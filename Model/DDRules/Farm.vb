@@ -1,8 +1,6 @@
 ﻿Public Class Farm
         Inherits Instance
-        Dim TestSilageHeap As Boolean = True
-
-        Private debug As Boolean = False
+        Private myDebugLevel As Integer = 0
         Private myPaddocks As List(Of LocalPaddockType)         ' Full list of apsim paddocks
         Private myHerd As SimpleHerd                            ' Dairy herd / on milking platform
         Private MyFarmArea As Double
@@ -11,7 +9,7 @@
         Private GrazedList As List(Of LocalPaddockType)         ' List of grazed paddocks
         Private myGrazingResidual As Integer = 1600
         Private myGrazingInterval As Integer = 30
-        Private myDayPerPaddock As Double
+        Private myDayPerHa As Double 'this value is used to control rotation speed
         Public WinterOffDryStock As Boolean = True
 
         Private myDate As Date
@@ -70,7 +68,7 @@
 
                         'TempArea = 1
                         myPaddocks.Add(New LocalPaddockType(i, SubPaddock, TempArea))
-                        If (debug) Then
+                        If (myDebugLevel > 0) Then
                                 Console.WriteLine("   Paddock " & myPaddocks(i).ToString)
                         End If
                 Next
@@ -93,6 +91,7 @@
                         p.setJustGrazed()
                 Next
                 SilageHeap.Prepare()
+                SupplementStore.Prepare()
         End Sub
 
         Public Sub Process()
@@ -108,6 +107,8 @@
                 doConservation()
         End Sub
 
+        'Should MoveStock events be generate as part of this process?
+        'If so a couple of changes need to be made to track when cows move into a new paddock. What about grazing multiple paddocks?
         Sub Graze()
                 GrazedList.Clear()
                 Dim PastureHarvested As Double = 0
@@ -116,10 +117,10 @@
                         Dim removed As BioMass = myHerd.Graze(p, GrazingResidual)
                         PastureHarvested += removed.DM_Total
                         GrazedList.Add(p)
-                        p.Counter -= 1
                         'Console.WriteLine("Grazing " & p.ApSim_ID & " DM = " & p.Cover.ToString)
-                        If (p.Counter <= 0) Then 'p.AvalibleDryMater <= 1 Or 
-                                PaddockQueue.Dequeue() ' not enough drymatter avaible to bother comming back to or end of rotation
+                        ' deque paddock if (reached allocated time/days in paddock) or (not enough drymatter avaible to bother comming back to)
+                        If (p.GrazingCounter <= 0) Then 'p.AvalibleDryMater <= 1 Or 
+                                PaddockQueue.Dequeue()
                         Else
                                 Return
                         End If
@@ -142,12 +143,13 @@
 
 #Region "2: Feeding Supplements"
         'Supplementary feeding
-        <Output()> <Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
-        <Output()> <Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
+        '<Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
+        '<Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
         Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
         Public SilageCutWastage As Double = 0.0 'percentage of silage lost as part of cutting
-
         Public SilageWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+
+        Private SupplementStore As New FeedStore 'this is used to track the supplements that have been fed to the herd (oppsite of SilageHeap)
 
         <Units("0-1")> Public SupplementDigestability As Double = 0.8
         <Units("0-1")> Public SilageDigestability As Double = 0.68 'need to check this value
@@ -196,21 +198,25 @@
 
         Function FeedSilage(ByVal MEDemand As Single, ByVal WastageFactor As Single) As Boolean
                 Dim tempDM As BioMass = SilageHeap.Remove(MEDemand * (1 + WastageFactor))
+                If (tempDM.DM_Total <= 0) Then
+                        Return False
+                End If
                 tempDM = tempDM.Multiply(1 - WastageFactor)
                 tempDM.digestibility = SilageDigestability
                 Dim tempEnergyDiff As Double = (tempDM.getME_Total - MEDemand) / MEDemand
-                myHerd.Feed(tempDM, False)
+                myHerd.Feed(tempDM, SimpleHerd.FeedType.Silage)
                 Return tempDM.getME_Total > 0
         End Function
 
         Function FeedSupplement(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single, ByVal Digestability As Single) As Boolean
                 Dim dm As BioMass = New BioMass()
-                SupplementFedout = (MEDemand / MEperKg) * (1 + WastageFactor)
+                Dim SupplementFedout As Double = (MEDemand / MEperKg) * (1 + WastageFactor)
                 dm.gLeaf = SupplementFedout * (1 - WastageFactor)
                 dm.setME(SupplementME)
                 dm.digestibility = Digestability
                 dm.N_Conc = NperKg
-                myHerd.Feed(dm, False)
+                myHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
+                SupplementStore.Add(dm)
                 Return (dm.DM_Total > 0)
         End Function
 #End Region
@@ -254,7 +260,7 @@
                 PaddockQueue = New Queue(Of LocalPaddockType)
                 For Each Paddock As LocalPaddockType In myPaddocks
                         If (Not Paddock.Closed And Paddock.Grazable) Then
-                                Paddock.Counter = Paddock.Area * myDayPerPaddock
+                                Paddock.GrazingCounter = Paddock.Area * myDayPerHa
                                 PaddockQueue.Enqueue(Paddock) 'add all paddock to the queue (including close ones)
                         End If
                 Next
@@ -300,7 +306,7 @@
                                 Else
                                         myGrazingInterval = 1 'default to set stocking
                                 End If
-                                myDayPerPaddock = myGrazingInterval / FarmArea
+                                myDayPerHa = myGrazingInterval / FarmArea
                                 Allocate_Paddocks()
                         End If
                 End Set
@@ -316,7 +322,7 @@
         End Sub
 
         Private Sub PrintPaddocks()
-                If (debug) Then
+                If (myDebugLevel > 0) Then
                         For Each pdk As LocalPaddockType In myPaddocks
                                 Console.WriteLine(pdk.ToString)
                         Next
@@ -346,8 +352,8 @@
 
 #Region "3: Pasture Conservation"
 
-        <Input()> <Units("kgDM/ha")> Public CDM As Double = 3500 ' Conservation trigger pasture mass (Dawn default = 3500)
-        <Input()> <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
+        <Units("kgDM/ha")> Public CDM As Double = 3500 ' Conservation trigger pasture mass (Dawn default = 3500)
+        <Units("kgDM/ha")> Public CR As Integer = 1600 ' Conservation cutting residual pasture mass (Dawn default)
         Private SilageHeap As New FeedStore
         Public PaddocksClosed As Integer = 0 'number of paddocks currently close for conservation
         'should these be moved out to a management script?
@@ -360,6 +366,19 @@
                         Return SilageHeap.DMAddedToday
                 End Get
         End Property
+
+        Public ReadOnly Property SupplementFedOut() As Double
+                Get
+                        Return SupplementStore.DMRemovedToday
+                End Get
+        End Property
+
+        Public ReadOnly Property SilageFedOut() As Double
+                Get
+                        Return SilageHeap.DMRemovedToday
+                End Get
+        End Property
+
         Private Sub doConservation()
                 If isBetween(myDate, FCD, LCD) Then
                         ClosePaddocks()
@@ -408,10 +427,12 @@
                 myPaddocks.Sort(LocalPaddockType.getSortListByIndex)
                 DM_Eaten = myHerd.DM_Eaten / FarmArea()
                 DM_Eaten_Pasture = myHerd.DM_Eaten_Pasture / FarmArea()
+                DM_Eaten_Silage = myHerd.DM_Eaten_Silage / FarmArea()
                 DM_Eaten_Supplement = myHerd.DM_Eaten_Supplement / FarmArea()
                 ME_Demand = myHerd.ME_Demand / FarmArea()
                 ME_Eaten = myHerd.ME_Eaten / FarmArea()
                 ME_Eaten_Pasture = myHerd.ME_Eaten_Pasture / FarmArea()
+                ME_Eaten_Silage = myHerd.ME_Eaten_Silage / FarmArea()
                 ME_Eaten_Supplement = myHerd.ME_Eaten_Supplement / FarmArea()
                 N_Eaten = myHerd.N_Eaten / FarmArea()
                 N_Eaten_Pasture = myHerd.N_Eaten_Pasture / FarmArea()
@@ -460,9 +481,11 @@
         <Output()> <Units("MJME/ha")> Public ME_Demand As Single
         <Output()> <Units("MJME/ha")> Public ME_Eaten As Single
         <Output()> <Units("MJME/ha")> Public ME_Eaten_Pasture As Single
+        <Output()> <Units("MJME/ha")> Public ME_Eaten_Silage As Single
         <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement As Single
         <Output()> <Units("kgDM/ha")> Public DM_Eaten As Single
         <Output()> <Units("kgDM/ha")> Public DM_Eaten_Pasture As Single
+        <Output()> <Units("kgDM/ha")> Public DM_Eaten_Silage As Single
         <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement As Single
         <Output()> <Units("kgN/ha")> Public N_Eaten As Single
         <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture As Single
@@ -519,6 +542,17 @@
                         'sort by index here
                         For i As Integer = 0 To (result.Length - 1)
                                 result(i) /= myPaddocks(i).Area
+                        Next
+                        Return result
+                End Get
+        End Property
+
+        <Output()> <Units("MJME/ha")> Public ReadOnly Property AverageGrowthRate() As Single()
+                Get
+                        Dim result(myPaddocks.Count - 1) As Single
+                        'sort by index here
+                        For i As Integer = 0 To (myPaddocks.Count - 1)
+                                result(i) = myPaddocks(i).AverageGrowthRate()
                         Next
                         Return result
                 End Get
@@ -626,17 +660,15 @@
 
         Public Property DebugLevel() As Integer
                 Get
-                        If (myPaddocks.Count > 0) Then
-                                Return myPaddocks(0).DebugLevel
-                        Else
-                                Return 0
-                        End If
+                        Return myDebugLevel
                 End Get
                 Set(ByVal value As Integer)
-                        For Each paddock As LocalPaddockType In myPaddocks
-                                paddock.DebugLevel = value
-                        Next
+                        myDebugLevel = value
+                        If Not (myPaddocks Is Nothing) Then
+                                For Each paddock As LocalPaddockType In myPaddocks
+                                        paddock.DebugLevel = value - 1
+                                Next
+                        End If
                 End Set
         End Property
-
 End Class

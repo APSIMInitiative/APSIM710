@@ -9,33 +9,201 @@
 <ul>
 	<li>This manager module is currently under heavy development as may be give unacceptable results. <b>Use with caution</b>.</li>
 	<li>This moduale <b>should</b> be capable of grazing crops other that AgPasture, but this to is currently untested</li>
-	<li>AgPasture reports stolons as a above ground pasture component. DDRules does not graze stolons under any curcumstances.
+	<li>AgPasture reports stolons as a above ground pasture component. DDRules does not graze stolons under any curcumstances.</li>
 </ul>
 <h2>Introduction</h2>
 <p>
-DDRules is a dairy farm manager component originally developed from a collection of rules and managment practices developed by Dawn Dally of DairyNZ. A number of 
-the orginal user input parameters are now being supplied by Apsim modules, most notably pasture mass and quality.
+	DDRules is a dairy farm manager component originally developed from a collection of rules and managment practices developed by Dawn Dally of DairyNZ. A number of 
+	the orginal user input parameters are now being supplied by Apsim modules, most notably pasture mass and quality.
 </p>
 <h2>Original Documentation</h2>
 <ul>
-<li><a href="Dairy Grazing rules Sep 07.doc">Dairy Grazing rules Sep 07.doc</a></li>
-<li><a href="Additional information for Dairy Farmsim 2 Oct 07.doc">Additional information for Dairy Farmsim 2 Oct 07.doc</a></li>
+	<li><a href="Dairy Grazing rules Sep 07.doc">Dairy Grazing rules Sep 07.doc</a></li>
+	<li><a href="Additional information for Dairy Farmsim 2 Oct 07.doc">Additional information for Dairy Farmsim 2 Oct 07.doc</a></li>
 </ul>
 
+<h2>How to use DDRules</h2>
+<h3>Introduction</h3>
+
+<h3>Setting Farm Effective Area [ha]</h3>
+<p>
+	e.g. FarmArea = 300
+</p>
+<p>
+	The farm effective area is defined as the sum of the area of all paddocks in the simulation. Paddocks are able to be set as being unavalible for grazing (WIP)
+	to allow development of forage crops etc. This will effect the grazable area at any given time, but the effective area of the farm will remain unchanged during a
+	simulation run.
+</p>
+<p>
+	Note: Currently all paddocks are assumed to be of equal size<br/>
+	Todo: Allow individual paddock sizes to be set
+</p>
+
+<h3>Grazing Controls</h3>
+<h4>Grazing Residual</h4>
+<p>
+	e.g. GrazingResiudal = 1750
+</p>
+<p>
+	Paddock will be grazed down to the given cover and then fed silage or supplements.<br/>
+	Note: AgPasture includes stolons in the above ground pasture mass. These are not considered grazable and as such it may look like DDRules is not grazing 
+	to the correct residual. Also all paddock will be grazed to the same residual irrispecive of the plant species in the paddock.
+</p>
+<h4>Rotation Length</h4>
+<p>
+	e.g. GrazingInterval = 30
+</p>
+<p>
+	This sets the number of days it takes to graze every paddock on the farm. Internally this is used to calculate the number of days the hard will
+	spend in each paddock e.g. 30 days / 10 paddock (assuming equal size) == 3 grazing days per paddock. <br/>
+	Note: Paddocks with the highest masses will be grazed first and as such the current model make no guarantee a paddock will be grazed. 
+</p>
+
+<h3>Supplementation</h3>
+<p>
+	Cows are assumed to be fully feed through out the year. Where this demand is unable to be meet by grazing pasture, silage made on farm and then supplements will be fed.
+</p>
+<ol>
+	<li>Pasture</li>
+	<li>Silage (made on farm)</li>
+	<li>Supplements (bought in)</li>
+</ol>
+<p>
+	Note: there are many possible ordering combinations that could be implemented e.g. feed 1kg of grain per cow per day (before grazing pasture). Most should 
+	be easy to implement but could become complex to manage.
+</p>
+
+<h3>Pasture Conservation</h3>
+<p>
+	Any pasture cut for conservation is assumed to go into silage. Any paddock that exceeds a preset mass during the conservation window is removed from the grazing
+	rotation ("shut up") for cutting (once a week).
+</p>
+<p>
+	Example:<br/>
+	&nbsp;&nbsp;&nbsp;ConservationStart = 01-Jan<br/>
+	&nbsp;&nbsp;&nbsp;ConservationFinish = 02-Mar<br/>
+	&nbsp;&nbsp;&nbsp;ConservationTrigger = 3500 kgDM/ha<br/>
+	&nbsp;&nbsp;&nbsp;ConservationResidual = 1200 kgDM/ha<br/>
+	&nbsp;&nbsp;&nbsp;SilageCutWastage = 5 %<br/>
+	&nbsp;&nbsp;&nbsp;SilageStoreEnable = 1<br/>
+	<br/>
+	The above can be interpred as:<br/>
+	The conservation window is from <b>1st January</b> to <b>2 March</b>. Shut any paddock over <b>3500</b> kgDM/ha. At cutting leave <b>1200</b> kgDM/ha standing, <b>5%</b> of the 
+	cut mass remains in the paddock as surface organic matter, and the silage collected is to be <b>stored on farm</b> for latter use.
+</p>
+<p>
+	Todo:
+	<ul>
+		<li>Allow the cutting frequency to be set from the manager</li>
+		<li>Set maximum (and minumum?) number of paddocks / area able to be shut at any one time</li>
+	</ul>
+</p>
+
+<h2>Parameter Settings</h2>
+<p>
+	Debug setting are stored in the DDRules.xml file
+</p>
+<h3>Debug Messages</h3>
+<dl>
+	<dt><b>DebugLevel</b> [0-4]</dt>
+	<dd>Sets the level of detail output to the summary file</dd>
+</dl>
+<p>
+	DDRules debuging messages are controlled via a "debug level" system. The higher the number, the more detail is returned
+	to the console/summary file. Higher level settting include outputs from lower setting e.g. DebugLevel = 2 turn on both
+	Apsim level and farm level messages
+</p>
+<p>
+	0 = Disable ALL debug message outs<br/>
+	1 = "Apsim" message/event confirmations<br/>
+	2 = Farm management level messages<br/>
+	3 = Brief Paddock/plant level messages<br/>
+	4 = Verbose Paddock/plant level messages<br/>
+</p>
+<h3>Cow Energy Demands</h3>
+<dl>
+	<dt><b>Cow_Interpolation</b> [0,1]</dt>
+	<dd>Use interpolation of monthly cow demand and production values: 0 = disabled, 1 = enabled</dd> 
+</dl>
+<p>
+	Cow demands are currently based on a fixed monthly herd average (as sourced for DairyNZ). Some of these monthly averages
+	can be interpolated back to daily values by the model to "smooth" out some of the default monthly data points.<br/>
+	When enabled these interpolations are applied to;
+	<ul>
+		<li>Live weight change</li>
+		<li>Condition score</li>
+		<li>Milk production</li>
+	</ul>
+</p>
+<p>
+	Note: The current "simplified" cows model will be depriciated once a biophsyical cow model has been created.
+</p>
+
+<h3>Break Feeding</h3>
+<dl>
+	<dt><b>Break Feeding</b> [0,1]</dt>
+		<dd>Enable break feeding: 0 = disabled, 1 = enabled</dd> 
+	<dt><b>GrowthRateWindowSize</b> [&gt;=1]</dt>
+		<dd>Window size of moving average pasture growth rate</dd>
+</dl>
+
+<p>
+	When <b>enabled</b> DDRules attempts to to limit cows intake in relation to the length of time a paddock is to be grazed for to simulation the use of break fencing. A
+	moving average of the previous days pasture growth rates is maintained for use in predicting pasture growth.
+<p>
+<p>
+	The calculation used to calculate the amount of dry matter / energy allocated to the herd is;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ME<sub>allowed</sub> = (ME<sub>avalible</sub> + GR<sub>est</sub>) x Days<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ME<sub>allowed</sub> = Amount of energy allocated for removal on the current grazing day [MJME]<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ME<sub>avalible</sub> = (Pasture cover [kgDM] - Grazing Residual [kgDM]) x PastureME [MJME/kgDM]<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GR<sub>est</sub> = Average pasture growth rate over the preceed <b>GrowthRateWindowSize</b> days x Days<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Days = Number of days the herd will remain in the paddock
+</p>
+<p>
+	e.g.
+	<ul>
+		<li>Pasture cover is 2300 kgDM/ha @ 10 MJME/kgDM</li>
+		<li>Average pasture growth rate over the last 30 days is 100 kgDM/ha/day</li>
+		<li>Current grazing residual is 1500 kgDM/ha</li>
+		<li>Herd energy demands is 6000 MJME/ha/day</li>
+		<li>The herd is to spend 2 days in the paddock</li>
+	</ul>
+	then;
+	<ul>
+		<li>ME<sub>allowed</sub> = (2300 - 1500 + 100 * 2) / 2</li>
+		<li>&nbsp;&nbsp;&nbsp;= 500 kgDM/ha/day * 10 MJME</li>
+		<li>&nbsp;&nbsp;&nbsp;= 5000 MJME/ha will be removed by todays grazing event</li>
+		<li>and the remaining 1000 MJME will be met by supplementy feeding</li>
+	</ul>
+</p>
+<p>
+	Todo: An alternative implementation might be to calculate a set amount of supplement to be fed to the herd for each grazing day when the herd enters the paddock i.e.
+	on entering the paddock it is estimated that pasture will only meet 80% of the herd requirements, so lets fed 100 kgDM of silage per day.<br/>
+	This would better reflect what dairy farmers to in the real world, but would raise some questions about how well this would work in simulations
+	with a small number of paddocks and long rotation periods i.e. spend a considerable amount of time in any one paddock.
+<p>
+	When <b>disabled</b> if there is enough pasutre avalible in the paddock to meet animal requirements then this will be grazed. Silage / supplements are
+	provided only once the paddock has been grazing down to the current grazing residual. As a result the herd may eat all the avalible dry matter in 2 days
+	and remain in the paddock being fed silage for say 10 days.
+</p>
+<p>
+	Note: the calculate quantity of pasture is removed/grazing from the paddock and any remaining feed demand is met with silage or supplements
+</p> 
 <h2>Module Inputs/Outputs</h2>
 <p>
-<b>Warning:</b> Some of the variable contained in the list below are either currently or will shortly be depreciated as DDRules moves away from an inital test implementation.
-Parameter and variable names may also be altered to better align with Apsim standards.
+	<b>Warning:</b> Some of the variable contained in the list below are either currently or will shortly be depreciated as DDRules moves away from an inital test implementation.
+	Parameter and variable names may also be altered to better align with Apsim standards.
 </p>
 <table border=1>
 <tr> <th>Name</th><th>Description</th><th>Read</th><th>Write</th><th>Kind</th><th>Array</th><th>Units</th></tr>
+    <tr> <td>FarmArea</td><td>Effective farm area [ha]</td><td>True</td><td>True</td><td>double</td><td>False</td><td>ha</td></tr>
+    <tr> <td>WinterOffDryStock</td><td>Take dry stock off farm</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
+    <tr> <td>StockingRate</td><td>Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
+    <tr> <td>PeakStockingRate</td><td>Stocking rate a peak of lactation</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
     <tr> <td>RemainingFeedDemand</td><td>ME still required to meet animal requirements</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
     <tr> <td>TotalCows</td><td>Total animal requirements [MJME] (for the full herd)</td><td>True</td><td>False</td><td>double</td><td>False</td><td>Cows</td></tr>
     <tr> <td>TotalFeedDemand</td><td>Total animal requirements [MJME] (for the full herd)</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
-    <tr> <td>StockingRate</td><td>Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
-    <tr> <td>PeakStockingRate</td><td>Stocking rate a peak of lactation</td><td>True</td><td>True</td><td>single</td><td>False</td><td>cows/ha</td></tr>
-    <tr> <td>FarmArea</td><td></td><td>True</td><td>True</td><td>double</td><td>False</td><td>cows/ha</td></tr>
-    <tr> <td>WinterOffDryStock</td><td>Take dry stock off farm</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
     <tr> <td>ME_Demand_Total</td><td>Total Metabolisable energy required by herd [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
     <tr> <td>ME_Demand_Maintance</td><td>Metabolisable energy required by herd for maintance [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
     <tr> <td>ME_Demand_Lactation</td><td>Metabolisable energy required by herd for lactation [MJME/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME</td></tr>
@@ -48,28 +216,25 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>ME_Demand_WeightChange_Cow</td><td>Metabolisable energy required for live weight change [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
     <tr> <td>ME_Demand_Pregnancy_Cow</td><td>Metabolisable energy required for pregnancy [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
     <tr> <td>ME_Demand_Walking_Cow</td><td>Metabolisable energy required for walking [MJME/cow/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>MJME/cow</td></tr>
-    <tr> <td>MilkProduction</td><td>Milk solids production - total</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS</td></tr>
-    <tr> <td>MLact</td><td>Month of lactation</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
-    <tr> <td>MPreg</td><td>Month of pregnancy</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
-    <tr> <td>Cow_LWt</td><td>Average cow live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
-    <tr> <td>Cow_dLWt</td><td>Average cows change in live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt</td></tr>
+    <tr> <td>MilkSolids</td><td>Milk solids production - total</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS/day</td></tr>
+    <tr> <td>MilkSolids_Cow</td><td>Milk solids production per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS/cow/day</td></tr>
+    <tr> <td>Cow_LWt</td><td>Average cow live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt/Cow</td></tr>
+    <tr> <td>Cow_dLWt</td><td>Average cows change in live weight</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kg_LWt/cow/day</td></tr>
     <tr> <td>Cow_BC</td><td>Averge body condition score</td><td>True</td><td>False</td><td>double</td><td>False</td><td></td></tr>
-    <tr> <td>Cow_MilkSolids</td><td>Milk solids production per cow</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgMS/cow</td></tr>
     <tr> <td>Cow_IsDry</td><td>Is herd currently dried off</td><td>True</td><td>False</td><td>string</td><td>False</td><td></td></tr>
     <tr> <td>GrazingInterval</td><td>Current grazing interval / return period</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>Days</td></tr>
     <tr> <td>GrazingResidual</td><td>Current cow grazing residual</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>SilageCut</td><td>Quantity of silage cut on farm today</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM</td></tr>
-    <tr> <td>SilageCut_kgha</td><td>Quantity of silage cut on farm today</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>SilageCut</td><td>Quantity of silage cut on farm today [kgDM/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM</td></tr>
+    <tr> <td>SupplementFedOut</td><td>Quantity of silage fed to cows today [kgDM/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM</td></tr>
+    <tr> <td>SilageFedOut</td><td>Quantity of silage fed to cows today [kgDM/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM</td></tr>
+    <tr> <td>SilageCut_kgha</td><td>Quantity of silage cut on farm today [kgDM/ha/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>SilageFedOut_kgha</td><td>Quantity of silage fed to cows today [kgDM/ha/day]</td><td>True</td><td>False</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>SupplementME</td><td>Energy content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME/kgDM</td></tr>
     <tr> <td>SupplementN</td><td>Nitrogen content of purchased supplement</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgN/kgDM</td></tr>
     <tr> <td>SupplementDigestability</td><td>Supplment digestability</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
     <tr> <td>SupplementWastage</td><td>Supplment loss at feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>%</td></tr>
     <tr> <td>SilageDigestability</td><td>Silage digestability (could this be made read only once the store has been refactored)</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
     <tr> <td>SilageCutWastage</td><td>Supplment/silage loss during cutting</td><td>True</td><td>True</td><td>double</td><td>False</td><td>%</td></tr>
-    <tr> <td>CDM</td><td>Conservation trigger pasture mass (Dawn default = 3500)</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>CR</td><td>Conservation cutting residual pasture mass (Dawn default = 1600)</td><td>True</td><td>True</td><td>integer</td><td>False</td><td>kgDM/ha</td></tr>
-    <tr> <td>FCD</td><td>First Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
-    <tr> <td>LCD</td><td>Last Conservation Date - uing a month for the time being</td><td>True</td><td>True</td><td>integer</td><td>False</td><td></td></tr>
     <tr> <td>SilageME</td><td>Energy content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>MJME/kgDM</td></tr>
     <tr> <td>SilageN</td><td>Nitrogen content of silage produced on farm</td><td>True</td><td>True</td><td>double</td><td>False</td><td>kgN/kgDM</td></tr>
     <tr> <td>SilageWastage</td><td>Proportion of silage lost during feeding out</td><td>True</td><td>True</td><td>double</td><td>False</td><td>0-1</td></tr>
@@ -84,10 +249,12 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>N_Out</td><td>Nitrogen output of herd</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>ME_Demand</td><td>Energy demand</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten</td><td>Total Energy consumed</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
-    <tr> <td>ME_Eaten_Pasture</td><td>Energy consumed as pasture</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
+    <tr> <td>ME_Eaten_Pasture</td><td>Energy consumed as silage</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
+    <tr> <td>ME_Eaten_Silage</td><td>Energy consumed as pasture</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten_Supplement</td><td>Energy consumed as supplement</td><td>True</td><td>True</td><td>single</td><td>False</td><td>MJME/ha</td></tr>
     <tr> <td>DM_Eaten</td><td>Total dry matter consumed</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>DM_Eaten_Pasture</td><td>Dry matter consumed as pasture</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
+    <tr> <td>DM_Eaten_Silage</td><td>Dry matter consumed as silage</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>DM_Eaten_Supplement</td><td>Dry matter consumed as supplement</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>N_Eaten</td><td>Total nitrogen consumed</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>N_Eaten_Pasture</td><td>Nitrogen consumed form pasture</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
@@ -98,6 +265,7 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>N_to_urine</td><td>Nitrogen partitioned to urine</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/ha</td></tr>
     <tr> <td>DM_to_feaces</td><td>Drymatter partitioned to dung</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgDM/ha</td></tr>
     <tr> <td>PaddockStatus</td><td>Current status of paddocks</td><td>True</td><td>False</td><td>string</td><td>True</td><td></td></tr>
+    <tr> <td>AverageGrowthRate</td><td>Energy consumed as pasture per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>kgDM/ha/day</td></tr>
     <tr> <td>ME_Eaten_Pasture_Pdks</td><td>Energy consumed as pasture per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten_Supplement_Pdks</td><td>Energy consumed as Supplements per paddock</td><td>True</td><td>True</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
     <tr> <td>ME_Eaten_Pdks</td><td>Energy consumed per paddock</td><td>True</td><td>False</td><td>single</td><td>True</td><td>MJME/ha</td></tr>
@@ -126,7 +294,6 @@ Parameter and variable names may also be altered to better align with Apsim stan
     <tr> <td>N_to_BC_Cow</td><td>Nitrogen partitioned to body condition per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
     <tr> <td>N_to_feaces_Cow</td><td>Nitrogen partitioned to dung per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
     <tr> <td>N_to_urine_Cow</td><td>Nitrogen partitioned to urine per cow</td><td>True</td><td>True</td><td>single</td><td>False</td><td>kgN/cow</td></tr>
-    <tr> <td>LWt_Change_Cow</td><td>Daily per cow live weight change</td><td>True</td><td>False</td><td>single</td><td>False</td><td>kgLWt/cow</td></tr>
     <tr> <td>PWO</td><td>Proportion (PWO) of herd wintered off-farm (range 0-1.0)</td><td>True</td><td>True</td><td>single</td><td>False</td><td>0-1</td></tr>
     <tr> <td>DCWO</td><td>Date commence winter off</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
     <tr> <td>DSWO</td><td>Date to stop winter off</td><td>True</td><td>True</td><td>string</td><td>False</td><td></td></tr>
@@ -169,6 +336,7 @@ Paddocks have a number of possible status, can only have 1 status at a time;<br 
 2.	JG – finished grazing yesterday (sometimes needed  for models)<br />
 3.	C – closed for conservation<br />
 4.	G – growing – everything else<br />
+5.	NA - Not avalible for grazing [NEW]
 </p>
 <p>
 Before a paddock has been totally grazed – easiest to reduce PM each day by the amount of TFD allocated to that paddock, BG status ensures that the cows come back to that paddock until they reach GR.

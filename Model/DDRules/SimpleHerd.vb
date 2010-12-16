@@ -1,9 +1,16 @@
 ﻿Public Class SimpleHerd
+        Public Enum FeedType
+                Pasture
+                Silage
+                Supplement
+        End Enum
+
         Private ReferenceCow As SimpleCow
         Private TotalCows As Double
 
         Dim Total_DM_Eaten As BioMass = New BioMass()
         Dim Total_Pasutre_Eaten As BioMass = New BioMass()
+        Dim Total_Silage_Eaten As BioMass = New BioMass()
         Dim Total_Supplement_Eaten As BioMass = New BioMass()
 
         Public ME_Demand As Double
@@ -18,6 +25,11 @@
         Public ReadOnly Property DM_Eaten_Pasture() As Double
                 Get
                         Return Total_Pasutre_Eaten.DM_Total
+                End Get
+        End Property
+        Public ReadOnly Property DM_Eaten_Silage() As Double
+                Get
+                        Return Total_Silage_Eaten.DM_Total
                 End Get
         End Property
         Public ReadOnly Property DM_Eaten_Supplement() As Double
@@ -37,6 +49,11 @@
                         Return Total_Pasutre_Eaten.getME_Total
                 End Get
         End Property
+        Public ReadOnly Property ME_Eaten_Silage() As Double
+                Get
+                        Return Total_Silage_Eaten.getME_Total
+                End Get
+        End Property
         Public ReadOnly Property ME_Eaten_Supplement() As Double
                 Get
                         Return Total_Supplement_Eaten.getME_Total
@@ -52,6 +69,11 @@
         Public ReadOnly Property N_Eaten_Pasture() As Double
                 Get
                         Return Total_Pasutre_Eaten.N_Total
+                End Get
+        End Property
+        Public ReadOnly Property N_Eaten_Silage() As Double
+                Get
+                        Return Total_Silage_Eaten.N_Total
                 End Get
         End Property
         Public ReadOnly Property N_Eaten_Supplement() As Double
@@ -123,6 +145,7 @@
                 ReferenceCow.OnPrepare(Year, Month)
                 Total_DM_Eaten = New BioMass()
                 Total_Pasutre_Eaten = New BioMass()
+                Total_Silage_Eaten = New BioMass()
                 Total_Supplement_Eaten = New BioMass()
                 setCowNumbers(numCows)
         End Sub
@@ -201,22 +224,31 @@
                 ME_Demand = ReferenceCow.TodaysEnergyRequirement * TotalCows
         End Sub
 
-        Public Sub Feed(ByVal feed As BioMass, ByVal isPasture As Boolean)
+        Public Sub Feed(ByVal feed As BioMass, ByVal type As FeedType)
                 If (feed.DM_Total > 0) Then
-                        If (isPasture) Then
-                                Total_Pasutre_Eaten = Total_Pasutre_Eaten.Add(feed)
-                        Else
-                                Total_Supplement_Eaten = Total_Supplement_Eaten.Add(feed)
-                        End If
+                        Select Case type
+                                Case FeedType.Pasture
+                                        Total_Pasutre_Eaten = Total_Pasutre_Eaten.Add(feed)
+                                Case FeedType.Silage
+                                        Total_Silage_Eaten = Total_Silage_Eaten.Add(feed)
+                                Case FeedType.Supplement
+                                        Total_Supplement_Eaten = Total_Supplement_Eaten.Add(feed)
+                        End Select
+
+                        'If (isPasture) Then
+                        '        Total_Pasutre_Eaten = Total_Pasutre_Eaten.Add(feed)
+                        'Else
+                        '        Total_Supplement_Eaten = Total_Supplement_Eaten.Add(feed)
+                        'End If
                         Total_DM_Eaten = Total_DM_Eaten.Add(feed)
-                        ReferenceCow.Feed(feed.Multiply(1 / TotalCows), isPasture)
+                        ReferenceCow.Feed(feed.Multiply(1 / TotalCows), type = FeedType.Pasture)
                 End If
         End Sub
 
         Public Function Graze(ByVal GrazingPaddock As LocalPaddockType, ByVal GrazingResidual As Double) As BioMass
                 Dim dmRemoved As BioMass = GrazingPaddock.Graze(RemainingFeedDemand, GrazingResidual)
                 If (dmRemoved.DM_Total > 0) Then
-                        Feed(dmRemoved, True)
+                        Feed(dmRemoved, FeedType.Pasture)
                 End If
                 Return Total_DM_Eaten
         End Function

@@ -1,5 +1,8 @@
 
 Public Class LocalPaddockType
+        'Local paddock is the wrapper for the basic apsim paddock. It adds "worker" functions for processes such as
+        ' nutrient grazing and returns.
+
         Public Enum PaddockStatus
                 G = 1  'Growing
                 BG = 2 'Being grazed
@@ -9,21 +12,27 @@ Public Class LocalPaddockType
         End Enum
 
         Public DebugLevel As Integer = 2 '0==none, 1==brief, 2==verbose
+        Public Shared DebugTestBreakFeeding As Boolean = True
+        Public Shared MovingAverageSeriesLength As Integer = 30
 
-        Private Default_N_Conc = 0.035
-        Private index As Integer
-        'Public TotalMass, TotalN As Double 'Pasture mass 
         Private ApSim_SubPaddock As PaddockType
         Public Area As Double
-        Private status As PaddockStatus
+        Private Status As PaddockStatus
+        'Homogeneous pasture cover
+        Dim Pasture_Cover As BioMass = New BioMass()
+        'Lookup for indervidual pasture species
+        Public PastureMasses As Dictionary(Of String, BioMass) = New Dictionary(Of String, BioMass)
+        Public myAverageGrowthRate As MovingAverage
+
+        Private Default_N_Conc = 0.035
+        Private Default_Digestability = 0.68
+        Private index As Integer
         Public GrazingResidual As Double = 0
         Dim DM_Grazed As BioMass = New BioMass()
-        Dim Pasture_Cover As BioMass = New BioMass()
         Dim N_Feaces, C_Feaces, N_Urine As Double
-        Public PastureMasses As Dictionary(Of String, BioMass) = New Dictionary(Of String, BioMass)
-        Public Counter As Integer = 0
+        Public GrazingCounter As Integer = 0 'number of days this paddocked will be grazed for given the current rotation length
 
-        Private patch As ComponentType
+        Private UrinePatchComponent As ComponentType
         Private AgPasture As ComponentType
 
         Public Sub New(ByVal index As Integer, ByRef paddock As PaddockType, ByVal PaddockArea As Double)
@@ -31,8 +40,9 @@ Public Class LocalPaddockType
                 Area = PaddockArea
                 Grazable = True                               'paddock grazable at initilisation time
                 Me.index = index                                        'sort origional paddock position in the simulation for sorting
-                patch = ApSim_SubPaddock.ComponentByName("UrinePatch")
+                UrinePatchComponent = ApSim_SubPaddock.ComponentByName("UrinePatch")
                 AgPasture = ApSim_SubPaddock.Component("AgPasture")
+                myAverageGrowthRate = New MovingAverage(MovingAverageSeriesLength)
         End Sub
 
         Public Sub New(ByVal index As Integer, ByRef paddock As PaddockType)
@@ -44,26 +54,26 @@ Public Class LocalPaddockType
                 C_Feaces = 0
                 N_Urine = 0
                 DM_Grazed = New BioMass()
-                If (status = PaddockStatus.JG) Then
+                If (Status = PaddockStatus.JG) Then
                         Grazable = True
                 End If
         End Sub
 
         Public Sub setJustGrazed()
-                status = PaddockStatus.JG
+                Status = PaddockStatus.JG
         End Sub
 
         Public Sub setBeingGrazed()
-                status = PaddockStatus.BG
+                Status = PaddockStatus.BG
         End Sub
 
         Public Property Closed() As Boolean
                 Get
-                        Return status = PaddockStatus.CL
+                        Return Status = PaddockStatus.CL
                 End Get
                 Set(ByVal value As Boolean)
                         If (value) Then
-                                status = PaddockStatus.CL
+                                Status = PaddockStatus.CL
                         Else
                                 Grazable = True
                         End If
@@ -72,18 +82,26 @@ Public Class LocalPaddockType
 
         Public Property Grazable() As Boolean
                 Get
-                        Return status <> PaddockStatus.NA
+                        Return Status <> PaddockStatus.NA
                 End Get
                 Set(ByVal value As Boolean)
                         If (value) Then
-                                status = PaddockStatus.G
+                                Status = PaddockStatus.G
                         Else
-                                status = PaddockStatus.NA
+                                Status = PaddockStatus.NA
                         End If
                 End Set
         End Property
 
         Function Graze(ByVal energyRequired As Double, ByVal GrazingResidual As Double) As BioMass
+                If (DebugTestBreakFeeding) Then
+                        Return GrazeBreak(energyRequired, GrazingResidual)
+                Else
+                        Return GrazeOld(energyRequired, GrazingResidual)
+                End If
+        End Function
+
+        Function GrazeOld(ByVal energyRequired As Double, ByVal GrazingResidual As Double) As BioMass
                 Me.GrazingResidual = GrazingResidual
                 UpdateCovers()
 
@@ -99,17 +117,26 @@ Public Class LocalPaddockType
                 End If
 
                 Dim RemovedME As Double
+                Dim testDM1, testDM2, testDM3 As Double
                 If (energyRequired < AvalibleME()) Then 'this paddock contains more ME that required...
                         'assue linear pasture removal/quality
-                        Dim aME As Double = AvalibleME()
-                        Dim aDM As Double = AvalibleDryMater()
-                        Dim ratio = (aME - energyRequired) / aME
-                        Dim gr As Double = ratio * aDM
-                        GrazingResidual += ((AvalibleME() - energyRequired) / AvalibleME()) * (Cover() - GrazingResidual) 'only graze down to the required residual
-                        RemovedME = energyRequired      'harvest the required amount
+                        If (DebugTestBreakFeeding) Then
+                                Dim avgGR As Double = myAverageGrowthRate.Average
+                                Dim predictedGrowth = avgGR * GrazingCounter
+                                testDM1 = AvalibleME() + predictedGrowth * PastureME()
+                                testDM2 = Math.Min(testDM1 / GrazingCounter, energyRequired)
+                                testDM3 = GrazingResidual + ((AvalibleME() - testDM2) / AvalibleME()) * (Cover() - GrazingResidual) 'only graze down to the required residual
+
+                                Dim testDM4 As Double = (Cover() - testDM3) * PastureME()
+                                GrazingResidual = testDM3
+                                RemovedME = testDM2
+                                Console.WriteLine("DDRules (DebugTestBreakFeeding) - " & ", " & index & ", " & avgGR & ", " & GrazingCounter & ", " & predictedGrowth & ", " & testDM2 & ", " & energyRequired & ", " & testDM3 & ", " & Cover() & ", " & GrazingResidual)
+                        Else
+                                GrazingResidual += ((AvalibleME() - energyRequired) / AvalibleME()) * (Cover() - GrazingResidual) 'only graze down to the required residual
+                                RemovedME = energyRequired      'harvest the required amount
+                        End If
                 Else
                         RemovedME = AvalibleME()          'harvest all avalible DM/ME
-                        'status = PaddockStatus.JG
                 End If
                 setBeingGrazed()       ' might need to come back
 
@@ -153,6 +180,64 @@ Public Class LocalPaddockType
                         Console.WriteLine("DDRules (debug) - " & "  = Energy Removed    = " & result.getME_Total)
                         Console.WriteLine("DDRules (debug) - " & "                      = " & Removal.getME_Total)
                 End If
+                GrazingCounter -= 1
+                DM_Grazed = result
+                Return result
+        End Function
+
+        Function GrazeBreak(ByVal energyRequired As Double, ByVal GR As Double) As BioMass
+                Me.GrazingResidual = GR
+                UpdateCovers()
+                Dim PreGrazeMass As New BioMass(Pasture_Cover)
+
+                'Dim RemovedME As Double
+                'Dim totalME_plusGR, ME_to_remove, New_Residual As Double
+                Dim todayGR As Double
+                Dim todayME As Double
+                'If (energyRequired < AvalibleME()) Then 'this paddock contains more ME that required...
+                Dim predictedME As Double = myAverageGrowthRate.Average * GrazingCounter * PastureME()
+                Dim totalME As Double = AvalibleME() + predictedME
+                todayME = totalME / GrazingCounter
+                todayME = Math.Min(todayME, energyRequired)
+                todayME = Math.Min(todayME, AvalibleME)
+                todayME = Math.Max(todayME, 0)
+
+                todayGR = GrazingResidual + todayME / PastureME()
+
+                'totalME_plusGR = AvalibleME() + predictedGrowth * PastureME()
+                'ME_to_remove = Math.Min(totalME_plusGR / GrazingCounter, energyRequired)
+                'New_Residual = GR + ((AvalibleME() - ME_to_remove) / AvalibleME()) * (Cover() - GR) 'only graze down to the required residual
+
+                'Dim testDM4 As Double = (Cover() - New_Residual) * PastureME()
+                'GR = New_Residual
+                'RemovedME = ME_to_remove
+                'Console.WriteLine("DDRules (DebugTestBreakFeeding) - " & ", " & index & ", " & Cover() & ", " & GrazingCounter & ", " & predictedGrowth & ", " & ME_to_remove & ", " & energyRequired & ", " & New_Residual & ", " & Cover() & ", " & GR)
+                'Else
+                'RemovedME = AvalibleME()          'harvest all avalible DM/ME
+                'todayGR = GrazingResidual
+                'End If
+
+                setBeingGrazed()       ' might need to come back
+                GrazingCounter -= 1
+
+                Dim result As BioMass = New BioMass()
+                'todayME = (Cover() - todayGR) * PastureME()
+                '                If (todayGR < Cover()) Then
+                Dim MassRemoved As BioMass
+                For Each crop As CropType In ApSim_SubPaddock.Crops
+                        Dim tempBioMass As BioMass = New BioMass
+                        PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
+                        Dim proportion As Double = tempBioMass.getME_Total / PreGrazeMass.getME_Total
+                        If (ApSim_SubPaddock.Crops.Count = 1 And proportion <> 1) Then
+                                Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
+                        End If
+
+                        MassRemoved = GrazePlant(crop, proportion * todayME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
+                        result = result.Add(MassRemoved.Multiply(Area))
+                Next
+                '                End If
+
+                UpdateCovers()
                 DM_Grazed = result
                 Return result
         End Function
@@ -169,72 +254,14 @@ Public Class LocalPaddockType
                         result.digestibility = crop.Variable("DefoliatedDigestibility").ToDouble
                 Else
                         result.N_Conc = Default_N_Conc
-                        result.digestibility = 0.68
+                        result.digestibility = Default_Digestability
                 End If
                 Return result
         End Function
 
         'It would be nice to replce this with an ApSim "Cut" event call based on cut height but not implmented in AgPasture.
         'Do farmers really cut to the resudual or to a height?
-        ' "loss" parameter defines the amount of pasture cut but not collected for silage
-        ' this is returned to paddock surface organic matter
-        ' TODO: this is in KgDM/ha. Nedd to check this is being handled correctly since inclusion of farm area.
-        ' TODO: return an instance of BioMass rather than pure DM figure
-        Public Function Harvest_Old(ByVal CuttingResidual As Integer, ByVal loss As Double) As Double
-                Dim cutDM As Double = Cover() - CuttingResidual
-                If (DebugLevel > 0) Then
-                        Console.WriteLine()
-                        Console.WriteLine("DDRules.Harvest")
-                        Console.WriteLine("     " & ApSim_SubPaddock.Name)
-                        Console.WriteLine("     " & "+ Start Cover = " & Cover())
-                        Console.WriteLine("     " & "- Residual    = " & CuttingResidual)
-                        Console.WriteLine("     " & "= Cut DM      = " & cutDM)
-                End If
-
-                cutDM /= 10 'convert kg/ha to g/m^2
-                If cutDM > 0 Then
-                        For Each crop As CropType In ApSim_SubPaddock.Crops
-                                Dim tempBioMass As BioMass = New BioMass
-                                PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
-                                If (DebugLevel > 1) Then
-                                        Console.WriteLine("DDRules.Harvest - " & tempBioMass.ToString())
-                                End If
-                                Dim Green2DeadSplit As Double = 1 - tempBioMass.proportionDead()
-                                Dim cutGreenDM = cutDM * Green2DeadSplit
-                                Dim cutDeadDM = cutDM - cutGreenDM
-                                Dim greenRemoved As New RemoveCropDmdmType
-                                greenRemoved.pool = "green"
-                                greenRemoved.part = New String() {"leaf", "stem"}
-                                Dim Leaf2StemSplit As Double = tempBioMass.proportionGreenLeaf()
-                                greenRemoved.dlt = New Double() {cutGreenDM * Leaf2StemSplit, cutGreenDM * (1 - Leaf2StemSplit)} '
-
-                                Dim deadRemoved As New RemoveCropDmdmType
-                                deadRemoved.pool = "dead"
-                                deadRemoved.part = New String() {"leaf", "stem"}
-                                Leaf2StemSplit = tempBioMass.proportionDeadLeaf()
-                                deadRemoved.dlt = New Double() {cutDeadDM * Leaf2StemSplit, cutDeadDM * (1 - Leaf2StemSplit)} '
-
-                                Dim dmRemoved As New RemoveCropDmType
-                                dmRemoved.dm = New RemoveCropDmdmType() {greenRemoved, deadRemoved}
-                                If (DebugLevel > 1) Then
-                                        print(greenRemoved)
-                                        print(deadRemoved)
-                                End If
-                                crop.Publish("remove_crop_biomass", dmRemoved)
-                                ReturnDM(tempBioMass, loss)
-
-                                UpdateCovers()
-                                PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
-                                If (DebugLevel > 1) Then
-                                        Console.WriteLine("DDRules.Harvest - " & "Finish = " & crop.biomass)
-                                        Console.WriteLine("DDRules.Harvest - " & "Finish = " & tempBioMass.ToString())
-                                End If
-                        Next
-                End If
-                Grazable = True       'flag paddock as "Growing"
-                Return cutDM * 10 * (1 - loss)
-        End Function
-
+        'Grazing could now use this function to harvest pasture for cows
         Public Function Harvest(ByVal CuttingResidual As Integer, ByVal loss As Double) As BioMass
                 Dim cutDM As Double = Cover() - CuttingResidual
                 Dim RemovalProportion = cutDM / Cover()
@@ -272,7 +299,7 @@ Public Class LocalPaddockType
                 Return RemovedMass
         End Function
 
-        ' return removed biomass to the SOM pools
+        ' Return removed biomass to the SOM pools
         ' Being used during silage cutting for return of uncollected pasture mass
         ' Will be used as part of grazing event if trampling is to be included
         Public Sub ReturnDM(ByVal Mass As BioMass, ByVal PercentageReturn As Double)
@@ -297,12 +324,12 @@ Public Class LocalPaddockType
                         End If
                         Console.WriteLine("DDRules (debug) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
                 End If
-                If Not (patch Is Nothing) Then ' use Val's new urine patch model is avalible
+                If Not (UrinePatchComponent Is Nothing) Then ' use Val's new urine patch model is avalible
                         Dim urine As ApplyUrineType = New ApplyUrineType()
                         urine.AmountUrine = kg
                         urine.StockDensity = StockingDensity
                         urine.StockType = "DairyCow"
-                        patch.Publish("ApplyUrine", urine)
+                        UrinePatchComponent.Publish("ApplyUrine", urine)
                 Else    ' use simple fertiliser and irrigation events
                         ApSim_SubPaddock.Fertiliser.Apply(kgN / Area, Default_Application_Depth, "urea_N")
                         ApSim_SubPaddock.Irrigation.Apply(v / 10000) ' 20107003 - converting litres/ha to mm/ha
@@ -346,6 +373,8 @@ Public Class LocalPaddockType
 
                         If Not (AgPasture Is Nothing) Then ' Note: this assumes AgPasture is the only crop model in the paddock
                                 mass.N_Conc = Crop.Variable("AboveGroundNPct").ToDouble() / 100.0
+                                Dim GrowthRate As Double = Crop.Variable("HerbageGrowthWt").ToDouble()
+                                myAverageGrowthRate.Add(GrowthRate)
                         Else
                                 mass.N_Conc = Default_N_Conc
                         End If
@@ -362,15 +391,8 @@ Public Class LocalPaddockType
         End Sub
 
 #Region "Paddock Sorting"
-        Private Class sortByCoverComparerNew : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
+        Private Class sortByCoverComparer : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
                 Function Compare(ByVal x As LocalPaddockType, ByVal y As LocalPaddockType) As Integer Implements System.Collections.Generic.IComparer(Of LocalPaddockType).Compare
-                        'Additional code to make sure the previous "being grazed" paddock gets grazed first - needs more thought "need to test if paddock has been grazed down properly"
-                        'If (x.status = PaddockStatus.BG And y.status <> PaddockStatus.BG) Then
-                        '        Return 1
-                        'ElseIf (x.status <> PaddockStatus.BG And y.status = PaddockStatus.BG) Then
-                        '        Return -1
-                        'End If
-
                         If (x.Cover < y.Cover) Then
                                 Return 1
                         End If
@@ -383,7 +405,7 @@ Public Class LocalPaddockType
 
                 End Function
         End Class
-        Private Class sortByIndexComparerNew : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
+        Private Class sortByIndexComparer : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
                 Function Compare(ByVal x As LocalPaddockType, ByVal y As LocalPaddockType) As Integer Implements System.Collections.Generic.IComparer(Of LocalPaddockType).Compare
                         If (x.index < y.index) Then
                                 Return 1
@@ -398,10 +420,10 @@ Public Class LocalPaddockType
                 End Function
         End Class
         Public Shared Function getSortListByCover() As System.Collections.Generic.IComparer(Of LocalPaddockType)
-                Return New sortByCoverComparerNew
+                Return New sortByCoverComparer
         End Function
         Public Shared Function getSortListByIndex() As System.Collections.Generic.IComparer(Of LocalPaddockType)
-                Return New sortByIndexComparerNew
+                Return New sortByIndexComparer
         End Function
 #End Region
 
@@ -414,7 +436,6 @@ Public Class LocalPaddockType
                 result = result & ", Cover " & Cover.ToString("0")
                 Return result
         End Function
-
         Public Sub print(ByVal removed As RemoveCropDmdmType)
                 If (DebugLevel > 0) Then
                         Console.WriteLine("DDRules.print (debug) - " & removed.pool.ToString())
@@ -428,6 +449,11 @@ Public Class LocalPaddockType
         Public Function DM_Eaten() As Double
                 Return DM_Grazed.DM_Total
         End Function
+
+        Public Function AverageGrowthRate() As Double
+                Return myAverageGrowthRate.Average
+        End Function
+
         Public Function ME_Eaten() As Double
                 Return DM_Grazed.getME_Total
         End Function
@@ -453,6 +479,6 @@ Public Class LocalPaddockType
                 Return Pasture_Cover.DM_Total
         End Function
         Public Function StatusCode() As String
-                Return status.ToString
+                Return Status.ToString
         End Function
 End Class

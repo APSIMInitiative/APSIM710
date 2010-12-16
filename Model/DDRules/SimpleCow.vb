@@ -20,7 +20,7 @@ Public Class SimpleCow
 
         Public TodaysEnergyRequirement As Double = 0
         Private RFD As Single = 0
-        Public DoInterpolate As Boolean = True
+        Public Shared DoInterpolate As Boolean = True
 
         Public N_to_feaces, DM_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double
 
@@ -205,7 +205,6 @@ Public Class SimpleCow
         End Function
 
         Public Function Graze(ByVal GrazingPaddock As LocalPaddockType, ByVal GrazingResidual As Double) As BioMass
-
                 Dim dmRemoved As BioMass = GrazingPaddock.Graze(RemainingFeedDemand, GrazingResidual)
                 If (dmRemoved.DM_Total > 0) Then
                         Feed(dmRemoved, True)
@@ -263,7 +262,7 @@ Public Class SimpleCow
                         If (DoInterpolate) Then
                                 Live_Weight += Change_in_KgLWt_per_Day
                                 CondistionScore += Change_in_CondistionScore_per_Day
-                                'MS_per_Day += Change_in_MS_per_Day
+                                MS_per_Day += Change_in_MS_per_Day
                         End If
                 End If
         End Sub

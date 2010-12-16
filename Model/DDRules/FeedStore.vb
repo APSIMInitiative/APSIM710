@@ -41,6 +41,10 @@
                 Return result
         End Function
 
+        Public Function DMRemovedToday() As Double
+                Return RemovedToday.DM_Total
+        End Function
+
         Public Function DMAddedToday() As Double
                 Return AddedToday.DM_Total
         End Function
