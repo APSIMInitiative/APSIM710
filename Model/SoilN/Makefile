@@ -2,7 +2,7 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = SoilN
 
-SRC = SoilN.f90 
+SRC = SoilN.for 
 ifeq ($(PLATFORM),Linux)
 SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for 
 DEF = ../Build/gfcomp.ldscript

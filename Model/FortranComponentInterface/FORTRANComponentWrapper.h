@@ -59,9 +59,9 @@ class FortranWrapper : public protocol::Component
          }
 
       void get_name(char* n, unsigned nLength)
-         {FString(n, nLength, EmptyString) = getName().c_str();}
+         {FString(n, nLength, FORString) = getName().c_str();}
       void get_fq_name(char* n, unsigned nLength)
-         {FString(n, nLength, EmptyString) = getFQName().c_str();}
+         {FString(n, nLength, FORString) = getFQName().c_str();}
       unsigned get_componentID(void) {return componentID;}
       unsigned get_parentID(void)    {return parentID;}
       unsigned get_componentData(void) {return (unsigned)componentData;}

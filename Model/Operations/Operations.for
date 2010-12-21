@@ -340,7 +340,6 @@
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
-      Rule_names(:) = blank
       ! get a list of all rule names that user has defined.
       call apsimcomponentdata_getrulenames(get_componentData(),
      .                                     Rule_names,
