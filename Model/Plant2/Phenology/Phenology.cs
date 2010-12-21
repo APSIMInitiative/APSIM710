@@ -73,7 +73,7 @@ public class Phenology : Instance
          if (CurrentPhaseIndex+1 >= Phases.Count)
             throw new Exception("Cannot transition to the next phase. No more phases exist");
 
-         CurrentPhase = Phases[CurrentPhaseIndex+1];
+         CurrentPhase = Phases[CurrentPhaseIndex + 1];
 
          GrowthStage.Invoke();
 
@@ -100,11 +100,11 @@ public class Phenology : Instance
       {
       get
          {
-         return Phases[CurrentPhaseIndex];
+             return Phases[CurrentPhaseIndex];
          }
       set
          {
-         string OldPhaseName = CurrentPhase.Name;
+             string OldPhaseName = CurrentPhase.Name;
 
          CurrentPhaseIndex = Phases.IndexOf(value.Name);
          if (CurrentPhaseIndex == -1)
@@ -116,9 +116,10 @@ public class Phenology : Instance
          // first phase.
          if (Phases[CurrentPhaseIndex] is GotoPhase)
             {
-            foreach (Phase P in Phases)
-               P.Initialising();
-
+                foreach (Phase P in Phases)
+                {
+                    P.Initialising();
+                }
             GotoPhase GotoP = (GotoPhase)Phases[CurrentPhaseIndex];
             CurrentPhaseIndex = Phases.IndexOf(GotoP.PhaseNameToGoto);
             if (CurrentPhaseIndex == -1)

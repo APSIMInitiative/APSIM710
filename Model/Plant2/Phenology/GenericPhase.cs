@@ -41,8 +41,13 @@ public class GenericPhase : Phase
       if (_CumulativeTT > Target)
          {
          double LeftOverValue = _CumulativeTT - Target;
-         double PropOfValueUnused = LeftOverValue / TTForToday;
-         PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
+         if (TTForToday > 0.0)
+         {
+             double PropOfValueUnused = LeftOverValue / TTForToday;
+             PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
+         }
+         else
+             PropOfDayUnused = 1.0;
          _CumulativeTT = Target;
          }
 
