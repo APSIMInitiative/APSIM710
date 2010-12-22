@@ -8,10 +8,15 @@ SRC = testComponentInterface.cpp \
       TestEvents.cpp \
       TestMisc.cpp
 
-ifdef DEBUG
-  LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-gd-1_42
-else
-  LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-1_42
+ifeq ($(PLATFORM),Linux)
+  LDDEBUGFLAGS := -lboost_unit_test_framework-mt
+  LIBS = General ApsimShared ComponentInterface2
+else 
+ ifdef DEBUG
+   LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-gd-1_42
+ else
+   LIBS = General ApsimShared ComponentInterface2 libboost_unit_test_framework-vc90-mt-1_42
+ endif
 endif
 
 PROJECTTYPE = exe
