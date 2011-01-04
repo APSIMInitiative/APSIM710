@@ -174,8 +174,12 @@ Public Class RGraphicsUI
 
         InRefresh = True
 
-        Dim OutputFileNames As New List(Of String)
+        Dim desiredImageWidth = Me.TabControl.Size.Width() - 5
+        Dim desiredImageHeight = Me.TabControl.Size.Height() - 5
+        Dim imageFileName As String = Directory.GetCurrentDirectory() + "\" + Me.Name() + ".png"
+        Dim scriptFileName As String = Directory.GetCurrentDirectory() + "\" + Me.Name() + ".R"
 
+        Dim OutputFileNames As New List(Of String)
         UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, OutputFileNames)
 
         Dim Script As String = ""
@@ -185,71 +189,102 @@ Public Class RGraphicsUI
         ScriptBox.Text = Script
         ConsoleBox.Text = ""
 
-        Dim canRun As Boolean = True
+        Dim newScript As New StringWriter()
+        newScript.WriteLine("# Automatically generated - do not edit")
+        newScript.WriteLine("width<- " + desiredImageWidth.ToString())
+        newScript.WriteLine("height<- " + desiredImageHeight.ToString())
+        newScript.WriteLine("imageFileName <- """ + Replace(imageFileName, "\", "/") + """")
+        newScript.Write("inputFiles <- c(")
+
+        Dim first As Boolean = True
+        For Each outputfile As String In OutputFileNames
+            If (Not (first)) Then
+                newScript.Write(",")
+            End If
+            newScript.Write("""" + Replace(outputfile, "\", "/") + """")
+            first = False
+        Next
+        newScript.WriteLine(")")
+        newScript.Write(Script)
+
         Dim needsRerun As Boolean = False
-        Dim imageFile As String = Directory.GetCurrentDirectory() + "\" + Me.Name() + ".png"
-        If (Not (File.Exists(imageFile))) Then
-            needsRerun = True
+        If (File.Exists(scriptFileName)) Then
+            Dim sfp As New StreamReader(scriptFileName, False)
+            Dim oldScript As String = sfp.ReadToEnd()
+            needsRerun = Not (String.Equals(oldScript, newScript.ToString()))
+            sfp.Close()
         Else
-            ' See if a simulation has been run that invalidates the image
-            Dim myDate As Date = File.GetCreationTime(imageFile)
+            needsRerun = True
+        End If
+
+        If (Not (needsRerun) And Not (File.Exists(imageFileName))) Then
+            needsRerun = True
+        End If
+
+        ' See if a simulation has been run that invalidates the image
+        Dim myDate As Date = File.GetCreationTime(imageFileName)
+        For Each outputfile As String In OutputFileNames
+            If (File.Exists(outputfile) And File.GetCreationTime(outputfile) > myDate) Then
+                needsRerun = True
+            End If
+        Next
+
+        ' See if the window size has changed
+        Dim diskImage As Image = Image.FromFile(imageFileName)
+        If ((desiredImageWidth <> diskImage.Width) Or _
+            (desiredImageHeight <> diskImage.Height)) Then
+            needsRerun = True
+        End If
+        diskImage.Dispose()
+
+        Dim canRun As Boolean = True
+        If (needsRerun) Then
             For Each outputfile As String In OutputFileNames
                 If (Not (File.Exists(outputfile))) Then
                     canRun = False
-                Else
-                    If (canRun And File.GetCreationTime(outputfile) > myDate) Then
-                        needsRerun = True
-                    End If
                 End If
             Next
-            ' See if the window size has changed
-            Dim diskImage As Image = Image.FromFile(imageFile)
-            If ((Me.TabControl.Size.Width() <> diskImage.Width) Or _
-                (Me.TabControl.Size.Height() <> diskImage.Height)) Then
-                needsRerun = True
-            End If
         End If
 
-        If (canRun And needsRerun) Then
-            Dim fp As New FileStream(Me.Name() + ".R", FileMode.Create, FileAccess.Write)
-            Dim s As New StreamWriter(fp)
-            s.WriteLine("# Automatically generated - do not edit")
-            s.WriteLine("width<- " + Me.TabControl.Size.Width().ToString())
-            s.WriteLine("height<- " + Me.TabControl.Size.Height().ToString())
-            s.WriteLine("imageFileName <- """ + Replace(imageFile, "\", "/") + """")
-            s.Write("inputFiles <- c(")
-            For Each outputfile As String In OutputFileNames
-                s.Write("""" + Replace(outputfile, "\", "/") + """")
-            Next
-            s.WriteLine(")")
-            s.WriteLine(Script)
-            s.Close()
+        If (Not (canRun)) Then
+            Me.ConsoleBox.Text = "Input files missing. Can't run"
+        ElseIf (needsRerun) Then
+            Dim fp As New StreamWriter(scriptFileName, False)
+            fp.Write(newScript.ToString())
             fp.Close()
 
             ' scrub the old image so that we can be sure it's regenerated
-            File.Delete(imageFile)
+            Try
+                File.Delete(imageFileName)
+            Catch E As System.IO.IOException
+            Finally
+            End Try
 
             ' try and run R with this script
             Dim regKey As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\R-core\R", True)
             Dim rpath As String = regKey.GetValue("InstallPath", "")
 
-            ' Should test for pre 2.12.x that doesnt have rscript installed
+            ' Should test somehow for pre 2.12.x that doesnt have rscript installed
             Dim rcmd As String = rpath + "\bin\Rscript.exe"
             Dim args As String = "--slave --vanilla """ + Directory.GetCurrentDirectory() + "\" + Me.Name() + ".R"""
-            Dim p As System.Diagnostics.Process = RunProcess(rcmd, args, Directory.GetCurrentDirectory())
 
+            Dim consoleMsg As String = "Command:   " + rcmd + vbCrLf
+            consoleMsg += "Arguments: " + args + vbCrLf
+            Me.ConsoleBox.Text = consoleMsg
+
+            Dim p As System.Diagnostics.Process = RunProcess(rcmd, args, Directory.GetCurrentDirectory())
             p.WaitForExit()
 
-            Dim msg As String = "Command:   " + rcmd + vbCrLf
-            msg += "Arguments: " + args + vbCrLf
-            msg += "stdout: " + vbCrLf + p.StandardOutput.ReadToEnd() + vbCrLf
-            msg += "stderr: " + vbCrLf + p.StandardError.ReadToEnd() + vbCrLf
-            msg += "script: " + vbCrLf + Script
-            Me.ConsoleBox.Text = msg
+            consoleMsg += "stdout: " + vbCrLf + p.StandardOutput.ReadToEnd() + vbCrLf
+            consoleMsg += "stderr: " + vbCrLf + p.StandardError.ReadToEnd() + vbCrLf
+            consoleMsg += "script: " + vbCrLf + newScript.ToString()
+            Me.ConsoleBox.Text = consoleMsg
 
             ' update displayed image
-            If (File.Exists(imageFile)) Then
-                Me.PictureBox.Image = Image.FromFile(imageFile)
+            If (File.Exists(imageFileName)) Then
+                Dim newImageStream As FileStream = New FileStream(imageFileName, FileMode.Open, FileAccess.Read)
+                Me.PictureBox.Image = Image.FromStream(newImageStream)
+                newImageStream.Dispose()
             End If
         End If
 
