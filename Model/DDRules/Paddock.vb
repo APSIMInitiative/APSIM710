@@ -151,9 +151,9 @@ Public Class LocalPaddockType
                                 Dim tempBioMass As BioMass = New BioMass
                                 PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
                                 Dim proportion As Double = tempBioMass.getME_Total / PreGrazeMass.getME_Total
-                                If (ApSim_SubPaddock.Crops.Count = 1 And proportion <> 1) Then
-                                        Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
-                                End If
+                If (ApSim_SubPaddock.Crops.Count = 1 And Math.Abs(proportion - 1.0) > 0.0000001) Then
+                    Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
+                End If
 
                                 MassRemoved = GrazePlant(crop, proportion * RemovedME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
                                 result = result.Add(MassRemoved.Multiply(Area))
