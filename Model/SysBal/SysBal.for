@@ -2239,6 +2239,7 @@
      :                      , '()', fraction_to_Residue, numvals
      :                      , 0.0, 100000.0)
 
+      max_part(:) = blank
       call collect_char_array (DATA_dm_type, max_part
      :                      , '()', part_name, numvals)
 

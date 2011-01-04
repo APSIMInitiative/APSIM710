@@ -267,6 +267,7 @@
       g%ComponentName(:) = ' '
       g%ComponentType(:) = ' '
       g%ComponentLAI(:) = 0.0
+      g%ComponentLAItot(:) = 0.0
       g%ComponentCoverGreen(:) = 0.0
       g%ComponentCoverTot(:) = 0.0
       g%ComponentK(:) = 0.0
