@@ -164,9 +164,9 @@ class LeafCohort
       {
       set
          {
-         if (value < 0)
+         if (value < -0.0000001)
             throw new Exception("Leaf cohort allocation -ve DM value");
-         Live.StructuralWt += value;
+         Live.StructuralWt += Math.Max(0.0, value);
          //LiveArea += Math.Min(PotentialAreaGrowth,value * SpecificLeafAreaMax);
          LiveArea += PotentialAreaGrowth;
          LiveArea = Math.Min(LiveArea, Live.StructuralWt * SpecificLeafAreaMax);
