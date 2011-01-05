@@ -63,8 +63,8 @@ float Zadok::calcZadok()
       static float zadok_code_x[] =
            {4.9, 5.4,  6,  7,  8,  9,  10};
       interpolationFunction zadok;
-      zadok.setXY(vector<float> (zadok_code_x, zadok_code_x + sizeof(zadok_code_x)),
-                  vector<float> (zadok_code_y, zadok_code_y + sizeof(zadok_code_y)));
+      zadok.setXY(vector<float> (zadok_code_x, zadok_code_x + sizeof(zadok_code_x)/sizeof(float)),
+                  vector<float> (zadok_code_y, zadok_code_y + sizeof(zadok_code_y)/sizeof(float)));
 
       zadok_stage = plant.phenology().doInterpolation(zadok);
       }
