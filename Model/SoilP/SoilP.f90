@@ -331,13 +331,13 @@ subroutine soilp_zero_variables ()
    g%crop_names       = ' '
    g%crop_owners      = 0
 
-   g%sat_dep          = 0.0
-   g%dul_dep          = 0.0
-   g%sw_dep           = 0.0
-   g%ll15_dep         = 0.0
-   g%dlayer           = 0.0
-   g%soil_t           = 0.0
-   g%bd               = 0.0
+   g%sat_dep(:)          = 0.0
+   g%dul_dep(:)          = 0.0
+   g%sw_dep(:)           = 0.0
+   g%ll15_dep(:)         = 0.0
+   g%dlayer(:)           = 0.0
+   g%soil_t(:)           = 0.0
+   g%bd(:)               = 0.0
 
    g%rlv              = 0.0
    g%crop_p_demand    = 0.0
@@ -374,6 +374,7 @@ subroutine soilp_zero_variables ()
    call fill_real_array (g%fom_p, 0.0, max_layer)
    call fill_real_array (g%hum_p, 0.0, max_layer)
    call fill_real_array (g%biom_p, 0.0, max_layer)
+   g%fom_p_pool(:,:) = 0.0
 
    p%root_cp = 0.0
    p%rate_dissol_rock_p = 0.0
@@ -2499,6 +2500,7 @@ end subroutine
       ml_external doInit1
 
       call doRegistrations(id)
+      call soilp_zero_variables()
       end subroutine
 
 

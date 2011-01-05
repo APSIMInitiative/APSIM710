@@ -30,8 +30,8 @@ class Biomass
 
       float Pconc() {return divide(P(),DM(),0.0);};
       float Nconc() {return divide(N(),DM(),0.0);};
-      float NconcPercent() {return divide(N(),DM(),0.0)*fract2pcnt;};
-      float PconcPercent() {return divide(P(),DM(),0.0)*fract2pcnt;};
+	  float NconcPercent() {return DM() > 1.0E-4 ? divide(N(),DM(),0.0)*fract2pcnt : 0.0;};
+	  float PconcPercent() {return DM() > 1.0E-4 ? divide(P(),DM(),0.0)*fract2pcnt : 0.0;};
 
       Biomass operator + (const Biomass& rhs);
       Biomass operator - (const Biomass& rhs);
