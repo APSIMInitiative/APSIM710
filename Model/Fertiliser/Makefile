@@ -21,5 +21,5 @@ PROJECTTYPE = dll
 ifeq ($(PLATFORM),Linux)
 include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
 else
-include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
+include $(APSIM)/Model/Build/$(PLATFORM)FORNew.make
 endif
