@@ -5361,7 +5361,9 @@ cjh
 
 cpsc need to develop leaf senescence functions for crop
 
-      leaf_no_dead_yesterday = sum_between (emerg, now, g_leaf_no_dead)
+      leaf_no_dead_yesterday = min(
+     :                         sum_between (emerg, now, g_leaf_no_dead)
+     :                         , g_leaf_no_final)
 
       if (stage_is_between (emerg, harvest_ripe, g_current_stage)) then
          leaf_no_dead_today = (c_leaf_no_dead_const

@@ -644,6 +644,61 @@ subroutine Pond_zero_variables ()
       g%ftmean_yest = 0.0
       g%no3ppm_topsoil = 0.0
       g%ureappm_topsoil = 0.0
+ 
+      g%pond_depth = 0.0
+      g%pond_depth_yest = 0.0
+      g%pond_evap = 0.0
+      g%ampef = 0.0
+      g%pond_no3_conc = 0.0
+      g%pond_nh4_conc = 0.0
+      g%pond_urea_conc = 0.0
+      g%pond_hum_C = 0.0
+      g%pond_biom_C = 0.0
+      g%pab_mass = 0.0
+      g%algal_turnover = 0.0
+      g%rep = 0.0
+      g%oc1 = 0.0
+      g%dlayer1 = 0.0
+      g%bd1 = 0.0
+      g%algact = 0.0
+      g%fni = 0.0
+      g%fpi = 0.0
+      g%ali = 0.0
+      g%fti = 0.0
+      g%yalga = 0.0
+      g%algfix = 0.0
+      g%tmpfon = 0.0
+      g%fuhydr = 0.0
+      g%totuh = 0.0
+      g%fph = 0.0
+      g%pot_hydrolysis = 0.0
+      g%totaml = 0.0
+      g%amloss = 0.0
+      g%runoff = 0.0
+      g%infiltration = 0.0
+      g%no3_infiltrated(:) = 0.0
+      g%nh4_infiltrated(:) = 0.0
+      g%urea_infiltrated(:) = 0.0
+
+      g%num_residues = 0
+      g%kill = 0
+      g%residue_name(:) = blank
+      g%residue_type(:) = blank
+
+      g%pot_C_decomp = 0.0
+      g%pot_N_decomp = 0.0
+      g%pot_P_decomp = 0.0
+      g%dlt_res_C_decomp = 0.0
+      g%dlt_res_N_decomp = 0.0
+      g%dlt_res_nh4_min = 0.0
+      g%dlt_res_no3_min = 0.0
+      g%dlt_res_c_atm = 0.0
+      g%dlt_res_c_biom = 0.0
+      g%dlt_res_c_hum = 0.0
+
+      g%immobil = .false.
+      g%akill = .false.
+                                          
 ! ====================================================================
 ! Parameters
 
@@ -1297,6 +1352,7 @@ subroutine Pond_sendActualResidueDecompositionCalculated()
        c_summed = 0.0
        n_summed = 0.0
    end do
+   SurfaceOrganicMatterDecomp%num_Pool = g%num_residues
  
    call publish_SurfaceOrganicMatterDecomp(id%ActualResidueDecompositionCalculated, SurfaceOrganicMatterDecomp)
 
@@ -2626,6 +2682,7 @@ subroutine alloc_dealloc_instance(doAllocate)
       allocate(g)
       allocate(p)
       allocate(c)
+      call Pond_Create()
    else
       deallocate(id)
       deallocate(g)

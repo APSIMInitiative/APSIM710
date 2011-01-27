@@ -7027,7 +7027,7 @@ c
 
       do 100 layer = 1, num_layers
 
-          margin = 0.0
+          margin = error_margin(g%sat_dep(layer)) 
 
          if ((g%sat_dep(layer)- g%sw_dep(layer)) .le. margin) then
             sat_layer = layer

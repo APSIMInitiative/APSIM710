@@ -1078,7 +1078,7 @@
          dul = divide (dul_dep(layer), dlayer(layer), 0.0)
          ll = divide (ll_dep(layer), dlayer(layer), 0.0)
 
-         if (ll.lt.minsw) then
+         if (ll + error_margin(ll) .lt. minsw) then
             write (err_messg, '(a,f8.2,a,i3,2a,f8.2)')          &
            ' lower limit of ', ll          &
           ,' in layer ', layer          &
@@ -1088,7 +1088,7 @@
          else
          endif
 
-         if (dul.lt.ll) then
+         if (dul + error_margin(dul) .lt. ll) then
             write (err_messg, '(a,f8.2,a,i3,2a,f8.2)')          &
             ' Drained upper limit of ',dul          &
            ,' in layer ', layer          &
@@ -1098,7 +1098,7 @@
          else
          endif
 
-         if (sw.lt.minsw) then
+         if (sw + error_margin(sw) .lt. minsw) then
             write (err_messg, '(a,f8.2,a,i3,2a,f8.2)')          &
             ' Soil water of ', sw          &
            ,' in layer ', layer          &

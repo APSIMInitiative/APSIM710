@@ -429,6 +429,7 @@ subroutine surfom_check_pond ()
 
    call push_routine (my_name)
 
+   g%pond_active = blank   
    ! dsg 180508 check for the presence of a pond
    call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
      
