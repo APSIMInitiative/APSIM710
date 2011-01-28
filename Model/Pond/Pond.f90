@@ -2272,6 +2272,9 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
      real amlos1      ! ammonia loss from the pond (kg N/ha/hr) 
      character err_string *200
      
+     save pond_nh3
+     save pond_nh3_conc
+	 
 !+  Initial Data Values
 
 !- Implementation Section ----------------------------------
@@ -2344,7 +2347,7 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
 
 !   dsg 300609 reset pond_nh3_conc & pond_nh3 ready for the next day
          if (timestep.eq.12) then
-            pond_nh3_conc = 0.0
+            pond_nh3 = 0.0
             pond_nh3_conc = 0.0
 !              Write (Err_string,*) ' end of TIMESTEP, the total amloss = ', g%amloss
 !   	      call Write_string (Err_string)
