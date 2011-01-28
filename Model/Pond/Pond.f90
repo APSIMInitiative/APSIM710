@@ -267,7 +267,7 @@ subroutine Pond_read_constants ()
 
    c%pond_cn = 30        ! ???guess pond carbon-nitrogen ratio
 
-   c%maxrate_PAB = 20    ! maximum rate of algae growth in kg/ha/day 
+   c%maxrate_PAB = 150    ! maximum rate of algae growth in kg/ha/day 
                     ! -according to Roger (1996) PAB should reach a max of 500 kg/ha
 
    c%PAB_p_index = 1.0   ! a modifying factor for algal production based on availability of P
@@ -644,6 +644,8 @@ subroutine Pond_zero_variables ()
       g%ftmean_yest = 0.0
       g%no3ppm_topsoil = 0.0
       g%ureappm_topsoil = 0.0
+      g%totaml = 0.0
+      g%amloss = 0.0
  
       g%pond_depth = 0.0
       g%pond_depth_yest = 0.0
@@ -909,7 +911,7 @@ subroutine Pond_season_init ()
       g%kill = 0
 
       ! Initialize Algal Activity
-      foci   = g%oc1 / 3.0
+      foci   = divide(g%oc1,3.0,0.0)
       foci   = min(foci, 1.0)
       g%algact = min(0.2, foci)
 
@@ -1399,7 +1401,7 @@ subroutine Pond_temperature_balance ()
 !             And field data of Roland Buresh, Philippines experiments 1985-86
 
 
-      g%ftmax = g%maxt + 5.0*((8.0 - g%rlai)/5.0)
+      g%ftmax = g%maxt + 5.0*(divide((8.0 - g%rlai),5.0,0.0))
       g%ftmin = g%mint + 2.0
 
      
@@ -1407,7 +1409,7 @@ subroutine Pond_temperature_balance ()
 !      temperature routine.
 	
 
-      g%ftmean     = (g%ftmax + g%ftmin)/2
+      g%ftmean     = divide((g%ftmax + g%ftmin),2.0,0.0)
       g%ftmin_yest = g%ftmin
       g%ftmax_yest = g%ftmax
       g%ftmean_yest= g%ftmean
@@ -1464,8 +1466,8 @@ subroutine Pond_hydrolise_urea (ftemp)
       g%totuh  = g%totuh + g%fuhydr
 
 !     Compute concentrations of N in floodwater.
-      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
-      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+      g%pond_nh4_conc = divide((g%pond_nh4  * 100.0),g%pond_depth,0.0)
+      g%pond_urea_conc = divide((g%pond_urea * 100.0),g%pond_depth,0.0)
 
    call pop_routine (my_name)
    return
@@ -1520,6 +1522,10 @@ subroutine Pond_move_solutes_down_mass_flow ()
 !  Calculate fraction of pond water infiltrating
       infiltration_frac = divide(g%infiltration,g%pond_depth,0.0)
       infiltration_frac = max(0.0, min(1.0, infiltration_frac))
+
+!              Write (Err_string,*)' ****Infiltration_frac**** ',infiltration_frac
+!  	      call Write_string (Err_string)
+      
 !  dsg 050309 this line was put in to test for a user-specified solute infiltration rate        
 !      infiltration_frac = c%solute_infiltration_rate
 
@@ -1537,12 +1543,11 @@ subroutine Pond_move_solutes_down_mass_flow ()
           dlt_urea_infiltrated(i) = 0.0
        end do
 
-
+!       infiltration_frac = infiltration_frac * 0.5
        
        dlt_no3_infiltrated(1) = g%pond_no3 * infiltration_frac
        dlt_nh4_infiltrated(1) = g%pond_nh4 * infiltration_frac
        dlt_urea_infiltrated(1) = g%pond_urea * infiltration_frac
-
 
       
 !     dsg & as 040209    Now increment pond mineral N pools
@@ -1551,9 +1556,9 @@ subroutine Pond_move_solutes_down_mass_flow ()
       g%pond_urea = g%pond_urea * (1 - infiltration_frac)
 
 !     Update concentrations of N in floodwater.
-      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
-      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
-      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+      g%pond_nh4_conc = divide((g%pond_nh4  * 100.0),g%pond_depth,0.0)
+      g%pond_no3_conc = divide((g%pond_no3  * 100.0),g%pond_depth,0.0)
+      g%pond_urea_conc = divide((g%pond_urea * 100.0),g%pond_depth,0.0)
    
 
           
@@ -1708,12 +1713,22 @@ subroutine Pond_diffusion()
 !            Then, calculate effective diffusion coefficient from soil to floodwat, DE
 !            diffsn coeff AQDC is 1.E-5 cm2/s
  
-             DE(solute) = AQDC(solute) * 1.E-5 * SQRT(SAT(1)) * SAT(1) / BPS(solute)
+!             DE(solute) = AQDC(solute) * 1.E-5 * SQRT(SAT(1)) * SAT(1) / BPS(solute)
+!  230310  Merv and I changed the above equation to that below, because Merv intuitively felt that Buffering power should INCREASE
+!          the rate of NH4 diffusion, not DECREASE as would happen with a 'divide' sign
+
+             DE(solute) = divide((AQDC(solute) * 1.E-5 * SQRT(SAT(1)) * SAT(1)),BPS(solute),0.0)
+
+!              Write (Err_string,*) ' ********DE',solute,' = ',DE(solute)
+!   	      call Write_string (Err_string)
+!              Write (Err_string,*) ' BPS',solute,' = ',BPS(solute)
+!   	      call Write_string (Err_string)
 !      
+
 !            DE = AQDC(ISI)*1.E-5*SQRT(0.90*po(1))*Sat(1)/BPS
 !           (=360)=( s to hr)*1.E-6(mg to kg)/[1.E3(lit to cm3)* 1.E-8 (cm2 to ha)]
 !     
-            DIFFN(solute) = DELC(solute) / DELX * DE(solute) *360.0 * 24.0 / timesteps_per_day
+            DIFFN(solute) = divide(DELC(solute),DELX,0.0) * DE(solute) *360.0 * divide(24.0,timesteps_per_day,0.0)
       end do
 
 !              Write (Err_string,*) ' ______________________________________________ '
@@ -1781,9 +1796,9 @@ subroutine Pond_diffusion()
       g%pond_urea = g%pond_urea - DIFFN(1)
 
 !     Update concentrations of N in floodwater.
-      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
-      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
-      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+      g%pond_nh4_conc = divide((g%pond_nh4  * 100.0),g%pond_depth,0.0)
+      g%pond_no3_conc = divide((g%pond_no3  * 100.0),g%pond_depth,0.0)
+      g%pond_urea_conc = divide((g%pond_urea * 100.0),g%pond_depth,0.0)
    
 
           
@@ -1867,7 +1882,7 @@ subroutine Pond_ammonium_isotherm(soil_nh4ppm,SOILC,BP )
               call FATAL_ERROR (ERR_user, err_string)
           endif
 
-       C   = soil_nh4ppm/14.0*bd(1)
+       C   = divide(soil_nh4ppm,14.0,0.0)*bd(1)
        
 !      if C=0 then the alog(C) will create a NaN and simulation will fall over.  Set C to very small concentration
 !      to avoid this happening.  For example, if C=0.1, the diffusable ammonium is 1.28*10^-7 
@@ -1948,13 +1963,13 @@ subroutine Pond_calculate_daily_variables ()
       
          
 !     Compute concentrations of N in floodwater.
-      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
-      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
-      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+      g%pond_nh4_conc = divide((g%pond_nh4  * 100.0),g%pond_depth,0.0)
+      g%pond_no3_conc = divide((g%pond_no3  * 100.0),g%pond_depth,0.0)
+      g%pond_urea_conc = divide((g%pond_urea * 100.0),g%pond_depth,0.0)
 
 
 !     Calculate n factor affecting algal growth
-      g%fni = (g%pond_nh4_conc + g%pond_no3_conc)/15.0+0.10          ! 15->10
+      g%fni = divide((g%pond_nh4_conc + g%pond_no3_conc),15.0,0.0)+0.10          ! 15->10
       g%fni = min (g%fni,1.0)
 
 !     dsg 311008  Phosphorus factor for algal growth will be assumed as 0.5 (ie no phosphorus fertilisers added)
@@ -1968,7 +1983,7 @@ subroutine Pond_calculate_daily_variables ()
       algaln = 0.0
       walb     = 0.1
       frad     = g%radn*(1.0-walb)*exp(-0.65*g%rlai)      ! .85->.65
-      g%ali      = 1.0 - exp(-frad/5.0)
+      g%ali      = 1.0 - exp(divide(-frad,5.0,0.0))
 
 !     dsg 311008  Calculate temperature factor for algal growth
       if (g%ftmean .lt. 30.0) then
@@ -1998,6 +2013,9 @@ subroutine Pond_calculate_daily_variables ()
       if(g%algact.lt.0.0) then
         g%algact = 0.0
       endif
+!              Write (Err_string,*) 'ALGAL ACTIVITY  g%fpi g%ali g%fti g%fni',g%fpi,g%ali,g%fti,g%fni
+!   	      call Write_string (Err_string)
+
 
       
 !  dsg 130209  - if no algae present (as specified by user) then make g%algact always equal to zero 
@@ -2021,14 +2039,14 @@ subroutine Pond_calculate_daily_variables ()
             !
             if (algaln .ge. g%algfix .and. algaln .gt. 0.8) then
                algaln = min (algaln,8.0)
-               g%pond_no3  = g%pond_no3 - algaln * g%pond_no3 / fldni
-               g%pond_nh4  = g%pond_nh4 - algaln * g%pond_nh4 / fldni
+               g%pond_no3  = g%pond_no3 - divide((algaln * g%pond_no3),fldni,0.0)
+               g%pond_nh4  = g%pond_nh4 - divide((algaln * g%pond_nh4),fldni,0.0)
                g%immobil  = .true.
                g%algfix = algaln
              else
                if (g%kill .eq. 1 .and. fldni .gt. 0.0) then
-                  g%pond_no3  = g%pond_no3 - algaln * g%pond_no3 / fldni
-                  g%pond_nh4  = g%pond_nh4 - algaln * g%pond_nh4 / fldni
+                  g%pond_no3  = g%pond_no3 - divide((algaln * g%pond_no3),fldni,0.0)
+                  g%pond_nh4  = g%pond_nh4 - divide((algaln * g%pond_nh4),fldni,0.0)
                   g%immobil  = .true.
                   g%algfix = algaln
                endif
@@ -2200,15 +2218,15 @@ subroutine Pond_ph_balance (timestep)
 
 
          if (timestep .le. 6 .or. timestep .gt. 8) then
-            g%fph = 7.0 + phshift*sin(3.1412*float(timestep)/12.0)
+            g%fph = 7.0 + phshift*sin(divide((3.1412*float(timestep)),12.0,0.0))
             !
             ! add effects of urea hydrolysis on floodwater ph here
             !
             if (g%fuhydr .gt. 0.05) then
-               fuhydrc = g%fuhydr*100.0/g%pond_depth
+               fuhydrc = divide((g%fuhydr*100.0),g%pond_depth,0.0)
                fuhydrm = fuhydrc*0.001/14.0
                phfuhyd = min(10.0,-log10(fuhydrm))
-               g%fph     = g%fph + g%ali*(10.0-phfuhyd)/10.0
+               g%fph     = g%fph + divide((g%ali*(10.0-phfuhyd)),10.0,0.0)
             endif
          endif
 
@@ -2263,37 +2281,36 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
 
          ! Calculate Hourly Floodwater Evaporation (HEF)
          !
-         ! hef = g%ampef*sin(3.141593*float(timestep)/12.0) + 0.08  ! original CERES-Rice code couldn't get to make sense
+!         ! hef = g%ampef*sin(3.141593*float(timestep)/12.0) + 0.08  ! original CERES-Rice code couldn't get to make sense
          ! dsg 300609 equation below fitted  using sigma plot
          hef = 0.1303*g%pond_evap*sin(0.2612*float(timestep)) + 0.0067675
          hef = abs(hef)
-
-!              Write (Err_string,*) ' hourly floodwater evaporation = ', hef,'  timestep = ',timestep
-!   	      call Write_string (Err_string)
-
-
 
 
          ! ammonia loss routine ... calculate floodwater nh3
          !
          tk     = ftemp + 273.
-         g%pond_nh4_conc = g%pond_nh4 * 100.0 / g%pond_depth
-         g%pond_no3_conc = g%pond_no3 * 100.0 / g%pond_depth
+         g%pond_nh4_conc = divide((g%pond_nh4 * 100.0),g%pond_depth,0.0)
+         g%pond_no3_conc = divide((g%pond_no3 * 100.0),g%pond_depth,0.0)
          if (timestep .le. 6 .or. timestep .gt. 9 .or. pond_nh3_conc .ge. g%pond_nh4_conc) then
-            pond_nh3_conc = g%pond_nh4_conc/(1.0+10.0**(0.09018+2729.92/tk-g%fph))
+            pond_nh3_conc = divide(g%pond_nh4_conc,(1.0+10.0**(0.09018+divide(2729.92,tk,0.0)-g%fph)),0.0)
          endif
          pond_nh3  = pond_nh3_conc * g%pond_depth * 0.01
      
          wind   = 7.15 * hef                           ! 7.15->5.75
          if (g%rlai .gt. 1.0) then
-            wind = 5.75*hef/(g%rlai*1.5)
+            wind = divide((5.75*hef),(g%rlai*1.5),0.0)
          endif
 
+!              Write (Err_string,*) ' WIND = ', wind,'  m/s???'
+!   	      call Write_string (Err_string)
+
+
   ! dsg 180209   detemine partial pressure of ammonia (reference Freney et al 1981, AJAR 32:37-45)
-         aloghk = 155.559 - 8621.06/tk - 25.6767*alog(tk) + 0.035388*tk
+         aloghk = 155.559 - divide(8621.06,tk,0.0) - 25.6767*alog(tk) + 0.035388*tk
          hk     = exp(aloghk)
-         fnh3m  = pond_nh3_conc*0.001/14.0
-         fnh3p  = max (0.0,(10.0*fnh3m/hk))       ! 1.552
+         fnh3m  = pond_nh3_conc*divide(0.001,14.0,0.0)
+         fnh3p  = max (0.0,divide((10.0*fnh3m),hk,0.0))       ! 1.552
 
      
   !   dsg 180209  Now calculate ammonia N loss - reference: Godwin Singh Buresh and DeDatta (1990) pages 320-325 in Transactions of the 
@@ -2301,6 +2318,7 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
   !                                              growth and yield", vol iv, Commission iv, Kyoto, japan 
          if (fnh3p .gt. 0.0) then
            amlos1 = 0.036 * fnh3p + 0.0082 * wind + 0.000036 * fnh3p**2 * wind * g%pond_depth
+!  merv and my suggestion test           amlos1 = 0.02 * fnh3p + 0.0082 * wind + 0.000036 * fnh3p**2 * wind * g%pond_depth
          endif
 
          if (fnh3p .le. 0.0) then
@@ -2313,16 +2331,13 @@ subroutine Pond_volatilise_ammonia (timestep, ftemp)
          pond_nh3  = min (pond_nh3,g%pond_nh4)
          amlos1 = min (amlos1,pond_nh3)
          
-!              Write (Err_string,*) ' amloss = ', amlos1
-!   	      call Write_string (Err_string)
-
 !  dsg fudge factor for testing with Ahmad Suriadi
-!         amlos1 = amlos1 * c%amlos_fudge_factor
+         amlos1 = amlos1 * 0.4
 
          g%pond_nh4  = g%pond_nh4  - amlos1
          g%amloss = g%amloss + amlos1
          g%totaml = g%totaml + amlos1
-         g%pond_nh4_conc = g%pond_nh4*100.0/g%pond_depth
+         g%pond_nh4_conc = divide((g%pond_nh4*100.0),g%pond_depth,0.0)
 
 !              Write (Err_string,*) ' new pond_nh4 = ', g%pond_nh4
 !   	      call Write_string (Err_string)
@@ -2447,7 +2462,7 @@ subroutine Pond_send_cropchopped_event (amount)
  
  ! dsg 31/10/08  put algae data into component 2, as per green leaves in other crops        
       dlt_crop_dm(2) = amount        
-      dlt_dm_n(2) = amount * 0.4 / 8.0  ! assuming algae is 40% C, with C:N of 8.0 (Roger 1996)
+      dlt_dm_n(2) = divide((amount * 0.4),8.0,0.0)  ! assuming algae is 40% C, with C:N of 8.0 (Roger 1996)
       fraction_to_residue(2) = 1.0
       
       
@@ -2508,9 +2523,9 @@ subroutine Pond_check_runoff_N ()
     g%pond_urea = g%pond_urea * (1 - loss_fraction)
    
 !     Compute concentrations of N in floodwater.
-      g%pond_nh4_conc = g%pond_nh4  * 100.0 / g%pond_depth
-      g%pond_no3_conc = g%pond_no3  * 100.0 / g%pond_depth
-      g%pond_urea_conc = g%pond_urea * 100.0 / g%pond_depth
+      g%pond_nh4_conc = divide((g%pond_nh4  * 100.0),g%pond_depth,0.0)
+      g%pond_no3_conc = divide((g%pond_no3  * 100.0),g%pond_depth,0.0)
+      g%pond_urea_conc = divide((g%pond_urea * 100.0),g%pond_depth,0.0)
 
    call pop_routine (my_name)
    return
@@ -2602,7 +2617,7 @@ end function
       WALB = 0.1
 
       FRAD     = g%radn*(1.0-WALB)*EXP(-0.65*g%rlai)      ! .85->.65
-      ALI      = 1.0 - EXP(-FRAD/5.0)
+      ALI      = 1.0 - EXP(divide(-FRAD,5.0,0.0))
 
 
       pond_pab_rcf = ALI
