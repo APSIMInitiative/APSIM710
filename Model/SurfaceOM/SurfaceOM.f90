@@ -1,7 +1,7 @@
 module SurfaceOMModule
    use ComponentInterfaceModule
    use Registrations
- 
+  
 ! ====================================================================
 !     SurfaceOM constants
 ! ====================================================================
@@ -429,13 +429,9 @@ subroutine surfom_check_pond ()
 
    call push_routine (my_name)
 
-   g%pond_active = blank   
    ! dsg 180508 check for the presence of a pond
+   g%pond_active = 'no'
    call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
-     
-      if (numvals.eq.0) then
-          g%pond_active = 'no'
-      endif
 
    call pop_routine (my_name)
    return
@@ -536,6 +532,8 @@ subroutine surfom_read_param ()
 
       ! Read in residue type from parameter file
       !         ------------
+   temp_name(:) = ' '
+   temp_type(:) = ' '
    call read_char_array (section_name, 'name', max_residues, '()', temp_name, g%num_surfom)
    call read_char_array (section_name, 'type', max_residues, '()', temp_type, numvals1)
    if (g%num_surfom.ne.numvals1) then
@@ -568,19 +566,11 @@ subroutine surfom_read_param ()
     endif
 
 
+   p%report_additions = 'no'
    call read_char_var_optional (section_name, 'report_additions', '()', p%report_additions, numvals1)
-   if (numvals1 .eq. 0) then
-      p%report_additions = 'no'
-   else
-   endif
 
+   p%report_removals = 'no'
    call read_char_var_optional (section_name, 'report_removals', '()', p%report_removals, numvals1)
-   if (numvals1 .eq. 0) then
-      p%report_removals = 'no'
-   else
-   endif
-
-
 
    ! NOW, PUT ALL THIS INFO INTO THE 'SurfaceOM' STRUCTURE
    do  i = 1,g%num_surfom
@@ -1581,6 +1571,7 @@ subroutine surfom_Tillage ()
    ! ----------------------------------------------------------
    !       Get User defined tillage effects on residue
    ! ----------------------------------------------------------
+   till_type = ' '
    call collect_char_var ('type', '()', till_type, numvals)
    call collect_real_var_optional ('f_incorp', '()', f_incorp, numvals_f, 0.0, 1.0)
    call collect_real_var_optional ('tillage_depth', '()', tillage_depth, numvals_t, 0.0, 1000.0)
@@ -1614,6 +1605,95 @@ subroutine surfom_Tillage ()
    !              Now incorporate the residues
    ! ----------------------------------------------------------
    Call surfom_incorp (till_type, F_incorp, Tillage_Depth)
+
+   Write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )   &
+         'Residue removed using ', till_type, New_Line   &
+        ,'Fraction Incorporated = ', F_incorp, New_Line   &
+        ,'Incorporated Depth    = ', Tillage_Depth
+
+   call Write_string (string)
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+!================================================================
+subroutine surfom_Tillage_single ()
+!================================================================
+   Use Infrastructure
+   implicit none
+
+!+  Purpose
+!   Calculates surfom incorporation as a result of tillage operations.
+
+!+  Constant Values
+   character*(*) my_name             ! name of current procedure
+   parameter (my_name = 'surfom_tillage_single')
+!
+   character*(*) Tillage_section    ! section name for tillage info in
+   parameter (Tillage_section = 'tillage') ! lookup file
+
+!+  Local Variables
+   character String*300             ! message string
+   real      F_incorp               ! Fraction of residue incorporated
+                                    ! by tillage. (0-1)
+   character surfom_name*50         ! name of single residue to be tilled in
+   character till_type*30           ! name of implement used for tillage
+   real      type_info(2)           ! Array containing information about
+                                    ! a certain type (from table)
+   integer   Numvals                ! Number of values found in data string
+   integer   Numvals_F              ! Number of values found in data string
+   integer   Numvals_T              ! Number of values found in data string
+   real      Tillage_depth          ! depth of residue incorp (mm)
+   character  Err_string*400      ! Event message string
+
+!- Implementation Section ----------------------------------
+   call push_routine (my_name)
+
+
+   ! ----------------------------------------------------------
+   !       Get User defined tillage effects on residue
+   ! ----------------------------------------------------------
+   call collect_char_var ('name', '()', surfom_name, numvals)
+   call collect_char_var ('type', '()', till_type, numvals)
+   call collect_real_var_optional ('f_incorp', '()', f_incorp, numvals_f, 0.0, 1.0)
+   call collect_real_var_optional ('tillage_depth', '()', tillage_depth, numvals_t, 0.0, 1000.0)
+
+              Write (Err_string,*)   ' OH BOY Im in tillage_single subroutine '
+   	      call Write_string (Err_string)
+
+   ! ----------------------------------------------------------
+   !    If no user defined characteristics then use the
+   !      lookup table compiled from expert knowledge
+   ! ----------------------------------------------------------
+   If (Numvals_t  .eq. 0  .OR.  numvals_f .eq. 0) then
+      call write_string (new_line//'    - Reading residue tillage info')
+
+      call read_real_array_optional (tillage_section, till_type, 2, '()', type_info, numvals, 0.0, 1000.0)
+
+      ! If we still have no values then stop
+      If (numvals.ne.2) then
+         ! We have an unspecified tillage type
+         f_incorp = 0.0
+         tillage_depth = 0.0
+         string = 'Cannot find info for tillage:- '//till_type
+         call FATAL_ERROR (ERR_user, string)
+
+      Else
+         F_incorp = type_info(1)
+         Tillage_depth = type_info(2)
+
+      Endif
+   Else
+   Endif
+
+   ! ----------------------------------------------------------
+   !              Now incorporate the residues
+   ! ----------------------------------------------------------
+   Call surfom_incorp_single (surfom_name, till_type, F_incorp, Tillage_Depth)
+
+   Write (string, * )'A SINGLE residue ',surfom_name,'tilled.'
+   call Write_string (string)
 
    Write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )   &
          'Residue removed using ', till_type, New_Line   &
@@ -1799,6 +1879,182 @@ subroutine surfom_incorp (action_type, F_incorp, Tillage_depth)
 end subroutine
 
 !================================================================
+subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_depth)
+!================================================================
+   Use Infrastructure
+   implicit none
+
+!+  Sub-Program Arguments
+   character  surfom_name*50                ! name of single residue to incorporate
+   character  action_type*30                ! name of implement used for tillage
+   real       F_incorp
+   real       Tillage_Depth
+!+  Purpose
+!   Calculate surfom incorporation as a result of tillage and update
+!   residue and N pools.
+
+!+  Notes
+!   I do not like updating the pools here but we need to be able to handle
+!   the case of multiple tillage events per day.
+
+!+  Constant Values
+   character*(*) my_name             ! name of current procedure
+   parameter (my_name = 'surfom_incorp_single')
+
+!+  Local Variables
+   character*200   message          !
+   integer    surfom_nmb            !  array integer for the single residue we are tilling
+   real       cum_depth             !
+   integer    Deepest_Layer         !
+   real       Depth_to_go           !
+   real       F_incorp_layer        !
+   real       residue_incorp_fraction(max_layer)
+   integer    layer                 !
+   integer    residue
+   integer    pool
+   real       layer_incorp_depth    !
+   real       C_pool(MaxFr,max_layer)      ! total C in each Om fraction and layer (from all surfOM's) incorporated
+   real       N_pool(MaxFr,max_layer)      ! total N in each Om fraction and layer (from all surfOM's) incorporated
+   real       P_pool(MaxFr,max_layer)      ! total P in each Om fraction and layer (from all surfOM's) incorporated
+   real       AshAlk_pool(MaxFr,max_layer) ! total AshAlk in each Om fraction and layer (from all surfOM's) incorporated
+   real       no3(max_layer)               ! total no3 to go into each soil layer (from all surfOM's)
+   real       nh4(max_layer)               ! total nh4 to go into each soil layer (from all surfOM's)
+   real       po4(max_layer)               ! total po4 to go into each soil layer (from all surfOM's)
+   type (FOMPoolType)::FPoolProfile
+   type (ExternalMassFlowType) :: massBalanceChange
+   character string*300
+
+
+!- Implementation Section ----------------------------------
+   call push_routine (my_name)
+
+   F_incorp = bound (F_incorp, 0.0, 1.0)
+
+   Deepest_Layer = get_cumulative_index_real (Tillage_depth, g%dlayer, max_layer)
+
+   C_Pool(:,:) = 0.0
+   N_Pool(:,:) = 0.0
+   P_Pool(:,:) = 0.0
+   AshAlk_Pool(:,:) = 0.0
+   no3(:) = 0.0
+   nh4(:) = 0.0
+   po4(:) = 0.0
+
+   cum_depth = 0.0
+
+! dsg 170310  Get the array integer corresponding to the single residue we are planning to incorporate
+   surfom_nmb = surfom_number (surfom_name)
+   Write (string, * )'The GREAT surfom_nmb ',surfom_name,' = ',surfom_nmb
+   call Write_string (string)
+
+   do layer = 1, Deepest_Layer
+
+         depth_to_go = tillage_depth - cum_depth
+         layer_incorp_depth = min (depth_to_go, g%dlayer(layer))
+         F_incorp_layer = divide (layer_incorp_depth, tillage_depth, 0.0)
+
+         C_pool(1:MaxFr,layer) = C_pool(1:MaxFr,layer) +  (g%SurfOM(surfom_nmb)%Lying(1:MaxFr)%C &
+                               + g%SurfOM(surfom_nmb)%Standing(1:MaxFr)%C) * F_incorp * F_incorp_layer
+         N_pool(1:MaxFr,layer) = N_pool(1:MaxFr,layer) +  (g%SurfOM(surfom_nmb)%Lying(1:MaxFr)%N &
+                               + g%SurfOM(surfom_nmb)%Standing(1:MaxFr)%N) * F_incorp * F_incorp_layer
+         P_pool(1:MaxFr,layer) = P_pool(1:MaxFr,layer) +  (g%SurfOM(surfom_nmb)%Lying(1:MaxFr)%P &
+                               + g%SurfOM(surfom_nmb)%Standing(1:MaxFr)%P) * F_incorp * F_incorp_layer
+         AshAlk_pool(1:MaxFr,layer) = AshAlk_pool(1:MaxFr,layer) +  (g%SurfOM(surfom_nmb)%Lying(1:MaxFr)%AshAlk &
+                               + g%SurfOM(surfom_nmb)%Standing(1:MaxFr)%AshAlk) * F_incorp * F_incorp_layer
+         no3(layer) = no3(layer) + g%SurfOM(surfom_nmb)%no3 * F_incorp * F_incorp_layer
+         nh4(layer) = nh4(layer) + g%SurfOM(surfom_nmb)%nh4 * F_incorp * F_incorp_layer
+         po4(layer) = po4(layer) + g%SurfOM(surfom_nmb)%po4 * F_incorp * F_incorp_layer
+
+      cum_depth = cum_depth + g%dlayer(layer)
+
+      ! dsg 160104  Remove the following variable after Res_removed_Event is scrapped
+      residue_incorp_fraction(layer) = F_incorp_layer
+
+   end do
+
+   if (sum(C_pool(1:MaxFr,1:Max_layer)) .gt. 0.0) then
+
+      ! Pack up the incorporation info and send to SOILN2 and SOILP as part of a
+      ! IncorpFOMPool Event
+
+      do layer = 1, Deepest_Layer
+
+         FPoolProfile%Layer(layer)%thickness = g%dlayer(layer)
+         FPoolProfile%Layer(layer)%no3 = no3(layer)
+         FPoolProfile%Layer(layer)%nh4 = nh4(layer)
+         FPoolProfile%Layer(layer)%po4 = po4(layer)
+         FPoolProfile%Layer(layer)%num_pool = 3
+         FPoolProfile%Layer(layer)%pool(1:MaxFr)%C = C_pool(1:MaxFr,layer)
+         FPoolProfile%Layer(layer)%pool(1:MaxFr)%N = N_pool(1:MaxFr,layer)
+         FPoolProfile%Layer(layer)%pool(1:MaxFr)%P = P_pool(1:MaxFr,layer)
+         FPoolProfile%Layer(layer)%pool(1:MaxFr)%AshAlk = AshAlk_pool(1:MaxFr,layer)
+
+      end do
+      FPoolProfile%num_Layer = Deepest_Layer
+
+      call publish_FOMPool(id%IncorpFOMPool, FPoolProfile)
+      ! dsg 160104  Keep this event for the time being - will be replaced by ResidueChanged
+      call residue2_Send_Res_removed_Event(action_type, F_incorp, residue_incorp_fraction, deepest_layer)
+
+   else
+      ! no residue incorporated
+   endif
+
+   if (Tillage_depth <= 0.000001) then
+         ! the OM is not incorporated and is lost from the system
+
+      massBalanceChange%PoolClass = "surface"
+      massBalanceChange%FlowType = "loss"
+      massBalanceChange%DM = 0.0
+      massBalanceChange%C  = 0.0
+      massBalanceChange%N  = 0.0
+      massBalanceChange%P  = 0.0
+      massBalanceChange%SW = 0.0
+
+      do pool = 1, MaxFr
+
+         massBalanceChange%DM = massBalanceChange%DM + (g%SurfOM(surfom_nmb)%Lying(pool)%amount + g%SurfOM(surfom_nmb)%Standing(pool)%amount) * F_incorp
+         massBalanceChange%C  = massBalanceChange%C + (g%SurfOM(surfom_nmb)%Lying(pool)%C      + g%SurfOM(surfom_nmb)%Standing(pool)%C     ) * F_incorp
+         massBalanceChange%N  = massBalanceChange%N + (g%SurfOM(surfom_nmb)%Lying(pool)%N      + g%SurfOM(surfom_nmb)%Standing(pool)%N     ) * F_incorp
+         massBalanceChange%P  = massBalanceChange%P + (g%SurfOM(surfom_nmb)%Lying(pool)%P      + g%SurfOM(surfom_nmb)%Standing(pool)%P     ) * F_incorp
+
+      end do
+      call surfom_ExternalMassFlow (massBalanceChange)
+   else
+   endif
+
+
+   ! Now update globals.  They must be updated here because there is the possibility of
+   ! more than one incorporation on any given day
+
+   do pool = 1, MaxFr
+
+      g%SurfOM(surfom_nmb)%Lying(pool)%amount  = g%SurfOM(surfom_nmb)%Lying(pool)%amount * (1-F_incorp)
+      g%SurfOM(surfom_nmb)%Standing(pool)%amount  = g%SurfOM(surfom_nmb)%Standing(pool)%amount * (1-F_incorp)
+
+      g%SurfOM(surfom_nmb)%Lying(pool)%C  = g%SurfOM(surfom_nmb)%Lying(pool)%C * (1-F_incorp)
+      g%SurfOM(surfom_nmb)%Standing(pool)%C  = g%SurfOM(surfom_nmb)%Standing(pool)%C * (1-F_incorp)
+
+      g%SurfOM(surfom_nmb)%Lying(pool)%N  = g%SurfOM(surfom_nmb)%Lying(pool)%N * (1-F_incorp)
+      g%SurfOM(surfom_nmb)%Standing(pool)%N  = g%SurfOM(surfom_nmb)%Standing(pool)%N * (1-F_incorp)
+
+      g%SurfOM(surfom_nmb)%Lying(pool)%P  = g%SurfOM(surfom_nmb)%Lying(pool)%P * (1-F_incorp)
+      g%SurfOM(surfom_nmb)%Standing(pool)%P  = g%SurfOM(surfom_nmb)%Standing(pool)%P * (1-F_incorp)
+
+      g%SurfOM(surfom_nmb)%Lying(pool)%AshAlk  = g%SurfOM(surfom_nmb)%Lying(pool)%AshAlk * (1-F_incorp)
+      g%SurfOM(surfom_nmb)%Standing(pool)%AshAlk  = g%SurfOM(surfom_nmb)%Standing(pool)%AshAlk * (1-F_incorp)
+
+   end do
+
+   g%SurfOM(surfom_nmb)%no3 = g%SurfOM(surfom_nmb)%no3 * (1-F_incorp)
+   g%SurfOM(surfom_nmb)%nh4 = g%SurfOM(surfom_nmb)%nh4 * (1-F_incorp)
+   g%SurfOM(surfom_nmb)%po4 = g%SurfOM(surfom_nmb)%po4 * (1-F_incorp)
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+!================================================================
 subroutine surfom_add_surfom ()
 !================================================================
    Use Infrastructure
@@ -1840,7 +2096,7 @@ subroutine surfom_add_surfom ()
 
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
-
+   surfom_name = ' '
    call collect_char_var ('name', '()', surfom_name, numvals)
 
 
@@ -1852,7 +2108,7 @@ subroutine surfom_add_surfom ()
        SOMNo = g%num_surfom
        g%SurfOM(SOMNo)%name = surfom_name
 
-       surfom_type = ' '
+       g%SurfOM(SOMNo)%OrganicMatterType = ' '
        call collect_char_var ('type','()',g%SurfOM(SOMNo)%OrganicMatterType, numvals)
 
        g%SurfOM(SOMNo)%PotDecompRate = 0.0
@@ -2019,7 +2275,7 @@ subroutine surfom_prop_up ()
 
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
-
+   surfom_name = ' '
    call collect_char_var ('name', '()', surfom_name, numvals)
 
 
@@ -2116,8 +2372,8 @@ subroutine surfom_read_type_specific_constants(surfom_type,i)
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
-
    ! check that there is 'type' information in the ini file for the specified 'type'
+   check_type = ' '
    call read_char_var (surfom_type, 'fom_type', '()', check_type, numvals)
 
    if (numvals .eq. 0) then
@@ -2659,8 +2915,8 @@ subroutine surfom_ON_Crop_chopped ()
    if (sum(fraction_to_Residue) .eq. 0.0) then
       ! no surfom in this stuff
    else
+      crop_type = ' '
       call collect_char_var (DATA_crop_type, '()', crop_type, numvals)
-
 
          ! Find the amount of surfom to be added today
       dlt_crop_dm(:) = 0.0
@@ -3084,6 +3340,9 @@ subroutine Main (action, data_string)
 
    else if (Action .eq. ACTION_Till) then
       call surfom_tillage ()
+
+   else if (Action .eq. 'tillage_single') then
+      call surfom_tillage_single ()
 
    else if (Action .eq. 'add_surfaceom') then
       call surfom_Add_surfom ()
