@@ -95,7 +95,7 @@ c     include   'fertiliz.inc'         ! fertiliz common block
             found = Get(
      :        'pond_active'              ! Variable Name
      :       , '()'                 ! Units                (Not Used)
-     :       ,IsOptional
+     :       , IsOptional
      :       , g%pond_active)       ! Variable
 
             if (found) then
@@ -158,6 +158,9 @@ c     include   'fertiliz.inc'
       character  string*200            ! output string
       character*200  message
       logical found
+      integer cropsta                  ! rice crop stage
+      integer rice_crop_in             ! digital 1 or 0 for whether rice crop in ground or not
+!      character  Err_string*400      ! Event message string
 
       type (ExternalMassFlowType) :: massBalanceChange
 
@@ -202,8 +205,38 @@ c     include   'fertiliz.inc'
 
 !    dsg 180508  Check whether the POND is active.  If it is then increment the component pools 
 !                in the POND, not in SoilN2
-          if(g%pond_active.eq.'yes') then
 
+!    dsg 100410  To allow for basal incorporation where the fertiliser goes straight into soil, 
+!                check whether rice crop is present in main field (ie CROPSTA GE 4.0 (rice is in the main field, 
+!                regardless of transplanting or direct-seeding)
+
+            cropsta = 10
+            found = .false.
+!              Write (Err_string,*) '*** CHECK FOR FOUND RETURN 1 ***',
+!     :        ' found, cropsta = ',found, cropsta              
+!              call WriteLine(Err_string)
+
+            found = Get(
+     :        'cropsta'              ! Variable Name
+     :       , '()'                  ! Units                (Not Used)
+     :       ,IsOptional
+     :       , cropsta, 0, 100)        ! Variable
+
+!              Write (Err_string,*) '*** CHECK FOR FOUND RETURN***',
+!     :        ' found, cropsta = ',found, cropsta              
+!              call WriteLine(Err_string)
+
+            if (cropsta.GE.4) then
+                rice_crop_in = 1
+            else
+                rice_crop_in = 0
+            endif
+
+
+          if(g%pond_active.eq.'yes'.and.rice_crop_in.eq.1) then
+!          if(g%pond_active.eq.'yes') then
+!           So, if the rice crop is in the field, apply the fertiliser directly into pond.  
+!           If not, then into soil as normal for APSIM (ie basal)
             dummy = 'pond_'//components(counter)
             
             found = Get(
@@ -230,9 +263,18 @@ c     include   'fertiliz.inc'
      :                    , array_size)          
           
 
+!              Write (Err_string,*) '*** FERTILISER ADDED INTO POND***',
+!     :        ' found, cropsta = ',found, cropsta              
+!              call WriteLine(Err_string)
+
+
 !            endif
             
           else
+
+!       Write (Err_string,*) '**FERTILISER ADDED straight INTO SOIL***',
+!     :        ' found, cropsta = ',found, cropsta              
+!              call WriteLine(Err_string)
 
             found = Get(
      :         components(counter)  ! Variable Name
@@ -430,6 +472,7 @@ c     include   'fertiliz.inc'
 *         call error ('Fertilizer application specification error')
 
       else
+         call fertiliz_get_other_variables ()
          call fertiliz_apply (Application%Amount,
      .                        Application%Depth,
      .                        Application%Type)
