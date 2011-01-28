@@ -2683,6 +2683,7 @@ subroutine alloc_dealloc_instance(doAllocate)
       allocate(p)
       allocate(c)
       call Pond_Create()
+      g%pond_active = blank ! Ugly attempt to maintain old behaviour
    else
       deallocate(id)
       deallocate(g)

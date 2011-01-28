@@ -858,6 +858,7 @@
       g%sw_dep(:) = 0.0
       g%ll15_dep(:) = 0.0
       g%dul_dep(:) = 0.0
+      g%solute(:) = 0.0
 
       call fill_char_array (g%solute_names, ' ', max_solutes)
       call fill_char_array (g%solute_owners, ' ', max_solutes)
