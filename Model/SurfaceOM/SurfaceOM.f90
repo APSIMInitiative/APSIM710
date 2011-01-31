@@ -2383,7 +2383,7 @@ subroutine surfom_read_type_specific_constants(surfom_type,i)
 
 	   call read_real_var (surfom_type, 'fraction_C', '()', c%c_fract(i), numvals, 0.0, 1.0)
       call read_real_var (surfom_type, 'po4ppm', '(ppm)', c%po4ppm(i), numvals, 0.0, 1000.0)
-	   call read_real_var (surfom_type, 'nh4ppm', '(ppm)', c%nh4ppm(i), numvals, 0.0, 1000.0)
+	   call read_real_var (surfom_type, 'nh4ppm', '(ppm)', c%nh4ppm(i), numvals, 0.0, 2000.0)
 	   call read_real_var (surfom_type, 'no3ppm', '(ppm)', c%no3ppm(i), numvals, 0.0, 1000.0)
 	   call read_real_var (surfom_type, 'specific_area', '(ha/kg)', c%specific_area(i), numvals, 0.0, 0.01)
 	   call read_integer_var (surfom_type, 'cf_contrib', '()', c%cf_contrib(i), numvals, 0, 1)
