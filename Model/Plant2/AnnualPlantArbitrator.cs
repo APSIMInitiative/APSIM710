@@ -44,6 +44,7 @@ public class AnnualPlantArbitrator : Arbitrator
          return TotalNDemand;
          }
       }
+   public override double LeafNReallocationSupply { get { return 0; } }
 
     public override void DoDM(NamedList<Organ> Organs)
       {
@@ -109,15 +110,15 @@ public class AnnualPlantArbitrator : Arbitrator
          // Allocate Daily Photosyntheis to organs according to demand
 
          for (int i = 0; i < Organs.Count; i++)
-            if (Organs[i] is Reproductive) { } // Do nothing this time round
+          if (Organs[i] is Reproductive) { } // Do nothing this time round
             else
-               {
+              {
                DMAllocation[i] = fraction * DMDemand[i];
                //if (Organs[i].Name == DMSink.ValueString)
                if (string.Compare(Organs[i].Name, DMSink.ValueString, true) == 0)
                  DMAllocation[i] += Excess;
                TotalDMAllocated += DMAllocation[i];
-               }
+              }
          }
       double BalanceError = Math.Abs(TotalDMAllocated - TotalDMSupply);
       if (BalanceError > 0.00001)
@@ -242,7 +243,8 @@ public class AnnualPlantArbitrator : Arbitrator
                 else
                 {
                     NAllocation[i] = fraction * NDemand[i];
-                    if (Organs[i].Name == NSink.ValueString)
+                    //if (Organs[i].Name == NSink.ValueString)
+                    if (string.Compare(Organs[i].Name, NSink.ValueString, true) == 0)
                         NAllocation[i] += Excess;
                     TotalNAllocated += NAllocation[i];
                 }

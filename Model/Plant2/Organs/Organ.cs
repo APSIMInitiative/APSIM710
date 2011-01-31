@@ -40,5 +40,11 @@ abstract public class Organ : Instance
    virtual public void DoWaterUptake(double Demand) { }
    virtual public void DoPotentialGrowth() { }
    virtual public void DoActualGrowth() { }
+
+   abstract public double MaxNconc { get; }
+   abstract public double MinNconc { get; }
+   abstract public double StrucNconc { get; }
+   abstract public double StrucDMfrac { get; }
+   //abstract public double NReallocationSupply { get; }
    }
    

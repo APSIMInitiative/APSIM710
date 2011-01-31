@@ -50,4 +50,10 @@ public class BaseOrgan : Organ
    public override void DoWaterUptake(double Demand) { }
    public override void DoPotentialGrowth() { }
    public override void DoActualGrowth() { }
+
+   public override double MaxNconc { get { return 0; } }
+   public override double MinNconc { get { return 0; } }
+   public override double StrucNconc { get { return 0; } }
+   public override double StrucDMfrac { get { return 0; } }
+   //public override double NReallocationSupply { get { return 0; } }
    }
