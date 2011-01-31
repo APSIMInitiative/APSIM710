@@ -4,7 +4,7 @@ using System.Text;
 using CSGeneral;
 using ManagerHelpers;
 
-public class SimpleRoot : Organ
+public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ but changed to base organ to fix bug. Need to check collatoral impacts
    {
    private double Uptake = 0;
 
@@ -104,9 +104,6 @@ public class SimpleRoot : Organ
          }
 
       }
-
-
-
 
    }
    
