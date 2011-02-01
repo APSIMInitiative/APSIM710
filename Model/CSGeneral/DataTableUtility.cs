@@ -169,6 +169,15 @@ namespace CSGeneral
          return Values;
          }
 
+      static public DateTime[] GetColumnAsDates(DataTable Table, string ColumnName)
+         {
+         DateTime[] Values = new DateTime[Table.Rows.Count];
+         for (int Row = 0; Row != Table.Rows.Count; Row++)
+            Values[Row] = Convert.ToDateTime(Table.Rows[Row][ColumnName]);
+         return Values;
+         }
+
+
       // ---------------------------------------------------
       // Get a list of column names
       // ---------------------------------------------------

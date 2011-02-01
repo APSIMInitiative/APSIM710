@@ -277,12 +277,13 @@ Public Class DataTree
         'Change the colour of all the new selected nodes to the "selected" colours
         For Each NodePath As String In NewSelections
 
-            Dim Node As TreeNode = GetNodeFromPath(NodePath)    'get the node that the new selected path points to.
+         Dim Node As TreeNode = GetNodeFromPath(NodePath)    'get the node that the new selected path points to.
+         If Not IsNothing(Node) Then
             SelectedNode = Node                                 'set the Tree's selected node to the node specified in the new selected path (just used to trigger the AfterSelect event, which is handled by OnTreeSelectionChanged() subroutine below this subroutine) (nb. we REDO this for EVERY node in NewSelections. We have to do this one node at a time because the Tree does not allow you to select more then one node) 
             ColourNode(Node)                                    'change the colour of the new selected node to the selected colours.
             Node.EnsureVisible()                                'use inbuilt tree node function that expands the tree to make sure the node specified is visible in the tree.  
-
-        Next
+         End If
+      Next
 
         EnableNodeSelection = True      'let the user click on other nodes again
     End Sub

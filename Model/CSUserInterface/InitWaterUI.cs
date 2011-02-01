@@ -41,7 +41,7 @@ namespace CSUserInterface
       internal TextBox PAWEdit;
       private bool UserChange = true;
       private XmlNode SoilNode;
-      private GraphDataUserInterface.SoilGraphUI SoilGraph;
+      private Graph.SoilGraphUI SoilGraph;
       private XmlNode OurNode;
 
 
@@ -94,7 +94,7 @@ namespace CSUserInterface
          this.PercentEdit = new System.Windows.Forms.NumericUpDown();
          this.label5 = new System.Windows.Forms.Label();
          this.splitter1 = new System.Windows.Forms.Splitter();
-         this.SoilGraph = new GraphDataUserInterface.SoilGraphUI();
+         this.SoilGraph = new Graph.SoilGraphUI();
          this.panel1.SuspendLayout();
          this.groupBox3.SuspendLayout();
          this.groupBox2.SuspendLayout();
@@ -473,7 +473,6 @@ namespace CSUserInterface
             UserChange = false;
   
             Soil.Variable PAWCVar;
-            Soil.Variable PAWVar;
             if (RelativeToCombo.Text == "ll15")
                PAWCVar = Soil.Get(SoilNode, "PAWC");
             else

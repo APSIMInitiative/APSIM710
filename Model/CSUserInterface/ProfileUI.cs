@@ -14,7 +14,7 @@ namespace CSUserInterface
    {
    public partial class ProfileUI : BaseView
       {
-      private GraphDataUserInterface.SoilGraphUI Graph = new GraphDataUserInterface.SoilGraphUI();
+      private Graph.SoilGraphUI Graph = new Graph.SoilGraphUI();
       private DataTable Table;
       private XmlNode _SoilNode;
       private XmlNode ProfileNode;

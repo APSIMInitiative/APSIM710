@@ -12,7 +12,7 @@ Imports ApsimFile
 Imports Controllers
 Imports CSGeneral
 Imports UIBits          'OptionsForm
-Imports GraphDataUserInterface
+Imports Graph
 
 
 Public Class MainUI
@@ -103,6 +103,7 @@ Public Class MainUI
             Configuration.Instance.ApplicationName = ApplicationName
             PlugIns.LoadAll()
             SimulationController = New BaseController(Me, ApplicationName, True)
+
 
          ' Display splash screen
          If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
@@ -490,7 +491,7 @@ Public Class MainUI
          Assembly.Load("Actions")
          Assembly.Load("CSUserInterface")
          Assembly.Load("VBUserInterface")
-         Assembly.Load("GraphDataUserInterface")
+         Assembly.Load("Graph")
          'Assembly.Load("Soils")
 
          'Try and load an icon from configuration. (Splash Screen?)

@@ -11,7 +11,7 @@ Public Class BaseView
     ' ----------------------------------   
     Inherits System.Windows.Forms.UserControl
 
-    Protected Controller As BaseController
+   Protected _Controller As BaseController
     Protected MyNodePath As String
     Protected Data As Xml.XmlNode
 
@@ -75,7 +75,7 @@ Public Class BaseView
     Public Overloads Sub OnLoad(ByVal Controller As BaseController, _
                                 ByVal NodePath As String, _
                                 ByVal Contents As String)
-        Me.Controller = Controller
+      _Controller = Controller
         MyNodePath = NodePath
 
         Dim Doc As Xml.XmlDocument = New Xml.XmlDocument
@@ -96,7 +96,11 @@ Public Class BaseView
         End Get
     End Property
 
-
+   Public ReadOnly Property Controller() As BaseController
+      Get
+         Return _Controller
+      End Get
+   End Property
 
 
     Protected Overridable Overloads Sub OnLoad()
