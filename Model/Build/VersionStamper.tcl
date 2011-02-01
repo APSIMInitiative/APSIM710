@@ -1,6 +1,6 @@
 # Writes build info to apsim.xml
 
-if {[catch {set msg [exec svn log -q -r HEAD ../..]} emsg] } {
+if {[catch {set msg [exec svn log -q -r BASE ../..]} emsg] } {
   set releaseNumber $emsg
 } else {
   set msg [lindex [split $msg "\n"] 1]
