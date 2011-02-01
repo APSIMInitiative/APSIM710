@@ -88,6 +88,11 @@ Public Class BioMass
         End Function
 
         Public Function Add(ByVal other As BioMass) As BioMass
+                Dim t As Double = DM_Total() + other.DM_Total
+                If (Double.IsInfinity(t) Or Double.IsNaN(t)) Then
+                        Return New BioMass()
+                End If
+
                 Dim result As BioMass = New BioMass()
                 result.gLeaf = gLeaf + other.gLeaf
                 result.gStem = gStem + other.gStem

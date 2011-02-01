@@ -21,7 +21,7 @@
                 myHerd = New SimpleHerd(1, 6, 0, 6)
         End Sub
 
-        Public Sub Init(ByVal MasterPM As PaddockType, ByVal Year As Integer, ByVal Month As Integer, ByVal Area As Double)
+        Public Sub Init(ByVal MasterPM As PaddockType, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
                 myPaddocks = New List(Of LocalPaddockType)
                 PaddockQueue = New Queue(Of LocalPaddockType)
                 GrazedList = New List(Of LocalPaddockType)
@@ -35,19 +35,21 @@
                 Dim TempList As New Dictionary(Of PaddockType, Double)
                 'How do we get the area of indervidual paddocks?
                 For Each SubPaddock As PaddockType In MasterPM.SubPaddocks
-                        Dim test As ComponentType = SubPaddock.ComponentByName("DDRulesTest")
-                        If (Not test Is Nothing) Then
-                                ' this approch doesn't work because paddock is not yet initilised
-                                'Dim a As VariableType = test.Variable("Area") 'not sure at this stage how best to do this
-                                'Dim a1 As Double = a.ToDouble
-                                'If (a1 > 0) Then
-                                '        TempList.Add(SubPaddock, a1)
-                                '        SpecifiedArea += a1
-                                'End If
-                        End If
+                        'Dim PaddockArea As Double = SubPaddock.Variable("area").ToDouble 'throws fatal error if not declared
+                        'Console.WriteLine("DDRules (debug) - Paddock area == " + PaddockArea)
+
+                        'If (Not test Is Nothing) Then
+                        ' this approch doesn't work because paddock is not yet initilised
+                        'Dim a As VariableType = test.Variable("Area") 'not sure at this stage how best to do this
+                        'Dim a1 As Double = a.ToDouble
+                        'If (a1 > 0) Then
+                        '        TempList.Add(SubPaddock, a1)
+                        '        SpecifiedArea += a1
+                        'End If
+                        'End If
                 Next
 
-                MyFarmArea = Area
+                MyFarmArea = FarmArea
                 Dim UnallocatedArea = MyFarmArea - SpecifiedArea
                 If (UnallocatedArea < 0) Then ' more aara set manually per paddock than set by the farm component
                         'throw a fatal error'
@@ -414,6 +416,9 @@
                                 Dim CutDM As BioMass = Paddock.Harvest(CR, loss)
                                 CutDM.digestibility = SilageDigestability
                                 result = result.Add(CutDM)
+                                If (CutDM.DM_Total > 0) Then
+                                        'fire event
+                                End If
                                 PaddockQueue.Enqueue(Paddock)           'add paddock back into the rotation
                         End If
                 Next

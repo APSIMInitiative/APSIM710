@@ -12,7 +12,6 @@
         Dim Total_Pasutre_Eaten As BioMass = New BioMass()
         Dim Total_Silage_Eaten As BioMass = New BioMass()
         Dim Total_Supplement_Eaten As BioMass = New BioMass()
-
         Public ME_Demand As Double
 
 #Region "Output Variables - Intake"

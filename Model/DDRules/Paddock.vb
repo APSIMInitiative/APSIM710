@@ -1,5 +1,6 @@
 
 Public Class LocalPaddockType
+        Inherits Instance
         'Local paddock is the wrapper for the basic apsim paddock. It adds "worker" functions for processes such as
         ' nutrient grazing and returns.
 
@@ -16,7 +17,8 @@ Public Class LocalPaddockType
         Public Shared MovingAverageSeriesLength As Integer = 30
 
         Private ApSim_SubPaddock As PaddockType
-        Public Area As Double
+        <Input(True)> Public Area As Double = -1
+
         Private Status As PaddockStatus
         'Homogeneous pasture cover
         Dim Pasture_Cover As BioMass = New BioMass()
@@ -38,6 +40,9 @@ Public Class LocalPaddockType
         Public Sub New(ByVal index As Integer, ByRef paddock As PaddockType, ByVal PaddockArea As Double)
                 ApSim_SubPaddock = paddock                              'store a local pointer to the ApSim "Subpaddock" 
                 Area = PaddockArea
+                Dim i As Integer = PaddockArea
+                Dim j As Integer = Area
+
                 Grazable = True                               'paddock grazable at initilisation time
                 Me.index = index                                        'sort origional paddock position in the simulation for sorting
                 UrinePatchComponent = ApSim_SubPaddock.ComponentByName("UrinePatch")
@@ -50,6 +55,7 @@ Public Class LocalPaddockType
         End Sub
 
         Sub OnPrepare()
+                Dim i As Integer = Area
                 N_Feaces = 0
                 C_Feaces = 0
                 N_Urine = 0
@@ -94,6 +100,7 @@ Public Class LocalPaddockType
         End Property
 
         Function Graze(ByVal energyRequired As Double, ByVal GrazingResidual As Double) As BioMass
+                GrazingCounter -= 1
                 If (DebugTestBreakFeeding) Then
                         Return GrazeBreak(energyRequired, GrazingResidual)
                 Else
@@ -151,9 +158,9 @@ Public Class LocalPaddockType
                                 Dim tempBioMass As BioMass = New BioMass
                                 PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
                                 Dim proportion As Double = tempBioMass.getME_Total / PreGrazeMass.getME_Total
-                If (ApSim_SubPaddock.Crops.Count = 1 And Math.Abs(proportion - 1.0) > 0.0000001) Then
-                    Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
-                End If
+                                If (ApSim_SubPaddock.Crops.Count = 1 And Math.Abs(proportion - 1.0) > 0.0000001) Then
+                                        Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
+                                End If
 
                                 MassRemoved = GrazePlant(crop, proportion * RemovedME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
                                 result = result.Add(MassRemoved.Multiply(Area))
@@ -180,7 +187,6 @@ Public Class LocalPaddockType
                         Console.WriteLine("DDRules (debug) - " & "  = Energy Removed    = " & result.getME_Total)
                         Console.WriteLine("DDRules (debug) - " & "                      = " & Removal.getME_Total)
                 End If
-                GrazingCounter -= 1
                 DM_Grazed = result
                 Return result
         End Function
@@ -218,7 +224,6 @@ Public Class LocalPaddockType
                 'End If
 
                 setBeingGrazed()       ' might need to come back
-                GrazingCounter -= 1
 
                 Dim result As BioMass = New BioMass()
                 'todayME = (Cover() - todayGR) * PastureME()
@@ -228,11 +233,15 @@ Public Class LocalPaddockType
                         Dim tempBioMass As BioMass = New BioMass
                         PastureMasses.TryGetValue(crop.name, tempBioMass) 'this should really be checked, it should never fail but...
                         Dim proportion As Double = tempBioMass.getME_Total / PreGrazeMass.getME_Total
-            If (ApSim_SubPaddock.Crops.Count = 1 And Math.Abs(proportion - 1.0) > 0.0000001) Then
-                Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
-            End If
+                        If (ApSim_SubPaddock.Crops.Count = 1 And Math.Abs(proportion - 1.0) > 0.0000001) Then
+                                Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
+                        End If
 
                         MassRemoved = GrazePlant(crop, proportion * todayME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
+                        If (MassRemoved.N_Total <= 0) Then
+                                Console.WriteLine("DDRulues ERROR - What the....")
+                        End If
+
                         result = result.Add(MassRemoved.Multiply(Area))
                 Next
                 '                End If

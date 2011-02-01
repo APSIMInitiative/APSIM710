@@ -9,10 +9,32 @@ Imports ManagerHelpers
 
 'Bugs:
 '    Rotation lenghts not being respected. Need to implement the day count type method or fix paddock status
+'    Grazing counter can reach -1
+
+' Why is it crashing (-1 error)
+' Why does the .Varabable request cause a fatal error
+' Why doesn't the summarry file get updated like the console output
+
+' Apsim Type applicable to DDRules
+'       AnimalGrazeType
+'       AddExcretaType
+'       ApplyUrineType
+'       DryOffStockType
+'       FaecesType
+'       GrazeType
+'       IntakeType
+'       MoveStockType
+'       PastureIntake
+'       PastureCut [Double cut_height, gathered, dmd_loss, dm_content]
+'       PastureOnCutType [Double fresh_wt, dm_content, dm, cp_conc, p_conc, s_conc, ash_alk]
+'       SuppEaten
+'       SuppIntake
+'       SupplementBuyType
 
 Public Class DDRules
         Inherits Instance
         Public myDebugLevel As Integer = 0
+        Private MyPaddock As PaddockType
         Private myFarm As Farm
         Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
@@ -20,7 +42,6 @@ Public Class DDRules
         <Input()> Private year As Integer
         <Input()> Private day_of_month As Integer
         <Input()> Private end_week As Integer
-
         Public dairyNZ_mg As Single() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
         Public dairyNZ_gr As Single() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
         Public Val_gr As Single() = {1600, 1600, 1600, 1600, 1600, 1200, 1200, 1600, 1600, 1600, 1600, 1600}  'june to may - altered by Val for FarmSim
@@ -38,7 +59,7 @@ Public Class DDRules
                 End If
 
                 ' ************* Farm testing **********************
-                Dim MyPaddock As PaddockType = New PaddockType(Me)
+                MyPaddock = New PaddockType(Me)
                 myFarm.Init(MyPaddock, year, month, TotalFarmArea)
                 myHerd = myFarm.getHerd()
 
@@ -49,10 +70,93 @@ Public Class DDRules
 
                 GrazingIntervalIsSet = False
                 GrazingResidualIsSet = False
-                'PaddockGrazable(1) = 1 'testing removal of a paddoxk from the rotation i.e. for forage crops etc.
-                'PaddockGrazable(2) = 0 'testing removal of a paddoxk from the rotation i.e. for forage crops etc.
+                'PaddockGrazable(1) = 1 'testing removal of a paddock from the rotation i.e. for forage crops etc.
+                'PaddockGrazable(2) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
                 DebugLevel = myDebugLevel
         End Sub
+
+        <EventHandler()> Sub OnPrepare()
+                If (DebugLevel > 0) Then
+                        Console.WriteLine("Enter OnPrepare()")
+                End If
+
+                'Todo: find a way to default to the dairy nz parameter if the user has not entered anything
+                ' If I introduce the line below they overwrite any values set by a manager component
+                ' Initilising "flag" values here to trigger default setting during OnProcess
+                '        GrazingInterval = dairyNZ_mg(month - 1) 'Minium Grazing Interval (actually rotation length)
+                '        GrazingResidual = dairyNZ_gr(month - 1) 'Grazing residual
+                'GrazingIntervalIsSet = False
+                'GrazingResidualIsSet = False
+
+                ' ************* Farm testing **********************
+                myFarm.Prepare(year, month, day_of_month, end_week)
+                myFarm.StockingRate = BaseStockingRate
+                ' ************* Farm testing **********************
+
+                If (DebugLevel > 0) Then
+                        Console.WriteLine("   Rotation Length " & GrazingInterval.ToString)
+                        Console.WriteLine("   Residual " & GrazingResidual.ToString)
+                        Console.WriteLine("   Stocking Rate " & StockingRate.ToString)
+                End If
+
+        End Sub
+
+        <EventHandler()> Sub OnProcess()
+                ' ************* Farm testing **********************
+                If Not (GrazingIntervalIsSet) Then
+                        GrazingInterval = dairyNZ_mg(month - 1)
+                        GrazingIntervalIsSet = False 'not user set so reset switch
+                End If
+                If Not (GrazingResidualIsSet) Then
+                        GrazingResidual = dairyNZ_gr(month - 1)
+                        GrazingResidualIsSet = False 'not user set so reset switch
+                End If
+
+                myFarm.GrazingResidual = GrazingResidual
+                myFarm.GrazingInterval = GrazingInterval
+                'myFarm.StockingRate = sr
+                myFarm.Process()
+                Dim cover = myFarm.AverageCover
+                ' ************* Farm testing **********************
+                PrepareOutputs()
+
+                'PublishGrazingEvent() - testing
+        End Sub
+
+        <EventHandler()> Sub Onremove_crop_biomass()
+                'this doesn't work!
+                Console.WriteLine("DDRules heard a remove_crop_biomass event")
+        End Sub
+
+        <EventHandler()> Sub OnBiomassRemoved()
+                'this works
+                'Console.WriteLine("DDRules heard a BiomassRemoved event")
+        End Sub
+#End Region
+        Private TotalFarmArea As Double = 0
+        'Effective farm area [ha]
+        <Output()> <Units("ha")> Public Property FarmArea() As Double
+                Get
+                        Return TotalFarmArea
+                End Get
+                Set(ByVal value As Double)
+                        TotalFarmArea = value
+                End Set
+        End Property
+
+        'Take dry stock off farm
+        <Output()> <Units("")> Public Property WinterOffDryStock() As Integer
+                Get
+                        If (myFarm.WinterOffDryStock) Then
+                                Return 1
+                        Else
+                                Return 0
+                        End If
+                End Get
+                Set(ByVal value As Integer)
+                        myFarm.WinterOffDryStock = value > 0
+                End Set
+        End Property
 
         Sub SetupFarmSim(ByVal MyPaddock As PaddockType)
                 Dim FarmSim As ComponentType = MyPaddock.Component("FarmSimGraze")
@@ -85,92 +189,6 @@ Public Class DDRules
                 default_gr = Val_gr
         End Sub
 
-        <EventHandler()> Sub OnPrepare()
-                If (DebugLevel > 0) Then
-                        Console.WriteLine("Enter OnPrepare()")
-                End If
-
-                'Todo: find a way to default to the dairy nz parameter if the user has not entered anything
-                ' If I introduce the line below they overwrite any values set by a manager component
-                ' Initilising "flag" values here to trigger default setting during OnProcess
-                '        GrazingInterval = dairyNZ_mg(month - 1) 'Minium Grazing Interval (actually rotation length)
-                '        GrazingResidual = dairyNZ_gr(month - 1) 'Grazing residual
-                'GrazingIntervalIsSet = False
-                'GrazingResidualIsSet = False
-
-                ' ************* Farm testing **********************
-                myFarm.Prepare(year, month, day_of_month, end_week)
-                myFarm.StockingRate = BaseStockingRate
-                ' ************* Farm testing **********************
-
-                If (DebugLevel > 0) Then
-                        Console.WriteLine("   Rotation Length " & GrazingInterval.ToString)
-                        Console.WriteLine("   Residual " & GrazingResidual.ToString)
-                        Console.WriteLine("   Stocking Rate " & StockingRate.ToString)
-                End If
-
-        End Sub
-
-        <EventHandler()> Sub OnProcess()
-                If (day_of_month = 1 And month = 1) Then
-                        Console.WriteLine("")
-                End If
-
-                ' ************* Farm testing **********************
-                If Not (GrazingIntervalIsSet) Then
-                        GrazingInterval = dairyNZ_mg(month - 1)
-                        GrazingIntervalIsSet = False 'not user set so reset switch
-                End If
-                If Not (GrazingResidualIsSet) Then
-                        GrazingResidual = dairyNZ_gr(month - 1)
-                        GrazingResidualIsSet = False 'not user set so reset switch
-                End If
-
-                myFarm.GrazingResidual = GrazingResidual
-                myFarm.GrazingInterval = GrazingInterval
-                'myFarm.StockingRate = sr
-                myFarm.Process()
-                Dim cover = myFarm.AverageCover
-                ' ************* Farm testing **********************
-
-                PrepareOutputs()
-        End Sub
-
-        <EventHandler()> Sub Onremove_crop_biomass()
-                'this doesn't work!
-                Console.WriteLine("DDRules heard a remove_crop_biomass event")
-        End Sub
-
-        <EventHandler()> Sub OnBiomassRemoved()
-                'this works
-                'Console.WriteLine("DDRules heard a BiomassRemoved event")
-        End Sub
-
-        Private TotalFarmArea As Double = 0
-        'Effective farm area [ha]
-        <Output()> <Units("ha")> Public Property FarmArea() As Double
-                Get
-                        Return TotalFarmArea
-                End Get
-                Set(ByVal value As Double)
-                        TotalFarmArea = value
-                End Set
-        End Property
-
-        'Take dry stock off farm
-        <Output()> <Units("")> Public Property WinterOffDryStock() As Integer
-                Get
-                        If (myFarm.WinterOffDryStock) Then
-                                Return 1
-                        Else
-                                Return 0
-                        End If
-                End Get
-                Set(ByVal value As Integer)
-                        myFarm.WinterOffDryStock = value > 0
-                End Set
-        End Property
-#End Region
 
 #Region "CowProperties"
         'Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off
@@ -200,7 +218,7 @@ Public Class DDRules
                 End Set
         End Property
 
-         'ME still required to meet animal requirements
+        'ME still required to meet animal requirements
         <Output()> <Units("MJME")> Public ReadOnly Property RemainingFeedDemand() As Double
                 Get
                         Return myHerd.RemainingFeedDemand
@@ -384,7 +402,7 @@ Public Class DDRules
         End Property
 
         'Quantity of silage cut on farm today [kgDM/day]
-        <Output()> <Units("kgDM")> Public ReadOnly Property SilageCut() As Double
+        <Output()> <Units("kgDM")> Public ReadOnly Property SilageCut_kg() As Double
                 Get
                         Return myFarm.SilageCut
                 End Get
@@ -407,7 +425,7 @@ Public Class DDRules
         'Quantity of silage cut on farm today [kgDM/ha/day]
         <Output()> <Units("kgDM/ha")> Public ReadOnly Property SilageCut_kgha() As Double
                 Get
-                        Return SilageCut / FarmArea
+                        Return SilageCut_kg / FarmArea
                 End Get
         End Property
 
@@ -919,5 +937,54 @@ Public Class DDRules
                 Set(ByVal value As Integer)
                         LocalPaddockType.MovingAverageSeriesLength = value
                 End Set
+
         End Property
+
+        'WIP: Fire an "Graze" event when pasture is removed by DDRules
+        '<[Event]()> Public Event Grazing1 As GrazeDelegate
+        '<[Event]()> Public Event Grazing2 As AnimalGrazeDelegate
+
+        'Private Sub PublishGrazingEvent()
+        '        'option 1
+        '        Dim grazeData As New GrazeType
+        '        grazeData.amount = 1
+        '        grazeData.type = "DairyCow"
+        '        grazeData.sender = "DDRules"
+        '        RaiseEvent Grazing1(grazeData)
+
+        '        'option 2
+        '        Dim grazeData2 As New AnimalGrazeType
+        '        grazeData2.species = "DairyCow"
+        '        grazeData2.stocking_rate = 2.5
+        '        grazeData2.time_on_pasture = 24
+        '        grazeData2.sender = "DDRules"
+        '        RaiseEvent Grazing2(grazeData2)
+        'End Sub
+
+        ''Dummy event handler to test event above
+        '<[EventHandler]()> Public Sub OnGrazing1(ByVal data As GrazeType)
+        '        Console.WriteLine("DDRules (Testing) - Caught Graze1 event")
+        'End Sub
+
+        '<[EventHandler]()> Public Sub OnGrazing2(ByVal data As AnimalGrazeType)
+        '        Console.WriteLine("DDRules (Testing) - Caught Graze2 event")
+        'End Sub
+
+        '<[EventHandler]()> Public Sub OnMove(ByVal data As MoveStockType)
+        '        Console.WriteLine("DDRules (Testing) - Caught OnMove event")
+        'End Sub
+
+        ''       <[Event]()> Public Event SilageCut As PastureCutDelegate
+        '<[EventHandler]()> Public Sub OnSilageCut(ByVal data As PastureCutType)
+        '        Console.WriteLine("DDRules (OnSilageCut)")
+        'End Sub
+
+        'Private Sub PublishSilageEvent()
+        '        Dim data As New PastureCutType
+        '        data.cut_height = 1600
+        '        data.dmd_loss = 0.1 '10% returned to SOM
+        '        data.dm_content = 0 'not used
+        '        data.gathered = 0 'not used
+        '        RaiseEvent SilageCut(data)
+        'End Sub
 End Class

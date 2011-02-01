@@ -20,8 +20,10 @@
         'This adds a the passed quantity of biomass onto the silage heap
         'The heap is not implement as a list/queue but this could be a good idea
         Public Sub Add(ByVal silage As BioMass)
-                AddedToday = AddedToday.Add(silage)
-                Total = Total.Add(silage)
+                If (silage.DM_Total > 0) Then
+                        AddedToday = AddedToday.Add(silage)
+                        Total = Total.Add(silage)
+                End If
         End Sub
 
         'This adds a the passed quantity of biomass onto the silage heap
