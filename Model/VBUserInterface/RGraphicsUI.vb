@@ -18,6 +18,8 @@ Public Class RGraphicsUI
     Inherits BaseView
     Private InRefresh As Boolean
 
+    Public Event Selected As TabControlEventHandler
+
     ' The image from R
     Friend WithEvents PictureBox As System.Windows.Forms.PictureBox
 
@@ -62,6 +64,8 @@ Public Class RGraphicsUI
         ConsoleBox.BringToFront()
 
         Console.Controls.Add(ConsoleBox)
+
+        AddHandler Me.TabControl.Selected, AddressOf onTabSelected
     End Sub
 
     'Form overrides dispose to clean up the component list.
@@ -108,6 +112,7 @@ Public Class RGraphicsUI
         Me.TabControl.SelectedIndex = 0
         Me.TabControl.Size = New System.Drawing.Size(1022, 800)
         Me.TabControl.TabIndex = 3
+
         '
         'ImagePage
         '
@@ -174,14 +179,6 @@ Public Class RGraphicsUI
 
         InRefresh = True
 
-        Dim desiredImageWidth = Me.TabControl.Size.Width() - 5
-        Dim desiredImageHeight = Me.TabControl.Size.Height() - 5
-        Dim imageFileName As String = Directory.GetCurrentDirectory() + "\" + Me.Name() + ".png"
-        Dim scriptFileName As String = Directory.GetCurrentDirectory() + "\" + Me.Name() + ".R"
-
-        Dim OutputFileNames As New List(Of String)
-        UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, OutputFileNames)
-
         Dim Script As String = ""
         For Each ScriptNode As XmlNode In XmlHelper.ChildNodes(Data, "script")
             Script = Script + XmlHelper.Value(ScriptNode, "text")
@@ -189,6 +186,34 @@ Public Class RGraphicsUI
         ScriptBox.Text = Script
         ConsoleBox.Text = ""
 
+        doIt(Script)
+
+        InRefresh = False
+    End Sub
+    Public Overrides Sub OnSave()
+        ' --------------------------------------
+        ' Save the script box if it has changed.
+        ' --------------------------------------
+        Data.RemoveAll()
+
+        Dim ScriptNode As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("script"))
+        XmlHelper.SetName(ScriptNode, "script")
+        XmlHelper.SetValue(ScriptNode, "text", ScriptBox.Text)
+
+    End Sub
+    Private Sub doIt(ByVal script As String)
+
+        Dim desiredImageWidth = Me.TabControl.Size.Width() - 5
+        Dim desiredImageHeight = Me.TabControl.Size.Height() - 5
+        Dim fullpath As String() = Split(NodePath, "/")
+        Dim nodeName = fullpath(fullpath.Length() - 1)
+        Dim imageFileName As String = Directory.GetCurrentDirectory() + "\" + nodeName + ".png"
+        Dim scriptFileName As String = Directory.GetCurrentDirectory() + "\" + nodeName + ".R"
+
+        Dim OutputFileNames As New List(Of String)
+        UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, OutputFileNames)
+
+        ' Build the R script from our XML value
         Dim newScript As New StringWriter()
         newScript.WriteLine("# Automatically generated - do not edit")
         newScript.WriteLine("width<- " + desiredImageWidth.ToString())
@@ -205,9 +230,11 @@ Public Class RGraphicsUI
             first = False
         Next
         newScript.WriteLine(")")
-        newScript.Write(Script)
+        newScript.Write(script)
 
         Dim needsRerun As Boolean = False
+
+        ' See if the script has changed since its last run
         If (File.Exists(scriptFileName)) Then
             Dim sfp As New StreamReader(scriptFileName, False)
             Dim oldScript As String = sfp.ReadToEnd()
@@ -217,25 +244,30 @@ Public Class RGraphicsUI
             needsRerun = True
         End If
 
-        If (Not (needsRerun) And Not (File.Exists(imageFileName))) Then
+        ' See if the input files have changed
+        If (Not (File.Exists(imageFileName))) Then
             needsRerun = True
+        Else
+            ' See if a simulation has been run that invalidates this image
+            Dim myDate As Date = File.GetCreationTime(imageFileName)
+            For Each outputfile As String In OutputFileNames
+                If (File.Exists(outputfile) And File.GetCreationTime(outputfile) > myDate) Then
+                    needsRerun = True
+                End If
+            Next
         End If
-
-        ' See if a simulation has been run that invalidates the image
-        Dim myDate As Date = File.GetCreationTime(imageFileName)
-        For Each outputfile As String In OutputFileNames
-            If (File.Exists(outputfile) And File.GetCreationTime(outputfile) > myDate) Then
-                needsRerun = True
-            End If
-        Next
 
         ' See if the window size has changed
-        Dim diskImage As Image = Image.FromFile(imageFileName)
-        If ((desiredImageWidth <> diskImage.Width) Or _
-            (desiredImageHeight <> diskImage.Height)) Then
+        If (Not (needsRerun) And File.Exists(imageFileName)) Then
+            Dim diskImage As Image = Image.FromFile(imageFileName)
+            If ((desiredImageWidth <> diskImage.Width) Or _
+                (desiredImageHeight <> diskImage.Height)) Then
+                needsRerun = True
+            End If
+            diskImage.Dispose()
+        Else
             needsRerun = True
         End If
-        diskImage.Dispose()
 
         Dim canRun As Boolean = True
         If (needsRerun) Then
@@ -247,7 +279,7 @@ Public Class RGraphicsUI
         End If
 
         If (Not (canRun)) Then
-            Me.ConsoleBox.Text = "Input files missing. Can't run"
+            Me.ConsoleBox.Text = "Output files are missing. Can't run R. Run APSIM first."
         ElseIf (needsRerun) Then
             Dim fp As New StreamWriter(scriptFileName, False)
             fp.Write(newScript.ToString())
@@ -266,40 +298,36 @@ Public Class RGraphicsUI
 
             ' Should test somehow for pre 2.12.x that doesnt have rscript installed
             Dim rcmd As String = rpath + "\bin\Rscript.exe"
-            Dim args As String = "--slave --vanilla """ + Directory.GetCurrentDirectory() + "\" + Me.Name() + ".R"""
+            Dim args As String = "--slave --vanilla """ + scriptFileName + """"
 
-            Dim consoleMsg As String = "Command:   " + rcmd + vbCrLf
-            consoleMsg += "Arguments: " + args + vbCrLf
+            Dim consoleMsg As String = "Command:   " + rcmd + vbCrLf + vbCrLf
+            consoleMsg += "Arguments: " + args + vbCrLf + vbCrLf
             Me.ConsoleBox.Text = consoleMsg
 
             Dim p As System.Diagnostics.Process = RunProcess(rcmd, args, Directory.GetCurrentDirectory())
             p.WaitForExit()
 
-            consoleMsg += "stdout: " + vbCrLf + p.StandardOutput.ReadToEnd() + vbCrLf
-            consoleMsg += "stderr: " + vbCrLf + p.StandardError.ReadToEnd() + vbCrLf
+            consoleMsg += "stdout: " + vbCrLf + p.StandardOutput.ReadToEnd() + vbCrLf + vbCrLf
+            consoleMsg += "stderr: " + vbCrLf + p.StandardError.ReadToEnd() + vbCrLf + vbCrLf
             consoleMsg += "script: " + vbCrLf + newScript.ToString()
             Me.ConsoleBox.Text = consoleMsg
 
-            ' update displayed image
-            If (File.Exists(imageFileName)) Then
-                Dim newImageStream As FileStream = New FileStream(imageFileName, FileMode.Open, FileAccess.Read)
-                Me.PictureBox.Image = Image.FromStream(newImageStream)
-                newImageStream.Dispose()
-            End If
         End If
 
-        InRefresh = False
-    End Sub
+        ' update displayed image
+        If (File.Exists(imageFileName)) Then
+            Dim newImageStream As FileStream = New FileStream(imageFileName, FileMode.Open, FileAccess.Read)
+            Me.PictureBox.Image = Image.FromStream(newImageStream)
+            newImageStream.Dispose()
+        End If
 
-    Public Overrides Sub OnSave()
-        ' --------------------------------------
-        ' Save the script box if it has changed.
-        ' --------------------------------------
-        Data.RemoveAll()
-
-        Dim ScriptNode As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("script"))
-        XmlHelper.SetName(ScriptNode, "script")
-        XmlHelper.SetValue(ScriptNode, "text", ScriptBox.Text)
 
     End Sub
+
+    Public Sub onTabSelected()
+
+        doIt(ScriptBox.Text.ToString())
+
+    End Sub
+
 End Class
