@@ -14,8 +14,11 @@ public class PlugIns
       Toolboxes.Instance.Clear();
 
       // Load all plugins by reading in their filenames from the Configuration.
-      foreach (string FileName in Configuration.Instance.Settings("PlugIn"))
-         Load(FileName);
+      foreach (KeyValuePair<string, bool> PlugIn in AllPlugIns)
+         {
+         if (PlugIn.Value)
+            Load(PlugIn.Key);
+         }
       }
    public static bool Load(string FileName)
       {
@@ -67,15 +70,15 @@ public class PlugIns
          IncludeNode = XmlHelper.Find(Node, "Include");
          }
       }
-   public static List<string> AllPlugIns
+   public static Dictionary<string, bool> AllPlugIns
       {
       get
          {
-         return Configuration.Instance.Settings("PlugIn");
+         return Configuration.Instance.SettingsWithEnabledFlags("PlugIn");
          }
       set
          {
-         Configuration.Instance.SetSettings("PlugIn", value);
+         Configuration.Instance.SetSettingsWithEnabledFlags("PlugIn", value);
          }
       }
    public static void Save(string FileName, bool SaveAsPlugIn)

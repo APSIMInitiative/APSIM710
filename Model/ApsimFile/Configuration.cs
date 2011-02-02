@@ -203,6 +203,21 @@ namespace ApsimFile
             Values[i] = RemoveMacros(Values[i]);
          return Values;
          }
+      public Dictionary<string, bool> SettingsWithEnabledFlags(string SettingName)
+         {
+         Dictionary<string, bool> Settings = new Dictionary<string, bool>();
+         XmlNode SectionNode = XmlHelper.Find(SettingsNode, SectionName);
+         if (SectionNode != null)
+            {
+            foreach (XmlNode SettingNode in XmlHelper.ChildNodes(SectionNode, SettingName))
+               {
+               string FileName = RemoveMacros(SettingNode.InnerText);
+               bool Enabled = XmlHelper.Attribute(SettingNode, "enabled").ToLower() == "yes";
+               Settings.Add(FileName, Enabled);
+               }
+            }
+         return Settings;               
+         }
       public void SetSetting(string SettingName, string Value)
          {
          XmlHelper.SetValue(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName, AddMacros(Value));
@@ -215,6 +230,28 @@ namespace ApsimFile
             NewValues[i] = AddMacros(NewValues[i]);
          XmlHelper.SetValues(SettingsNode, SectionName + XmlHelper.Delimiter + SettingName, NewValues);
          Save();
+         }
+      public void SetSettingsWithEnabledFlags(string SettingName, Dictionary<string, bool> Values)
+         {
+         XmlNode SectionNode = XmlHelper.Find(SettingsNode, SectionName);
+         if (SectionNode != null)
+            {
+            XmlHelper.EnsureNumberOfChildren(SectionNode, "PlugIn", "", Values.Count);
+            List<XmlNode> Nodes = XmlHelper.ChildNodes(SectionNode, "PlugIn");
+
+            int i = 0;
+            foreach (KeyValuePair<string, bool> Value in Values)
+               {
+               string FileName = Configuration.AddMacros(Value.Key);
+               Nodes[i].InnerText = Value.Key;
+               if (Value.Value)
+                  XmlHelper.SetAttribute(Nodes[i], "enabled", "yes");
+               else
+                  XmlHelper.SetAttribute(Nodes[i], "enabled", "no");
+               i++;
+               }
+            Save();
+            }
          }
       public List<string> ComponentOrder()
          {
