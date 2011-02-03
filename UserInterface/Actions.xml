@@ -328,7 +328,20 @@
             </call>
          </OnInvoke>
       </Disable>
-
+      <Duplicate>
+         <Text>Duplicate this node</Text>
+         <Description>Duplicate the selected node a specified number of times</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\element_add16.png</SmallIcon>
+         <DisabledWhen>Disabled</DisabledWhen>
+         <DisabledWhen>MultipleNodesSelected</DisabledWhen>
+         <DisabledWhen>RootNode</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>CreateDuplicates</method>
+            </call>
+         </OnInvoke>
+      </Duplicate>
 
 
       <SoilCropManagement>
@@ -580,6 +593,7 @@
       <Item>Paste</Item>
       <Item>Delete</Item>
       <Item>Rename</Item>
+      <Item>Duplicate</Item>
       <Item>MoveUp</Item>
       <Item>MoveDown</Item>
       <Item>CollapseAll</Item>

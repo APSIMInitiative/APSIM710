@@ -433,12 +433,12 @@ namespace ApsimFile
          ChildNodes.Remove(ComponentToDelete);
          MyFile.PublishComponentChanged(this);
          }
-      public Component Duplicate(Component ComponentToDuplicate)
+      public Component Duplicate(Component ComponentToDuplicate, bool AsAShortCut)
          {
          XmlDocument Doc = new XmlDocument();
          Doc.AppendChild(Doc.CreateElement(ComponentToDuplicate.Type));
          ComponentToDuplicate.Write(Doc.DocumentElement);
-         if (XmlHelper.Attribute(Doc.DocumentElement, "shortcut") == "")
+         if (!AsAShortCut && XmlHelper.Attribute(Doc.DocumentElement, "shortcut") == "")
             return Add(Doc.DocumentElement.OuterXml);
          else
             return AddShortCut(ComponentToDuplicate);

@@ -244,7 +244,20 @@ Public Class ApsimUIActions
         Utility.CheckProcessExitedProperly(P)
 
         MessageBox.Show("Finished writing to <info> section.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Sub
+   End Sub
+
+
+   Public Shared Sub CreateDuplicates(ByVal Controller As BaseController)
+      Dim f As New UIBits.DuplicateForm
+      If f.ShowDialog = DialogResult.OK Then
+         Dim Comp As ApsimFile.Component = Controller.Selection
+
+         For i As Integer = 1 To f.NumDuplicates
+            Comp.Parent.Duplicate(Comp, f.DoLinkDuplicates)
+         Next
+
+      End If
+   End Sub
 End Class
 
 
