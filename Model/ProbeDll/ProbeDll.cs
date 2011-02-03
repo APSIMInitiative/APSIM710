@@ -25,7 +25,7 @@ class ProbeDll
 
 
    [STAThread]
-   static void Main(string[] args)
+   static int Main(string[] args)
       {
       try
          {
@@ -39,15 +39,18 @@ class ProbeDll
             }
          else
             Console.WriteLine("Usage: ProbeDLL XMLPlugInFileName");
+         return 0;
          }
       catch (TargetInvocationException err)
          {
          Console.WriteLine(err.InnerException.Message + " Module name: " + args[0]);
+         return 1;
          }
 
       catch (Exception err)
          {
          Console.WriteLine(err.Message + " Module name: " + args[0]);
+         return 1;
          }
       }
 
@@ -71,7 +74,7 @@ class ProbeDll
          {
          foreach (string FileName in Types.Instance.Dlls(TypeName))
             {
-            string DllFileName = Configuration.RemoveMacros(FileName);
+            string DllFileName = Configuration.RemoveMacros(FileName).Replace("%dllext%", "dll");
             string ModuleName = Path.GetFileNameWithoutExtension(DllFileName);
             string ModelConfiguration = Types.Instance.ModelContents(TypeName);
             if (ModelConfiguration == "")

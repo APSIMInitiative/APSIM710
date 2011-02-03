@@ -254,6 +254,10 @@ public class Types
       else
          XmlHelper.SetName(ProbeInfoNode, ModuleName);
 
+      // The probe info passed into this method is not nicely formatted so we want
+      // to pretty it up a bit.
+      ProbeInfo = XmlHelper.FormattedXML(ProbeInfo);
+
       XmlDocument ProbeInfoDoc = new XmlDocument();
       ProbeInfoDoc.LoadXml(ProbeInfo);
       foreach (XmlNode Child in ProbeInfoDoc.DocumentElement)
@@ -262,6 +266,6 @@ public class Types
    public void Save(string TypeName, TextWriter Out)
       {
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
-      Out.Write(XmlHelper.FormattedXML(TypeNode.OuterXml));
+      Out.Write(TypeNode.OuterXml);
       }
    }

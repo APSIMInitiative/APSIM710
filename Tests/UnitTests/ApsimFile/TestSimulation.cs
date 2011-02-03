@@ -317,7 +317,7 @@ namespace Test
       public void Duplicate()
          {
          Component Simulation = Simulations.Find("/folder/My Sim"); Assert.IsNotNull(Simulation);
-         Simulation.Parent.Duplicate(Simulation);
+         Simulation.Parent.Duplicate(Simulation, false);
          Component NewSim = Simulations.Find("/folder/My Sim2");
          Assert.IsNotNull(NewSim);
          Assert.IsNull(NewSim.ShortCutTo);
