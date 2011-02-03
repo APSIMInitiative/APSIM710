@@ -93,7 +93,11 @@ public ref class ComponentType : public TypedItem
          {
          return gcnew VariableType(ParentComponent, Name, VariableName);
          }
-         
+
+      void Publish(String^ EventName)
+         {
+         ParentComponent->Publish(Name + "." + EventName, gcnew NullType());
+         }
       void Publish(String^ EventName, ApsimType^ Data)
          {
          ParentComponent->Publish(Name + "." + EventName, Data);

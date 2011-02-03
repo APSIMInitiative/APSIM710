@@ -55,7 +55,8 @@ namespace Graph
 
          List<string> DefaultFileNames = new List<string>();
          UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
-         _DataSources.AddRange(OurComponent.DataSources(DefaultFileNames));
+         foreach (DataTable Source in OurComponent.DataSources(DefaultFileNames))
+            AddDataSource(Source);
          }
 
       /// <summary>

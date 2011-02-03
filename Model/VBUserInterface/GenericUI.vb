@@ -242,7 +242,7 @@ Public Class GenericUI
                End If
                If Row("Value").ToString() <> "" Then
                   ' Make sure we save date rows as dd/mm/yyyy.
-                  If Row("Type") = "date" Then
+                  If Not IsDBNull(Row("Type")) AndAlso Row("Type") = "date" Then
                      Dim DateValue As DateTime = Row("Value").ToString()
                      NewProperty.InnerText = DateValue.ToString("dd/MM/yyyy")
                   Else
