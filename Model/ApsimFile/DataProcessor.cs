@@ -390,7 +390,7 @@ public class DataProcessor
                   NewRow[ProfileColumns[Col]] = Data.Rows[Row][ProfileColumns[Col] + "(" + Layer.ToString() + ")"];
 
                NewRow["Date"] = RowDate;
-               NewRow["Title"] = Data.Rows[Row]["Title"] + ", " + RowDate.ToString("d/MM/yyyy");
+               NewRow["Title"] = Data.Rows[Row]["Title"] + ", " + RowDate.ToShortDateString();
                NewData.Rows.Add(NewRow);
                }
             }

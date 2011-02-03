@@ -74,16 +74,7 @@
                <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption><sorption_coeff>[soil.SorptionCoeff]</sorption_coeff></initdata></component>
       [endfor]
       [if [soil.Cl (mg/kg)]]
-    <component name="Cl" executable="%apsim%/Model/Solute.%dllext%">
-      <executable name="%apsim%/Model/Solute.%dllext%" version="1.0" />
-      <initdata>
-        <ub_solute description="Upper bound for solutes">1000    </ub_solute>
-        <lb_solute description="Lower bound for solutes">0       </lb_solute>
-        <solute_names>cl</solute_names>
-        <d0_cl>0</d0_cl>
-        <cl_ppm>[soil.Cl (mg/kg)]</cl_ppm>
-      </initdata>
-    </component>
+    <component name="Cl" executable="%apsim%/Model/Solute.%dllext%"><executable name="%apsim%/Model/Solute.%dllext%" version="1.0" /><initdata><ub_solute description="Upper bound for solutes">1000    </ub_solute><lb_solute description="Lower bound for solutes">0       </lb_solute><solute_names>cl</solute_names><d0_cl>0</d0_cl><cl_ppm>[soil.Cl (mg/kg)]</cl_ppm></initdata></component>
     [endif]
 
     </ApsimToSim>
@@ -302,8 +293,8 @@
       <dnit_wf_power description="power term for calculation of water factor for denitrification">1        </dnit_wf_power>
       <dnit_k1 description="K1 parameter from Thorburn et al(2010) for N2O model">25.1        </dnit_k1>
       <dnit_wfps description="WFPS for calculating n2o fraction of denitrification">21.33333 100.0 </dnit_wfps>
-      <dnit_n2o_factor description="WFPS factor for n2o fraction of denitrification">0.0   1.18 </dnit_n2o_factor>      
-      <dnit_nitrf_loss description="Fraction of nitrification lost as denitrifcation">0.0 </dnit_nitrf_loss>      
+      <dnit_n2o_factor description="WFPS factor for n2o fraction of denitrification">0.0   1.18 </dnit_n2o_factor>
+      <dnit_nitrf_loss description="Fraction of nitrification lost as denitrifcation">0.0 </dnit_nitrf_loss>
     </standard>
     <!--  where wf = ((SW-DUL)/(SAT-DUL))^P
       -->
@@ -690,6 +681,7 @@
       <variable name="dlt_n_min_res" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="dlt_n_min_tot" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="dlt_nh4" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
+      <variable name="dlt_nh4_dnit" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="dlt_nh4_net" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="dlt_nh4ppm" description="" read="F" write="T" kind="single" array="T" units="mg/kg" />
       <variable name="dlt_no3" description="" read="F" write="T" kind="single" array="T" units="kg/ha" />
@@ -722,6 +714,7 @@
       <variable name="fr_lign" description="" read="T" write="F" kind="single" array="" units="" />
       <variable name="hum_c" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="hum_n" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="n2o_atm" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
       <variable name="n_reduction" description="" read="F" write="T" kind="string" array="" units="" />
       <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
       <variable name="nh4" description="" read="T" write="T" kind="single" array="T" units="kg/ha" />

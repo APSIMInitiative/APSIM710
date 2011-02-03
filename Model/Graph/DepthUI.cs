@@ -37,6 +37,22 @@ namespace Graph
 
          // get a list of currently selected dates.
          List<string> SelectedDates = XmlHelper.Values(Data, "Date");
+
+         // Convert all dd/mm/yyyy dates in XML to date strings formatted according to current
+         // locale.
+         for (int i = 0; i < SelectedDates.Count; i++)
+            {
+            try
+               {
+               DateTime d = DateTime.ParseExact(SelectedDates[i], "d/M/yyyy", null);
+               SelectedDates[i] = d.ToShortDateString();
+               }
+            catch (Exception)
+               {
+               SelectedDates[i] = "";
+               }
+            }
+
          DateList.Items.Clear();
          if (DepthData != null)
             {
@@ -61,6 +77,14 @@ namespace Graph
             List<string> DateStrings = new List<string>();
             for (int i = 0; i != DateList.CheckedIndices.Count; i++)
                DateStrings.Add(DateList.Items[DateList.CheckedIndices[i]].ToString());
+
+            // Convert all current locale dates to dd/mm/yyyy to be stored in XML
+            for (int i = 0; i < DateStrings.Count; i++)
+               {
+               DateTime d = DateTime.Parse(DateStrings[i]);
+               DateStrings[i] = d.ToString("d/M/yyyy");
+               }
+
             XmlHelper.SetValues(Data, "Date", DateStrings);
             AllowCheckedEvent = true;
             }

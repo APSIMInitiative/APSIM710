@@ -55,7 +55,7 @@ namespace Graph
 
          List<string> DefaultFileNames = new List<string>();
          UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
-         _DataSources = OurComponent.DataSources(DefaultFileNames);
+         _DataSources.AddRange(OurComponent.DataSources(DefaultFileNames));
          }
 
       /// <summary>
