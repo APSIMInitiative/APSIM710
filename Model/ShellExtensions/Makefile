@@ -19,6 +19,6 @@ SRC = ContextHandler.cpp \
 RES = Icons.res
 PROJECTTYPE = dll
 VCL = yes
-LIBS = ole32
+LIBS = ole32 Rpcrt4
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

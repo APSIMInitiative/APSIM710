@@ -91,7 +91,7 @@ STDMETHODIMP CContextMenuHandler::QueryContextMenu
                        menuDescriptions[menu].name.c_str());
             }
 
-         string subMenuName = "&Apsim" + getApsimVersion();
+         string subMenuName = "&Apsim" + getApsimVersion() + " (" + getApsimBuildNumber() + ")";
          InsertMenu(hMenu,
                     indexMenu++,
                     MF_STRING | MF_BYPOSITION | MF_POPUP,

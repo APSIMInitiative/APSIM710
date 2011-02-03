@@ -23,10 +23,22 @@ public ref class Param : public System::Attribute
 			Optional = false;
 			MinVal = MaxVal = Double::NaN;  // Using Nan to indicate min. and max. values not set
 			}
+		Param(bool IsOptional)
+			{
+			Name = "";
+			Optional = IsOptional;
+			MinVal = MaxVal = Double::NaN;  // Using Nan to indicate min. and max. values not set
+			}
 		Param(String^ Name)
 			{
 			this->Name = Name;
 			Optional = false;
+			MinVal = MaxVal = Double::NaN;
+			}
+		Param(String^ Name, bool IsOptional)
+			{
+			this->Name = Name;
+			Optional = IsOptional;
 			MinVal = MaxVal = Double::NaN;
 			}
  	};

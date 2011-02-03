@@ -17,7 +17,7 @@ using namespace std;
 //---------------------------------------------------------------------------
 // generated with CoCreateGuid()
 //---------------------------------------------------------------------------
-const char *szCLSID = "{5637FAA5-A5A4-42DD-A9F2-AE08F204B5";
+string clsid;
 
 STDAPI DllCanUnloadNow(void)
    {
@@ -29,13 +29,26 @@ STDAPI DllCanUnloadNow(void)
 //---------------------------------------------------------------------------
 string getKey(void)
    {
-   return "Apsim" + getApsimVersion();
+   return "Apsim" + getApsimVersion() + getApsimBuildNumber();
    }
 string getClsid(void)
    {
-   string version = getApsimVersion();
-   replaceAll(version, ".", "");
-   return szCLSID + version + "}";
+   if (clsid == "")
+      {
+      UUID uuid;
+      UuidCreate(&uuid);
+      
+      char* uuidString;
+      UuidToString(&uuid, (RPC_CSTR*) &uuidString);
+      
+      clsid = (char*) uuidString;
+      
+      RpcStringFree((RPC_CSTR*) &uuidString);
+      uuidString = NULL;
+      
+      clsid = "{" + clsid + "}";
+      }
+   return clsid;
    }
 //---------------------------------------------------------------------------
 // create a CClassFactory object

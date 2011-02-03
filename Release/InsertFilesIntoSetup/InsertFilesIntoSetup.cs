@@ -6,6 +6,7 @@ using System.Xml;
 using System.IO;
 using CSGeneral;
 using System.Collections.Specialized;
+using ApsimFile;
 
 class InsertFilesIntoSetup
    {
@@ -82,6 +83,9 @@ class InsertFilesIntoSetup
       Doc.Save("Test.xml");
 
       InsertFilesIntoXML(WildCard, Doc.DocumentElement, TargetDirectory);
+
+      // Update the ProductCode and ProductVersion.
+      UpdateVersionInfo(Doc.DocumentElement);
 
       // write to .vdproj
       //string NewFileName = Path.ChangeExtension(SourceFileName, ".vdprojnew");
@@ -426,6 +430,31 @@ class InsertFilesIntoSetup
       return FirstBit + ":" + SecondBit;
       }
 
+   /// <summary>
+   /// Update the ProductCode and ProductVersion
+   /// </summary>
+   private void UpdateVersionInfo(XmlNode Node)
+      {
+      string ProductName = "APSIM " + Configuration.Instance.ApsimVersion()
+                              + " " +
+                              Configuration.Instance.ApsimBuildNumber().Replace(" ", "");
+      string ProductVersion = Configuration.Instance.ApsimVersion().Replace(".", "");
+      string ProductCode = Guid.NewGuid().ToString().ToUpper();
+      string DefaultLocation = "[ProgramFilesFolder]\\\\Apsim" + 
+                               Configuration.Instance.ApsimVersion().Replace(".", "")
+                               + "-" +
+                               Configuration.Instance.ApsimBuildNumber().Replace(" ", "");
+
+      XmlHelper.SetValue(Node, "Deployable/Product/ProductName", "8:" + ProductName);
+      XmlHelper.SetValue(Node, "Deployable/Product/ProductVersion", "8:" + ProductVersion);
+      XmlHelper.SetValue(Node, "Deployable/Folder/3C67513D-01DD-4637-8A68-80971EB9504F/DefaultLocation",
+                               "8:" + DefaultLocation);
+
+      // We also need to update the ProductCode to get around the problem of the installation
+      // thinking there's a previous version already installed on users computer.
+      XmlHelper.SetValue(Node, "Deployable/Product/ProductCode", "8:{" + ProductCode + "}");     
+      
+      } 
 
 
    }
