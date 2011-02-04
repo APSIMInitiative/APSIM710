@@ -284,7 +284,7 @@ cjh      endif
       integer    num_layers            ! number of layers in profile
       integer    numvals
       character  string*200            ! output string
-
+      real       swim3
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -305,7 +305,18 @@ cjh      endif
          p%uptake_source = 'calc'
       else
       endif
-
+      call get_real_var_optional (unknown_module
+     :                           , 'swim3'
+     :                           , '()'
+     :                           , swim3
+     :                           , numvals
+     :                           , 0.0
+     :                           , 1.0)
+      if (numvals.gt.0) then
+         p%uptake_source = 'swim3'
+      endif      
+      
+      
          !       cproc_sw_demand_bound
 
       call read_real_var_optional (section_name
@@ -366,6 +377,11 @@ cjh      endif
       elseif (p%uptake_source.eq.'calc') then
          string = 'Uptake of NO3 and water calculated by '
      :            //c%crop_type
+
+      else if (p%uptake_source .eq. 'swim3') then
+
+         string = 'Module is using water uptake'//
+     :       ' provided from Swim3'
 
       else
          string = blank
@@ -2870,6 +2886,25 @@ c        end if
 
          call set_real_array (unknown_module, 'dlt_sw_dep', '(mm)'
      :                       , g%dlt_sw_dep, num_layers)
+
+      elseif (p%uptake_source.eq.'swim3') then
+         num_layers = count_of_real_vals (g%dlayer, max_layer)
+
+         dlt_NO3(:) = 0.0
+         dlt_NH4(:) = 0.0
+         do layer = 1, num_layers
+            dlt_NO3(layer) = g%dlt_NO3gsm(layer) * gm2kg /sm2ha
+            dlt_Nh4(layer) = g%dlt_Nh4gsm(layer) * gm2kg /sm2ha
+         end do
+
+         dlt_no3(:) = - MIN(g%NO3(:), - dlt_NO3(:))
+         dlt_nh4(:) = - MIN(g%NH4(:), - dlt_NH4(:))
+
+         call set_real_array (unknown_module, 'dlt_no3', '(kg/ha)'
+     :                       , dlt_NO3, num_layers)
+
+         call set_real_array (unknown_module, 'dlt_nh4', '(kg/ha)'
+     :                       , dlt_Nh4, num_layers)
 
       else
       endif

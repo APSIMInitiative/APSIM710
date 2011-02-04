@@ -1535,7 +1535,8 @@ C     Last change:  E    24 Aug 2001    4:50 pm
       call push_routine (my_name)
 
       if (Option .eq. 1) then
-         if (p%uptake_source .eq. 'apsim') then
+         if ((p%uptake_source .eq. 'apsim').or.
+     :       (p%uptake_source .eq. 'swim3')) then
             ! this would have been avoided if we have
             ! each stress factor in its own routine! - NIH
             ! photo requires (really) actually water uptake
@@ -1543,7 +1544,7 @@ C     Last change:  E    24 Aug 2001    4:50 pm
             ! we only have one supply variable.
 
             call crop_get_ext_uptakes(
-     :                  p%uptake_source   ! uptake flag
+     :                  'apsim'   ! uptake flag
      :                , c%crop_type       ! crop type
      :                , 'water'           ! uptake name
      :                , 1.0               ! unit conversion factor
@@ -1917,7 +1918,7 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 
          call cproc_transp_eff_co2 (
      :              c%svp_fract
-     :            , c%transp_eff_cf
+     :            , c%transp_eff_cf !*g%temp_stress_photo
      :            , g%current_stage
      :            , g%maxt
      :            , g%mint
@@ -5749,9 +5750,10 @@ cpsc need to develop leaf senescence functions for crop
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
-      if (p%uptake_source .eq. 'apsim') then
+         if ((p%uptake_source .eq. 'apsim').or.
+     :       (p%uptake_source .eq. 'swim3')) then
          call crop_get_ext_uptakes (
-     :                  p%uptake_source   ! uptake flag
+     :                  'apsim'   ! uptake flag
      :                , c%crop_type       ! crop type
      :                , 'water'           ! uptake name
      :                , 1.0               ! unit conversion factor
@@ -5872,9 +5874,10 @@ cpsc need to develop leaf senescence functions for crop
 
       if (Option .eq. 1) then
 
+        
         call cproc_transp_eff_co2 (
      :              c%svp_fract
-     :            , c%transp_eff_cf
+     :            , c%transp_eff_cf !*g%temp_stress_photo
      :            , g%current_stage
      :            , g%maxt
      :            , g%mint

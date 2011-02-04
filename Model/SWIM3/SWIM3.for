@@ -2903,7 +2903,8 @@ cnh
       double precision psio(num_psio)
       data psio/-1.d-2,-10.d0,-100.d0,-1000.d0,-15000.d0,-1.d5,-1.d6
      :           ,-1d7/
-     
+      data psio/-1.d-2,-10.d0,-25.d0,-100.d0,-1000.d0,-15000.d0,-1.d6
+     :           ,-1d7/   
 
 *- Implementation Section ----------------------------------
       
@@ -2957,7 +2958,7 @@ cnh
      :'                         Soil Water Potential (cm)'
       call write_string (string)
       string =
-     :'    x       0      10     100   1000  15000   10^5   10^6   10^7'
+     :'    x       0      10      25    100   1000  15000   10^6   10^7'
       call write_string (string)
 
       string =
@@ -2988,7 +2989,7 @@ cnh
      :'                         Soil Water Potential (cm)'
       call write_string (string)
       string =
-     :'    x       0        10       100     1000    15000     10^5'//
+     :'    x       0        10       25       100     1000    15000'//
      :'     10^6'
       call write_string (string)
 
@@ -3196,10 +3197,10 @@ c      eqr0  = 0.d0
      :           numvals,
      :           0e0,
      :           1e6)      
-      if (numvals.gt.0) then
+c      if (numvals.gt.0) then
          p%solute_names(4) = 'cl'      
          p%num_solutes = 4
-      endif
+c      endif
       return
       end subroutine
 

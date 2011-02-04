@@ -523,9 +523,10 @@ c     integer    deepest_layer
       call push_routine (my_name)
       call print_routine (my_name)
 
-      if (p%uptake_source .eq. 'apsim') then
+      if ((p%uptake_source .eq. 'apsim').or.
+     :    (p%uptake_source .eq. 'swim3')) then
          call crop_get_ext_uptakes(
-     :                    p%uptake_source   ! uptake flag
+     :                    'apsim'   ! uptake flag
      :                   ,c%crop_type       ! crop type
      :                   ,'water'           ! uptake name
      :                   ,1.0               ! unit conversion factor
@@ -537,6 +538,7 @@ c     integer    deepest_layer
 
          do layer = 1, g%num_layers
             g%dlt_sw_dep(layer) = -ext_sw_supply(layer)
+            
          enddo
 
 
@@ -595,7 +597,8 @@ c      REAL    deepest_layer
       call print_routine (my_name)
 
 
-       if (p%uptake_source .eq. 'apsim') then
+      if ((p%uptake_source .eq. 'apsim').or.
+     :    (p%uptake_source .eq. 'swim3')) then
             ! this would have been avoided if we have
             ! each stress factor in its own routine! - NIH
             ! photo requires (really) actually water uptake
@@ -603,7 +606,7 @@ c      REAL    deepest_layer
             ! we only have one supply variable.
 
             call crop_get_ext_uptakes(
-     :                 p%uptake_source   ! uptake flag
+     :                 'apsim'   ! uptake flag
      :                ,c%crop_type       ! crop type
      :                ,'water'           ! uptake name
      :                ,1.0               ! unit conversion factor
@@ -612,6 +615,7 @@ c      REAL    deepest_layer
      :                ,used_sw_supply    ! uptake array - external supply
      :                ,max_layer         ! array dim
      :                )
+          
        else
 
          do layer = 1, g%num_layers
