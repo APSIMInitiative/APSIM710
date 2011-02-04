@@ -6757,6 +6757,7 @@ c dsg 070302 added runon
      :                          ,0
      :                          ,10000)
 
+      names(:) = blank
       call collect_char_array (DATA_new_solute_names
      :                        ,max_solute
      :                        ,'()'
