@@ -401,7 +401,7 @@
                   g%solute(solnum,layer) = sol(layer)
   100          continue
             else
-               call read_real_array (
+               call read_real_array_optional (
      :           section_name,          ! Section header
      :           trim(p%solute_names(solnum))//'_ppm',! Keyword
      :           max_layer,             ! array size
@@ -410,12 +410,16 @@
      :           numvals,               ! Number of values returned
      :           0.0,           ! Lower Limit for bound checking
      :           1e6)           ! Upper Limit for bound checking
+     
 
-               do 101 layer = 1, numvals
+              if (numvals.gt.0) then
+                  do 101 layer = 1, numvals
                   g%solute(solnum,layer) = sol(layer)
-     :               / divide (100.0, g%bd(layer)*g%dlayer(layer), 0.0)
-  101          continue
-            
+     :            / divide (100.0, g%bd(layer)*g%dlayer(layer), 0.0)
+ 101              continue
+               else
+                 g%solute(solnum,:) = 0.0
+               endif
             endif
             
             parname = 'd0_'//p%solute_names(solnum)
@@ -786,7 +790,8 @@
       type(NewProfileType) :: newProfile
 
 !+  Constant Values
-      character*(*) myname               ! name of current procedure 
+      character*(*) myname               ! name of current procedure
+ 
       parameter (myname = 'SoilN2_ONNew_Profile')
 
 !- Implementation Section ----------------------------------

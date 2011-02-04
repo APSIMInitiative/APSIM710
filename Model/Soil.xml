@@ -49,7 +49,7 @@
       [foreach Soil.Swim]
       <component name="SWIM" executable="%apsim%/Model/swim3.%dllext%"><executable name="%apsim%/Model/Swim3.%dllext%" version="1.0" /><initdata>
                [Model Swim3]
-               <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><dlayer>[soil.Thickness (mm)]</dlayer><air_dry>[soil.AirDry]</air_dry><sat>[soil.Sat]</sat><dul>[soil.Dul]</dul><ll15>[soil.LL15]</ll15><bd>[soil.BD]</bd><theta>[soil.SW(mm/mm)]</theta><ks>[soil.KS]</ks><Kdul>[soil.Kdul]</Kdul><psidul>[soil.PsiDUL]</psidul><vapour_conductivity>[soil.VC]</vapour_conductivity><rainfall_source>apsim</rainfall_source><evap_source>calc</evap_source><dtmin>[soil.dtmin]</dtmin><dtmax>[soil.dtmax]</dtmax><max_water_increment>[soil.MaxWaterIncrement]</max_water_increment><swt>[soil.SpaceWeightingFactor]</swt><slswt>[soil.SoluteSpaceWeightingFactor]</slswt>
+               <cn2_bare>[soil.CN2Bare]</cn2_bare><cn_red>[soil.CNRed]</cn_red><cn_cov>[soil.CNCov]</cn_cov><salb>[soil.Salb]</salb><dlayer>[soil.Thickness (mm)]</dlayer><air_dry>[soil.AirDry]</air_dry><sat>[soil.Sat]</sat><dul>[soil.Dul]</dul><ll15>[soil.LL15]</ll15><bd>[soil.BD]</bd><theta>[soil.SW(mm/mm)]</theta><ks>[soil.KS]</ks><Kdul>[soil.Kdul]</Kdul><psidul>[soil.PsiDUL]</psidul><vapour_conductivity>[soil.VC]</vapour_conductivity><rainfall_source>apsim</rainfall_source><evap_source>calc</evap_source><dtmin>[soil.dtmin]</dtmin><dtmax>[soil.dtmax]</dtmax><max_water_increment>[soil.MaxWaterIncrement]</max_water_increment><swt>[soil.SpaceWeightingFactor]</swt><slswt>[soil.SoluteSpaceWeightingFactor]</slswt><diagnostics>[soil.diagnostics]</diagnostics>
                [foreach Swim.SwimSubsurfaceDrain]
                   <DrainDepth>[SwimSubsurfaceDrain.DrainDepth]</DrainDepth><DrainSpacing>[SwimSubsurfaceDrain.DrainSpacing]</DrainSpacing><DrainRadius>[SwimSubsurfaceDrain.DrainRadius]</DrainRadius><Klat>[SwimSubsurfaceDrain.Klat]</Klat><ImpermDepth>[SwimSubsurfaceDrain.ImpermDepth]</ImpermDepth>
                [endfor]
@@ -73,9 +73,9 @@
                [Model SoilP]
                <root_cp>[soil.RootCP]</root_cp><rate_dissol_rock_P>[soil.RateDissolRock]</rate_dissol_rock_P><rate_loss_avail_P>[soil.RateLossAvail]</rate_loss_avail_P><labile_p>[soil.LabileP(mg/kg)]</labile_p><banded_p>[soil.BandedP(kg/ha)]</banded_p><rock_p>[soil.RockP(kg/ha)]</rock_p><sorption>[soil.Sorption(-)]</sorption><sorption_coeff>[soil.SorptionCoeff]</sorption_coeff></initdata></component>
       [endfor]
-      [if [soil.Cl (mg/kg)]]
-    <component name="Cl" executable="%apsim%/Model/Solute.%dllext%"><executable name="%apsim%/Model/Solute.%dllext%" version="1.0" /><initdata><ub_solute description="Upper bound for solutes">1000    </ub_solute><lb_solute description="Lower bound for solutes">0       </lb_solute><solute_names>cl</solute_names><d0_cl>0</d0_cl><cl_ppm>[soil.Cl (mg/kg)]</cl_ppm></initdata></component>
-    [endif]
+    
+    <component name="Cl" executable="%apsim%/Model/Solute.%dllext%"><executable name="%apsim%/Model/Solute.%dllext%" version="1.0" /><initdata><ub_solute description="Upper bound for solutes">1000    </ub_solute><lb_solute description="Lower bound for solutes">0       </lb_solute><solute_names>cl</solute_names><d0_cl>0</d0_cl>[if [soil.Cl (mg/kg)]]<cl_ppm>[soil.Cl (mg/kg)]</cl_ppm>[endif]</initdata></component>
+
 
     </ApsimToSim>
   </MetaData>
