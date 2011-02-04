@@ -144,10 +144,14 @@ void ApsimComponent::messageToLogic (char* message)
    		   // Create an XML model that we can pass to BuildObjects.
    		   XmlDocument^ NewDoc = gcnew XmlDocument();
    		   XmlNode^ ScriptNode = NewDoc->AppendChild(NewDoc->CreateElement(ScriptClassName));
-   		   for each (XmlNode^ Child in XmlHelper::ChildNodes(InitData, "ui"))
+            XmlNode^ UINode = XmlHelper::Find(InitData, "ui");
+            if (UINode != nullptr)
                {
-               if (XmlHelper::Attribute(Child, "type")->ToLower() != "category")
-                  XmlHelper::SetValue(ScriptNode, Child->Name, Child->InnerText);   		      
+   		      for each (XmlNode^ Child in XmlHelper::ChildNodes(UINode, ""))
+                  {
+                  if (XmlHelper::Attribute(Child, "type")->ToLower() != "category")
+                     XmlHelper::SetValue(ScriptNode, Child->Name, Child->InnerText);   		      
+                  }
                }
 
             // Build all necessary objects

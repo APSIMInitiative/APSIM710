@@ -114,6 +114,9 @@ void Plant::plantInit1(void)
    // Cruft for adding sowing/harvesting events to UI
    scienceAPI.notifyFutureEvent("sowing");
    scienceAPI.notifyFutureEvent("harvesting");
+   
+   // DeanH - Fix for bug#: 1242 - How many other variables should be zero'd??
+   transpEff = 0.0;
   }
 //------------------------------------------------------------------------------------------------
 void Plant::plantInit2(void)
