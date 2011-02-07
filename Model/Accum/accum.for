@@ -146,16 +146,24 @@
 
                if (g%variable_sizes(indx) .gt. 0 .and.
      .             g%variable_sizes(g%num_variables) .le. Max_days) then
-* Actually register the variables that "accum" makes available.
-		 do i = 1, g%variable_sizes(indx)
-		    write(Size_string, *) i
-			Size_string = ADJUSTL(Size_string)
-			nDigits = LEN_TRIM(Size_string)
-            dummy = add_registration_with_units(respondToGetReg,
-     . 	  g%variable_names(indx)(:idx)//'['//Size_string(:nDigits)//']',
-     .                     floatTypeDDML, '')
-		 end do
-                  goto 10
+                  ! Convert all variable names to lower_case otherwise the test in Send_my_variables
+                  ! doesn't work BugID: 1191
+                  do i = 1, g%num_variables
+                     g%variable_names(indx) = 
+     .                    Lower_case(g%variable_names(indx))
+                  end do
+               
+                  ! Actually register the variables that "accum" makes available.
+                  do i = 1, g%variable_sizes(indx)
+                      write(Size_string, *) i
+                      Size_string = ADJUSTL(Size_string)
+                      nDigits = LEN_TRIM(Size_string)
+                        dummy = add_registration_with_units
+     .                          (respondToGetReg,
+     .                  g%variable_names(indx)(:idx)
+     .                     //'['//Size_string(:nDigits)//']',
+     .                       floatTypeDDML, '')
+                  end do
 
                else
                   call Fatal_error(Err_internal, Err3)
