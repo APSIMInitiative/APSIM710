@@ -588,10 +588,6 @@ Public Class DataTree
         ' selected, then go select it.
         ' ---------------------------------------------------------------
 
-        'Don't let the user click any other nodes while this code executes
-
-        EnableNodeSelection = False
-
 
         'Initialise variables
 
@@ -603,6 +599,10 @@ Public Class DataTree
         If (e.X < ClickedNode.Bounds.Left - 20) Then                                'allow for an image 20 pixels to the left of the text of a node
             Return
         End If
+
+      'Don't let the user click any other nodes while this code executes
+
+      EnableNodeSelection = False
 
         Dim RightClick As Boolean = (e.Button = Windows.Forms.MouseButtons.Right)   'is it a right mouse button click
         Dim Control As Boolean = (ModifierKeys = Keys.Control)                      'is control button on keyboard pressed 
@@ -682,7 +682,7 @@ Public Class DataTree
                 LabelEdit = True                                                                'set the tree's label edit property  to true, allowing all the nodes on the tree to have their labels edited. (needs to be set to true for Node.BeginEdit() to work)  
                 FirstTimeRename = True
                 ClickedNode.BeginEdit()                                                         'call the inbuilt tree node function that allows the user to edit the nodes label. (see OnBeforeEdit and OnAfterEdit sub for what happens before and after the user edits the label)
-
+            EnableNodeSelection = True
                 Exit Sub
 
                 'if they clicked on something different to what was already selected -> change the selection

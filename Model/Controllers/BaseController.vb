@@ -201,8 +201,22 @@ Public Class BaseController
         If FileName.ToLower <> "untitled" Then
             Configuration.Instance.AddFileToFrequentList(FileName)
       End If
+      ClearRunStrip()
       RefreshToolStrips()
-    End Sub
+   End Sub
+   Private Sub ClearRunStrip()
+      Dim RunPanels As Control() = MainForm.Controls.Find("RunToolStrip", True)
+      If RunPanels.Length = 1 Then
+         Dim Strip As ToolStrip = RunPanels(0)
+         Dim ErrorsButton As ToolStripButton = Strip.Items("ErrorsButton")
+         Dim PercentLabel As ToolStripLabel = Strip.Items("PercentLabel")
+         Dim ProgressBar As ToolStripProgressBar = Strip.Items("RunProgress")
+
+         ErrorsButton.Visible = False
+         PercentLabel.Text = ""
+         ProgressBar.Value = 0
+      End If
+   End Sub
     Public Function ToRelativePath(ByVal FileName As String) As String
         Dim st As String = Configuration.AddMacros(FileName)
         Dim DName As String = Path.GetDirectoryName(ApsimData.FileName)

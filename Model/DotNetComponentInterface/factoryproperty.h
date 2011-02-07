@@ -76,7 +76,17 @@ public ref class ReflectedProperty : ReflectedType
       property String^ Name { virtual String^ get()override                     { return Member->Name; } }
       property Type^   Typ  { virtual Type^ get()override                       { return Member->PropertyType; } }
       property bool ReadOnly { virtual bool get() override                      { return !Member->CanWrite; } }
-      property Object^ Get  { virtual Object^ get()override                     { return Member->GetValue(Obj, nullptr); } }
+      property Object^ Get  { virtual Object^ get()override                     
+         { 
+         try
+            {
+            return Member->GetValue(Obj, nullptr);
+            }
+         catch (Exception^)
+            {
+            throw gcnew Exception("The property " + Member->Name + " is not a gettable property.");
+            }
+         } }
       property array<Object^>^ MetaData { virtual array<Object^>^ get()override { return Member->GetCustomAttributes(false); } }
       virtual void SetObject(Object^ Value)override                             { Member->SetValue(Obj, Value, nullptr); }
    };

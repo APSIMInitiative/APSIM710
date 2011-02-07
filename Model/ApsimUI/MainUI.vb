@@ -189,10 +189,10 @@ Public Class MainUI
       Me.StopButton = New System.Windows.Forms.ToolStripButton
       Me.RunProgress = New System.Windows.Forms.ToolStripProgressBar
       Me.PercentLabel = New System.Windows.Forms.ToolStripLabel
+      Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton
       Me.ErrorsButton = New System.Windows.Forms.ToolStripButton
       Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
       Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem
-      Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton
       Me.ToolBoxPanel.SuspendLayout()
       Me.ToolBoxToolBarPanel.SuspendLayout()
       Me.SimulationContainer.BottomToolStripPanel.SuspendLayout()
@@ -416,6 +416,16 @@ Public Class MainUI
       Me.PercentLabel.Name = "PercentLabel"
       Me.PercentLabel.Size = New System.Drawing.Size(0, 43)
       '
+      'ToolStripButton1
+      '
+      Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
+      Me.ToolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+      Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+      Me.ToolStripButton1.Name = "ToolStripButton1"
+      Me.ToolStripButton1.Size = New System.Drawing.Size(70, 43)
+      Me.ToolStripButton1.Text = "Create .sim"
+      Me.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+      '
       'ErrorsButton
       '
       Me.ErrorsButton.Image = CType(resources.GetObject("ErrorsButton.Image"), System.Drawing.Image)
@@ -438,16 +448,6 @@ Public Class MainUI
       Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
       Me.ToolStripMenuItem1.Size = New System.Drawing.Size(183, 22)
       Me.ToolStripMenuItem1.Text = "ToolStripMenuItem1"
-      '
-      'ToolStripButton1
-      '
-      Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-      Me.ToolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-      Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-      Me.ToolStripButton1.Name = "ToolStripButton1"
-      Me.ToolStripButton1.Size = New System.Drawing.Size(70, 43)
-      Me.ToolStripButton1.Text = "Create .sim"
-      Me.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
       '
       'MainUI
       '
