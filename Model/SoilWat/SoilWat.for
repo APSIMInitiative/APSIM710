@@ -5128,7 +5128,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%drain = 0.0                        ! drainage rate from bottom layer (cm/d)
          g%infiltration = 0.0                 ! infiltration (mm)
          g%runoff = 0.0                       ! runoff (mm)
-		 g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)  
+		     g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)  
          g%irrigation = 0.0                   ! irrigation (mm)
          g%obsrunoff = 0.0                    ! observed runoff (mm)
          g%tillage_cn_red = 0.0               ! reduction in CN due to tillage ()
@@ -7453,100 +7453,154 @@ c
      .                                   WaterChangedTypeDDML, '')
 
       ! variables we own and make gettable
-      dummy = add_registration_with_units(respondToGetReg, 'es',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'pond_evap',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 't',
-     .                     floatTypeDDML, 'day')
-      dummy = add_registration_with_units(respondToGetReg, 'eo',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'eos',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg,
-     .                     'cover_surface_runoff', floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetReg, 'cn2_new',
-     .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetReg, 'runoff',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'pond',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'drain',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg,
-     .                     'infiltration', floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'eff_rain',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'salb',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'bd',
-     .                     floatarrayTypeDDML, 'g/cm^3')
-      dummy = add_registration_with_units(respondToGetReg, 'esw',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'flux',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'flow',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'flow_water',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg,
-     .                     'water_table', floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetReg, 'sws',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetReg, 
-     .                     'outflow_lat', floatarrayTypeDDML, 'mm')
+      dummy = add_reg(respondToGetReg, 'es',
+     .                     floatTypeDDML, 'mm', 'Soil Evaporation')
+      dummy = add_reg(respondToGetReg, 'pond_evap',
+     .                     floatTypeDDML, 'mm', 
+     .                     'Evaporation from pond surface')
+      dummy = add_reg(respondToGetReg, 't',
+     .                     floatTypeDDML, 'day', 
+     .                'time after 2nd-stage soil evaporation begins')
+      dummy = add_reg(respondToGetReg, 'eo',
+     .                     floatTypeDDML, 'mm', 
+     .               'Potential evapotranspiration via priestly-taylor')
+      dummy = add_reg(respondToGetReg, 'eos',
+     .                     floatTypeDDML, 'mm',
+     . 'Potential evap after modification for green cover & residue')
+      dummy = add_reg(respondToGetReg,
+     .                     'cover_surface_runoff', floatTypeDDML, '',
+     .  'Effective cover used in runoff calculation')
+      dummy = add_reg(respondToGetReg, 'cn2_new',
+     .                     floatTypeDDML, '',
+     . 'CN2 after modification for crop cover')
+      dummy = add_reg(respondToGetReg, 'runoff',
+     .                floatTypeDDML, 'mm',
+     .                'Runoff')
+      dummy = add_reg(respondToGetReg, 'pond',
+     .                floatTypeDDML, 'mm',
+     .                'Surface ponding depth')
+      dummy = add_reg(respondToGetReg, 'drain',
+     .               floatTypeDDML, 'mm',
+     .               'Drainage from bottom layer')
+      dummy = add_reg(respondToGetReg,
+     .               'infiltration', floatTypeDDML, 'mm',
+     .               'Infiltration')
+      dummy = add_reg(respondToGetReg, 'eff_rain',
+     .                floatTypeDDML, 'mm',
+     .                'daily effective rainfall')
+      dummy = add_reg(respondToGetReg, 'salb',
+     .                floatTypeDDML, '0-1',
+     .                'bare soil albedo')
+      dummy = add_reg(respondToGetReg, 'bd',
+     .                floatarrayTypeDDML, 'g/cm^3',
+     .                'Bulk density')
+      dummy = add_reg(respondToGetReg, 'esw',
+     .                floatTypeDDML, 'mm',
+     .            'Extractible soil water relative to LL15')
+      dummy = add_reg(respondToGetReg, 'flux',
+     .                floatarrayTypeDDML, 'mm', 
+     .                'initially, water moving downward into ' //
+     .                 'layer l, then water moving downward ' //
+     .                 ' out of layer l ')
+      dummy = add_reg(respondToGetReg, 'flow',
+     .                floatarrayTypeDDML, 'mm',
+     .                'depth of water moving from layer l+1 '//
+     .                'into layer l because of unsaturated flow. '//
+     .                'positive value indicates upward ' //
+     .                'movement into layer l, negative value '//
+     .                'indicates downward movement (mm) out of '//
+     .               'layer l')
+      dummy = add_reg(respondToGetReg, 'flow_water',
+     .                floatarrayTypeDDML, 'mm',
+     .                'Flux - Flow')
+      dummy = add_reg(respondToGetReg,
+     .               'water_table', floatTypeDDML, 'mm',
+     .               'water table depth')
+      dummy = add_reg(respondToGetReg, 'sws',
+     .                floatarrayTypeDDML, 'mm/mm',
+     .                'soil water')
+      dummy = add_reg(respondToGetReg, 'outflow_lat',
+     .                floatarrayTypeDDML, 'mm',
+     .                'lateral flow out of the profile')
 
       ! variables that are settable
-      dummy = add_registration_with_units(respondToSetReg, 'insoil',
-     .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToSetReg,
-     .                     'profile_esw_depth', floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToSetReg,
-     .                     'wet_soil_depth', floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToSetReg,
-     .                     'profile_fesw', floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToSetReg, 'dlt_sw',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToSetReg, 'dlt_sw_dep',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToSetReg, 'max_pond',
-     .                     floatTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToSetReg, 'dlt_dlayer',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToSetReg, 'cn2_bare',
-     .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToSetReg, 'cn_cov',
-     .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToSetReg, 'cn_red',
-     .                     floatTypeDDML, '')
+      dummy = add_reg(respondToSetReg, 'insoil',
+     .                floatTypeDDML, '',
+     .                'initial soil water')
+      dummy = add_reg(respondToSetReg,
+     .                'profile_esw_depth', floatTypeDDML, 'mm',
+     .  'initial depth of extractable soil water distributed ' //
+     .  'from the top down')
+      dummy = add_reg(respondToSetReg,
+     .                'wet_soil_depth', floatTypeDDML, 'mm',
+     .                'initial depth of soil filled to drained ' //
+     .                'upper limit (field capacity)')
+      dummy = add_reg(respondToSetReg,
+     .                'profile_fesw', floatTypeDDML, '',
+     .  'initial fraction of esw of profile distributed from ' //
+     .  ' top down')
+      dummy = add_reg(respondToSetReg, 'dlt_sw',
+     .                floatarrayTypeDDML, 'mm/mm',
+     .                'Change to sw')
+      dummy = add_reg(respondToSetReg, 'dlt_sw_dep',
+     .                floatarrayTypeDDML, 'mm',
+     .                'Change to sw')
+      dummy = add_reg(respondToSetReg, 'max_pond',
+     .                floatTypeDDML, 'mm',
+     .                'Height of pond')
+      dummy = add_reg(respondToSetReg, 'dlt_dlayer',
+     .                floatarrayTypeDDML, 'mm',
+     .                'Change to profile thickness')
+      dummy = add_reg(respondToSetReg, 'cn2_bare',
+     .                floatTypeDDML, '',
+     . 'curve number input used to calculate runoff')
+      dummy = add_reg(respondToSetReg, 'cn_cov',
+     .                floatTypeDDML, '',
+     . 'cover term in curve number equation')
+      dummy = add_reg(respondToSetReg, 'cn_red',
+     .                floatTypeDDML, '',
+     . 'CN reduction in curve number equation (cover)')
 
       ! variables that are gettable and settable
-      dummy = add_registration_with_units(respondToGetSetReg, 'sw',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'sw_dep',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'dul_dep',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'dul',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetSetReg,
-     .                     'll15_dep', floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'll15',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'sat_dep',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'sat',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetSetReg,
-     .                     'air_dry_dep', floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'air_dry',
-     .                     floatarrayTypeDDML, 'mm/mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'dlayer',
-     .                     floatarrayTypeDDML, 'mm')
-      dummy = add_registration_with_units(respondToGetSetReg, 'cona',
-     .                     floatTypeDDML, '')
-      dummy = add_registration_with_units(respondToGetSetReg, 'u',
-     .                     floatTypeDDML, '')
+      dummy = add_reg(respondToGetSetReg, 'sw',
+     .                     floatarrayTypeDDML, 'mm/mm',
+     . 'Soil water content')
+      dummy = add_reg(respondToGetSetReg, 'sw_dep',
+     .                floatarrayTypeDDML, 'mm',
+     . 'Soil water content')
+      dummy = add_reg(respondToGetSetReg, 'dul_dep',
+     .                floatarrayTypeDDML, 'mm',
+     . 'Drained Upper Limit')
+      dummy = add_reg(respondToGetSetReg, 'dul',
+     .                floatarrayTypeDDML, 'mm/mm',
+     . 'Drained Upper Limit')
+      dummy = add_reg(respondToGetSetReg,
+     .                'll15_dep', floatarrayTypeDDML, 'mm',
+     . '15 bar Lower Limit')
+      dummy = add_reg(respondToGetSetReg, 'll15',
+     .                floatarrayTypeDDML, 'mm/mm',
+     . '15 bar Lower Limit')
+      dummy = add_reg(respondToGetSetReg, 'sat_dep',
+     .                     floatarrayTypeDDML, 'mm',
+     . 'Saturated water content')
+      dummy = add_reg(respondToGetSetReg, 'sat',
+     .                floatarrayTypeDDML, 'mm/mm',
+     . 'Saturated water content')
+      dummy = add_reg(respondToGetSetReg,
+     .                'air_dry_dep', floatarrayTypeDDML, 'mm',
+     . 'Air Dry water content')
+      dummy = add_reg(respondToGetSetReg, 'air_dry',
+     .                floatarrayTypeDDML, 'mm/mm',
+     . 'Air Dry water content')
+      dummy = add_reg(respondToGetSetReg, 'dlayer',
+     .                floatarrayTypeDDML, 'mm',
+     . 'Thickness of profile layer')
+      dummy = add_reg(respondToGetSetReg, 'cona',
+     .                     floatTypeDDML, '',
+     . 'Stage 2 evaporation coefficient')
+      dummy = add_reg(respondToGetSetReg, 'u',
+     .                floatTypeDDML, '',
+     . 'upper limit of stage 1 evaporation')
 
       ! variables we get from other modules.
       dummy = add_registration_with_units(getVariableReg,
