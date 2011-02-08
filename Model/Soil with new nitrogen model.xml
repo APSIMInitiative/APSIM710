@@ -59,6 +59,7 @@
                <solute><a>[Swim.SwimSoluteParameters.a]</a><dthc>[Swim.SwimSoluteParameters.dthc]</dthc><dthp>[Swim.SwimSoluteParameters.dthp]</dthp><dis> [Swim.SwimSoluteParameters.dis]</dis><disp>[Swim.SwimSoluteParameters.disp]</disp><NO3Exco>[soil.NO3Exco]</NO3Exco><NO3FIP>[soil.NO3FIP]</NO3FIP><NH4Exco>[soil.NH4Exco]</NH4Exco><NH4FIP>[soil.NH4FIP]</NH4FIP><UreaExco>[soil.UreaExco]</UreaExco><UreaFIP>[soil.UreaFIP]</UreaFIP><ClExco>[soil.ClExco]</ClExco><ClFIP>[soil.ClFIP]</ClFIP><WaterTableNO3>[Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3><WaterTableNH4>[Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4><WaterTableUrea>[Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea><WaterTableCl>[Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl></solute></initdata></component>
       [endfor]
       <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.%dllext%">
+        <componentinterface>%apsim%/Model/dotnetcomponentinterface.dll</componentinterface>
          <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" />
             <initdata>
                <SoilN>
@@ -238,6 +239,8 @@
       <rd_cell description="maximum rate constant for decomposition of FPool2 (0-1)">0.05  0.25    </rd_cell>
       <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0095   0.003  </rd_lign>
       <rd_hum description="potential rate of humus mineralization (per day)">0.00015    0.00007 </rd_hum>
+      <nh4ppm_min description="minimum allowable NH4 (ppm)">0.0    </nh4ppm_min>
+      <no3ppm_min description="minimum allowable NO3 (ppm)">0.0    </no3ppm_min>
       <min_depth description="depth of soil from which N can be immobilised by decomposing surface residues (mm)">100.    </min_depth>
       <!--
       ______________________________________________________________________-
