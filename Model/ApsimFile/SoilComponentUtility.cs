@@ -79,6 +79,18 @@ namespace ApsimFile
          }
 
       /// <summary>
+      /// Return a list of valid units for the specified variable.
+      /// </summary>
+      internal string DefaultUnits(string RawVariableName)
+         {
+         List<string> Units = ValidUnits(RawVariableName);
+         if (Units.Count > 0)
+            return Units[0];
+         else
+            return "";
+         }
+
+      /// <summary>
       /// Return a full code name from the abbreviated code passed in.
       /// </summary>
       internal string GetFullCodeName(string CodeText, string RawVariableName)

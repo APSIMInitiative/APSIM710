@@ -323,7 +323,7 @@ namespace Test
          Soil.Variable PAW = Soil.Get(S, "PAW");
          PAW.Units = "mm";
          Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(SoilPAWC.Doubles), 289.5));
-         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(ChickpeaPAWC.Doubles), 94.5));
+         Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(ChickpeaPAWC.Doubles), 88.5));
          Assert.IsTrue(MathUtility.FloatsAreEqual(MathUtility.Sum(PAW.Doubles), 289.5));
          }
 

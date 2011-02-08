@@ -157,7 +157,7 @@ namespace ApsimFile
          XmlDocument Doc = new XmlDocument();
          XmlNode AllSoils = Doc.CreateElement("folder");
          Doc.AppendChild(AllSoils);
-         XmlHelper.SetName(AllSoils, "AllSoils");
+         XmlHelper.SetName(AllSoils, "Soils");
          XmlHelper.SetAttribute(AllSoils, "version", APSIMChangeTool.CurrentVersion.ToString());
          
          // Loop through all blocks of rows in datatable from XLS, create a
@@ -564,6 +564,7 @@ namespace ApsimFile
             {
             if (Column.ColumnName.Contains("Code"))
                {
+               bool MultipleUnitsFound = false;
                string Units = null;
                foreach (DataRow Row in Table.Rows)
                   {
@@ -575,13 +576,26 @@ namespace ApsimFile
                         Units = CodeUnits;
                      if (Units != null && Units != CodeUnits)
                         {
-                        Units = null;
+                        MultipleUnitsFound = true;
                         break;
                         }
                      }
                   }
                string NonCodeColumnName = Column.ColumnName.Replace("Code", "");
-               if (Units != null && !VariablesHasMultipleUnits(NonCodeColumnName))
+               if (!MultipleUnitsFound && Units == null && Soil.ValidUnits(NonCodeColumnName).Count >= 1)
+                  {
+                  // This can happen when an entire column has no values in the code column e.g. Rocks. 
+                  // Need to make sure that column header at least has some units.
+
+                  Units = Soil.ValidUnits(NonCodeColumnName)[0];
+
+                  // Find the non code column and give it units.
+                  int ColumnIndex = Table.Columns.IndexOf(NonCodeColumnName);
+                  if (ColumnIndex == -1)
+                     throw new Exception("Cannot find column " + NonCodeColumnName);
+                  Table.Columns[ColumnIndex].ColumnName += " (" + Units + ")";
+                  }
+               else if (!MultipleUnitsFound && !VariablesHasMultipleUnits(NonCodeColumnName))
                   {
                   foreach (DataRow Row in Table.Rows)
                      {
@@ -592,7 +606,7 @@ namespace ApsimFile
                   // Find the non code column and give it units.
                   int ColumnIndex = Table.Columns.IndexOf(NonCodeColumnName);
                   if (ColumnIndex == -1)
-                     throw new Exception("Cannot find column " + Column.ColumnName);
+                     throw new Exception("Cannot find column " + NonCodeColumnName);
                   Table.Columns[ColumnIndex].ColumnName += " (" + Units + ")";
                   }
                }

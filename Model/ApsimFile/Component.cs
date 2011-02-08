@@ -640,12 +640,15 @@ namespace ApsimFile
          // It won't look down the simulation hierarchy and won't look
          // outside the paddock.
          Component Paddock = FindContainingPaddock();
-         List<Component> ComponentsInPaddock = new List<Component>();
-         Paddock.ChildNodesRecursively(ComponentsInPaddock);
-         foreach (Component ChildComponent in ComponentsInPaddock)
+         if (Paddock != null)
             {
-            if (ChildComponent.Name.ToLower() == Name.ToLower() && ChildComponent.Type != "SoilCrop")
-               return ChildComponent;
+            List<Component> ComponentsInPaddock = new List<Component>();
+            Paddock.ChildNodesRecursively(ComponentsInPaddock);
+            foreach (Component ChildComponent in ComponentsInPaddock)
+               {
+               if (ChildComponent.Name.ToLower() == Name.ToLower() && ChildComponent.Type != "SoilCrop")
+                  return ChildComponent;
+               }
             }
          return null;
          }

@@ -49,6 +49,8 @@ namespace ApsimFile
             _Doubles = Values;
             _ThicknessMM = Thickness;
             _SoilNode = SoilNode;
+            if (_Units == null || _Units == "")
+               _Units = SoilMetaData.Instance.DefaultUnits(Name);
             Soil.CheckUnits(Name, Units);
             }
 
@@ -62,6 +64,8 @@ namespace ApsimFile
             _Strings = Values;
             _ThicknessMM = Thickness;
             _SoilNode = SoilNode;
+            if (_Units == null || _Units == "")
+               _Units = SoilMetaData.Instance.DefaultUnits(Name);
             Soil.CheckUnits(Name, Units);
             }
 
@@ -83,6 +87,8 @@ namespace ApsimFile
             // Check for a property first.
             if (XmlHelper.Find(ProfileNode, VariableName) != null)
                Value = XmlHelper.Value(ProfileNode, VariableName);
+            else if (XmlHelper.Find(ProfileNode, "Layer/" + Name) == null)
+               _Strings = new string[0];
             else
                {
                List<XmlNode> LayerNodes = XmlHelper.ChildNodes(ProfileNode, "Layer");
@@ -816,7 +822,7 @@ namespace ApsimFile
          {
          Soil.Variable Var = new Soil.Variable(ProfileNode, VariableName);
          if (Var.Strings.Length == 0)
-            return null;
+            return GetCalculated(SoilNode, VariableName);
          else
             return Var;
          }
@@ -1140,7 +1146,11 @@ namespace ApsimFile
 
          // Go look to see if there is an existing variable. If so, then the destination
          // units should be the same as the existing variable.
-         Soil.Variable OldVar = Soil.GetOptionalFromProfileNode(SoilNode, ProfileNode, VariableName);
+         Soil.Variable OldVar;
+         if (ProfileNode == null)
+            OldVar = Soil.GetOptional(SoilNode, VariableName);
+         else
+            OldVar = Soil.GetOptionalFromProfileNode(SoilNode, ProfileNode, VariableName);
          if (OldVar != null && Units == "")
             Units = OldVar.Units;
 
@@ -1363,7 +1373,7 @@ namespace ApsimFile
                Soil.Variable LL = Soil.Get(SoilNode, CropName + " LL");
                LL.Units = "mm/mm";
                
-               Soil.Variable XF = Soil.Get(SoilNode, CropName + " XF)");
+               Soil.Variable XF = Soil.Get(SoilNode, CropName + " XF");
                XF.Units = "0-1";
                XF.ThicknessMM = LL.ThicknessMM;
 

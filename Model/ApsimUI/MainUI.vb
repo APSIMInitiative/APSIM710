@@ -721,7 +721,11 @@ Public Class MainUI
             Button.Checked = False
         Next
 
-        ToolboxController.ApsimData.Save()                                'Save any changes made to the Toolbox.
+      Try
+         ToolboxController.ApsimData.Save()                                'Save any changes made to the Toolbox.
+      Catch ex As Exception
+         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+      End Try
 
         ToolBoxPanel.Visible = False                            'This is what makes the toolbox disappear. There is no actual close.
         ToolboxSplitter.Visible = ToolBoxPanel.Visible
