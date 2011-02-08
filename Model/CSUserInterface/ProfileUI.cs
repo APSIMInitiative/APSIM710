@@ -73,6 +73,7 @@ namespace CSUserInterface
          this.Grid.ColumnWidthChanged -= new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
          Grid.TableColumnChangedEvent -= new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
 
+         Grid.SaveSelection();
          Properties.OnRefresh();
          Properties.Visible = !Properties.IsEmpty;
           
@@ -113,6 +114,8 @@ namespace CSUserInterface
 
          CreateUnitsMenus();
          Label.Visible = Label.Text != "";
+
+         Grid.RestoreSelection(0);
 
          this.Grid.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.OnColumnWidthChanged);
          Grid.TableColumnChangedEvent += new UIBits.EnhancedGrid.TableColumnChangedDelegate(OnTableColumnChanged);
@@ -427,7 +430,7 @@ namespace CSUserInterface
             if (!ColumnName.Contains("Depth"))
                {
                SomethingWasSaved = true;
-               Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+               Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, ColumnName.Replace("\n", " "));
                }
             }
 
@@ -435,7 +438,7 @@ namespace CSUserInterface
             {
             OnRefresh();
             RefreshGraph();
-            if (RowIndex < Grid.Rows.Count - 1 && ColIndex < Grid.Columns.Count - 1)
+            if (RowIndex < Grid.Rows.Count - 1 && ColIndex <= Grid.Columns.Count - 1)
                Grid.CurrentCell = Grid.Rows[RowIndex].Cells[ColIndex];
             }
          }
@@ -458,7 +461,7 @@ namespace CSUserInterface
 
          Table.Columns[OldColumnName].ColumnName = NewColumnName;
 
-         Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, NewColumnName);
+         Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, NewColumnName);
          
          OnRefresh();         
          }
@@ -476,7 +479,7 @@ namespace CSUserInterface
             Grid.Rows[i].Cells[e.ColumnIndex].Value = Values[i] * Scale;
 
          string ColumnName = Grid.Columns[e.ColumnIndex].HeaderText.Replace("\n", " "); ;
-         Soil.ReadFromTable(_SoilNode, Grid.DataSourceTable, ColumnName);
+         Soil.ReadFromTable(_SoilNode, ProfileNode, Grid.DataSourceTable, ColumnName);
 
          OnRefresh();
          }

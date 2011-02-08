@@ -814,9 +814,9 @@ namespace ApsimFile
       /// </summary>
       public static Soil.Variable GetOptionalFromProfileNode(XmlNode SoilNode, XmlNode ProfileNode, string VariableName)
          {
-         Soil.Variable Var = GetCalculated(SoilNode, VariableName);
-         if (Var == null)
-            return new Soil.Variable(ProfileNode, VariableName);
+         Soil.Variable Var = new Soil.Variable(ProfileNode, VariableName);
+         if (Var.Strings.Length == 0)
+            return null;
          else
             return Var;
          }
@@ -1103,13 +1103,13 @@ namespace ApsimFile
             if (!Column.ColumnName.Contains("Thickness") &&
                 !Column.ColumnName.Contains("Depth") &&
                 !Column.ColumnName.Contains("DepthMidPoints"))
-               ReadFromTable(SoilNode, Table, Column.ColumnName);
+               ReadFromTable(SoilNode, null, Table, Column.ColumnName);
             }
          }
       /// <summary>
       /// Read in a column from the specified table
       /// </summary>
-      public static void ReadFromTable(XmlNode SoilNode, DataTable Table, string ColumnName)
+      public static void ReadFromTable(XmlNode SoilNode, XmlNode ProfileNode, DataTable Table, string ColumnName)
          {
          // Find a thickness.
          Soil.Variable Thickness = null;
@@ -1138,13 +1138,11 @@ namespace ApsimFile
          string VariableName = ColumnName;
          string Units = StringManip.SplitOffBracketedValue(ref VariableName, '(', ')');
 
-         Soil.Variable OldVar = null;
-         if (FindVariableParentOptional(SoilNode, VariableName, false) != null)
-            {
-            OldVar = Soil.Get(SoilNode, VariableName);
-            if (Units == "")
-               Units = OldVar.Units;
-            }
+         // Go look to see if there is an existing variable. If so, then the destination
+         // units should be the same as the existing variable.
+         Soil.Variable OldVar = Soil.GetOptionalFromProfileNode(SoilNode, ProfileNode, VariableName);
+         if (OldVar != null && Units == "")
+            Units = OldVar.Units;
 
          string UnitsForNewVariable = Units;
          if (OldVar != null)
@@ -1166,9 +1164,10 @@ namespace ApsimFile
          if (OldVar == null)
             Var.Codes = StringManip.CreateStringArray("", Var.Strings.Length);
          else
-            SetCodesInVar(SoilNode, Var, OldVar);
+            SetCodesInVar(Var, OldVar);
 
-         XmlNode ProfileNode = FindVariableParent(SoilNode, VariableName, true);
+         if (ProfileNode == null)
+            ProfileNode = FindVariableParent(SoilNode, VariableName, true);
          Var.WriteTo(ProfileNode);
 
 
@@ -1178,7 +1177,7 @@ namespace ApsimFile
       /// Add a codes column into the specified Var. It does this by comparing the specified
       /// var with the one already in the soil with the same name.
       /// </summary>
-      private static void SetCodesInVar(XmlNode SoilNode, Soil.Variable Var, Soil.Variable OldVar)
+      private static void SetCodesInVar(Soil.Variable Var, Soil.Variable OldVar)
          {
          OldVar.Units = Var.Units;
          

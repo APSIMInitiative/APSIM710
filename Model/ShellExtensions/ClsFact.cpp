@@ -119,6 +119,7 @@ LPVOID *ppObject)
     LPVOID   pTemp = NULL;
     CContextMenuHandler *pContextMenu = NULL;
 
+
     *ppObject = NULL;
 
     if(pUnknown != NULL)
@@ -126,6 +127,7 @@ LPVOID *ppObject)
         return CLASS_E_NOAGGREGATION;
     }
 
+    
     // create the proper object
     if(IsEqualIID(riid, IID_IContextMenu) ||
         IsEqualIID(riid, IID_IShellExtInit))

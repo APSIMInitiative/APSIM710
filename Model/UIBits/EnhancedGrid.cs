@@ -619,7 +619,7 @@ namespace UIBits
       /// <summary>
       /// Save the current cell selections
       /// </summary>
-      private void SaveSelection()
+      public void SaveSelection()
          {
          SavedSelections.Clear();
          foreach (DataGridViewCell Cell in SelectedCells)
@@ -629,7 +629,7 @@ namespace UIBits
       /// <summary>
       /// Restore from a previously saved cell selections
       /// </summary>
-      private void RestoreSelection(int YModifier)
+      public void RestoreSelection(int YModifier)
          {
          ClearSelection();
          foreach (Point Cell in SavedSelections)

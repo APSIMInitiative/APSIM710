@@ -5,50 +5,97 @@
 #include <olectl.h>
 #include <string>
 #include <exception>
+#include <fstream>
 #include <General\path.h>
 #include <General\inifile.h>
+#include <General\stristr.h>
 #include <General\stream_functions.h>
-#include <ApsimShared\ApsimVersion.h>
-
+#include <ApsimShared\ApsimDirectories.h>
 HINSTANCE hInstance;
 extern ULONG g_DllRefCount;
 using namespace std;
 
+// ---------------------------------------------
+// DPH: I've added some simple XML reading routines
+// so that we don't need to link against LibXML2.
+// We changed LibXML2 versions before APSIM 7.1 and
+// this causes problems with the Windows Explorer
+// context menu hiding earlier APSIM versions of 
+// the menu.
+// ----------------------------------------------
+string getXMLValue(const string& NodeName)
+   {
+   string apsimdir = getApsimDirectory();
+   string apsimXMLFileName = apsimdir + "\\apsim.xml";
+   ifstream in(apsimXMLFileName.c_str());
+   string line;
+   getline(in, line);
+
+   string st = "<" + NodeName + ">";
+      
+   while (in && stristr(line.c_str(), st.c_str()) == NULL)
+      getline(in, line);
+   
+   if (stristr(line.c_str(), st.c_str()) == NULL)
+      {
+      ::MessageBox(NULL, "Cannot find APSIM version number in ShellExtensions", "Error", 0);
+      return "";
+      }
+    
+   // Get rid of element open tag e.g <apsim>
+   replaceAll(line, st, "");
+   
+   // Get rid of element close tag e.g. </apsim>
+   st = "</" + NodeName + ">";
+   replaceAll(line, st, "");
+
+   // remove any unnecessary spaces.
+   replaceAll(line, " ", "");
+
+   // What's left should be the node value e.g. 5.2
+   return line;
+   }   
+string getApsimVersion()
+   {
+   return getXMLValue("apsim");
+   }
+string getApsimBuildNumber()
+   {
+   return getXMLValue("buildnumber");
+   }
+   
+
+
 //---------------------------------------------------------------------------
 // generated with CoCreateGuid()
 //---------------------------------------------------------------------------
-string clsid;
+const char *szCLSID = "5637FAA5-A5A4-42DD-A9F2-AE08F204B571";
 
 STDAPI DllCanUnloadNow(void)
    {
    return (g_DllRefCount > 0 ? S_FALSE : S_OK);
    }
 
+   
+
 //---------------------------------------------------------------------------
 // work out a registry key for this DLL.
 //---------------------------------------------------------------------------
 string getKey(void)
    {
-   return "Apsim" + getApsimVersion() + getApsimBuildNumber();
+   string version = getApsimBuildNumber();
+   return "Apsim" + version;
    }
 string getClsid(void)
    {
-   if (clsid == "")
-      {
-      UUID uuid;
-      UuidCreate(&uuid);
-      
-      char* uuidString;
-      UuidToString(&uuid, (RPC_CSTR*) &uuidString);
-      
-      clsid = (char*) uuidString;
-      
-      RpcStringFree((RPC_CSTR*) &uuidString);
-      uuidString = NULL;
-      
-      clsid = "{" + clsid + "}";
-      }
-   return clsid;
+   string version = getApsimBuildNumber();
+   replaceAll(version, "R", "");
+
+   int numChars = strlen(szCLSID) - version.length();
+   string clsid = string(szCLSID, numChars);
+   clsid += version;
+
+   return "{" + clsid + "}";
    }
 //---------------------------------------------------------------------------
 // create a CClassFactory object
@@ -148,7 +195,7 @@ string getClsid(void)
          }
       }
    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
-        
+
    return hRes;
    }
 //---------------------------------------------------------------------------

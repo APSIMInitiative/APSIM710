@@ -6,14 +6,14 @@
 #include <General\path.h>
 #include <General\stream_functions.h>
 #include <ApsimShared\ApsimDirectories.h>
-#include <ApsimShared\ApsimVersion.h>
 #include "ApsimCommands.h"
-#pragma package(smart_init)
 
 extern ULONG g_DllRefCount;
 
 using namespace std;
 
+string getApsimVersion();
+string getApsimBuildNumber();
 //---------------------------------------------------------------------------
 // constructor
 //---------------------------------------------------------------------------

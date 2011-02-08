@@ -8,13 +8,10 @@ SRC = ContextHandler.cpp \
       ClsFact.cpp \
       ..\General\Path.cpp \
       ..\General\String_functions.cpp \
-      ..\General\Xml.cpp \
       ..\General\StriStr.cpp \
       ..\General\Stream_functions.cpp \
       ..\General\io_functions.cpp \
-      ..\ApsimShared\ApsimDirectories.cpp \
-      ..\ApsimShared\ApsimVersion.cpp \
-      ..\ApsimShared\ApsimSettings.cpp
+      ..\ApsimShared\ApsimDirectories.cpp
 
 RES = Icons.res
 PROJECTTYPE = dll
