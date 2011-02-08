@@ -88,37 +88,40 @@ Public Class ApsimUIActions
             Controller.ApsimData.Find(NodePath).Enabled = False
         Next
     End Sub
-   Public Shared Sub RunOnCluster(ByVal Controller As BaseController)
-      BaseActions.FileSave(Controller)
+    Public Shared Sub ToggleFactorialMode(ByVal Controller As BaseController)
+        Controller.FactorialMode = Not Controller.FactorialMode
+    End Sub
+    Public Shared Sub RunOnCluster(ByVal Controller As BaseController)
+        BaseActions.FileSave(Controller)
 
-      Try
-         ' Get a list of simulation paths.
-         Dim SimulationPaths As New List(Of String)
-         For Each SelectedPath As String In Controller.SelectedPaths
-            ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SelectedPath), SimulationPaths)
-         Next
+        Try
+            ' Get a list of simulation paths.
+            Dim SimulationPaths As New List(Of String)
+            For Each SelectedPath As String In Controller.SelectedPaths
+                ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SelectedPath), SimulationPaths)
+            Next
 
-         Dim F As New UIBits.ClusterForm
-         If F.ShowDialog = DialogResult.OK Then
-            Cursor.Current = Cursors.WaitCursor
-            If F.FolderOfFiles = "" Then
-               ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.Password, F.Email, F.Version)
-               MessageBox.Show("You job has been successfully submitted to the cluster. You will be notified by email when complete.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Else
-               Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.Password, F.Email, F.Version)
-               ' Create a msg to show to user.
-               Dim msg As String = ""
-               For Each FileName As String In FilesRun
-                  msg = FileName + vbCrLf
-               Next
-               MessageBox.Show("These files were successfully submitted to the cluster:" + vbCrLf + msg, "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Dim F As New UIBits.ClusterForm
+            If F.ShowDialog = DialogResult.OK Then
+                Cursor.Current = Cursors.WaitCursor
+                If F.FolderOfFiles = "" Then
+                    ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.Password, F.Email, F.Version)
+                    MessageBox.Show("You job has been successfully submitted to the cluster. You will be notified by email when complete.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Else
+                    Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.Password, F.Email, F.Version)
+                    ' Create a msg to show to user.
+                    Dim msg As String = ""
+                    For Each FileName As String In FilesRun
+                        msg = FileName + vbCrLf
+                    Next
+                    MessageBox.Show("These files were successfully submitted to the cluster:" + vbCrLf + msg, "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
             End If
-         End If
-      Catch ex As Exception
-         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-      End Try
-      Cursor.Current = Cursors.Default
-   End Sub
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        Cursor.Current = Cursors.Default
+    End Sub
 #End Region
 
 #Region "Output file methods"

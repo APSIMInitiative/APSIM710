@@ -174,9 +174,10 @@ Public Class DataTree
 
                 Dim NodeToRefresh As TreeNode = GetNodeFromPath(Comp.FullPath)                  'get the corresponding node for the component this sub was passed
                 If IsNothing(NodeToRefresh) Then                                                'if you have switched from one toolbox to another toolbox, then even though the components exist to do the refresh, the corresponding nodes do not yet exist because this OnRefresh is supposed to provide them. So GetNodeFromPath will return Nothing.
-                    NodeToRefresh = Nodes(0)                                                        'so make the node to refresh the root node, instead of the node corresponding to the component that OnRefresh was passed.
+                    RefreshNodeAndChildren(Nodes(0), Controller.ApsimData.RootComponent)                                     'refresh the tree from this node down.
+                Else
+                    RefreshNodeAndChildren(NodeToRefresh, Comp)                                     'refresh the tree from this node down.
                 End If
-                RefreshNodeAndChildren(NodeToRefresh, Comp)                                     'refresh the tree from this node down.
 
             End If
         Catch ex As Exception
@@ -232,14 +233,16 @@ Public Class DataTree
         ' Go refresh all children.
         Dim ChildIndex As Integer = 0
         For Each Child As ApsimFile.Component In Comp.ChildNodes
-            Dim ChildTreeNode As TreeNode
-            If ChildIndex < Node.Nodes.Count Then
-                ChildTreeNode = Node.Nodes(ChildIndex)
-            Else
-                ChildTreeNode = Node.Nodes.Add(Child.Name)
+            If Child.Type <> "factorial" Then
+                Dim ChildTreeNode As TreeNode
+                If ChildIndex < Node.Nodes.Count Then
+                    ChildTreeNode = Node.Nodes(ChildIndex)
+                Else
+                    ChildTreeNode = Node.Nodes.Add(Child.Name)
+                End If
+                RefreshNodeAndChildren(ChildTreeNode, Child)
+                ChildIndex = ChildIndex + 1
             End If
-            RefreshNodeAndChildren(ChildTreeNode, Child)
-            ChildIndex = ChildIndex + 1
         Next
         While Node.Nodes.Count > ChildIndex
             Node.Nodes.Remove(Node.Nodes(Node.Nodes.Count - 1))

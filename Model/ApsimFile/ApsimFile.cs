@@ -21,6 +21,7 @@ namespace ApsimFile
 
       // private stuff
       private Component MyRootNode = null;
+      private Component MyFactorNode = null;
       private bool Dirty = false;
       private bool ReadOnly = false;
       private string MyFileName = "";
@@ -87,6 +88,14 @@ namespace ApsimFile
 
          get { return MyRootNode; }
          }
+      public Component FactorComponent
+      {
+          // ------------------------------------------------------
+          // Return the root node to the caller.
+          // ------------------------------------------------------
+
+          get { return MyFactorNode; }
+      }
       public string FileName
       { get { return MyFileName; } }
 
@@ -163,6 +172,15 @@ namespace ApsimFile
          MyRootNode = new Component(this, null);
          MyRootNode.Read(Node);
          MyRootNode.ResolveShortcuts();
+
+         //FactorialNode should be in the first level
+         MyFactorNode = null;
+         foreach (Component comp in MyRootNode.ChildNodes)
+         {
+             if (comp.Type.ToLower() == "factorial")
+                 MyFactorNode = comp;
+         }
+
          DisabledEventCount--;
          PublishComponentChanged(MyRootNode);
          SetFileName("Untitled");

@@ -63,13 +63,21 @@ Public Class BaseActions
         ' Delete selected nodes
         ' --------------------------------------------------------
         Dim PathsToDelete As Specialized.StringCollection = Controller.SelectedPaths
-        Dim Selection As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedPaths(0))
+
+        Dim ParentSelection As String = Controller.SelectedPaths(0)
+        For Each SelectedPath As String In PathsToDelete
+            If ParentSelection.IndexOf(SelectedPath) = 0 Then
+                ParentSelection = SelectedPath
+            End If
+        Next
+        Dim Selection As ApsimFile.Component = Controller.ApsimData.Find(ParentSelection)
         Controller.SelectedPath = Selection.Parent.FullPath
+
         For Each SelectedPath As String In PathsToDelete
             Dim CompToDelete As ApsimFile.Component = Controller.ApsimData.Find(SelectedPath)
             CompToDelete.Parent.Delete(CompToDelete)
         Next
-      Controller.Explorer.RefreshCurrentView()
+        Controller.Explorer.RefreshCurrentView()
     End Sub
     Public Shared Sub Rename(ByVal Controller As BaseController)
         ' --------------------------------------------------------

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            FarPoint.Win.Spread.TipAppearance tipAppearance1 = new FarPoint.Win.Spread.TipAppearance();
+            this.components = new System.ComponentModel.Container();
             FarPoint.Win.Spread.CellType.CheckBoxCellType checkBoxCellType1 = new FarPoint.Win.Spread.CellType.CheckBoxCellType();
             FarPoint.Win.Spread.CellType.ComboBoxCellType comboBoxCellType1 = new FarPoint.Win.Spread.CellType.ComboBoxCellType();
             FarPoint.Win.Spread.CellType.ComboBoxCellType comboBoxCellType2 = new FarPoint.Win.Spread.CellType.ComboBoxCellType();
@@ -47,46 +47,88 @@
             FarPoint.Win.Spread.CellType.CheckBoxCellType checkBoxCellType6 = new FarPoint.Win.Spread.CellType.CheckBoxCellType();
             FarPoint.Win.Spread.CellType.ComboBoxCellType comboBoxCellType11 = new FarPoint.Win.Spread.CellType.ComboBoxCellType();
             FarPoint.Win.Spread.CellType.ComboBoxCellType comboBoxCellType12 = new FarPoint.Win.Spread.CellType.ComboBoxCellType();
-            this.fpSpread = new FarPoint.Win.Spread.FpSpread();
-            this.fpSpread_Sheet1 = new FarPoint.Win.Spread.SheetView();
-            this.fpSpread_Sheet2 = new FarPoint.Win.Spread.SheetView();
+            FarPoint.Win.Spread.TipAppearance tipAppearance1 = new FarPoint.Win.Spread.TipAppearance();
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("15 Oct");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("15 Nov");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("15 Dec");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("15 Jan");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Sorghum Sowing Rule: Sow Date", 2, 2, new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("solid");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("single");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("double");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Sorghum Sowing Rule: skip row", 2, 2, new System.Windows.Forms.TreeNode[] {
+            treeNode6,
+            treeNode7,
+            treeNode8});
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("3.5");
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("5");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("7.5");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Sorghum Sowing Rule: Density", 2, 2, new System.Windows.Forms.TreeNode[] {
+            treeNode10,
+            treeNode11,
+            treeNode12});
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("15 Sep");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("15 Oct");
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("15 Nov");
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("15 Dec");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("15 Jan");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Sorghum Sowing Rule: Sow Date", 2, 2, new System.Windows.Forms.TreeNode[] {
+            treeNode14,
+            treeNode15,
+            treeNode16,
+            treeNode17,
+            treeNode18});
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("FactorLevel", 1, 1, new System.Windows.Forms.TreeNode[] {
+            treeNode19});
+            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("Factorial", 3, 3, new System.Windows.Forms.TreeNode[] {
+            treeNode5,
+            treeNode9,
+            treeNode13,
+            treeNode20});
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Factorial));
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.fpSpread)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet1)).BeginInit();
+            this.fpSpread_Sheet2 = new FarPoint.Win.Spread.SheetView();
+            this.fpSpread_Sheet1 = new FarPoint.Win.Spread.SheetView();
+            this.fpSpread = new FarPoint.Win.Spread.FpSpread();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fpSpread)).BeginInit();
             this.SuspendLayout();
             // 
             // MyHelpLabel
             // 
             this.MyHelpLabel.Text = "Factorial";
             // 
-            // fpSpread
+            // button1
             // 
-            this.fpSpread.AccessibleDescription = "fpSpread, Sheet2, Row 0, Column 0, ";
-            this.fpSpread.AllowCellOverflow = true;
-            this.fpSpread.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.fpSpread.BackColor = System.Drawing.SystemColors.Window;
-            this.fpSpread.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fpSpread.HorizontalScrollBarPolicy = FarPoint.Win.Spread.ScrollBarPolicy.AsNeeded;
-            this.fpSpread.Location = new System.Drawing.Point(3, 70);
-            this.fpSpread.Name = "fpSpread";
-            this.fpSpread.Sheets.AddRange(new FarPoint.Win.Spread.SheetView[] {
-            this.fpSpread_Sheet1,
-            this.fpSpread_Sheet2});
-            this.fpSpread.Size = new System.Drawing.Size(649, 468);
-            this.fpSpread.TabIndex = 2;
-            tipAppearance1.BackColor = System.Drawing.SystemColors.Info;
-            tipAppearance1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            tipAppearance1.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.fpSpread.TextTipAppearance = tipAppearance1;
-            this.fpSpread.VerticalScrollBarPolicy = FarPoint.Win.Spread.ScrollBarPolicy.AsNeeded;
-            this.fpSpread.EditChange += new FarPoint.Win.Spread.EditorNotifyEventHandler(this.fpSpread_EditChange);
-            this.fpSpread.ActiveSheetIndex = 1;
+            this.button1.Location = new System.Drawing.Point(468, 27);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(86, 23);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Add";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
+            // 
+            // fpSpread_Sheet2
+            // 
+            this.fpSpread_Sheet2.Reset();
+            // Formulas and custom names must be loaded with R1C1 reference style
+            this.fpSpread_Sheet2.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.R1C1;
+            this.fpSpread_Sheet2.AutoUpdateNotes = true;
+            this.fpSpread_Sheet2.DefaultStyle.HorizontalAlignment = FarPoint.Win.Spread.CellHorizontalAlignment.Left;
+            this.fpSpread_Sheet2.DefaultStyle.Locked = false;
+            this.fpSpread_Sheet2.DefaultStyle.Parent = "DataAreaDefault";
+            this.fpSpread_Sheet2.DefaultStyle.VerticalAlignment = FarPoint.Win.Spread.CellVerticalAlignment.Center;
+            this.fpSpread_Sheet2.GrayAreaBackColor = System.Drawing.SystemColors.Window;
+            this.fpSpread_Sheet2.RowHeader.Columns.Default.Resizable = false;
+            this.fpSpread_Sheet2.SheetName = "Sheet2";
+            this.fpSpread_Sheet2.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.A1;
             // 
             // fpSpread_Sheet1
             // 
@@ -258,90 +300,162 @@
             this.fpSpread_Sheet1.SheetName = "Sheet1";
             this.fpSpread_Sheet1.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.A1;
             // 
-            // fpSpread_Sheet2
+            // fpSpread
             // 
-            this.fpSpread_Sheet2.Reset();
-            // Formulas and custom names must be loaded with R1C1 reference style
-            this.fpSpread_Sheet2.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.R1C1;
-            this.fpSpread_Sheet2.AutoUpdateNotes = true;
-            this.fpSpread_Sheet2.DefaultStyle.HorizontalAlignment = FarPoint.Win.Spread.CellHorizontalAlignment.Left;
-            this.fpSpread_Sheet2.DefaultStyle.Locked = false;
-            this.fpSpread_Sheet2.DefaultStyle.Parent = "DataAreaDefault";
-            this.fpSpread_Sheet2.DefaultStyle.VerticalAlignment = FarPoint.Win.Spread.CellVerticalAlignment.Center;
-            this.fpSpread_Sheet2.GrayAreaBackColor = System.Drawing.SystemColors.Window;
-            this.fpSpread_Sheet2.RowHeader.Columns.Default.Resizable = false;
-            this.fpSpread_Sheet2.SheetName = "Sheet2";
-            this.fpSpread_Sheet2.ReferenceStyle = FarPoint.Win.Spread.Model.ReferenceStyle.A1;
+            this.fpSpread.AccessibleDescription = "fpSpread, Sheet2, Row 0, Column 0, ";
+            this.fpSpread.AllowCellOverflow = true;
+            this.fpSpread.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.fpSpread.BackColor = System.Drawing.SystemColors.Window;
+            this.fpSpread.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.fpSpread.HorizontalScrollBarPolicy = FarPoint.Win.Spread.ScrollBarPolicy.AsNeeded;
+            this.fpSpread.Location = new System.Drawing.Point(3, 446);
+            this.fpSpread.Name = "fpSpread";
+            this.fpSpread.Sheets.AddRange(new FarPoint.Win.Spread.SheetView[] {
+            this.fpSpread_Sheet1,
+            this.fpSpread_Sheet2});
+            this.fpSpread.Size = new System.Drawing.Size(649, 92);
+            this.fpSpread.TabIndex = 2;
+            tipAppearance1.BackColor = System.Drawing.SystemColors.Info;
+            tipAppearance1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            tipAppearance1.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.fpSpread.TextTipAppearance = tipAppearance1;
+            this.fpSpread.VerticalScrollBarPolicy = FarPoint.Win.Spread.ScrollBarPolicy.AsNeeded;
+            this.fpSpread.Visible = false;
+            this.fpSpread.EditChange += new FarPoint.Win.Spread.EditorNotifyEventHandler(this.fpSpread_EditChange);
+            this.fpSpread.ActiveSheetIndex = 1;
             // 
-            // button1
+            // treeView1
             // 
-            this.button1.Location = new System.Drawing.Point(468, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Add";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
+            this.treeView1.CheckBoxes = true;
+            this.treeView1.ImageIndex = 0;
+            this.treeView1.ImageList = this.imageList1;
+            this.treeView1.Location = new System.Drawing.Point(395, 56);
+            this.treeView1.Name = "treeView1";
+            treeNode1.Checked = true;
+            treeNode1.Name = "Node7";
+            treeNode1.Text = "15 Oct";
+            treeNode2.Checked = true;
+            treeNode2.Name = "Node8";
+            treeNode2.Text = "15 Nov";
+            treeNode3.Checked = true;
+            treeNode3.Name = "Node9";
+            treeNode3.Text = "15 Dec";
+            treeNode4.Checked = true;
+            treeNode4.Name = "Node10";
+            treeNode4.Text = "15 Jan";
+            treeNode5.Checked = true;
+            treeNode5.ImageIndex = 2;
+            treeNode5.Name = "Node4";
+            treeNode5.SelectedImageIndex = 2;
+            treeNode5.Text = "Sorghum Sowing Rule: Sow Date";
+            treeNode6.Checked = true;
+            treeNode6.Name = "Node13";
+            treeNode6.Text = "solid";
+            treeNode7.Checked = true;
+            treeNode7.Name = "Node14";
+            treeNode7.Text = "single";
+            treeNode8.Checked = true;
+            treeNode8.Name = "Node15";
+            treeNode8.Text = "double";
+            treeNode9.Checked = true;
+            treeNode9.ImageIndex = 2;
+            treeNode9.Name = "Node2";
+            treeNode9.SelectedImageIndex = 2;
+            treeNode9.Text = "Sorghum Sowing Rule: skip row";
+            treeNode10.Checked = true;
+            treeNode10.Name = "Node17";
+            treeNode10.Text = "3.5";
+            treeNode11.Checked = true;
+            treeNode11.Name = "Node18";
+            treeNode11.Text = "5";
+            treeNode12.Checked = true;
+            treeNode12.Name = "Node19";
+            treeNode12.Text = "7.5";
+            treeNode13.Checked = true;
+            treeNode13.ImageIndex = 2;
+            treeNode13.Name = "Node3";
+            treeNode13.SelectedImageIndex = 2;
+            treeNode13.Text = "Sorghum Sowing Rule: Density";
+            treeNode14.Checked = true;
+            treeNode14.Name = "Node6";
+            treeNode14.Text = "15 Sep";
+            treeNode15.Checked = true;
+            treeNode15.ForeColor = System.Drawing.Color.DimGray;
+            treeNode15.Name = "Node7";
+            treeNode15.Text = "15 Oct";
+            treeNode16.Checked = true;
+            treeNode16.ForeColor = System.Drawing.Color.DimGray;
+            treeNode16.Name = "Node8";
+            treeNode16.Text = "15 Nov";
+            treeNode17.Checked = true;
+            treeNode17.ForeColor = System.Drawing.Color.DimGray;
+            treeNode17.Name = "Node9";
+            treeNode17.Text = "15 Dec";
+            treeNode18.ForeColor = System.Drawing.Color.DimGray;
+            treeNode18.Name = "Node10";
+            treeNode18.Text = "15 Jan";
+            treeNode19.Checked = true;
+            treeNode19.ForeColor = System.Drawing.Color.DimGray;
+            treeNode19.ImageIndex = 2;
+            treeNode19.Name = "Node5";
+            treeNode19.SelectedImageIndex = 2;
+            treeNode19.Text = "Sorghum Sowing Rule: Sow Date";
+            treeNode20.Checked = true;
+            treeNode20.ImageIndex = 1;
+            treeNode20.Name = "Node4";
+            treeNode20.SelectedImageIndex = 1;
+            treeNode20.Text = "FactorLevel";
+            treeNode20.ToolTipText = "FactorLevel";
+            treeNode21.Checked = true;
+            treeNode21.ImageIndex = 3;
+            treeNode21.Name = "Node0";
+            treeNode21.SelectedImageIndex = 3;
+            treeNode21.Text = "Factorial";
+            this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode21});
+            this.treeView1.SelectedImageIndex = 0;
+            this.treeView1.Size = new System.Drawing.Size(257, 364);
+            this.treeView1.TabIndex = 7;
+            this.treeView1.Visible = false;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
-            // button2
+            // imageList1
             // 
-            this.button2.Location = new System.Drawing.Point(3, 33);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Remove";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(85, 28);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(318, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Add a variable by clicking on the drop down in the Target Column.";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(85, 47);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(370, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Remove a variable by selecting the variable and clicking the Remove button.";
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "cube_yellow16.png");
+            this.imageList1.Images.SetKeyName(1, "cubes16.png");
+            this.imageList1.Images.SetKeyName(2, "cube_green16.png");
+            this.imageList1.Images.SetKeyName(3, "cube_molecule16.png");
             // 
             // Factorial
             // 
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.fpSpread);
+            this.Controls.Add(this.treeView1);
             this.Controls.Add(this.button1);
             this.HelpText = "Factorial";
             this.Name = "Factorial";
             this.Controls.SetChildIndex(this.button1, 0);
+            this.Controls.SetChildIndex(this.treeView1, 0);
             this.Controls.SetChildIndex(this.fpSpread, 0);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
-            this.Controls.SetChildIndex(this.button2, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
-            this.Controls.SetChildIndex(this.label2, 0);
-            ((System.ComponentModel.ISupportInitialize)(this.fpSpread)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fpSpread_Sheet1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fpSpread)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private FarPoint.Win.Spread.FpSpread fpSpread1;
-        private FarPoint.Win.Spread.SheetView fpSpread_Sheet1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private FarPoint.Win.Spread.FpSpread fpSpread;
         private FarPoint.Win.Spread.SheetView fpSpread_Sheet2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private FarPoint.Win.Spread.SheetView fpSpread_Sheet1;
+        private FarPoint.Win.Spread.FpSpread fpSpread;
+        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }

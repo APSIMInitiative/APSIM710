@@ -83,6 +83,7 @@ namespace ApsimFile
          Type = Node.Name;
          if (Type.ToLower() == "simulations")
             Type = "folder";
+
          Name = XmlHelper.Name(Node);
          if (XmlHelper.Attribute(Node, "shortcut") != "")
             TempShortCutName = XmlHelper.Attribute(Node, "shortcut");
@@ -356,7 +357,7 @@ namespace ApsimFile
          MyFile.BeginUpdate();
          foreach (XmlNode Child in Doc.DocumentElement.ChildNodes)
             {
-            if (Types.Instance.AllowComponentAdd(Child.Name, Type))
+                if (Types.Instance.AllowComponentAdd(Child.Name, Type) || Type == "factor" || Type == "factorComplex")
                {
                Component ChildComponent = new Component(MyFile, this);
                MyChildNodes.Add(ChildComponent);

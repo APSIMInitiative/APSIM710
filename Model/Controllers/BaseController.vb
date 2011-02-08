@@ -22,15 +22,20 @@ Public Class BaseController
     Private SmallIcons As ImageList = Nothing
     Private ImageIndexes As List(Of Integer) = Nothing
     Private ImageFileNames As List(Of String) = Nothing
+    Private MyFactorialMode As Boolean = False
+    Private MySelectedFactorialPath As String = ""
+
     Public ApsimData As ApsimFile.ApsimFile
 
     Delegate Sub NotifyEventHandler()
     Delegate Sub SelectionChangedHandler(ByVal OldSelections As StringCollection, ByVal NewSelections As StringCollection)
+    Delegate Sub FactorialSelectionChangedHandler(ByVal OldSelection As String, ByVal NewSelection As String)
 
     Public Event BeforeSaveEvent As NotifyEventHandler              ' Fired immediately before data is saved.
     Public Event AfterSaveEvent As NotifyEventHandler               ' Fired immediately after data is saved.
     Public Event SelectionChangingEvent As NotifyEventHandler       ' Fired when the current selection is about to change.
     Public Event SelectionChangedEvent As SelectionChangedHandler   ' Fired when the current selection has changed.
+    Public Event FactorialSelectionChangedEvent As FactorialSelectionChangedHandler   ' Fired when the current selection has changed.
 
 
     Sub New(ByVal MainForm As Form, ByVal SectionName As String, ByVal MainController As Boolean)
@@ -107,6 +112,16 @@ Public Class BaseController
         End Get
         Set(ByVal value As ExplorerUI)
             MyExplorer = value
+        End Set
+    End Property
+    Public Property FactorialMode() As Boolean
+        Get
+            Return (MyFactorialMode)
+        End Get
+        Set(ByVal value As Boolean)
+            MyFactorialMode = value
+            MyExplorer.RefreshDisplayMode()
+
         End Set
     End Property
 
@@ -318,6 +333,37 @@ Public Class BaseController
             Return ApsimData.Find(SelectedPath) 'return the corresponding component to the node that was selected.
         End Get
     End Property
+#End Region
+#Region "Factorial Selection Methods"
+    Public Property SelectedFactorialPath() As String
+        Get
+            Return MySelectedFactorialPath
+        End Get
+        Set(ByVal value As String)
+
+            If MySelectedFactorialPath <> value Then
+                Dim oldSelection As String = MySelectedFactorialPath
+                MySelectedFactorialPath = value
+                RaiseEvent FactorialSelectionChangedEvent(oldSelection, MySelectedFactorialPath)     'calls OnSelectionChanged() -> in DataTree.vb and in ExplorerUI.vb 
+                'RefreshToolStrips()     'IMPORTANT 'See first sub in Action Region below. This region is where all the toolstrips get rebinded after the selection is changed. This first sub is what starts all this rebinding.
+            End If
+        End Set
+    End Property
+    Public ReadOnly Property FactorialSelection() As ApsimFile.Component
+        Get
+            Return ApsimData.Find(SelectedFactorialPath) 'return the corresponding component to the node that was selected.
+            'Return FindFactorialComponent(SelectedFactorialPath)
+        End Get
+    End Property
+    Public Function FindFactorialComponent(ByVal path As String) As ApsimFile.Component
+        Dim pos As Integer = path.IndexOf(ApsimFile.Component.Delimiter)
+        If (pos = -1) Then
+            Return ApsimData.FactorComponent
+        End If
+
+        Dim adjPath As String = path.Substring(pos + 1)
+        Return ApsimData.FactorComponent.Find(adjPath) 'return the corresponding component to the node that was selected.
+    End Function
 #End Region
 
 #Region "Action methods"

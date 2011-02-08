@@ -109,7 +109,7 @@ Public Class MetUI
 #End Region
 
     Protected Overrides Sub OnLoad()
-        MetGraphControl1.OnLoad(Controller, NodePath, Controller.Selection.Contents)
+        MetGraphControl1.OnLoad(Controller, NodePath, Data.OuterXml) 'Controller.Selection.Contents)
     End Sub
     Public Overrides Sub OnRefresh()
         Dim FileName As String = XmlHelper.Value(Data, "filename")

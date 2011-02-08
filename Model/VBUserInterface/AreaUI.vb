@@ -129,10 +129,12 @@ Public Class AreaUI
         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
         If Not IsNothing(Comp) Then
             For Each Child As ApsimFile.Component In Comp.ChildNodes
-                'create new item
-                Dim item As New ListViewItem(Child.Name, 0)
-                item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
-                ListView.Items.Add(item)
+                If Child.Type <> "factorial" Then
+                    'create new item
+                    Dim item As New ListViewItem(Child.Name, 0)
+                    item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
+                    ListView.Items.Add(item)
+                End If
             Next
 
 

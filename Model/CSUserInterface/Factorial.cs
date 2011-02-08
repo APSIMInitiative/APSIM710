@@ -37,15 +37,18 @@ namespace CSUserInterface
             //ProcessConfig is used to remove references that no longer exist
             //UpdateConfig will add new variables
             //DisplayConfig will then display the udated settings
-            targets.Clear();
-            targetTypes.Clear();
-            ProcessSubGroup(Controller.Selection, Data);
-            DisplayConfig();
+            //targets.Clear();
+            //targetTypes.Clear();
+            //ProcessSubGroup(Controller.Selection, Data);
+            //DisplayConfig();
+
+            //DisplayXMLValues();
         }
         public override void OnSave()
         {
-            //update variable settings
-            int iRow = 1;
+/*
+  //update variable settings
+           int iRow = 1;
             SaveVariables(Data, ref iRow);
 
             while(iRow < fpSpread.ActiveSheet.RowCount)
@@ -54,7 +57,49 @@ namespace CSUserInterface
                 ++iRow;
                 //row should be pointing to the last row of the current subgroup (blank row)
             }
+ */ 
         }
+
+        private void DisplayXMLValues()
+        {
+            treeView1.Nodes.Clear();
+            //find vars node
+            XmlNode varsNode = Data.SelectSingleNode("vars");
+            if (varsNode != null)
+            {
+                foreach (XmlNode node in varsNode.ChildNodes)
+                {
+                    AddTreeNode(null, node);
+                }
+            }
+        }
+        private void AddTreeNode(TreeNode parentNode, XmlNode xmlnode)
+        {
+            string sText = XmlHelper.Name(xmlnode);
+            TreeNode treeNode = null;
+
+            if (parentNode == null)
+            {
+                treeNode = treeView1.Nodes.Add(sText);
+            }
+            else
+            {
+                treeNode = parentNode.Nodes.Add(sText);
+                parentNode.Expand();
+            }
+
+            bool bEnabled = XmlHelper.Attribute(xmlnode, "enabled") == "yes";
+            treeNode.Checked = bEnabled;
+            bool bInherited = XmlHelper.Attribute(xmlnode, "inherited") == "yes";
+            if(bInherited)
+                treeNode.ForeColor = Color.Gray;
+
+            foreach (XmlNode node in xmlnode.ChildNodes)
+            {
+                AddTreeNode(treeNode, node);
+            }
+        }
+
         private void ProcessSubGroup(ApsimFile.Component tmpComponent, XmlNode subNode)
         {
             //get variables node
@@ -163,8 +208,6 @@ namespace CSUserInterface
                 UpdateVariable(variableNode, iRow);
             }
         }
-
-
         private void SaveChildGroups(XmlNode parentGroup, ref int iRow, int iCurrentCol)
         {
             bool bChildrenRemain = true;
@@ -574,6 +617,11 @@ namespace CSUserInterface
                 DisplayBlankVariable(e.Row + 1);
                 AddNewVariable(e.Row, e.Column);
             }
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
         }
     }
 }
