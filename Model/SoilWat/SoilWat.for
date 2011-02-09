@@ -2595,36 +2595,20 @@ cjh
       
       num_layers = count_of_real_vals (p%dlayer, max_layer)
       
-      ! If only 1 number was specified for solute_flow_eff then assume that
-      ! number is the same for all soil layers.
-      if (c%Num_solute_flow .eq. 1) then
-         call Fill_real_array (c%Solute_flow_eff, c%Solute_flow_eff(1),
-     :                         num_layers)
-         c%Num_solute_flow = num_layers
-         
-      ! Make sure we have the correct number of solute_flow_eff values.
-      else if (c%Num_solute_flow .ne. num_layers) then
+      if (c%Num_solute_flow .gt. 1 .and. 
+     :    c%Num_solute_flow .ne. num_layers) then
          call fatal_error (err_internal, 
      :       'The number of values specified for solute_flow_eff does '
      :       // new_line //
      :       'not match the number of soil layers.')
-
       endif      
 
-      ! If only 1 number was specified for Solute_flux_eff then assume that
-      ! number is the same for all soil layers.
-      if (c%Num_solute_flux .eq. 1) then
-         call Fill_real_array (c%Solute_flux_eff, c%Solute_flux_eff(1),
-     :                         num_layers)
-         c%Num_solute_flux = num_layers
-         
-      ! Make sure we have the correct number of Solute_flux_eff values.
-      else if (c%Num_solute_flux .ne. num_layers) then
+      if (c%Num_solute_flux .gt. 1 .and. 
+     :    c%Num_solute_flux .ne. num_layers) then
          call fatal_error (err_internal, 
      :       'The number of values specified for solute_flux_eff does '
      :       // new_line //
      :       'not match the number of soil layers.')
-
       endif      
 
       return
@@ -5466,6 +5450,7 @@ c         g%crop_module(:) = ' '               ! list of modules
       real       out_w                 ! water draining out of layer (mm)
       real       solute_kg_layer       ! quantity of solute in layer (kg/ha)
       real       water                 ! quantity of water in layer (mm)
+      real       solute_flux_eff
 
 *- Implementation Section ----------------------------------
 
@@ -5490,10 +5475,17 @@ c         g%crop_module(:) = ' '               ! list of modules
 * ?????????????? 21 mar 91 - jngh. should the water draining into this
 * ?????????????? layer be removed also?
 
+            if (c%Num_solute_flux .eq. 1) then
+               solute_flux_eff = c%Solute_flux_eff(1)
+            else
+               solute_flux_eff = c%Solute_flux_eff(layer)
+            endif 
+
+
          water = g%sw_dep(layer) + out_w
          out_solute = solute_kg_layer
      :         * divide (out_w, water, 0.0)
-     :         * c%Solute_flux_eff(layer)
+     :         * solute_flux_eff
 
              ! don't allow the n to be reduced below a minimum level
 
@@ -5571,6 +5563,7 @@ c         g%crop_module(:) = ' '               ! list of modules
       real       top_w                 ! water movement to/from above layer
                                        ! (kg/ha)
       real       water                 ! quantity of water in layer (mm)
+      real       solute_flow_eff
 
 *- Implementation Section ----------------------------------
 
@@ -5615,9 +5608,16 @@ c         g%crop_module(:) = ' '               ! list of modules
                 ! and this compensates for it.
 
 cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
+
+            if (c%Num_solute_flow .eq. 1) then
+               solute_flow_eff = c%Solute_flow_eff(1)
+            else
+               solute_flow_eff = c%Solute_flow_eff(layer)
+            endif 
+            
             out_solute = solute_kg_layer
      :                 * divide (out_w, water, 0.0)
-     :                 * c%Solute_flow_eff(layer)
+     :                 * solute_flow_eff
 
                 ! don't allow the n to be reduced below a minimum level
 
@@ -5672,9 +5672,15 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
                 ! jngh 19-3-91 i think the *0.5 should be removed.
                 ! 25-10-91 see note in up movement about this.
 
+            if (c%Num_solute_flow .eq. 1) then
+               solute_flow_eff = c%Solute_flow_eff(1)
+            else
+               solute_flow_eff = c%Solute_flow_eff(layer)
+            endif 
+                 
             out_solute = solute_kg_layer
      :            * divide (out_w, water, 0.0)
-     :            * c%Solute_flow_eff(layer)
+     :            * solute_flow_eff
 
                 ! don't allow the n to be reduced below a minimum level
 
