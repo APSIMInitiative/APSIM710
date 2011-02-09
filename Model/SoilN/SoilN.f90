@@ -567,8 +567,9 @@ subroutine soiln2_read_param ()
 
    ! read in setting for soil type which is used to determine the mineralisation
    ! model parameters section from the ini file.
-   g%soiltype = 'standard'
+   g%soiltype = ' '
    call read_char_var_optional (section_name, 'soiltype', '()', g%soiltype, numvals)
+   if (numvals.le.0) g%soiltype = 'standard'
 
       ! Get parameter file name from control file and open it
    if (.not. g%use_external_st) then

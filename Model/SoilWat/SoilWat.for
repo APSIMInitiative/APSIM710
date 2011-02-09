@@ -251,8 +251,10 @@
                                                       ! below which stage 2 evaporation occurs
          real    sumes1_max                           ! upper limit of sumes1
          real    sumes2_max                           ! upper limit of sumes2
-         real    Solute_flux_eff                      ! efficiency of moving solute with flux (0-1)
-         real    Solute_flow_eff                      ! efficiency of moving solute with flow (0-1)
+         real    Solute_flux_eff(max_layer)           ! efficiency of moving solute with flux (0-1) by layer
+         integer Num_solute_flux                      ! Number of values in Solute_flux_eff array
+         real    Solute_flow_eff(max_layer)           ! efficiency of moving solute with flow (0-1) by layer
+         integer Num_solute_flow                      ! Number of values in Solute_flow_eff array
          real    gravity_gradient                     ! gradient due to hydraulic differentials
                                                       ! (0-1)
          real    specific_bd                          ! specific bulk density (g/cc)
@@ -2493,7 +2495,9 @@ cjh
 *
       real       max_sw                ! largest acceptable value for sat
                                        !   (mm water/mm soil)
-
+      integer    num_layers            ! Number of soil layers.
+      integer    i
+      
 *- Implementation Section ----------------------------------
       max_sw = 1.0 - divide (g%bd(layer), c%specific_bd, 0.0)
          ! ie Total Porosity
@@ -2588,6 +2592,40 @@ cjh
 
       else
       endif
+      
+      num_layers = count_of_real_vals (p%dlayer, max_layer)
+      
+      ! If only 1 number was specified for solute_flow_eff then assume that
+      ! number is the same for all soil layers.
+      if (c%Num_solute_flow .eq. 1) then
+         call Fill_real_array (c%Solute_flow_eff, c%Solute_flow_eff(1),
+     :                         num_layers)
+         c%Num_solute_flow = num_layers
+         
+      ! Make sure we have the correct number of solute_flow_eff values.
+      else if (c%Num_solute_flow .ne. num_layers) then
+         call fatal_error (err_internal, 
+     :       'The number of values specified for solute_flow_eff does '
+     :       // new_line //
+     :       'not match the number of soil layers.')
+
+      endif      
+
+      ! If only 1 number was specified for Solute_flux_eff then assume that
+      ! number is the same for all soil layers.
+      if (c%Num_solute_flux .eq. 1) then
+         call Fill_real_array (c%Solute_flux_eff, c%Solute_flux_eff(1),
+     :                         num_layers)
+         c%Num_solute_flux = num_layers
+         
+      ! Make sure we have the correct number of Solute_flux_eff values.
+      else if (c%Num_solute_flux .ne. num_layers) then
+         call fatal_error (err_internal, 
+     :       'The number of values specified for solute_flux_eff does '
+     :       // new_line //
+     :       'not match the number of soil layers.')
+
+      endif      
 
       return
       end subroutine
@@ -2683,7 +2721,8 @@ cjh
 *+  Local Variables
        integer numvals                 ! number of values read from file
        character  evap_method*300
-
+       character  st*500
+       
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
@@ -2730,15 +2769,23 @@ cjh
      :                   , c%sumes2_max, numvals
      :                   , 0.0, 1000.0)
 
-      call read_real_var (section_name
+      ! read in solute_flow_eff as an array of numbers, 1 for each layer.
+      call read_char_var (section_name
      :                   , 'solute_flow_eff', '()'
-     :                   , c%Solute_flow_eff, numvals
-     :                   , 0.0, 1.0)
-
-      call read_real_var (section_name
+     :                   , st, numvals)
+      call String_to_real_array(st, c%Solute_flow_eff, 
+     :                          max_layer, c%Num_solute_flow)
+      call bound_check_real_array(c%Solute_flow_eff, 0.0, 1.0, 
+     :                            "solute_flow_eff", c%Num_solute_flow)
+     
+      ! read in solute_flux_eff as an array of numbers, 1 for each layer.
+      call read_char_var (section_name
      :                   , 'solute_flux_eff', '()'
-     :                   , c%Solute_flux_eff, numvals
-     :                   , 0.0, 1.0)
+     :                   , st, numvals)     
+      call String_to_real_array(st, c%Solute_flux_eff, 
+     :                          max_layer, c%Num_solute_flux)
+      call bound_check_real_array(c%Solute_flux_eff, 0.0, 1.0, 
+     :                            "solute_flow_eff", c%Num_solute_flux)
 
       call read_real_var (section_name
      :                   , 'gravity_gradient', '()'
@@ -5446,7 +5493,7 @@ c         g%crop_module(:) = ' '               ! list of modules
          water = g%sw_dep(layer) + out_w
          out_solute = solute_kg_layer
      :         * divide (out_w, water, 0.0)
-     :         * c%Solute_flux_eff
+     :         * c%Solute_flux_eff(layer)
 
              ! don't allow the n to be reduced below a minimum level
 
@@ -5570,7 +5617,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
             out_solute = solute_kg_layer
      :                 * divide (out_w, water, 0.0)
-     :                 * c%Solute_flow_eff
+     :                 * c%Solute_flow_eff(layer)
 
                 ! don't allow the n to be reduced below a minimum level
 
@@ -5627,7 +5674,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 
             out_solute = solute_kg_layer
      :            * divide (out_w, water, 0.0)
-     :            * c%Solute_flow_eff
+     :            * c%Solute_flow_eff(layer)
 
                 ! don't allow the n to be reduced below a minimum level
 
