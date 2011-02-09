@@ -46,6 +46,7 @@ public class SoilN : Instance
     [Param]
     [Output]
     [Units("%")]
+    [Description("Organic carbon")]
     double[] oc             // organic carbon concentration (%)
     {
         get 
@@ -78,6 +79,7 @@ public class SoilN : Instance
     [Param]
     [Output]
     [Units("mg/kg")]
+    [Description("Nitrate nitrogen")]
     private double[] no3ppm     // nitrate nitrogen (ppm)  Watch out! no3 and no3ppm aren't quite the same thing... different units
     {
         get 
@@ -115,6 +117,7 @@ public class SoilN : Instance
     [Param]
     [Output]
     [Units("mg/kg")]
+    [Description("Ammonium nitrogen")]
     private double[] nh4ppm    // ammonium nitrogen (ppm) 
     {
         get
@@ -152,6 +155,7 @@ public class SoilN : Instance
     [Param(Optional = true)]
     [Output]
     [Units("mg/kg")]
+    [Description("Urea nitrogen")]
     private double[] ureappm    // urea nitrogen (ppm)
     {
         get
@@ -245,14 +249,17 @@ public class SoilN : Instance
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction of carbohydrate in FOM")]
     public double[] fr_carb;            // carbohydrate fraction of FOM (0-1)          
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction of cellulose in FOM")]
     public double[] fr_cell;            // cellulose fraction of FOM (0-1)          
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Description("Fraction of lignin in FOM")]
     public double[] fr_lign;            // lignin fraction of FOM (0-1)          
 
     [Param(MinVal = 0.0, MaxVal = 3.0)]
@@ -322,6 +329,7 @@ public class SoilN : Instance
     // Output variables made available to other components
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrate nitrogen")]
     double[] no3           // nitrate nitrogen
     {
         get { return _no3; }
@@ -341,15 +349,18 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net NO3 change today")]
     double[] dlt_no3_net;   // net no3 change today
 
     [Output]
     [Units("kg/ha")]
+    [Description("Minimum allowable NO3")]
     double[] no3_min;       // minimum allowable NO3
 
     private double[] _nh4;  // Internal variable associated with the no3 property
     [Output]
     [Units("kg/ha")]
+    [Description("Ammonium nitrogen")]
     double[] nh4            // ammonium nitrogen
     {
         get { return _nh4; }
@@ -370,15 +381,18 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net NH4 change today")]
     double[] dlt_nh4_net;   // net nh4 change today
 
     [Output]
     [Units("kg/ha")]
+    [Description("Minimum allowable NH4")]
     double[] nh4_min;       // minimum allowable NH4
 
     private double[] _urea;  // Internal variable associated with the urea property
     [Output]
     [Units("kg/ha")]
+    [Description("Urea nitrogen")]
     double[] urea            // urea nitrogen
     {
         get { return _urea; }
@@ -393,52 +407,64 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen moved by nitrification")]
     double[] dlt_rntrf;     // nitrogen moved by nitrification (kg/ha)
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen moved by nitrification")]
     double[] nitrification
     { get { return dlt_rntrf; } }
 
     [Output]
     [Units("kg/ha")]
-    double[] effective_nitrification; // effecitive nitrogen moved by nitrification
+    [Description("Effective nitrogen moved by nitrification")]
+    double[] effective_nitrification; // effective nitrogen moved by nitrification
                                       // (Alias dlt_rntrf_eff)
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen moved by hydrolysis")]
     double[] dlt_urea_hydrol;   // nitrogen moved by hydrolysis
 
     [Output]
     [Units("kg/ha")]
+    [Description("Excess N required above NH4 supply")]
     double[] excess_nh4;    // excess N required above NH4 supply
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen in FOM")]
     double[] fom_n;         // nitrogen in FOM
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen in FOM pool 1")]
     double[] fom_n_pool1;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen in FOM pool 2")]
     double[] fom_n_pool2;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Nitrogen in FOM pool 3")]
     double[] fom_n_pool3;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Humic nitrogen")]
     double[] hum_n;         // Humic N
 
     [Output]
     [Units("kg/ha")]
+    [Description("Biomass nitrogen")]
     double[] biom_n;        // biomass nitrogen
 
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C")]
     double[] fom_c         // fresh organic C        
     {
         get
@@ -453,31 +479,38 @@ public class SoilN : Instance
     }
 
     [Output]
+    [Description("Number of FOM types")]
     int num_fom_types      // number of fom types read
     { get { return fom_types.Length; } }
 
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C in pool 1")]
     double[] fom_c_pool1;   
 
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C in pool 2")]
     double[] fom_c_pool2;
 
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C in pool 3")]
     double[] fom_c_pool3;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Humic C")]
     double[] hum_c;         // Humic C
 
     [Output]
     [Units("kg/ha")]
+    [Description("Biomass C")]
     double[] biom_c;        // biomass carbon 
 
     [Output]
     [Units("kg/ha")]
+    [Description("Total carbon")]
     double[] carbon_tot    // total carbon in soil
     {
         get
@@ -496,46 +529,57 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net NH4 transformation")]
     double[] nh4_transform_net; // net NH4 transformation today
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net NO3 transformation")]
     double[] no3_transform_net; // net NO3 transformation today
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net NH4 transformation")]
     double[] dlt_res_nh4_min;   // Net Residue NH4 mineralisation
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net FOM N mineralized, negative for immobilization")]
     double[] dlt_fom_n_min;     // net fom N mineralized (negative for immobilization) 
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net biomass N mineralized")]
     double[] dlt_biom_n_min;    // net biomass N mineralized
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net humic N mineralized")]
     double[] dlt_hum_n_min;     // net humic N mineralized
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net Residue NO3 mineralisation")]
     double[] dlt_res_no3_min;   // Net Residue NO3 mineralisation
 
     [Output]
     [Units("kg/ha")]
+    [Description("NO3 N denitrified")]
     double[] dlt_no3_dnit;      // NO3 N denitrified
 
     [Output]
     [Units("kg/ha")]
+    [Description("NH4 N denitrified")]
     double[] dlt_nh4_dnit;      // NH4 N denitrified
 
     [Output]
     [Units("kg/ha")]
+    [Description("Amount of N2O produced")]
     double[] n2o_atm;           // amount of N2O produced
 
     [Output]
     [Units("kg/ha")]
+    [Description("Total N in soil")]
     double[] nit_tot           // total N in soil   
     {
         get
@@ -557,6 +601,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net N mineralized")]
     double[] dlt_n_min         // net mineralisation
     {
         get
@@ -573,6 +618,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Net Residue N mineralisation")]
     double[] dlt_n_min_res
     {
         get
@@ -588,6 +634,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Humic N mineralized")]
     double[] dlt_n_min_tot
     {
         get
@@ -606,6 +653,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Denitrification")]
     double[] dnit
     {
         get
@@ -620,18 +668,22 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg")]
+    [Description("Carbon loss in sediment")]
     double dlt_c_loss_in_sed;
 
     [Output]
     [Units("kg")]
+    [Description("N loss in sediment")]
     double dlt_n_loss_in_sed;
 
     [Output]
     [Units("oC")]
+    [Description("Surface temperature")]
     double[] st;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Not fully implemented")]
     double[] org_c_pool1 // Doesn't seem to be fully implemented
     {
         get { return new double [fom_c_pool1.Length]; }
@@ -644,6 +696,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Not fully implemented")]
     double[] org_c_pool2 // Doesn't seem to be fully implemented
     {
         get { return new double[fom_c_pool2.Length]; }
@@ -656,6 +709,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Not fully implemented")]
     double[] org_c_pool3 // Doesn't seem to be fully implemented
     {
         get { return new double[fom_c_pool3.Length]; }
@@ -668,6 +722,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Not fully implemented")]
     double[] org_n // Doesn't seem to be fully implemented
     {
         get { return new double[fom_n.Length]; }
@@ -681,6 +736,7 @@ public class SoilN : Instance
     double[][] _dlt_fom_c_hum = new double[3][];
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C converted to humic")]
     double[] dlt_fom_c_hum  // fom C converted to humic (kg/ha)
     {
         get
@@ -698,6 +754,7 @@ public class SoilN : Instance
     double[][] _dlt_fom_c_biom = new double[3][];
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C converted to biomass")]
     double[] dlt_fom_c_biom // fom C converted to biomass (kg/ha)
     {
         get
@@ -715,6 +772,7 @@ public class SoilN : Instance
     double[][] _dlt_fom_c_atm = new double[3][];
     [Output]
     [Units("kg/ha")]
+    [Description("FOM C lost to atmosphere")]
     double[] dlt_fom_c_atm  // fom C lost to atmosphere (kg/ha)
     {
         get
@@ -731,23 +789,28 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Humic C converted to biomass")]
     double[] dlt_hum_c_biom;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Humic C lost to atmosphere")]
     double[] dlt_hum_c_atm;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Biomass C converted to humic")]
     double[] dlt_biom_c_hum;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Biomass C lost to atmosphere")]
     double[] dlt_biom_c_atm;
 
     double[][] _dlt_res_c_biom;
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from residues converted to biomass")]
     double[] dlt_res_c_biom
     {
         get
@@ -763,6 +826,7 @@ public class SoilN : Instance
     double[][] _dlt_res_c_hum;
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from residues converted to humic")]
     double[] dlt_res_c_hum
     {
         get
@@ -778,6 +842,7 @@ public class SoilN : Instance
     double[][] _dlt_res_c_atm;
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from residues lost to atmosphere")]
     double[] dlt_res_c_atm
     {
         get
@@ -792,33 +857,41 @@ public class SoilN : Instance
 
     [Output]
     [Units("kg/ha")]
+    [Description("Delta FOM C pool in fraction 1")]
     double[] dlt_fom_c_pool1;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Delta FOM C pool in fraction 2")]
     double[] dlt_fom_c_pool2;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Delta FOM C pool in fraction 3")]
     double[] dlt_fom_c_pool3;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from all residues to atmosphere")]
     double[] soilp_dlt_res_c_atm;
     
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from all residues to humic")]
     double[] soilp_dlt_res_c_hum;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Carbon from all residues to biomass")]
     double[] soilp_dlt_res_c_biom;
 
     [Output]
     [Units("kg/ha")]
+    [Description("Variable needed by soilp in its calculations")]
     double[] soilp_dlt_org_p;
 
     [Output]
+    [Description("Temperature factor for nitrification and mineralisation")]
     double[] tf
     {
         get
@@ -1128,7 +1201,11 @@ public class SoilN : Instance
             // Now convert the IncorpFOM.DeltaWt and IncorpFOM.DeltaN arrays to
             // include fraction information and add to pools.
             int nLayers = IncorpFOM.Layer.Length;
-            ResizeLayerArrays(nLayers);
+            if (nLayers > dlayer.Length)
+            {
+                Array.Resize(ref dlayer, nLayers);
+                ResizeLayerArrays(nLayers);
+            }
             for (int i = 0; i < nLayers; i++)
             {
                 fom_c_pool1[i] += IncorpFOM.Layer[i].FOM.amount * fr_carb[fom_type] * c_in_fom;
@@ -1360,10 +1437,13 @@ public class SoilN : Instance
     {
         Console.WriteLine();
         Console.WriteLine("        - Reading Constants");
-        if (soiltypeOverridden)
-            Console.WriteLine("     Using soil mineralisation specification for " + soiltype);
-        else
-            Console.WriteLine("     Using standard soil mineralisation for soil type " + soiltype);
+        if (soiltype != "standard")
+        {
+            if (soiltypeOverridden)
+                Console.WriteLine("     Using soil mineralisation specification for " + soiltype);
+            else
+                Console.WriteLine("     Using standard soil mineralisation for soil type " + soiltype);
+        }
         if (num_fom_types != fr_carb.Length)
             throw new Exception("Number of \"fr_carb\" different to \"fom_type\"");
         if (num_fom_types != fr_cell.Length)
@@ -1549,7 +1629,7 @@ public class SoilN : Instance
             Console.WriteLine("           TAV and AMP supplied externally");
         if (use_external_ph)
             Console.WriteLine("           Soil pH supplied externally");
-        Console.WriteLine(@"
+        Console.Write(@"
 
                       Soil Profile Properties
           ------------------------------------------------
@@ -1572,7 +1652,7 @@ public class SoilN : Instance
         Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine();
-        Console.WriteLine(@"
+        Console.Write(@"
                   Initial Soil Organic Matter Status
           ---------------------------------------------------------
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
