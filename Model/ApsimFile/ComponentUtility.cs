@@ -200,6 +200,26 @@ namespace ApsimFile
             }
          }
 
+
+      public static Component FindComponentWithinScopeOf(Component C, string ComponentTypeToFind)
+         {
+         if (C != null)
+            {
+            // Find the containing area, simulation or folder whichever comes first.
+            Component Parent = C;
+            while (Parent != null)
+               {
+               foreach (Component Child in Parent.ChildNodes)
+                  {
+                  if (Child.Type == ComponentTypeToFind)
+                     return Child;
+                  }
+               Parent = Parent.Parent;
+               }
+            }
+         return null;
+         }
+
       }
 
 

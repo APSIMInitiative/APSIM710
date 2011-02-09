@@ -20,6 +20,21 @@ public class PlugIns
             Load(PlugIn.Key);
          }
       }
+   public static void LoadAllFromComponent(Component C)
+      {
+      Types.Instance.Clear();
+      Toolboxes.Instance.Clear();
+
+      XmlDocument Doc = new XmlDocument();
+      Doc.LoadXml(C.FullXMLNoShortCuts());
+      foreach (XmlNode Child in XmlHelper.ChildNodes(Doc.DocumentElement, "PlugIn"))
+         {
+         string FileName = Configuration.RemoveMacros(Child.InnerText);
+         bool Enabled = XmlHelper.Attribute(Child, "enabled") == "yes";
+         if (Enabled)
+            Load(FileName);
+         }
+      }
    public static bool Load(string FileName)
       {
       // Returns true if the file is a plugin. Returns false if the file

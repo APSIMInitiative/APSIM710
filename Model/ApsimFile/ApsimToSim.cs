@@ -15,12 +15,23 @@ public class ApsimToSim
    /// 
    public static string WriteSimFile(Component Child)
       {
+      // See if there is an overriding plugins component within scope of the Child passed in.
+      // If so then tell PlugIns to load the plugins.
+      Component PluginsOverride = ComponentUtility.FindComponentWithinScopeOf(Child, "PlugIns");
+      if (PluginsOverride != null)
+         PlugIns.LoadAllFromComponent(PluginsOverride);
+
       TestUniqueNamesUnderPaddock(Child);           //test to see if the .apsim file was valid before writing sim file.
       string SimFileName = Child.Name + ".sim";
       XmlDocument SimXML = new XmlDocument();
       SimXML.LoadXml(WriteSimScript(Child));
       SortSimContents(SimXML.DocumentElement);
       SimXML.Save(SimFileName);
+
+      // Reinstate the original plugins if we overrode them at the start of this method.
+      if (PluginsOverride != null)
+         PlugIns.LoadAll();
+
       return Path.GetFullPath(SimFileName);
       }
    private static string WriteSimScript(Component Child)
