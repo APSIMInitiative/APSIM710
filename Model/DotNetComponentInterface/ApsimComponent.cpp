@@ -209,12 +209,15 @@ unsigned ApsimComponent::CallBack(int RegistrationIndex, char* messageData, int 
 		if (RegistrationIndex == INIT2INDEX)
 		{
 		   Init2Received = true;
-		   Console::WriteLine();
-		   Console::Write("------- " + Model->Name + " Initialisation ");
-		   int col = Model->Name->Length + 24;
-		   while (++col < 80)
+           if (Model != nullptr)
+		   {
+			Console::WriteLine();
+			Console::Write("------- " + Model->Name + " Initialisation ");
+			int col = Model->Name->Length + 24;
+			while (++col < 80)
 			   Console::Write("-");
-		   Console::WriteLine();
+			Console::WriteLine();
+		   }
 		}
 		else if (RegistrationIndex == SOWINDEX)
 		   OnSow(messageData);
