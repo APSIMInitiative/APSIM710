@@ -7466,7 +7466,7 @@ c
      .               'Potential evapotranspiration via priestly-taylor')
       dummy = add_reg(respondToGetReg, 'eos',
      .                     floatTypeDDML, 'mm',
-     . 'Potential evap after modification for green cover & residue')
+     . 'Potential evap after modification for green cover and residue')
       dummy = add_reg(respondToGetReg,
      .                     'cover_surface_runoff', floatTypeDDML, '',
      .  'Effective cover used in runoff calculation')

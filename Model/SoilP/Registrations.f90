@@ -41,7 +41,7 @@ module Registrations
          dummy = add_reg(respondToGetSetReg, 'rock_p', floatarrayTypeDDML, 'kg/ha', 'Rock P')
          dummy = add_reg(respondToGetReg, 'soil_test_p', floatarrayTypeDDML, 'kg/ha', 'Labile + Banded P')
          dummy = add_reg(respondToGetReg, 'biom_p', floatarrayTypeDDML, 'kg/ha', 'P in biomass pool')
-         dummy = add_reg(respondToGetReg, 'humic_p', floatarrayTypeDDML, 'kg/ha', 'P in humic pool')
+         dummy = add_reg(respondToGetReg, 'hum_p', floatarrayTypeDDML, 'kg/ha', 'P in humic pool')
          dummy = add_reg(respondToGetReg, 'fom_p', floatarrayTypeDDML, 'kg/ha', 'P in FOM pool')
          dummy = add_reg(respondToGetReg, 'fom_p_pool1', floatarrayTypeDDML, 'kg/ha', 'P in FOM pool 1')
          dummy = add_reg(respondToGetReg, 'fom_p_pool2', floatarrayTypeDDML, 'kg/ha', 'P in FOM pool 2')

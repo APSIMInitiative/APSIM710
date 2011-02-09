@@ -102,7 +102,7 @@ module Soiln2Module
       real         inert_C(max_layer)     ! humic C that is not subject to
                                           ! mineralization (kg/ha)
       real         NH4(max_layer)         ! ammonium nitrogen(kg/ha)
-      real         NO3(max_layer)         ! nitrate nitrogen (kg/ha)
+      real         NO3(max_layer)         ! nitrate nitrogen (kg/ha) 
       real         NH4_yesterday(max_layer) ! yesterday's ammonium nitrogen(kg/ha)
       real         NO3_yesterday(max_layer) ! yesterday's nitrate nitrogen (kg/ha)
       real         urea(max_layer)        ! Urea nitrogen   (kg/ha)
@@ -567,8 +567,8 @@ subroutine soiln2_read_param ()
 
    ! read in setting for soil type which is used to determine the mineralisation
    ! model parameters section from the ini file.
+   g%soiltype = 'standard'
    call read_char_var_optional (section_name, 'soiltype', '()', g%soiltype, numvals)
-   if (numvals.le.0) g%soiltype = 'standard'
 
       ! Get parameter file name from control file and open it
    if (.not. g%use_external_st) then
@@ -647,7 +647,7 @@ subroutine soiln2_read_param ()
    call read_real_var (section_name, 'enr_a_coeff', '()', c%enr_a_coeff, numvals, 1.0, 20.0)
 
    call read_real_var (section_name, 'enr_b_coeff', '()', c%enr_b_coeff, numvals, 0.0, 20.0)
-
+   string = ' '
    call read_char_var (section_name, 'profile_reduction', '()', string, numvals)
 
    if (string(1:2) .eq. 'on') then
@@ -658,7 +658,7 @@ subroutine soiln2_read_param ()
 
    endif
 
-   string = '  '
+   string = ' '
    call read_char_var_optional (section_name, 'use_organic_solutes', '()', string, numvals)
    if (string(1:2) .eq. 'on') then
       g%use_organic_solutes = .true.
@@ -1084,18 +1084,16 @@ subroutine soiln2_check_pond ()
 
 !+  Local Variables
    integer      numvals             ! number of values returned
-
+   character*20  string
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
 
 ! dsg 180508 check for the presence of a pond
-      call get_char_var_optional (Unknown_module,'pond_active','',g%pond_active,numvals)
-
-      if (numvals.eq.0) then
-          g%pond_active = 'no'
-      endif
-
+      call get_char_var_optional (Unknown_module,'pond_active','()',string,numvals)
+      if (numvals .gt. 0) then
+         g%pond_active = string
+      endif  
 
    call pop_routine (my_name)
    return
@@ -2007,7 +2005,7 @@ subroutine soiln2_set_my_variable (variable_name)
       end do
 
    elseif (variable_name .eq. 'n_reduction') then
-
+      string = ' '
       call collect_char_var (variable_name, '()', string, numvals)
       if (string(1:2) .eq. 'on') then
          g%p_n_reduction = on
@@ -5207,72 +5205,72 @@ subroutine doInit1()
    dummy = add_registration_with_units(getVariableReg, 'salb', floatTypeDDML, '')
 
    ! variables we own and make available to other modules.
-   dummy = add_registration_with_units(respondToGetSetReg, 'no3', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_no3_net', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetSetReg, 'no3ppm', floatarrayTypeDDML, 'mg/kg')
-   dummy = add_registration_with_units(respondToGetReg, 'no3_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetSetReg, 'nh4', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_nh4_net', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetSetReg, 'nh4ppm', floatarrayTypeDDML, 'mg/kg')
-   dummy = add_registration_with_units(respondToGetReg, 'nh4_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetSetReg, 'urea', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_urea_hydrol', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'excess_nh4', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_n', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_n_pool1', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_n_pool2', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_n_pool3', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'hum_n', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'biom_n', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_c', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'num_fom_types', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'fr_carb', floatTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'fr_cell', floatTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'fr_lign', floatTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_c_pool1', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_c_pool2', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'fom_c_pool3', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'hum_c', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'biom_c', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'carbon_tot', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'oc', floatarrayTypeDDML, '%')
-   dummy = add_registration_with_units(respondToGetReg, 'nh4_transform_net', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'no3_transform_net', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_res_nh4_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_n_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_biom_n_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_hum_n_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_res_no3_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_no3_dnit', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_nh4_dnit', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'n2o_atm', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'nit_tot', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_n_min', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_n_min_res', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_n_min_tot', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dnit', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_c_loss_in_sed', floatTypeDDML, 'kg')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_n_loss_in_sed', floatTypeDDML, 'kg')
-   dummy = add_registration_with_units(respondToGetReg, 'st', floatarrayTypeDDML, 'oC')
-   dummy = add_registration_with_units(respondToGetSetReg, 'org_c_pool', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetSetReg, 'org_n', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_hum', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_biom', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_atm', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_hum_c_biom', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_hum_c_atm', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_biom_c_hum', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_biom_c_atm', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_res_c_biom', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_res_c_hum', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_res_c_atm', floatTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_pool1', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_pool2', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'dlt_fom_c_pool3', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'soilp_dlt_res_c_atm', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'soilp_dlt_res_c_hum', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'soilp_dlt_res_c_biom', floatarrayTypeDDML, 'kg/ha')
-   dummy = add_registration_with_units(respondToGetReg, 'soilp_dlt_org_p', floatarrayTypeDDML, 'kg/ha')
+   dummy = add_reg(respondToGetSetReg, 'no3', floatarrayTypeDDML, 'kg/ha', 'Nitrate nitrogen')
+   dummy = add_reg(respondToGetReg, 'dlt_no3_net', floatarrayTypeDDML, 'kg/ha', 'Net NO3 change today')
+   dummy = add_reg(respondToGetSetReg, 'no3ppm', floatarrayTypeDDML, 'mg/kg', 'Nitrate nitrogen')
+   dummy = add_reg(respondToGetReg, 'no3_min', floatarrayTypeDDML, 'kg/ha', 'Minimum allowable NO3')
+   dummy = add_reg(respondToGetSetReg, 'nh4', floatarrayTypeDDML, 'kg/ha', 'Ammonium nitrogen')
+   dummy = add_reg(respondToGetReg, 'dlt_nh4_net', floatarrayTypeDDML, 'kg/ha', 'Net NH4 change today')
+   dummy = add_reg(respondToGetSetReg, 'nh4ppm', floatarrayTypeDDML, 'mg/kg', 'Ammonium nitrogen')
+   dummy = add_reg(respondToGetReg, 'nh4_min', floatarrayTypeDDML, 'kg/ha', 'Minimum allowable NH4')
+   dummy = add_reg(respondToGetSetReg, 'urea', floatarrayTypeDDML, 'kg/ha', 'Urea nitrogen')
+   dummy = add_reg(respondToGetReg, 'dlt_urea_hydrol', floatarrayTypeDDML, 'kg/ha', 'Nitrogen moved by hydrolysis')
+   dummy = add_reg(respondToGetReg, 'excess_nh4', floatarrayTypeDDML, 'kg/ha', 'Excess N required above NH4 supply')
+   dummy = add_reg(respondToGetReg, 'fom_n', floatarrayTypeDDML, 'kg/ha', 'Nitrogen in FOM')
+   dummy = add_reg(respondToGetReg, 'fom_n_pool1', floatarrayTypeDDML, 'kg/ha', 'Nitrogen in FOM pool 1')
+   dummy = add_reg(respondToGetReg, 'fom_n_pool2', floatarrayTypeDDML, 'kg/ha', 'Nitrogen in FOM pool 2')
+   dummy = add_reg(respondToGetReg, 'fom_n_pool3', floatarrayTypeDDML, 'kg/ha', 'Nitrogen in FOM pool 3')
+   dummy = add_reg(respondToGetReg, 'hum_n', floatarrayTypeDDML, 'kg/ha', 'Humic nitrogen')
+   dummy = add_reg(respondToGetReg, 'biom_n', floatarrayTypeDDML, 'kg/ha', 'Biomass nitrogen')
+   dummy = add_reg(respondToGetReg, 'fom_c', floatarrayTypeDDML, 'kg/ha', 'FOM C')
+   dummy = add_reg(respondToGetReg, 'num_fom_types', intTypeDDML, '', 'Number of FOM types')
+   dummy = add_reg(respondToGetReg, 'fr_carb', floatTypeDDML, '', 'Fraction of carbohydrate')
+   dummy = add_reg(respondToGetReg, 'fr_cell', floatTypeDDML, '', 'Fraction of cellulose' )
+   dummy = add_reg(respondToGetReg, 'fr_lign', floatTypeDDML, '', 'Fraction of lignin')
+   dummy = add_reg(respondToGetReg, 'fom_c_pool1', floatarrayTypeDDML, 'kg/ha', 'FOM C in pool1')
+   dummy = add_reg(respondToGetReg, 'fom_c_pool2', floatarrayTypeDDML, 'kg/ha', 'FOM C in pool2')
+   dummy = add_reg(respondToGetReg, 'fom_c_pool3', floatarrayTypeDDML, 'kg/ha', 'FOM C in pool3')
+   dummy = add_reg(respondToGetReg, 'hum_c', floatarrayTypeDDML, 'kg/ha', 'Humic C')
+   dummy = add_reg(respondToGetReg, 'biom_c', floatarrayTypeDDML, 'kg/ha', 'Biomass C')
+   dummy = add_reg(respondToGetReg, 'carbon_tot', floatarrayTypeDDML, 'kg/ha', 'Total carbon')
+   dummy = add_reg(respondToGetReg, 'oc', floatarrayTypeDDML, '%', 'Organic carbon')
+   dummy = add_reg(respondToGetReg, 'nh4_transform_net', floatarrayTypeDDML, 'kg/ha', 'Net NH4 transformation')
+   dummy = add_reg(respondToGetReg, 'no3_transform_net', floatarrayTypeDDML, 'kg/ha', 'Net NO3 transformation')
+   dummy = add_reg(respondToGetReg, 'dlt_res_nh4_min', floatarrayTypeDDML, 'kg/ha', 'Net NH4 transformation')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_n_min', floatarrayTypeDDML, 'kg/ha', 'Net FOM N mineralized, negative for immobilization')
+   dummy = add_reg(respondToGetReg, 'dlt_biom_n_min', floatarrayTypeDDML, 'kg/ha', 'Net biomass N mineralized')
+   dummy = add_reg(respondToGetReg, 'dlt_hum_n_min', floatarrayTypeDDML, 'kg/ha', 'Net humic N mineralized')
+   dummy = add_reg(respondToGetReg, 'dlt_res_no3_min', floatarrayTypeDDML, 'kg/ha', 'Net Residue NO3 mineralisation')
+   dummy = add_reg(respondToGetReg, 'dlt_no3_dnit', floatarrayTypeDDML, 'kg/ha', 'NO3 N denitrified')
+   dummy = add_reg(respondToGetReg, 'dlt_nh4_dnit', floatarrayTypeDDML, 'kg/ha', 'NH4 N denitrified')
+   dummy = add_reg(respondToGetReg, 'n2o_atm', floatarrayTypeDDML, 'kg/ha', 'Amount of N20 produced')
+   dummy = add_reg(respondToGetReg, 'nit_tot', floatarrayTypeDDML, 'kg/ha', 'total N in soil')
+   dummy = add_reg(respondToGetReg, 'dlt_n_min', floatarrayTypeDDML, 'kg/ha', 'Net N mineralized')
+   dummy = add_reg(respondToGetReg, 'dlt_n_min_res', floatarrayTypeDDML, 'kg/ha', 'Net Residue N mineralisation')
+   dummy = add_reg(respondToGetReg, 'dlt_n_min_tot', floatarrayTypeDDML, 'kg/ha', 'Humic N mineralized' )
+   dummy = add_reg(respondToGetReg, 'dnit', floatarrayTypeDDML, 'kg/ha', 'Denitrification')
+   dummy = add_reg(respondToGetReg, 'dlt_c_loss_in_sed', floatTypeDDML, 'kg', 'Carbon loss in sediment')
+   dummy = add_reg(respondToGetReg, 'dlt_n_loss_in_sed', floatTypeDDML, 'kg', 'N loss in sediment')
+   dummy = add_reg(respondToGetReg, 'st', floatarrayTypeDDML, 'oC', 'Surface temperature')
+   dummy = add_reg(respondToGetSetReg, 'org_c_pool', floatarrayTypeDDML, 'kg/ha','Organic C')
+   dummy = add_reg(respondToGetSetReg, 'org_n', floatarrayTypeDDML, 'kg/ha', 'Organic N')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_hum', floatarrayTypeDDML, 'kg/ha',  'Fom C converted to humic')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_biom', floatarrayTypeDDML, 'kg/ha', 'Fom C converted to biomass')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_atm', floatarrayTypeDDML, 'kg/ha',  'Fom C lost to atmosphere')
+   dummy = add_reg(respondToGetReg, 'dlt_hum_c_biom', floatarrayTypeDDML, 'kg/ha', 'Humic C converted to biomass')
+   dummy = add_reg(respondToGetReg, 'dlt_hum_c_atm', floatarrayTypeDDML, 'kg/ha',  'Humic C lost to atmosphere')
+   dummy = add_reg(respondToGetReg, 'dlt_biom_c_hum', floatarrayTypeDDML, 'kg/ha', 'Biomass C converted to humic')
+   dummy = add_reg(respondToGetReg, 'dlt_biom_c_atm', floatarrayTypeDDML, 'kg/ha', 'Biomass C lost to atmosphere')
+   dummy = add_reg(respondToGetReg, 'dlt_res_c_biom', floatarrayTypeDDML, 'kg/ha', 'Carbon from residues lost to atmosphere')
+   dummy = add_reg(respondToGetReg, 'dlt_res_c_hum', floatarrayTypeDDML, 'kg/ha',  'Carbon from residues converted to humic')
+   dummy = add_reg(respondToGetReg, 'dlt_res_c_atm', floatTypeDDML, 'kg/ha',       'Carbon from residues lost to atmosphere')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_pool1', floatarrayTypeDDML, 'kg/ha', 'delta fom C pool in fraction 1')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_pool2', floatarrayTypeDDML, 'kg/ha', 'delta fom C pool in fraction 2')
+   dummy = add_reg(respondToGetReg, 'dlt_fom_c_pool3', floatarrayTypeDDML, 'kg/ha', 'delta fom C pool in fraction 3')
+   dummy = add_reg(respondToGetReg, 'soilp_dlt_res_c_atm', floatarrayTypeDDML, 'kg/ha', 'Carbon from all residues to atmosphere')
+   dummy = add_reg(respondToGetReg, 'soilp_dlt_res_c_hum', floatarrayTypeDDML, 'kg/ha', 'Carbon from all residues to humic')
+   dummy = add_reg(respondToGetReg, 'soilp_dlt_res_c_biom', floatarrayTypeDDML, 'kg/ha', 'Carbon from all residues to biomass')
+   dummy = add_reg(respondToGetReg, 'soilp_dlt_org_p', floatarrayTypeDDML, 'kg/ha', 'variable needed by soilp in its calculations')
 
    ! settable variables
    dummy = add_registration_with_units(respondToSetReg, 'dlt_no3', floatarrayTypeDDML, 'kg/ha')
