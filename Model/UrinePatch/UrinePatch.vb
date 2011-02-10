@@ -39,6 +39,8 @@ Public Class UrinePatch
 
 
     <Input()> Private UI_SoilType As String
+    <Input()> Private dlayer As Single()      'mm
+    Private SoilDepth As Single = 1500.0 ' mm
     <Output()> Public SoilPAW As Single
     <Output()> Public SoilPAW_fac As Single
     <Output()> Public Animal_fac As Single
@@ -140,7 +142,16 @@ Public Class UrinePatch
         ElseIf UI_SoilType.ToLower = "poorlydrainedlight" Then
             SoilPAW = 93  'to 150 cm deep
         Else
-            Throw New Exception("Soil type - " & UI_SoilType & " - not allowed")
+            Dim MyPaddock As New PaddockType(Me)
+            Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep           'sw at DUL
+            Dim sw_15 As Single() = MyPaddock.SoilWater.ll15_dep         'sw at LL15 
+
+            SoilPAW = 0.0
+            Dim CumDepth As Single = 0.0
+            For z As Integer = 0 To dlayer.Length - 1
+                CumDepth += dlayer(z)
+                SoilPAW += (sw_dul(z) - sw_15(z)) * Math.Min(1.0, Math.Max(0.0, (1.0 - (CumDepth - SoilDepth) / dlayer(z))))
+            Next
         End If
         SoilPAW_fac = LinearInterp(SoilPAW, PAW_x, PAW_y)
 
