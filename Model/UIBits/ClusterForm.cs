@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+
 using ApsimFile;
 
 namespace UIBits
@@ -21,11 +23,15 @@ namespace UIBits
          VersionBox.Text = Configuration.Instance.ApsimVersion();
          FolderTextBox.Enabled = false;
          BrowseButton.Enabled = false;
+
+         string DropBoxLocation = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+                              + "\\..\\Dropbox\\Apsim\\" + Environment.UserName;
+         DropBoxLocation = Path.GetFullPath(DropBoxLocation);
+         DropBoxFolder.Text = DropBoxLocation;
          }
 
-      public string Password { get { return PasswordBox.Text; } }
       public string Version { get { return VersionBox.Text; } }
-      public string Email { get { return EmailBox.Text; } }
+      public string DropFolder { get { return DropBoxFolder.Text; } }
       public string FolderOfFiles { get { return FolderTextBox.Text; } }
 
       private void AllSimsCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -58,6 +64,16 @@ namespace UIBits
          AllSimsCheckBox.Checked = false;
          FolderTextBox.Enabled = true;
          BrowseButton.Enabled = true;
+
+         }
+
+      private void OnBrowseButton2Click(object sender, EventArgs e)
+         {
+         FolderBrowserDialog f = new FolderBrowserDialog();
+         if (f.ShowDialog() == DialogResult.OK)
+            {
+            DropBoxFolder.Text = f.SelectedPath;
+            }
 
          }
 

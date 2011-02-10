@@ -105,10 +105,10 @@ Public Class ApsimUIActions
             If F.ShowDialog = DialogResult.OK Then
                 Cursor.Current = Cursors.WaitCursor
                 If F.FolderOfFiles = "" Then
-                    ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.Password, F.Email, F.Version)
-                    MessageBox.Show("You job has been successfully submitted to the cluster. You will be notified by email when complete.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+               ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.DropFolder, F.Version)
+               MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Else
-                    Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.Password, F.Email, F.Version)
+               Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.DropFolder, F.Version)
                     ' Create a msg to show to user.
                     Dim msg As String = ""
                     For Each FileName As String In FilesRun

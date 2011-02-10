@@ -29,11 +29,9 @@
       private void InitializeComponent()
          {
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ClusterForm));
-         this.label2 = new System.Windows.Forms.Label();
-         this.PasswordBox = new System.Windows.Forms.TextBox();
          this.label3 = new System.Windows.Forms.Label();
          this.label4 = new System.Windows.Forms.Label();
-         this.EmailBox = new System.Windows.Forms.TextBox();
+         this.DropBoxFolder = new System.Windows.Forms.TextBox();
          this.OkButton = new System.Windows.Forms.Button();
          this.CancelButton = new System.Windows.Forms.Button();
          this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
@@ -44,51 +42,36 @@
          this.BrowseButton = new System.Windows.Forms.Button();
          this.label6 = new System.Windows.Forms.Label();
          this.VersionBox = new System.Windows.Forms.TextBox();
+         this.folderBrowserDialog2 = new System.Windows.Forms.FolderBrowserDialog();
+         this.BrowseButton2 = new System.Windows.Forms.Button();
          this.groupBox1.SuspendLayout();
          this.SuspendLayout();
-         // 
-         // label2
-         // 
-         this.label2.AutoSize = true;
-         this.label2.Location = new System.Drawing.Point(16, 16);
-         this.label2.Name = "label2";
-         this.label2.Size = new System.Drawing.Size(56, 13);
-         this.label2.TabIndex = 1;
-         this.label2.Text = "Password:";
-         // 
-         // PasswordBox
-         // 
-         this.PasswordBox.Location = new System.Drawing.Point(81, 15);
-         this.PasswordBox.Name = "PasswordBox";
-         this.PasswordBox.Size = new System.Drawing.Size(100, 20);
-         this.PasswordBox.TabIndex = 2;
-         this.PasswordBox.UseSystemPasswordChar = true;
          // 
          // label3
          // 
          this.label3.AutoSize = true;
-         this.label3.Location = new System.Drawing.Point(19, 263);
+         this.label3.Location = new System.Drawing.Point(33, 234);
          this.label3.Name = "label3";
-         this.label3.Size = new System.Drawing.Size(75, 13);
+         this.label3.Size = new System.Drawing.Size(38, 13);
          this.label3.TabIndex = 3;
-         this.label3.Text = "Email address:";
+         this.label3.Text = "Name:";
          // 
          // label4
          // 
          this.label4.AutoSize = true;
-         this.label4.Location = new System.Drawing.Point(16, 235);
+         this.label4.Location = new System.Drawing.Point(9, 206);
          this.label4.Name = "label4";
-         this.label4.Size = new System.Drawing.Size(464, 13);
+         this.label4.Size = new System.Drawing.Size(425, 13);
          this.label4.TabIndex = 4;
-         this.label4.Text = "You will be informed by email when your job is completed and where you can retrie" +
-             "ve the outputs.";
+         this.label4.Text = "Enter the dropbox directory where you want to send your cluster run and receive o" +
+             "utputs.";
          // 
-         // EmailBox
+         // DropBoxFolder
          // 
-         this.EmailBox.Location = new System.Drawing.Point(100, 260);
-         this.EmailBox.Name = "EmailBox";
-         this.EmailBox.Size = new System.Drawing.Size(270, 20);
-         this.EmailBox.TabIndex = 5;
+         this.DropBoxFolder.Location = new System.Drawing.Point(77, 231);
+         this.DropBoxFolder.Name = "DropBoxFolder";
+         this.DropBoxFolder.Size = new System.Drawing.Size(270, 20);
+         this.DropBoxFolder.TabIndex = 5;
          // 
          // OkButton
          // 
@@ -118,7 +101,7 @@
          this.groupBox1.Controls.Add(this.BrowseButton);
          this.groupBox1.Controls.Add(this.label6);
          this.groupBox1.Controls.Add(this.VersionBox);
-         this.groupBox1.Location = new System.Drawing.Point(19, 42);
+         this.groupBox1.Location = new System.Drawing.Point(12, 13);
          this.groupBox1.Name = "groupBox1";
          this.groupBox1.Size = new System.Drawing.Size(468, 166);
          this.groupBox1.TabIndex = 3;
@@ -187,19 +170,31 @@
          this.VersionBox.Size = new System.Drawing.Size(60, 20);
          this.VersionBox.TabIndex = 21;
          // 
+         // BrowseButton2
+         // 
+         this.BrowseButton2.AutoSize = true;
+         this.BrowseButton2.Image = ((System.Drawing.Image)(resources.GetObject("BrowseButton2.Image")));
+         this.BrowseButton2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         this.BrowseButton2.Location = new System.Drawing.Point(353, 231);
+         this.BrowseButton2.Name = "BrowseButton2";
+         this.BrowseButton2.Size = new System.Drawing.Size(28, 23);
+         this.BrowseButton2.TabIndex = 22;
+         this.BrowseButton2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+         this.BrowseButton2.UseVisualStyleBackColor = true;
+         this.BrowseButton2.Click += new System.EventHandler(this.OnBrowseButton2Click);
+         // 
          // ClusterForm
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(603, 310);
-         this.Controls.Add(this.PasswordBox);
+         this.ClientSize = new System.Drawing.Size(603, 265);
+         this.Controls.Add(this.BrowseButton2);
          this.Controls.Add(this.groupBox1);
          this.Controls.Add(this.CancelButton);
          this.Controls.Add(this.OkButton);
          this.Controls.Add(this.label4);
          this.Controls.Add(this.label3);
-         this.Controls.Add(this.EmailBox);
-         this.Controls.Add(this.label2);
+         this.Controls.Add(this.DropBoxFolder);
          this.Name = "ClusterForm";
          this.Text = "Run APSIM on the Toowoomba cluster";
          this.Load += new System.EventHandler(this.OnLoad);
@@ -212,11 +207,9 @@
 
       #endregion
 
-      private System.Windows.Forms.Label label2;
-      private System.Windows.Forms.TextBox PasswordBox;
       private System.Windows.Forms.Label label3;
       private System.Windows.Forms.Label label4;
-      private System.Windows.Forms.TextBox EmailBox;
+      private System.Windows.Forms.TextBox DropBoxFolder;
       private System.Windows.Forms.Button OkButton;
       private System.Windows.Forms.Button CancelButton;
       private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
@@ -227,5 +220,7 @@
       private System.Windows.Forms.TextBox FolderTextBox;
       private System.Windows.Forms.CheckBox AllFilesCheckBox;
       private System.Windows.Forms.CheckBox AllSimsCheckBox;
+      private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog2;
+      private System.Windows.Forms.Button BrowseButton2;
       }
    }

@@ -13,7 +13,7 @@ using System.Net.Mail;
 
 public class ToowoombaCluster
    {
-   public static List<string> RunOnCluster(string FolderName, string Password, string EmailAddress, string ApsimVersion)
+   public static List<string> RunOnCluster(string FolderName, string DropBoxFolder, string ApsimVersion)
       {
       List<string> FilesToRun = new List<string>();
       Utility.FindFiles(FolderName, "*.apsim", ref FilesToRun, false);
@@ -22,54 +22,44 @@ public class ToowoombaCluster
          ApsimFile.ApsimFile f = new ApsimFile.ApsimFile(FileName);
          List<string> SimPaths = new List<string>();
          ApsimFile.ApsimFile.ExpandSimsToRun(f.RootComponent, ref SimPaths);
-         RunOnCluster(f, SimPaths, Password, EmailAddress, ApsimVersion);
+         RunOnCluster(f, SimPaths, DropBoxFolder, ApsimVersion);
          }
       return FilesToRun;
       }
 
 
-   public static void RunOnCluster(ApsimFile.ApsimFile F, List<string> SimulationPaths, string Password, string EmailAddress, string ApsimVersion)
+   public static void RunOnCluster(ApsimFile.ApsimFile F, List<string> SimulationPaths, string DropBoxFolder, string ApsimVersion)
       {
-      string UserName = EmailAddress;
-      if (!UserName.Contains("@"))
-         throw new Exception("Invalid email address: " + EmailAddress);
-      UserName = UserName.Remove(UserName.IndexOf("@"));
-
       // Keep track of all files that need to go to the cluster.
       List<string> FilesToSend = new List<string>();
 
       // Create a .sub file + sim files.
-      //string SubFileName = Path.GetTempPath() + "Job.su~";
-      //CreateSubFile(F, SubFileName, SimulationPaths, ref FilesToSend);
+      string SubFileName = Path.GetTempPath() + "Job.sub";
+      CreateSubFile(F, SubFileName, SimulationPaths, ref FilesToSend);
 
       // Modify the .apsim file, fixing references to filenames in other directories.
       ModifyApsimFile(F.FileName, ref FilesToSend);
-      FilesToSend.Add(F.FileName);
-
-      // Create a job file.
-      string JobFileName = Path.GetTempPath() + "Job.xml";
-      CreateJobFile(F, JobFileName, EmailAddress, ApsimVersion, ref FilesToSend);
 
       // Create a RunApsim.bat file
       string RunApsimFileName = Path.GetTempPath() + "Job.bat";
       CreateRunApsimFile(RunApsimFileName, ApsimVersion, ref FilesToSend);
 
       // Zip the whole lot up.
-      string ZipFileName = CalcZipFileName(UserName);
+      string ZipFileName = CalcZipFileName();
       UIUtility.Zip.ZipFiles(FilesToSend, ZipFileName, "");
 
-      // Email the file to the run machine.
-      //SendEmailToRunMachine(ZipFileName, EmailAddress)
-      SendToWebService(ZipFileName, Password);
+      // Put the file on DropBox
+      Directory.CreateDirectory(DropBoxFolder);
+      File.Copy(ZipFileName, DropBoxFolder + "\\" + ZipFileName);
 
       // Remove temporary files.
-      File.Delete(JobFileName);
       File.Delete(RunApsimFileName);
       File.Delete(ZipFileName);
 
       // Get the instance of ApsimFile to resave itself so that we overwrite our mods to the file.
       F.Save();
       }
+
 
    private static void ModifyApsimFile(string FileName, ref List<string> FilesToSend)
       {
@@ -84,7 +74,7 @@ public class ToowoombaCluster
              !FileNameNode.ParentNode.Name.Contains("ApsimFileReader"))
             {
             string ReferencedFileName = Configuration.RemoveMacros(FileNameNode.InnerText).ToLower();
-            if (File.Exists(ReferencedFileName) && !FilesToSend.Contains(ReferencedFileName))
+            if (File.Exists(ReferencedFileName) && StringManip.IndexOfCaseInsensitive(FilesToSend, ReferencedFileName) == -1)
                FilesToSend.Add(ReferencedFileName);
             FileNameNode.InnerText = Path.GetFileName(FileNameNode.InnerText);
             }
@@ -174,7 +164,7 @@ public class ToowoombaCluster
       XmlHelper.SetAttribute(ClusterNode, "foreach", "*.sim");
 
       // zip up the outputs.
-      string ZipFileName = CalcZipFileName(UserName); 
+      string ZipFileName = CalcZipFileName(); 
       XmlHelper.SetValue(JobNode, "Zip/To", ZipFileName);
 
       // ftp the zip outputs to apsrunet2.
@@ -194,17 +184,17 @@ public class ToowoombaCluster
       Doc.Save(JobFileName);
       }
 
-   private static string CalcZipFileName(string UserName)
+   private static string CalcZipFileName()
       {
-      string ZipFileName = UserName + "(" + DateAndTime.Now.ToShortDateString() + " " + DateAndTime.Now.ToShortTimeString() + ").zip";
-      ZipFileName = ZipFileName.Replace(" ", "_");
+      string ZipFileName = DateAndTime.Now.ToShortDateString() + "(" + DateAndTime.Now.ToShortTimeString() + ").zip";
+      ZipFileName = ZipFileName.Replace(" ", ".");
       ZipFileName = ZipFileName.Replace("/", ".");
       ZipFileName = ZipFileName.Replace(":", ".");
 
       return ZipFileName;
       }
 
-   public static void SendToWebService(string ZipFileName, string Password)
+   private static void SendToWebService(string ZipFileName, string Password)
       {
       FileInfo fInfo = new FileInfo(ZipFileName);
       long numBytes = fInfo.Length;
@@ -222,4 +212,5 @@ public class ToowoombaCluster
          throw new Exception("Error: " + msg);
          }
       }
+
    }
