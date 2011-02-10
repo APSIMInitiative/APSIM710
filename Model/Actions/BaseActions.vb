@@ -326,10 +326,13 @@ Public Class BaseActions
     End Sub
 
 
-    Public Shared Sub MakeConcrete(ByVal Controller As BaseController)
-        Controller.Selection.MakeConcrete()
-    End Sub
+   Public Shared Sub Unlink(ByVal Controller As BaseController)
+      Controller.Selection.MakeConcrete()
+   End Sub
 
+   Public Shared Sub UnlinkRecursively(ByVal Controller As BaseController)
+      Controller.Selection.MakeConcreteRecursively()
+   End Sub
 
 End Class
 

@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 25;
+      public static int CurrentVersion = 26;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -57,7 +57,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion22),
                                           new UpgraderDelegate(ToVersion23),
                                           new UpgraderDelegate(ToVersion24),
-                                          new UpgraderDelegate(ToVersion25)
+                                          new UpgraderDelegate(ToVersion25),
+                                          new UpgraderDelegate(ToVersion26)
                                        };
          if (Data != null)
             {
@@ -1671,6 +1672,27 @@ namespace ApsimFile
          XmlHelper.SetAttribute(ThicknessNode, "units", "mm");
          }
 
+      private static void ToVersion26(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // 1. Remove an unwanted "croppropertyname" attribute from <cultivar>
+         // 2. change the name attribute of <category> to description.
+         // ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "ui")
+            {
+            foreach (XmlNode Category in XmlHelper.ChildNodes(Node, "category"))
+               {
+               XmlHelper.SetAttribute(Category, "type", "category");
+               if (XmlHelper.Attribute(Category, "name") != "")
+                  XmlHelper.SetAttribute(Category, "description", XmlHelper.Attribute(Category, "name"));
+               XmlHelper.DeleteAttribute(Category, "name");
+               }
+
+            foreach (XmlNode Cultivar in XmlHelper.ChildNodes(Node, "cultivar"))
+               XmlHelper.DeleteAttribute(Cultivar, "croppropertyname");
+            }
+         }
 
       }
    }

@@ -252,8 +252,7 @@ Public Class RuleUI
         For Each Page As TabPage In TabControl.TabPages
             If Page.Text <> "Properties" Then
                 Dim Script As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement("script"))
-                XmlHelper.SetName(Script, Page.Text)
-                Dim ScriptBox As QWhale.Editor.SyntaxEdit = Page.Controls.Item(0)
+            Dim ScriptBox As QWhale.Editor.SyntaxEdit = Page.Controls.Item(0)
                 XmlHelper.SetValue(Script, "text", ScriptBox.Text)
 
                 Dim EventNames As String() = Page.Text.Split(",".ToCharArray())

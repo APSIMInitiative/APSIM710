@@ -533,6 +533,16 @@ namespace ApsimFile
             MyFile.PublishComponentChanged(this);
             }
          }
+      public void MakeConcreteRecursively()
+         {
+         // ---------------------------------------------------------------------
+         // Convert this component from a shortcut node to a concrete node
+         // PLUS all child components.
+         // ---------------------------------------------------------------------
+         MakeConcrete();
+         foreach (Component Child in ChildNodes)
+            Child.MakeConcreteRecursively();
+         }
       public Component FindContainingPaddock()
          {
          Component Paddock = this;
@@ -560,6 +570,18 @@ namespace ApsimFile
                return FoundComponent;
             }
          return null;
+         }
+      public void FindRecursively(string ComponentType, ref List<Component> Matches)
+         {
+         // ------------------------------------------------------
+         // Recursively locates all component of a specified type
+         // ------------------------------------------------------
+
+         if (ComponentType.ToLower() == Type.ToLower())
+            Matches.Add(this);
+
+         foreach (Component Child in ChildNodes)
+            Child.FindRecursively(ComponentType, ref Matches);
          }
       public void Replace(string Xml)
          {
@@ -671,7 +693,27 @@ namespace ApsimFile
          return DataSources;
          }
 
-
+      public void ConvertToShortcutsUsingBase(Component Base)
+         {
+         if (ShortCutTo == null)
+            {
+            // If this node is a simulation or paddock then link the simulation and 
+            // not worry about the different name. The call to IsEqual below will 
+            // test the name attributes and find them different.
+            if (Type == "area" || Type == "simulation" || XmlHelper.IsEqual(ContentsAsXML, Base.ContentsAsXML))
+               {
+               MyContents = "";
+               MyShortCutTo = Base;
+               MyFile.PublishComponentChanged(this);
+               }
+            }
+         foreach (Component Child in ChildNodes)
+            {
+            Component RelatedBaseComponent = Base.Find(Child.Name);
+            if (RelatedBaseComponent != null)
+               Child.ConvertToShortcutsUsingBase(RelatedBaseComponent);
+            }
+         }
 
       }
    }

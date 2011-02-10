@@ -292,20 +292,37 @@
             </call>
          </OnInvoke>
       </CollapseAll>
-      <MakeConcrete>
+      <Unlink>
          <text>Unlink</text>
-         <Location>AllNodes</Location>
-         <Description>Turn link node into a non-link node</Description>
          <SmallIcon>%apsim%\UserInterface\Images\link_delete16.png</SmallIcon>
+      </Unlink>
+      <UnlinkThis>
+         <text>Unlink this node</text>
+         <Location>AllNodes</Location>
+         <Description>Unlink just this node</Description>
+         
          <DisabledWhen>ReadOnly</DisabledWhen>
          <DisabledWhen>NotShortcut</DisabledWhen>
          <OnInvoke>
             <call>
                <class>Actions.BaseActions</class>
-               <method>MakeConcrete</method>
+               <method>Unlink</method>
             </call>
          </OnInvoke>
-      </MakeConcrete>
+      </UnlinkThis>
+      <UnlinkRecursively>
+         <text>Unlink all child nodes.</text>
+         <Location>AllNodes</Location>
+         <Description>Unlink this node and all child nodes</Description>
+         <DisabledWhen>ReadOnly</DisabledWhen>
+         <DisabledWhen>NotShortcut</DisabledWhen>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>UnlinkRecursively</method>
+            </call>
+         </OnInvoke>
+      </UnlinkRecursively>      
       <Enable>
          <Text>Enable</Text>
          <Description>Enable this node in an APSIM run</Description>
@@ -560,6 +577,20 @@
             </call>
          </OnInvoke>
       </Cluster>      
+      <AnalyseForLinkages>
+         <text>Link all if possible</text>
+         <Description>Use selected node as a base to try and create linked nodes</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\link16.png</SmallIcon>
+         <AppliesTo>Simulation</AppliesTo>
+         <AppliesTo>Area</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.ApsimUIActions</class>
+               <method>LinkWherePossible</method>
+            </call>
+         </OnInvoke>
+      </AnalyseForLinkages>
+     
    </Actions>
 
 
@@ -611,7 +642,12 @@
       <Item>ExpandAll</Item>
       <Item>Enable</Item>
       <Item>Disable</Item>
-      <Item>MakeConcrete</Item>
+      <Separator/>
+      <DropDownItem action="Unlink">
+         <Item>UnlinkThis</Item>
+         <Item>UnlinkRecursively</Item>
+      </DropDownItem>
+      <Item>AnalyseForLinkages</Item>
       <Separator/>
       <Item>AddFolder</Item>
       <Item>Print</Item>

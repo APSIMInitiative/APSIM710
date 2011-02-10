@@ -1,4 +1,4 @@
-<folder version="25" name="Simulations">
+<folder version="26" name="Simulations">
   <simulation name="Maize P">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/09/1988</start_date>
@@ -23,14 +23,14 @@
       <folder name="Manager folder">
         <manager name="Sow using a variable rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-oct</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-feb</date2>
             <must_sow type="yesno" description="Must sow? : ">no</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">50</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -58,10 +58,10 @@
         </manager>
         <manager name="Fertilise N at sowing">
           <ui>
-            <category description="When should fertiliser be applied" />
+            <category description="When should fertiliser be applied" type="category" />
             <modulename type="modulename" description="On which module should the event come from : ">maize</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" />
+            <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">50</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
@@ -75,10 +75,10 @@
         </manager>
         <manager name="Fertilise with Phosphorus at sowing">
           <ui>
-            <category description="When should fertiliser be applied" />
+            <category description="When should fertiliser be applied" type="category" />
             <modulename type="modulename" description="On which module should the event come from : ">maize</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" />
+            <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
             <fert_type_sow type="list" listvalues="rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">broadcast_p</fert_type_sow>
@@ -92,7 +92,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
+            <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
           </ui>
           <script name="end_of_day">

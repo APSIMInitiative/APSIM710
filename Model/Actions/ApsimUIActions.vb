@@ -261,6 +261,21 @@ Public Class ApsimUIActions
 
       End If
    End Sub
+
+
+   Public Shared Sub LinkWherePossible(ByVal Controller As BaseController)
+      Cursor.Current = Cursors.WaitCursor
+      Dim Base As ApsimFile.Component = Controller.Selection
+      Dim Siblings As New List(Of ApsimFile.Component)
+      Base.Parent.FindRecursively(Base.Type, Siblings)
+
+      For Each Sibling As ApsimFile.Component In Siblings
+         If Sibling.FullPath <> Base.FullPath Then
+            Sibling.ConvertToShortcutsUsingBase(Base)
+         End If
+      Next
+      Cursor.Current = Cursors.Default
+   End Sub
 End Class
 
 

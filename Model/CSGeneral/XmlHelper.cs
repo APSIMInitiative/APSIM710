@@ -531,6 +531,78 @@ namespace CSGeneral
             return EnsureNodeExists(NewChild, NodePath.Substring(PosDelimiter + 1));
          }
 
+      public static bool IsEqual(XmlNode Node1, XmlNode Node2)
+         {
+         // Go through each attribute and each child node and make sure everything is the same.
+         // By doing this, attributes and child nodes can be in different orders but this method
+         // will still return true.
+         if (XmlHelper.ChildNodes(Node1, "").Count > 0)
+            {
+            if (Node1.Attributes.Count != Node2.Attributes.Count)
+               return false;
+            foreach (XmlAttribute Attribute1 in Node1.Attributes)
+               {
+               string Attribute2Value = XmlHelper.Attribute(Node2, Attribute1.Name);
+               if (Attribute1.InnerText != Attribute2Value)
+                  return false;
+               }
+
+            // Check child nodes.
+            List<XmlNode> Node1Children = XmlHelper.ChildNodes(Node1, "");
+            if (Node1Children.Count != XmlHelper.ChildNodes(Node2, "").Count)
+               return false;
+
+            // Some child nodes need to be checked sequentially because they don't have
+            // a "name" attribute e.g. <Layer> and <Script>
+            string[] SequentialNodeTypes = new string[] { "Layer", "script" };
+
+            // Perform lookup comparison for all non sequential nodes.
+            foreach (XmlNode Child1 in XmlHelper.ChildNodes(Node1, ""))
+               {
+               if (Array.IndexOf(SequentialNodeTypes, Child1.Name) == -1)
+                  {
+                  XmlNode Child2 = XmlHelper.ChildByNameAndType(Node2, XmlHelper.Name(Child1), Child1.Name);
+                  if (Child2 == null)
+                     return false;
+                  if (!XmlHelper.IsEqual(Child1, Child2))
+                     return false;
+                  }
+               }
+
+            // Now go and compare all sequential node types.
+            foreach (string SequentialType in SequentialNodeTypes)
+               {
+               if (!XmlHelper.IsEqualSequentially(Node1, Node2, SequentialType))
+                  return false;
+               }
+
+            return true;
+            }
+         else
+            {
+            double Value1, Value2;
+            if (double.TryParse(Node1.InnerText, out Value1) &&
+                double.TryParse(Node2.InnerText, out Value2))
+               return MathUtility.FloatsAreEqual(Value1, Value2);
+            else
+               return Node1.InnerText == Node2.InnerText;
+            }
+         }
+
+      private static bool IsEqualSequentially(XmlNode Node1, XmlNode Node2, string ChildType)
+         {
+         List<XmlNode> Children1 = XmlHelper.ChildNodes(Node1, ChildType);
+         List<XmlNode> Children2 = XmlHelper.ChildNodes(Node2, ChildType);
+         if (Children1.Count != Children2.Count)
+            return false;
+         for (int i = 0; i < Children1.Count; i++)
+            {
+            if (!XmlHelper.IsEqual(Children1[i], Children2[i]))
+               return false;
+            }
+         return true;
+         }
+
       }
    }
 
