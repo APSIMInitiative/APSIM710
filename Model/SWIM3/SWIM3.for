@@ -209,6 +209,7 @@
          sequence
          character        evap_source*50
          character        echo_directives*5
+         character        diagnostics*3
          real             salb
 
          double precision dlayer(0:M)
@@ -529,7 +530,16 @@ c     :              1d0)
      :              '(??)',
      :              p%echo_directives,
      :              numvals)
-
+     
+      call Read_char_var_optional (
+     :              parameters_section,
+     :              'diagnostics',
+     :              '()',
+     :              p%diagnostics,
+     :              numvals)
+      if (numvals.eq.0) then
+         p%diagnostics='yes'
+      endif
 
             call Read_double_array (
      :              parameters_section,
@@ -2047,13 +2057,6 @@ c     :              / (p%c(i) * Log10(-p%psid(i))**(p%c(i) - 1d0))
          call apswim_reset_water_balance (2,g%psi)
       endif
 
-      ! Calculate the solute/soil parameters from inputs
-
-      do 40 node = 0,p%n
-         do 30 solnum = 1,p%num_solutes
-            p%ex(solnum,node) = p%rhob(node)*p%exco(solnum,node)
-   30    continue
-   40 continue
 
       ! Calculate Water Table If Required
       if (p%ibbc.eq.1) then
@@ -2901,8 +2904,8 @@ cnh
 
 *+  Initial Data Values
       double precision psio(num_psio)
-      data psio/-1.d-2,-10.d0,-100.d0,-1000.d0,-15000.d0,-1.d5,-1.d6
-     :           ,-1d7/
+c      data psio/-1.d-2,-10.d0,-100.d0,-1000.d0,-15000.d0,-1.d5,-1.d6
+c     :           ,-1d7/
       data psio/-1.d-2,-10.d0,-25.d0,-100.d0,-1000.d0,-15000.d0,-1.d6
      :           ,-1d7/   
 
@@ -3182,25 +3185,6 @@ c      eqr0  = 0.d0
       ! No storage of water on soil surface
       p%isbc = 0
 
-
-      p%solute_names(1) = 'no3'
-      p%solute_names(2) = 'nh4'
-      p%solute_names(3) = 'urea'
-      p%num_solutes = 3
-      
-      call get_real_array_optional (
-     :           unknown_module,
-     :           'cl',
-     :           M+1,
-     :           '()',
-     :           temp,
-     :           numvals,
-     :           0e0,
-     :           1e6)      
-c      if (numvals.gt.0) then
-         p%solute_names(4) = 'cl'      
-         p%num_solutes = 4
-c      endif
       return
       end subroutine
 
@@ -3583,51 +3567,6 @@ c      endif
      :           0d0,
      :           10d0)
      
-
-      ! Now find what solutes are out there and assign them the relevant
-      ! ----------------------------------------------------------------
-      !                solute movement parameters
-      !                --------------------------
-
-      do 200 solnum = 1, p%num_solutes
-
-         temp(:)=0d0
-         call Read_double_array(
-     :           solute_section,
-     :           Trim(p%solute_names(solnum))//'Exco',
-     :           M+1,
-     :           '()',
-     :           temp,
-     :           numvals,
-     :           0d0,
-     :           15000d0)
-         p%exco(solnum,0:M)=temp(0:M)
-         temp(:)=0d0
-         call Read_double_array(
-     :           solute_section,
-     :           Trim(p%solute_names(solnum))//'FIP',
-     :           M+1,
-     :           '()',
-     :           temp,
-     :           numvals,
-     :           0d0,
-     :           15000d0)
-         p%fip(solnum,0:M)=temp(0:M)
-
-
-         call Read_double_var(
-     :           solute_section,
-     :           'WaterTable'//Trim(p%solute_names(solnum)),
-     :           '(ppm)',
-     :           p%cslgw(solnum),
-     :           numvals,
-     :           0d0,
-     :           10d0)
-     
-           
-               p%dcon(solnum) = c%d0(solnum)*p%a
-
-  200 continue
 
       return
       end subroutine
@@ -5140,29 +5079,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
      :               0d0,
      :               1d4)
      
-      ! Solute Constants
-      ! ================
-      
-      do 100 solnum = 1, p%num_solutes
-         call Read_double_var (
-     :              section_name,
-     :              Trim(p%solute_names(solnum))//'slos',
-     :              '()',
-     :              c%slos(solnum),
-     :              numvals,
-     :               0d0,
-     :               1d4)
-         call Read_double_var (
-     :              section_name,
-     :              Trim(p%solute_names(solnum))//'d0',
-     :              '()',
-     :              c%d0(solnum),
-     :              numvals,
-     :               0d0,
-     :               1d4)
-      
-  100 continue
-
      
       return
       end subroutine
@@ -5804,6 +5720,7 @@ cnh      end if
       double precision f
       double precision dfdCw
       logical          solved
+      character        message*200
 
 *- Implementation Section ----------------------------------
 
@@ -5855,8 +5772,14 @@ cnh      end if
       endif
 
       if (.not.solved) then
-         call fatal_error (err_internal,
-     :           'APSwim failed to solve for freundlich isotherm')
+         write(message,*) 
+     :     'APSwim failed to solve for freundlich isotherm for '
+     :     //trim(p%solute_names(solnum))//new_line
+     :     ,'FIP=',p%fip(solnum,node)
+     :     ,'Exco=',p%ex(solnum,node)
+     :     ,trim(p%solute_names(solnum))//'=',Ctot
+     
+         call fatal_error (err_internal,message)
          apswim_solve_freundlich = ddivide (Ctot, g%th(node), 0.d0)
 
       else
@@ -6601,6 +6524,8 @@ cnh      end if
 
 *- Implementation Section ----------------------------------
 
+      if (p%diagnostics.eq.'yes') then
+
       string =     '     APSwim Numerical Diagnostics'
       call write_string (string)
 
@@ -6632,6 +6557,9 @@ cnh      end if
      :            //    '----------------------------------'
       call write_string (string)
 
+
+      endif
+      
       return
       end subroutine
 
@@ -6734,10 +6662,12 @@ cnh      end if
 
 *+  Local Variables
       integer numvals
+      integer node
       character names(nsol)*32
       integer sender
       integer counter
       integer solnum
+      double precision temp(0:M)
 
 *- Implementation Section ----------------------------------
 
@@ -6758,10 +6688,75 @@ cnh      end if
 
       do 100 counter = 1, numvals
 
-         solnum = apswim_solute_number (names(counter))
+         if ((names(counter).eq.'no3').or.
+     :       (names(counter).eq.'nh4').or.
+     :       (names(counter).eq.'urea').or.
+     :       (names(counter).eq.'cl')) then
+            p%num_solutes = p%num_solutes + 1
+            p%solute_names(p%num_solutes) = names(counter)
+            g%solute_owners(p%num_solutes) = sender
 
-         if (solnum.ne.0) then
-            g%solute_owners(solnum) = sender
+         call Read_double_var (
+     :              'constants',
+     :              Trim(names(counter))//'slos',
+     :              '()',
+     :              c%slos(p%num_solutes),
+     :              numvals,
+     :               0d0,
+     :               1d4)
+         call Read_double_var (
+     :              'constants',
+     :              Trim(names(counter))//'d0',
+     :              '()',
+     :              c%d0(p%num_solutes),
+     :              numvals,
+     :               0d0,
+     :               1d4)
+      
+
+         temp(:)=0d0
+         call Read_double_array(
+     :           solute_section,
+     :           Trim(names(counter))//'Exco',
+     :           M+1,
+     :           '()',
+     :           temp,
+     :           numvals,
+     :           0d0,
+     :           15000d0)
+         p%exco(p%num_solutes,0:M)=temp(0:M)
+         
+         temp(:)=0d0
+         call Read_double_array(
+     :           solute_section,
+     :           Trim(names(counter))//'FIP',
+     :           M+1,
+     :           '()',
+     :           temp,
+     :           numvals,
+     :           0d0,
+     :           15000d0)
+         p%fip(p%num_solutes,0:M)=temp(0:M)
+
+
+         call Read_double_var(
+     :           solute_section,
+     :           'WaterTable'//Trim(names(counter)),
+     :           '(ppm)',
+     :           p%cslgw(p%num_solutes),
+     :           numvals,
+     :           0d0,
+     :           10d0)
+     
+           
+               p%dcon(p%num_solutes) = c%d0(p%num_solutes)*p%a
+
+         do 40 node = 0,p%n
+            p%ex(p%num_solutes,node) = p%rhob(node)
+     :         *p%exco(p%num_solutes,node)
+   40    continue
+
+           
          else
              ! not a run_solute
             call Write_string (
