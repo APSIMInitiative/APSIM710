@@ -75,6 +75,7 @@ namespace UIBits
          CellDoubleClick += new DataGridViewCellEventHandler(OnCellDoubleClick);
          CellClick += new DataGridViewCellEventHandler(OnCellClick);
          CellValidating += new DataGridViewCellValidatingEventHandler(OnCellValidating);
+         DataError += new DataGridViewDataErrorEventHandler(OnDataError);
          EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEditingControlShowing);
          RowHeadersVisible = false;
 
@@ -130,17 +131,23 @@ namespace UIBits
             }
          }
 
+      void OnDataError(object sender, DataGridViewDataErrorEventArgs e)
+         {
+         e.Cancel = false;
+         }
+
       /// <summary>
       /// Need to trap the case when the user clicks away on the ComboBox.
       /// </summary>
       void OnComboLeave(object sender, EventArgs e)
          {
          DataGridViewComboBoxEditingControl Combo = (DataGridViewComboBoxEditingControl)EditingControl;
-         if (Combo != null)
+         if (Combo != null && CurrentCell.Value.ToString() != Combo.Text)
             {
             string SavedValue = Combo.Text;
-            //EndEdit();
+            Combo.Leave -= new EventHandler(OnComboLeave);
             CurrentCell.Value = SavedValue;
+            Combo.Leave += new EventHandler(OnComboLeave);
             }
          }
 
@@ -280,7 +287,6 @@ namespace UIBits
          OldCell.OwningRow.Cells[i].Value = OldValue;
          OldCell.OwningRow.Cells.RemoveAt(i + 1);
          }
-
 
       /// <summary>
       /// Validate the cell contents to make sure it is ok.
