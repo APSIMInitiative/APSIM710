@@ -259,7 +259,7 @@ Public Class SimpleCow
                         adjustLiveWeight(year, mth)
                         setMilkProduction(year, mth)
                 Else
-                        If (DoInterpolate) Then
+                        If (DoInterpolate) Then 'don't interpolate as it requires a Bézier curve or similar with modification to get the monthly averages correct
                                 Live_Weight += Change_in_KgLWt_per_Day
                                 CondistionScore += Change_in_CondistionScore_per_Day
                                 MS_per_Day += Change_in_MS_per_Day

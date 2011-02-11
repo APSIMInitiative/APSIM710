@@ -60,6 +60,10 @@ Public Class DDRules
 
                 ' ************* Farm testing **********************
                 MyPaddock = New PaddockType(Me)
+                If (TotalFarmArea <= 0) Then
+                        TotalFarmArea = MyPaddock.SubPaddocks.Count 'default to one hectare paddocks if no area set
+                End If
+
                 myFarm.Init(MyPaddock, year, month, TotalFarmArea)
                 myHerd = myFarm.getHerd()
 
@@ -98,7 +102,6 @@ Public Class DDRules
                         Console.WriteLine("   Residual " & GrazingResidual.ToString)
                         Console.WriteLine("   Stocking Rate " & StockingRate.ToString)
                 End If
-
         End Sub
 
         <EventHandler()> Sub OnProcess()

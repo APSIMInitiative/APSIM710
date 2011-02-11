@@ -51,7 +51,7 @@
 
                 MyFarmArea = FarmArea
                 Dim UnallocatedArea = MyFarmArea - SpecifiedArea
-                If (UnallocatedArea < 0) Then ' more aara set manually per paddock than set by the farm component
+                If (UnallocatedArea < 0) Then ' more area set manually per paddock than set by the farm component
                         'throw a fatal error'
                 End If
 
