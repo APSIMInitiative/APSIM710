@@ -3091,6 +3091,14 @@ cjh
             endif
 
          endif
+      if (date_within(p%winterdate,p%summerdate,g%today))then
+         p%cona = p%wintercona
+         p%u = p%winteru
+      else
+         p%cona = p%summercona
+         p%u = p%summeru
+      endif
+
 
 
       elseif (c%evap_method .eq. bs_acs_method) then
