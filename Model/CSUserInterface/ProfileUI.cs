@@ -166,6 +166,7 @@ namespace CSUserInterface
       /// </summary>
       private void ApplyCodesToColumns()
          {
+         Soil.Variable Thickness = Soil.Get(_SoilNode, "Thickness");
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
@@ -173,9 +174,10 @@ namespace CSUserInterface
             if (RawVariableName != "Thickness" && RawVariableName != "Depth" && RawVariableName != "DepthMidPoints")
                {
                Soil.Variable Var = Soil.GetOptionalFromProfileNode(_SoilNode, ProfileNode, RawVariableName);
+               Var.ThicknessMM = Thickness.ThicknessMM;
                if (Var != null && Var.Codes != null)
                   {
-                  if (Var.Codes.Length > 0 && Var.Codes[0] == "Calculated")
+                  if (Var.Codes.Length > 0 && Var.Codes[0].Contains("Calculated"))
                      Grid.Columns[Col].ReadOnly = true;
 
                   // Put codes as tooltips.

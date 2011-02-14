@@ -449,6 +449,8 @@ class InsertFilesIntoSetup
       XmlHelper.SetValue(Node, "Deployable/Product/ProductVersion", "8:" + ProductVersion);
       XmlHelper.SetValue(Node, "Deployable/Folder/3C67513D-01DD-4637-8A68-80971EB9504F/DefaultLocation",
                                "8:" + DefaultLocation);
+      XmlHelper.SetValue(Node, "Deployable/Folder/1525181F-901A-416C-8A58-119130FE478E/Folders/9EF0B969-E518-4E46-987F-47570745A589/Name",
+                               "8:" + ProductName);
 
       // We also need to update the ProductCode to get around the problem of the installation
       // thinking there's a previous version already installed on users computer.

@@ -334,11 +334,15 @@ namespace ApsimFile
                if (!MathUtility.AreEqual(ToThickness, ThicknessMM))
                   {
                   _Doubles = MapToTarget(Name, Units, Doubles, _ThicknessMM, ToThickness, _SoilNode);
+                  _Strings = null;
 
                   Constrain(_Doubles, ToThickness);
                   _ThicknessMM = ToThickness;
                   if (Codes == null)
                      Codes = new string[_ThicknessMM.Length];
+                  if (Codes.Length != _ThicknessMM.Length)
+                     Array.Resize(ref Codes, _ThicknessMM.Length);
+
                   for (int i = 0; i < Codes.Length; i++)
                      {
                      if (Codes[i] != "")
@@ -1326,7 +1330,7 @@ namespace ApsimFile
             {
             foreach (XmlNode CropNode in XmlHelper.ChildNodes(WaterNode, "SoilCrop"))
                CropNames.Add(XmlHelper.Name(CropNode));
-            XmlNode PredLLCoeff = Configuration.Instance.GetSettingsNode("PredictedLLCoeff");
+            XmlNode PredLLCoeff = Configuration.Instance.GetSettingsNode("Soil/PredictedLLCoeff");
 
             Soil.Variable SoilType = Soil.Get(SoilNode, "SoilType");
             if (PredLLCoeff != null && SoilType.Value != null && SoilType.Value != "")
@@ -1455,11 +1459,13 @@ namespace ApsimFile
                
                Soil.Variable DUL = Soil.Get(SoilNode, "DUL");
                DUL.Units = "mm/mm";
-               
+               DUL.ThicknessMM = a.ThicknessMM;
+
                Soil.Variable LL15 = Soil.Get(SoilNode, "LL15");
                LL15.Units = "mm/mm";
+               LL15.ThicknessMM = a.ThicknessMM;
 
-               double[] DepthCentre = SoilUtility.ToMidPoints(DUL.ThicknessMM);
+               double[] DepthCentre = SoilUtility.ToMidPoints(a.ThicknessMM);
 
                // only continue if our soil depth  centers are within range of
                // the coefficient depth centers.
@@ -1486,7 +1492,8 @@ namespace ApsimFile
                      LL[2] = LL15.Doubles[2];
                      }
                   // Create a variable value structure to return to caller.
-                  Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, LL15.ThicknessMM, SoilNode);
+                  Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, a.ThicknessMM, SoilNode);
+                  Value.ThicknessMM = Soil.Get(SoilNode, "DUL").ThicknessMM;
                   Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
                   }
                }
@@ -1499,19 +1506,14 @@ namespace ApsimFile
             if (PredKLNode != null)
                {
                Soil.Variable LL = Soil.Get(SoilNode, CropName + " " + "LL");
-               double[] DepthCentre = SoilUtility.ToMidPoints(LL.ThicknessMM);
 
                Soil.Variable KL = Soil.Get(PredKLNode, "KL");
-               double[] CoeffDepthCentre = SoilUtility.ToMidPoints(KL.ThicknessMM);
-
-               double[] Values = new double[DepthCentre.Length];
-               bool DidInterpolate;
-               for (int i = 0; i != DepthCentre.Length; i++)
-                  Values[i] = MathUtility.LinearInterpReal(DepthCentre[i], CoeffDepthCentre, KL.Doubles, out DidInterpolate);
+               KL.ThicknessMM = LL.ThicknessMM;
 
                // Create a variable value structure to return to caller.
-               Value = new Soil.Variable(CropName + " " + CropVariableName, "/day", Values, KL.ThicknessMM, SoilNode);
-               Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+               KL.Codes = StringManip.CreateStringArray("Calculated", KL.Doubles.Length);
+
+               Value = KL;
                }
             }
          else if (SoilType.Value != "" && CropVariableName.ToLower() == "xf")
