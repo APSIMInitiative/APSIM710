@@ -665,7 +665,7 @@ namespace CSGeneral
             if (Values[i] != MissingValue)
                break;
             }
-         if (i <= 0)
+         if (i < 0)
             return new double[0];
          double[] ReturnValues = new double[i+1];
          for (int j = 0; j <= i; j++)

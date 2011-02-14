@@ -614,8 +614,10 @@ namespace Test
          {
          Soil.Variable LL = Soil.Get(S, "Barley LL");
          LL.Name = "Barley LL";
-         LL.ThicknessMM = new double[1];
-         LL.ThicknessMM[0] = 100;
+
+         double[] Thickness = new double[1];
+         Thickness[0] = 100;
+         LL.ThicknessMM = Thickness;
          Soil.Set(S, LL);
          Assert.IsTrue(MathUtility.AreEqual(Soil.Get(S, "Barley LL").Doubles,
                                    new double[] { 0.29 }));

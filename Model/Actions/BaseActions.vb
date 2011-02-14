@@ -205,21 +205,21 @@ Public Class BaseActions
     Private Shared Sub ExportAllRecursively(ByVal Component As Component, _
                                             ByVal ExportDirectory As String, _
                                             ByVal ExportExtension As String)
-        If (Component.Type = "Graph" Or Component.Type = "RegressionGraph" Or Component.Type = "GraphReport" Or Component.Type = "memo") Then
-            ExportComponent(Component.FullPath, ExportDirectory, ExportExtension)
+      If (Component.Type = "Graph" Or Component.Type = "Graph2" Or Component.Type = "RegressionGraph" Or Component.Type = "GraphReport" Or Component.Type = "memo") Then
+         ExportComponent(Component.FullPath, ExportDirectory, ExportExtension)
 
-        ElseIf Component.Type = "area" Or _
-                Component.Type = "simulation" Or _
-                Component.Type = "folder" Or _
-                Component.Type = "outputfile" Then
-            ' Need to recurse.
+      ElseIf Component.Type = "area" Or _
+              Component.Type = "simulation" Or _
+              Component.Type = "folder" Or _
+              Component.Type = "outputfile" Then
+         ' Need to recurse.
          If Component.Type = "folder" Or Component.Type = "simulation" Then
             ExportDirectory = ExportDirectory + "\" + Component.Name
          End If
-            For Each Child As ApsimFile.Component In Component.ChildNodes
-                ExportAllRecursively(Child, ExportDirectory, ExportExtension)
-            Next
-        End If
+         For Each Child As ApsimFile.Component In Component.ChildNodes
+            ExportAllRecursively(Child, ExportDirectory, ExportExtension)
+         Next
+      End If
 
     End Sub
 

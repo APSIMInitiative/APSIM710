@@ -295,6 +295,14 @@
               <DUL units="mm/mm" />
               <SAT units="mm/mm" />
            </Layer>
+          <SoilCrop name="Crop">
+           <Layer>
+              <Thickness units="mm" />
+              <LL units="mm/mm"/>
+              <KL units="/day"/>
+              <XF units="0-1"/>
+           </Layer>
+         </SoilCrop>           
         </Water>
         <SoilWat>
           <SummerCona />
@@ -343,7 +351,7 @@
               <EC units="1:5 dS/m" />
               <PH units="1:5 water" />
               <CL units="mg/kg" />
-              <Boron units="" />
+              <Boron units="Hot water mg/kg" />
               <CEC units="cmol+/kg" />
               <Ca units="cmol+/kg" />
               <Mg units="cmol+/kg" />
@@ -407,9 +415,31 @@
         </InitWater>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
+          <Layer>
+             <Thickness units="mm">100</Thickness>
+             <SW units="mm/mm">0</SW>
+             <NO3 units="ppm">0</NO3>
+             <NH4 units="ppm">0</NH4>
+          </Layer>           
         </Sample>
         <Water>
-          <SoilCrop name="Crop"/>
+           <Layer>
+              <Thickness units="mm" />
+              <KS units="mm/day"/>
+              <BD units="g/cc" />
+              <Airdry units="mm/mm" />
+              <LL15 units="mm/mm" />
+              <DUL units="mm/mm" />
+              <SAT units="mm/mm" />
+           </Layer>
+          <SoilCrop name="Crop">
+           <Layer>
+              <Thickness units="mm" />
+              <LL units="mm/mm"/>
+              <KL units="/day"/>
+              <XF units="0-1"/>
+           </Layer>
+         </SoilCrop>
         </Water>
         <Thickness>
            <Values description="Enter soil profile thickness values for APSIM (mm)">10 20 30 40 100 200 300 300 300 300 300 100 </Values>
@@ -484,8 +514,19 @@
         </SwimSubsurfaceDrain>
 
           </Swim>
-        
-        <SoilOrganicMatter/>
+        <SoilOrganicMatter>
+          <RootCn></RootCn>
+          <RootWt></RootWt>
+          <SoilCn></SoilCn>
+          <EnrACoeff></EnrACoeff>
+          <EnrBCoeff></EnrBCoeff>
+           <Layer>
+              <Thickness units="mm" />
+              <OC units="Walkley Black %" />
+              <FBIOM units="0-1" />
+              <FINERT units="0-1" />
+           </Layer>
+        </SoilOrganicMatter>
         <Analysis>
            <Layer>
               <Thickness units="mm" />
@@ -495,7 +536,7 @@
               <EC units="1:5 dS/m" />
               <PH units="1:5 water" />
               <CL units="mg/kg" />
-              <Boron units="" />
+              <Boron units="Hot water mg/kg" />
               <CEC units="cmol+/kg" />
               <Ca units="cmol+/kg" />
               <Mg units="cmol+/kg" />
@@ -511,9 +552,15 @@
         </Analysis>
         <Sample name="Soil sample">
           <Date type="date" description="Sample date:" />
+          <Layer>
+             <Thickness units="mm">100</Thickness>
+             <SW units="mm/mm">0</SW>
+             <NO3 units="ppm">0</NO3>
+             <NH4 units="ppm">0</NH4>
+          </Layer>           
         </Sample>
       </soil>
-       
+      
         </folder>
       <surfaceom name="Surface Organic Matter">
       <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>

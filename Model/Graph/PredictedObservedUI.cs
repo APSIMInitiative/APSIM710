@@ -25,8 +25,12 @@ namespace Graph
 
          DataProcessor Processor = new DataProcessor();
          XmlDocument Doc = new XmlDocument();
-         Doc.LoadXml(Controller.ApsimData.Find(NodePath + "/Observed").FullXML());
-         DataGrid.DataSource = Processor.Go(Doc.DocumentElement, NodePath);
+         ApsimFile.Component c = Controller.ApsimData.Find(NodePath + "/Observed");
+         if (c != null)
+            {
+            Doc.LoadXml(Controller.ApsimData.Find(NodePath + "/Observed").FullXML());
+            DataGrid.DataSource = Processor.Go(Doc.DocumentElement, NodePath);
+            }
          foreach (DataGridViewColumn Col in DataGrid.Columns)
             Col.SortMode = DataGridViewColumnSortMode.NotSortable;
 

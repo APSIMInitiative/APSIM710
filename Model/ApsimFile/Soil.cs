@@ -409,12 +409,23 @@ namespace ApsimFile
             string ChildName = Name;
             // remove the crop part of the variable name if it exists.
             if (ChildName.Contains(" "))
-               ChildName = ChildName.Substring(ChildName.IndexOf(' ') + 1);
-
+               {
+               string CropName = ChildName.Substring(0, ChildName.LastIndexOf(' '));
+               ChildName = ChildName.Substring(ChildName.LastIndexOf(' ') + 1);
+               if (ProfileNode.Name == "Water")
+                  {
+                  XmlNode CropNode = XmlHelper.Find(ProfileNode, CropName);
+                  if (CropNode == null)
+                     CropNode = ProfileNode.AppendChild(ProfileNode.OwnerDocument.CreateElement("SoilCrop"));
+                  ProfileNode = CropNode;
+                  }
+               }
             if (Value != null)
                XmlHelper.SetValue(ProfileNode, ChildName, Value);
             else
                {
+               _ThicknessMM = MathUtility.RemoveMissingValuesFromBottom(_ThicknessMM);
+
                // The number of thickness numbers determines how many layers we have.
                XmlHelper.EnsureNumberOfChildren(ProfileNode, "Layer", "", ThicknessMM.Length);
 

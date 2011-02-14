@@ -639,7 +639,10 @@ namespace UIBits
          {
          ClearSelection();
          foreach (Point Cell in SavedSelections)
-            Rows[Cell.Y + YModifier].Cells[Cell.X].Selected = true;
+            {
+            if (Cell.Y < Rows.Count && Cell.X < Columns.Count)
+               Rows[Cell.Y + YModifier].Cells[Cell.X].Selected = true;
+            }
          }
 
       }

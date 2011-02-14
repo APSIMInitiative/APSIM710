@@ -502,6 +502,16 @@ namespace Graph
             }
          }
 
-
+      public override void PrintPage(Rectangle MarginBounds, Graphics g)
+         {
+         Rectangle R = new Rectangle(0, 0, MarginBounds.Width - MarginBounds.X, MarginBounds.Height - MarginBounds.Y);
+         Bitmap b = new Bitmap(R.Width, R.Height);
+         Chart.Dock = DockStyle.None;
+         Chart.Width = R.Width;
+         Chart.Height = R.Height;
+         Chart.DrawToBitmap(b, R);
+         Chart.Dock = DockStyle.Fill;
+         g.DrawImage(b, MarginBounds.Location);
+         }
       }
    }
