@@ -293,7 +293,8 @@ Public Class RGraphicsUI
             End Try
 
             ' try and run R with this script
-            Dim regKey As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\R-core\R", True)
+         Dim regKey As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\R-core\R", True)
+         If (Not IsNothing(regKey)) Then
             Dim rpath As String = regKey.GetValue("InstallPath", "")
 
             ' Should test somehow for pre 2.12.x that doesnt have rscript installed
@@ -311,6 +312,7 @@ Public Class RGraphicsUI
             consoleMsg += "stderr: " + vbCrLf + p.StandardError.ReadToEnd() + vbCrLf + vbCrLf
             consoleMsg += "script: " + vbCrLf + newScript.ToString()
             Me.ConsoleBox.Text = consoleMsg
+         End If
 
         End If
 
