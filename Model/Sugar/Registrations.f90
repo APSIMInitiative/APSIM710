@@ -118,7 +118,7 @@ module Registrations
          id%dummy = add_reg(respondToGetReg, 'sw_demand', floatTypeDDML, 'mm', 'Sugar crop demand for water (potential uptake)')
          id%dummy = add_reg(respondToGetReg, 'sw_demand_te', floatTypeDDML, 'mm', '')
          id%dummy = add_reg(respondToGetReg, 'fasw', floatTypeDDML, '', '')
-         id%dummy = add_reg(respondToGetReg, 'esw', floatArrayTypeDDML, 'mm', '')
+         id%dummy = add_reg(respondToGetReg, 'esw_layr', floatArrayTypeDDML, 'mm', '')
          id%dummy = add_reg(respondToGetReg, 'cane_dmf', floatTypeDDML, '', '')
          id%dummy = add_reg(respondToGetReg, 'oxdef_photo', floatTypeDDML, '', '')
          id%dummy = add_reg(respondToGetReg, 'daysaftersowing', intTypeDDML, 'days', 'Sugar days after sowing')

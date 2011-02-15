@@ -3371,7 +3371,7 @@ c      call sugar_nit_stress_expansion (1)
      :                             , '(0-1)'
      :                             , fasw)
 
-      elseif (variable_name .eq. 'esw') then
+      elseif (variable_name .eq. 'esw_layr') then
          num_layers = count_of_real_vals (g%dlayer, max_layer)
          if (g%crop_status.ne.crop_out) then
             do 20 layer = 1, num_layers
