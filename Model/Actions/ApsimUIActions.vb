@@ -60,9 +60,9 @@ Public Class ApsimUIActions
       BaseActions.FileSave(Controller)
       Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
       If RunPanels.Length = 1 Then
-         ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), _
-                                             Controller.ApsimData, _
-                                             Controller.SelectedPaths)
+            ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), Controller) '_
+            'Controller.ApsimData, _
+            'Controller.SelectedPaths)
       End If
    End Sub
     Public Shared Sub CreateSIM(ByVal Controller As BaseController)

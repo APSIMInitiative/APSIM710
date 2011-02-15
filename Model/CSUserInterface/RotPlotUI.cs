@@ -40,8 +40,14 @@ namespace CSUserInterface
             XmlNodeList nodes = Data.SelectNodes("//rotnode");
             m_OldVersion = nodes.Count > 0;
             BuildGraphDisplay();
+
             GraphDisplay.Height = GraphDisplay.MaxHeight;
             GraphDisplay.Width = GraphDisplay.MaxWidth;
+            if (GraphDisplay.Height == 0 && GraphDisplay.Width == 0)
+            {
+                GraphDisplay.Height = panel1.Height - 10;
+                GraphDisplay.Width = panel1.Width - 10;
+            }
 
             pnlFlowLayout.Controls.Clear();
             List<string> states = new List<string>();
@@ -949,6 +955,7 @@ namespace CSUserInterface
         }
         public void AddArc(GDArc tmpArc)
         {
+            EnsureArcNameIsUnique(tmpArc);
             //link arc with nodes
             tmpArc.SourceNode = FindNode(tmpArc.Source);
             if (tmpArc.SourceNode != null)
@@ -991,6 +998,14 @@ namespace CSUserInterface
                     return sSeedName + i.ToString();
             }
             return "UniqueNameNotFound";
+        }
+        private void EnsureArcNameIsUnique(GDArc newArc)
+        {
+            GDArc existingArc = FindArc(newArc.Name);
+            if (existingArc != null)
+            {
+                newArc.Name = getUniqueArcName("arc");
+            }
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -1040,8 +1055,15 @@ namespace CSUserInterface
             }
             else
             {
-                Width = 0;
-                Height = 0;
+                //reset to just inside parent, so there is something to click on
+                if(Parent.Width > 10)
+                    Width = Parent.Width-10;
+                else
+                    Width = Parent.Width;
+                if(Parent.Width > 10)
+                    Height = Parent.Height - 10;
+                else
+                    Height = Parent.Height;
             }
         }
         protected void MoveAll(int x, int y)
@@ -1242,6 +1264,7 @@ namespace CSUserInterface
         private GDArc DupeArc(GDArc arc)
         {
             GDArc ga = new GDArc();
+            ga.Name = getUniqueArcName("arc");
             ga.Source = arc.Source;
             ga.Target = arc.Target;
             ga.Location.X = arc.Location.X + 10;
