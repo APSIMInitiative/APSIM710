@@ -189,6 +189,20 @@ public class ApsimRunToolStrip
       List<string> SimsToRun = new List<string>();
       foreach (string SimulationPath in SelectedPaths)
          ApsimFile.ApsimFile.ExpandSimsToRun(F.Find(SimulationPath), ref SimsToRun);
+      string UserMsg;
+
+      if (SimsToRun.Count <= 0)
+      {
+          UserMsg = "No simulations selected!";
+      }
+      else if (SimsToRun.Count == 1)
+      {
+          UserMsg = "Created simulation file:";
+      }
+      else
+      {
+          UserMsg = "Created simulation files:";
+      }
 
       foreach (string SimulationPath in SimsToRun)
          {
@@ -196,13 +210,15 @@ public class ApsimRunToolStrip
             {
             Component Simulation = F.Find(SimulationPath);
             string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+            UserMsg += "\n" + SimFileName;
             }
          catch (Exception err)
             {
             MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
          }
-      }
+       MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }      
 
    private void OnTick(object sender, EventArgs e)
       {
