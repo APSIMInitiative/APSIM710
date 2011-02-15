@@ -160,8 +160,10 @@ Public Class ApsimUIActions
 
 #Region "Checkpoint"
     Public Shared Sub CheckPoint(ByVal Controller As BaseController)
-        If MessageBox.Show("Are you sure you want to checkpoint your simulation and outputfiles, overwriting any previous checkpoints?", _
+        If MessageBox.Show("Are you sure you want to save and checkpoint your simulation and outputfiles, overwriting any previous checkpoints?", _
                            "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.Yes Then
+            ' Save first
+            BaseActions.FileSave(Controller)
 
             ' empty the checkpoint sub folder.
             Dim CheckPointFolder As String = Path.GetDirectoryName(Controller.ApsimData.FileName) + "\CheckPoint"

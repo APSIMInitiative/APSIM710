@@ -207,7 +207,7 @@ namespace ApsimFile
             SetFileName(FileName);
          }
 
-      public void Save()
+      public bool Save()
          {
          // ---------------------------------------------------------
          // Save the contents of this apsim document to the specified 
@@ -224,13 +224,15 @@ namespace ApsimFile
             doc.Save(FileName);
             Dirty = true;
             SetDirty(false);
+            return true;
             }
+         return false;
          }
-      public void SaveAs(string FileName)
+      public bool SaveAs(string FileName)
          {
          ReadOnly = false;
          SetFileName(FileName);
-         Save();
+         return Save();
          }
 
       public void CopyToClipboard(StringCollection Paths)

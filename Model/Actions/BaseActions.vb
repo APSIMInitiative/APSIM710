@@ -34,7 +34,8 @@ Public Class BaseActions
             Controller.ApsimData.Save()
         End If
     End Sub
-    Public Shared Sub FileSaveAs(ByVal Controller As BaseController)
+    Public Shared Function FileSaveAs(ByVal Controller As BaseController) As Boolean
+        Dim result As Boolean = False
         Dim Dialog As New SaveFileDialog
         Dialog.Filter = Configuration.Instance.Setting("DialogFilter")
         Dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
@@ -42,10 +43,11 @@ Public Class BaseActions
         Dialog.OverwritePrompt = True
         If Dialog.ShowDialog = DialogResult.OK Then
             Controller.Explorer.SaveCurrentView()
-            Controller.ApsimData.SaveAs(Dialog.FileName)
+            result = Controller.ApsimData.SaveAs(Dialog.FileName)
             Controller.RefreshToolStrips()
         End If
-    End Sub
+        Return result
+    End Function
     Public Shared Sub HelpAbout(ByVal Controller As BaseController)
         If Configuration.Instance.Setting("SplashScreen") <> "" Then
             Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
@@ -205,21 +207,21 @@ Public Class BaseActions
     Private Shared Sub ExportAllRecursively(ByVal Component As Component, _
                                             ByVal ExportDirectory As String, _
                                             ByVal ExportExtension As String)
-      If (Component.Type = "Graph" Or Component.Type = "Graph2" Or Component.Type = "RegressionGraph" Or Component.Type = "GraphReport" Or Component.Type = "memo") Then
-         ExportComponent(Component.FullPath, ExportDirectory, ExportExtension)
+        If (Component.Type = "Graph" Or Component.Type = "Graph2" Or Component.Type = "RegressionGraph" Or Component.Type = "GraphReport" Or Component.Type = "memo") Then
+            ExportComponent(Component.FullPath, ExportDirectory, ExportExtension)
 
-      ElseIf Component.Type = "area" Or _
-              Component.Type = "simulation" Or _
-              Component.Type = "folder" Or _
-              Component.Type = "outputfile" Then
-         ' Need to recurse.
-         If Component.Type = "folder" Or Component.Type = "simulation" Then
-            ExportDirectory = ExportDirectory + "\" + Component.Name
-         End If
-         For Each Child As ApsimFile.Component In Component.ChildNodes
-            ExportAllRecursively(Child, ExportDirectory, ExportExtension)
-         Next
-      End If
+        ElseIf Component.Type = "area" Or _
+                Component.Type = "simulation" Or _
+                Component.Type = "folder" Or _
+                Component.Type = "outputfile" Then
+            ' Need to recurse.
+            If Component.Type = "folder" Or Component.Type = "simulation" Then
+                ExportDirectory = ExportDirectory + "\" + Component.Name
+            End If
+            For Each Child As ApsimFile.Component In Component.ChildNodes
+                ExportAllRecursively(Child, ExportDirectory, ExportExtension)
+            Next
+        End If
 
     End Sub
 
@@ -326,13 +328,13 @@ Public Class BaseActions
     End Sub
 
 
-   Public Shared Sub Unlink(ByVal Controller As BaseController)
-      Controller.Selection.MakeConcrete()
-   End Sub
+    Public Shared Sub Unlink(ByVal Controller As BaseController)
+        Controller.Selection.MakeConcrete()
+    End Sub
 
-   Public Shared Sub UnlinkRecursively(ByVal Controller As BaseController)
-      Controller.Selection.MakeConcreteRecursively()
-   End Sub
+    Public Shared Sub UnlinkRecursively(ByVal Controller As BaseController)
+        Controller.Selection.MakeConcreteRecursively()
+    End Sub
 
 End Class
 
