@@ -74,6 +74,7 @@ protocol::Component* createComponent(void)
 Coordinator::Coordinator(void)
    {
    runningMessageID = 0;
+   sequencerID = 1 /* masterPMID - for want of something better*/;
    afterInit2 = false;
    doTerminate = false;
    printReport = false;
@@ -297,7 +298,9 @@ void Coordinator::addComponent(const string& compName,
       }
 
    // dph hack - shouldn't hardwire clock as sequencer.
-   if (Str_i_Eq(compName, "clock"))
+   string tail = fileTailNoExtension(compExecutable);
+   To_lower(tail);
+   if (Str_i_Eq(tail, "clock"))
       sequencerID = childComponentID;
 
    }
