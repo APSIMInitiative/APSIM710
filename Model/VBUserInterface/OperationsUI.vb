@@ -59,18 +59,26 @@ Public Class OperationsUI
       ' Add new child nodes.
       For Each Row As DataRow In StartOfDayGrid.DataSourceTable.Rows
          Dim NewNode As XmlNode = XmlHelper.CreateNode(Data.OwnerDocument, "operation", "")
-         XmlHelper.SetAttribute(NewNode, "condition", "start_of_day")
-         XmlHelper.SetValue(NewNode, "date", Row(0).ToString())
-         XmlHelper.SetValue(NewNode, "action", Row(1).ToString())
-         Data.AppendChild(NewNode)
-      Next
+            XmlHelper.SetAttribute(NewNode, "condition", "start_of_day")
+            If (Not (IsDBNull(Row(0)))) Then
+                XmlHelper.SetValue(NewNode, "date", Row(0).ToString())
+            End If
+            If (Not (IsDBNull(Row(1)))) Then
+                XmlHelper.SetValue(NewNode, "action", Row(1).ToString())
+            End If
+            Data.AppendChild(NewNode)
+        Next
       For Each Row As DataRow In EndOfDayGrid.DataSourceTable.Rows
          Dim NewNode As XmlNode = XmlHelper.CreateNode(Data.OwnerDocument, "operation", "")
          XmlHelper.SetAttribute(NewNode, "condition", "end_of_day")
-         XmlHelper.SetValue(NewNode, "date", Row(0).ToString())
-         XmlHelper.SetValue(NewNode, "action", Row(1).ToString())
-         Data.AppendChild(NewNode)
-      Next
+            If (Not (IsDBNull(Row(0)))) Then
+                XmlHelper.SetValue(NewNode, "date", Row(0).ToString())
+            End If
+            If (Not (IsDBNull(Row(1)))) Then
+                XmlHelper.SetValue(NewNode, "action", Row(1).ToString())
+            End If
+            Data.AppendChild(NewNode)
+        Next
    End Sub
 
 End Class
