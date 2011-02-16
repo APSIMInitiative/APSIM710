@@ -1,0 +1,53 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Clock Test
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/11/1940
+     Simulation end date   =  2/01/1941
+     Time step =           = 1440 (mins)
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        report
+     Output variables:
+        dd/mm/yyyy as Date
+        day_of_month
+        day_of_year
+        end_week
+        end_month
+        end_year
+        simulation_days
+        month_str
+
+     Output file = Clock Test.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+------- Start of simulation  --------------------------------------------------
+2 January 1941(Day of year=2), clock: 
+     Simulation is terminating due to end criteria being met.

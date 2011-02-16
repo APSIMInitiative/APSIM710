@@ -9,7 +9,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
          integer day                   ! current day for simulation
          integer year                  ! current year for simulation
          integer timestep              ! length of timestep (min)
-         double precision start _date   ! start date of simulation
+         double precision start_date   ! start date of simulation
          double precision end_date     ! end date of simulation
          double precision demo_start   ! DEMO start date of simulation
          double precision demo_end     ! DEMO end date of simulation
@@ -23,16 +23,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
                                        ! list of all events this sequencer is going
                                        ! to publish every timestep.
          integer numTimestepEvents     ! number of timestep events.
-         integer id_start_simulation
-         integer id_end_simulation
-         integer id_start_week
-         integer id_start_month
-         integer id_start_year
-         integer id_end_week
-         integer id_end_month
-         integer id_end_year
-         integer id_end_day
-         integer id_report
 
       end type ClockData
 
@@ -292,7 +282,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .          'Simulation is terminating due to end ' //
      .          'criteria being met.')
 
-            call publish_null(g%id_end_simulation)
+            call publish_null(id%end_simulation)
 
             call terminate_simulation()
             g%end_current_run = .true.
@@ -352,6 +342,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
 *+  Local Variables
       integer thisdate(3)              ! day, month, year
       logical logical_to_return        ! logical value to return to calling module
+      integer  integer_to_return
       integer   doy                    ! day of year
       integer   year                   ! year
       character str*100                ! string for date formatting
@@ -470,6 +461,25 @@ C     Last change:  E     5 Dec 2000    8:52 am
       else if (variable_name .eq. 'month_str') then
          call Respond2get_char_var
      .        (variable_name, '()', Get_month_string(thisdate(2)))
+
+      else if (variable_name .eq. 'start_simulation') then
+         Logical_to_return = 
+     .     reals_are_equal(real(g%current_date), 
+     .                     real(g%start_date))
+         call respond2get_logical_var(Variable_name, '()', 
+     .     Logical_to_return )
+
+      else if (variable_name .eq. 'end_simulation') then
+         Logical_to_return = 
+     .     reals_are_equal(real(g%current_date), 
+     .                     real(g%end_date))
+         call respond2get_logical_var(Variable_name, '()', 
+     .     Logical_to_return )
+
+      else if (variable_name .eq. 'simulation_days') then
+         integer_to_return = g%current_date - g%start_date
+         call respond2get_integer_var(Variable_name, '()', 
+     .     integer_to_return)
 
       else if (variable_name .eq. 'dd/mm') then
          write (str, '(i2,a,i2)')
@@ -598,7 +608,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
 
       ! do all timesteps for simulation
 
-      call publish_null(g%id_start_simulation)
+      call publish_null(id%start_simulation)
 
       ! enter an infinate loop until end of run is signalled.
       do while (.not. g%end_current_run)
@@ -640,27 +650,27 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .    .not. g%end_current_run) then
 
          if (end_week(g%day, g%year)) then
-            call publish_null(g%id_end_week)
+            call publish_null(id%end_week)
          endif
          if (end_month(g%day, g%year)) then
-            call publish_null(g%id_end_month)
+            call publish_null(id%end_month)
          endif
          if (end_year(g%day, g%year)) then
-            call publish_null(g%id_end_year)
+            call publish_null(id%end_year)
          endif
-         call publish_null(g%id_end_day)
-         call publish_null(g%id_report)
+         call publish_null(id%end_day)
+         call publish_null(id%report)
 
          call clock_advance_clock()
 
          if (start_week(g%day, g%year)) then
-            call publish_null(g%id_start_week)
+            call publish_null(id%start_week)
          endif
          if (start_month(g%day, g%year)) then
-            call publish_null(g%id_start_month)
+            call publish_null(id%start_month)
          endif
          if (g%day .eq. 1) then
-            call publish_null(g%id_start_year)
+            call publish_null(id%start_year)
          endif
 
       endif
@@ -909,7 +919,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
          ! must have been a fatal error better tell crops
          ! that we're about to end.
 
-         call publish_null(g%id_end_simulation)
+         call publish_null(id%end_simulation)
          call terminate_simulation()
 
       else
@@ -931,28 +941,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       ml_external doInit1
 
       call doRegistrations(id)
-      g%id_start_simulation = add_registration(eventReg,
-     .                                         'start_simulation',
-     .                                         nullTypeDDML, '')
-      g%id_end_simulation = add_registration(eventReg,
-     .                                         'end_simulation',
-     .                                         nullTypeDDML, '')
-      g%id_start_week = add_registration(eventReg, 'start_week',
-     .                                   nullTypeDDML, '')
-      g%id_start_month = add_registration(eventReg, 'start_month',
-     .                                    nullTypeDDML, '')
-      g%id_start_year = add_registration(eventReg, 'start_year',
-     .                                   nullTypeDDML, '')
-      g%id_end_week = add_registration(eventReg, 'end_week',
-     .                                    nullTypeDDML, '')
-      g%id_end_month = add_registration(eventReg, 'end_month',
-     .                                  nullTypeDDML, '')
-      g%id_end_year = add_registration(eventReg, 'end_year',
-     .                                 nullTypeDDML, '')
-      g%id_end_day = add_registration(eventReg, 'end_day',
-     .                                nullTypeDDML, '')
-      g%id_report = add_registration(eventReg, 'report',
-     .                               nullTypeDDML, '')
+
       end subroutine
 
 ! ====================================================================
