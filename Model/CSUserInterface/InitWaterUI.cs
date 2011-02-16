@@ -476,7 +476,7 @@ namespace CSUserInterface
             if (RelativeToCombo.Text == "ll15")
                PAWCVar = Soil.Get(SoilNode, "PAWC");
             else
-               PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAWC");
+               PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + " " + "PAWC");
             PAWCVar.Units = "mm";
             double[] pawc = PAWCVar.Doubles;
 
