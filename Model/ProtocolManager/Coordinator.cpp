@@ -74,7 +74,7 @@ protocol::Component* createComponent(void)
 Coordinator::Coordinator(void)
    {
    runningMessageID = 0;
-   sequencerID = 1 /* masterPMID - for want of something better*/;
+   sequencerID = 0;
    afterInit2 = false;
    doTerminate = false;
    printReport = false;
@@ -229,7 +229,8 @@ void Coordinator::doCommence(void)
       cout << "------- Start of simulation  --------------------------------------------------" << endl;
 
       // send the commence message on to the sequencer.
-      sendMessage(protocol::newCommenceMessage(componentID, sequencerID));
+      if (sequencerID != 0) 
+         sendMessage(protocol::newCommenceMessage(componentID, sequencerID));
       }
    }
 
