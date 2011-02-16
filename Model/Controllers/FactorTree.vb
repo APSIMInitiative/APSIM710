@@ -8,6 +8,7 @@ Public Class FactorTree
 
     Private Controller As BaseController
     Private EnableNodeSelection As Boolean = True
+    Private FirstTimeRename As Boolean = False
 
     Private PopupMenu As New System.Windows.Forms.ContextMenuStrip                              'create a new Context Menu for the page [right click anywhere on the page]
     Private WithEvents PopupMenuRightDrag As New System.Windows.Forms.ContextMenuStrip          'create a new Context Menu for a drag using the right mouse button. See TreeView Drag Events below
@@ -41,6 +42,12 @@ Public Class FactorTree
 
 #Region "Refresh methods"
     Private Sub OnRefresh(ByVal Comp As ApsimFile.Component)
+        'This should only happen if the user  opens a file /or new file that doesn't have a Factorial Component
+        If IsNothing(Controller.ApsimData.FactorComponent) Then
+            Controller.FactorialMode = False
+            Exit Sub
+        End If
+
         ' ----------------------------------------------
         ' Do a refresh from the specified Comp down
         ' ----------------------------------------------
@@ -251,6 +258,7 @@ Public Class FactorTree
                 'and they have clicked on a node that is lower down then the root node [can't rename the root node] 
 
                 LabelEdit = True         'set the tree's label edit property  to true, allowing all the nodes on the tree to have their labels edited. (needs to be set to true for Node.BeginEdit() to work)  
+                FirstTimeRename = True
                 ClickedNode.BeginEdit()  'call the inbuilt tree node function that allows the user to edit the nodes label. (see OnBeforeEdit and OnAfterEdit sub for what happens before and after the user edits the label)
                 Exit Sub
             End If
@@ -280,8 +288,11 @@ Public Class FactorTree
         'Change the colour of all the new selected nodes to the "selected" colours
         'get the node that the new selected path points to.
         SelectedNode = GetNodeFromPath(NewSelection)                'set the Tree's selected node to the node specified in the new selected path (just used to trigger the AfterSelect event, which is handled by OnTreeSelectionChanged() subroutine below this subroutine) (nb. we REDO this for EVERY node in NewSelections. We have to do this one node at a time because the Tree does not allow you to select more then one node) 
-        ColourNode(SelectedNode)                                    'change the colour of the new selected node to the selected colours.
-        SelectedNode.EnsureVisible()                                'use inbuilt tree node function that expands the tree to make sure the node specified is visible in the tree.  
+        If Not IsNothing(SelectedNode) Then
+            ColourNode(SelectedNode)                                    'change the colour of the new selected node to the selected colours.
+            SelectedNode.EnsureVisible()                                'use inbuilt tree node function that expands the tree to make sure the node specified is visible in the tree.  
+            SelectedNode.EnsureVisible()                                'use inbuilt tree node function that expands the tree to make sure the node specified is visible in the tree.  
+        End If
 
         EnableNodeSelection = True      'let the user click on other nodes again
     End Sub
@@ -297,41 +308,44 @@ Public Class FactorTree
         ' will trigger, deleting the whole node rather than
         ' the bit of text on the node caption.
         ' ---------------------------------------------------
-        'Me.ContextMenuStrip.Enabled = False
+        Me.ContextMenuStrip.Enabled = False
 
     End Sub
     Private Sub OnAfterEdit(ByVal sender As Object, ByVal e As System.Windows.Forms.NodeLabelEditEventArgs) Handles Me.AfterLabelEdit
         ' ---------------------------------------------------
         ' User has just finished editing the label of a node.
         ' ---------------------------------------------------
-        If Not IsNothing(e.Label) Then
+        If Not FirstTimeRename Then
+            If Not IsNothing(e.Label) Then
 
-            If (e.Label.Length > 0) Then 'Check user typed something in. So you are not trying to rename it to a blank.
+                If (e.Label.Length > 0) Then 'Check user typed something in. So you are not trying to rename it to a blank.
 
-                If Not (CSGeneral.Utility.CheckForInvalidChars(e.Label)) Then
+                    If Not (CSGeneral.Utility.CheckForInvalidChars(e.Label)) Then
 
-                    ' Firstly empty the current selections.
-                    Controller.SelectedFactorialPath = ""
+                        ' Firstly empty the current selections.
+                        Controller.SelectedFactorialPath = ""
 
-                    ' Change the data
-                    Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
-                    Comp.Name = e.Label
+                        ' Change the data
+                        Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
+                        Comp.Name = e.Label
 
-                    ' Now tell the base controller about the new selections.
-                    Controller.SelectedFactorialPath = Comp.FullPath
+                        ' Now tell the base controller about the new selections.
+                        Controller.SelectedFactorialPath = Comp.FullPath
+
+                    Else
+
+                        MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
+                        e.CancelEdit = True     'cancel the edit event.
+
+                    End If
 
                 Else
-
-                    MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
                     e.CancelEdit = True     'cancel the edit event.
-
                 End If
-
-            Else
-                e.CancelEdit = True     'cancel the edit event.
             End If
+            LabelEdit = False
         End If
-        LabelEdit = False
+        FirstTimeRename = False
         'Me.ContextMenuStrip.Enabled = True
     End Sub
 #End Region

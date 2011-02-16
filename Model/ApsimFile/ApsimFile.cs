@@ -96,6 +96,16 @@ namespace ApsimFile
 
           get { return MyFactorNode; }
       }
+       public void CreateFactorComponent()
+       {
+           MyFactorNode = new Component(this, RootComponent);
+           DisabledEventCount++;
+           RootComponent.ChildNodes.Add(MyFactorNode);
+           MyFactorNode.Name = "Factorials";  //setting Name cause a ComponentChanged event
+           MyFactorNode.Type = "factorial";   //setting Type cause a ComponentChanged event
+           DisabledEventCount--;
+           PublishComponentChanged(MyFactorNode);
+       }
       public string FileName
       { get { return MyFileName; } }
 

@@ -120,6 +120,10 @@ Public Class BaseController
         End Get
         Set(ByVal value As Boolean)
             MyFactorialMode = value
+            If MyFactorialMode And IsNothing(ApsimData.FactorComponent) Then
+                ApsimData.CreateFactorComponent() 'should trigger an onRefresh to theinterface
+            End If
+
             MyExplorer.RefreshDisplayMode()
 
         End Set
@@ -634,6 +638,8 @@ Public Class BaseController
         Try
             If Not IsNothing(E.ClickedItem.Tag) Then
                 If E.ClickedItem.Tag = "" AndAlso FileSaveAfterPrompt() Then
+                    'if the user clicks on one of the mru files listed under the open icon on the toolbar
+                    'then it falls through here...
                     Explorer.CloseUI()
                     ApsimData.OpenFile(E.ClickedItem.Text)
                 Else

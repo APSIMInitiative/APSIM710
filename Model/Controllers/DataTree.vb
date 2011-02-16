@@ -128,6 +128,7 @@ Public Class DataTree
                 End If
                 RootNode.Nodes(0).Expand()
             End If
+            Controller.SelectedPath = ""
             Controller.SelectedPath = Controller.ApsimData.RootComponent.FullPath
         End If
     End Sub
@@ -274,7 +275,6 @@ Public Class DataTree
             If Not IsNothing(Node) Then
                 ColourNode(Node)                                'change the colour of the unselected node to the unselected colours.
             End If
-
         Next
 
         'Change the colour of all the new selected nodes to the "selected" colours
@@ -685,7 +685,7 @@ Public Class DataTree
                 LabelEdit = True                                                                'set the tree's label edit property  to true, allowing all the nodes on the tree to have their labels edited. (needs to be set to true for Node.BeginEdit() to work)  
                 FirstTimeRename = True
                 ClickedNode.BeginEdit()                                                         'call the inbuilt tree node function that allows the user to edit the nodes label. (see OnBeforeEdit and OnAfterEdit sub for what happens before and after the user edits the label)
-            EnableNodeSelection = True
+                EnableNodeSelection = True
                 Exit Sub
 
                 'if they clicked on something different to what was already selected -> change the selection
