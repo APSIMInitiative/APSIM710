@@ -72,4 +72,4 @@ c:\iexpress32\iexpress /N /Q ApsimSetupForRelease.sed
 
 rem Now copy the 2 releases to the right directory - with the revision number.
 copy ApsimSetup.exe C:\inetpub\wwwroot\Files\%1.ApsimSetup.exe
-copy ApsimSetup.exe C:\inetpub\wwwroot\Files\%1.ApsimSetupForRelease.exe
+copy ApsimSetupForRelease.exe C:\inetpub\wwwroot\Files\%1.ApsimSetupForRelease.exe

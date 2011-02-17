@@ -47,26 +47,13 @@ public class ApsimRunToolStrip
       if (_Strip != null)
          {
          ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
-         ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
          ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
          RunButton.Enabled = true;
-         PauseButton.Checked = false;
-         PauseButton.Enabled = false;
          StopButton.Enabled = false;
          _JobRunner.Stop();
          }
       }
-   public void OnPause()
-      {
-      // ----------------------------------------------------------
-      // User has clicked pause button.
-      // ----------------------------------------------------------
-      ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
-      if (PauseButton.Checked)
-         _JobRunner.Pause();
-      else
-         _JobRunner.Resume();
-      }
+
    public string GetSimulationWithError()
       {
       // ----------------------------------------------------------
@@ -104,13 +91,11 @@ public class ApsimRunToolStrip
        _JobRunner = new JobRunner();
 
        ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
-       ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
        ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
        ToolStripButton ErrorsButton = (ToolStripButton)_Strip.Items["ErrorsButton"];
        ToolStripLabel PercentLabel = (ToolStripLabel)_Strip.Items["PercentLabel"];
 
        RunButton.Enabled = false;
-       PauseButton.Enabled = true;
        StopButton.Enabled = true;
        ErrorsButton.Visible = false;
        PercentLabel.Text = "";
@@ -148,7 +133,6 @@ public class ApsimRunToolStrip
            if (_JobRunner.Jobs.Count == 0)
            {
                RunButton.Enabled = true;
-               PauseButton.Enabled = false;
                StopButton.Enabled = false;
                ErrorsButton.Visible = false;
                PercentLabel.Text = "";
@@ -228,7 +212,6 @@ public class ApsimRunToolStrip
       // ----------------------------------------------------------
       ToolStripProgressBar ProgressBar = (ToolStripProgressBar)_Strip.Items["RunProgress"];
       ToolStripButton RunButton = (ToolStripButton)_Strip.Items["RunButton"];
-      ToolStripButton PauseButton = (ToolStripButton)_Strip.Items["PauseButton"];
       ToolStripButton StopButton = (ToolStripButton)_Strip.Items["StopButton"];
       ToolStripButton ErrorsButton = (ToolStripButton)_Strip.Items["ErrorsButton"];
       ToolStripLabel PercentLabel = (ToolStripLabel)_Strip.Items["PercentLabel"];
@@ -239,7 +222,6 @@ public class ApsimRunToolStrip
          {
          // All finished.
          RunButton.Enabled = true;
-         PauseButton.Enabled = false;
          StopButton.Enabled = false;
          _JobRunner.Stop();
          string WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
