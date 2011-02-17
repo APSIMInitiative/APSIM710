@@ -372,13 +372,20 @@ Public Class DataTree
                         ' Firstly empty the current selections.
                         Controller.SelectedPath = ""
 
-                        ' Change the data
+                        ' Change the data. 
                         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(e.Node))
+                        Dim oldName As String = Comp.Name
                         Comp.Name = e.Label
 
-                        ' Now tell the base controller about the new selections.
-                        Controller.SelectedPath = Comp.FullPath
-
+                        ' The component may baulk at this change and suggest something else. If so, give up.
+                        If Comp.Name <> e.Label Then
+                            Comp.Name = oldName
+                            MessageBox.Show("You can not have two components with the same name (" + e.Label + ")")
+                            e.CancelEdit = True
+                        Else
+                            ' Now tell the base controller about the new selections.
+                            Controller.SelectedPath = Comp.FullPath
+                        End If
                     Else
 
                         MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
@@ -386,15 +393,15 @@ Public Class DataTree
 
                     End If
 
-                Else
-                    e.CancelEdit = True     'cancel the edit event.
+                    Else
+                        e.CancelEdit = True     'cancel the edit event.
+                    End If
                 End If
+                LabelEdit = False
             End If
-            LabelEdit = False
-        End If
-        FirstTimeRename = False
-        'PopupMenu.Enabled = True
-        Me.ContextMenuStrip.Enabled = True
+            FirstTimeRename = False
+            'PopupMenu.Enabled = True
+            Me.ContextMenuStrip.Enabled = True
     End Sub
 
 #End Region
