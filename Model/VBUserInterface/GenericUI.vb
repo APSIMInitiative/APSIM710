@@ -280,7 +280,7 @@ Public Class GenericUI
 
             Case "list", "multilist"
                If Not IsNothing(NewRow.Cells(2).Value) Then
-                  Grid.CreateComboInCell(NewRow.Cells(4), NewRow.Cells(2).Value.Split(","))
+                  Grid.CreateComboInCell(NewRow.Cells(4), NewRow.Cells(2).Value.ToString().Split(","))
                End If
 
             Case "multiedit"
@@ -293,7 +293,7 @@ Public Class GenericUI
                Grid.CreateButtonInCell(NewRow.Cells(4))
 
             Case "category"
-               NewRow.Cells(3).ReadOnly = True  ' Make listitems field readonly
+               NewRow.Cells(3).ReadOnly = Not EditModeItem.Checked  ' Make listitems field readonly
                NewRow.Cells(4).ReadOnly = True  ' Make description field readonly
                NewRow.DefaultCellStyle.BackColor = System.Drawing.Color.LightSteelBlue
 

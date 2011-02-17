@@ -12,7 +12,7 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 26;
+      public static int CurrentVersion = 27;
       private delegate void UpgraderDelegate(XmlNode Data);
 
       public static bool Upgrade(XmlNode Data)
@@ -58,7 +58,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion23),
                                           new UpgraderDelegate(ToVersion24),
                                           new UpgraderDelegate(ToVersion25),
-                                          new UpgraderDelegate(ToVersion26)
+                                          new UpgraderDelegate(ToVersion26),
+                                          new UpgraderDelegate(ToVersion27)
                                        };
          if (Data != null)
             {
@@ -1432,7 +1433,7 @@ namespace ApsimFile
          if (NodeToMove != null)
             NodeToMoveTo.AppendChild(NodeToMove);
          }
-
+      
       private static void ToVersion22(XmlNode Node)
          {
          // ----------------------------------------------------------------
@@ -1693,6 +1694,28 @@ namespace ApsimFile
                XmlHelper.DeleteAttribute(Cultivar, "croppropertyname");
             }
          }
+
+      private static void ToVersion27(XmlNode Node)
+         {
+         // ----------------------------------------------------------------
+         // 1. Change Boron units from mg/kg to Hot water mg/kg
+         // 2. Remove CnCanopyFact from SoilWat
+         // ---------------------------------------------------------------
+
+         if (Node.Name.ToLower() == "soil")
+            {
+            XmlNode BoronNode = XmlHelper.Find(Node, "Analysis/Layer/Boron");
+            if (BoronNode != null && XmlHelper.Attribute(BoronNode, "units") == "mg/kg")
+               XmlHelper.SetAttribute(BoronNode, "units", "Hot water mg/kg");
+
+            XmlNode CnCanopyFactNode = XmlHelper.Find(Node, "SoilWat/CnCanopyFact");
+            if (CnCanopyFactNode != null)
+               CnCanopyFactNode.ParentNode.RemoveChild(CnCanopyFactNode);            
+            }
+         }
+
+
+
 
       }
    }

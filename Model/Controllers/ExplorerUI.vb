@@ -284,34 +284,36 @@ Public Class ExplorerUI
         ' Create and show a specific UI depending on the
         ' currently selected data
         ' -------------------------------------------------
-        'Dim SelectedData As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedPath)
-        If CurrentUIIndex = -1 OrElse UITypes(CurrentUIIndex) <> SelectedComponent.Type Then
+      'Dim SelectedData As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedPath)
+      If Not IsNothing(SelectedComponent) Then
+         If CurrentUIIndex = -1 OrElse UITypes(CurrentUIIndex) <> SelectedComponent.Type Then
             CloseUI()
             CurrentUIIndex = UITypes.IndexOf(SelectedComponent.Type)
             If CurrentUIIndex = -1 Then
-                Dim View As BaseView = Controller.CreateUI(SelectedComponent.Type)
-                If Not IsNothing(View) Then
-                    UIs.Add(View)
-                    UITypes.Add(SelectedComponent.Type)
-                    CurrentUIIndex = UIs.Count - 1
-                End If
+               Dim View As BaseView = Controller.CreateUI(SelectedComponent.Type)
+               If Not IsNothing(View) Then
+                  UIs.Add(View)
+                  UITypes.Add(SelectedComponent.Type)
+                  CurrentUIIndex = UIs.Count - 1
+               End If
             End If
-        Else
+         Else
             SaveCurrentView()
-        End If
-        If CurrentUIIndex <> -1 Then
+         End If
+         If CurrentUIIndex <> -1 Then
             Try
-                Dim View As BaseView = UIs(CurrentUIIndex)
-                View.OnLoad(Controller, SelectedPath, SelectedComponent.Contents)
-                View.Parent = UIPanel
-                View.Dock = DockStyle.Fill
-                View.Show()
-                View.OnRefresh()
+               Dim View As BaseView = UIs(CurrentUIIndex)
+               View.OnLoad(Controller, SelectedPath, SelectedComponent.Contents)
+               View.Parent = UIPanel
+               View.Dock = DockStyle.Fill
+               View.Show()
+               View.OnRefresh()
             Catch ex As Exception
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+               MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-        End If
-    End Sub
+         End If
+      End If
+   End Sub
     Public Sub CloseUI()
         ' -------------------------------------------------
         ' Close the current UI

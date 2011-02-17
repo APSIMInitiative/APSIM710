@@ -78,7 +78,7 @@ namespace UIBits
          DataError += new DataGridViewDataErrorEventHandler(OnDataError);
          EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(OnEditingControlShowing);
          RowHeadersVisible = false;
-
+         
          // Populate the context menu.
          ToolStripMenuItem CopyItem = (ToolStripMenuItem) PopupMenu.Items.Add("Copy");
          CopyItem.ShortcutKeys = Keys.Control | Keys.C;
@@ -149,6 +149,19 @@ namespace UIBits
             CurrentCell.Value = SavedValue;
             Combo.Leave += new EventHandler(OnComboLeave);
             }
+         }
+
+      /// <summary>
+      /// We need to stop the Tab key. If the user has a combo box dropped down and types a value into
+      /// the edit part of the combo box and then presses TAB, a nasty exception occurs. This method
+      /// stops that happening.
+      /// </summary>
+      protected override bool ProcessDialogKey(Keys keyData)
+         {
+         if (keyData == Keys.Tab)
+            return true;
+         else
+            return base.ProcessDialogKey(keyData);
          }
 
       /// <summary>

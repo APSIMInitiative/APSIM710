@@ -377,8 +377,8 @@ namespace CSUserInterface
             }
          else
             {
-            PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAWC");
-            PAWVar = Soil.Get(SoilNode, RelativeToCombo.Text + "PAW");
+            PAWCVar = Soil.Get(SoilNode, RelativeToCombo.Text + " PAWC");
+            PAWVar = Soil.Get(SoilNode, RelativeToCombo.Text + " PAW");
             }
          PAWCVar.Units = "mm";
          PAWVar.Units = "mm";
