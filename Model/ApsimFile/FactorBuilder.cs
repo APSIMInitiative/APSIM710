@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using CSGeneral;
 
 namespace ApsimFile
 {
@@ -11,6 +12,25 @@ namespace ApsimFile
         public List<string> Targets = null;
 
         public Component FactorComponent = null;
+
+        public virtual string getDesc()
+        {
+            return FactorComponent.Name;
+        }
+        //getCount returns the number of parameters for this factor only
+        public virtual int getCount()
+        {
+            if(FactorComponent != null)
+                return FactorComponent.ChildNodes.Count;
+            return 0;
+        }
+        //CalcCount returns the number of parameters for the chain of factors
+        public virtual int CalcCount()
+        {
+            if (NextItem != null)
+                return NextItem.CalcCount() * FactorComponent.ChildNodes.Count;
+            return FactorComponent.ChildNodes.Count; 
+        }
 
         public virtual void Process(JobRunner jobRunner, Component Simulation, string SimulationPath, string filename)
         {
@@ -53,6 +73,26 @@ namespace ApsimFile
     {
         public XmlNode Variable = null;
         public List<string> Parameters = null;
+        public override string getDesc()
+        {
+            if (Variable != null)
+                return FactorComponent.Name + "."+XmlHelper.Name(Variable);
+            return FactorComponent.Name;
+        }
+        //getCount returns the number of parameters for this factor only
+        public override int getCount()
+        {
+            if(Parameters != null)
+                return Parameters.Count;
+            return 0;
+        }
+        //CalcCount returns the number of parameters for the chain of factors
+        public override int CalcCount()
+        {
+            if (NextItem != null)
+                return NextItem.CalcCount() * Parameters.Count;
+            return Parameters.Count;
+        }
 
         public override void Process(JobRunner jobRunner, Component Simulation, string SimulationPath, string filename)
         {
@@ -93,7 +133,12 @@ namespace ApsimFile
             //change to a list of lists when adding levels?
             FactorItem lastItem = null;
             List<FactorItem> items = new List<FactorItem>();
-            foreach (Component comp in factorial.ChildNodes)
+            ProcessFactorNodes(factorial, ref lastItem, ref items, SimulationPath);
+            return items;
+        }
+        public void ProcessFactorNodes(Component parentComponent, ref FactorItem lastItem, ref List<FactorItem> items, string SimulationPath)
+        {
+            foreach (Component comp in parentComponent.ChildNodes)
             {
                 if (comp.Type == "factor")
                 {
@@ -143,8 +188,11 @@ namespace ApsimFile
                         }
                     }
                 }
+                else
+                {
+                    ProcessFactorNodes(comp, ref lastItem, ref items, SimulationPath);
+                }
             }
-            return items;
         }
     }
 }
