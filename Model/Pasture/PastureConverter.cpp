@@ -67,37 +67,37 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    protocol::Component::doInit1(initData);
 
       // respondToGet
-   sandID =    addRegistration(::respondToGet, -1, "sand", singleArrayTypeDDML);
-   vpdID =     addRegistration(::respondToGet, -1, "vpd", singleTypeDDML);
-   co2ppmID =     addRegistration(::respondToGet, -1, "co2_ppm", singleTypeDDML);
+   sandID =    addRegistration(::respondToGet, 0, "sand", singleArrayTypeDDML);
+   vpdID =     addRegistration(::respondToGet, 0, "vpd", singleTypeDDML);
+   co2ppmID =     addRegistration(::respondToGet, 0, "co2_ppm", singleTypeDDML);
 
       // get
-   maxtID =       addRegistration(::get, -1, "maxt", singleTypeDDML);
-   mintID =       addRegistration(::get, -1, "mint", singleTypeDDML);
+   maxtID =       addRegistration(::get, 0, "maxt", singleTypeDDML);
+   mintID =       addRegistration(::get, 0, "mint", singleTypeDDML);
 
       // event
-   sowID =            addRegistration(::event, -1, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
-   cutID =            addRegistration(::event, -1, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
-   cultivateID =      addRegistration(::event, -1, "cultivate", protocol::DDML(protocol::PastureCultivateType()).c_str());
-   killID =           addRegistration(::event, -1, "kill", protocol::DDML(protocol::PastureKillType()).c_str());
-   burnID =           addRegistration(::event, -1, "burn", protocol::DDML(protocol::PastureBurnType()).c_str());
- spraytopID =       addRegistration(::event,   -1, "spraytop", "");
+   sowID =            addRegistration(::event, 0, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
+   cutID =            addRegistration(::event, 0, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
+   cultivateID =      addRegistration(::event, 0, "cultivate", protocol::DDML(protocol::PastureCultivateType()).c_str());
+   killID =           addRegistration(::event, 0, "kill", protocol::DDML(protocol::PastureKillType()).c_str());
+   burnID =           addRegistration(::event, 0, "burn", protocol::DDML(protocol::PastureBurnType()).c_str());
+ spraytopID =       addRegistration(::event,   0, "spraytop", "");
 
 //   residueAddedID =   addRegistration(RegistrationType::event, "residue_added", residueAddedTypeDDML);
-   incorpFOMID =        addRegistration(::event, -1, "incorpfom", "");
+   incorpFOMID =        addRegistration(::event, 0, "incorpfom", "");
 
       // respondToEvent
-   sowPastureID =       addRegistration(::respondToEvent, -1, "sowpasture", singleTypeDDML);
-   cutPastureID =       addRegistration(::respondToEvent, -1, "cutpasture", singleTypeDDML);
-   cultivatePastureID = addRegistration(::respondToEvent, -1, "cultivatepasture", singleTypeDDML);
-   killPastureID =      addRegistration(::respondToEvent, -1, "killpasture", singleTypeDDML);
-   burnPastureID =      addRegistration(::respondToEvent, -1, "burnpasture", singleTypeDDML);
-   spraytopPastureID =  addRegistration(::respondToEvent, -1, "spraytoppasture", singleTypeDDML);
+   sowPastureID =       addRegistration(::respondToEvent, 0, "sowpasture", singleTypeDDML);
+   cutPastureID =       addRegistration(::respondToEvent, 0, "cutpasture", singleTypeDDML);
+   cultivatePastureID = addRegistration(::respondToEvent, 0, "cultivatepasture", singleTypeDDML);
+   killPastureID =      addRegistration(::respondToEvent, 0, "killpasture", singleTypeDDML);
+   burnPastureID =      addRegistration(::respondToEvent, 0, "burnpasture", singleTypeDDML);
+   spraytopPastureID =  addRegistration(::respondToEvent, 0, "spraytoppasture", singleTypeDDML);
 
-   prepareID =          addRegistration(::respondToEvent, -1, "prepare", "");
-   processID =          addRegistration(::respondToEvent, -1, "process", "");
-   postID =             addRegistration(::respondToEvent, -1, "post", "");
-   fomAddedID =         addRegistration(::respondToEvent, -1, "fom_added", protocol::DDML(protocol::FomAddedType()).c_str());
+   prepareID =          addRegistration(::respondToEvent, 0, "prepare", "");
+   processID =          addRegistration(::respondToEvent, 0, "process", "");
+   postID =             addRegistration(::respondToEvent, 0, "post", "");
+   fomAddedID =         addRegistration(::respondToEvent, 0, "fom_added", protocol::DDML(protocol::FomAddedType()).c_str());
 
    SW = new PastureUptake(this, "sw_uptake", "dlt_sw_dep", "(mm)");
    NO3 = new PastureUptake(this, "uptake_no3", "dlt_no3", "(kg/ha)");

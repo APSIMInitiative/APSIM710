@@ -71,12 +71,12 @@ void SupplementConverter::doInit1(const protocol::Init1Data& initData)
 //===========================================================================
    {
    protocol::Component::doInit1(initData);
-//   buyID = addRegistration(RegistrationType::event, -1,"buy", supplementbuyTypeDDML);
-   buySupplementID = addRegistration(::respondToEvent, -1,"buysupplement", singleTypeDDML);
-   feedID = addRegistration(::event, -1, "feed", protocol::DDML(protocol::SupplementFeedType()).c_str());
-   feedSupplementID = addRegistration(::respondToEvent, -1, "feedsupplement", singleTypeDDML);
-   mixID = addRegistration(::event, -1, "mix", protocol::DDML(protocol::SupplementMixType()).c_str());
-   mixSupplementID = addRegistration(::respondToEvent, -1, "mixsupplement", singleTypeDDML);
+//   buyID = addRegistration(RegistrationType::event, 0,"buy", supplementbuyTypeDDML);
+   buySupplementID = addRegistration(::respondToEvent, 0,"buysupplement", singleTypeDDML);
+   feedID = addRegistration(::event, 0, "feed", protocol::DDML(protocol::SupplementFeedType()).c_str());
+   feedSupplementID = addRegistration(::respondToEvent, 0, "feedsupplement", singleTypeDDML);
+   mixID = addRegistration(::event, 0, "mix", protocol::DDML(protocol::SupplementMixType()).c_str());
+   mixSupplementID = addRegistration(::respondToEvent, 0, "mixsupplement", singleTypeDDML);
 
    }
 // ------------------------------------------------------------------
@@ -266,7 +266,7 @@ void SupplementConverter::readParameters ( void )
    msg << endl << ends;
    writeString (msg.str().c_str());
 
-   int moduleID = -1;
+   int moduleID = 0;
    componentNameToID(supplementModuleName, moduleID);
    buyID = addRegistration(::event, moduleID, "buy", protocol::DDML(protocol::SupplementBuyType()).c_str());
 }

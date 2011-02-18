@@ -40,10 +40,10 @@ void PastureUptake::doInit1(const protocol::Init1Data& initData)
 //===========================================================================
    {
       // get
-   elementUptakeID = system->addRegistration(::get, -1, uptakeName.c_str(), singleArrayTypeDDML);
+   elementUptakeID = system->addRegistration(::get, 0, uptakeName.c_str(), singleArrayTypeDDML);
 
       // set
-   dltElementID = system->addRegistration(::set, -1, deltaName.c_str(), singleArrayTypeDDML);
+   dltElementID = system->addRegistration(::set, 0, deltaName.c_str(), singleArrayTypeDDML);
    }
 // ------------------------------------------------------------------
 // Init2 phase.

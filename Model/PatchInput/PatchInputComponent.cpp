@@ -62,7 +62,7 @@ void PatchInputComponent::doInit1(const protocol::Init1Data& initData)
    InputComponent::doInit1(initData);
 
    haveReadPatchData = false;
-   preNewmetID = addRegistration(::respondToEvent, -1, "preNewmet", DDML(protocol::NewMetType()).c_str());
+   preNewmetID = addRegistration(::respondToEvent, 0, "preNewmet", DDML(protocol::NewMetType()).c_str());
    ApsimDataFile::iterator i = find(data.constantsBegin(),
                                     data.constantsEnd(),
                                     "patch_all_years");
@@ -72,12 +72,12 @@ void PatchInputComponent::doInit1(const protocol::Init1Data& initData)
    if (i != data.constantsEnd())
       patchVariablesLongTerm = i->values;
 
-   unpatchedMaxTID = addRegistration(::respondToGet, -1, "unpatched_maxt", protocol::DDML(newmet.maxt).c_str());
-   unpatchedMinTID = addRegistration(::respondToGet, -1, "unpatched_mint", protocol::DDML(newmet.mint).c_str());
-   unpatchedRadnID = addRegistration(::respondToGet, -1, "unpatched_radn", protocol::DDML(newmet.radn).c_str());
-   unpatchedRainID = addRegistration(::respondToGet, -1, "unpatched_rain", protocol::DDML(newmet.rain).c_str());
-   startDateID = addRegistration(::get, -1, "simulation_start_date", "<type kind=\"double\"/>");
-   endDateID = addRegistration(::get, -1, "simulation_end_date", "<type kind=\"double\"/>");
+   unpatchedMaxTID = addRegistration(::respondToGet, 0, "unpatched_maxt", protocol::DDML(newmet.maxt).c_str());
+   unpatchedMinTID = addRegistration(::respondToGet, 0, "unpatched_mint", protocol::DDML(newmet.mint).c_str());
+   unpatchedRadnID = addRegistration(::respondToGet, 0, "unpatched_radn", protocol::DDML(newmet.radn).c_str());
+   unpatchedRainID = addRegistration(::respondToGet, 0, "unpatched_rain", protocol::DDML(newmet.rain).c_str());
+   startDateID = addRegistration(::get, 0, "simulation_start_date", "<type kind=\"double\"/>");
+   endDateID = addRegistration(::get, 0, "simulation_end_date", "<type kind=\"double\"/>");
    }
 // ------------------------------------------------------------------
 // Read all patch dates.
@@ -156,7 +156,7 @@ void PatchInputComponent::getDataFromInput(unsigned int fromID)
                                         fromID,
                                         "getData",
                                         getDataDDML);
-      returnDataMethodID = addRegistration(::respondToEvent, -1, "returnData", returnDataDDML);
+      returnDataMethodID = addRegistration(::respondToEvent, 0, "returnData", returnDataDDML);
       publish(getDataMethodID, dataDates);
       }
    }
@@ -330,25 +330,25 @@ void PatchInputComponent::setPatchData()
       if (find(patchVariablesLongTerm.begin(), patchVariablesLongTerm.end(),
                "maxt") != patchVariablesLongTerm.end())
          {
-         unsigned maxtID = addRegistration(::set, -1, "maxt", DTsingleString);
+         unsigned maxtID = addRegistration(::set, 0, "maxt", DTsingleString);
          setVariable(maxtID, i->second.maxt);
          }
       if (find(patchVariablesLongTerm.begin(), patchVariablesLongTerm.end(),
                "mint") != patchVariablesLongTerm.end())
          {
-         unsigned mintID = addRegistration(::set, -1, "mint", DTsingleString);
+         unsigned mintID = addRegistration(::set, 0, "mint", DTsingleString);
          setVariable(mintID, i->second.mint);
          }
       if (find(patchVariablesLongTerm.begin(), patchVariablesLongTerm.end(),
                "radn") != patchVariablesLongTerm.end())
          {
-         unsigned radnID = addRegistration(::set, -1, "radn", DTsingleString);
+         unsigned radnID = addRegistration(::set, 0, "radn", DTsingleString);
          setVariable(radnID, i->second.radn);
          }
       if (find(patchVariablesLongTerm.begin(), patchVariablesLongTerm.end(),
                "rain") != patchVariablesLongTerm.end())
          {
-         unsigned rainID = addRegistration(::set, -1, "rain", DTsingleString);
+         unsigned rainID = addRegistration(::set, 0, "rain", DTsingleString);
          setVariable(rainID, i->second.rain);
          }
       }

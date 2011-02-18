@@ -37,30 +37,30 @@ NonHerbageConverter::~NonHerbageConverter(void)
 // ------------------------------------------------------------------
 void NonHerbageConverter::doInit1(const protocol::Init1Data& initData)
    {
-   day_lengthID = system->addRegistration(::get, -1, "day_length", singleTypeDDML);
-//   tramplingID = system->addRegistration(::get,-1, "trampling", singleTypeDDML);
-   ureaID = system->addRegistration(::get,-1, "urea", singleArrayTypeDDML);
-   dltUreaID = system->addRegistration(::set, -1, "dlt_urea", singleArrayTypeDDML);
-   labilePID = system->addRegistration(::get, -1, "labile_p", singleArrayTypeDDML);
-   dltLabilePID = system->addRegistration(::set, -1, "dlt_labile_p", singleArrayTypeDDML);
+   day_lengthID = system->addRegistration(::get, 0, "day_length", singleTypeDDML);
+//   tramplingID = system->addRegistration(::get,0, "trampling", singleTypeDDML);
+   ureaID = system->addRegistration(::get,0, "urea", singleArrayTypeDDML);
+   dltUreaID = system->addRegistration(::set, 0, "dlt_urea", singleArrayTypeDDML);
+   labilePID = system->addRegistration(::get, 0, "labile_p", singleArrayTypeDDML);
+   dltLabilePID = system->addRegistration(::set, 0, "dlt_labile_p", singleArrayTypeDDML);
 
-   dayLengthID = system->addRegistration(::respondToGet, -1, "dayLength", singleTypeDDML);
-   addExcretaID = system->addRegistration(::respondToEvent, -1, "add_excreta", protocol::DDML(protocol::AddExcretaType()));
+   dayLengthID = system->addRegistration(::respondToGet, 0, "dayLength", singleTypeDDML);
+   addExcretaID = system->addRegistration(::respondToEvent, 0, "add_excreta", protocol::DDML(protocol::AddExcretaType()));
 
-   stockBuyID = system->addRegistration(::respondToEvent, -1, "buystock", stringTypeDDML);
-//   buyID = system->addRegistration(::event, -1, "buy", buystockTypeDDML);
+   stockBuyID = system->addRegistration(::respondToEvent, 0, "buystock", stringTypeDDML);
+//   buyID = system->addRegistration(::event, 0, "buy", buystockTypeDDML);
 
-   stockMoveID = system->addRegistration(::respondToEvent, -1, "movestock", stringTypeDDML);
-   moveID = system->addRegistration(::event, -1, "move", DDML(protocol::MoveStockType()));
+   stockMoveID = system->addRegistration(::respondToEvent, 0, "movestock", stringTypeDDML);
+   moveID = system->addRegistration(::event, 0, "move", DDML(protocol::MoveStockType()));
 
-   stockSellID = system->addRegistration(::respondToEvent, -1, "sellstock", stringTypeDDML);
-   sellID = system->addRegistration(::event, -1, "sell", protocol::DDML(protocol::SellStockType()));
+   stockSellID = system->addRegistration(::respondToEvent, 0, "sellstock", stringTypeDDML);
+   sellID = system->addRegistration(::event, 0, "sell", protocol::DDML(protocol::SellStockType()));
 
-   addManureID = system->addRegistration(::event, -1, "add_surfaceom", "");
+   addManureID = system->addRegistration(::event, 0, "add_surfaceom", "");
 
    protocol::IntakeType dummy;
-   intakeGetID = system->addRegistration(::get, -1, "intake", protocol::DDML(dummy));
-   intakeSendID = system->addRegistration(::respondToGet, -1, "intakestock", singleTypeDDML);
+   intakeGetID = system->addRegistration(::get, 0, "intake", protocol::DDML(dummy));
+   intakeSendID = system->addRegistration(::respondToGet, 0, "intakestock", singleTypeDDML);
    }
 // ------------------------------------------------------------------
 // Init2 phase.

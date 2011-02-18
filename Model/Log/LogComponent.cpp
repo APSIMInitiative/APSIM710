@@ -99,7 +99,7 @@ void LogComponent::doInit1(const protocol::Init1Data& initData)
    {
    protocol::Component::doInit1(initData);
 
-   debug_outputID = addRegistration(::respondToSet, -1, "debug_output", "");
+   debug_outputID = addRegistration(::respondToSet, 0, "debug_output", "");
    string filename = componentData->getProperty("parameters", "logfile");
    if (filename == "")
       filename = "log.xml";

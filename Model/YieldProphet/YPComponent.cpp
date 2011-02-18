@@ -47,21 +47,21 @@ void YPComponent::doInit1(const protocol::Init1Data& initData)
    static const char* realArrayType = "<type kind=\"single\" array=\"T\"\\>";
    static const char* doubleType = "<type kind=\"double\"\\>";
 
-   cllID = addRegistration(::respondToGet, -1, "CLLToday", doubleType);
-   dulID = addRegistration(::respondToGet, -1, "DULToday", doubleType);
-   swID = addRegistration(::respondToGet, -1, "SWToday", doubleType);
-   critSwID = addRegistration(::respondToGet, -1, "CritSWToday", doubleType);
-   nID = addRegistration(::respondToGet, -1, "NToday", doubleType);
-   satID = addRegistration(::respondToGet, -1, "SATToday", doubleType);
+   cllID = addRegistration(::respondToGet, 0, "CLLToday", doubleType);
+   dulID = addRegistration(::respondToGet, 0, "DULToday", doubleType);
+   swID = addRegistration(::respondToGet, 0, "SWToday", doubleType);
+   critSwID = addRegistration(::respondToGet, 0, "CritSWToday", doubleType);
+   nID = addRegistration(::respondToGet, 0, "NToday", doubleType);
+   satID = addRegistration(::respondToGet, 0, "SATToday", doubleType);
 
-   rootDepthID = addRegistration(::get, -1, "root_depth", doubleType);
-   lldepID = addRegistration(::get, -1, "ll_dep", realArrayType);
-   duldepID = addRegistration(::get, -1, "dul_dep", realArrayType);
-   satdepID = addRegistration(::get, -1, "sat_dep", realArrayType);
-   swdepID = addRegistration(::get, -1, "sw_dep", realArrayType);
-   dlayerID = addRegistration(::get, -1, "dlayer", realArrayType);
-   no3ID = addRegistration(::get, -1, "no3", realArrayType);
-   nh4ID = addRegistration(::get, -1, "nh4", realArrayType);
+   rootDepthID = addRegistration(::get, 0, "root_depth", doubleType);
+   lldepID = addRegistration(::get, 0, "ll_dep", realArrayType);
+   duldepID = addRegistration(::get, 0, "dul_dep", realArrayType);
+   satdepID = addRegistration(::get, 0, "sat_dep", realArrayType);
+   swdepID = addRegistration(::get, 0, "sw_dep", realArrayType);
+   dlayerID = addRegistration(::get, 0, "dlayer", realArrayType);
+   no3ID = addRegistration(::get, 0, "no3", realArrayType);
+   nh4ID = addRegistration(::get, 0, "nh4", realArrayType);
    }
 // ------------------------------------------------------------------
 // return a variable to caller.

@@ -135,7 +135,7 @@ void PlantHerbage::doRunTimeReg(void)
    doRegister(MEAL, "meal");
    doRegister(OIL, "oil");
 
-   tramplingID = system->addRegistration(::get, -1, "trampling", singleTypeDDML);
+   tramplingID = system->addRegistration(::get, 0, "trampling", singleTypeDDML);
    heightID = system->addRegistration(::get, cHerbageModuleID, "height", singleTypeDDML);
    stageID = system->addRegistration(::get, cHerbageModuleID, "stage", singleTypeDDML);
    stageNameID = system->addRegistration(::get, cHerbageModuleID,"stagename", stringTypeDDML);
@@ -143,8 +143,8 @@ void PlantHerbage::doRunTimeReg(void)
     removeCropBiomassID = system->addRegistration(::event, cHerbageModuleID,"remove_crop_biomass", DDML(protocol::RemoveCropDmType()));
     detachRateID = system->addRegistration(::event, cHerbageModuleID, "detach_crop_biomass_rate", "");
 
-//   dmFeedOnOfferID = system->addRegistration(::respondToGet, -1, "dm_feed_on_offer", singleArrayTypeDDML);
-     dmPartsRemovedID = system->addRegistration(::respondToGet, -1, "dm_parts_removed", singleArrayTypeDDML);
+//   dmFeedOnOfferID = system->addRegistration(::respondToGet, 0, "dm_feed_on_offer", singleArrayTypeDDML);
+     dmPartsRemovedID = system->addRegistration(::respondToGet, 0, "dm_parts_removed", singleArrayTypeDDML);
   }
 
 // ------------------------------------------------------------------
@@ -691,7 +691,7 @@ void PlantHerbage::initialiseData ( void )
       PSeed = 0.0;
       dmdSeed = 0.0;
 
-      cHerbageModuleID = -1;
+      cHerbageModuleID = 0;
       cDebug = "";
 
       for (int pool = 0; pool < maxDmdPoolsVeg; pool++)

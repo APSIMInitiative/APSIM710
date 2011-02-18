@@ -40,14 +40,14 @@ HerbageConverter::~HerbageConverter(void)
 // ------------------------------------------------------------------
 void HerbageConverter::doInit1(const protocol::Init1Data& initData)
    {
-   tramplingID = system->addRegistration(::respondToGet, -1, "herbage_trampling", singleTypeDDML);
-   plant2stockID = system->addRegistration(::respondToGet, -1, "plant2stock", protocol::DDML(protocol::Plant2StockType()).c_str());
-   removeHerbageID = system->addRegistration(::respondToEvent, -1, "remove_herbage", DDML(protocol::RemoveHerbageType()).c_str());
+   tramplingID = system->addRegistration(::respondToGet, 0, "herbage_trampling", singleTypeDDML);
+   plant2stockID = system->addRegistration(::respondToGet, 0, "plant2stock", protocol::DDML(protocol::Plant2StockType()).c_str());
+   removeHerbageID = system->addRegistration(::respondToEvent, 0, "remove_herbage", DDML(protocol::RemoveHerbageType()).c_str());
 
-   dmFeedOnOfferID = system->addRegistration(::respondToGet, -1, "dm_feed_on_offer", singleArrayTypeDDML);
-   dmFeedRemovedID = system->addRegistration(::respondToGet, -1, "dm_feed_removed", singleArrayTypeDDML);
-   DmdFeedRemovedID = system->addRegistration(::respondToGet, -1, "dm_feed_removed_dmd_class", singleArrayTypeDDML);
-   DmdAvgFeedRemovedID = system->addRegistration(::respondToGet, -1, "dmd_avg_feed_removed", singleTypeDDML);
+   dmFeedOnOfferID = system->addRegistration(::respondToGet, 0, "dm_feed_on_offer", singleArrayTypeDDML);
+   dmFeedRemovedID = system->addRegistration(::respondToGet, 0, "dm_feed_removed", singleArrayTypeDDML);
+   DmdFeedRemovedID = system->addRegistration(::respondToGet, 0, "dm_feed_removed_dmd_class", singleArrayTypeDDML);
+   DmdAvgFeedRemovedID = system->addRegistration(::respondToGet, 0, "dmd_avg_feed_removed", singleTypeDDML);
 
      herbage_model = system->readParameter ("constants", "herbage_model");
 

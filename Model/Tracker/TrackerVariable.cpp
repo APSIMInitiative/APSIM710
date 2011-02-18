@@ -22,7 +22,7 @@ TrackerVariable::TrackerVariable(protocol::Component* p, const string& fullName)
    count = 0;
    last = 0;
    startPeriodID = endPeriodID = nameID = eventID = 0; 
-   startPeriodComponentID = endPeriodComponentID = eventComponentID = -1;
+   startPeriodComponentID = endPeriodComponentID = eventComponentID = 0;
    inWindow = false;
    parse(fullName);
    sampleDate = 0;
@@ -241,14 +241,14 @@ void TrackerVariable::doRegistrations(void)
    if (stat == dateStat)
       {
       nameID = parent->addRegistration(::respondToGet,
-                                       -1,
+                                       0,
                                        name,
                                        doubleDDML);
       }
    else
       {
       nameID = parent->addRegistration(::respondToGet,
-                                       -1,
+                                       0,
                                        name,
                                        typeString);
       }
@@ -306,7 +306,7 @@ void TrackerVariable::doSample(void)
       {
       double today;
       unsigned todayID = parent->addRegistration(::get,
-                                                 -1,
+                                                 0,
                                                  "today",
                                                  protocol::DDML(today).c_str());
       parent->getVariable(todayID, today, -1.0E12, 1.0E12);
