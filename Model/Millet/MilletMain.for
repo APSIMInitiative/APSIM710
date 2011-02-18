@@ -1,7 +1,7 @@
 
       module MilletModule
       Use Registrations
-      Use CropLibrary
+      Use CropLibrary 
 
 !      millet_array_sizes
 
@@ -1937,8 +1937,6 @@ cjh special for erik - end
          if (.not. g%plant_status_out_today) then
 
 
-      call publish_null(id%sowing)
-
       call Write_string ( 'Sow')
 
 cjh      if (data_record.ne.blank) then
@@ -1962,6 +1960,9 @@ cjh      if (data_record.ne.blank) then
 
          call collect_char_var ('cultivar', '()'
      :                        , g%cultivar, numvals)
+
+
+      call publish_null(id%sowing)
 
              ! report
 
@@ -3952,7 +3953,7 @@ cejvo
      :                             , '()'
      :                             , g%pfact_expansion)
 
-      elseif (variable_name .eq. 'p%demand') then
+      elseif (variable_name .eq. 'p_demand') then
          ! really ought to do this properly
          call respond2get_real_var (variable_name
      :                             , '(g/m2)'
@@ -5228,6 +5229,7 @@ cpsc
 *+  Sub-Program Arguments
       character  action*(*)            ! (INPUT) Message action to perform
       character  data_string*(*)       ! (INPUT) Message data
+!      character  string*200            ! output string
 
 *+  Purpose
 *      This module simulates phenology, root, leaf, stem, panicle, and grain growth,
@@ -5255,8 +5257,8 @@ cpsc
       call get_name (module_name)
 
 
-!        call write_string('millet('// module_name // ' '
-!       :         // g%last_mdl_name //' ' //g%stem_class//action)
+!        call write_string('DEBUG millet('// trim(module_name) //') '
+!     :       //trim(action)//' DataString: '//trim(data_string))
 !        g%last_mdl_name = module_name
 
       if (action.eq.ACTION_get_variable) then
@@ -5307,6 +5309,8 @@ cpsc
 
       elseif (action.eq.ACTION_sow) then
 
+!         write (string, *) ' DEBUG ACTION_sow received: ',trim(action)
+!         call write_string (string)
          if (millet_my_type ()) then
 
             if (g%stem_class .eq. class_tiller) then
