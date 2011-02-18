@@ -1259,16 +1259,16 @@ subroutine soilp_get_crop_variables ()
       else
          ! crop has been specified so end do
 
-         call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
-
-         if (numvals.gt.0) then
-            do layer = 1,numvals
-               g%rlv(vegnum,layer) = rlv(layer)
-            end do
-
-         else
-            call fatal_error (Err_Internal,'no rlv returned from '//g%crop_names(vegnum))
-         endif
+!!JH What is rlv for? It doesn't appear to be used         call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
+!!JH What is rlv for? It doesn't appear to be used
+!!JH What is rlv for? It doesn't appear to be used         if (numvals.gt.0) then
+!!JH What is rlv for? It doesn't appear to be used            do layer = 1,numvals
+!!JH What is rlv for? It doesn't appear to be used               g%rlv(vegnum,layer) = rlv(layer)
+!!JH What is rlv for? It doesn't appear to be used            end do
+!!JH What is rlv for? It doesn't appear to be used
+!!JH What is rlv for? It doesn't appear to be used         else
+!!JH What is rlv for? It doesn't appear to be used            call fatal_error (Err_Internal,'no rlv returned from '//g%crop_names(vegnum))
+!!JH What is rlv for? It doesn't appear to be used         endif
 
          !  mep/dsg 200302  added get for root_depth
          call get_real_var (g%crop_owners(vegnum),'root_depth','(mm)',g%root_depth(vegnum),numvals,0.0,10000.0)
