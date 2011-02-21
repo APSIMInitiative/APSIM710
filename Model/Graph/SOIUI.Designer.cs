@@ -188,7 +188,7 @@ namespace Graph
          // January
          // 
          this.January.AutoSize = true;
-         this.January.Checked = true;
+         this.January.Checked = false;
          this.January.Location = new System.Drawing.Point(219, 34);
          this.January.Name = "January";
          this.January.Size = new System.Drawing.Size(62, 17);
