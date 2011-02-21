@@ -4680,16 +4680,11 @@ c  dsg   070302  added runon
      :                             , 0.0, p%cn2_bare - 0.00009)
 
       elseif (variable_name .eq. 'cona') then
-         call collect_real_var (variable_name, '()'
-     :                             , p%cona, numvals
-     :                             , 0.0001, 10.0)
-         write (line, '(6x, a, f4.1)') 'Cona:             ',
-     :        p%cona
-         call write_string (line)         
+         call fatal_error (err_user, 'setting '//
+     :     'cona is done via GUI')
       elseif (variable_name .eq. 'u') then
-         call collect_real_var (variable_name, '()'
-     :                             , p%u, numvals
-     :                             , 0.0001, 40.0)
+         call fatal_error (err_user, 'setting '//
+     :      'U is done via GUI')
       elseif (variable_name .eq. 'water_table') then
          call collect_real_var (variable_name, '()'
      :                             , water_table, numvals
@@ -7656,10 +7651,10 @@ c
       dummy = add_reg(respondToGetSetReg, 'dlayer',
      .                floatarrayTypeDDML, 'mm',
      . 'Thickness of profile layer')
-      dummy = add_reg(respondToGetSetReg, 'cona',
+      dummy = add_reg(respondToGetReg, 'cona',
      .                     floatTypeDDML, '',
      . 'Stage 2 evaporation coefficient')
-      dummy = add_reg(respondToGetSetReg, 'u',
+      dummy = add_reg(respondToGetReg, 'u',
      .                floatTypeDDML, '',
      . 'upper limit of stage 1 evaporation')
 
