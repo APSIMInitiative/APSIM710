@@ -33,7 +33,7 @@ class PastureUptake : public protocol::Component
       PastureUptake(protocol::Component *system);
       PastureUptake(protocol::Component *system, string uptakeNam, string deltaNam, string unitNam);
       ~PastureUptake(void);
-      void doInit1(const protocol::Init1Data&);
+      void doInit1(int compId);
       void doInit2(void);
       void doUptake(void);
 

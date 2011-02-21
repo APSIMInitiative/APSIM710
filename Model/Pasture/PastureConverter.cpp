@@ -1,6 +1,5 @@
 #include "PastureConverter.h"
 
-
 #pragma package(smart_init)
 using namespace std;
 
@@ -66,7 +65,7 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    {
    protocol::Component::doInit1(initData);
 
-      // respondToGet
+   // respondToGet
    sandID =    addRegistration(::respondToGet, 0, "sand", singleArrayTypeDDML);
    vpdID =     addRegistration(::respondToGet, 0, "vpd", singleTypeDDML);
    co2ppmID =     addRegistration(::respondToGet, 0, "co2_ppm", singleTypeDDML);
@@ -75,13 +74,15 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    maxtID =       addRegistration(::get, 0, "maxt", singleTypeDDML);
    mintID =       addRegistration(::get, 0, "mint", singleTypeDDML);
 
+   /* We want to direct these events to ONLY the AusFarm pasture component, so delay registration until init2
       // event
    sowID =            addRegistration(::event, 0, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
    cutID =            addRegistration(::event, 0, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
    cultivateID =      addRegistration(::event, 0, "cultivate", protocol::DDML(protocol::PastureCultivateType()).c_str());
    killID =           addRegistration(::event, 0, "kill", protocol::DDML(protocol::PastureKillType()).c_str());
    burnID =           addRegistration(::event, 0, "burn", protocol::DDML(protocol::PastureBurnType()).c_str());
- spraytopID =       addRegistration(::event,   0, "spraytop", "");
+   spraytopID =       addRegistration(::event, 0, "spraytop", "");
+   */
 
 //   residueAddedID =   addRegistration(RegistrationType::event, "residue_added", residueAddedTypeDDML);
    incorpFOMID =        addRegistration(::event, 0, "incorpfom", "");
@@ -103,9 +104,12 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    NO3 = new PastureUptake(this, "uptake_no3", "dlt_no3", "(kg/ha)");
    NH4 = new PastureUptake(this, "uptake_nh4", "dlt_nh4", "(kg/ha)");
 
-   SW->doInit1(initData);
-   NO3->doInit1(initData);
-   NH4->doInit1(initData);
+   /* We want to direct these events to ONLY the AusFarm pasture component, so delay registration until init2
+   SW->doInit1(0);
+   NO3->doInit1(0);
+   NH4->doInit1(0);
+   */
+
 }
 // ------------------------------------------------------------------
 // Init2 phase.
@@ -113,6 +117,48 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
 void PastureConverter::doInit2(void)
 //===========================================================================
    {
+   // Go looking for one, and only one, AusFarm pasture component
+   // If we find it, use uptake information from it alone, not from any
+   // other (crop) components.
+   // Unfortunately we can't do this during init1, since this component is
+   // initialized before the AusFarm pasture component itself.
+   int pastureID = 0;
+
+   protocol::Message* msg = newQueryInfoMessage(componentID,
+                                         parentID,
+                                         FString("do_pasture_growth"),
+                                         protocol::respondToEventInfo);
+   int msgId = msg->messageID;
+   sendMessage(msg);
+
+   for (unsigned int i = 0; i < returnInfos.size(); i++)
+   {
+	   if (returnInfos[i]->queryID == msgId)
+	   {
+		   if (pastureID != 0 && pastureID != returnInfos[i]->componentID)
+		   {
+              error("Science converter can only handle one AusFarm Pasture component", true);
+			  return;
+		   } 
+		   else 
+		   {
+			   pastureID = returnInfos[i]->componentID;
+		   }
+	   }
+   }
+
+   // event
+   sowID =            addRegistration(::event, pastureID, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
+   cutID =            addRegistration(::event, pastureID, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
+   cultivateID =      addRegistration(::event, pastureID, "cultivate", protocol::DDML(protocol::PastureCultivateType()).c_str());
+   killID =           addRegistration(::event, pastureID, "kill", protocol::DDML(protocol::PastureKillType()).c_str());
+   burnID =           addRegistration(::event, pastureID, "burn", protocol::DDML(protocol::PastureBurnType()).c_str());
+   spraytopID =       addRegistration(::event, pastureID, "spraytop", "");
+
+   SW->doInit1(pastureID);
+   NO3->doInit1(pastureID);
+   NH4->doInit1(pastureID);
+
    readParameters (); // Read constants
    SW->doInit2();
    NO3->doInit2();

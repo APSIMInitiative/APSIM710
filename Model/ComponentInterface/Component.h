@@ -451,8 +451,6 @@ class EXPORT Component
       int active;
       std::string state;
 
-      vector<ReturnInfoData*> returnInfos;
-
       typedef std::map<unsigned int, Variants*> getVariableResponses;
       getVariableResponses myGetVariableResponses;
 
@@ -497,6 +495,9 @@ class EXPORT Component
                           bool isArray,
                           const char *units,
                           const char *desc);
+
+ protected:
+      vector<ReturnInfoData*> returnInfos;
 
  public:
       // Get a variable from the system (into basic C datatypes)
