@@ -135,7 +135,7 @@ namespace ApsimFile
                                           "stylo", "sugar", "lablab", "millet", "triticale", "weed", "medic",
                                           "Lupins", "lentils", "oatenhay", "broccoli", "peas", "Vetch", "potatoes",
                                           "poppy", "butterflypea", "burgundybean", "desmanthus_v", "centro", "caatingastylo",
-                                          "brazilianstylo", "desmanthus_per"};
+                                          "brazilianstylo", "desmanthus_per", "rice"};
       public SoilSpreadsheet()
          {
          }

@@ -131,6 +131,21 @@ namespace UIBits
             }
          }
 
+      /// <summary>
+      /// Need to make sure that when the user stops editing a cell, a context menu is still
+      /// attached to both the cell and the grid. The ContextMenu is removed in the 
+      /// OnEditingControlShowing method above, so we need to add it back in here.
+      /// </summary>
+      protected override void OnCellEndEdit(DataGridViewCellEventArgs e)
+         {
+         base.OnCellEndEdit(e);
+         CurrentCell.ContextMenuStrip = PopupMenu;
+         ContextMenuStrip = PopupMenu;
+         }
+
+      /// <summary>
+      /// Need to stop the occasional error message.
+      /// </summary>
       void OnDataError(object sender, DataGridViewDataErrorEventArgs e)
          {
          e.Cancel = false;
