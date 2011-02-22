@@ -637,9 +637,9 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
             queryName = getName();
          }
       else
-         componentNameToID(queryName.c_str(), childID);
+         componentNameToID(asString(queryInfo.name), childID);
 
-      if (childID == INT_MAX || queryName == "") return; // XX Yuck!!
+      if (childID == 0 || queryName == "") return; // XX Yuck!!
 
       string fqn = getName();
       fqn += ".";

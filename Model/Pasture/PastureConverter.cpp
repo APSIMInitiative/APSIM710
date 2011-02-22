@@ -74,7 +74,7 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    maxtID =       addRegistration(::get, 0, "maxt", singleTypeDDML);
    mintID =       addRegistration(::get, 0, "mint", singleTypeDDML);
 
-   /* We want to direct these events to ONLY the AusFarm pasture component, so delay registration until init2
+   /* We want to direct these events to ONLY our associated AusFarm pasture component, so delay registration until init2
       // event
    sowID =            addRegistration(::event, 0, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
    cutID =            addRegistration(::event, 0, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
@@ -104,7 +104,7 @@ void PastureConverter::doInit1(const protocol::Init1Data& initData)
    NO3 = new PastureUptake(this, "uptake_no3", "dlt_no3", "(kg/ha)");
    NH4 = new PastureUptake(this, "uptake_nh4", "dlt_nh4", "(kg/ha)");
 
-   /* We want to direct these events to ONLY the AusFarm pasture component, so delay registration until init2
+   /* We want to obtain values from ONLY our associated AusFarm pasture component, so delay registration until init2
    SW->doInit1(0);
    NO3->doInit1(0);
    NH4->doInit1(0);
@@ -126,8 +126,8 @@ void PastureConverter::doInit2(void)
 
    protocol::Message* msg = newQueryInfoMessage(componentID,
                                          parentID,
-                                         FString("do_pasture_growth"),
-                                         protocol::respondToEventInfo);
+                                         FString( (getFQName() + "Model").c_str()),
+                                         protocol::componentInfo);
    int msgId = msg->messageID;
    sendMessage(msg);
 
@@ -137,7 +137,7 @@ void PastureConverter::doInit2(void)
 	   {
 		   if (pastureID != 0 && pastureID != returnInfos[i]->componentID)
 		   {
-              error("Science converter can only handle one AusFarm Pasture component", true);
+              error("Science converter can handle only one AusFarm Pasture component", true);
 			  return;
 		   } 
 		   else 

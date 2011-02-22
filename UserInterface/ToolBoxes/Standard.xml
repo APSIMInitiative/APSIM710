@@ -2771,10 +2771,10 @@ endif
         <dmdcontent type="text" description="Dry matter content when stored (kg/kg):">0.9</dmdcontent>
       </ui>
       <script name="start_of_day">
-        <text><![CDATA[if (avail_dm > [availdmthreshold]) then
-         standing_DM = avail_dm
+        <text><![CDATA[if ([pasturemodel]Model.avail_dm > [availdmthreshold]) then
+         standing_DM = [pasturemodel]Model.avail_dm
          '[pasturemodel]' cutpasture cut_height = [height], gathered = [gathered], dmd_loss = [dmdloss], dm_content = [dmdcontent]
-         resid_DM = avail_dm
+         resid_DM = [pasturemodel]Model.avail_dm
          removed_DM = standing_DM - resid_DM
    endif
 
