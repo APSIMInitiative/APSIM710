@@ -18,6 +18,7 @@ namespace CSUserInterface
       private DataTable Table;
       private XmlNode _SoilNode;
       private XmlNode ProfileNode;
+      private List<string> EditableColumnNames = new List<string>();
 
       /// <summary>
       /// Constructor
@@ -166,6 +167,8 @@ namespace CSUserInterface
       /// </summary>
       private void ApplyCodesToColumns()
          {
+         EditableColumnNames.Clear();
+
          Soil.Variable Thickness = Soil.Get(_SoilNode, "Thickness");
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
@@ -179,6 +182,8 @@ namespace CSUserInterface
                   {
                   if (Var.Codes.Length > 0 && Var.Codes[0].Contains("Calculated"))
                      Grid.Columns[Col].ReadOnly = true;
+                  else
+                     EditableColumnNames.Add(Grid.Columns[Col].HeaderText);
 
                   // Put codes as tooltips.
                   if (Var.Codes.Length == Grid.Rows.Count - 1)
@@ -427,6 +432,11 @@ namespace CSUserInterface
          int RowIndex = Grid.CurrentCell.RowIndex;
 
          bool SomethingWasSaved = false;
+         if (ColumnNames.Contains("Depth (cm)"))
+            {
+            // User has changed depth column - go update all variables.
+            ColumnNames = EditableColumnNames;
+            }
          foreach (string ColumnName in ColumnNames)
             {
             if (!ColumnName.Contains("Depth"))

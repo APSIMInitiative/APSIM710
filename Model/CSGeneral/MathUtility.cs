@@ -669,7 +669,7 @@ namespace CSGeneral
             return new double[0];
          double[] ReturnValues = new double[i+1];
          for (int j = 0; j <= i; j++)
-            ReturnValues[j] = Values[i];
+            ReturnValues[j] = Values[j];
          return ReturnValues;
          }
       static public double[] RemoveValueAt(double[] Values, int Index)

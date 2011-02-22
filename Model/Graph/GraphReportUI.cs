@@ -38,7 +38,7 @@ namespace Graph
             if (GraphNode.Name == "Graph")
                {
                GraphUI Graph = new GraphUI();
-               Graph.Parent = this;
+               Graph.Parent = Panel;
                Graph.OnLoad(Controller, GraphNodePath, Comp.Contents);
                }
             if (GraphNode.Name == "Graph2")

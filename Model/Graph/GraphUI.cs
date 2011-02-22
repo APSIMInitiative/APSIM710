@@ -317,10 +317,17 @@ namespace Graph
 
                      double CumulativeXSoFar = 0.0;
                      double CumulativeYSoFar = 0.0;
-                     // Loop through all data rows and populate series.
-                     for (int Row = 0; Row < View.Count; Row++)
+                     if (NewSeries is Box && View.Count < 4)
                         {
-                        AddDataToSeries(DataSource, XFieldName, XDataPresent, CumulativeY, CumulativeX, YColumnName, XColumnName, View, NewSeries, ref CumulativeXSoFar, ref CumulativeYSoFar, Row, ErrorBarSeries);
+
+                        }
+                     else
+                        {
+                        // Loop through all data rows and populate series.
+                        for (int Row = 0; Row < View.Count; Row++)
+                           {
+                           AddDataToSeries(DataSource, XFieldName, XDataPresent, CumulativeY, CumulativeX, YColumnName, XColumnName, View, NewSeries, ref CumulativeXSoFar, ref CumulativeYSoFar, Row, ErrorBarSeries);
+                           }
                         }
                      }
                   }
