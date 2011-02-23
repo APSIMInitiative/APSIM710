@@ -1,4 +1,4 @@
-<folder version="23" name="simulations">
+<folder version="27" name="simulations">
   <simulation name="DCD_Test">
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
@@ -11,28 +11,10 @@
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
     </summaryfile>
     <area name="Pdk_plusDCD">
-      <SoilN_dcd>
-        <category description="Parameters to initialise soil organic matter" />
-        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
-        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
-        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
-        <category description="Enter the values for each layer" />
-        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
-        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
-        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
-        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
-        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
-        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
-        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
-        <category description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
-      </SoilN_dcd>
       <folder name="Manager folder">
         <manager name="Cut or graze AgPasture">
           <ui>
-            <category description="Cut or graze rotation" />
+            <category description="Cut or graze rotation" type="category" />
             <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
             <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
             <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
@@ -40,7 +22,7 @@
             <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
             <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
             <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
-            <category description="Management of cut/grazed material" />
+            <category description="Management of cut/grazed material" type="category" />
             <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
             <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
             <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
@@ -820,34 +802,16 @@ End Class
         <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
         <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
         <category type="category" description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
       </SoilNui>
     </area>
     <area name="Pdk_noDCD">
-      <SoilN_dcd>
-        <category description="Parameters to initialise soil organic matter" />
-        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
-        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
-        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
-        <category description="Enter the values for each layer" />
-        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
-        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
-        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
-        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
-        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
-        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
-        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
-        <category description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
-      </SoilN_dcd>
       <folder name="Manager folder">
         <manager name="Cut or graze AgPasture">
           <ui>
-            <category description="Cut or graze rotation" />
+            <category description="Cut or graze rotation" type="category" />
             <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
             <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
             <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
@@ -855,7 +819,7 @@ End Class
             <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
             <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
             <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
-            <category description="Management of cut/grazed material" />
+            <category description="Management of cut/grazed material" type="category" />
             <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
             <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
             <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
@@ -1635,34 +1599,16 @@ End Class
         <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
         <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
         <category type="category" description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
       </SoilNui>
     </area>
     <area name="Pdk_earlyDCD">
-      <SoilN_dcd>
-        <category description="Parameters to initialise soil organic matter" />
-        <root_wt type="text" description="Type the amount of dead roots in the soil (kg/ha):">1000</root_wt>
-        <root_cn type="text" description="Type the C:N ratio of dead roots:">50</root_cn>
-        <soil_cn type="text" description="Type the C:N ratio of soil humus:">12.5</soil_cn>
-        <category description="Enter the values for each layer" />
-        <ph type="text" description="Type the inital soil pH:">6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0   6.0</ph>
-        <oc type="text" description="Type the initial soil organic carbon content (%):">7.7 7.1 7 6.8 6.6 6.4 6.2 5.8 5.1 4.4 4 3.5 3 2.5 1.8 1.5 1.1 0.9 0.8 0.7 0.5 0.4 0.3 0.2 0.2 0.1 0.1 0.1 0.1 0.1 0.1 </oc>
-        <fbiom type="text" description="Type the microbial biomass fraction of OC (0-1):">0.080 0.080 0.080 0.080 0.080 0.079 0.077 0.073 0.065 0.056 0.045 0.034 0.025 0.017 0.010 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008 0.008</fbiom>
-        <finert type="text" description="Type the inert fraction of soil humus (0-1):">0.55 0.55 0.55 0.56 0.57 0.58 0.59 0.74 0.79 0.84 0.88 0.92 0.95 0.97 0.98 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 0.99 </finert>
-        <no3ppm type="text" description="Type the initial concentration of NO3 is the soil (ppm):">4.50  6.00  7.20  7.50  7.50  7.50  7.50  7.50  7.50  7.35  6.90  6.45  6.00  5.55  4.80  4.05  3.45  2.70  2.40  2.13  1.95  1.77  1.53  1.32  1.17  1.02  0.90  0.78  0.63  0.60  0.60</no3ppm>
-        <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">1.50  2.00  2.40  2.50  2.50  2.50  2.50  2.50  2.50  2.45  2.30  2.15  2.00  1.85  1.60  1.35  1.15  0.90  0.80  0.71  0.65  0.59  0.51  0.44  0.39  0.34  0.30  0.26  0.21  0.20  0.20</nh4ppm>
-        <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
-        <category description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil):">40</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
-      </SoilN_dcd>
       <folder name="Manager folder">
         <manager name="Cut or graze AgPasture">
           <ui>
-            <category description="Cut or graze rotation" />
+            <category description="Cut or graze rotation" type="category" />
             <CutPasture_start_date type="ddmmmdate" description="Enter date to start rotation (dd/mm/yyyy): ">1/01/1900</CutPasture_start_date>
             <CutPasture_end_date type="ddmmmdate" description="Enter date to end rotation (dd/mm/yyyy): ">1/12/2010</CutPasture_end_date>
             <AgPasture_type type="list" listvalues="AgPasture,AgPastureSWIM,ryegrass_clover,ryegrass,clover" description="Enter pasture type">AgPastureSWIM</AgPasture_type>
@@ -1670,7 +1616,7 @@ End Class
             <cut_interval type="text" description="Enter the interval between cuts/grazings (days):">21</cut_interval>
             <upper_threshold type="text" description="Enter the upper mass threshold (kg/ha):">2500</upper_threshold>
             <lower_threshold type="text" description="Enter the lower mass threshold (kg/ha):">1250</lower_threshold>
-            <category description="Management of cut/grazed material" />
+            <category description="Management of cut/grazed material" type="category" />
             <treatment_type type="list" listvalues="Return as residue,Return as dung &amp; urine" description="Enter the treatment type for the cut/grazed material:">Return as residue</treatment_type>
             <remove_dm_frac type="text" description="Enter fraction of dm that is removed from field (0-1):">0.98</remove_dm_frac>
             <remove_n_frac type="text" description="Enter fraction of N that is removed from field (0-1):">0.98</remove_n_frac>
@@ -2450,9 +2396,9 @@ End Class
         <nh4ppm type="text" description="Type the initial concentration of NH4 is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</nh4ppm>
         <ureappm type="text" description="Type the initial concentration of urea is the soil (ppm):">0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00  0.00</ureappm>
         <category type="category" description="Other parameters" />
-        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">20</nitrification_pot>
-        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">100</nh4_at_half_pot>
-        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">30</opt_temp>
+        <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
+        <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
+        <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
       </SoilNui>
     </area>
   </simulation>
