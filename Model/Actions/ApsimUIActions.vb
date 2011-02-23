@@ -276,6 +276,8 @@ Public Class ApsimUIActions
             Sibling.ConvertToShortcutsUsingBase(Base)
          End If
       Next
+      Controller.ApsimData.PublishComponentChanged(Controller.ApsimData.RootComponent)
+
       Cursor.Current = Cursors.Default
    End Sub
 End Class

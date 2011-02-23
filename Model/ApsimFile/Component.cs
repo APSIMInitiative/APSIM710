@@ -704,7 +704,6 @@ namespace ApsimFile
                {
                MyContents = "";
                MyShortCutTo = Base;
-               MyFile.PublishComponentChanged(this);
                }
             }
          foreach (Component Child in ChildNodes)

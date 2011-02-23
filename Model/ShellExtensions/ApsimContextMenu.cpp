@@ -33,7 +33,7 @@ string getXMLValue(const string& NodeName)
 
    string st = "<" + NodeName + ">";
       
-   while (in && stristr(line.c_str(), st.c_str()) == NULL)
+   while (in && strstr(line.c_str(), st.c_str()) == NULL)
       getline(in, line);
    
    if (stristr(line.c_str(), st.c_str()) == NULL)

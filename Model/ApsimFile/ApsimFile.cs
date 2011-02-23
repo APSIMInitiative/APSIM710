@@ -36,7 +36,7 @@ namespace ApsimFile
       public event FileDelegate<string> FileNameChanged;
       public event EmptyDelegate BeforeSave;
 
-      internal void PublishComponentChanged(Component Comp)
+      public void PublishComponentChanged(Component Comp)
          {
          // If you are not already executing a ComponentChangedEvent 
          if (DisabledEventCount == 0 && ComponentChangedEvent != null)
