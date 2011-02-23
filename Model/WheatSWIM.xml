@@ -1,15 +1,21 @@
-<Type name="BarleySWIM">
+<Type name="WheatSWIM">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\barley.jpg</Image>
-    <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation name="Barley science documentation">%apsim%\Documentation\4 Module Reference\Barley.htm</Documentation>
-    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\plant.htm</Documentation>
+    <Image>%apsim%\UserInterface\Images\wheat.jpg</Image>
+    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation>%apsim%\Documentation\4 Module Reference\Wheat.htm</Documentation>
+    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <Documentation name="Gunnedah and Walgett sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/nsw.gif</Documentation>
+    <Documentation name="Birchip sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/birchip.gif</Documentation>
+    <Documentation name="Warra sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/warra.gif</Documentation>
+    <Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/darlingdowns.gif</Documentation>
+    <Documentation name="Mingenew sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/Mingenew.gif</Documentation>
+    <Documentation name="Walpeup sensibility tests">http://www.apsim.info/apsim/publish/apsim/wheat/sensibility/Walpeup.gif</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-    <dll>%apsim%\Model\Plant.dll</dll>
+    <dll>%apsim%/Model/Plant.%dllext%</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -17,11 +23,11 @@
       <drop>folder</drop>
     </drops>
     <ApsimToSim>
-      <component name="[BarleySWIM.name]" executable="[dll]">
+      <component name="[WheatSWIM.name]" executable="[dll]">
         <executable name="[dll]" version="1.0" />
         <initdata>
                [Model]
-               [BarleySWIM.innerxml]
+               [WheatSWIM.innerxml]
                [if "[soil.SoilType]"]
                   <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
                [endif]
@@ -41,9 +47,9 @@
       <Population />
       <Phenology />
       <Zadok />
-      <root />
+      <Root />
       <GenericArbitratorXY />
-      <GenericLeaf name="leaf" />
+      <GenericLeaf name="Leaf" />
       <Stem />
       <CompositePart name="Head">
         <FruitCohort name="Cohort1">
@@ -59,15 +65,16 @@
       <Parts name="Grain1">
         <Head.Cohort1.Grain />
       </Parts>
-	</options>
-    
-	<RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
-    <crop_type>barley</crop_type>
+    </options>
+    <RadiationPartitioningOrder>head leaf</RadiationPartitioningOrder>
+    <crop_type>wheat</crop_type>
     <default_crop_class>plant</default_crop_class>
-    <default_cultivar>grimmett</default_cultivar>
-    <stress_determinants>leaf stem meal</stress_determinants>
+    <default_cultivar>hartog</default_cultivar>
+    <!--  Parts than can supply retranslocate to grain
+      -->
+    <stress_determinants>leaf stem</stress_determinants>
     <yield_parts>meal</yield_parts>
-    <retrans_parts>leaf stem</retrans_parts>
+    <retrans_parts>stem leaf</retrans_parts>
     <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       SECTION - VALUE LIMITS - MAX AND MINS
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,8 +114,8 @@
       -->
     <stage_code_list>1         2          3         4                5               6           7               8             9            10       12</stage_code_list>
     <phase_names>sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</phase_names>
-    <phase_type>cwsowing cwemergent  cwinductive   cwinductive      cwinductive       cwfixed        cwfixed     cwfixed    cwfixed  cwfixed    waiting</phase_type>
-    <composite_phases>under_ground above_ground grainfill reproductive leaf_senescence vernalisation eme2ej preflowering tiller_formation hi_stress_sensitive stress_reporting postflowering n_stress</composite_phases>
+    <phase_type>cwsowing cwemergent  cwinductive   cwinductive      cwinductive       cwfixed        cwfixed     cwfixed    cwfixed  cwfixed      cwfixed</phase_type>
+    <composite_phases>under_ground above_ground grainfill reproductive leaf_senescence vernalisation eme2ej preflowering tiller_formation hi_stress_sensitive stress_reporting postflowering  n_stress</composite_phases>
     <under_ground>sowing germination</under_ground>
     <above_ground>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</above_ground>
     <vernalisation>germination emergence end_of_juvenile</vernalisation>
@@ -116,20 +123,19 @@
     <tiller_formation>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity</tiller_formation>
     <preflowering>emergence end_of_juvenile floral_initiation</preflowering>
     <postflowering>flowering start_grain_fill</postflowering>
-    <reproductive>flowering start_grain_fill end_grain_fill</reproductive>
+    <reproductive>flowering start_grain_fill</reproductive>
     <hi_stress_sensitive>flowering</hi_stress_sensitive>
     <grainfill>start_grain_fill</grainfill>
     <eme2ej>emergence end_of_juvenile</eme2ej>
-    <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
+    <n_stress>end_of_juvenile(0.3) floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
     <plant class="yes">
          <rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00</rlvp>
          <ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23 0.23</ll>
          <kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06 0.06</kl>
          <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00</xf>
          <soilSatFactor>0.1 0.1 0.1</soilSatFactor>
-    <!--	 <WaterUptakeSource>apsim</WaterUptakeSource>         -->
-         <partition_option>2</partition_option> 
+      <partition_option>2</partition_option>
       <partitionparts>root  head  leaf stem</partitionparts>
       <partitionrules>magic demand frac remainder</partitionrules>
       <n_retrans_option>2</n_retrans_option>
@@ -148,6 +154,9 @@
       <total_n_uptake_max units="g/m2">0.6</total_n_uptake_max>
       <fruit_no_option>1</fruit_no_option>
       <parasite_option>1</parasite_option>
+      <!--  list of crop class definitions
+         !!!plant = wheat
+         -->
       <class_action>harvest</class_action>
       <class_change>unchanged</class_change>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -165,14 +174,14 @@
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          -->
       <phenology_option>2</phenology_option>
-      <stage_code description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9    10     11</stage_code>
+      <stage_code description="numeric code for phenological stages">1      2          3           4             5                 6           7              8            9        10     11</stage_code>
       <stage_names description="stage names">sowing germination emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop </stage_names>
       <!-- __________________________________________________________________________________________________________-
          STEM REDUCTION EFFECT ON PHENOLOGY
          sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
          -->
       <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9    10     11</stage_code_list>
-      <stage_stem_reduction_harvest>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
+      <stage_stem_reduction_harvest>1      2    3     4     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
       <stage_stem_reduction_kill_stem>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_kill_stem>
       <!-- __________________________________________________________________________________________________________-
          SEED GERMINATION
@@ -205,11 +214,13 @@
          -->
       <x_temp units="oC" description="cardinal temps.">0  26  34</x_temp>
       <y_tt units="oCd" description="effective thermal time">0  26   0</y_tt>
+      <x_removeBiomPheno description="fraction of above ground biomass removed">0.0  0.1   0.4  0.5  1.0</x_removeBiomPheno>
+      <y_removeFractPheno description="fraction of above ground thermal time removed">0.0  0.08  0.4  0.5  1.0</y_removeFractPheno>
       <!-- __________________________________________________________________________________________________________-
          LEAF NUMBER DEVELOPMENT
          currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
          -->
-      <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.0                 </leaf_no_at_emerg>
+      <leaf_no_at_emerg description="0.5     ! (expanded) leaf number at emergence ()">2.0 </leaf_no_at_emerg>
       <leaf_app_rate1 units="oCd" description="Growing deg day required to develop the most leaf ligules. (deg day).">75.0</leaf_app_rate1>
       <leaf_app_rate2 units="oCd" description="Growing deg day required to develop last leaf ligules. (deg day).">2.0</leaf_app_rate2>
       <leaf_no_rate_change description="Leaf no below flag above which leaf appearance rate changes from rate1 to rate2.">7</leaf_no_rate_change>
@@ -217,9 +228,11 @@
          -->
       <leaf_no_pot_option>2</leaf_no_pot_option>
       <x_node_no_app>0    20</x_node_no_app>
-      <y_node_app_rate>75   75</y_node_app_rate>
-      <x_node_no_leaf>0    2.5   10</x_node_no_leaf>
-      <y_leaves_per_node>1    1     10</y_leaves_per_node>
+      <y_node_app_rate>95   95</y_node_app_rate>
+      <!-- x_node_no_leaf    =   0    5   8
+         -->
+      <x_node_no_leaf>0    2.5   6</x_node_no_leaf>
+      <y_leaves_per_node>1    1   6.0</y_leaves_per_node>
       <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.1 0.8 1.0</x_lai_ratio>
       <y_leaf_no_frac description="reduction in leaf appearance ()">0.0  1.0 1.0 1.0</y_leaf_no_frac>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -259,6 +272,7 @@
          INITIATION
          root
          -->
+      <dm_init units="g/plant" description="part weight at emergence xxx">0.010</dm_init>
       <root_dm_init units="g/plant" description="part weight at emergence">0.010</root_dm_init>
       <leaf_dm_init>0.003</leaf_dm_init>
       <stem_dm_init>0.0016</stem_dm_init>
@@ -294,7 +308,7 @@
       <minimum_grain_n_filling_rate units="g/grain/d">0.000015</minimum_grain_n_filling_rate>
       <x_temp_grain_n_fill>0 25</x_temp_grain_n_fill>
       <y_rel_grain_n_fill>0   1</y_rel_grain_n_fill>
-      <crit_grainfill_rate>0.000</crit_grainfill_rate>
+      <crit_grainfill_rate description="0.0005">0. </crit_grainfill_rate>
       <GrainMaxDailyNConc>0.03 </GrainMaxDailyNConc>
       <x_temp_grain units="oC" description="temperature table for grain growth rate">0.0   15.0</x_temp_grain>
       <y_grain_rate units="0-1" description="temperature factor on grain growth rate">0.0   1.0</y_grain_rate>
@@ -317,8 +331,12 @@
          SPECIFIC LEAF AREA - SLA
          -->
       <x_lai>0     5</x_lai>
-      <y_sla_max description="maximum specific leaf area for delta LAI">30000   25000       </y_sla_max>
-      <sla_min description="minimum specific leaf area for delta LAI">18000            </sla_min>
+      <!-- y_sla_max   =   27000 27000    ! maximum specific leaf area for delta LAI
+         -->
+      <y_sla_max description="maximum specific leaf area for delta LAI">27000 22000    </y_sla_max>
+      <!-- sla_min         =  10000           ! minimum specific leaf area for delta LAI
+         -->
+      <sla_min description="minimum specific leaf area for delta LAI">18000           </sla_min>
       <!-- ______________________________________________________________________________
          TPLA  - USED TO INTIALISE THE INITIAL LAI
          -->
@@ -335,6 +353,7 @@
          ROOTING DEPTH
          sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
          stage_code           = 1      2    3     4     5     6     7      8     9    10     11  ()
+         root_depth_rate       = 0      5.0  40    40    40    40    0      0.0   0.0   0.0    0  (mm/d)
          -->
       <root_depth_rate units="mm/d">0      5.0  30    30    30    30    30      0.0   0.0   0.0    0</root_depth_rate>
       <!-- Effect of sw_supply_demand_ratio on root depth increase
@@ -376,7 +395,7 @@
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
          -->
       <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">1.5  </eo_crop_factor_default>
+      <eo_crop_factor_default description="default crop factor for limiting soil">1.1  </eo_crop_factor_default>
       <!--  water demand to some fraction/multiple
          of atmospheric potential.
          __________________________________________________________________________________________________________-
@@ -438,10 +457,10 @@
       <N_fact_photo description="multipler for N deficit effect on photosynthesis">1.5    </N_fact_photo>
       <N_fact_expansion description="multipler for N deficit effect on leaf expansion">1.0    </N_fact_expansion>
       <N_fact_pheno description="multipler for N deficit effect on phenology">100    </N_fact_pheno>
-      <N_fact_grain description="multipler for N deficit effect on grain">1</N_fact_grain>
+      <N_fact_grain description="multipler for N deficit effect on grain filling">1    </N_fact_grain>
       <!-- ______________________________________________________________________________
          NITROGEN CONCENTRATION LIMITS: MAX. CRITICAL AND MINIMUM N CONCENTRATIONS
-         emerg   endjuv fi    flag   start gf maturity
+         emerg   endjuv fi    flow   end gf maturity
          -->
       <x_stage_code>3       4      5     6      8      10</x_stage_code>
       <y_n_conc_min_leaf>0.025   0.025  0.021 0.010  0.005  0.0025</y_n_conc_min_leaf>
@@ -470,7 +489,9 @@
       <y_n_conc_max_oil>0.0     0.0     0.0    0.0    0.0    0.0</y_n_conc_max_oil>
       <!-- ______________________________________________________________________________
          INITIAL NITROGEN CONCENTRATION OF ORGANS
+         root
          -->
+      <n_init_conc description="xxx">0.020 </n_init_conc>
       <root_n_init_conc>0.020</root_n_init_conc>
       <leaf_n_init_conc>0.063</leaf_n_init_conc>
       <stem_n_init_conc>0.050</stem_n_init_conc>
@@ -483,6 +504,9 @@
          instantly transferred from leaves to stem (need to stop this occuring if you 'kill' crop)
          -->
       <n_senescence_option>2</n_senescence_option>
+      <!--             root
+         -->
+      <n_sen_conc description="xxxx">0.005 </n_sen_conc>
       <root_n_sen_conc description="shouldn't they more or less match the min_conc of plant parts?">0.005 </root_n_sen_conc>
       <leaf_n_sen_conc>0.005</leaf_n_sen_conc>
       <stem_n_sen_conc>0.0025</stem_n_sen_conc>
@@ -519,15 +543,20 @@
       <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.035</fr_lf_sen_rate>
       <n_fact_lf_sen_rate>0.0</n_fact_lf_sen_rate>
       <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">7.0</lai_sen_light>
-      <sen_light_slope description="sensitivity of leaf area senescence to shading">0.005</sen_light_slope>
+      <!-- sen_light_slope = 0.005()         ! sensitivity of leaf area senescence to shading
+         -->
+      <sen_light_slope description="sensitivity of leaf area senescence to shading">0.002</sen_light_slope>
       <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-15.0 -5.0     </x_temp_senescence>
-      <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1    0       </y_senescence_fac>
+      <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">0    0       </y_senescence_fac>
       <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.10</sen_rate_water>
       <!-- ______________________________________________________________________________
          DETACHMENT
+         root
          -->
-      <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0.0</root_dead_detach_frac>
-      <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1.0</root_sen_detach_frac>
+      <dead_detach_frac description="xxx">0</dead_detach_frac>
+      <sen_detach_frac description="xxx">1</sen_detach_frac>
+      <root_dead_detach_frac description="fraction detached from each part of a dead plant per day.">0</root_dead_detach_frac>
+      <root_sen_detach_frac description="fraction of senesced plant part detached each day from live plants">1</root_sen_detach_frac>
       <leaf_dead_detach_frac>0.0</leaf_dead_detach_frac>
       <leaf_sen_detach_frac>0.0</leaf_sen_detach_frac>
       <stem_dead_detach_frac>0.0</stem_dead_detach_frac>
@@ -562,6 +591,73 @@
          SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 11 - DIGESTIBILITY
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         green
+         -->
+      <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
+      <YLeafGreenDigestibilityMax>0.92  0.92  0.92   0.92  0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
+      <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
+      <YLeafGreenDigestibilityAvg>0.82  0.82  0.82   0.82  0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
+      <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
+      <YLeafGreenDigestibilityMin>0.72  0.72  0.72   0.72  0.6  0.58  0.58  0.58</YLeafGreenDigestibilityMin>
+      <XStemGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMaxStageCode>
+      <YStemGreenDigestibilityMax>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMax>
+      <XStemGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityAvgStageCode>
+      <YStemGreenDigestibilityAvg>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityAvg>
+      <XStemGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMinStageCode>
+      <YStemGreenDigestibilityMin>0.82  0.82  0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMin>
+      <XPodGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMaxStageCode>
+      <YPodGreenDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMax>
+      <XPodGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityAvgStageCode>
+      <YPodGreenDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityAvg>
+      <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
+      <YPodGreenDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
+      <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
+      <YMealGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMax>
+      <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
+      <YMealGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityAvg>
+      <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
+      <YMealGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealGreenDigestibilityMin>
+      <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
+      <YOilGreenDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMax>
+      <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
+      <YOilGreenDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityAvg>
+      <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
+      <YOilGreenDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilGreenDigestibilityMin>
+      <!-- senesced
+         -->
+      <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
+      <YLeafSenescedDigestibilityMax>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMax>
+      <XLeafSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityAvgStageCode>
+      <YLeafSenescedDigestibilityAvg>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityAvg>
+      <XLeafSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMinStageCode>
+      <YLeafSenescedDigestibilityMin>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMin>
+      <XStemSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMaxStageCode>
+      <YStemSenescedDigestibilityMax>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMax>
+      <XStemSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityAvgStageCode>
+      <YStemSenescedDigestibilityAvg>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityAvg>
+      <XStemSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMinStageCode>
+      <YStemSenescedDigestibilityMin>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMin>
+      <XPodSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMaxStageCode>
+      <YPodSenescedDigestibilityMax>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMax>
+      <XPodSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityAvgStageCode>
+      <YPodSenescedDigestibilityAvg>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityAvg>
+      <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
+      <YPodSenescedDigestibilityMin>0.82  0.82  0.82  0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
+      <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
+      <YMealSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMax>
+      <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
+      <YMealSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityAvg>
+      <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
+      <YMealSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YMealSenescedDigestibilityMin>
+      <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
+      <YOilSenescedDigestibilityMax>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMax>
+      <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
+      <YOilSenescedDigestibilityAvg>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityAvg>
+      <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
+      <YOilSenescedDigestibilityMin>0.9   0.9   0.9   0.9   0.85  0.85  0.88  0.88</YOilSenescedDigestibilityMin>
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION - VALUE LIMITS - MAX AND MINS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          ______________________________________________________________________________
@@ -592,15 +688,24 @@
       <grains_per_gram_stem>25.0</grains_per_gram_stem>
       <potential_grain_filling_rate description="grain growth rate during grainfill">0.0020  </potential_grain_filling_rate>
       <potential_grain_growth_rate description="grain growth from flowering to grain fill">0.0010  </potential_grain_growth_rate>
-      <max_grain_size description="set to high value to remove effect">0.065</max_grain_size>
+      <max_grain_size>0.041</max_grain_size>
       <tt_emergence units="oCd">1.0</tt_emergence>
       <tt_end_of_juvenile units="oCd">400.0</tt_end_of_juvenile>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
+      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
       <tt_flowering units="oCd">120.0</tt_flowering>
+      <!--
+         startgf_to_mat = 580
+         tt_end_grain_fill = (0.05 * (tt_flowering + startgf_to_mat))
+         = 35
+         tt_start_grain_fill = startgf_to_mat - tt_end_grain_fill
+         = 545
+         -->
       <tt_start_grain_fill units="oCd">545</tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
       <tt_maturity units="oCd">1</tt_maturity>
+      <tt_end_crop units="oCd">1000</tt_end_crop>
       <tt_harvest_ripe units="oCd">1000</tt_harvest_ripe>
+      <startgf_to_mat>580</startgf_to_mat>
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
       <cum_vernal_days>0    25</cum_vernal_days>
@@ -619,238 +724,935 @@
       <x_stem_wt units="g/plant" description="stem weight per plant">0  6</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  1500</y_height>
     </base_cultivar>
-    <!-- !!!!!!!!! BARLEY cultivars !!!!!!!!!!!!!!!!
-      Varieties in Phil Goyne's dataset
+    <!--  ===================== Eastern Australian Cultivars  ==================
+      In order from fastest to slowest maturing varieties.
       -->
-    <Grimmett cultivar="yes">
+    <hartog cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>3.9</photop_sens>
-    </Grimmett>
-    <Mackay cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.0</photop_sens>
-    </Mackay>
-    <Koru cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <vern_sens>1.5</vern_sens>
-      <photop_sens>4.5</photop_sens>
-    </Koru>
-    <Tallon_x_Grimmett cultivar="yes">
+    </hartog>
+    <janz cultivar="yes">
       <derived_from>base_cultivar</derived_from>
       <vern_sens>1.5</vern_sens>
       <photop_sens>3.5</photop_sens>
-    </Tallon_x_Grimmett>
-    <!--  Phenology Based on David Moody's data at Horsham and Walpeup - ZH 6 Aug 2005
-      potential_grain_filling_rate optimised to fit BCG trial sites 2003/2004 - ZH 6 Aug 2005
-      __________________
-      -->
-    <schooner cultivar="yes">
+    </janz>
+    <cunningham cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </schooner>
-    <FlagShip cultivar="yes">
-      <derived_from>schooner</derived_from>
-    </FlagShip>
-    <!--  __________________
-      -->
-    <skiff cultivar="yes">
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </cunningham>
+    <hybrid_meteor cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <tt_floral_initiation>255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </skiff>
-    <!--  __________________
-      -->
-    <franklin cultivar="yes">
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </hybrid_meteor>
+    <buckly cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <tt_start_grain_fill units="oCd">545</tt_start_grain_fill>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </buckly>
+    <anlace cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </anlace>
+    <bowie cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </bowie>
+    <sunco cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </sunco>
+    <batavia cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </batavia>
+    <suneca cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </suneca>
+    <sunbri cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.5</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </sunbri>
+    <sunbrook cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </sunbrook>
+    <ellison cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </ellison>
+    <espada cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </espada>
+    <!--  Barley Varieties
+      ===================== Western Australian Cultivars  ==================
+      dsg 240504 The following "pasture" cultivar is for testing purposes only
+      -->
+    <pasture cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem>0.0</grains_per_gram_stem>
+    </pasture>
+    <kulin cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+      <tt_start_grain_fill units="oCd">646</tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">34</tt_end_grain_fill>
+      <startgf_to_mat>680</startgf_to_mat>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </kulin>
+    <gamenya cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>2.0</photop_sens>
+      <tt_floral_initiation units="oCd">630.0</tt_floral_initiation>
+      <tt_start_grain_fill units="oCd">665</tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
-      <tt_floral_initiation>530.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-    </franklin>
-    <!--  __________________
+      <startgf_to_mat>700</startgf_to_mat>
+    </gamenya>
+    <gutha cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </gutha>
+    <spear cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+      <startgf_to_mat description="was 740">580 </startgf_to_mat>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+      <grains_per_gram_stem description="was 27.0">20 </grains_per_gram_stem>
+      <max_grain_size>0.045</max_grain_size>
+    </spear>
+    <dagger cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+      <startgf_to_mat description="was 740">580 </startgf_to_mat>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+      <grains_per_gram_stem description="was 27.0">20 </grains_per_gram_stem>
+      <max_grain_size>0.045</max_grain_size>
+    </dagger>
+    <wilgoyne cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">555.0</tt_floral_initiation>
+      <startgf_to_mat description="was 680">580 </startgf_to_mat>
+      <vern_sens>1.4</vern_sens>
+      <photop_sens>1.6</photop_sens>
+      <grains_per_gram_stem>20.0</grains_per_gram_stem>
+      <max_grain_size>0.045</max_grain_size>
+    </wilgoyne>
+    <!--  ===================== American Cultivars  ==================
       -->
-    <sloop cultivar="yes">
+    <yecora cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </sloop>
-    <!--  __________________
+      <grains_per_gram_stem description="Not sure why this is different??? NIH">20.0 </grains_per_gram_stem>
+      <vern_sens>2.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </yecora>
+    <!--  ===================== New Zealand Cultivars  ==================
       -->
-    <Sloop_SA cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </Sloop_SA>
-    <!--  __________________
-      -->
-    <Sloop_VIC cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </Sloop_VIC>
-    <Buloke cultivar="yes">
-      <derived_from>Sloop_VIC</derived_from>
-    </Buloke>
-    <!--  __________________
-      -->
-    <gairdner cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">545</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">35</tt_end_grain_fill>
-      <tt_floral_initiation>280.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </gairdner>
-    <barque cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.30</photop_sens>
-    </barque>
-    <capstan cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">580</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">40</tt_end_grain_fill>
-      <tt_floral_initiation>280.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </capstan>
-    <!--  __________________
-      -->
-    <maritime cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.30</photop_sens>
-    </maritime>
-    <!--  __________________
-      -->
-    <baudin cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <tt_floral_initiation>255.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </baudin>
-    <!--  __________________
-      -->
-    <vb0021 cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>280.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.50</photop_sens>
-    </vb0021>
-    <!--  __________________
-      -->
-    <keel cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0035</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">475</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">25</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-    </keel>
-    <!--  __________________
-      -->
-    <hamelin cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">503.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">26.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-    </hamelin>
-    <hindmarsh cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0031</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">522.5</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">27.5</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>3.30</photop_sens>
-    </hindmarsh>
-    <yagen cultivar="yes">
-      <derived_from>base_cultivar</derived_from>
-      <potential_grain_filling_rate>0.0033</potential_grain_filling_rate>
-      <tt_start_grain_fill units="oCd">475</tt_start_grain_fill>
-      <tt_end_grain_fill units="oCd">25</tt_end_grain_fill>
-      <tt_floral_initiation>230.0</tt_floral_initiation>
-      <vern_sens>1.00</vern_sens>
-      <photop_sens>2.90</photop_sens>
-    </yagen>
-    <!--_____________   New Zealand Cultivars   ____________-->
     <NewZealand_base_cultivar cultivar="yes">
       <derived_from>base_cultivar</derived_from>
-      <grains_per_gram_stem>35</grains_per_gram_stem>
-      <potential_grain_filling_rate description="grain growth rate during grainfill">0.004  </potential_grain_filling_rate>
-      <!-- Used same as DASH -->
-      <vern_sens>0</vern_sens>
-      <photop_sens>4</photop_sens>
+      <grains_per_gram_stem description="grain numbers set">35.0 </grains_per_gram_stem>
+      <!-- I have set this as 35  because the lower value of 22 was giving lower yields that expected-->
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
       <y_height units="mm" description="plant canopy height">50  1500</y_height>
-      <!-- made zero stem height 50 to get micromet to work -->
-      <max_grain_size description="set to high value to remove effect">0.1 </max_grain_size>
-      <root_depth_rate units="mm/d">0      5.0  20    20    20    20    20      0.0   0.0   0.0    0</root_depth_rate>
-      <!-- RaIN shelter ESTIMATE rfz heb  -->
+      <!-- 4 micromet rfz -->
+      <root_depth_rate units="mm/d">0      5.0  20    20    20    20    0      0.0   0.0   0.0    0 </root_depth_rate>
+      <!-- roots were going down to fast so reduced rate HEB I don't really believe they grow slower that australian varieties, probably an error in temperature response of root extension this is a short term solution -->
+      <!-- Some NZ cultivars are using base cultivar instead of NewZealand_base_cultivar to avoid causing problems with the validation set.  These will need to be reconciled in the future-->
     </NewZealand_base_cultivar>
-    <!-- Dash varitey description is based on sowing data trial validation HEB June 2009-->
-    <Dash cultivar="yes">
+    <Advantage>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </Advantage>
+    <Albric cultivar="yes">
       <derived_from>NewZealand_base_cultivar</derived_from>
-      <tt_floral_initiation>130.0</tt_floral_initiation>
-      <vern_sens>0</vern_sens>
-      <photop_sens>4</photop_sens>
-    </Dash>
-    <!-- Cask variety description is based on MTT trial data  HEB Oct 2009-->
-    <Cask cultivar="yes">
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </Albric>
+    <Amarok cultivar="yes">
       <derived_from>NewZealand_base_cultivar</derived_from>
-      <vern_sens>0</vern_sens>
-      <!-- Used same as DASH, CPT data shows very little difference between barley cultivars -->
-      <photop_sens>4</photop_sens>
-      <!-- Used same as DASH, CPT data shows very little difference between barley cultivars -->
-      <tt_floral_initiation>260.0</tt_floral_initiation>
-      <!-- Used same as DASH, CPT data shows very little difference between barley cultivars -->
-    </Cask>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Amarok>
+    <Aspiring cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Aspiring>
+    <Avalon>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Avalon>
+    <BAKKER_GOLD cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </BAKKER_GOLD>
+    <Batten>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Batten>
+    <Bounty>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </Bounty>
+    <Buster cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Buster>
+    <Cellar cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>4.0</vern_sens>
+      <photop_sens>2.0</photop_sens>
+    </Cellar>
+    <CENTAUR cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </CENTAUR>
+    <Claire cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Claire>
+    <Conquest cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Conquest>
+    <Commando cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Commando>
+    <Consort cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </Consort>
+    <CR137>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </CR137>
+    <Dominio cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Dominio>
+    <Einstein cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Einstein>
+    <Exceed cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Exceed>
+    <Hilton cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Hilton>
+    <Kohika cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Kohika>
+    <Kopara>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Kopara>
+    <Kotuku cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Kotuku>
+    <Macro cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Macro>
+    <Marshall cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Marshall>
+    <Monad cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Monad>
+    <Morph cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </Morph>
+    <Moulin>
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Moulin>
+    <Option cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>4.0</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </Option>
+    <Otane cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </Otane>
+    <Pennant cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Pennant>
+    <Phonix cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Phonix>
+    <Raffels cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Raffels>
+    <Regency cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Regency>
+    <Richmond cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>4.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Richmond>
+    <rongotea cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
+      <max_grain_size>0.047</max_grain_size>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </rongotea>
+    <Sapphire cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Sapphire>
+    <Saracen cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>0.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Saracen>
+    <Savannah cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Savannah>
+    <Solstice cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Solstice>
+    <Tanker cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Tanker>
+    <Torlesse cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Torlesse>
+    <Wakaniu cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Wakaniu>
+    <Weston cultivar="yes">
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>5.0</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </Weston>
+    <!-- x_pp_endjuv_to_init =           10.8   16.3
+      y_tt_endjuv_to_init =           700    600
+
+      x_pp_init_to_flower        =   1      24   (h)
+      y_tt_init_to_flower =          50     50  (oCd)
+      ====================== Chinese Cultivars  ============================
+      -->
+    <xifeng24 description="tested and revised by mike and wen on 26 Nov.02" cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_start_grain_fill units="oCd">617.5</tt_start_grain_fill>
+      <tt_end_grain_fill units="oCd">32.5</tt_end_grain_fill>
+      <startgf_to_mat>650</startgf_to_mat>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>2.0</photop_sens>
+      <potential_grain_filling_rate>0.0025</potential_grain_filling_rate>
+    </xifeng24>
+    <dingxi24 description="based on cv. hartog" cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>0.5</vern_sens>
+      <photop_sens>1.0</photop_sens>
+    </dingxi24>
+    <!--  ===================== Special Cultivars for Validation simulations ONLY ==================
+      -->
+    <hartog_wet cultivar="yes">
+      <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
+         -->
+      <derived_from>base_cultivar</derived_from>
+    </hartog_wet>
+    <hartog_dry cultivar="yes">
+      <!--  Cultivar to "fix" phenology for APS26 to observed dates to allow comparison of the rest of the model w.r.t water and N use.
+         -->
+      <derived_from>base_cultivar</derived_from>
+    </hartog_dry>
+    <gatton_hartog cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <!--  special parameterisation for simulations at Gatton where there appears to be consistant problems with
+         use of temperature data from the remote met square.
+         -->
+      <vern_sens>2.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </gatton_hartog>
+    <!--  ===================== yield Prophet Cultivars ==================
+      Very Early maturing
+      __________________
+      -->
+    <axe>
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </axe>
+    <h45 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </h45>
+    <h46 cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </h46>
+    <silverstar cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </silverstar>
+    <westonia cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </westonia>
+    <zippy cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </zippy>
+    <tamarinrock cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </tamarinrock>
+    <wollaroi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </wollaroi>
+    <waagan cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>1.5</photop_sens>
+    </waagan>
+    <!--  Early maturing
+      __________________
+      -->
+    <arrino cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </arrino>
+    <ruby cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </ruby>
+    <kirchauff cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </kirchauff>
+    <kalka cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </kalka>
+    <kukri cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </kukri>
+    <hybrid_mercury cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </hybrid_mercury>
+    <ouyen cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </ouyen>
+    <tamaroi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </tamaroi>
+    <wyalkatchem cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </wyalkatchem>
+    <mace cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </mace>
+    <young cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </young>
+    <bowerbird cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </bowerbird>
+    <drysdale cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </drysdale>
+    <bonnie_rock cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </bonnie_rock>
+    <perengori cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </perengori>
+    <agtscythe cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </agtscythe>
+    <livingston cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </livingston>
+    <crusader cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.6</vern_sens>
+      <photop_sens>1.8</photop_sens>
+    </crusader>
+    <!--  Early-Mid maturing
+      __________________
+      -->
+    <annuello cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </annuello>
+    <diamondbird cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </diamondbird>
+    <frame cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </frame>
+    <goroke cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </goroke>
+    <ventura cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </ventura>
+    <mitre cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </mitre>
+    <yallaroi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </yallaroi>
+    <yitpi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </yitpi>
+    <carnamah cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </carnamah>
+    <sunstate cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </sunstate>
+    <guardian cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </guardian>
+    <barunga cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </barunga>
+    <catalina cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </catalina>
+    <gladius cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </gladius>
+    <halbred cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </halbred>
+    <stiletto cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </stiletto>
+    <clf_stiletto cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </clf_stiletto>
+    <pugsley cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </pugsley>
+    <lincoln cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </lincoln>
+    <correll cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </correll>
+    <!--  Mid maturing
+      ____________
+      -->
+    <baxter cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </baxter>
+    <babbler cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </babbler>
+    <camm cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </camm>
+    <clf-jnz cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </clf-jnz>
+    <dollarbird cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </dollarbird>
+    <saphire cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </saphire>
+    <arrivato cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </arrivato>
+    <derrimut cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </derrimut>
+    <barham cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </barham>
+    <buckley cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </buckley>
+    <carinya cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>1.5</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </carinya>
+    <!--  Mid+ maturing
+      ________________-
+      -->
+    <bellaroi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </bellaroi>
+    <lang cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.0</vern_sens>
+      <photop_sens>3.5</photop_sens>
+    </lang>
+    <!--  Mid-late maturing
+      ________________-
+      -->
+    <braewood cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </braewood>
+    <calingiri cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </calingiri>
+    <chara cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </chara>
+    <giles cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </giles>
+    <wylie cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </wylie>
+    <endure cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </endure>
+    <sunlin cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </sunlin>
+    <sunvale cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </sunvale>
+    <gregory cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </gregory>
+    <magenta cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.8</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </magenta>
+    <!--  Late Maturing
+      ____________-
+      -->
+    <kelallac cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.5</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </kelallac>
+    <strzelecki cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <vern_sens>2.5</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </strzelecki>
+    <bolac cultivar="yes">
+      <derived_from>kelallac</derived_from>
+    </bolac>
+    <beaufort cultivar="yes">
+      <derived_from>kelallac</derived_from>
+    </beaufort>
+    <!--  Winter Wheat
+      ____________
+      Based on data in Penrose et al 2003 (AJAR)
+
+      wagga maturity types
+
+      -->
+    <lorikeet cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>3.9</photop_sens>
+    </lorikeet>
+    <wylah cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>3.9</photop_sens>
+    </wylah>
+    <rosella cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>3.9</photop_sens>
+    </rosella>
+    <whistler cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>3.9</photop_sens>
+    </whistler>
+    <wedgetail cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">380.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>3.9</photop_sens>
+    </wedgetail>
+    <!--
+      mid maturity types
+
+      -->
+    <marombi cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">455.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.0</photop_sens>
+    </marombi>
+    <!--
+      CSIRO maturity types
+
+      -->
+    <declic cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.3</photop_sens>
+    </declic>
+    <mackellar cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.3</photop_sens>
+    </mackellar>
+    <revenue cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.3</photop_sens>
+    </revenue>
+    <brennan cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">530.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.3</photop_sens>
+    </brennan>
+    <!--
+      Late maturity types
+
+      -->
+    <dennis cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </dennis>
+    <tennant cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </tennant>
+    <teesdale cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </teesdale>
+    <wills cultivar="yes">
+      <derived_from>base_cultivar</derived_from>
+      <tt_floral_initiation units="oCd">580.0</tt_floral_initiation>
+      <vern_sens>3.9</vern_sens>
+      <photop_sens>4.5</photop_sens>
+    </wills>
+    <janzjl>
+      <derived_from>base_cultivar</derived_from>
+      <startgf_to_mat>700</startgf_to_mat>
+      <vern_sens>0.5</vern_sens>
+      <photop_sens>3.0</photop_sens>
+    </janzjl>
   </Model>
   <Info>
     <variables>
@@ -966,21 +1768,21 @@
       <variable name="dlt_n_senesced_retrans_cohort1" description="N retranslocated to/from senesced Cohort1" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_grain" description="N retranslocated to/from senesced Grain" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_head" description="N retranslocated to/from senesced Head" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dlt_n_senesced_retrans_leaf" description="N retranslocated to/from senesced leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_leaf" description="N retranslocated to/from senesced Leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_meal" description="N retranslocated to/from senesced meal" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_oil" description="N retranslocated to/from senesced oil" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_pod" description="N retranslocated to/from senesced Pod" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dlt_n_senesced_retrans_root" description="N retranslocated to/from senesced root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_retrans_root" description="N retranslocated to/from senesced Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_retrans_stem" description="N retranslocated to/from senesced Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans" description="N translocated to/from senesced  plant" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_cohort1" description="N translocated to/from senesced Cohort1" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_grain" description="N translocated to/from senesced Grain" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_head" description="N translocated to/from senesced Head" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dlt_n_senesced_trans_leaf" description="N translocated to/from senesced leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_leaf" description="N translocated to/from senesced Leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_meal" description="N translocated to/from senesced meal" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_oil" description="N translocated to/from senesced oil" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_pod" description="N translocated to/from senesced Pod" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dlt_n_senesced_trans_root" description="N translocated to/from senesced root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dlt_n_senesced_trans_root" description="N translocated to/from senesced Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_n_senesced_trans_stem" description="N translocated to/from senesced Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dlt_node_no" description="Change in number of nodes" read="T" write="F" kind="single" array="F" units="nodes/m2" />
       <variable name="dlt_p_retrans" description="dlt P parts" read="T" write="F" kind="single" array="T" units="g/m^2" />
@@ -992,11 +1794,11 @@
       <variable name="dm_demand_cohort1" description="DM demand of Cohort1" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_grain" description="DM demand of Grain" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_head" description="DM demand of Head" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dm_demand_leaf" description="DM demand of leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_leaf" description="DM demand of Leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_meal" description="DM demand of meal" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_oil" description="DM demand of oil" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_pod" description="DM demand of Pod" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="dm_demand_root" description="DM demand of root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="dm_demand_root" description="DM demand of Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_demand_stem" description="DM demand of Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="dm_plant_min" description="Minimum weights" read="T" write="F" kind="single" array="T" units="g/m^2" />
       <variable name="effective_rue" description="EffectiveRUE" read="T" write="F" kind="single" array="F" units="g/m2/MJ" />
@@ -1258,59 +2060,65 @@
       <variable name="leaf_area_tot" description="Total plant leaf area" read="T" write="F" kind="single" array="F" units="m^2" />
       <variable name="leaf_no" description="Number of leaves per plant" read="T" write="F" kind="single" array="F" units="leaves/plant" />
       <variable name="leaf_no_sen" description="Number of senesced leaves per square meter" read="T" write="F" kind="single" array="F" units="leaves/m2" />
-      <variable name="leafdetachingn" description="Change in Detaching leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafdetachingp" description="Change in Detaching leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafdetachingwt" description="Change in Detaching leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenn" description="Green leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreennconc" description="N concentration in Green leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafgreennonstructuralwt" description="Green leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenp" description="Green leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenpconc" description="P concentration in Green leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafgreenremovedn" description="Change in GreenRemoved leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenremovedp" description="Change in GreenRemoved leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenremovedwt" description="Change in GreenRemoved leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenstructuralwt" description="Green leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgreenwt" description="Green leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgrowthn" description="Change in Growth leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgrowthp" description="Change in Growth leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafgrowthwt" description="Change in Growth leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafretranslocationn" description="Change in Retranslocation leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafretranslocationp" description="Change in Retranslocation leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafretranslocationwt" description="Change in Retranslocation leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedn" description="Senesced leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescednconc" description="N concentration in Senesced leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafsenescednonstructuralwt" description="Senesced leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedp" description="Senesced leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedpconc" description="P concentration in Senesced leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafsenescedremovedn" description="Change in SenescedRemoved leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedremovedp" description="Change in SenescedRemoved leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedremovedwt" description="Change in SenescedRemoved leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedstructuralwt" description="Senesced leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescedwt" description="Senesced leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescingn" description="Change in Senescing leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescingp" description="Change in Senescing leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafsenescingwt" description="Change in Senescing leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leaftotaln" description="Total leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leaftotalnconc" description="N concentration in Total leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leaftotalnonstructuralwt" description="Total leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leaftotalp" description="Total leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leaftotalpconc" description="P concentration in Total leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leaftotalstructuralwt" description="Total leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leaftotalwt" description="Total leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativen" description="Vegetative leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativenconc" description="N concentration in Vegetative leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafvegetativenonstructuralwt" description="Vegetative leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativep" description="Vegetative leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativepconc" description="P concentration in Vegetative leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafvegetativestructuralwt" description="Vegetative leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativetotaln" description="VegetativeTotal leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativetotalnconc" description="N concentration in VegetativeTotal leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafvegetativetotalnonstructuralwt" description="VegetativeTotal leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativetotalp" description="VegetativeTotal leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativetotalpconc" description="P concentration in VegetativeTotal leaf" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="leafvegetativetotalstructuralwt" description="VegetativeTotal leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativetotalwt" description="VegetativeTotal leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="leafvegetativewt" description="Vegetative leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafdetachingn" description="Change in Detaching Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafdetachingp" description="Change in Detaching Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafdetachingwt" description="Change in Detaching Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreendigestibilityavg" description="Average Digestibility of Green Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafgreendigestibilitymax" description="Maximum Digestibility of Green Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafgreendigestibilitymin" description="Minimum Digestibility of Green Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafgreenn" description="Green Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreennconc" description="N concentration in Green Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafgreennonstructuralwt" description="Green Leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenp" description="Green Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenpconc" description="P concentration in Green Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafgreenremovedn" description="Change in GreenRemoved Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenremovedp" description="Change in GreenRemoved Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenremovedwt" description="Change in GreenRemoved Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenstructuralwt" description="Green Leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgreenwt" description="Green Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthn" description="Change in Growth Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthp" description="Change in Growth Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafgrowthwt" description="Change in Growth Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationn" description="Change in Retranslocation Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationp" description="Change in Retranslocation Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafretranslocationwt" description="Change in Retranslocation Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenesceddigestibilityavg" description="Average Digestibility of Senesced Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafsenesceddigestibilitymax" description="Maximum Digestibility of Senesced Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafsenesceddigestibilitymin" description="Minimum Digestibility of Senesced Leaf" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="leafsenescedn" description="Senesced Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescednconc" description="N concentration in Senesced Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafsenescednonstructuralwt" description="Senesced Leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedp" description="Senesced Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedpconc" description="P concentration in Senesced Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafsenescedremovedn" description="Change in SenescedRemoved Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedremovedp" description="Change in SenescedRemoved Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedremovedwt" description="Change in SenescedRemoved Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedstructuralwt" description="Senesced Leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescedwt" description="Senesced Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingn" description="Change in Senescing Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingp" description="Change in Senescing Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafsenescingwt" description="Change in Senescing Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotaln" description="Total Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalnconc" description="N concentration in Total Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leaftotalnonstructuralwt" description="Total Leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalp" description="Total Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalpconc" description="P concentration in Total Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leaftotalstructuralwt" description="Total Leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leaftotalwt" description="Total Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativen" description="Vegetative Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativenconc" description="N concentration in Vegetative Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativenonstructuralwt" description="Vegetative Leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativep" description="Vegetative Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativepconc" description="P concentration in Vegetative Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativestructuralwt" description="Vegetative Leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotaln" description="VegetativeTotal Leaf nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalnconc" description="N concentration in VegetativeTotal Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativetotalnonstructuralwt" description="VegetativeTotal Leaf nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalp" description="VegetativeTotal Leaf phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalpconc" description="P concentration in VegetativeTotal Leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="leafvegetativetotalstructuralwt" description="VegetativeTotal Leaf structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativetotalwt" description="VegetativeTotal Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="leafvegetativewt" description="Vegetative Leaf dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="leaves_per_node" description="" read="T" write="F" kind="single" array="F" units="" />
       <variable name="ll" description="Crop lower limit" read="T" write="F" kind="single" array="T" units="%vol" />
       <variable name="ll_dep" description="Plant Lower Limit (mm/mm)" read="T" write="F" kind="single" array="T" units="mm" />
@@ -1334,6 +2142,9 @@
       <variable name="mealgraintotalstructuralwt" description="GrainTotal meal structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealgraintotalwt" description="GrainTotal meal dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealgrainwt" description="Grain meal dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="mealgreendigestibilityavg" description="Average Digestibility of Green meal" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="mealgreendigestibilitymax" description="Maximum Digestibility of Green meal" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="mealgreendigestibilitymin" description="Minimum Digestibility of Green meal" read="T" write="F" kind="single" array="F" units="" />
       <variable name="mealgreenn" description="Green meal nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealgreennconc" description="N concentration in Green meal" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="mealgreennonstructuralwt" description="Green meal nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1350,6 +2161,9 @@
       <variable name="mealretranslocationn" description="Change in Retranslocation meal nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealretranslocationp" description="Change in Retranslocation meal phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealretranslocationwt" description="Change in Retranslocation meal dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="mealsenesceddigestibilityavg" description="Average Digestibility of Senesced meal" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="mealsenesceddigestibilitymax" description="Maximum Digestibility of Senesced meal" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="mealsenesceddigestibilitymin" description="Minimum Digestibility of Senesced meal" read="T" write="F" kind="single" array="F" units="" />
       <variable name="mealsenescedn" description="Senesced meal nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="mealsenescednconc" description="N concentration in Senesced meal" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="mealsenescednonstructuralwt" description="Senesced meal nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1388,11 +2202,11 @@
       <variable name="n_conc_crit_cohort1" description="Critical N content in Cohort1" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_grain" description="Critical N content in Grain" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_head" description="Critical N content in Head" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="n_conc_crit_leaf" description="Critical N content in leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_leaf" description="Critical N content in Leaf" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_meal" description="Critical N content in meal" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_oil" description="Critical N content in oil" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_pod" description="Critical N content in Pod" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="n_conc_crit_root" description="Critical N content in root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_crit_root" description="Critical N content in Root" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_crit_stem" description="Critical N content in Stem" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_grain" description="N concentration in grain" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_meal" description="meal N content" read="T" write="F" kind="single" array="F" units="%" />
@@ -1400,22 +2214,22 @@
       <variable name="n_conc_min_cohort1" description="Minimum N content in Cohort1" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_grain" description="Minimum N content in Grain" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_head" description="Minimum N content in Head" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="n_conc_min_leaf" description="Minimum N content in leaf" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_leaf" description="Minimum N content in Leaf" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_meal" description="Minimum N content in meal" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_oil" description="Minimum N content in oil" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_pod" description="Minimum N content in Pod" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="n_conc_min_root" description="Minimum N content in root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="n_conc_min_root" description="Minimum N content in Root" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_min_stem" description="Minimum N content in Stem" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_conc_stover" description="N concentration in stover" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="n_demand" description="N demand of  plant" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_cohort1" description="N demand of Cohort1" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_grain" description="N demand of Grain" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_head" description="N demand of Head" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="n_demand_leaf" description="N demand of leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_leaf" description="N demand of Leaf" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_meal" description="N demand of meal" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_oil" description="N demand of oil" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_pod" description="N demand of Pod" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="n_demand_root" description="N demand of root" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="n_demand_root" description="N demand of Root" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demand_stem" description="N demand of Stem" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="n_demanded" description="N demanded" read="T" write="F" kind="single" array="T" units="g/m^2" />
       <variable name="n_fixed_tops" description="N fixation" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1457,6 +2271,9 @@
       <variable name="oilgraintotalstructuralwt" description="GrainTotal oil structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilgraintotalwt" description="GrainTotal oil dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilgrainwt" description="Grain oil dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="oilgreendigestibilityavg" description="Average Digestibility of Green oil" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="oilgreendigestibilitymax" description="Maximum Digestibility of Green oil" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="oilgreendigestibilitymin" description="Minimum Digestibility of Green oil" read="T" write="F" kind="single" array="F" units="" />
       <variable name="oilgreenn" description="Green oil nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilgreennconc" description="N concentration in Green oil" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="oilgreennonstructuralwt" description="Green oil nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1473,6 +2290,9 @@
       <variable name="oilretranslocationn" description="Change in Retranslocation oil nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilretranslocationp" description="Change in Retranslocation oil phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilretranslocationwt" description="Change in Retranslocation oil dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="oilsenesceddigestibilityavg" description="Average Digestibility of Senesced oil" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="oilsenesceddigestibilitymax" description="Maximum Digestibility of Senesced oil" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="oilsenesceddigestibilitymin" description="Minimum Digestibility of Senesced oil" read="T" write="F" kind="single" array="F" units="" />
       <variable name="oilsenescedn" description="Senesced oil nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="oilsenescednconc" description="N concentration in Senesced oil" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="oilsenescednonstructuralwt" description="Senesced oil nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1522,6 +2342,9 @@
       <variable name="poddetachingn" description="Change in Detaching Pod nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="poddetachingp" description="Change in Detaching Pod phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="poddetachingwt" description="Change in Detaching Pod dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="podgreendigestibilityavg" description="Average Digestibility of Green Pod" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="podgreendigestibilitymax" description="Maximum Digestibility of Green Pod" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="podgreendigestibilitymin" description="Minimum Digestibility of Green Pod" read="T" write="F" kind="single" array="F" units="" />
       <variable name="podgreenn" description="Green Pod nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="podgreennconc" description="N concentration in Green Pod" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="podgreennonstructuralwt" description="Green Pod nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1538,6 +2361,9 @@
       <variable name="podretranslocationn" description="Change in Retranslocation Pod nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="podretranslocationp" description="Change in Retranslocation Pod phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="podretranslocationwt" description="Change in Retranslocation Pod dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="podsenesceddigestibilityavg" description="Average Digestibility of Senesced Pod" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="podsenesceddigestibilitymax" description="Maximum Digestibility of Senesced Pod" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="podsenesceddigestibilitymin" description="Minimum Digestibility of Senesced Pod" read="T" write="F" kind="single" array="F" units="" />
       <variable name="podsenescedn" description="Senesced Pod nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="podsenescednconc" description="N concentration in Senesced Pod" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="podsenescednonstructuralwt" description="Senesced Pod nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1582,59 +2408,59 @@
       <variable name="root_depth" description="depth of roots" read="T" write="F" kind="single" array="F" units="mm" />
       <variable name="root_length" description="Root length" read="T" write="F" kind="single" array="T" units="mm/mm^2" />
       <variable name="root_length_senesced" description="Senesced root length" read="T" write="F" kind="single" array="T" units="mm/mm^2" />
-      <variable name="rootdetachingn" description="Change in Detaching root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootdetachingp" description="Change in Detaching root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootdetachingwt" description="Change in Detaching root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenn" description="Green root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreennconc" description="N concentration in Green root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootgreennonstructuralwt" description="Green root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenp" description="Green root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenpconc" description="P concentration in Green root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootgreenremovedn" description="Change in GreenRemoved root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenremovedp" description="Change in GreenRemoved root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenremovedwt" description="Change in GreenRemoved root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenstructuralwt" description="Green root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgreenwt" description="Green root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgrowthn" description="Change in Growth root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgrowthp" description="Change in Growth root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootgrowthwt" description="Change in Growth root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootretranslocationn" description="Change in Retranslocation root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootretranslocationp" description="Change in Retranslocation root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootretranslocationwt" description="Change in Retranslocation root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedn" description="Senesced root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescednconc" description="N concentration in Senesced root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootsenescednonstructuralwt" description="Senesced root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedp" description="Senesced root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedpconc" description="P concentration in Senesced root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootsenescedremovedn" description="Change in SenescedRemoved root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedremovedp" description="Change in SenescedRemoved root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedremovedwt" description="Change in SenescedRemoved root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedstructuralwt" description="Senesced root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescedwt" description="Senesced root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescingn" description="Change in Senescing root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescingp" description="Change in Senescing root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootsenescingwt" description="Change in Senescing root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="roottotaln" description="Total root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="roottotalnconc" description="N concentration in Total root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="roottotalnonstructuralwt" description="Total root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="roottotalp" description="Total root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="roottotalpconc" description="P concentration in Total root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="roottotalstructuralwt" description="Total root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="roottotalwt" description="Total root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativen" description="Vegetative root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativenconc" description="N concentration in Vegetative root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootvegetativenonstructuralwt" description="Vegetative root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativep" description="Vegetative root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativepconc" description="P concentration in Vegetative root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootvegetativestructuralwt" description="Vegetative root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativetotaln" description="VegetativeTotal root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativetotalnconc" description="N concentration in VegetativeTotal root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootvegetativetotalnonstructuralwt" description="VegetativeTotal root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativetotalp" description="VegetativeTotal root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativetotalpconc" description="P concentration in VegetativeTotal root" read="T" write="F" kind="single" array="F" units="%" />
-      <variable name="rootvegetativetotalstructuralwt" description="VegetativeTotal root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativetotalwt" description="VegetativeTotal root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
-      <variable name="rootvegetativewt" description="Vegetative root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootdetachingn" description="Change in Detaching Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootdetachingp" description="Change in Detaching Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootdetachingwt" description="Change in Detaching Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenn" description="Green Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreennconc" description="N concentration in Green Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootgreennonstructuralwt" description="Green Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenp" description="Green Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenpconc" description="P concentration in Green Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootgreenremovedn" description="Change in GreenRemoved Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenremovedp" description="Change in GreenRemoved Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenremovedwt" description="Change in GreenRemoved Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenstructuralwt" description="Green Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgreenwt" description="Green Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthn" description="Change in Growth Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthp" description="Change in Growth Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootgrowthwt" description="Change in Growth Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationn" description="Change in Retranslocation Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationp" description="Change in Retranslocation Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootretranslocationwt" description="Change in Retranslocation Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedn" description="Senesced Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescednconc" description="N concentration in Senesced Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootsenescednonstructuralwt" description="Senesced Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedp" description="Senesced Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedpconc" description="P concentration in Senesced Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootsenescedremovedn" description="Change in SenescedRemoved Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedremovedp" description="Change in SenescedRemoved Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedremovedwt" description="Change in SenescedRemoved Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedstructuralwt" description="Senesced Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescedwt" description="Senesced Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingn" description="Change in Senescing Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingp" description="Change in Senescing Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootsenescingwt" description="Change in Senescing Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotaln" description="Total Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalnconc" description="N concentration in Total Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="roottotalnonstructuralwt" description="Total Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalp" description="Total Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalpconc" description="P concentration in Total Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="roottotalstructuralwt" description="Total Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="roottotalwt" description="Total Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativen" description="Vegetative Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativenconc" description="N concentration in Vegetative Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativenonstructuralwt" description="Vegetative Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativep" description="Vegetative Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativepconc" description="P concentration in Vegetative Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativestructuralwt" description="Vegetative Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotaln" description="VegetativeTotal Root nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalnconc" description="N concentration in VegetativeTotal Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativetotalnonstructuralwt" description="VegetativeTotal Root nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalp" description="VegetativeTotal Root phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalpconc" description="P concentration in VegetativeTotal Root" read="T" write="F" kind="single" array="F" units="%" />
+      <variable name="rootvegetativetotalstructuralwt" description="VegetativeTotal Root structural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativetotalwt" description="VegetativeTotal Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="rootvegetativewt" description="Vegetative Root dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="senescedn" description="Senesced  nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="senescednconc" description="N concentration in Senesced " read="T" write="F" kind="single" array="F" units="%" />
       <variable name="senescednonstructuralwt" description="Senesced  nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1659,6 +2485,9 @@
       <variable name="stemdetachingn" description="Change in Detaching Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemdetachingp" description="Change in Detaching Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemdetachingwt" description="Change in Detaching Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemgreendigestibilityavg" description="Average Digestibility of Green Stem" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="stemgreendigestibilitymax" description="Maximum Digestibility of Green Stem" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="stemgreendigestibilitymin" description="Minimum Digestibility of Green Stem" read="T" write="F" kind="single" array="F" units="" />
       <variable name="stemgreenn" description="Green Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemgreennconc" description="N concentration in Green Stem" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="stemgreennonstructuralwt" description="Green Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
@@ -1675,6 +2504,9 @@
       <variable name="stemretranslocationn" description="Change in Retranslocation Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemretranslocationp" description="Change in Retranslocation Stem phosphorus" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemretranslocationwt" description="Change in Retranslocation Stem dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
+      <variable name="stemsenesceddigestibilityavg" description="Average Digestibility of Senesced Stem" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="stemsenesceddigestibilitymax" description="Maximum Digestibility of Senesced Stem" read="T" write="F" kind="single" array="F" units="" />
+      <variable name="stemsenesceddigestibilitymin" description="Minimum Digestibility of Senesced Stem" read="T" write="F" kind="single" array="F" units="" />
       <variable name="stemsenescedn" description="Senesced Stem nitrogen" read="T" write="F" kind="single" array="F" units="g/m^2" />
       <variable name="stemsenescednconc" description="N concentration in Senesced Stem" read="T" write="F" kind="single" array="F" units="%" />
       <variable name="stemsenescednonstructuralwt" description="Senesced Stem nonstructural dry matter" read="T" write="F" kind="single" array="F" units="g/m^2" />
