@@ -11,6 +11,131 @@
       <filename name="filename">%apsim%\Examples\MetFiles\dalby.met</filename>
     </metfile>
     <area name="paddock">
+      <millet />
+      <canopy name="Canopy">
+        <intercrop type="text" description="Enter crop names to intercrop">millet millet1 millet2 millet3 millet4 millet5</intercrop>
+      </canopy>
+      <surfaceom name="surface organic matter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <folder name="Manager folder">
+        <manager name="Sow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" type="category" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">1-dec</date>
+            <category description="Sowing parameters" type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">millet</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">7.5</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">wrajpop</cultivar>
+          </ui>
+          <script name="start_of_day">
+            <text>
+        if (today = date('[date]') then
+            [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar]
+         endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise N at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">millet</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">50</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Fertilise with Phosphorus at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">millet</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : "> broadcast_p</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category description="Harvesting criteria" type="category" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">millet</crop>
+          </ui>
+          <script>
+            <text>
+if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
+   [crop] harvest
+   [crop]1 harvest
+   [crop]2 harvest
+   [crop]3 harvest
+   [crop]4 harvest
+   [crop]5 harvest
+   [crop] end_crop
+   [crop]1 end_crop
+   [crop]2 end_crop
+   [crop]3 end_crop
+   [crop]4 end_crop
+   [crop]5 end_crop
+   
+endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Tiller Aggregation">
+          <script>
+            <text>millet_yield = 0.0
+millet_lai = 0.0
+millet_biomass = 0.0</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>millet_yield = millet.yield + millet1.yield + millet2.yield + millet3.yield + millet4.yield + millet5.yield
+millet_lai = millet.lai + millet1.lai + millet2.lai + millet3.lai + millet4.lai + millet5.lai
+millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.biomass + millet4.biomass + millet5.biomass
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+      </folder>
       <soil name="Soil">
         <Country />
         <Site />
@@ -1123,129 +1248,22 @@
           </Layer>
         </Sample>
       </soil>
-      <surfaceom name="surface organic matter">
-        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
-        <type type="text" description="Organic Matter type">wheat</type>
-        <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
-        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
-        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
-      </surfaceom>
-      <fertiliser name="Fertiliser" />
-      <millet />
-      <irrigation name="Irrigation">
-        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
-        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
-        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
-        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
-        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
-        <allocation type="text" description="Allocation in mm">0</allocation>
-        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
-        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
-        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
-      </irrigation>
-      <folder name="Manager folder">
-        <manager name="Sow on a fixed date">
-          <ui>
-            <category description="Sowing criteria" type="category" />
-            <date type="text" description="Enter sowing date (dd-mmm) : ">1-dec</date>
-            <category description="Sowing parameters" type="category" />
-            <crop type="crop" description="Enter name of crop to sow : ">millet</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">7.5</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">wrajpop</cultivar>
-          </ui>
-          <script name="start_of_day">
-            <text>
-        if (today = date('[date]') then
-            [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar]
-         endif
-               </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise N at sowing">
-          <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which module should the event come from : ">millet</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">50</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
-          </ui>
-          <script>
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
-        <manager name="Fertilise with Phosphorus at sowing">
-          <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which module should the event come from : ">millet</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : "> broadcast_p</fert_type_sow>
-          </ui>
-          <script>
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
-        <manager name="Harvesting rule">
-          <ui>
-            <category description="Harvesting criteria" type="category" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">millet</crop>
-          </ui>
-          <script>
-            <text>
-millet_lai = millet.lai + millet1.lai + millet2.lai + millet3.lai + millet4.lai + millet5.lai
-millet_yield = millet.yield + millet1.yield + millet2.yield + millet3.yield + millet4.yield + millet5.yield
-millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.biomass + millet4.biomass + millet5.biomass
-
-
-if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
-   [crop] harvest
-   [crop]1 harvest
-   [crop]2 harvest
-   [crop]3 harvest
-   [crop]4 harvest
-   [crop]5 harvest
-   [crop] end_crop
-   [crop]1 end_crop
-   [crop]2 end_crop
-   [crop]3 end_crop
-   [crop]4 end_crop
-   [crop]5 end_crop
-   
-endif
-
-            </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-      </folder>
       <outputfile>
         <filename name="filename">Continuous Maize Simulation.out</filename>
         <variables name="My Variables">
           <variable name="dd/mm/yyyy as Date" />
-          <variable name="esw" />
           <variable name="day" />
           <variable name="year" />
+          <variable name="millet_lai" />
+          <variable name="millet_biomass" />
+          <variable name="millet_yield" />
+          <variable name="esw" />
           <variable name="yield" />
           <variable name="biomass" />
           <variable name="lai" />
           <variable name="pfact_photo" />
           <variable name="nfact_photo" />
           <variable name="swdef_photo" />
-          <variable name="millet_lai" />
-          <variable name="millet_biomass" />
-          <variable name="millet_yield" />
         </variables>
         <events name="My Variables Events">
           <event name="Daily" array="No" description="End of day" />
