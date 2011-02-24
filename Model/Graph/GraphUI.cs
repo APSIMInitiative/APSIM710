@@ -265,9 +265,10 @@ namespace Graph
          {
          if (DataSource != null && XFieldName != "" && YFieldName != "")
             {
-            bool XDataPresent = false;
-            if (XFieldName != "Title")
-               XDataPresent = true;
+            bool XDataPresent = true;
+            if (DataSource.Columns.Contains(XFieldName) && 
+                DataSource.Columns[XFieldName].DataType.ToString() == "System.String")
+               XDataPresent = false;
 
             if (DataSource.Columns.Count > 0)
                {
