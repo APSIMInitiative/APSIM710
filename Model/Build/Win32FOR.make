@@ -3,12 +3,13 @@
 ###########################################
 FC=gfortran
 LD=ld
+RC=windres
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),../$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 
-F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-local-zero -O2 -g
+F90FLAGS= -cpp -D'ml_external=!' -shared-libgcc -static-libgfortran -fno-underscoring -mrtd -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O3 -frounding-math -g -march=pentiumpro -mtune=pentiumpro
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
 F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
@@ -32,12 +33,24 @@ all: $(APSIM)/Model/$(PROJECT).dll
 endif
 
 ifeq ($(PROJECTTYPE),dll)
+
+ifeq ($(MAJOR_VERSION),)
+  MAJOR_VERSION = 1
+  MINOR_VERSION = 0
+  BUILD_NUMBER = 0
+endif
+
+RESOBJ = dllres.obj
 LDFLAGS:= --export-dynamic \
 -u Main -u doInit1 -u wrapperDLL -u respondToEvent -u alloc_dealloc_instance \
 -u getInstance -u getDescription -u getDescriptionLength --no-allow-shlib-undefined --disable-auto-import  -L "C:\Program Files\gfortran\lib"
-all: $(APSIM)/Model/$(PROJECT).dll
-$(APSIM)/Model/$(PROJECT).dll: $(OBJS)
-	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(DEF) $(STATICLIBS) $(LIBS) 
+all: $(APSIM)/Model/$(PROJECT).dll 
+$(APSIM)/Model/$(PROJECT).dll: $(OBJS) $(RESOBJ)
+	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) 
+
+$(RESOBJ): $(APSIM)/Model/Build/dll.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+
 else
 
 ifeq ($(PROJECTTYPE),lib)

@@ -1,0 +1,59 @@
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version Info
+//
+// Can be compiled with either GNU windres or MS rc (optionally followed by cvtres)
+// PROJ should be defined to indicate the component name
+// e.g. :   windres -DPROJ=SoilN dll.rc dll.obj
+// This will generate an object file which can then be included when linking a Win32 executable
+// NOTE: MAJOR_VERSION, MINOR_VERSION and BUILD_NUMBER are expected to be 
+// defined when invoking the resource compiler!!
+
+// You can use the C pre-processor in either rc or windres, but trying to convert the version numbers into a 
+// quoted string requires the use of indirect quoting.
+#define QUOTE_ME(x) #x
+#define XQUOTE_ME(x) QUOTE_ME(x)
+
+#ifndef MAJOR_VERSION
+#define MAJOR_VERSION 7
+#endif
+#ifndef MINOR_VERSION
+#define MINOR_VERSION 4
+#endif
+#ifndef BUILD_NUMBER
+#define BUILD_NUMBER 666
+#endif
+
+1 VERSIONINFO
+ FILEVERSION MAJOR_VERSION,MINOR_VERSION,BUILD_NUMBER,0
+ PRODUCTVERSION MAJOR_VERSION,MINOR_VERSION,BUILD_NUMBER,0
+ FILEFLAGSMASK 0x3fL 
+ /* For FILEFLAGS, OR together: 1: debug; 2; prerelease; 4: patched; 8: private build; 16: info inferred; 32: special build */
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L /*  0 = unknown; 1 = Windows 16-bit; 4 = Windows 32-bit; 0x40004 = Windows NT */
+ FILETYPE 0x2L  /* 1 = appliation; 2 = dll; 3 = device driver; 4 = font  */
+ FILESUBTYPE 0x0L /* always 0 for application or dll */
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "APSIM Initiative"
+            VALUE "FileDescription", XQUOTE_ME(APSIM PROJ component)
+            VALUE "FileVersion", XQUOTE_ME(MAJOR_VERSION.MINOR_VERSION.BUILD_NUMBER)
+            VALUE "InternalName", XQUOTE_ME(PROJ.dll)
+            VALUE "LegalCopyright", "© APSIM Initiative.  All rights reserved."
+            VALUE "OriginalFilename", XQUOTE_ME(PROJ.dll)
+            VALUE "ProductName", "APSIM"
+            VALUE "ProductVersion", XQUOTE_ME(MAJOR_VERSION.MINOR_VERSION.BUILD_NUMBER)
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END

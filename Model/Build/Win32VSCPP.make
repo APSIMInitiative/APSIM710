@@ -9,6 +9,7 @@
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 MT="$(WindowsSdkDir)\bin\mt.exe"
+RC=windres
 
 BOOST = $(APSIM)\..\BuildLibraries\boost_1_42_0-msvc
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
@@ -69,26 +70,41 @@ endif
 
 SOURCEOBJS:= $(SRC:.cpp=.obj)
 
-ifeq ($(PROJECTTYPE),exe)
+# Normally these are obtained as environment variables, but we want to be sure they are not left undefined
+ifeq ($(MAJOR_VERSION),)
+  MAJOR_VERSION = 1
+  MINOR_VERSION = 0
+  BUILD_NUMBER = 0
+endif
 
-$(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+ifeq ($(PROJECTTYPE),exe)
+RESOBJ = exeres.obj
+
+$(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).exe.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).exe;1"
 
+$(RESOBJ): $(APSIM)/Model/Build/exe.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+
 else
 
+RESOBJ = dllres.obj
 # Ugh. By default, MS dlls export symbols with _@ adornments, eg function "xyz" appears as "_xyz@n"
 #   what we do here is build the dll once, generate an unadorned .def file, and build it again with
 #   that def file so that the unadorned names are visible.
 #   Then after all that, we embed a manifest into the DLL
-$(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+$(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
+
+$(RESOBJ): $(APSIM)/Model/Build/dll.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 endif
 
