@@ -90,6 +90,7 @@
          real    rain                                 ! precipitation (mm/d)
          real    runon                                ! external run-on of H2O (mm/d)
          real    interception                         ! canopy interception loss (mm)
+         real    ResidueInterception                  ! residue interception loss (mm)
          real    radn                                 ! solar radiation (mj/m^2/day)
          real    mint                                 ! minimum air temperature (oC)
          real    maxt                                 ! maximum air temperature (oC)
@@ -409,9 +410,10 @@
 
       call soilwat2_cover_surface_runoff (g%cover_surface_runoff)
 c dsg 070302 added runon
+! NIH Need to consider if interception losses were already considered in runoff model calibration
       call soilwat2_runoff (g%rain
      :                     ,g%runon
-     :                     ,g%interception
+     :                     ,g%interception+g%ResidueInterception
      :                     ,g%runoff_pot)
 
       ! DSG  041200
@@ -526,7 +528,7 @@ c dsg 070302 added runon
 *+  Sub-Program Arguments
       real       rain            ! (INPUT) rainfall (mm)
       real       runon           ! (INPUT) run on (mm)
-      real       interception    ! (INPUT) interception loss(mm)
+      real       interception    ! (INPUT) total interception loss(mm)
       real       runoff          ! (OUTPUT) runoff (mm)
 
 *+  Purpose
@@ -4247,6 +4249,16 @@ c  dsg   070302  added runon
           g%interception = 0.0
       endif
 
+         call get_real_var_optional (unknown_module,
+     :                               'residueinterception', '(mm)',
+     :                               g%ResidueInterception, numvals,
+     :                               0.0, 100.0)
+
+      if (numvals.eq.0) then
+          g%ResidueInterception = 0.0
+      endif
+
+
       call pop_routine (my_name)
       return
       end subroutine
@@ -5326,6 +5338,7 @@ c         g%crop_module(:) = ' '               ! list of modules
          g%rain = 0.0                         ! precipitation (mm/d)
          g%runon = 0.0                        ! run on H20 (mm/d)
          g%interception = 0.0
+         g%ResidueInterception = 0.0
          g%radn = 0.0                         ! solar radiation (mj/m^2/day)
          g%mint = 0.0                         ! minimum air temperature (oC)
          g%maxt = 0.0                         ! maximum air temperature (oC)
@@ -6592,7 +6605,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 
 c dsg 070302 added runon
       infiltration_1 = g%rain + g%runon -  g%runoff_pot
-     :               - g%interception
+     :               - g%interception - g%ResidueInterception
 
       if (p%irrigation_layer.eq.0) then
         infiltration_1 = infiltration_1 + g%irrigation
@@ -7671,6 +7684,8 @@ c
      .                     floatTypeDDML, 'mm')
       dummy = add_registration_with_units(getVariableReg,
      .                     'interception', floatTypeDDML, 'mm')
+      dummy = add_registration_with_units(getVariableReg,
+     .                     'residueinterception', floatTypeDDML, 'mm')
 
       call soilwat2_create()
       end subroutine
