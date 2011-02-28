@@ -6862,7 +6862,7 @@ cnh      end if
       integer numvals                  ! number of values returned
 
       double precision intercep
-
+      double precision residueinterception
 *- Implementation Section ----------------------------------
 
          call get_double_var_optional (
@@ -6879,7 +6879,21 @@ cnh      end if
          else
          endif
 
-      call apswim_remove_from_rainfall(intercep)
+         call get_double_var_optional (
+     :            unknown_module,
+     :           'residueinterception',
+     :           '(mm)',
+     :           residueinterception,
+     :           numvals,
+     :           0d0,
+     :           1000d0)
+
+         if (numvals.le.0) then
+            residueinterception = 0d0
+         else
+         endif
+         
+      call apswim_remove_from_rainfall(intercep+residueinterception)
 
       return
       end subroutine
