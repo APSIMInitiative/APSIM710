@@ -1724,6 +1724,61 @@ endif
       ]]></text>
       </script>
     </manager>
+	<manager name="Residue percipitation interception">
+            <script>
+              <text>!initialise variables
+
+precip = 0
+Maximum_interception = 0
+Residue_water = 0
+Interception_today = 0
+Evaporated_interception = 0
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>!Set interception variables
+     
+precip = rain + irrigation.irrigation 
+Maximum_interception = 0.0002 * surfaceom_wt
+            
+! Determine the amount of water intercepted by residue today
+
+if (precip * surfaceom_cover) &gt;= (Maximum_interception - Residue_water) then
+   Interception_today = (Maximum_interception - Residue_water)
+else
+   Interception_today = (precip * surfaceom_cover) 
+endif 
+
+! Send message to soil module to take interception out of water balance
+    
+residueinterception = Interception_today
+            
+! Add intercepted water into residual water pool
+
+Residue_water = Residue_water + Interception_today
+
+
+! The remainder of the residue interception/evaporation procedure is on the end_of_day tab
+            
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>! calculate the amount of water that is going to evaporate from the residue water pool
+
+if Residue_water &gt; eo then
+   Evaporated_interception = eo
+else
+   Evaporated_interception = Residue_water
+endif
+
+! remove evaporation from residue water pool               
+
+Residue_water = Residue_water - Evaporated_interception</text>
+              <event>end_of_day</event>
+            </script>
+        </manager>
     </folder>
     <folder name="African and Indian specialisations">
       <folder name="Phosphorus and Manure">

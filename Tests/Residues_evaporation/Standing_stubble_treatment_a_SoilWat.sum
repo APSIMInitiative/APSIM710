@@ -1,0 +1,343 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Standing_stubble_treatment_a_SoilWat
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "Empty manager" = %apsim%\Model\Manager.dll
+   Component "Residue percipitation interception" = %apsim%\Model\Manager.dll
+   Component      "A_block_templeton Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component   "A_block_templeton Nitrogen" = %apsim%\Model\SoilN.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 25/02/2010
+     Simulation end date   = 11/08/2010
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        surfaceom_cover
+        surfaceom_wt
+        sw_dep
+        rain
+        flow
+        dlayer
+        es
+        irrigation
+        sw
+        runoff
+        infiltration
+        flux(1)
+        ll15
+        dul
+        ll15_dep
+        dul_dep
+        drainage
+        SW_dep_0_20cm
+        SW_dep_20_40cm
+        SW_dep_40_60cm
+        SW_dep_0_60cm
+
+     Output file = Standing_stubble_treatment_a_SoilWat.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+       5/3/2010  Prepare      irrigation apply amount = 26.6 (mm)
+       8/3/2010  Prepare      irrigation apply amount = 30.4 (mm)
+       9/3/2010  Prepare      irrigation apply amount = 100 (mm)
+      12/3/2010  Prepare      irrigation apply amount = 10 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Empty manager Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     sw_dep_0_20cm = 0
+     sw_dep_20_40cm = 0
+     sw_dep_40_60cm = 0
+     sw_dep_0_60cm = 0
+     drainage = 0
+     
+     SECTION:- start_of_day
+     sw_dep_0_20cm = sw_dep(1)
+     sw_dep_20_40cm = sw_dep(2)
+     sw_dep_40_60cm = sw_dep(3)
+     sw_dep_0_60cm = sw_dep(1) + sw_dep(2) + sw_dep(3)
+     drainage = flux(3)
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : sw_dep_0_20cm = 0.00000
+     Manager creating a new local real variable : sw_dep_20_40cm = 0.00000
+     Manager creating a new local real variable : sw_dep_40_60cm = 0.00000
+     Manager creating a new local real variable : sw_dep_0_60cm = 0.00000
+     Manager creating a new local real variable : drainage = 0.00000
+
+------- Residue percipitation interception Initialisation ---------------------
+     Manager rules:
+     
+     SECTION:- init
+     precip = 0
+     maximum_interception = 0
+     residue_water = 0
+     interception_today = 0
+     evaporated_interception = 0
+     
+     SECTION:- start_of_day
+     precip = rain + irrigation.irrigation
+     maximum_interception = 0.0002 * surfaceom_wt
+     if (precip * surfaceom_cover) >= (maximum_interception - residue_water) then
+        interception_today = (maximum_interception - residue_water)
+     else
+        interception_today = (precip * surfaceom_cover)
+     endif
+     residueinterception = interception_today
+     residue_water = residue_water + interception_today
+     
+     SECTION:- end_of_day
+     if residue_water > eo then
+        evaporated_interception = eo
+     else
+        evaporated_interception = residue_water
+     endif
+     residue_water = residue_water - evaporated_interception
+     END of rules
+     
+     Manager creating a new local real variable : precip = 0.00000
+     Manager creating a new local real variable : maximum_interception = 0.00000
+     Manager creating a new local real variable : residue_water = 0.00000
+     Manager creating a new local real variable : interception_today = 0.00000
+     Manager creating a new local real variable : evaporated_interception = 0.00000
+
+------- A_block_templeton Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  200.  0.060  0.080  0.270  0.310  0.253  1.300  0.856  0.300999.000
+          200.-  400.  0.124  0.124  0.250  0.358  0.175  1.300  0.135  0.600300.000
+          400.-  600.  0.106  0.106  0.270  0.400  0.150  1.300  0.009  0.600100.000
+          600.-  800.  0.070  0.070  0.200  0.314  0.100  1.520  0.000  0.600 90.000
+          800.- 1000.  0.070  0.070  0.200  0.314  0.130  1.520  0.000  0.950 90.000
+         1000.- 1200.  0.165  0.165  0.300  0.358  0.250  1.520  0.000  0.950 90.000
+         1200.- 1400.  0.157  0.157  0.290  0.350  0.290  1.650  0.000  0.950 90.000
+         1400.- 1600.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         1600.- 1800.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         1800.- 2000.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         2000.- 2200.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         2200.- 2400.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         2400.- 2600.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         2600.- 2800.  0.125  0.125  0.250  0.318  0.250  1.650  0.000  0.950 90.000
+         2800.- 3000.  0.125  0.125  0.250  0.318  0.250  1.600  0.000  0.950 90.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      16.00      34.60      38.00       8.00
+          200.-  400.      24.80      10.20      25.20      21.60
+          400.-  600.      21.20       8.80      32.80      26.00
+          600.-  800.      14.00       6.00      26.00      22.80
+          800.- 1000.      14.00      12.00      26.00      22.80
+         1000.- 1200.      33.00      17.00      27.00      11.60
+         1200.- 1400.      31.40      26.60      26.60      12.00
+         1400.- 1600.      25.00      25.00      25.00      13.60
+         1600.- 1800.      25.00      25.00      25.00      13.60
+         1800.- 2000.      25.00      25.00      25.00      13.60
+         2000.- 2200.      25.00      25.00      25.00      13.60
+         2200.- 2400.      25.00      25.00      25.00      13.60
+         2400.- 2600.      25.00      25.00      25.00      13.60
+         2600.- 2800.      25.00      25.00      25.00      13.60
+         2800.- 3000.      25.00      25.00      25.00      13.60
+          ---------------------------------------------------------
+               Totals     354.40     315.20     401.60     233.60
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     4.40 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          barley    barley        2026.0   810.4    10.1     0.0   0.333     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- A_block_templeton Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_Sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.63  115.55    0.26    0.00
+             2     6.00  1.25   77.04    0.26    0.00
+             3     6.00  0.32   57.78    0.26    0.00
+             4     6.00  0.21   33.78    0.30    0.00
+             5     6.00  0.20   33.78    0.30    0.00
+             6     6.00  0.20    0.00    0.30    0.00
+             7     6.00  0.20    0.00    0.33    0.00
+             8     6.00  0.20    0.00    0.33    0.00
+             9     6.00  0.20    0.33    0.33    0.00
+            10     6.00  0.20    0.33    0.33    0.00
+            11     6.00  0.20    0.33    0.33    0.00
+            12     6.00  0.20    0.33    0.33    0.00
+            13     6.00  0.20    0.33    0.33    0.00
+            14     6.00  0.20    0.33    0.33    0.00
+            15     6.00  0.20    0.32    0.32    0.00
+          ------------------------------------------------
+           Totals              320.22    4.65    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      67185.0  6107.7  1195.0   149.4    76.3     1.9
+             2      32308.8  2937.2   191.2    23.9    62.5     1.6
+             3       8303.5   754.9    16.5     2.1    51.1     1.3
+             4       6377.7   579.8     6.3     0.8    41.9     1.0
+             5       6080.0   552.7     0.0     0.0    34.3     0.9
+             6       6080.0   552.7     0.0     0.0    28.1     0.7
+             7       6600.0   600.0     0.0     0.0    23.0     0.6
+             8       6600.0   600.0     0.0     0.0    18.8     0.5
+             9       6600.0   600.0     0.0     0.0    15.4     0.4
+            10       6600.0   600.0     0.0     0.0    12.6     0.3
+            11       6600.0   600.0     0.0     0.0    10.3     0.3
+            12       6600.0   600.0     0.0     0.0     8.5     0.2
+            13       6600.0   600.0     0.0     0.0     6.9     0.2
+            14       6600.0   600.0     0.0     0.0     5.7     0.1
+            15       6400.0   581.8     0.0     0.0     4.6     0.1
+          ---------------------------------------------------------
+           Totals  185535.0 16866.8  1409.0   176.1   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : residueinterception = 0.09995
+5 March 2010(Day of year=64), operations: 
+      Sending apply message to irrigation
+8 March 2010(Day of year=67), operations: 
+      Sending apply message to irrigation
+9 March 2010(Day of year=68), operations: 
+      Sending apply message to irrigation
+12 March 2010(Day of year=71), operations: 
+      Sending apply message to irrigation
+11 August 2010(Day of year=223), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,402 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.3
+Title                  = Standing_stubble_treatment_a_SWIM2
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "Empty manager" = %apsim%\Model\Manager.dll
+   Component         "Residue interception" = %apsim%\Model\Manager.dll
+   Component                      "SWIM2ui" = %apsim%\Model\SWIM2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                      "SoilNui" = %apsim%\Model\SoilN.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 25/02/2010
+     Simulation end date   = 11/08/2010
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        surfaceom_cover
+        surfaceom_wt
+        sw_dep
+        rain
+        flow
+        dlayer
+        es
+        irrigation
+        sw
+        runoff
+        infiltration
+        flux(1)
+        ll15
+        dul
+        ll15_dep
+        dul_dep
+        drainage
+        SW_dep_0_20cm
+        SW_dep_20_40cm
+        SW_dep_40_60cm
+        SW_dep_0_60cm
+
+     Output file = Standing_stubble_treatment_a_SWIM2.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+       5/3/2010  Prepare      irrigation apply amount = 26.6 (mm)
+       8/3/2010  Prepare      irrigation apply amount = 30.4 (mm)
+       9/3/2010  Prepare      irrigation apply amount = 100 (mm)
+      12/3/2010  Prepare      irrigation apply amount = 10 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Empty manager Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     sw_dep_0_20cm = 0
+     sw_dep_20_40cm = 0
+     sw_dep_40_60cm = 0
+     sw_dep_0_60cm = 0
+     drainage = 0
+     
+     SECTION:- start_of_day
+     sw_dep_0_20cm = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5)
+     sw_dep_20_40cm = sw_dep(6) + sw_dep(7)
+     sw_dep_40_60cm = sw_dep(8)
+     sw_dep_0_60cm = sw_dep(1) + sw_dep(2) + sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6) + sw_dep(7) + sw_dep(8)
+     drainage = flow_water(8)
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : sw_dep_0_20cm = 0.00000
+     Manager creating a new local real variable : sw_dep_20_40cm = 0.00000
+     Manager creating a new local real variable : sw_dep_40_60cm = 0.00000
+     Manager creating a new local real variable : sw_dep_0_60cm = 0.00000
+     Manager creating a new local real variable : drainage = 0.00000
+
+------- Residue interception Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     precip = 0
+     maximum_interception = 0
+     residue_water = 0
+     interception_today = 0
+     evaporated_interception = 0
+     
+     SECTION:- start_of_day
+     precip = rain + irrigation.irrigation
+     maximum_interception = 0.0002 * surfaceom_wt
+     if (precip * surfaceom_cover) >= (maximum_interception - residue_water) then
+        interception_today = (maximum_interception - residue_water)
+     else
+        interception_today = (precip * surfaceom_cover)
+     endif
+     residueinterception = interception_today
+     residue_water = residue_water + interception_today
+     
+     SECTION:- end_of_day
+     if residue_water > eo then
+        evaporated_interception = eo
+     else
+        evaporated_interception = residue_water
+     endif
+     residue_water = residue_water - evaporated_interception
+     END of rules
+     
+     Manager creating a new local real variable : precip = 0.00000
+     Manager creating a new local real variable : maximum_interception = 0.00000
+     Manager creating a new local real variable : residue_water = 0.00000
+     Manager creating a new local real variable : interception_today = 0.00000
+     Manager creating a new local real variable : evaporated_interception = 0.00000
+
+------- SWIM2ui Initialisation ------------------------------------------------
+     Initialising
+     
+     
+           APSIM soil profile
+           ------------------
+     
+     
+           ---------------------------------------
+           dlayer   BD   SW     LL15   DUL   SAT
+           ---------------------------------------
+             5.0  1.53  0.398  0.031  0.263  0.398
+            15.0  1.53  0.398  0.031  0.263  0.398
+            25.0  1.53  0.398  0.031  0.263  0.398
+            35.0  1.53  0.398  0.031  0.263  0.398
+            70.0  1.53  0.398  0.031  0.263  0.398
+           100.0  1.53  0.398  0.031  0.263  0.398
+           100.0  1.76  0.333  0.141  0.270  0.334
+           150.0  1.76  0.333  0.141  0.270  0.334
+           300.0  1.76  0.333  0.141  0.270  0.334
+           350.0  1.76  0.333  0.141  0.270  0.334
+           300.0  1.76  0.333  0.141  0.270  0.334
+           200.0  1.76  0.333  0.141  0.270  0.334
+            50.0  1.76  0.333  0.141  0.270  0.334
+     
+     
+           APSWIM soil profile
+           -------------------
+     
+     
+          -------------------------------------------------
+           depth   Soil Type     Theta    Psi        Ks
+           ------------------------------------------------
+             0.0  tLFs          0.3982220     -0.001     17.561
+            10.0  -             0.3982220     -0.001     17.561
+            30.0  -             0.3982220     -0.001     17.561
+            60.0  -             0.3982220     -0.001     17.561
+           100.0  -             0.3982220     -0.001     17.561
+           200.0  tLFs          0.3982220     -0.001     17.561
+           300.0  LCf1          0.3334800     -0.001      0.283
+           400.0  LCf2          0.3334800     -0.001      0.283
+           600.0  -             0.3334800     -0.001      0.283
+          1000.0  -             0.3334800     -0.001      0.283
+          1300.0  -             0.3334800     -0.001      0.283
+          1600.0  -             0.3334800     -0.001      0.283
+          1700.0  LCf2          0.3334800     -0.001      0.283
+     
+     
+           Soil Moisture Characteristics
+           -----------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.03123    0.03123    0.03123    0.03123    0.03123    0.03123    0.14076
+            -1.00 |    0.09921    0.09921    0.09921    0.09921    0.09921    0.09921    0.19984
+            -0.10 |    0.26314    0.26314    0.26314    0.26314    0.26314    0.26314    0.26991
+            -0.01 |    0.39650    0.39650    0.39650    0.39650    0.39650    0.39650    0.33155
+     
+     
+           Soil Hydraulic Conductivity
+           ---------------------------
+     
+     
+                                  nodes(0-6)
+     
+            g%psi   |        0          1          2          3          4          5          6
+          --------------------------------------------------------------------------------------
+           -15.00 |    0.00002    0.00002    0.00002    0.00002    0.00002    0.00002    0.00000
+            -1.00 |    0.00914    0.00914    0.00914    0.00914    0.00914    0.00914    0.00000
+            -0.10 |    1.84209    1.84209    1.84209    1.84209    1.84209    1.84209    0.00020
+            -0.01 |   17.10893   17.10893   17.10893   17.10893   17.10893   17.10893    0.03712
+     
+     
+           Swim calculation parameters
+           ---------------------------
+           p%dtmin p%dtmax   p%ersoil   p%ernode    p%errex p%dppl p%dpnl max_water_increment
+           --------------------------------------------------------------------
+     
+            0.0   0.5 .100E-03 .100E-03 .100E-01 2.00 1.00        0.010
+     
+     
+     
+     
+          Bypass flow is INactive
+          Runoff calculated using runoff functions
+          p%hm1   p%hm0   p%hrc   p%roff0   p%roff1
+          0.5   0.5   1.0    2.00    2.00
+     
+     
+     
+          top boundary condition = infinite conductance
+          bottom boundary condition = specified gradient (     0.000)
+     
+     
+     
+     
+          vapour conductivity = on
+          Rainfall Source: rain
+     
+     
+          Evaporation Source: calc
+     
+     
+     
+     
+     
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          barley    barley        2026.0   810.4    10.1     0.0   0.333     1.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- SoilNui Initialisation ------------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.63    3.39    0.01    0.00
+             2     6.00  2.63   10.17    0.02    0.00
+             3     6.00  2.63   16.95    0.04    0.00
+             4     6.00  2.63   23.72    0.05    0.00
+             5     6.00  2.63   47.45    0.11    0.00
+             6     6.00  1.25   45.19    0.15    0.00
+             7     6.00  0.32   39.00    0.18    0.00
+             8     6.00  0.21   29.25    0.26    0.00
+             9     6.00  0.20   58.50    0.53    0.00
+            10     6.00  0.20    0.00    0.61    0.00
+            11     6.00  0.20    0.00    0.53    0.00
+            12     6.00  0.20    0.00    0.35    0.00
+            13     0.00  0.00    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals              273.61    2.84    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       1972.5   179.3    35.1     4.4    59.5     1.5
+             2       5917.4   537.9   105.3    13.2    57.9     1.4
+             3       9862.4   896.6   175.4    21.9    55.4     1.4
+             4      13807.4  1255.2   245.6    30.7    52.1     1.3
+             5      27614.8  2510.4   491.2    61.4    46.0     1.2
+             6      18971.1  1724.6   112.3    14.0    38.6     1.0
+             7       5610.2   510.0    11.1     1.4    32.3     0.8
+             8       5528.0   502.5     5.5     0.7    24.8     0.6
+             9      10540.0   958.2     0.0     0.0    14.6     0.4
+            10      12296.7  1117.9     0.0     0.0     7.9     0.2
+            11      10540.0   958.2     0.0     0.0     4.6     0.1
+            12       7026.7   638.8     0.0     0.0     3.3     0.1
+            13          0.0     0.0     0.0     0.0     3.0     0.1
+          ---------------------------------------------------------
+           Totals  129687.1 11789.7  1181.4   147.7   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : residueinterception = 0.09995
+5 March 2010(Day of year=64), operations: 
+      Sending apply message to irrigation
+8 March 2010(Day of year=67), operations: 
+      Sending apply message to irrigation
+9 March 2010(Day of year=68), operations: 
+      Sending apply message to irrigation
+10 March 2010(Day of year=69), SWIM2ui: 
+      Maximum iterations reached - swim will reduce timestep to solve water movement
+          APSwim Numerical Diagnostics
+          ------------------------------------------------------------------------------
+           depth   Soil Type     Theta         g%psi        K           g%p          g%p*
+          ------------------------------------------------------------------------------
+             0.0  tLFs          0.3982341      1.070     17.561     10.012     10.002
+            10.0  -             0.3982341      2.054     17.561     10.208     10.199
+            30.0  -             0.3982341      4.022     17.561     10.602     10.592
+            60.0  -             0.3982341      6.974     17.561     11.192     11.183
+           100.0  -             0.3982341     10.909     17.561     11.980     11.970
+           200.0  tLFs          0.3982341     20.748     17.561     13.947     13.938
+           300.0  LCf1          0.3335000     30.432      0.283     15.884     15.874
+           400.0  LCf2          0.3335000     30.432      0.283     15.884     15.874
+           600.0  -             0.3335000     30.432      0.283     15.884     15.874
+          1000.0  -             0.3335000     30.432      0.283     15.884     15.874
+          1300.0  -             0.3335000     30.432      0.283     15.884     15.874
+          1600.0  -             0.3335000     30.432      0.283     15.884     15.874
+          1700.0  LCf2          0.3335000     30.432      0.283     15.884     15.874
+          ------------------------------------------------------------------------------
+     ApsimSwim|apswim_swim -  Changing dt value from:  3.539494971893942E-02 to:  1.769747485946971E-02
+12 March 2010(Day of year=71), operations: 
+      Sending apply message to irrigation
+8 August 2010(Day of year=220), SWIM2ui: 
+      Maximum iterations reached - swim will reduce timestep to solve water movement
+          APSwim Numerical Diagnostics
+          ------------------------------------------------------------------------------
+           depth   Soil Type     Theta         g%psi        K           g%p          g%p*
+          ------------------------------------------------------------------------------
+             0.0  tLFs          0.3807597    -29.930     13.461      3.981      4.003
+            10.0  -             0.3819478    -28.946     13.706      4.178      4.200
+            30.0  -             0.3841850    -26.976     14.180      4.571      4.594
+            60.0  -             0.3871711    -24.018     14.837      5.162      5.185
+           100.0  -             0.3904396    -20.071     15.591      5.950      5.975
+           200.0  tLFs          0.3964083    -10.191     17.061      7.920      7.950
+           300.0  LCf1          0.3334967     -0.409      0.177      9.859      9.904
+           400.0  LCf2          0.3335000      0.741      0.053      9.666     10.357
+           600.0  -             0.3334808     -0.982      0.237      9.914      9.672
+          1000.0  -             0.3016503    -42.532      0.003      1.522      1.456
+          1300.0  -             0.3018019    -42.367      0.003      1.527      1.527
+          1600.0  -             0.3027240    -41.382      0.004      1.724      1.724
+          1700.0  LCf2          0.3028351    -41.265      0.004      1.747      1.747
+          ------------------------------------------------------------------------------
+     ApsimSwim|apswim_swim -  Changing dt value from:  4.724409519784443E-02 to:  2.362204759892221E-02
+11 August 2010(Day of year=223), clock: 
+     Simulation is terminating due to end criteria being met.

@@ -1,0 +1,257 @@
+
+<!-- _________________________________________________________________________________________________________
+  This files is a copy of the SWIMs xml file rearranged by R Cichota.
+  It contains changes on the layering and description of horizons for a particular soil
+  It is to be used as an ini adding to SWIM for use in the graphic user interface.
+ _____________________________________________________________________________________________________________  
+  
+  This file describes the generic soils of Canterbury (to be used in FarmSim [updated by RCichota in 12/July/2010])
+ __________________________________________________________________________________________________________ -->  
+
+
+<Type name="SWIM2ui">
+   <MetaData>
+      <UItype>VBUserInterface.GenericUI</UItype>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+      <Documentation name="Science documentation">../apsim/apswim/docs/apswim_science.htm</Documentation>
+      <Documentation name="Technical specification">../apsim/apswim/docs/SWIMv21UserManual.pdf</Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\note_pinned32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\note_pinned16.png</SmallIcon>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+      </drops>
+      
+     <variables name="SWIM2ui" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+     <events name="SWIM events" link="%apsim%\Documentation\ModelInfo\swim2.xml" />
+     <ApsimToSim>
+        <component name="[SWIM2ui.name]" executable="%apsim%\Model\SWIM2.dll">
+           <executable>%apsim%\Model\SWIM2.dll</executable>
+           <initdata>
+              [Model]
+           </initdata>
+        </component>
+     </ApsimToSim>
+   </MetaData>
+   <Model>
+      <!-- * * * * *  These are the General Paramenters (arranged by RCichota) * * * * *   -->
+      <!-- ***  Convergence  ***  -->
+      <max_iterations description="number of iterations before timestep is halved">50</max_iterations>
+      <!-- ***  solute balance  ****************
+      Numerical Error can result in negative solute concentration
+      We allert the user according to the level of loss of solute
+      balance due to trucation of negative values.            -->
+      <negative_conc_fatal units="kg/ha">0.000001</negative_conc_fatal>
+      <negative_conc_warn units="kg/ha">0.0000000001</negative_conc_warn>
+      <!-- ****  soilwat_eeq_fac  **************** -->
+      <min_crit_temp units="oC" description="temperature below which eeq decreases (oC)">5.0</min_crit_temp>
+      <max_crit_temp units="oC" description="temperature above which eeq increases (oC)">35.0</max_crit_temp>
+      <!-- *** soilwat_pot_evapotranspiration  ************** -->
+      <max_albedo description="albedo at 100% green crop cover (0-1).">0.23</max_albedo>
+      <!-- Bare soil albedo must not exceed this value.       -->
+      <residue_albedo description="albedo at 100% residue cover (0-1).">0.23</residue_albedo>
+      <!-- max_bitesize = .02                                 -->
+      <max_bitesize>0.1</max_bitesize>
+      <extra_supply_fraction>0.5</extra_supply_fraction>
+      <trf_fasw>0 1</trf_fasw>
+      <trf_value>1  1</trf_value>
+      <!-- trf_fasw = 0.0  0.5  1.0 
+           trf_value= 0.0  1.0  1.0                           -->
+      <min_total_root_length>0.01</min_total_root_length>
+      <!-- ***  Residue and Crop Cover Effects    **************
+      The effect of residue and canopy cover is implemented as in the soilwat model.
+      These can be turn off for compatibility with SWIM standalone. -->
+      <cover_effects>on</cover_effects>
+      <A_to_evap_fact description="converts residue specfic area 'A' to">0.44</A_to_evap_fact>
+      <!--    a coef. in exp effect on reducing pot. soil evap for wt. of mixed residues.
+      0.44 = 0.00022/0.0005 DMS 1st approx. 6/95              -->
+      <canopy_eos_coef description="coef. in exp effect of canopy on">1.7</canopy_eos_coef>
+      <!-- reducing pot. soil evap. = 1.7 Adams, Arkin & Ritchie 1976
+      Set the default rainfall and evaporation daily time courses these are used
+      if the user does not specify them in the met file       -->
+      <default_rain_time>0:00</default_rain_time>
+      <default_rain_duration>1440.0</default_rain_duration>
+      <default_evap_time>6:00</default_evap_time>
+      <default_evap_duration>720.</default_evap_duration>
+      <!-- ***  Bounds  ***                                   -->
+      <lb_exco>0</lb_exco>
+      <ub_exco>15000</ub_exco>
+      <lb_fip>0</lb_fip>
+      <ub_fip>100</ub_fip>
+      <lb_dis>0</lb_dis>
+      <ub_dis>30</ub_dis>
+      <lb_slupf>0</lb_slupf>
+      <ub_slupf>1</ub_slupf>
+      <lb_slos>0</lb_slos>
+      <ub_slos>10</ub_slos>
+      <lb_d0>0</lb_d0>
+      <ub_d0>1</ub_d0>
+      <lb_a>0</lb_a>
+      <ub_a>100</ub_a>
+      <lb_dthc>0</lb_dthc>
+      <ub_dthc>1</ub_dthc>
+      <lb_dthp>0</lb_dthp>
+      <ub_dthp>10</ub_dthp>
+      <lb_disp>0</lb_disp>
+      <ub_disp>5</ub_disp>
+      <lb_solute>0</lb_solute>
+      <ub_solute>100000</ub_solute>
+
+      <!-- * * * * *  These are the Soil Specific Paramenters (arranged by RCichota) * * * * *   -->
+      <init>
+         <slmin>-3.0</slmin>
+         <slmax>7.0</slmax>
+         <bypass_flow>off</bypass_flow>
+         <runoff>2</runoff>
+         <top_boundary_condition>0</top_boundary_condition>
+         <bottom_boundary_condition>0</bottom_boundary_condition>
+         <vapour_conductivity>on</vapour_conductivity>
+         <run_solutes>urea no3 nh4</run_solutes>
+         <extra_solute_supply>on</extra_solute_supply>
+         <solute_exclusion>on</solute_exclusion>
+         <subsurface_drain>off</subsurface_drain>
+
+          <!--  This describes the whole profile (link layers with horizon) and initial water status  -->
+			<!-- ExtraLight -->
+         <layer_no>  (0)      (1)      (2)      (3)      (4)      (5)      (6)      (7)      (8)      (9)      (10)     (11)     (12) </layer_no>
+         <x>          0        10       30      60       100      200      300      400      600      1000     1300     1600     1700 </x>
+         <psi>      -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0     -1.0  </psi>
+         <soil_type> tLFs      -        -        -        -       tLFs     LCf1    LCf2       -      -        -        -       LCf2 </soil_type>
+
+      
+       + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + - + -->
+
+      </init>
+      <solute>
+         <solute_name>      no3      nh4      urea     dcd      br       cl       orgn    </solute_name>
+         <slupf>            1.0      1.0      0.0      0.0      0.0      0.0      0.0     </slupf>
+         <slos>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </slos>
+         <d0>               0.06840  0.07056  0.07150  0.07700  0.06000  0.06000  0.07900 </d0>
+         <a>                0.0      0.0      0.0      0.0      0.0      0.0      0.0     </a>
+         <dthc>             0.0      0.0      0.0      0.0      0.0      0.0      0.0     </dthc>
+         <dthp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </dthp>
+         <disp>             1.0      1.0      1.0      1.0      1.0      1.0      1.0     </disp>
+         <ground_water_conc>0.0      0.0      0.0      0.0      0.0      0.0      0.0     </ground_water_conc>
+         
+         <!--  Where,
+          - slupf: factor for solute uptake (1 = free uptake, 0 = no uptake);
+          - slos: factor for osmotic effect at soil-root interface (0 = no effect);
+          - d0: molecular diffusion coefficient in free water (cm2/h);
+          - a, dthc, and dthp: empirical constants to calculate tortuosity;
+          - disp: empirical constant to calculate hydrodynamic dispersion;
+          - ground_water_conc: solute concentration in the ground water (ppm);
+          -->
+      </solute>
+      <calc>
+         <dtmin>0.0</dtmin>
+         <dtmax>30.0</dtmax>
+         <ersoil>0.0001</ersoil>
+         <ernode>0.0001</ernode>
+         <slcerr>0.0001</slcerr>
+         <errex>0.01</errex>
+         <dppl>2</dppl>
+         <dpnl>1</dpnl>
+         <swt>0</swt>
+         <slswt>0.0</slswt>
+         <max_water_increment>0.1</max_water_increment>
+
+         <!--  Where:
+          - dtmin: the mininum dt (time step) for calculations (min);
+          - dtmax: the maximum allowed dt for calculations (min);
+          - ersoil: the maximum allowed water balance error for the whole soil (cm/h) - recomended values 10E-3 to 10E-6. Larger values may be used for unstable sims;
+          - ernode: the maximum allowed water balance error for each soil node (cm/h)- recomended values 10E-4 to 10E-6. Larger values may be used for unstable sims;
+          - slcerr: the maximum error admitted for Cw in any node when solving the Thomas algorithm for solute transport.
+          - errex: relative fraction of water uptake from which the rate becomes constant () - recomended value around 10E-2, and not much smaller;
+          - dppl and dpnl: upper and lower limits for the tranformed variable 'p'. Ross (1990) recomends 2 and 1;
+          - swt: spatial weighting factor for calculations of Richards eq. (should vary between 0.5 (central differences) and 1 (fully upstream). Use zero to allow SWIM to decide, central diffs are preffered);
+          - slswt: spatial weighting factor for calculations of solute's ADE (should vary similarly to swt);
+          - max_water_increment: parameter used to calculate the value of dt for each step (mm), also called dw. dt = dw/max(qw);
+          -->
+      </calc>
+      <climate>
+         <rainfall_source>apsim</rainfall_source>
+         <evap_source>calc</evap_source>
+         <salb>0.23</salb>
+      </climate>
+      <runoff>
+         <maximum_surface_storage>5.2</maximum_surface_storage>
+         <minimum_surface_storage>5.0</minimum_surface_storage>
+         <initial_surface_storage>5.1</initial_surface_storage>
+         <precipitation_constant>10</precipitation_constant>
+         <runoff_rate_factor>0.2</runoff_rate_factor>
+         <runoff_rate_power>2</runoff_rate_power>
+      </runoff>
+      <bottom_boundary>
+         <constant_gradient>0</constant_gradient>
+         <constant_potential>100.</constant_potential>
+      </bottom_boundary>
+      <top_boundary>
+         <maximum_conductance>4.0</maximum_conductance>
+         <minimum_conductance>0.02</minimum_conductance>
+         <initial_conductance>4.0</initial_conductance>
+         <precipitation_constant>25</precipitation_constant>
+      </top_boundary>
+      <bypass_flow>
+         <depth>11</depth>
+         <conductance>0.10</conductance>
+         <storage>0.10</storage>
+      </bypass_flow>
+      <crop>
+         <crop_name>           AgPasture  grass    ryegrass  clover  paspalum  wheat   lucerne  barley  </crop_name>
+         <min_xylem_potential> -15000     -15000   -1500     -1500   -15000    -15000  -1500  -15000 (cm)</min_xylem_potential>
+         <root_radius>         0.25       0.25     0.25      0.25    0.25      0.25    0.25   0.25 (mm)</root_radius>
+         <root_conductance>    1.4D-7     1.4D-7   1.4D-7    1.4D-7  1.4D-7    1.4D-7  1.4D-7 1.4D-7    </root_conductance>
+      </crop>
+      <drain>
+         <drain_depth>450. (mm)</drain_depth>
+         <drain_spacing>2000 (mm)</drain_spacing>
+         <drain_radius>35 (mm)</drain_radius>
+         <klat>1000. (mm/d)</klat>
+         <imperm_depth>800.</imperm_depth>
+      </drain>
+
+      <tLFs>
+         <!-- Templeton, tLFs - depth range: 0-0.2 -->
+         <sl>   -3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -2.000000D-01 +5.000000D-01 +1.200000D+00 +1.611116D+00 +1.780447D+00 +2.190208D+00 +3.308315D+00 +4.866586D+00 +7.000000D+00 </sl>
+         <wc>   +3.982341D-01 +3.982341D-01 +3.982341D-01 +3.982338D-01 +3.982262D-01 +3.980348D-01 +3.932276D-01 +3.649856D-01 +3.257981D-01 +2.187083D-01 +7.371846D-02 +1.619429D-02 +2.033326D-03 </wc>
+         <wcd>  -9.178793D-11 -2.305609D-09 -5.791427D-08 -1.454741D-06 -3.654143D-05 -9.178793D-04 -2.305609D-02 -1.531153D-01 -3.168754D-01 -2.127186D-01 -7.169952D-02 -1.575077D-02 -1.977639D-03 </wcd>
+         <hkl>  +1.244554D+00 +1.244554D+00 +1.244554D+00 +1.244552D+00 +1.244502D+00 +1.243254D+00 +1.211888D+00 +1.026773D+00 +7.669608D-01 -1.763030D-01 -2.748111D+00 -6.332135D+00 -1.123899D+01 </hkl>
+         <hkld> -5.984714D-10 -1.503292D-08 -3.776099D-07 -9.485133D-06 -2.382563D-04 -5.985042D-03 -1.505361D-01 -1.007529D+00 -2.221216D+00 -2.300827D+00 -2.300003D+00 -2.300000D+00 -2.300000D+00 </hkld>
+         <bulk_density> 1.52666666666667 </bulk_density>
+         <solute_name> urea   nh4    no3    dcd    br     orgc   orgn   Sol8    </solute_name>
+         <exco>        0      28.86  0      0      0      0      0      0       </exco>
+         <fip>         1      0.59   1      1      1      1      1      1       </fip>
+         <dis>         4.98   4.98   4.98   4.98   4.98   4.98   4.98   1       </dis>
+      </tLFs>
+      <LCf1>
+         <!-- Templeton, LCf1 - depth range: 0.2-0.4 -->
+         <sl>   -3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +5.000000D-02 +3.000000D-01 +5.000000D-01 +1.100000D+00 +1.446840D+00 +1.613680D+00 +4.970754D+00 +7.000000D+00 </sl>
+         <wc>   +3.335000D-01 +3.335000D-01 +3.335000D-01 +3.334997D-01 +3.334950D-01 +3.334748D-01 +3.334203D-01 +3.332997D-01 +3.303248D-01 +3.178159D-01 +3.030072D-01 +1.112207D-01 +6.068480D-02 </wc>
+         <wcd>  -9.226236D-11 -2.317526D-09 -5.821361D-08 -1.462260D-06 -2.317526D-05 -1.161514D-04 -3.673031D-04 -9.226236D-04 -1.462260D-02 -7.222783D-02 -9.046155D-02 -3.320447D-02 -1.811720D-02 </wcd>
+         <hkl>  -5.489413D-01 -5.489516D-01 -5.492097D-01 -5.556828D-01 -6.534202D-01 -1.005329D+00 -1.344668D+00 -1.372144D+00 -1.471209D+00 -1.897657D+00 -2.424761D+00 -1.349627D+01 -2.018865D+01 </hkl>
+         <hkld> -1.961725D-06 -4.927610D-05 -1.237628D-03 -3.100416D-02 -4.687643D-01 -1.647235D+00 -4.976270D-01 -3.178603D-02 -4.890106D-01 -2.510520D+00 -3.297964D+00 -3.297964D+00 -3.297964D+00 </hkld>
+         <bulk_density> 1.75666666666667 </bulk_density>
+         <solute_name> urea   nh4    no3    dcd    br     orgc   orgn   Sol8    </solute_name>
+         <exco>        0      32.97  0      0      0      0      0      0       </exco>
+         <fip>         1      0.52   1      1      1      1      1      1       </fip>
+         <dis>         7.65   7.65   7.65   7.65   7.65   7.65   7.65   1       </dis>
+       </LCf1>
+      <LCf2>
+         <!-- Templeton, LCf2 - depth range: 0.4-0.6 -->
+         <sl>   -3.000000D+00 -2.300000D+00 -1.600000D+00 -9.000000D-01 -3.000000D-01 +5.000000D-02 +3.000000D-01 +5.000000D-01 +1.100000D+00 +1.446840D+00 +1.613680D+00 +4.970754D+00 +7.000000D+00 </sl>
+         <wc>   +3.335000D-01 +3.335000D-01 +3.335000D-01 +3.334997D-01 +3.334950D-01 +3.334748D-01 +3.334203D-01 +3.332997D-01 +3.303248D-01 +3.178159D-01 +3.030072D-01 +1.112207D-01 +6.068480D-02 </wc>
+         <wcd>  -9.226236D-11 -2.317526D-09 -5.821361D-08 -1.462260D-06 -2.317526D-05 -1.161514D-04 -3.673031D-04 -9.226236D-04 -1.462260D-02 -7.222783D-02 -9.046155D-02 -3.320447D-02 -1.811720D-02 </wcd>
+         <hkl>  -5.489413D-01 -5.489516D-01 -5.492097D-01 -5.556828D-01 -6.534202D-01 -1.005329D+00 -1.344668D+00 -1.372144D+00 -1.471209D+00 -1.897657D+00 -2.424761D+00 -1.349627D+01 -2.018865D+01 </hkl>
+         <hkld> -1.961725D-06 -4.927610D-05 -1.237628D-03 -3.100416D-02 -4.687643D-01 -1.647235D+00 -4.976270D-01 -3.178603D-02 -4.890106D-01 -2.510520D+00 -3.297964D+00 -3.297964D+00 -3.297964D+00 </hkld>
+         <bulk_density> 1.75666666666667 </bulk_density>
+         <solute_name> urea   nh4    no3    dcd    br     orgc   orgn   Sol8    </solute_name>
+         <exco>        0      32.97  0      0      0      0      0      0       </exco>
+         <fip>         1      0.52   1      1      1      1      1      1       </fip>
+         <dis>         7.65   7.65   7.65   7.65   7.65   7.65   7.65   1       </dis>
+      </LCf2>
+
+   </Model>
+</Type>
