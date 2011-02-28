@@ -99,7 +99,7 @@ $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 
