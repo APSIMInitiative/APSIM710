@@ -10035,6 +10035,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       integer counter
       integer start                ! record for start of interception
       double precision intercep
+      double precision residueinterception      
       double precision tot_rain
       double precision fraction
       double precision start_timestep
@@ -10056,6 +10057,21 @@ cRC            Changes by RCichota, 30/Jan/2010
             intercep = 0d0
          else
          endif
+
+         call get_double_var_optional (
+     :            unknown_module,
+     :           'residueinterception',
+     :           '(mm)',
+     :           residueinterception,
+     :           numvals,
+     :           0d0,
+     :           1000d0)
+
+         if (numvals.le.0) then
+            residueinterception = 0d0
+         else
+         endif
+      intercep = intercep + residueinterception
 
       if (intercep.gt.0d0) then
 
