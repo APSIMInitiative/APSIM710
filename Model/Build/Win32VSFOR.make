@@ -3,7 +3,7 @@
 ###########################################
 LFLM=lm.exe
 LF95=lf95.exe
-RC=windres
+RC=rc
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),..\$(library).lib)
@@ -39,13 +39,14 @@ ifeq ($(MAJOR_VERSION),)
   BUILD_NUMBER = 0
 endif
 
-   RESOBJ = dllres.obj
+   RESOBJ = dllres.res
    EXPORTS := -export Main,doInit1,wrapperDLL,respondToEvent,alloc_dealloc_instance,getInstance,getDescription,getDescriptionLength
    $(PROJECT).dll: $(OBJS) $(RESOBJ)
 	   $(LF95) $(F90FLAGS) $(LIBS) $(STATICLIBS) $(OBJSNODIR) $(RESOBJ) $(EXPORTS) -exe ..\$(PROJECT).dll
 	   
-$(RESOBJ): $(APSIM)/Model/Build/exe.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+$(RESOBJ): $(APSIM)/Model/Build/dll.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
+#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 else
 ifeq ($(PROJECTTYPE),lib)

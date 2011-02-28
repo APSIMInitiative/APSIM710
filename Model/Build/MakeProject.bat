@@ -1,6 +1,8 @@
 @echo off
 cd %APSIM%\Model\Build
 
+if EXIST VersionInfo.bat call VersionInfo
+
 echo ----------------------------------------------------- >> Build.out
 echo Compiling  %1 >> Build.out
 echo ----------------------------------------------------- >> Build.out

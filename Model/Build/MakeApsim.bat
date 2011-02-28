@@ -4,15 +4,6 @@ rem This batch file compiles the APSIM engine and modules
 rem -------------------------------------------------------------
 
 rem -------------------------------------------------------------
-rem Attempt to get build and version information
-for /F "tokens=1-3" %%i in ('"%APSIM%\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe" GetVersion.tcl') do (
-  set MAJOR_VERSION=%%i
-  set MINOR_VERSION=%%j
-  set BUILD_NUMBER=%%k
- )
-rem -------------------------------------------------------------
- 
-rem -------------------------------------------------------------
 rem Need to process the datatypes.interface file and auto-
 rem generate the datatypes.cpp, .h etc.
 rem -------------------------------------------------------------
