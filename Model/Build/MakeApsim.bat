@@ -68,6 +68,7 @@ call MakeProject Report
 call MakeProject Root
 call MakeProject SiloInput
 call MakeProject SOI
+call MakeProject SoilErosion
 call MakeProject SoilN
 call MakeProject SoilNitrogen
 call MakeProject SoilP
