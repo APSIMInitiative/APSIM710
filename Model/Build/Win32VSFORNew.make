@@ -3,6 +3,7 @@
 ###########################################
 LFLM=lm.exe
 LF95=lf95.exe
+RC=rc
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),..\$(library).lib)
@@ -36,8 +37,21 @@ OBJS:=	$(OBJS:.f90=.obj)
 OBJSNODIR := $(foreach obj,$(OBJS),$(notdir $(obj)))
 
 ifeq ($(PROJECTTYPE),dll)
+
+# Normally these are obtained as environment variables, but we want to be sure they are not left undefined
+ifeq ($(MAJOR_VERSION),)
+  MAJOR_VERSION = 1
+  MINOR_VERSION = 0
+  BUILD_NUMBER = 0
+endif
+
+   RESOBJ = dllres.res
    $(PROJECT).dll: $(OBJS)
 	   $(LF95) $(F90FLAGS) $(LIBS) $(STATICLIBS) $(OBJSNODIR) $(EXPORTS) -exe ..\$(PROJECT).dll
+
+$(RESOBJ): $(APSIM)/Model/Build/dll.rc
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
+	   
 else
    OBJSWITHPLUS := $(foreach obj,$(OBJSNODIR),+$(obj))
    $(PROJECT).lib: $(OBJS)

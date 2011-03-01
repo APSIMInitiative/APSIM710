@@ -21,6 +21,11 @@
 #include "Variants.h"
 #include "MessageTypes.h"
 
+#ifdef __WIN32__
+#include <windows.h>
+#pragma comment(lib, "Version.lib")
+#endif
+
 using namespace protocol;
 
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
@@ -296,6 +301,39 @@ catch (const std::string& e)
 
 }
 
+#ifdef __WIN32__
+char* GetVerInfoString(const char * filename, const char* field)
+{
+  DWORD retLen;
+  static char aBuf[MAX_PATH];
+  strcpy(aBuf, "unknown");   /* string to return on failure */
+  DWORD infoSize = GetFileVersionInfoSize(filename, &retLen);
+  if (infoSize != 0)
+  {
+    char* VersionInfoBuf = new char[infoSize];
+    void* ptr;
+    std::string buffer("\\StringFileInfo\\");
+    GetFileVersionInfo(filename, retLen, infoSize, VersionInfoBuf);
+    if (VerQueryValue(VersionInfoBuf, "\\VarFileInfo\\Translation", &ptr, (PUINT)&retLen) && retLen >= 4)
+    {
+      char temp[33];
+      unsigned Info = *(unsigned *)ptr;
+      Info = (Info >> 16) | ((Info & 0xffff) << 16);
+      sprintf(temp, "%8.8X", Info);
+      buffer += temp;
+    }
+    else
+      buffer += "040904e4";
+    buffer += '\\';
+    buffer += field;
+    if (VerQueryValue(VersionInfoBuf, (LPTSTR)buffer.c_str(), &ptr, (PUINT)&retLen) && retLen > 0)
+      strcpy(aBuf, (char*)ptr);
+    delete [] VersionInfoBuf;
+  }
+  return aBuf;
+}
+#endif
+
 // ------------------------------------------------------------------
 //  Short description:
 //     Do the standard registrations.
@@ -321,12 +359,18 @@ void Component::doInit1(const Init1Data& init1Data)
       name = fqn.substr(posPeriod+1);
 	  pathName = fqn.substr(0, posPeriod);
       }
-   type = "?";
+   type = name; // "?";
    version = "1";
    author = "APSRU";
    active = 1;
    state = "";
 
+#ifdef __WIN32__
+   version = GetVerInfoString(dllName.c_str(), "FileVersion");
+   if (version == "unknown") version = "1";
+   author = GetVerInfoString(dllName.c_str(), "CompanyName");
+   if (author == "unknown") author = "APSRU";
+#endif
    componentData = newApsimComponentData(init1Data.sdml.f_str(),
                                          init1Data.sdml.length());
 
@@ -1026,8 +1070,8 @@ std::string Component::getDescription()
 	  string returnString = "<describecomp>\n";
 	  returnString += string("<executable>") + dllName + "</executable>\n";
 	  returnString += string("<class>") + name + "</class>\n";
-	  returnString += "<version>1.0</version>\n";
-	  returnString += "<author>APSRU</author>\n";
+	  returnString += "<version>" + version + "</version>\n";
+	  returnString += "<author>" + author + "</author>\n";
 
 	  returnString += ApsimRegistry::getApsimRegistry().getDescription(componentID);
 
@@ -1082,3 +1126,4 @@ void Component::changeComponentOrder(const FStrings& names)
    //sendMessage(newApsimChangeOrderMessage(componentID, masterPMID, names));
    sendMessage(newApsimChangeOrderMessage(componentID, parentID, names));
    }
+

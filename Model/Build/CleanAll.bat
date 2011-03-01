@@ -11,6 +11,8 @@ del /Q /S *.mod >nul 2>nul
 del /Q /S *.bak >nul 2>nul
 del /Q /S *.dsk >nul 2>nul
 del /Q /S *.~*  >nul 2>nul
+del /Q /S dll.res  >nul 2>nul
+del /Q /S exe.res  >nul 2>nul
 
 del /Q *.dll >nul 2>nul
 del /Q *.exe >nul 2>nul

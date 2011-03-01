@@ -9,7 +9,7 @@
 CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
 LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 MT="$(WindowsSdkDir)\bin\mt.exe"
-RC=windres
+RC=rc
 
 BOOST = $(APSIM)\..\BuildLibraries\boost_1_42_0-msvc
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
@@ -78,7 +78,7 @@ ifeq ($(MAJOR_VERSION),)
 endif
 
 ifeq ($(PROJECTTYPE),exe)
-RESOBJ = exeres.obj
+RESOBJ = exeres.res
 
 $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
@@ -86,11 +86,12 @@ $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).exe.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).exe;1"
 
 $(RESOBJ): $(APSIM)/Model/Build/exe.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
+#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 else
 
-RESOBJ = dllres.obj
+RESOBJ = dllres.res
 # Ugh. By default, MS dlls export symbols with _@ adornments, eg function "xyz" appears as "_xyz@n"
 #   what we do here is build the dll once, generate an unadorned .def file, and build it again with
 #   that def file so that the unadorned names are visible.
@@ -104,7 +105,8 @@ $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
+#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 endif
 
