@@ -1,0 +1,966 @@
+<Type version="24" name="lucerne2">
+  <Info>
+    <variables>
+      <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="WaterSupplyDemandRatio" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PlantStatus" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="WaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="AboveGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="BelowGroundDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="TotalDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ReserveDM" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Population" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="ArbitratorDMSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyCurrentPhaseName" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="PhenologyThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="PhenologyShockTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileCumulativeVD" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileCumulativeTT" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyJuvenileVDModelValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="PhenologyVegetativeTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyBuddingTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyHeadingTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="PhenologyMatureTTInPhase" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Height" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafMaxCover" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPrimaryBudNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafFinalNodeNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPotentialGrowth" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSize" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafMaxSize" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafMaxLeafArea" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="LeafBranchNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafTotalNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafGreenNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSLAcheck" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSpecificArea" description="" read="T" write="F" kind="double" array="" units="mm^2/g" />
+      <variable name="LeafCohortNo" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDeadNodeNo" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="LeafFullyExpandedNodeNo" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="LeafDMDemand" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDMSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="LeafWaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
+      <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLAI" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
+      <variable name="LeafLAIDead" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
+      <variable name="Cover_green" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Cover_tot" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="LeafNodeAppearanceRateFunctionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafExpansionStressValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafMaxAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSpecificLeafAreaValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafGrowthDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafLagDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafSenescenceDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafBranchingRateValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StemLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="StemPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootDepth" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="RootLengthDensity" description="" read="T" write="F" kind="double" array="T" units="" />
+      <variable name="RootDMAllocation" description="" read="T" write="T" kind="double" array="" units="" />
+      <variable name="RootWaterSupply" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootWaterUptake" description="" read="T" write="F" kind="double" array="" units="mm" />
+      <variable name="RootKLModifierValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootRootFrontVelocityValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="RootTemperatureEffectValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
+      <variable name="FloretLiveFWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="ReadyForHarvest" description="" read="T" write="F" kind="integer4" array="" units="" />
+      <variable name="FloretLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
+      <variable name="FloretPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StageCodeValue" description="" read="T" write="F" kind="double" array="" units="" />
+    </variables>
+    <events>
+      <event name="NewCrop" description="" />
+      <event name="GrowthStage" description="" />
+      <event name="NewPotentialGrowth" description="" />
+      <event name="New_Canopy" description="" />
+      <event name="WaterChanged" description="" />
+      <event name="Harvesting" description="" />
+    </events>
+  </Info>
+  <Memo>This is a first prototype of lucerne 2 parameterized for Kaituna lucerne in New Zealand by John Hargreaves and Edmar Teixeira (PlantandFoodResearch)
+
+- Focus was to test new empirical functions to allocate biomass to roots and account for its desapearance (respiration+senescence) seasonally so we could use total RUE
+
+- LAI model is not satisfatory, needs to be revisited later for a proper parameterization. At the moment it was parameterizad to fit measurements.</Memo>
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\lucerne.jpg</Image>
+    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation>%apsim%\Documentation\4 Module Reference\Lucerne.htm</Documentation>
+    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll>%apsim%\Model\Plant2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[lucerne2.name]" executable="[dll]">
+        <executable name="[dll]" version="1.0" />
+        <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+        <initdata>
+               [Model]
+               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <Cultivar name="hunter_river">
+      <Construct>Plant</Construct>
+    </Cultivar>
+    <Cultivar name="kaituna">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Plant>
+      <CropType>lucerne</CropType>
+      <Population>
+        <Value type="text" description="Value">4</Value>
+      </Population>
+      <AnnualPlantArbitrator name="Arbitrator">
+        <Constant name="DMSink">
+          <Value>Stem</Value>
+        </Constant>
+        <Constant name="NSink">
+          <Value>Stem</Value>
+        </Constant>
+      </AnnualPlantArbitrator>
+      <StageBasedInterpolation name="StageCode">
+        <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation            Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation   RGFlowering    EndRegrowth</Stages>
+        <Codes type="text" description="Codes">   1               2                  3                  4                         5                            6                   7                    8                       4                       5                            6                        7       </Codes>
+      </StageBasedInterpolation>
+      <Phenology>
+        <PhotoperiodFunction name="Photoperiod">
+          <Twilight type="text" description="Twilight">-6</Twilight>
+        </PhotoperiodFunction>
+        <TemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY>1 0</XY>
+            <XY>5 3</XY>
+            <XY>10 6.5</XY>
+            <XY>15 10</XY>
+            <XY>30 25</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <GerminatingPhase name="Germinating">
+          <Start>Sowing</Start>
+          <End>Germination</End>
+        </GerminatingPhase>
+        <EmergingPhase name="Emerging">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Emergence</End>
+          <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </EmergingPhase>
+        <GenericPhase name="EmergenceToEndJuvenile">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndJuvenile</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">300</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="EndJuvenileToInitiation">
+          <Start type="text" description="Start">EndJuvenile</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <OnEventFunction name="Target">
+            <Event type="text" description="Event">EndJuvenile</Event>
+            <GenericFunction name="TemporaryTarget">
+              <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+              <XYPairs>
+                <XY>10 700</XY>
+                <XY>13 379</XY>
+                <XY>14.5 295</XY>
+                <XY>16.5 243</XY>
+                <XY>24 243</XY>
+              </XYPairs>
+            </GenericFunction>
+          </OnEventFunction>
+        </GenericPhase>
+        <GenericPhase name="InitiationToFlowering">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">Flowering</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">260</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="FloweringToStartPodGrowth">
+          <Start type="text" description="Start">Flowering</Start>
+          <End type="text" description="End">StartPodGrowth</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">100</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="PodFilling">
+          <Start type="text" description="Start">StartPodGrowth</Start>
+          <End type="text" description="End">Maturity</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">9900</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="Ripening">
+          <Start type="text" description="Start">Maturity</Start>
+          <End type="text" description="End">HarvestRipe</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">9400</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <PhaseJumpFunction name="JumpToRegrowth">
+          <Start type="text" description="Start stage name:">Germination</Start>
+          <End type="text" description="End stage name:">EndRegrowth</End>
+          <Event type="text" description="Look for this event:">cut</Event>
+          <PhaseNameToJumpTo type="text" description="Phase name to jump to">RGVeg</PhaseNameToJumpTo>
+        </PhaseJumpFunction>
+        <GenericPhase name="RGVeg">
+          <Start type="text" description="Start stage name">StartRegrowth</Start>
+          <End type="text" description="End stage name">RGFloralInitiation</End>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <OnEventFunction name="Target">
+            <Event type="text" description="Event">StartRegrowth</Event>
+            <GenericFunction name="TemporaryTarget">
+              <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+              <XYPairs>
+                <XY>10 700</XY>
+                <XY>13 379</XY>
+                <XY>14.5 295</XY>
+                <XY>16.5 243</XY>
+                <XY>24 243</XY>
+              </XYPairs>
+            </GenericFunction>
+          </OnEventFunction>
+        </GenericPhase>
+        <GenericPhase name="RGInitiationtoFlowering">
+          <Start type="text" description="Start stage name">RGFloralInitiation</Start>
+          <End type="text" description="End stage name">RGFlowering</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">260</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="RGFloweringtoStartPodGrowth">
+          <Start type="text" description="Start stage name">RGFlowering</Start>
+          <End type="text" description="End stage name">EndRegrowth</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">100</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GotoPhase>
+          <Start type="text" description="Start stage name">EndRegrowth</Start>
+          <End type="text" description="End stage name">Z</End>
+          <PhaseNameToGoto type="text" description="PhaseNameToGoto">PodFilling</PhaseNameToGoto>
+        </GotoPhase>
+        <Memo>Phenology and thermal-time were parameterized for Kaituna in New Zealand
+
+References: 
+
+Moot D. J., Robertson M. J., Pollock K. M. (2001) Validation of the APSIM-Lucerne model for phenological development in a cool-temperate climate. Hobart.
+
+Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth and phenological development patterns differ between seedling and regrowth lucerne crops (Medicago sativa L.). European Journal of Agronomy xxx, xxx.
+
+</Memo>
+      </Phenology>
+      <Leaf>
+        <Frgr type="text" description="Frgr">1</Frgr>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <MaxCover type="text" description="MaxCover">1.0</MaxCover>
+        <KDead type="text" description="KDead">0.5</KDead>
+        <MaxNodeNo type="text" description="MaxNodeNo">150</MaxNodeNo>
+        <InitialAreas type="text" description="InitialAreas">1</InitialAreas>
+        <InitialAges type="text" description="InitialAges">0</InitialAges>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
+        <GenericFunction name="FrostFraction">
+          <XProperty>Leaf.MinT</XProperty>
+          <XYPairs>
+            <XY>-1 0</XY>
+            <XY>0 0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PhaseLookup name="NodeInitiationRate">
+          <PhaseLookupValue name="Juvenile">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">EndJuvenile</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegSeedling">
+            <Start type="text" description="Start">EndJuvenile</Start>
+            <End type="text" description="End">Flowering</End>
+            <OnEventFunction name="Target">
+              <Event type="text" description="Event">EndJuvenile</Event>
+              <GenericFunction name="TemporaryTarget">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </GenericFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepSeedling">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegRegrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">RGFlowering</End>
+            <OnEventFunction name="Target">
+              <Event type="text" description="Event">StartRegrowth</Event>
+              <GenericFunction name="TemporaryTarget">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </GenericFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepRegrowth">
+            <Start type="text" description="Start">RGFlowering</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="NodeAppearanceRate">
+          <PhaseLookupValue name="Juvenile">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">EndJuvenile</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegSeedling">
+            <Start type="text" description="Start">EndJuvenile</Start>
+            <End type="text" description="End">Flowering</End>
+            <OnEventFunction name="Target">
+              <Event type="text" description="Event">EndJuvenile</Event>
+              <GenericFunction name="TemporaryTarget">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </GenericFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepSeedling">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegRegrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">RGFlowering</End>
+            <OnEventFunction name="Target">
+              <Event type="text" description="Event">StartRegrowth</Event>
+              <GenericFunction name="TemporaryTarget">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </GenericFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepRegrowth">
+            <Start type="text" description="Start">RGFlowering</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Rationale for parameterization is:
+
+Long phyllochron 51oC/node occurs at:
+- Juvenile
+- Reproductive stages
+
+Shorter phyllochrons 34 to 51oCd as f = (photoperiod) during vegetative stages
+
+</Memo>
+        </PhaseLookup>
+        <MultiplyFunction name="MaxArea">
+          <Memo>Leaf area expansion
+
+- We were not able to parameterize the cohort model for cultivar Kaituna yet. So an empirical model to account for smaller leaves in spring and slower canopy expansion in autumn was used:
+
+- Fixed leaf size (800 mm2/leaf)
+
+- No branching (unrealistic)
+
+- Senescence as 100 oCd/leaf (
+
+- We adapted the canopy expansion vs. photoperiod from Teixeira E. I., Moot D. J., Pollock K. J., Brown H. E., 2007. European Journal of Agronomy 27, 154-164.
+
+LAI expansion needs attention in the future.</Memo>
+          <GenericFunction name="PpFct">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>10 0</XY>
+              <XY>12.5 1</XY>
+              <XY>24 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <PhaseLookup name="PotMaxArea">
+            <PhaseLookupValue name="Seedling">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">450</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Regrowth">
+              <Start type="text" description="Start">StartRegrowth</Start>
+              <End type="text" description="End">EndRegrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">750</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </MultiplyFunction>
+        <GenericFunction name="SpecificLeafArea">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 3000000</XY>
+            <XY>1 3000000</XY>
+            <XY>3 3000000</XY>
+            <XY>5 3000000</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="GrowthDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>4 100</XY>
+            <XY>5 100</XY>
+          </XYPairs>
+          <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
+        </GenericFunction>
+        <GenericFunction name="LagDuration">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>1 300</XY>
+            <XY>3.5 300</XY>
+            <XY>5 5</XY>
+          </XYPairs>
+          <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
+        </GenericFunction>
+        <GenericFunction name="SenescenceDuration">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>1 100</XY>
+            <XY>3.5 100</XY>
+            <XY>5 10</XY>
+          </XYPairs>
+          <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
+        </GenericFunction>
+        <GenericFunction name="BranchingRate">
+          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>2 0</XY>
+            <XY>5 0</XY>
+          </XYPairs>
+          <Memo>this is causing a crash in the program when set to any value (guess: is it because SLA was artifitialy made very high?)</Memo>
+        </GenericFunction>
+        <GenericFunction name="ExtinctionCoeff">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 0.81</XY>
+            <XY>0.5 0.81</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>2 500</XY>
+            <XYPairs>
+              <XY>0 100</XY>
+              <XY>300 750</XY>
+            </XYPairs>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="ExpansionStress">
+          <XProperty>WaterSupplyDemandRatio</XProperty>
+          <XYPairs>
+            <XY>0.1 0</XY>
+            <XY>1.1 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <RUEModel name="Photosynthesis">
+          <WeightedTemperatureFunction name="FT">
+            <MaximumTemperatureWeighting type="text" description="MaximumTemperatureWeighting">0.5</MaximumTemperatureWeighting>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>0 0</XY>
+              <XY>18 1</XY>
+              <XY>25 1</XY>
+              <XY>40 1</XY>
+            </XYPairs>
+          </WeightedTemperatureFunction>
+          <GenericFunction name="FVPD">
+            <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>10 1</XY>
+              <XY>50 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <PhaseLookup name="RUE">
+            <PhaseLookupValue name="Seedling">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">Flowering</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">1.00</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Regrowth">
+              <Start type="text" description="Start">StartRegrowth</Start>
+              <End type="text" description="End">EndRegrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">1.60</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </RUEModel>
+        <PhaseLookup name="MaximumNConc">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="MinimumNConc">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+            <Constant name="StructuralNConc">
+              <Value type="text" description="Value">0.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="StructuralNConc">
+          <Value type="text" description="Value">0.0</Value>
+        </Constant>
+        <Constant name="InitialNConc">
+          <Value type="text" description="Value">0.01</Value>
+        </Constant>
+        <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </TemperatureFunction>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.5</Value>
+        </Constant>
+        <MultiplyFunction name="PartitionFraction">
+          <GenericFunction name="LeafToShootFraction">
+            <XProperty type="text" description="XProperty">AboveGroundDM</XProperty>
+            <XYPairs>
+              <XY>0 0.7</XY>
+              <XY>50 0.53</XY>
+              <XY>100 0.41</XY>
+              <XY>200 0.34</XY>
+              <XY>1000 0.26</XY>
+            </XYPairs>
+          </GenericFunction>
+          <SubtractFunction name="ShootPartitionFraction">
+            <Constant name="One">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+            <SubtractFunction name="RootPartitionFraction">
+              <GenericFunction name="BaseFraction">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10 0.1</XY>
+                  <XY>16.5 0.44</XY>
+                  <XY>24 0.44</XY>
+                </XYPairs>
+              </GenericFunction>
+              <MultiplyFunction name="CorrectionFactor">
+                <Constant name="ScaleFactor">
+                  <Value type="text" description="Value">0.8</Value>
+                </Constant>
+                <PhotoperiodDeltaFunction>
+                  <Twilight type="text" description="Twilight">-6</Twilight>
+                </PhotoperiodDeltaFunction>
+              </MultiplyFunction>
+            </SubtractFunction>
+          </SubtractFunction>
+          <Memo>Here we assumed:
+
+- DM is partitioned to shoots seasonally as a function of photoperiod: this is an empirical way of decribing negligible partitionig of DM to roots during spring and a seasonal shift to intense partitioning during mid-summer/autumn. (ShootPartitionFraction)
+
+- Biomass once in shoot is partitioned between leaf and stem:  Leaf proportion in shoot declines with increase in shoot size allometrically (LeafToShootFraction)</Memo>
+        </MultiplyFunction>
+        <Constant name="One">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
+      </Leaf>
+      <GenericOrgan name="Stem">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+        <PhaseLookup name="StructuralFraction">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.5</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">StartPodGrowth</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Regrowth">
+            <Start type="text" description="Start">StartPodGrowth</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.5</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="MaximumNConc">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.06</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.02</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <SubtractFunction name="PartitionFraction">
+          <Memo><![CDATA[The remaining of DM partitioned to leaves is allocated to stems (see memo in partitioning to leaves)
+
+Photoperiod is driving biomass allocation to roots, with max/min values in solstices but different values in equinoxes (autumn > spring). Teixeira E. I., Hargreaves J., Brown H., Moot D. J. (2010) Simulating perennial crops with the APSIM plant module – a study with lucerne. Proceedings of the 15th ASA Conference, 15-19 November 2010, Lincoln, New Zealand. Web site www.agronomy.org.au.]]></Memo>
+          <Constant name="One">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <MultiplyFunction name="LeafPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction">
+            <GenericFunction name="LeafToShootFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction">
+              <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction/XYPairs" />
+            </GenericFunction>
+            <SubtractFunction name="ShootPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction">
+              <Constant name="One" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/One" />
+              <SubtractFunction name="PartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction">
+                <GenericFunction name="BaseFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction">
+                  <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction/XYPairs" />
+                </GenericFunction>
+                <MultiplyFunction name="CorrectionFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor">
+                  <Constant name="ScaleFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/ScaleFactor" />
+                  <PhotoperiodDeltaFunction shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/PhotoperiodDeltaFunction" />
+                </MultiplyFunction>
+              </SubtractFunction>
+            </SubtractFunction>
+          </MultiplyFunction>
+          <SubtractFunction name="RootPartitionFraction">
+            <GenericFunction name="BaseFraction">
+              <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+              <XYPairs>
+                <XY>10 0.1</XY>
+                <XY>16.5 0.44</XY>
+                <XY>24 0.44</XY>
+              </XYPairs>
+            </GenericFunction>
+            <MultiplyFunction name="CorrectionFactor">
+              <Constant name="ScaleFactor">
+                <Value type="text" description="Value">0.8</Value>
+              </Constant>
+              <PhotoperiodDeltaFunction>
+                <Twilight type="text" description="Twilight">-6</Twilight>
+              </PhotoperiodDeltaFunction>
+            </MultiplyFunction>
+          </SubtractFunction>
+        </SubtractFunction>
+        <Constant name="StructuralNConc">
+          <Value type="text" description="Value">0.0</Value>
+        </Constant>
+      </GenericOrgan>
+      <Root>
+        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM type="text" description="InitialDM">0.002</InitialDM>
+        <SpecificRootLength type="text" description="SpecificRootLength">60000</SpecificRootLength>
+        <KNO3 type="text" description="KNO3">0.02</KNO3>
+        <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <GenericFunction name="KLModifier">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>3 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <PhaseLookup name="RootFrontVelocity">
+          <PhaseLookupValue name="PreEmergence">
+            <Start>Germination</Start>
+            <End>Emergence</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PostEmergence">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PodFilling">
+            <Start type="text" description="Start">StartPodGrowth</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Regrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">10</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <TemperatureFunction name="TemperatureEffect">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>8 1</XY>
+            <XY>25 1</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <Constant name="MaxDailyNUptake">
+          <Value>6.0</Value>
+        </Constant>
+        <PhaseLookup name="StructuralFraction">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.5</Value>
+            </Constant>
+            <PhaseLookupValue name="Vegetative">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.5</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">StartPodGrowth</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Regrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.5</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="MaximumNConc">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.025</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.025</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <MultiplyFunction name="SenescenceRate">
+          <SubtractFunction name="SeasRespRate">
+            <GenericFunction name="BaseFraction">
+              <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+              <XYPairs>
+                <XY>10 0.002</XY>
+                <XY>13.2 0.006</XY>
+                <XY>16 0.023</XY>
+                <XY>16.7 0.032</XY>
+              </XYPairs>
+            </GenericFunction>
+            <MultiplyFunction name="CorrectionFactor">
+              <Constant name="ScaleFactor">
+                <Value type="text" description="Value">-0.067</Value>
+              </Constant>
+              <PhotoperiodDeltaFunction>
+                <Twilight type="text" description="Twilight">-6</Twilight>
+              </PhotoperiodDeltaFunction>
+            </MultiplyFunction>
+          </SubtractFunction>
+          <ExpressionFunction>
+            <ExpressionProperty type="text" description="Math Expression">1.8^((Root.SoilTemp.Value-20)/10)</ExpressionProperty>
+          </ExpressionFunction>
+          <Memo>- We use a Q10 function to account for root desapearance (assuing that respiration is a considerable fraction of respiration+senescence)
+
+- Additionally we make respiration rate seasonal. As a consequence, more biomass desapears in spring/summer than in autumn (for the same temperature being experienced)</Memo>
+        </MultiplyFunction>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Seedling">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.57</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Regrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <SubtractFunction name="RegPartFrac">
+              <GenericFunction name="BaseFraction">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10 0.06</XY>
+                  <XY>16.5 0.4</XY>
+                  <XY>24 0.4</XY>
+                </XYPairs>
+              </GenericFunction>
+              <MultiplyFunction name="CorrectionFactor">
+                <Constant name="ScaleFactor">
+                  <Value type="text" description="Value">.8</Value>
+                </Constant>
+                <PhotoperiodDeltaFunction>
+                  <Twilight type="text" description="Twilight">-6</Twilight>
+                </PhotoperiodDeltaFunction>
+              </MultiplyFunction>
+            </SubtractFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <SoilTemperatureFunction name="SoilTemp">
+          <Depth type="text" description="Soil depth(mm)">10</Depth>
+          <Memo>We've implemented that to retrieve Soil temperature. Attention on which module is being used. In New Zealand the .NET soil temperature module performs really well, better than the one from soilN.</Memo>
+        </SoilTemperatureFunction>
+      </Root>
+      <GenericOrgan name="Pod">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="NStructuralFraction">
+          <Value>1.0</Value>
+        </Constant>
+        <StageBasedInterpolation name="PartitionFraction">
+          <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
+          <Codes type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Codes>
+        </StageBasedInterpolation>
+        <PhaseLookup name="StructuralFraction">
+          <PhaseLookupValue name="Vegetative">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive">
+            <Start type="text" description="Start">StartPodGrowth</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">1.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Regrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="StructuralNConc">
+          <Value type="text" description="Value">0.0</Value>
+        </Constant>
+      </GenericOrgan>
+      <Summary />
+    </Plant>
+  </Model>
+</Type>
