@@ -10,5 +10,6 @@ if "%LIBPATH%" == "" (
    
 )
 if "%1" == "APSIM" set APSIM=%2
+if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\VersionInfo.bat"
 
 %APSIM%\Model\Build\make %3
