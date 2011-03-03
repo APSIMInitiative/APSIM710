@@ -46,7 +46,7 @@ ifeq ($(MAJOR_VERSION),)
 endif
 
    RESOBJ = dllres.res
-   $(PROJECT).dll: $(OBJS)
+   $(PROJECT).dll: $(OBJS) $(RESOBJ)
 	   $(LF95) $(F90FLAGS) $(LIBS) $(STATICLIBS) $(OBJSNODIR) $(RESOBJ) $(EXPORTS) -exe ..\$(PROJECT).dll
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
