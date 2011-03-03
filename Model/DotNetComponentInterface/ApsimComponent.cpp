@@ -6,6 +6,7 @@
 using namespace System::CodeDom::Compiler;
 using namespace System::Runtime::InteropServices;
 using namespace System::IO;
+using namespace System::Diagnostics;
 using namespace ModelFramework;
 using namespace CSGeneral;
 
@@ -558,10 +559,11 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
 
 	String^ Desc = "<describecomp>\r\n";
 
+	FileVersionInfo^ versionInfo = FileVersionInfo::GetVersionInfo(DLLName);
    Desc += "   <executable>" + DLLName + "</executable>\r\n";
-   Desc += "   <class>" + Name + "</class>\r\n";
-   Desc += "   <version>1.0</version>\r\n";
-   Desc += "   <author>APSRU</author>\r\n";
+   Desc += "   <class>" + versionInfo->ProductName + "</class>\r\n";
+   Desc += "   <version>" + versionInfo->FileVersion + "</version>\r\n";
+   Desc += "   <author>" + versionInfo->CompanyName + "</author>\r\n";
 
    XmlNode^ ModelDescription = nullptr;
    XmlNode^ CultivarNode = XmlHelper::FindByType(InitData, "Cultivar");

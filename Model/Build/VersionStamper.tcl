@@ -35,13 +35,13 @@ if ([regexp -line "\<apsim\>.*\</apsim\>$" $text version]) {
 
   set fp [open VersionInfo.cs w]
   puts $fp "using System.Reflection;"
-  puts $fp "\[assembly: AssemblyVersion(\"$major.$minor.0.0\")\]"
+#  puts $fp "\[assembly: AssemblyVersion(\"3.0.0.0\")\]"
   puts $fp "\[assembly: AssemblyFileVersion(\"$major.$minor.$releaseNumber.0\")\]" 
   close $fp
 
   set fp [open VersionInfo.vb w]
   puts $fp "Imports System.Reflection"
-  puts $fp "<Assembly: AssemblyVersion(\"$major.$minor.0.0\")>"
+#  puts $fp "<Assembly: AssemblyVersion(\"3.0.0.0\")>"
   puts $fp "<Assembly: AssemblyFileVersion(\"$major.$minor.$releaseNumber.0\")>"
   close $fp
 }

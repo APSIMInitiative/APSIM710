@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Diagnostics;
 using CSGeneral;
 using System.IO;
 using System.Collections.Specialized;
@@ -176,6 +177,52 @@ namespace ApsimFile
          get { return SectionName; }
          set { SectionName = value; }
          }
+      private string GetFilePath()
+      {
+          Assembly assem = System.Reflection.Assembly.GetEntryAssembly();
+          if (assem == null)
+              assem = System.Reflection.Assembly.GetCallingAssembly();
+          return assem.Location;
+      }
+
+
+      private DateTime GetBuildTimeStamp()
+      {
+          const int peHeaderOffset = 60;
+          const int linkerTimestampOffset = 8;
+          byte[] buf = new byte[2048];
+          System.IO.Stream s = null;
+          try
+          {
+              s = new System.IO.FileStream(GetFilePath(), System.IO.FileMode.Open, System.IO.FileAccess.Read);
+              s.Read(buf, 0, 2048);
+          }
+          finally
+          {
+              if (s != null)
+                  s.Close();
+          }
+          int i = System.BitConverter.ToInt32(buf, peHeaderOffset);
+          int secondsSince1970 = System.BitConverter.ToInt32(buf, i + linkerTimestampOffset);
+          DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0);
+          dt = dt.AddSeconds(secondsSince1970);
+          dt = dt.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(dt).Hours);
+          return dt;
+      }
+      public string ExeVersion()
+      {
+          FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(GetFilePath());
+          return versionInfo.ProductMajorPart + "." + versionInfo.ProductMinorPart;
+      }
+      public string ExeBuildDate()
+      {
+          return GetBuildTimeStamp().ToString("dd-MMM-yyyy");
+      }
+      public string ExeBuildNumber()
+      {
+          FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(GetFilePath());
+          return "r" + versionInfo.ProductBuildPart.ToString();
+      }
       public string ApsimVersion()
          {
          return XmlHelper.Value(SettingsNode, "version" + XmlHelper.Delimiter + "apsim");
@@ -297,4 +344,4 @@ namespace ApsimFile
          return GoodFileNames;
          }
       }
-   }
+}

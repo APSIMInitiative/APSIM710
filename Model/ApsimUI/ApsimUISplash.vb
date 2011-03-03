@@ -10,9 +10,9 @@ Public NotInheritable Class ApsimUISplash
             OkButton.Visible = False
         End If
 
-        Me.LabelVersion.Text = "Version: " & Configuration.Instance.ApsimVersion
-        Me.LabelBuildDate.Text = "Build date: " & Configuration.Instance.ApsimBuildDate
-        Me.LabelBuildNumber.Text = "Build number: " & Configuration.Instance.ApsimBuildNumber
+        Me.LabelVersion.Text = "Version: " & Configuration.Instance.ExeVersion
+        Me.LabelBuildDate.Text = "Build date: " & Configuration.Instance.ExeBuildDate
+        Me.LabelBuildNumber.Text = "Build number: " & Configuration.Instance.ExeBuildNumber
     End Sub
 
     Private Sub OKButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles OkButton.Click
