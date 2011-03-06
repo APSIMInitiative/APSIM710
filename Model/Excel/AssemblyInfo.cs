@@ -57,6 +57,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
-[assembly: AssemblyFileVersionAttribute("3.0")]
+// [assembly: AssemblyFileVersionAttribute("3.0")]
 [assembly: ComVisibleAttribute(false)]
 [assembly: GuidAttribute("0EDE48F7-7725-4ff7-9ED8-3818D1DE52D0")]
