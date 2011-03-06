@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{29210E34-C94B-459F-A926-8203411B93BD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Controllers, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b233105d74210ec5, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -44,7 +41,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIUtility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApsimRunToolStrip.cs" />
@@ -166,6 +162,24 @@
       <DependentUpon>VerticalProgressBar.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApsimFile\ApsimFile.csproj">
+      <Project>{416A3885-FD38-46D0-BE42-54AA33D146B7}</Project>
+      <Name>ApsimFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Controllers\Controllers.vbproj">
+      <Project>{988E68C0-5735-4849-9447-BEABDEE5BCBA}</Project>
+      <Name>Controllers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIUtility\UIUtility.csproj">
+      <Project>{BD0D614A-2EF9-411B-9884-F1EBD349A0C8}</Project>
+      <Name>UIUtility</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
