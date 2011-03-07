@@ -17,5 +17,6 @@ SRC = ApsimAttributes.cpp \
 PROJECT = DOTNETComponentInterface
 
 PROJECTTYPE = dll
+RESOBJ = dllres.res
 
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make
