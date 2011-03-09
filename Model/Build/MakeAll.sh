@@ -7,6 +7,8 @@ cd $APSIM/Model/Build
 ulimit -s unlimited
 rm -f $APSIM/Model/Build/Build.out
 
+if [ "$1" != "clean" ]; then tclsh VersionStamper.tcl; fi
+
 ./MakeProject.sh CSGeneral $1
 ./MakeProject.sh ApsimFile $1
 ./MakeProject.sh DataTypes $1
@@ -61,7 +63,9 @@ rm -f $APSIM/Model/Build/Build.out
 #./MakeProject.sh Root             $1
 ./MakeProject.sh SiloInput        $1
 ./MakeProject.sh SOI              $1
+#./MakeProject.sh SoilErosion        $1
 ./MakeProject.sh SoilN            $1
+#./MakeProject.sh SoilNitrogen        $1
 ./MakeProject.sh SoilP            $1
 ./MakeProject.sh SoilTemp         $1
 #./MakeProject.sh SoilTemp2        $1
