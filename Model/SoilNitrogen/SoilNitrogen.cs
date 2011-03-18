@@ -1539,6 +1539,8 @@ public class SoilN : Instance
         Array.Resize(ref dlt_fom_c_pool1, nLayers);
         Array.Resize(ref dlt_fom_c_pool2, nLayers);
         Array.Resize(ref dlt_fom_c_pool3, nLayers);
+        Array.Resize(ref dlt_res_no3_min, nLayers);
+        Array.Resize(ref dlt_res_nh4_min, nLayers);
         Array.Resize(ref dlt_no3_dnit, nLayers);
         Array.Resize(ref dlt_nh4_dnit, nLayers);
         Array.Resize(ref n2o_atm, nLayers);
