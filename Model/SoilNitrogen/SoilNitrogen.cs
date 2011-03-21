@@ -336,12 +336,21 @@ public class SoilN : Instance
         set
         {
             double sumOld = SumDoubleArray(_no3);
-            _no3 = value;
-            for (int layer = 0; layer < _no3.Length; ++layer)
+            for (int layer = 0; layer < value.Length; ++layer)
             {
-                if (_no3[layer] < no3_min[layer])
-                    Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
-                            " less than lower limit of " + no3_min[layer]);
+                if (layer >= _no3.Length)
+                {
+                    Console.WriteLine("Attempt to assign nitrate value to non-existent soil layer");
+                    break;
+                }
+                else
+                {
+
+                    _no3[layer] = value[layer];
+                    if (_no3[layer] < no3_min[layer])
+                        Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
+                                " less than lower limit of " + no3_min[layer]);
+                }
             }
             SendExternalMassFlow(SumDoubleArray(_no3) - sumOld);
         }
@@ -367,12 +376,20 @@ public class SoilN : Instance
         set
         {
             double sumOld = SumDoubleArray(_nh4);
-            _nh4 = value;
-            for (int layer = 0; layer < _nh4.Length; ++layer)
+            for (int layer = 0; layer < value.Length; ++layer)
             {
-                if (_nh4[layer] < nh4_min[layer])
-                    Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
-                            " less than lower limit of " + nh4_min[layer]);
+                if (layer >= _nh4.Length)
+                {
+                    Console.WriteLine("Attempt to assign ammonium value to non-existent soil layer");
+                    break;
+                }
+                else
+                {
+                    _nh4[layer] = value[layer];
+                    if (_nh4[layer] < nh4_min[layer])
+                        Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
+                                " less than lower limit of " + nh4_min[layer]);
+                }
             }
             SendExternalMassFlow(SumDoubleArray(_nh4) - sumOld);
         }
@@ -399,7 +416,13 @@ public class SoilN : Instance
         set
         {
             double sumOld = SumDoubleArray(_urea);
-            _urea = value;
+            for (int layer = 0; layer < Math.Min(value.Length, _urea.Length); ++layer)
+                if (layer >= _urea.Length)
+                {
+                    Console.WriteLine("Attempt to assign urea value to non-existent soil layer");
+                }
+                else
+                    _urea[layer] = value[layer];
             SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
         }
     }
