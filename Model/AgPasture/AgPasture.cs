@@ -144,6 +144,7 @@ public class AgPasture : Instance
     [Param]    public double[] ll = null;      //Crop Lower Limit (mm/mm)
     [Param]    public double[] xf = null;      //effects of X-factors on root growth(fraction)
 
+    [Param]    private double[] waterStressFactor;  //[0-1] specifying effects of on plant growth in relation with uptake/demand 
     [Param]    private double[] soilSatFactor;  //soil moisture saturation effects on growth 
                                                 //for SWIM options
     [Param]    public String WaterUptakeSource = "calc";
@@ -155,6 +156,7 @@ public class AgPasture : Instance
     [Input]    private float[] DUL;     //draina upper limit (fioeld capacity);
     [Input]    private float[] no3;     //SNO3dep = new float[dlayer.Length];
     [Input]    private float[] nh4;     //SNH4dep = new float[dlayer.Length];
+    
 
     [Input]    private double day_length = 12;
     [Input]    private double latitude;
@@ -452,6 +454,7 @@ public class AgPasture : Instance
         SP[s].CO2NMin = CO2NMin[s];
         SP[s].CO2NCurvature =CO2NCurvature[s];
 
+        SP[s].waterStressFactor = waterStressFactor[s];
         SP[s].soilSatFactor = soilSatFactor[s];
         
         //init N
@@ -582,6 +585,7 @@ public class AgPasture : Instance
     /// </summary>
     private void SetSpeciesLimitingFactors()
     {
+
         if (p_waterDemand == 0 )
         {
             p_gfwater = 1.0;
@@ -733,7 +737,7 @@ public class AgPasture : Instance
             p_rootMass += SP[s].dmroot;
 
             p_dHerbage += (SP[s].dmtotal - SP[s].pS.dmtotal);
-            //p_Herbage += SP[s].dGrowth - SP[s].dLitter;  
+            //p_dHerbage += SP[s].dGrowth - SP[s].dLitter;  
 
             p_dLitter += SP[s].dLitter;
             p_dNLitter += SP[s].dNLitter;
@@ -1308,7 +1312,17 @@ public class AgPasture : Instance
         for (sLayer = 0; sLayer < dlayer.Length; sLayer++)
         {
             if (spDepth <= p_rootFrontier)
-            {
+            {                 
+                /* an approach for controlling N uptake
+                const float KNO3 = 0.1F;
+                const float KNH4 = 0.1F;
+                double swaf = 1.0;
+                swaf = (sw_dep[sLayer] - ll[sLayer]) / (DUL[sLayer] - ll[sLayer]);
+                swaf = Math.Max(0.0, Math.Min(swaf, 1.0));                                
+                p_soilNavailable += (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * swaf;
+                SNSupply[sLayer] = (no3[sLayer] * KNO3 + nh4[sLayer] * KNH4 ) * (float)swaf;
+                */
+                //original below
                 p_soilNavailable += (no3[sLayer] + nh4[sLayer]);
                 SNSupply[sLayer] = (no3[sLayer] + nh4[sLayer]);
             }
@@ -1659,11 +1673,11 @@ public class AgPasture : Instance
     {      
         get { return p_dGrowthPot; }        
     }
-    /*[Output][Units("kg/ha")]
-    public float dm_daily_growthW   
+   [Output][Units("kg/ha")]
+    public float PlantGrowthNoNLimit   
     {
-        get { return (float)p_dGrowthW; }    
-    }   */
+        get { return (float) p_dGrowthW; }    
+    }   
     [Output][Units("kg/ha")] 
     public float GrossGrowthWt        //dm_daily_growth
     {                                 //including roots & before littering   
@@ -2626,6 +2640,7 @@ public class Species
     //water
     public double swuptake;
     public double swdemandFrac;
+    public double waterStressFactor;
     public double soilSatFactor;
 
     //Nc - N concentration    
@@ -3152,6 +3167,8 @@ public class Species
     //Species -------------------------------------------------------------
     public double DailyGrowthPot()   //GrassGro routine. Not used since Aug 09. FYLi    
     {
+        //*** This process is finally not used, so not updated. Need reexmie it if it is used! FLi Dec 2010)  
+  
         //phebology
         if (isAnnual)
         { 
@@ -3311,12 +3328,11 @@ public class Species
       
         //Add temp effects to Pm
         double Tmean = (MetData.maxt + MetData.mint) / 2;
-        double Tday = Tmean + 0.5 * (MetData.maxt - Tmean); 
-                                            
-        double Pm_mean = Pm * GFTemperature(Tmean); 
-        double Pm_day  = Pm * GFTemperature(Tday);  //Only temperate effect is added here 
-                                                    //[N] will not be considered in potential growth                                                        
-                                                    //[CO2] effects will be added by CO2Effects()                   
+        double Tday = Tmean + 0.5 * (MetData.maxt - Tmean);
+
+        double Pm_mean = Pm * GFTemperature(Tmean) * PCO2Effects() * PmxNeffect();  //Dec10: added CO2 & [N]effects
+        double Pm_day = Pm * GFTemperature(Tday) * PCO2Effects() * PmxNeffect();    //Dec10: added CO2 & [N]effects
+               
         double tau = 3600*dayLength;                //conversion of hour to seconds //  tau := 0.0036 * hours ;            
                                                     //IL_1 := k_light * 1.33333 * 0.5 * light/tau;  // flat bit - goes with Pm_day
                                                     //FYL: k_light*light/tau = Irridance intercepted by 1 LAI on 1 m^2 ground: J/(m^2 ground)/s
@@ -3365,11 +3381,10 @@ public class Species
 
 
         double YgFactor = 1.0;
-        //if (month < 8)
-        //   YgFactor = 0.9;
                                                                         //Ignore [N] effects in potential growth here 
-        Resp_m = maint_coeff * Teffect * (dmgreen + dmroot)*DM2C;       //converting DM to C    (kg/ha)
-       
+        Resp_m = maint_coeff * Teffect * PmxNeffect() * (dmgreen + dmroot) * DM2C;       //converting DM to C    (kg/ha)
+                                        //Dec10: added [N] effects here
+
                                         // ** C budget is not explicitly done here as in EM
         Cremob = 0;                     // Nremob* C2N_protein;    // No carbon budget here  
                                         // Nu_remob[elC] := C2N_protein * Nu_remob[elN];                                   
@@ -3377,7 +3392,7 @@ public class Species
         dGrowthPot = Yg * YgFactor *( Pgross + Cremob - Resp_m );     //Net potential growth (C) of the day (excluding growth respiration)
         dGrowthPot = Math.Max(0.0, dGrowthPot);  
                                                             //double Resp_g = Pgross * (1 - Yg) / Yg;  
-        dGrowthPot *= PCO2Effects();                        //multiply the CO2 effects
+        //dGrowthPot *= PCO2Effects();                      //multiply the CO2 effects. Dec10: This ihas been now incoporated in Pm/leaf area above
 
         //convert C to DM  
         dGrowthPot *= C2DM;
@@ -3385,7 +3400,7 @@ public class Species
         // phenologically related reduction of annual species (from IJ)
         if (isAnnual)
             dGrowthPot = annualSpeciesReduction();
-                                      
+     
         return dGrowthPot;  
 
     }
@@ -3510,7 +3525,7 @@ public class Species
         NdemandOpt = (toRoot * Ncroot + toStol * Ncstol1
                   + toLeaf * Ncleaf1 + toStem * Ncstem1);
         NdemandOpt *= NCO2Effects();    //reduce the demand under elevated [co2], 
-                                        //this will reduce teh N stress under N limitation
+                                        //this will reduce the N stress under N limitation for the same soilN
 
         //N demand for new growth assuming luxury uptake to max [N]
         Ndemand = (toRoot * NcrootMax + toStol * NcstolMax
@@ -3554,10 +3569,9 @@ public class Species
     {
         Ncfactor = PmxNeffect();
         
-        //Ncfactor affact both Pgross and Resp_m, so put it here.
-        //instead of separately on those two processes
-        dGrowthW = dGrowthPot * Math.Min(gfwater, Ncfactor);
-
+        // NcFactor were addeded in Pm and Resp_m, Dec 10
+        //  dGrowthW = dGrowthPot * Math.Min(gfwater, Ncfactor);
+        dGrowthW = dGrowthPot * Math.Pow(gfwater,waterStressFactor);
         return dGrowthW;
     }
 
@@ -3878,7 +3892,7 @@ public class Species
         //Variable maxSR - maximum shoot/root ratio accoding to phenoloty
         double maxSR = maxSRratio;
         // fac: Assuming the new growth paritoning is towards a shoot:root ratio of 'maxSR' during reproductive stage,
-        //      then the partitiing will toeards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage 
+        //      then the partitiing will towards a lower shoot:root ratio of (frac*maxSRratio) during vegetative stage 
 
         double minF = 0.6; 
         double fac = 1.0;   //day-to-day fraction of reduction        
@@ -3915,6 +3929,7 @@ public class Species
         }
         maxSR = 1.25 * fac * maxSRratio;    //maxR is bigger in reproductive stage (i.e., less PHT going to root
                                             //fac = 0.6 ~ 1; i.e., maxSR = 0.8 ~ 1.2 of maxSRratio
+        
         phenoFactor = fac;
         //calculate shoot:root partitioning: fShoot = fraction to shoot [eq.4.12c]
         if (pS.dmroot > 0.00001)                    //pS is the previous state (yesterday)
