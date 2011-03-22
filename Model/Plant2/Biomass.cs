@@ -8,6 +8,7 @@ public class Biomass : Instance
    private double _NonStructuralWt = 0;
    private double _StructuralN = 0;
    private double _NonStructuralN = 0;
+   private double _PotentialDMAllocation = 0;
 
    [Output] [Units("g/m^2")] public double NonStructuralN
       {
@@ -39,6 +40,14 @@ public class Biomass : Instance
          _StructuralWt = value;
          }
       }
+   [Output] [Units("g/m^2")] public double PotentialDMAllocation
+      {
+          get { return _PotentialDMAllocation; }
+      set
+         {
+             _PotentialDMAllocation = value;
+         }
+      } //FIXME  This was only added because it was the only way I could get potential DM allocation values into a root layer array.  need to pull back to the root module
 
    [Output][Units("g/m^2")] public double Wt
    {
@@ -47,15 +56,14 @@ public class Biomass : Instance
            return StructuralWt + NonStructuralWt;
        }
    }
-
-    [Output][Units("g/m^2")] public double N
+   [Output][Units("g/m^2")] public double N
       {
       get
          {
          return StructuralN + NonStructuralN;
          }
       }
-    [Output] [Units("g/m^2")] public double NConc
+   [Output] [Units("g/m^2")] public double NConc
        {
        get
           {
@@ -67,6 +75,9 @@ public class Biomass : Instance
              return 0.0;
           }
        }
+
+
+
 
    public void Clear()
       {

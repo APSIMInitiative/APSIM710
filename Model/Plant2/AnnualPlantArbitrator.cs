@@ -44,7 +44,7 @@ public class AnnualPlantArbitrator : Arbitrator
          return TotalNDemand;
          }
       }
-   public override double LeafNReallocationSupply { get { return 0; } }
+   public override double NReallocationSupply { get { return 0; } }
 
     public override void DoDM(NamedList<Organ> Organs)
       {

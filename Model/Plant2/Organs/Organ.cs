@@ -24,6 +24,7 @@ abstract public class Organ : Instance
    abstract public double DMDemand{ get; }
    abstract public double DMSupply { get; }
    abstract public double DMRetranslocationSupply { get;}
+   abstract public double DMPotentialAllocation { set; }
    abstract public double DMAllocation {set; }
    abstract public double DMRetranslocation { set;}
 
@@ -40,11 +41,13 @@ abstract public class Organ : Instance
    virtual public void DoWaterUptake(double Demand) { }
    virtual public void DoPotentialGrowth() { }
    virtual public void DoActualGrowth() { }
+   virtual public void DoStartSet() { }
 
    abstract public double MaxNconc { get; }
    abstract public double MinNconc { get; }
    abstract public double StrucNconc { get; }
-   abstract public double StrucDMfrac { get; }
-   //abstract public double NReallocationSupply { get; }
+   //abstract public double StrucDMfrac { get; }
+   abstract public double NReallocationSupply { get; }
+   abstract public double NReallocation { set; }
    }
    

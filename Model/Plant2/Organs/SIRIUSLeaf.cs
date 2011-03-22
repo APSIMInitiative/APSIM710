@@ -4,424 +4,34 @@ using System.Text;
 using CSGeneral;
 
 public class SIRIUSLeaf : Leaf, AboveGround
-   {
-   #region Class Data Members
-   [Input]
-   private int Day = 0;
-   [Input]
-   private int Year = 0;
+{
+ #region Class Data Members
    private double _WaterAllocation;
    private double PEP = 0;
    private double EP = 0;
    private List<SIRIUSLeafCohort> Leaves = new List<SIRIUSLeafCohort>();
-   [Input]
-   private double Radn = 0;
-   [Input]
-   private double MinT = 0;  //HEB  VS gives a warning that this is not used but it is so don't delete
    private double _FinalNodeNo = 0;
-   [Output]
-   public double NodeNo = 0;
-   [Output("Height")]
-   private double Height = 0;
-   [Event]
-   public event NewPotentialGrowthDelegate NewPotentialGrowth;
-   [Event]
-   public event NewCanopyDelegate New_Canopy;
-   [Param("Frgr")]
-   private double _Frgr;              // Relative Growth Rate Factor
-   [Param]
-   [Output]
-   public double MaxCover;
-   [Param]
-   [Output]
-   public double PrimaryBudNo = 1;
-   [Param]
-   private double KDead = 0;                  // Extinction Coefficient (Dead)
-   [Param]
-   private double MaxNodeNo = 0;              // Maximum Final Leaf Number 
-   [Param]
-   string InitialiseStage = "";
-   [Param]
-   double[] InitialAreas = null;                   // Initial number of leaf nodes
-   [Param]
-   double[] InitialAges = null;                   // Initial number of leaf nodes
-   [Param]
-   double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
-   [Param]
-   double FinalNodeNoEstimate = 0;
-   #endregion
-   [Output]
-   public double FinalNodeNo
-      {
-      get
-         {
-         return Math.Max(_FinalNodeNo, FinalNodeNoEstimate); 
-         }
-      }
-   [Output]
-   public double RemainingNodeNo
-      {
-      get
-         {
-         return _FinalNodeNo - NodeNo;
-         }
-      }
-   [Output]
-   double PotentialGrowth
-      {
-      get
-         {
-         return DMDemand;
-         }
-      }
-   [Output]
-   double[] Size
-      {
-      get
-         {
-         int i = 0;
-
-         double[] values = new double[(int)MaxNodeNo];
-         for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-            values[i] = 0;
-         i = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            values[i] = L.Size;
-            i++;
-            }
-
-         return values;
-         }
-      }
-   [Output]
-   double[] Age
-      {
-      get
-         {
-         int i = 0;
-
-         double[] values = new double[(int)MaxNodeNo];
-         for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-            values[i] = 0;
-         i = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            values[i] = L.NodeAge;
-            i++;
-            }
-
-         return values;
-         }
-      }
-   [Output]
-   double[] MaxSize
-      {
-      get
-         {
-         int i = 0;
-
-         double[] values = new double[(int)MaxNodeNo];
-         for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-            values[i] = 0;
-         i = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            values[i] = L.MaxSize;
-            i++;
-            }
-
-         return values;
-         }
-      }
-   [Output]
-   double[] MaxLeafArea
-      {
-      get
-         {
-         int i = 0;
-
-         double[] values = new double[(int)MaxNodeNo];
-         for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-            values[i] = 0;
-         i = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            values[i] = L.MaxArea;
-            i++;
-            }
-
-         return values;
-         }
-      }
-   [Output]
-   double[] PotentialSize
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               values[i] = L.PotentialSize;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveStructuralN
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               values[i] = L.Live.StructuralN;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveNonStructuralN
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               values[i] = L.Live.NonStructuralN;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveStructuralWt
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               values[i] = L.Live.StructuralWt;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveNonStructuralWt
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               values[i] = L.Live.NonStructuralWt;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveNonStructuralNconc
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               if (L.Live.NonStructuralN <= 0 || L.Live.NonStructuralWt <= 0)
-                   values[i] = 0;
-               else
-                   values[i] = L.Live.NonStructuralN / L.Live.NonStructuralWt;
-               
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveStructuralNconc
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               if (L.Live.StructuralN <= 0 || L.Live.StructuralWt <= 0)
-                   values[i] = 0;
-               else
-               values[i] = L.Live.StructuralN / L.Live.StructuralWt;
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output]
-   double[] LiveNconc
-   {
-       get
-       {
-           int i = 0;
-
-           double[] values = new double[(int)MaxNodeNo];
-           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-               values[i] = 0;
-           i = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-           {
-               if (L.Live.StructuralN <= 0 || L.Live.StructuralWt <= 0)
-                   values[i] = 0;
-               else
-               values[i] = (L.Live.StructuralN + L.Live.NonStructuralN) / (L.Live.StructuralWt + L.Live.NonStructuralWt);
-               i++;
-           }
-
-           return values;
-       }
-   }
-   [Output] [Units("/m2")]
-   private double BranchNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            n = Math.Max(n, L.Population);
-            }
-         return n;
-         }
-      }
-   [Output] [Units("/plant")]
-   private double TotalNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            n += L.Population;
-            }
-         Population Population = Plant.Children["Population"] as Population;
-
-         return n / Population.Value;
-         }
-      }
-   [Output]
-   [Units("/plant")]
-   private double GreenNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            if (!L.Finished)
-               n += L.Population;
-            }
-         Population Population = Plant.Children["Population"] as Population;
-         return n / Population.Value;
-         }
-      }
-   [Output]
-   private double ExpandingNodeNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            if (L.IsGrowing)
-               n += 1;
-            }
-         return n;
-         }
-      }
-   [Output]
-   [Units("/plant")]
-   private double GreenNodeNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            if (L.IsGreen)
-               n += 1;
-            }
-         return n;
-         }
-      }   
-   [Output]
-   private double SenescingNodeNo
-      {
-      get
-         {
-         double n = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            {
-            if (L.IsSenescing)
-               n += 1;
-            }
-         return n;
-         }
-      }
-   [Output]
-   private double SLAcheck
-      {
-      get
-         {
-         if (Live.Wt > 0)
-            return LAI / Live.Wt * 10000;
-         else
-            return 0;
-         }
-      }
+   //private double PotentialDMAllocation = 0;
+   [Input]   private int Day = 0;
+   [Input]   private int Year = 0;
+   [Input]   private double Radn = 0;
+   [Input]   private double MinT = 0;  //HEB  VS gives a warning that this is not used but it is so don't delete
+   [Event]   public event NewPotentialGrowthDelegate NewPotentialGrowth;
+   [Event]   public event NewCanopyDelegate New_Canopy;
+   [Param("Frgr")]    private double _Frgr;              // Relative Growth Rate Factor
+   [Param]   private double KDead = 0;                  // Extinction Coefficient (Dead)
+   [Param]   private double MaxNodeNo = 0;              // Maximum Final Leaf Number 
+   [Param]   string InitialiseStage = "";
+   [Param]   double[] InitialAreas = null;                   // Initial number of leaf nodes
+   [Param]   double[] InitialAges = null;                   // Initial number of leaf nodes
+   [Param]   double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
+   [Param]   double FinalNodeNoEstimate = 0;
+   [Output]   public double NodeNo = 0;
+   [Output("Height")]   private double Height = 0;
+   [Param]   [Output]   public double MaxCover;
+   [Param]   [Output]   public double PrimaryBudNo = 1;   
+ #endregion
+   
    public override Biomass Live
       {
       get
@@ -453,18 +63,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
          return total;
          }
       }
-   [Output]
-   [Units("mm^2/g")]
-   private double SpecificArea
-      {
-      get
-         {
-         if (Live.Wt > 0)
-            return LAI / Live.Wt * 1000000;
-         else
-            return 0;
-         }
-      }
+
+ #region  Leaf functions
    private RUEModel Photosynthesis
       {
       get
@@ -497,44 +97,32 @@ public class SIRIUSLeaf : Leaf, AboveGround
       EP = 0;
       Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
       Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
-
       if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
          _FinalNodeNo = InitialLeafPrimordia;
-
-      //if ((Leaves.Count == 0) && (NodeAppearanceRate.Value>0 ))
-      if (Plant.Phenology.OnDayOf(InitialiseStage))
+      if (Plant.Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
          {
-         // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-
-         InitialiseCohorts();
-
+             InitialiseCohorts();
          }
-
       if (NodeInitiationRate.Value > 0)
          _FinalNodeNo = _FinalNodeNo + ThermalTime.Value / NodeInitiationRate.Value;
       _FinalNodeNo = Math.Min(_FinalNodeNo, MaxNodeNo);
-
       if (NodeAppearanceRate.Value > 0)
          NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
       NodeNo = Math.Min(NodeNo, _FinalNodeNo);
-
+      
       Function FrostFraction = Children["FrostFraction"] as Function;
       foreach (SIRIUSLeafCohort L in Leaves)
          L.DoFrost(FrostFraction.Value);
-
+      
       if (NodeNo > Leaves.Count + 1)
          {
          double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
-         //Function MaxArea = (Function)Children["MaxArea"];
-         //Function MaxArea = Children["MaxArea"] as Function;
-
          Function BranchingRate = (Function)Children["BranchingRate"];
          Population Population = Plant.Children["Population"] as Population;
          double BranchNo = Population.Value * PrimaryBudNo;
          if (Leaves.Count > 0)
             BranchNo = Leaves[Leaves.Count - 1].Population;
          BranchNo += BranchingRate.Value * Population.Value * PrimaryBudNo;
-
          Leaves.Add(new SIRIUSLeafCohort(BranchNo,
                                 CohortAge,
                                 Math.Truncate(NodeNo + 1),
@@ -543,21 +131,18 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                 Children["LagDuration"] as Function,
                                 Children["SenescenceDuration"] as Function,
                                 Children["SpecificLeafArea"] as Function,
-                                0.0, Children["MaximumNConc"] as Function,
-                                   Children["MinimumNConc"] as Function,
-                                Children["StructuralNConc"] as Function,
+                                0.0, 
+                                Children["MaximumNConc"] as Function,
+                                Children["MinimumNConc"] as Function,
                                 Children["InitialNConc"] as Function,  
-                                Children["StructuralFraction"] as Function));
+                                Children["StructuralFraction"] as Function,
+                                Children["NReallocationFactor"] as Function,
+                                Children["NRetranslocationRate"] as Function));
          }
       foreach (SIRIUSLeafCohort L in Leaves)
          {
          L.DoPotentialGrowth(ThermalTime.Value);
          }
-      
-       //foreach (SIRIUSLeafCohort L in Leaves)
-       //  {
-       //  L.DoSenescedFraction(ThermalTime.Value);
-       //  }
       }
    private void InitialiseCohorts()
       {
@@ -577,15 +162,22 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                 InitialAreas[i],
                                 Children["MaximumNConc"] as Function,
                                 Children["MinimumNConc"] as Function,
-                                Children["StructuralNConc"] as Function,
                                 Children["InitialNConc"] as Function,
-                                Children["StructuralFraction"] as Function));
-
+                                Children["StructuralFraction"] as Function,
+                                Children["NReallocationFactor"] as Function,
+                                Children["NRetranslocationRate"] as Function));
          }
       // Add fraction of top leaf expanded to node number.
       NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
 
       }
+   public override void DoStartSet()
+   {
+       foreach (SIRIUSLeafCohort L in Leaves)
+       {
+           L.DoStartSet(ThermalTime.Value);
+       }
+   }
    public override void DoActualGrowth()
       {
       base.DoActualGrowth();
@@ -613,130 +205,343 @@ public class SIRIUSLeaf : Leaf, AboveGround
       Leaves.Clear();
       Console.WriteLine("Removing Leaves from plant");
       }
-   [EventHandler]
-   private void OnPrune(ManagerEventType Prune)
-      {
-      foreach (ManagerEventKeyType key in Prune.Key)
-         {
-         if (key.Name == "budno")
-            {
-            double[] Values = CSGeneral.MathUtility.StringsToDoubles(key.Values);
-            PrimaryBudNo = Values[0];
-            }
-         }
-      ZeroLeaves();
-      }
-   [Output]
-   public double CohortNo
-      {
-      get { return Leaves.Count; }
-      }
-   [Output]
-   public int DeadNodeNo
-      {
-      get
-         {
-         int DNN = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            if (L.IsDead)
-               DNN++;
+   private void PublishNewPotentialGrowth()
+   {
+       // Send out a NewPotentialGrowthEvent.
+       if (NewPotentialGrowth != null)
+       {
+           NewPotentialGrowthType GrowthType = new NewPotentialGrowthType();
+           GrowthType.sender = Plant.Name;
+           GrowthType.frgr = (float)Math.Min(Math.Min(Frgr, Photosynthesis.Fvpd), Photosynthesis.Ft);
+           NewPotentialGrowth.Invoke(GrowthType);
+       }
+   }
+   private void PublishNewCanopyEvent()
+   {
+       if (New_Canopy != null)
+       {
+           NewCanopyType Canopy = new NewCanopyType();
+           Canopy.sender = Plant.Name;
+           Canopy.lai = (float)LAI;
+           Canopy.lai_tot = (float)(LAI + LAIDead);
+           Canopy.height = (float)Height;
+           Canopy.depth = (float)Height;
+           Canopy.cover = (float)CoverGreen;
+           Canopy.cover_tot = (float)CoverTot;
+           New_Canopy.Invoke(Canopy);
+       }
+   }
+ #endregion
 
-         return DNN;
-         }
-      }
-   [Output]
-   public int FullyExpandedNodeNo
+ #region Arbitrator method calls
+   // Method calls communicated with Arbitrator
+   [Output]   [Units("g/m^2")]   public override double DMDemand
       {
       get
          {
-         int FXNN = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            if (L.IsFullyExpanded)
-               FXNN++;
-         return FXNN;
-         }
-      }
-   [Output]
-   public override double DMDemand
-      {
-      get
-         {
-
-         double Demand = 0;
-
-         // No longer model DM demand using individual leaf demands
-         //foreach (SIRIUSLeafCohort L in Leaves)
-         //   Demand = Demand + L.DMDemand(ThermalTime.Value);
-
-         Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-         Function PartitionFraction = Children["PartitionFraction"] as Function;
-         Demand = A.DMSupply * PartitionFraction.Value;
-
-
-         // Limit Demand to a max proportion of DMSupply
-         //Function PFmax = Children["PartitionFractionMax"] as Function;
-         //Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-         //Demand = Math.Min(Demand, A.TotalDMSupply * PFmax.Value);
-
-         // Discount this demand according to water stress impacts on canopy expansion
-         Function Stress = Children["ExpansionStress"] as Function;
-         Demand = Demand * Stress.Value;
-
-         return Demand;
-         }
-      }
-   [Output]
-   public override double DMSupply
-      {
-      get
-         {
-         //double Fw;
-         //if (PEP > 0)
-         //   Fw = EP / PEP;
-         //else
-         //   Fw = 0;
-             return Photosynthesis.Growth(Radn * CoverGreen);//, Math.Min(Fw, Fn));
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public override double DMAllocation
-      {  
-      set
-         {
-         if (DMDemand == 0)
-            if (value == 0) { }//All OK
-            else
-               throw new Exception("Invalid allocation of DM");
-         else
-            {
-            double Demand = 0;
+            double Demand = 0.0;   
             foreach (SIRIUSLeafCohort L in Leaves)
-               Demand += L.DMDemand(ThermalTime.Value);
-
-            if (Demand > 0)
-               {
-               double fraction = value / Demand;
-               if (fraction > 1)
-               { }
-
-               //Console.WriteLine(fraction.ToString());
+                 {
+                     Demand += L.DMDemand;
+                 }
+            return Demand;
+         }
+      }
+   [Output]   [Units("g/m^2")]   public override double DMSupply
+      {
+      get
+         {
+            return Photosynthesis.Growth(Radn * CoverGreen);
+         }
+      }
+   public override double DMPotentialAllocation
+   {
+       set
+       {
+               if (DMDemand == 0)
+               if (value < 0.000000000001) { }//All OK
+               else
+                   throw new Exception("Invalid allocation of potential DM in" + Name);
+           
+           if (value == 0.0)
+              { }// do nothing
+           else 
+           {
+               double DMPotentialsupply = value;
+               double DMPotentialallocated = 0;
+               double TotalPotentialDemand = 0;
 
                foreach (SIRIUSLeafCohort L in Leaves)
-                  {
-                  L.DMAllocation = L.DMDemand(ThermalTime.Value) * fraction;
-                  }
+               {
+                   TotalPotentialDemand += L.DMDemand;
                }
-            }
+               // first make sure each cohort gets the DM required for Maximum SLA
+               double fraction = (value)/TotalPotentialDemand;//
+               foreach (SIRIUSLeafCohort L in Leaves)
+                   {
+                       double CohortPotentialDemand = 0;
+                       CohortPotentialDemand = L.DMDemand;
+                       double PotentialAllocation = Math.Min(CohortPotentialDemand * fraction, DMPotentialsupply);
+                       L.DMPotentialAllocation = PotentialAllocation;
+                       DMPotentialallocated += PotentialAllocation;
+                       DMPotentialsupply -= PotentialAllocation;
+                   }
+                  if (DMPotentialsupply > 0.0000000001)
+                      throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
+                  if ((DMPotentialallocated - value) > 0.000000001)
+                      throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
+                  
+                 // Not currently allowing leaves to change thickness  
+             }
+       }
+   }     
+   [Output]   [Units("g/m^2")]   public override double DMAllocation
+      {
+       set
+       {
+           if (DMDemand == 0)
+               if (value < 0.000000000001) { }//All OK
+               else
+                   throw new Exception("Invalid allocation of DM in Leaf");
+           
+           if (value == 0.0)
+              { }// do nothing
+           else 
+           {
+               double DMsupply = value;
+               double DMallocated = 0;
+               double TotalDemand = 0;
 
-         }
-      }
-   [Output]
-   [Units("mm")]
-   public override double WaterDemand { get { return PEP; } }
-   [Output]
-   [Units("mm")]
-   public double Transpiration { get { return EP; } }
+               foreach (SIRIUSLeafCohort L in Leaves)
+               {
+                   TotalDemand += L.DMDemand;
+               }
+               // first make sure each cohort gets the DM required for Maximum SLA
+               double fraction = (value)/TotalDemand;//
+               foreach (SIRIUSLeafCohort L in Leaves)
+                   {
+                       double CohortDemand = 0;
+                       CohortDemand = L.DMDemand;
+                       double allocation = Math.Min(CohortDemand * fraction, DMsupply);
+                       L.DMAllocation = allocation;
+                       DMallocated += allocation;
+                       DMsupply -= allocation;
+                   }
+                  if (DMsupply > 0.0000000001)
+                      throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
+                  if ((DMallocated - value) > 0.000000001)
+                      throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
+                  
+                 // Not currently allowing leaves to change thickness  
+             }
+       }
+   }
+   [Output]   [Units("g/m^2")]   public override double NDemand
+   {
+       get
+       {
+           double Demand = 0.0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               //if (L.IsNotSenescing)
+               {
+                   Demand += L.NDemand;
+               }
+           return Demand;
+       }
+   }
+   [Output]   [Units("g/m^2")]   public override double NAllocation
+   {
+       set
+       {
+           if (NDemand == 0)
+               if (value == 0) { }//All OK
+               else
+                   throw new Exception("Invalid allocation of N");
+           
+           if (value == 0.0)
+              { }// do nothing
+           else 
+           {
+               //setup allocation variables
+               double NSupply = value;
+               double[] MinNAllocated = new double[Leaves.Count];
+               double[] LabileNAllocated = new double[Leaves.Count];
+               double[] MinNdemand = new double[Leaves.Count];
+               double[] LabileNdemand = new double[Leaves.Count];
+               double NAllocated = 0;
+               double MinDemand = 0;
+               double LabileDemand = 0;
+
+               for (int i = 0; i < Leaves.Count; i++)
+               {
+                   LabileNAllocated[i] = 0;
+                   MinNAllocated[i] = 0;
+                   MinNdemand[i] = Leaves[i].DeltaWt * MinNconc;
+                   LabileNdemand[i] = Leaves[i].NDemand - MinNdemand[i];
+                   MinDemand += Leaves[i].NDemand - MinNdemand[i];
+                   LabileDemand += Leaves[i].NDemand - MinNdemand[i];
+               }
+               // first make sure each cohort gets the minimun N requirement for growth (includes MinNconc for structural growth and MinNconc for nonstructural growth)
+               for (int i = 0; i < Leaves.Count; i++)
+               {
+                   double allocation = 0;
+                   allocation = Math.Min(MinNdemand[i], NSupply);
+                   MinNAllocated[i] = allocation;
+                   NSupply -= allocation;
+                   NAllocated += allocation;
+               }
+             //  if (NAllocated < MinDemand)
+             //      throw new Exception("Not all leaf cohorts have recieved their minimum N requirement following Minimum N allocation processing");
+               
+               // then allocate additional N relative to leaves labile demands
+               if (NSupply > 0)
+               {
+                   double fraction = (value - NAllocated) / LabileDemand;// (Demand - MinNallocated);
+                   for (int i = 0; i < Leaves.Count; i++)
+                   {
+                       if (Leaves[i].IsNotSenescing)
+                       {
+                       double allocation = 0;
+                       allocation = Math.Min(Math.Max(0.0, LabileNdemand[i] * fraction), NSupply);
+                       LabileNAllocated[i] += allocation;
+                       NSupply -= allocation;//Math.Max(NnotAllocated - FurtherAllocation, 0.0);
+                       NAllocated += allocation;
+                       }
+                   }
+               }
+               if (NSupply > 0.0000000001)
+                   throw new Exception("N allocated to Leaf left over after allocation to leaf cohorts");
+               if ((NAllocated - value) > 0.000000001)
+                   throw new Exception("the sum of N allocation to leaf cohorts is more that that allocated to leaf organ");
+               
+               //send N allocations to each cohort
+               for (int i = 0; i < Leaves.Count; i++)
+               {
+                   Leaves[i].NAllocation = (LabileNAllocated[i] + MinNAllocated[i]);
+               }
+           }
+       }
+   }
+   public override double DMRetranslocationSupply
+   {
+       get
+       {
+           double Supply = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               Supply += L.LeafStartDMRetranslocationSupply;
+           return Supply;
+       }
+   }
+   public override double DMRetranslocation
+   {
+       set
+       {
+           double DMSupply = DMRetranslocationSupply;
+           if (value > DMSupply)
+               throw new Exception(Name + " cannot supply that amount for DM retranslocation");
+           if (value > 0)
+           {
+               double remainder = value;
+               foreach (SIRIUSLeafCohort L in Leaves)
+               {
+                   double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
+                   L.DMRetranslocation = Supply;
+                   remainder = remainder - Supply;
+               }
+               if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                   throw new Exception(Name + " DM Retranslocation demand left over after processing.");
+           }
+       }
+   }
+   public override double NRetranslocationSupply
+   {
+       get
+       {
+           double Supply = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               Supply += Math.Max(0,L.LeafStartNRetranslocationSupply);
+           return Supply;
+       }
+   }
+   public override double NRetranslocation
+   {
+       set
+       {
+           //double Retrans = 0;
+           double NSupply = NRetranslocationSupply;
+           if (value - NSupply > 0.000000001)
+               throw new Exception(Name + " cannot supply that amount for N retranslocation");
+           if (value < -0.000000001)
+               throw new Exception(Name + " recieved -ve N retranslocation");
+           if (value > 0)
+           {
+               double remainder = value;
+               foreach (SIRIUSLeafCohort L in Leaves)
+               {
+                   double Supply = Math.Min(remainder, L.LeafStartNRetranslocationSupply);
+                   L.NRetranslocation = Supply;
+                   remainder = Math.Max(0.0, remainder - Supply);
+               }
+               if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                   throw new Exception(Name + " N Retranslocation demand left over after processing.");
+           }
+       }
+   }
+   public override double NReallocationSupply
+   {
+       get
+       {
+           double Supply = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               Supply += L.LeafStartNReallocationSupply;
+           return Supply;
+       }
+   }
+   public override double NReallocation
+   {
+       set
+       {
+           double NSupply = NReallocationSupply;
+           if (value - NSupply > 0.000000001)
+               throw new Exception(Name + " cannot supply that amount for N Reallocation");
+           if (value < -0.000000001)
+               throw new Exception(Name + " recieved -ve N reallocation");
+           if (value > 0)
+           {
+               double remainder = value;
+               foreach (SIRIUSLeafCohort L in Leaves)
+               {
+                   double Supply = Math.Min(remainder, L.LeafStartNReallocationSupply);
+                   L.NReallocation = Supply;
+                   remainder = Math.Max(0.0, remainder - Supply);
+               }
+               if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                   throw new Exception(Name + " N Reallocation demand left over after processing.");
+           }
+       }
+   } 
+   public override double MaxNconc
+   {
+       get
+       {
+           Function MaximumNConc = Children["MaximumNConc"] as Function;
+           return MaximumNConc.Value;
+       }
+   }
+   public override double MinNconc
+   {
+       get
+       {
+           Function MinimumNConc = Children["MinimumNConc"] as Function;
+           return MinimumNConc.Value;
+       }
+   }
+ #endregion
+
+ #region Water method calls
+   // Method calls communicated with water balance
+   [Output]   [Units("mm")]   public override double WaterDemand { get { return PEP; } }
+   [Output]   [Units("mm")]   public double Transpiration { get { return EP; } }
    public override double WaterAllocation
       {
       get { return _WaterAllocation; }
@@ -746,8 +551,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
          EP = value;
          }
       }
-   [Output]
-   public double Frgr
+   [Output]   public double Frgr
       {
       get { return _Frgr; }
       set
@@ -756,80 +560,10 @@ public class SIRIUSLeaf : Leaf, AboveGround
          PublishNewCanopyEvent();
          }
       }
-   [Output]
-   public double Fw
-      {
-      get
-         {
-         double F = 0;
-         if (PEP > 0)
-            F = EP / PEP;
-         else
-            F = 1;
-         return F;
-         }
-      }
-   [Output]
-   public double Fn
-      {
-      get
-         {
-         double F = 1;
-         Function MaximumNConc = (Function)Children["MaximumNConc"];
-         Function MinimumNConc = (Function)Children["MinimumNConc"];
-         if (MaximumNConc.Value == 0)
-            F = 1;
-         else
-            {
-            F = (Live.NConc - MinimumNConc.Value) / (MaximumNConc.Value - MinimumNConc.Value);
-            F = Math.Max(0.0, Math.Min(F, 1.0));
-            } 
-             return F;
-         }
-      }
-   [Output]
-   [Units("m^2/m^2")]
-   public double LAI
-      {
-      get
-         {
-         double value = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            value = value + L.LiveArea / 1000000;
-         return value;
-         }
-      }
-   [Output]
-   [Units("m^2/m^2")]
-   public double LAIDead
-      {
-      get
-         {
-         double value = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            value = value + L.DeadArea / 1000000;
-         return value;
-         }
-      }
-   [Output("Cover_green")]
-   public double CoverGreen
-      {
-      get
-         {
-         Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
-         return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
-         }
-      }
-   [Output("Cover_tot")]
-   public double CoverTot
-      {
-      get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
-      }
-   [Output("Cover_dead")]
-   public double CoverDead
-      {
-      get { return 1.0 - Math.Exp(-KDead * LAIDead); }
-      }
+ #endregion
+
+ #region Event functions
+   // functions used to trigger leaf events
    [EventHandler]
    public void OnInit2()
       {
@@ -856,368 +590,833 @@ public class SIRIUSLeaf : Leaf, AboveGround
             PEP = CWB.Canopy[i].PotentialEp;
          }
       }
-   private void PublishNewPotentialGrowth()
-      {
-      // Send out a NewPotentialGrowthEvent.
-      if (NewPotentialGrowth != null)
-         {
-         NewPotentialGrowthType GrowthType = new NewPotentialGrowthType();
-         GrowthType.sender = Plant.Name;
-         GrowthType.frgr = (float)Math.Min(Math.Min(Frgr, Photosynthesis.Fvpd), Photosynthesis.Ft);
-         NewPotentialGrowth.Invoke(GrowthType);
-         }
-      }
-   private void PublishNewCanopyEvent()
-      {
-      if (New_Canopy != null)
-         {
-         NewCanopyType Canopy = new NewCanopyType();
-         Canopy.sender = Plant.Name;
-         Canopy.lai = (float)LAI;
-         Canopy.lai_tot = (float)(LAI + LAIDead);
-         Canopy.height = (float)Height;
-         Canopy.depth = (float)Height;
-         Canopy.cover = (float)CoverGreen;
-         Canopy.cover_tot = (float)CoverTot;
-         New_Canopy.Invoke(Canopy);
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveN2
+   [EventHandler]
+   private void OnKillLeaf(KillLeafType KillLeaf)
+   {
+       DateTime Today = new DateTime(Year, 1, 1);
+       Today = Today.AddDays(Day - 1);
+       string Indent = "     ";
+       string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
+       Console.WriteLine("");
+       Console.WriteLine(Title);
+       Console.WriteLine(Indent + new string('-', Title.Length));
+
+       foreach (SIRIUSLeafCohort L in Leaves)
+       {
+           L.DoKill(KillLeaf.KillFraction);
+       }
+
+   }
+   [EventHandler]
+   private void OnCut()
+   {
+       DateTime Today = new DateTime(Year, 1, 1);
+       Today = Today.AddDays(Day - 1);
+       string Indent = "     ";
+       string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
+       Console.WriteLine("");
+       Console.WriteLine(Title);
+       Console.WriteLine(Indent + new string('-', Title.Length));
+
+       NodeNo = 0;
+       _FinalNodeNo = 0;
+       Live.Clear();
+       Dead.Clear();
+       Leaves.Clear();
+       InitialiseCohorts();
+
+   }
+   [EventHandler]
+   private void OnPrune(ManagerEventType Prune)
+   {
+       foreach (ManagerEventKeyType key in Prune.Key)
+       {
+           if (key.Name == "budno")
+           {
+               double[] Values = CSGeneral.MathUtility.StringsToDoubles(key.Values);
+               PrimaryBudNo = Values[0];
+           }
+       }
+       ZeroLeaves();
+   }
+ #endregion
+    
+ #region State variables
+   // State variables for reporting and internal calls 
+   [Output]                       public double FinalNodeNo
+   {
+       get
+       {
+           return Math.Max(_FinalNodeNo, FinalNodeNoEstimate);
+       }
+   }
+   [Output]                       public double RemainingNodeNo
+   {
+       get
+       {
+           return _FinalNodeNo - NodeNo;
+       }
+   }
+   [Output]                              double PotentialGrowth
+   {
+       get
+       {
+           return DMDemand;
+       }
+   }
+   [Output]   [Units("/m2")]     private double BranchNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               n = Math.Max(n, L.Population);
+           }
+           return n;
+       }
+   }
+   [Output]   [Units("/plant")]  private double TotalNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               n += L.Population;
+           }
+           Population Population = Plant.Children["Population"] as Population;
+
+           return n / Population.Value;
+       }
+   }
+   [Output]   [Units("/plant")]  private double GreenNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (!L.Finished)
+                   n += L.Population;
+           }
+           Population Population = Plant.Children["Population"] as Population;
+           return n / Population.Value;
+       }
+   }
+   [Output]   [Units("/plant")]  private double GreenNodeNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.IsGreen)
+                   n += 1;
+           }
+           return n;
+       }
+   }
+   [Output]   [Units("/stem")]   private double SenescingNodeNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.IsSenescing)
+                   n += 1;
+           }
+           return n;
+       }
+   }
+   [Output]   [Units("/stem")]   private double ExpandingNodeNo
+   {
+       get
+       {
+           double n = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.IsGrowing)
+                   n += 1;
+           }
+           return n;
+       }
+   }
+   [Output]   [Units("/stem")]   public double CohortNo
+   {
+       get { return Leaves.Count; }
+   }
+   [Output]   [Units("/stem")]   public double LeafNo
+   {
+       get { return TotalNo / PrimaryBudNo; }
+   }
+   [Output]   [Units("/stem")]   public int DeadNodeNo
+   {
+       get
+       {
+           int DNN = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               if (L.IsDead)
+                   DNN++;
+
+           return DNN;
+       }
+   }
+   [Output]   [Units("/stem")]   public int FullyExpandedNodeNo
+   {
+       get
+       {
+           int FXNN = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               if (L.IsFullyExpanded)
+                   FXNN++;
+           return FXNN;
+       }
+   }
+   [Output]                      private double SLAcheck
+   {
+       get
+       {
+           if (Live.Wt > 0)
+               return LAI / Live.Wt * 10000;
+           else
+               return 0;
+       }
+   }
+   [Output]   [Units("mm^2/g")]  private double SpecificArea
+   {
+       get
+       {
+           if (Live.Wt > 0)
+               return LAI / Live.Wt * 1000000;
+           else
+               return 0;
+       }
+   }
+   [Output]                      public double Fw
+   {
+       get
+       {
+           double F = 0;
+           if (PEP > 0)
+               F = EP / PEP;
+           else
+               F = 1;
+           return F;
+       }
+   }
+   [Output]                      public double Fn
+   {
+       get
+       {
+           double F = 1;
+           Function MaximumNConc = (Function)Children["MaximumNConc"];
+           Function MinimumNConc = (Function)Children["MinimumNConc"];
+           if (MaximumNConc.Value == 0)
+               F = 1;
+           else
+           {
+               F = (Live.NConc - MinimumNConc.Value) / (MaximumNConc.Value - MinimumNConc.Value);
+               F = Math.Max(0.0, Math.Min(F, 1.0));
+           }
+           return F;
+       }
+   }
+   [Output]   [Units("m^2/m^2")] public double LAI
+   {
+       get
+       {
+           double value = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               value = value + L.LiveArea / 1000000;
+           return value;
+       }
+   }
+   [Output]   [Units("m^2/m^2")] public double LAIDead
+   {
+       get
+       {
+           double value = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+               value = value + L.DeadArea / 1000000;
+           return value;
+       }
+   }
+   [Output("Cover_green")]       public double CoverGreen
+   {
+       get
+       {
+           Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
+           return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
+       }
+   }
+   [Output("Cover_tot")]         public double CoverTot
+   {
+       get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
+   }
+   [Output("Cover_dead")]        public double CoverDead
+   {
+       get { return 1.0 - Math.Exp(-KDead * LAIDead); }
+   }
+   [Output]                      double[] CohortSize
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Size;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortAge
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.NodeAge;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortMaxSize
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.MaxSize;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortMaxArea
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.MaxArea;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortPotSize
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.PotentialSize;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = (L.Live.StructuralN + L.Live.NonStructuralN);
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = (L.Live.StructuralWt + L.Live.NonStructuralWt);
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               //if (L.Live.StructuralN <= 0 || L.Live.StructuralWt <= 0)
+               if ((L.Live.StructuralWt + L.Live.NonStructuralWt)>0)
+                   values[i] = (L.Live.StructuralN + L.Live.NonStructuralN) / (L.Live.StructuralWt + L.Live.NonStructuralWt);
+               else                   
+                   values[i] = 0;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveStrN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Live.StructuralN;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveStrWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Live.StructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveStrNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.Live.StructuralN <= 0 || L.Live.StructuralWt <= 0)
+                   values[i] = 0;
+               else
+                   values[i] = L.Live.StructuralN / L.Live.StructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveNonStrN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Live.NonStructuralN;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveNonStrWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Live.NonStructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortLiveNonStrNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.Live.NonStructuralN <= 0 || L.Live.NonStructuralWt <= 0)
+                   values[i] = 0;
+               else
+                   values[i] = L.Live.NonStructuralN / L.Live.NonStructuralWt;
+
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = (L.Dead.StructuralN + L.Dead.NonStructuralN);
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = (L.Dead.StructuralWt + L.Dead.NonStructuralWt);
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.Dead.StructuralN <= 0 || L.Dead.StructuralWt <= 0)
+                   values[i] = 0;
+               else
+                   values[i] = (L.Dead.StructuralN + L.Dead.NonStructuralN) / (L.Dead.StructuralWt + L.Dead.NonStructuralWt);
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadStrN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Dead.StructuralN;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadStrWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Dead.StructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadStrNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.Dead.StructuralN <= 0 || L.Dead.StructuralWt <= 0)
+                   values[i] = 0;
+               else
+                   values[i] = L.Dead.StructuralN / L.Dead.StructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadNonStrN
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Dead.NonStructuralN;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadNonStrWt
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               values[i] = L.Dead.NonStructuralWt;
+               i++;
+           }
+
+           return values;
+       }
+   }
+   [Output]                      double[] CohortDeadNonStrNconc
+   {
+       get
+       {
+           int i = 0;
+
+           double[] values = new double[(int)MaxNodeNo];
+           for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+               values[i] = 0;
+           i = 0;
+           foreach (SIRIUSLeafCohort L in Leaves)
+           {
+               if (L.Dead.NonStructuralN <= 0 || L.Dead.NonStructuralWt <= 0)
+                   values[i] = 0;
+               else
+                   values[i] = L.Dead.NonStructuralN / L.Dead.NonStructuralWt;
+
+               i++;
+           }
+
+           return values;
+       }
+   }
+    //FIXME HEB These classes are needed because for some reason the biomass object returns zeros of leaf biomass proberties
+   [Output]   [Units("g/m^2")]   public double LiveN2
       {
       get
          {
          return Live.N;
          }
       }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadN2
+   [Output]   [Units("g/m^2")]   public double DeadN2
       {
       get
          {
          return Dead.N;
          }
       }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveWt2
+   [Output]   [Units("g/m^2")]   public double LiveWt2
       {
       get
          {
          return Live.Wt;
          }
       }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadWt2
+   [Output]   [Units("g/m^2")]   public double DeadWt2
       {
       get
          {
          return Dead.Wt;
          }
       }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadN
-      {
-      get
-         {
-         return Dead.N;
-         }
-      }
-   [Output]
-   public double LiveNConc
+   [Output]   [Units("g/g")]     public double LiveNConc2
       {
       get
          {
          return Live.NConc;
          }
       }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveNonStructuralN2
+   [Output]   [Units("g/g")]     public double DeadNConc2
+   {
+       get
+       {
+           return Dead.NConc;
+       }
+   }
+   [Output]   [Units("g/m^2")]   public double LiveNonStructuralN2
    {
        get
        {
            return Live.NonStructuralN;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveStructuralN2
+   [Output]   [Units("g/m^2")]   public double LiveStructuralN2
    {
        get
        {
            return Live.StructuralN;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveNonStructuralWt2
+   [Output]   [Units("g/m^2")]   public double LiveNonStructuralWt2
    {
        get
        {
            return Live.NonStructuralWt;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveStructuralWt2
+   [Output]   [Units("g/m^2")]   public double LiveStructuralWt2
    {
        get
        {
            return Live.StructuralWt;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double TotalStructuralN2
+   [Output]   [Units("g/m^2")]   public double TotalStructuralN2
    {
        get
        {
            return Live.StructuralN + Dead.StructuralN;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double TotalStructuralWt2
+   [Output]   [Units("g/m^2")]   public double TotalStructuralWt2
    {
        get
        {
            return Live.StructuralWt + Dead.StructuralWt;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double TotalNonStructuralN2
+   [Output]   [Units("g/m^2")]   public double TotalNonStructuralN2
    {
        get
        {
            return Live.NonStructuralN + Dead.NonStructuralN;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public double TotalNonStructuralWt2
+   [Output]   [Units("g/m^2")]   public double TotalNonStructuralWt2
    {
        get
        {
            return Live.NonStructuralWt + Dead.NonStructuralWt;
        }
    }
-   [Output]
-   [Units("g/m^2")]
-   public override double NDemand
-   {
-       get
-        {
-         /*   double Demand = 0.0;
-            Plant P = (Plant)Root;
-            if (P.Phenology.Between("Emergence", "FinalLeaf") && Children.Count > 0)
-              Demand = 1.0;
-            else
-              Demand = 0;
 
-            return Demand;
-        }*/
-      
-           double Demand = 0.0;
-          // Plant P = (Plant)Root;
-          // if (P.Phenology.Between("FinalLeaf", "Maturity") && Children.Count > 0)
-          //     return 0;
-          // else
-          // {
-               foreach (SIRIUSLeafCohort L in Leaves)
-                   if (L.IsGrowing)
-                   {
-                       Demand += L.NDemand();
-                   }
-               if (Demand >= 0.0)
-                   Demand = 1.0;
-               else Demand = 0.0;  //Made Ndemand a binary that is 0 if final leaf is not growing and 1 if it is.
-               
-              return Demand;
-
-           //}
-       }  
-   }
-   [Output]
-   [Units("g/m^2")]
-   public override double NAllocation
-      {
-      set
-         {
-         if (NDemand == 0)
-            if (value == 0) { }//All OK
-            else
-               throw new Exception("Invalid allocation of N");
-         else
-            {
-            double Demand = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-               Demand += L.NDemand();
-
-            if (Demand == 0.0)
-               { } // do nothing
-            else
-               {
-                 double fraction = value / Demand;
-                 if (fraction > 1)
-                 { }
-                 foreach (SIRIUSLeafCohort L in Leaves)
-                 {
-                    L.NAllocation = L.NDemand() * fraction;
-                 }
-               }
-            }
-         }
-      }
-   public override double NRetranslocationSupply 
-      { 
-      get 
-         {
-         double Supply = 0;
-         foreach (SIRIUSLeafCohort L in Leaves)
-            Supply += L.NRetranslocationSupply;
-         return Supply;
-         } 
-      }
-   public override double NRetranslocation
-      {
-      set
-         {
-         double NSupply = NRetranslocationSupply;
-         if (value > NSupply)
-            throw new Exception(Name + " cannot supply that amount for N retranslocation");
-         if (value > 0)
-            {
-            //double fraction = value/NSupply;
-            //foreach (SIRIUSLeafCohort L in Leaves)
-            //   {
-            //   L.NRetranslocation = fraction * L.NRetranslocationSupply;
-            //   }
-            double remainder = value;
-            foreach (SIRIUSLeafCohort L in Leaves)
-               {
-               double Supply = Math.Min(remainder, L.NRetranslocationSupply);
-               L.NRetranslocation = Supply;
-               remainder = remainder - Supply;
-               }
-            if (!MathUtility.FloatsAreEqual(remainder,0.0))
-               throw new Exception(Name + " N Retranslocation demand left over after processing.");
-            }
-          }
-        }
-   public override double DMRetranslocationSupply
-   {
-       get
-       {
-           double Supply = 0;
-           foreach (SIRIUSLeafCohort L in Leaves)
-               Supply += L.DMRetranslocationSupply;
-           return Supply;
-       }
-   }
-   public override double DMRetranslocation
-   {
-       set
-       {
-           double DMSupply = DMRetranslocationSupply;
-           if (value > DMSupply)
-               throw new Exception(Name + " cannot supply that amount for DM retranslocation");
-           if (value > 0)
-           {
-               double remainder = value;
-               foreach (SIRIUSLeafCohort L in Leaves)
-               {
-                   double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
-                   L.DMRetranslocation = Supply;
-                   remainder = remainder - Supply;
-               }
-               if (!MathUtility.FloatsAreEqual(remainder, 0.0))
-                   throw new Exception(Name + " DM Retranslocation demand left over after processing.");
-           }
-       }
-   }
-   public double NReallocationSupply 
-         {
-             get
-             {
-                 double Supply = 0;
-                 foreach (SIRIUSLeafCohort L in Leaves)
-                     Supply += L.NReallocationSupply;
-                 return Supply;
-             }  
-       }
-   [EventHandler]
-   private void OnKillLeaf(KillLeafType KillLeaf)
-      {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
-      string Indent = "     ";
-      string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
-      Console.WriteLine("");
-      Console.WriteLine(Title);
-      Console.WriteLine(Indent + new string('-', Title.Length));
-
-      foreach (SIRIUSLeafCohort L in Leaves)
-         {
-         L.DoKill(KillLeaf.KillFraction);
-         }
-
-      }
-   [EventHandler]
-   private void OnCut()
-      {
-      DateTime Today = new DateTime(Year, 1, 1);
-      Today = Today.AddDays(Day - 1);
-      string Indent = "     ";
-      string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
-      Console.WriteLine("");
-      Console.WriteLine(Title);
-      Console.WriteLine(Indent + new string('-', Title.Length));
-
-      NodeNo = 0;
-      _FinalNodeNo = 0;
-      Live.Clear();
-      Dead.Clear();
-      Leaves.Clear();
-      InitialiseCohorts();
-
-      }
-   public override double MaxNconc
-   {
-       get
-       {
-           Function MaximumNConc = Children["MaximumNConc"] as Function;
-           return MaximumNConc.Value;
-       }
-   }
-   public override double StrucNconc
-   {
-       get
-       {
-           Function StructuralNConc = Children["StructuralNConc"] as Function;
-           return StructuralNConc.Value;
-       }
-   }
-   public override double MinNconc
-   {
-       get
-       {
-           Function MinimumNConc = Children["MinimumNConc"] as Function;
-           return MinimumNConc.Value;
-       }
-   }
-   public override double StrucDMfrac
-   {
-       get
-       {
-           Function StructuralFraction = Children["StructuralFraction"] as Function;
-           return StructuralFraction.Value;
-       }
-   }
-   }
+ #endregion
+}
    

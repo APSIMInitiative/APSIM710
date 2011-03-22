@@ -483,6 +483,37 @@
               <XY>50 1.0</XY>
             </XYPairs>
           </GenericFunction>
+		  <GenericFunction name="FN">
+            <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <GenericFunction name="FW">
+            <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+		  <DivideFunction name="Fco2">
+            <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
+            <ExpressionFunction name="First">
+              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
+              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
+Obs: Expression can contain variable names from Plant2
+</Memo>
+            </ExpressionFunction>
+            <ExpressionFunction name="Second">
+              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
+              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
+Obs: Expression can contain variable names from Plant2
+</Memo>
+            </ExpressionFunction>
+          </DivideFunction>
         </RUEModel>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>

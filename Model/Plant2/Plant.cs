@@ -75,6 +75,17 @@ public class Plant : Instance
       DoActualGrowth();
       }
 
+    //Calculate initital N of plant
+   public double InitialN
+   {
+       get
+       {
+           double Total = 0;
+           foreach (Organ o in Organs)
+               Total += o.Live.N + o.Dead.N;
+           return Total;
+       }
+   }
    private void DoArbitrator()
       {
       if (IndexOf("Arbitrator") != -1)
@@ -219,6 +230,26 @@ public class Plant : Instance
           return Total;
           }
        }
+   [Output] public double TotalLiveN
+   {
+       get
+       {
+           double Total = 0;
+           foreach (Organ o in Organs)
+               Total += o.Live.N;
+           return Total;
+       }
+   }
+   [Output] public double TotalDeadN
+   {
+       get
+       {
+           double Total = 0;
+           foreach (Organ o in Organs)
+               Total += o.Dead.N;
+           return Total;
+       }
+   }
    [Output]
    public double ReserveDM
       {

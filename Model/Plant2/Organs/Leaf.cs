@@ -528,7 +528,7 @@ public class Leaf : BaseOrgan, AboveGround
          //   Fw = EP / PEP;
          //else
          //   Fw = 0;
-         return Photosynthesis.Growth(Radn * CoverGreen, Math.Min(Fw, Fn));
+             return Photosynthesis.Growth(Radn * CoverGreen);//, Math.Min(Fw, Fn));
          }
       }
    [Output]

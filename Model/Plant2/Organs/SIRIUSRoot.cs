@@ -4,68 +4,67 @@ using System.Text;
 using CSGeneral;
 
 public class SIRIUSRoot : BaseOrgan, BelowGround
-   {
-   #region Class Data Members
+{
+ #region Class Data Members
    const double kgha2gsm = 0.1;
-
    private double[] SWSupply = null;
    private double[] Uptake = null;
    public Biomass[] LayerLive;
    public Biomass[] LayerDead;
    private SowType SowingInfo = null;
+   [Event]    public event FOMLayerDelegate IncorpFOM;
+   [Event]   public event WaterChangedDelegate WaterChanged;
+   [Event]   public event NitrogenChangedDelegate NitrogenChanged;
+   [Input]   public double[] sw_dep = null;
+   [Input]   public double[] dlayer = null;
+   [Input]   public double[] bd = null;
+   [Input]   public double[] no3 = null;
+   [Input]   public double[] nh4 = null;
+   [Input]   public double[] dul_dep = null;
+   [Input]   public double[] ll15_dep = null;
+   [Param]   public double[] ll = null;
+   [Param]   public double[] kl = null;
+   [Param]   public double[] xf = null;
+   [Param]   private double InitialDM = 0;
+   [Param]   private double SpecificRootLength = 0;
+   [Param]   private double KNO3 = 0;
+   [Param]   private double KNH4 = 0;
+   [Output] [Units("mm")]    public double Depth = 0;
+ #endregion
 
-   [Event]
-   public event FOMLayerDelegate IncorpFOM;
-   [Event]
-   public event WaterChangedDelegate WaterChanged;
-   [Event]
-   public event NitrogenChangedDelegate NitrogenChanged;
-   [Input]
-   public double[] sw_dep = null;
-   [Input]
-   public double[] dlayer = null;
-   [Input]
-   public double[] bd = null;
-   [Input]
-   public double[] no3 = null;
-   [Input]
-   public double[] nh4 = null;
-   [Input]
-   public double[] dul_dep = null;
-   [Input]
-   public double[] ll15_dep = null;
-   [Param]
-   public double[] ll = null;
-   [Param]
-   public double[] kl = null;
-   [Param]
-   public double[] xf = null;
-   [Param]
-   private double InitialDM = 0;
-   [Param]
-   private double SpecificRootLength = 0;
-   [Param]
-   private double KNO3 = 0;
-   [Param]
-   private double KNH4 = 0;
+   public override Biomass Live
+   {
+       get
+       {
+           Biomass Total = new Biomass();
+           foreach (Biomass Layer in LayerLive)
+           {
+               Total.StructuralWt += Layer.StructuralWt;
+               Total.NonStructuralWt += Layer.NonStructuralWt;
+               Total.StructuralN += Layer.StructuralN;
+               Total.NonStructuralN += Layer.NonStructuralN;
+           }
+           return Total;
+       }
+   }
+   public override Biomass Dead
+   {
+       get
+       {
+           Biomass Total = new Biomass();
+           foreach (Biomass Layer in LayerDead)
+           {
+               Total.StructuralWt += Layer.StructuralWt;
+               Total.NonStructuralWt += Layer.NonStructuralWt;
+               Total.StructuralN += Layer.StructuralN;
+               Total.NonStructuralN += Layer.NonStructuralN;
+           }
+           return Total;
+       }
+   }
 
-   [Output]
-   [Units("mm")]
-   public double Depth = 0;
-   #endregion
-   [Output] [Units("mm")]
-   double[] LLdep
-      {
-      get
-         {
-         double[] value = new double[dlayer.Length];
-         for (int i = 0; i < dlayer.Length; i++)
-            value[i] = ll[i] * dlayer[i];
-         return value;
-         }
-      }
-   [EventHandler]
-   public void OnSow(SowType Sow)
+ #region root functions
+   [EventHandler]   public void OnSow(SowType Sow)
       {
       SowingInfo = Sow;
       }
@@ -147,49 +146,86 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
       IncorpFOM.Invoke(FomLayer);
 
       }
-   public override double DMDemand
-      {
-      get
-         {
-         Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-         Function PartitionFraction = Children["PartitionFraction"] as Function;
-         return A.DMSupply * PartitionFraction.Value;
-         }
-      }
-   public override Biomass Live
-      {
-      get
-         {
-         Biomass Total = new Biomass();
-         foreach (Biomass Layer in LayerLive)
-            {
-            Total.StructuralWt += Layer.StructuralWt;
-            Total.NonStructuralWt += Layer.NonStructuralWt;
-            Total.StructuralN += Layer.StructuralN;
-            Total.NonStructuralN += Layer.NonStructuralN;
+   public override void DoWaterUptake(double Amount)
+   {
+       // Send the delta water back to SoilWat that we're going to uptake.
+       WaterChangedType WaterUptake = new WaterChangedType();
+       WaterUptake.DeltaWater = new double[SWSupply.Length];
+       double Supply = MathUtility.Sum(SWSupply);
+       double FractionUsed = 1;
+       if (Supply > 0)
+           FractionUsed = Amount / Supply;
 
-            }
-         return Total;
-         }
-      }
-   public override Biomass Dead
-      {
-      get
-         {
-         Biomass Total = new Biomass();
-         foreach (Biomass Layer in LayerDead)
-            {
-            Total.StructuralWt += Layer.StructuralWt;
-            Total.NonStructuralWt += Layer.NonStructuralWt;
-            Total.StructuralN += Layer.StructuralN;
-            Total.NonStructuralN += Layer.NonStructuralN;
+       for (int layer = 0; layer <= SWSupply.Length - 1; layer++)
+           WaterUptake.DeltaWater[layer] = -SWSupply[layer] * FractionUsed;
 
-            }
-         return Total;
-         }
-      }
-   [Output]
-   double[] LengthDensity
+       Uptake = WaterUptake.DeltaWater;
+       if (WaterChanged != null)
+           WaterChanged.Invoke(WaterUptake);
+   }
+   private int LayerIndex(double depth)
+   {
+       double CumDepth = 0;
+       for (int i = 0; i < dlayer.Length; i++)
+       {
+           CumDepth = CumDepth + dlayer[i];
+           if (CumDepth >= depth) { return i; }
+       }
+       throw new Exception("Depth deeper than bottom of soil profile");
+   }
+   private double RootProportion(int layer, double root_depth)
+   {
+       double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
+       double depth_to_layer_top = 0;      // depth to top of layer (mm)
+       double depth_to_root = 0;           // depth to root in layer (mm)
+       double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
+       // Implementation Section ----------------------------------
+       for (int i = 0; i <= layer; i++)
+           depth_to_layer_bottom += dlayer[i];
+       depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
+       depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
+       depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
+
+       return depth_of_root_in_layer / dlayer[layer];
+   }
+   private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
+   {
+       double[] no3ppm = new double[dlayer.Length];
+       double[] nh4ppm = new double[dlayer.Length];
+
+       for (int layer = 0; layer < dlayer.Length; layer++)
+       {
+           if (LayerLive[layer].Wt > 0)
+           {
+               double swaf = 0;
+               swaf = (sw_dep[layer] - ll15_dep[layer]) / (dul_dep[layer] - ll15_dep[layer]);
+               swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
+               no3ppm[layer] = no3[layer] * (100.0 / (bd[layer] * dlayer[layer]));
+               NO3Supply[layer] = no3[layer] * KNO3 * no3ppm[layer] * swaf;
+               nh4ppm[layer] = nh4[layer] * (100.0 / (bd[layer] * dlayer[layer]));
+               NH4Supply[layer] = nh4[layer] * KNH4 * nh4ppm[layer] * swaf;
+           }
+           else
+           {
+               NO3Supply[layer] = 0;
+               NH4Supply[layer] = 0;
+           }
+       }
+   }
+ #endregion
+
+ #region state variables and deltas
+   [Output]   [Units("mm")]         double[] LLdep
+   {
+       get
+       {
+           double[] value = new double[dlayer.Length];
+           for (int i = 0; i < dlayer.Length; i++)
+               value[i] = ll[i] * dlayer[i];
+           return value;
+       }
+   }
+   [Output]   [Units("??mm/mm3")]   double[] LengthDensity
       {
       get
          {
@@ -199,44 +235,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
          return value;
          }
       }
-   [Output]
-   public override double DMAllocation
-      {
-      set
-         {
-         // Calculate Root Activity Values
-         double[] RAw = new double[dlayer.Length];
-         double TotalRAw = 0;
-
-         for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-            if (layer <= LayerIndex(Depth))
-               if (LayerLive[layer].Wt > 0)
-                  {
-                  RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
-                             * dlayer[layer]
-                             * RootProportion(layer, Depth);
-                  RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
-                  }
-               else
-                  RAw[layer] = RAw[layer - 1];
-            else
-               RAw[layer] = 0;
-            TotalRAw += RAw[layer];
-            }
-
-         for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-            if (TotalRAw > 0)
-
-               LayerLive[layer].StructuralWt += value * RAw[layer] / TotalRAw;
-            else if (value > 0)
-               throw new Exception("Error trying to partition root biomass");
-            }
-         }
-      }
-   [Output]
-   public override double WaterSupply
+   [Output]   [Units("mm")]         public override double WaterSupply
       {
       get
          {
@@ -254,120 +253,133 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
          return MathUtility.Sum(SWSupply);
          }
       }
-   [Output]
-   [Units("mm")]
-   public double WaterUptake
+   [Output]   [Units("mm")]         public double WaterUptake
       {
       get { return -MathUtility.Sum(Uptake); }
       }
-   public override void DoWaterUptake(double Amount)
-      {
-      // Send the delta water back to SoilWat that we're going to uptake.
-      WaterChangedType WaterUptake = new WaterChangedType();
-      WaterUptake.DeltaWater = new double[SWSupply.Length];
-      double Supply = MathUtility.Sum(SWSupply);
-      double FractionUsed = 1;
-      if (Supply > 0)
-         FractionUsed = Amount / Supply;
-
-      for (int layer = 0; layer <= SWSupply.Length - 1; layer++)
-         WaterUptake.DeltaWater[layer] = -SWSupply[layer] * FractionUsed;
-
-      Uptake = WaterUptake.DeltaWater;
-      if (WaterChanged != null)
-         WaterChanged.Invoke(WaterUptake);
-      }
-   private int LayerIndex(double depth)
-      {
-      double CumDepth = 0;
-      for (int i = 0; i < dlayer.Length; i++)
-         {
-         CumDepth = CumDepth + dlayer[i];
-         if (CumDepth >= depth) { return i; }
-         }
-      throw new Exception("Depth deeper than bottom of soil profile");
-      }
-   private double RootProportion(int layer, double root_depth)
-      {
-      double depth_to_layer_bottom = 0;   // depth to bottom of layer (mm)
-      double depth_to_layer_top = 0;      // depth to top of layer (mm)
-      double depth_to_root = 0;           // depth to root in layer (mm)
-      double depth_of_root_in_layer = 0;  // depth of root within layer (mm)
-      // Implementation Section ----------------------------------
-      for (int i = 0; i <= layer; i++)
-         depth_to_layer_bottom += dlayer[i];
-      depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
-      depth_to_root = Math.Min(depth_to_layer_bottom, root_depth);
-      depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
-
-      return depth_of_root_in_layer / dlayer[layer];
-      }
-   [Output]
-   public double LiveN
+   [Output]   [Units("g/m2")]       public double LiveN
       {
       get
          {
          return Live.N;
          }
       }
-   [Output]
-   public double DeadN
+   [Output]   [Units("g/m2")]       public double DeadN
       {
       get
          {
          return Dead.N;
          }
       }
-   [Output]
-   public double LiveWt
+   [Output]   [Units("g/m2")]       public double LiveWt
       {
       get
          {
          return Live.Wt;
          }
       }
-   [Output]
-   public double DeadWt
+   [Output]   [Units("g/m2")]       public double DeadWt
       {
       get
          {
          return Dead.Wt;
          }
       }
-   [Output]
-   public double LiveNConc
+   [Output]   [Units("g/g")]        public double LiveNConc
       {
       get
          {
          return Live.NConc;
          }
       }
-   private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
-      {
-      double[] no3ppm = new double[dlayer.Length];
-      double[] nh4ppm = new double[dlayer.Length];
+   
+   [Output]   [Units("g/m2")]       public override double DMDemand
+   {
+       get
+       {
+           Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
+           Function PartitionFraction = Children["PartitionFraction"] as Function;
+           return A.DMSupply * PartitionFraction.Value;
+       }
+   }
+                                    public override double DMPotentialAllocation
+   {
+       set
+       {
+           if (DMDemand == 0)
+               if (value < 0.000000000001) { }//All OK
+               else
+                   throw new Exception("Invalid allocation of potential DM in" + Name);
+               
+               // Calculate Root Activity Values
+               double[] RAw = new double[dlayer.Length];
+               double TotalRAw = 0;
 
-      for (int layer = 0; layer < dlayer.Length; layer++)
-         {
-         if (LayerLive[layer].Wt > 0)
-            {
-            double swaf = 0;
-            swaf = (sw_dep[layer] - ll15_dep[layer]) / (dul_dep[layer] - ll15_dep[layer]);
-            swaf = Math.Max(0.0, Math.Min(swaf, 1.0));
-            no3ppm[layer] = no3[layer] * (100.0 / (bd[layer] * dlayer[layer]));
-            NO3Supply[layer] = no3[layer] * KNO3 * no3ppm[layer] * swaf;
-            nh4ppm[layer] = nh4[layer] * (100.0 / (bd[layer] * dlayer[layer]));
-            NH4Supply[layer] = nh4[layer] * KNH4 * nh4ppm[layer] * swaf;
-            }
-         else
-            {
-            NO3Supply[layer] = 0;
-            NH4Supply[layer] = 0;
-            }
-         }
-      }
-   [Output]
-   public override double NUptakeSupply
+               for (int layer = 0; layer < dlayer.Length; layer++)
+               {
+                   if (layer <= LayerIndex(Depth))
+                       if (LayerLive[layer].Wt > 0)
+                       {
+                           RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
+                                      * dlayer[layer]
+                                      * RootProportion(layer, Depth);
+                           RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+                       }
+                       else
+                           RAw[layer] = RAw[layer - 1];
+                   else
+                       RAw[layer] = 0;
+                   TotalRAw += RAw[layer];
+               }
+               double allocated = 0;
+               for (int layer = 0; layer < dlayer.Length; layer++)
+               {
+                   if (TotalRAw > 0)
+
+                       LayerLive[layer].PotentialDMAllocation = value * RAw[layer] / TotalRAw;
+                   else if (value > 0)
+                       throw new Exception("Error trying to partition potential root biomass");
+                   allocated += value * RAw[layer] / TotalRAw;
+               }
+           }
+   }
+   [Output]   [Units("g/m2")]       public override double DMAllocation
+   {
+       set
+       {
+           // Calculate Root Activity Values
+           double[] RAw = new double[dlayer.Length]; //FIXME need to make RAw a seperate function populating a higher level array bacause the code to calculate it is repeated in two places
+           double TotalRAw = 0;  
+
+           for (int layer = 0; layer < dlayer.Length; layer++)
+           {
+               if (layer <= LayerIndex(Depth))
+                   if (LayerLive[layer].Wt > 0)
+                   {
+                       RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
+                                  * dlayer[layer]
+                                  * RootProportion(layer, Depth);
+                       RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+                   }
+                   else
+                       RAw[layer] = RAw[layer - 1];
+               else
+                   RAw[layer] = 0;
+               TotalRAw += RAw[layer];
+           }
+           double allocated = 0;
+           for (int layer = 0; layer < dlayer.Length; layer++)
+           {
+               if (TotalRAw > 0)
+
+                   LayerLive[layer].StructuralWt += value * RAw[layer] / TotalRAw;
+               else if (value > 0)
+                   throw new Exception("Error trying to partition root biomass");
+              allocated += value * RAw[layer] / TotalRAw;
+           }
+       }
+   }
+   [Output]   [Units("g/m2")]       public override double NUptakeSupply
       {
       get
          {
@@ -377,7 +389,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
          SoilNSupply(no3supply, nh4supply);
 
          Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-         UptakeDemand = Math.Max(0.0, A.NDemand - A.LeafNReallocationSupply);
+         UptakeDemand = Math.Max(0.0, A.NDemand - A.NReallocationSupply);
          Function MaxDailyNUptake = Children["MaxDailyNUptake"] as Function;
 
          double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
@@ -386,6 +398,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
 
          }
       }
+
    public override double NUptake
       {
       set
@@ -421,43 +434,37 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
       {
       get
          {
-             /* double Total = 0.0;
+              //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
+              double TotalDeficit = 0.0;
+              double Ndemandtoday =0.0;
               Function MaximumNConc = Children["MaximumNConc"] as Function;
+              Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
               foreach (Biomass Layer in LayerLive)
                  {
-                 double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                 Total += NDeficit;
+                     double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
+                 TotalDeficit += NDeficit;
                  }
-              return Total; */
-             Plant P = (Plant)Root;
-             if (P.Phenology.Between("Planting", "FinalLeaf") && Children.Count > 0)
-                 return 1.0;
-             else
-                 return 0.0;  //made N demand a binary so there is no stem N demand when there is no leaf growth
+                return TotalDeficit * NitrogenDemandPhase.Value; 
          }
       }
    public override double NAllocation
       {
       set
          {
-             
+          // Recalculate N defict following DM allocation for checking N allocation and partitioning N between layers   
           double Demand = 0.0;
           Function MaximumNConc = Children["MaximumNConc"] as Function;
           foreach (Biomass Layer in LayerLive)
              {
                  double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                 //Total += NDeficit;
                  Demand += NDeficit;
              }
-             //return Total;
-         //double Demand = NDemand;
-         
          double Supply = value;
          double NAllocated = 0;
-        // Function MaximumNConc = Children["MaximumNConc"] as Function;
-
-         if ((Demand == 0) && (Supply > 0)) 
+         if ((Demand == 0) && (Supply > 0.0000000001)) 
          { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
+         
+         // Allocate N to each layer
          if (Demand > 0)
             {
             foreach (Biomass Layer in LayerLive)
@@ -483,14 +490,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
            return MaximumNConc.Value;
        }
    }
-   public override double StrucNconc
-   {
-       get
-       {
-           Function StructuralNConc = Children["StructuralNConc"] as Function;
-           return StructuralNConc.Value;
-       }
-   }
    public override double MinNconc
    {
        get
@@ -499,13 +498,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
            return MinimumNConc.Value;
        }
    }
-   public override double StrucDMfrac
-   {
-       get
-       {
-           Function StructuralFraction = Children["StructuralFraction"] as Function;
-           return StructuralFraction.Value;
-       }
-   }
-  }
+ #endregion
+}
 

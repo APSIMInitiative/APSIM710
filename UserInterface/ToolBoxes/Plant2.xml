@@ -43,6 +43,159 @@
       <Biomass name="Live" />
       <Biomass name="Dead" />
     </GenericOrgan>
+    <SIRIUSArbitrator>
+      <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
+               1) it allocates N and DM along a hirachy of priorities
+               2) it allocates potential DM then allocates N then limits DM below potential if there is insufficient N to meet Min N content
+               3) it reallocates N from senessing leaves before taking N up from the soil, then takes N up from the soil then retranslocates to meet further demand			   
+        </Memo>
+      <PhaseLookup name="DMSink">
+        <PhaseLookupValue name="Dormant">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Root</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Sprouting">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Root</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Inductive">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">root</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Induced">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">TuberInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">root</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="EarlyTuber">
+          <Start type="text" description="Start">TuberInitiation</Start>
+          <End type="text" description="End">FinalLeaf</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Tuber</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="LateTuber">
+          <Start type="text" description="Start">FinalLeaf</Start>
+          <End type="text" description="End">FullSenescence</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Tuber</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Senesced">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Tuber</Value>
+          </Constant>
+        </PhaseLookupValue>
+      </PhaseLookup>
+      <PhaseLookup name="NSink">
+        <PhaseLookupValue name="Dormant">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Stem</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Sprouting">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Stem</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Inductive">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Stem</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Induced">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">TuberInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Stem</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="EarlyTuber">
+          <Start type="text" description="Start">TuberInitiation</Start>
+          <End type="text" description="End">FinalLeaf</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Tuber</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="LateTuber">
+          <Start type="text" description="Start">FinalLeaf</Start>
+          <End type="text" description="End">FullSenescence</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Tuber</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="Senesced">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">Stem</Value>
+          </Constant>
+        </PhaseLookupValue>
+      </PhaseLookup>
+      <Constant name="DMRetransFact">
+        <Value type="text" description="Value">6.25</Value>
+      </Constant>
+    </SIRIUSArbitrator>
+    <SIRIUSTuber>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SIRIUSTuber>
+    <SIRIUSLeaf>
+      <FrostFraction>
+        <XY> 0 0.0</XY>
+        <XY> 2 0.0</XY>
+      </FrostFraction>
+      <Frgr type="text" description="Frgr">1</Frgr>
+      <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+      <MaxCover type="text" description="MaxCover">1.0</MaxCover>
+      <KDead type="text" description="KDead">0.5</KDead>
+      <MaxNodeNo type="text" description="MaxNodeNo">40</MaxNodeNo>
+      <InitialAreas type="text" description="InitialAreas">380</InitialAreas>
+      <InitialAges type="text" description="InitialAges">30</InitialAges>
+      <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+      <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+      <FinalNodeNoEstimate>16</FinalNodeNoEstimate>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SIRIUSLeaf>
+    <SIRIUSGenericOrgan>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SIRIUSGenericOrgan>
+    <SIRIUSGrain>
+      <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
+      <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+    </SIRIUSGrain>
+    <SIRIUSRoot>
+      <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+      <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+      <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+      <InitialDM>0.2</InitialDM>
+      <SpecificRootLength>40000</SpecificRootLength>
+      <KNO3>0.02</KNO3>
+      <KNH4>0.0</KNH4>
+    </SIRIUSRoot>
     <Root>
       <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
       <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
@@ -212,6 +365,15 @@
     </PhaseJumpFunction>
   </folder>
   <folder name="Functions">
+    <PhaseBasedSwitch>
+      <Start>
+      </Start>
+      <End>
+      </End>
+      <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+    </PhaseBasedSwitch>
     <WeightedTemperatureFunction>
       <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
       <XYPairs>
@@ -240,18 +402,6 @@
           </Value>
         </Constant>
       </PhaseLookupValue>
-      <PhaseLookup>
-        <PhaseLookupValue>
-          <Start>
-          </Start>
-          <End>
-          </End>
-          <Constant name="Function">
-            <Value type="text">
-            </Value>
-          </Constant>
-        </PhaseLookupValue>
-      </PhaseLookup>
     </PhaseLookup>
     <StageBasedInterpolation>
       <Stages>Germination Emergence 50%Anthesis StartGrainFill Maturity </Stages>
@@ -275,6 +425,22 @@
           <XY> 0  1.0</XY>
           <XY> 10 1.0</XY>
           <XY> 50 1.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="FN">
+        <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+        <XYPairs>
+          <XY> 0   1.0</XY>
+          <XY> 1   1.0</XY>
+          <XY> 1.5 1.0</XY>
+        </XYPairs>
+      </GenericFunction>
+      <GenericFunction name="FW">
+        <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+        <XYPairs>
+          <XY> 0   1.0</XY>
+          <XY> 1   1.0</XY>
+          <XY> 1.5 1.0</XY>
         </XYPairs>
       </GenericFunction>
     </RUEModel>
