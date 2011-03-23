@@ -9,7 +9,7 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.4
+Version                = 7.3
 Title                  = DCD_Test
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
@@ -26,7 +26,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "SoilNui" = %apsim%\Model\SoilN.dll
    Component                          "DCD" = %apsim%\Model\Solute.dll
-   Component                "AgPastureSWIM" = %apsim%\Model\AgPasture.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
    Component                    "Apply_DCD" = %apsim%\Model\DotNetComponentInterface.dll
    Component                   "DCD_action" = %apsim%\Model\DotNetComponentInterface.dll
    Component        "CentrePivotIrrigation" = %apsim%\Model\DotNetComponentInterface.dll
@@ -43,7 +43,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "SoilNui" = %apsim%\Model\SoilN.dll
    Component                          "DCD" = %apsim%\Model\Solute.dll
-   Component                "AgPastureSWIM" = %apsim%\Model\AgPasture.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
    Component                    "Apply_DCD" = %apsim%\Model\DotNetComponentInterface.dll
    Component                   "DCD_action" = %apsim%\Model\DotNetComponentInterface.dll
    Component        "CentrePivotIrrigation" = %apsim%\Model\DotNetComponentInterface.dll
@@ -60,7 +60,7 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "SoilNui" = %apsim%\Model\SoilN.dll
    Component                          "DCD" = %apsim%\Model\Solute.dll
-   Component                "AgPastureSWIM" = %apsim%\Model\AgPasture.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
    Component                    "Apply_DCD" = %apsim%\Model\DotNetComponentInterface.dll
    Component                   "DCD_action" = %apsim%\Model\DotNetComponentInterface.dll
    Component        "CentrePivotIrrigation" = %apsim%\Model\DotNetComponentInterface.dll
@@ -130,8 +130,8 @@ Paddock:
      
      SECTION:- start_of_day
      if today >= date('1/01/1900') and today <= date('1/12/2010') then
-        preharvest_dm = agpastureswim.abovegroundwt
-        preharvest_n = agpastureswim.abovegroundn
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
         harvested_dm =0
         harvested_n = 0
         removed_dm = 0.0
@@ -154,10 +154,10 @@ Paddock:
      endif
      if do_cut = 'true' then
         if preharvest_dm > 1250 then
-           agpastureswim graze type = 'residue', amount = 1250
+           agpasture graze type = 'residue', amount = 1250
            has_cut = 'true'
-           harvested_dm = agpastureswim.harvestwt
-           harvested_n = agpastureswim.harvestn
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
            growthratecalc = harvested_dm/days_after_cut
            if harvested_dm > 0 then
               n_conc_removed = harvested_n*100/harvested_dm
@@ -461,9 +461,7 @@ Paddock:
      
         - Reading Constants
 
-------- AgPastureSWIM Initialisation ------------------------------------------
-Warning: Number of layers specified for root length density (rlvp) is different 
-from the number of soil layers.The simulation will run using the minimum of the two.
+------- AgPasture Initialisation ----------------------------------------------
 
 ------- Apply_DCD Initialisation ----------------------------------------------
 
@@ -525,8 +523,8 @@ from the number of soil layers.The simulation will run using the minimum of the 
      
      SECTION:- start_of_day
      if today >= date('1/01/1900') and today <= date('1/12/2010') then
-        preharvest_dm = agpastureswim.abovegroundwt
-        preharvest_n = agpastureswim.abovegroundn
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
         harvested_dm =0
         harvested_n = 0
         removed_dm = 0.0
@@ -549,10 +547,10 @@ from the number of soil layers.The simulation will run using the minimum of the 
      endif
      if do_cut = 'true' then
         if preharvest_dm > 1250 then
-           agpastureswim graze type = 'residue', amount = 1250
+           agpasture graze type = 'residue', amount = 1250
            has_cut = 'true'
-           harvested_dm = agpastureswim.harvestwt
-           harvested_n = agpastureswim.harvestn
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
            growthratecalc = harvested_dm/days_after_cut
            if harvested_dm > 0 then
               n_conc_removed = harvested_n*100/harvested_dm
@@ -856,9 +854,7 @@ from the number of soil layers.The simulation will run using the minimum of the 
      
         - Reading Constants
 
-------- AgPastureSWIM Initialisation ------------------------------------------
-Warning: Number of layers specified for root length density (rlvp) is different 
-from the number of soil layers.The simulation will run using the minimum of the two.
+------- AgPasture Initialisation ----------------------------------------------
 
 ------- Apply_DCD Initialisation ----------------------------------------------
 
@@ -920,8 +916,8 @@ from the number of soil layers.The simulation will run using the minimum of the 
      
      SECTION:- start_of_day
      if today >= date('1/01/1900') and today <= date('1/12/2010') then
-        preharvest_dm = agpastureswim.abovegroundwt
-        preharvest_n = agpastureswim.abovegroundn
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
         harvested_dm =0
         harvested_n = 0
         removed_dm = 0.0
@@ -944,10 +940,10 @@ from the number of soil layers.The simulation will run using the minimum of the 
      endif
      if do_cut = 'true' then
         if preharvest_dm > 1250 then
-           agpastureswim graze type = 'residue', amount = 1250
+           agpasture graze type = 'residue', amount = 1250
            has_cut = 'true'
-           harvested_dm = agpastureswim.harvestwt
-           harvested_n = agpastureswim.harvestn
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
            growthratecalc = harvested_dm/days_after_cut
            if harvested_dm > 0 then
               n_conc_removed = harvested_n*100/harvested_dm
@@ -1251,9 +1247,7 @@ from the number of soil layers.The simulation will run using the minimum of the 
      
         - Reading Constants
 
-------- AgPastureSWIM Initialisation ------------------------------------------
-Warning: Number of layers specified for root length density (rlvp) is different 
-from the number of soil layers.The simulation will run using the minimum of the two.
+------- AgPasture Initialisation ----------------------------------------------
 
 ------- Apply_DCD Initialisation ----------------------------------------------
 
@@ -1278,7 +1272,7 @@ from the number of soil layers.The simulation will run using the minimum of the 
      Manager creating a new local real variable : return_n = 0.00000
      Manager creating a new local real variable : growthratecalc = 0.00000
      Manager creating a new local real variable : n_conc_total = 0.00000
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
      Manager creating a new local real variable : n_conc_removed = 3.40658
      Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
      Manager creating a new local real variable : preharvest_dm = 2050.00000
@@ -1291,7 +1285,7 @@ from the number of soil layers.The simulation will run using the minimum of the 
      Manager creating a new local real variable : return_n = 0.00000
      Manager creating a new local real variable : growthratecalc = 0.00000
      Manager creating a new local real variable : n_conc_total = 0.00000
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
      Manager creating a new local real variable : n_conc_removed = 3.40658
      Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
      Manager creating a new local real variable : preharvest_dm = 2050.00000
@@ -1304,7 +1298,7 @@ from the number of soil layers.The simulation will run using the minimum of the 
      Manager creating a new local real variable : return_n = 0.00000
      Manager creating a new local real variable : growthratecalc = 0.00000
      Manager creating a new local real variable : n_conc_total = 0.00000
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
      Manager creating a new local real variable : n_conc_removed = 3.40658
      Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
 2 July 1940(Day of year=184), operations: 
@@ -1395,13 +1389,13 @@ from the number of soil layers.The simulation will run using the minimum of the 
 05 July 1940 (Day of year=187), Apply_DCD:
      DCD being applied. 0kg/ha added at depth 1mm
 22 July 1940(Day of year=204), Cut or graze AgPasture: 
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
-     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 16.18030 (kg/ha), n = 0.60541 (kg/ha), cpr = 0
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 17.66132 (kg/ha), n = 0.66641 (kg/ha), cpr = 0
 22 July 1940(Day of year=204), Cut or graze AgPasture: 
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
-     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 16.01660 (kg/ha), n = 0.59663 (kg/ha), cpr = 0
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 17.22607 (kg/ha), n = 0.64455 (kg/ha), cpr = 0
 22 July 1940(Day of year=204), Cut or graze AgPasture: 
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
-     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 16.18030 (kg/ha), n = 0.60541 (kg/ha), cpr = 0
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 17.66132 (kg/ha), n = 0.66641 (kg/ha), cpr = 0
 31 July 1940(Day of year=213), clock: 
      Simulation is terminating due to end criteria being met.

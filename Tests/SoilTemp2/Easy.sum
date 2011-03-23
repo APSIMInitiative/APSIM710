@@ -9,7 +9,7 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.4
+Version                = 7.3
 Title                  = Easy
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
@@ -24,7 +24,7 @@ Paddock:
    Component         "SoilTemp2 (withSWIM)" = %apsim%\Model\SoilTemp2.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                      "SoilNui" = %apsim%\Model\SoilN.dll
-   Component                "AgPastureSWIM" = %apsim%\Model\AgPasture.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -105,8 +105,8 @@ Paddock:
      
      SECTION:- start_of_day
      if today >= date('1/01/1900') and today <= date('1/12/2010') then
-        preharvest_dm = agpastureswim.abovegroundwt
-        preharvest_n = agpastureswim.abovegroundn
+        preharvest_dm = agpasture.abovegroundwt
+        preharvest_n = agpasture.abovegroundn
         harvested_dm =0
         harvested_n = 0
         removed_dm = 0.0
@@ -133,10 +133,10 @@ Paddock:
      endif
      if do_cut = 'true' then
         if preharvest_dm > 1250 then
-           agpastureswim graze type = 'residue', amount = 1250
+           agpasture graze type = 'residue', amount = 1250
            has_cut = 'true'
-           harvested_dm = agpastureswim.harvestwt
-           harvested_n = agpastureswim.harvestn
+           harvested_dm = agpasture.harvestwt
+           harvested_n = agpasture.harvestn
            growthratecalc = harvested_dm/days_after_cut
            if harvested_dm > 0 then
               n_conc_removed = harvested_n*100/harvested_dm
@@ -434,7 +434,7 @@ Paddock:
            Totals  155646.2 11972.8  4139.2   517.4   400.0    13.3
           ---------------------------------------------------------
 
-------- AgPastureSWIM Initialisation ------------------------------------------
+------- AgPasture Initialisation ----------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager creating a new local real variable : preharvest_dm = 2050.00000
      Manager creating a new local real variable : preharvest_n = 68.10000
@@ -446,7 +446,7 @@ Paddock:
      Manager creating a new local real variable : return_n = 0.00000
      Manager creating a new local real variable : growthratecalc = 0.00000
      Manager creating a new local real variable : n_conc_total = 0.00000
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
      Manager creating a new local real variable : n_conc_removed = 3.40658
      Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 13.00000 (kg/ha), n = 0.44285 (kg/ha), cpr = 0
 20 January 1970(Day of year=20), Operations1: 
@@ -483,6 +483,45 @@ Paddock:
    - Reading Fertiliser Type Parameters
          5.00 of N as urea (urea_n)
                                          added at depth   20.00 (layer   3)
+24 February 1970(Day of year=55), SWIM2ui: 
+      Maximum iterations reached - swim will reduce timestep to solve water movement
+          APSwim Numerical Diagnostics
+          ------------------------------------------------------------------------------
+           depth   Soil Type     Theta         g%psi        K           g%p          g%p*
+          ------------------------------------------------------------------------------
+             0.0  tLw_0         0.4301612    -28.190      0.228      4.330      4.288
+            10.0  tLw_0         0.4315113    -27.608      0.242      4.444      4.401
+            20.0  tLw_0         0.4329429    -26.978      0.258      4.567      4.524
+            30.0  tLw_0         0.4344430    -26.305      0.275      4.697      4.656
+            50.0  tLw_0         0.4375859    -24.843      0.314      4.976      4.943
+            70.0  tLw_0         0.4408106    -23.253      0.359      5.276      5.257
+            90.0  tLw_0         0.4440064    -21.562      0.410      5.592      5.593
+           110.0  tLw_0         0.4470762    -19.791      0.465      5.919      5.945
+           140.0  tLw_0         0.4512967    -17.027      0.551      6.425      6.497
+           160.0  -             0.4364410    -15.158      0.407      6.754      6.870
+           190.0  -             0.4116990    -12.399      0.235      7.185      7.422
+           210.0  LFs_0         0.3937919    -10.639      0.155      7.387      7.775
+           250.0  LFs_0         0.3940781     -7.212      0.158      7.675      8.465
+           270.0  -             0.3884038     -5.583      0.080      7.883      8.794
+           330.0  -             0.3713272     -1.688      0.010      8.662      9.526
+           370.0  LCf_0         0.3598771      1.446      0.003      9.289      9.223
+           430.0  LCf_0         0.3560032    -47.876      0.002      2.425     -0.356
+           470.0  LCf_0         0.3357497   -121.313      0.000     -3.333     -3.366
+           530.0  LCf_0         0.3345579   -125.337      0.000     -3.407     -3.407
+           570.0  LCf_0         0.3349587   -123.968      0.000     -3.388     -3.388
+           630.0  LCf_0         0.3341575   -126.722      0.000     -3.425     -3.425
+           670.0  -             0.3287547   -130.545      0.000     -3.473     -3.473
+           780.0  -             0.3167842   -130.807      0.000     -3.477     -3.477
+           820.0  LCs_0         0.3129685   -129.302      0.001     -3.458     -3.458
+           980.0  LCs_0         0.3151541   -123.065      0.001     -3.376     -3.376
+          1020.0  LCs_0         0.3156107   -121.806      0.001     -3.359     -3.359
+          1180.0  LCs_0         0.3170759   -117.862      0.001     -3.303     -3.302
+          1220.0  LCs_0         0.3173698   -117.088      0.001     -3.291     -3.291
+          1380.0  LCs_0         0.3181809   -114.983      0.001     -3.259     -3.259
+          1420.0  LCs_0         0.3182981   -114.682      0.001     -3.255     -3.255
+          1500.0  LCs_0         0.3183944   -114.436      0.001     -3.251     -3.251
+          ------------------------------------------------------------------------------
+     ApsimSwim|apswim_swim -  Changing dt value from:  0.2125439551375621 to:  0.1062719775687810
 20 March 1970(Day of year=79), Operations1: 
       Sending apply message to fertiliser
 20 March 1970(Day of year=79), fertiliser: 
@@ -535,7 +574,7 @@ Paddock:
          5.00 of N as urea (urea_n)
                                          added at depth   20.00 (layer   3)
 9 July 1970(Day of year=190), Cut or graze AgPasture: 
-     Manager sending message :- agpastureswim graze  type = 'residue', amount = 1250
-     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 0.60478 (kg/ha), n = 0.01731 (kg/ha), cpr = 0
+     Manager sending message :- agpasture graze  type = 'residue', amount = 1250
+     Manager sending message :- surface organic matter add_surfaceom  name = grass, type = grass, mass = 1.10658 (kg/ha), n = 0.03174 (kg/ha), cpr = 0
 14 July 1970(Day of year=195), clock: 
      Simulation is terminating due to end criteria being met.
