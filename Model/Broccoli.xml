@@ -1,4 +1,4 @@
-<Type version="23" name="broccoli">
+<Type version="27" name="broccoli">
   <Info>
     <variables>
       <variable name="Crop_Type" description="" read="T" write="F" kind="string" array="" units="" />
@@ -12,6 +12,8 @@
       <variable name="BelowGroundN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="TotalDM" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="TotalN" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="TotalLiveN" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="TotalDeadN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="ReserveDM" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="ReserveN" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="Population" description="" read="T" write="F" kind="double" array="" units="" />
@@ -82,10 +84,20 @@
       <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisVPD" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisCO2CompensationPoint" description="" read="T" write="F" kind="double" array="" units="ppm" />
+      <variable name="LeafPhotosynthesisCO2conc" description="" read="T" write="F" kind="double" array="" units="ppm" />
       <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFn" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFw" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFco2" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPhotosynthesisFTValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="LeafPhotosynthesisFVPDValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFNValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFWValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFco2Value" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFco2FirstValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFco2SecondValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="deg.day" />
       <variable name="LeafNodeAppearanceRateFunctionValue" description="" read="T" write="F" kind="double" array="" units="" />
@@ -100,6 +112,7 @@
       <variable name="StemLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemLivePotentialDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -107,6 +120,7 @@
       <variable name="StemDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="StemDeadPotentialDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -132,6 +146,7 @@
       <variable name="FloretLiveStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="FloretLivePotentialDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretLiveNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -139,6 +154,7 @@
       <variable name="FloretDeadStructuralN" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadNonStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadStructuralWt" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
+      <variable name="FloretDeadPotentialDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadN" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadNConc" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -289,6 +305,12 @@
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.5</KDead>
+        <MaxNodeNo>40</MaxNodeNo>
+        <InitialAreas>200 1326 990 844 167</InitialAreas>
+        <InitialAges>150 120 90 60 30</InitialAges>
+        <InitialiseStage>Transplanting</InitialiseStage>
+        <InitialLeafPrimordia>8</InitialLeafPrimordia>
+        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <GenericFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -296,12 +318,6 @@
             <XY>0 0.0</XY>
           </XYPairs>
         </GenericFunction>
-        <MaxNodeNo>40</MaxNodeNo>
-        <InitialAreas>200 1326 990 844 167</InitialAreas>
-        <InitialAges>150 120 90 60 30</InitialAges>
-        <InitialiseStage>Transplanting</InitialiseStage>
-        <InitialLeafPrimordia>8</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -337,7 +353,7 @@
               <XY>50 1.0</XY>
             </XYPairs>
           </GenericFunction>
-		  <GenericFunction name="FN">
+          <GenericFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
