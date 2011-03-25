@@ -92,7 +92,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,11 +156,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -198,7 +198,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      END of rules
      
@@ -241,7 +241,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      profile_sw = 0
      
@@ -270,7 +270,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -303,7 +303,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
      Manager creating a new local real variable : profile_sw = 0.00000
 
@@ -3526,8 +3526,8 @@ fertiliser:
      
      
 30/06/1985 - FloralInitiation
-                            LAI = 1.12 (m^2/m^2)
-           Above Ground Biomass = 82.42 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 53.94 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -3619,8 +3619,8 @@ fertiliser:
      
      
 2/07/1985 - TuberInitiation
-                            LAI = 1.25 (m^2/m^2)
-           Above Ground Biomass = 105.10 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 73.18 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -6594,8 +6594,8 @@ fertiliser:
      
      
 6/09/1985 - FinalLeaf
-                            LAI = 5.71 (m^2/m^2)
-           Above Ground Biomass = 1174.87 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 426.66 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------

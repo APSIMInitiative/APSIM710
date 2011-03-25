@@ -152,7 +152,7 @@ public override void DoDM(NamedList<Organ> Organs)
         {
             Organs[i].DMPotentialAllocation = DMAllocation[i];
         }
-
+        
         // Then check it all adds up
         double DMBalanceError = Math.Abs(TotalDMAllocated - TotalDMSupply);
         if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
@@ -244,7 +244,7 @@ public override void DoDM(NamedList<Organ> Organs)
         for (int i = 0; i < Organs.Count; i++)
         {
             double Allocation = 0.0;
-            Allocation = Math.Min(Math.Max(DMAllocation[i] * MinNconc[i] - NAllocation[i], 0.0), ReallocNNotAllocated);
+            Allocation = Math.Min(Math.Max(DMAllocation[i] * MinNconc[i] - NAllocation[i], 0.0), ReallocNNotAllocated); //FIXME, check  - NAllocation[i] is needed
             NAllocation[i] += Allocation;
             ReallocNNotAllocated -= Allocation;
             ReallocNAllocated += Allocation;

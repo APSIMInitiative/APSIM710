@@ -92,7 +92,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,11 +156,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -353,7 +353,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      END of rules
      
@@ -396,7 +396,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -424,7 +424,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -456,7 +456,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -723,15 +723,15 @@ Paddock:
 24 January 2008(Day of year=24), operations: 
       Sending apply message to irrigation
 24/01/2008 - FloralInitiation
-                            LAI = 0.09 (m^2/m^2)
-           Above Ground Biomass = 3.60 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 25.87 (g/m^2)
 25 January 2008(Day of year=25), operations: 
       Sending apply message to irrigation
 26 January 2008(Day of year=26), operations: 
       Sending apply message to irrigation
 26/01/2008 - TuberInitiation
-                            LAI = 0.12 (m^2/m^2)
-           Above Ground Biomass = 4.95 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 31.53 (g/m^2)
 27 January 2008(Day of year=27), operations: 
       Sending apply message to fertiliser
 27 January 2008(Day of year=27), fertiliser: 
@@ -843,8 +843,8 @@ Paddock:
 6 March 2008(Day of year=66), operations: 
       Sending apply message to irrigation
 6/03/2008 - FinalLeaf
-                            LAI = 2.62 (m^2/m^2)
-           Above Ground Biomass = 314.41 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 188.93 (g/m^2)
 7 March 2008(Day of year=67), operations: 
       Sending apply message to irrigation
 8 March 2008(Day of year=68), operations: 
@@ -959,14 +959,7 @@ Paddock:
       Sending apply message to irrigation
 21/05/2008 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 696.23 (g/m^2)
-21 May 2008(Day of year=142): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Mass Balance Error in Photosynthesis DM Allocation
-     Component name: potato2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+           Above Ground Biomass = 231.62 (g/m^2)
+Removing Leaves from plant
+1 June 2008(Day of year=153), clock: 
+     Simulation is terminating due to end criteria being met.

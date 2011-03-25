@@ -92,7 +92,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,11 +156,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -206,7 +206,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      if stagecodevalue >=3 then
      tt_emerge = tt_emerge + phenologythermaltimevalue
@@ -252,7 +252,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -280,7 +280,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -312,7 +312,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -482,11 +482,11 @@ Paddock:
 15 December 1998(Day of year=349), operations: 
       Sending apply message to irrigation
 23/12/1998 - FloralInitiation
-                            LAI = 0.75 (m^2/m^2)
-           Above Ground Biomass = 63.26 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 49.79 (g/m^2)
 25/12/1998 - TuberInitiation
-                            LAI = 0.86 (m^2/m^2)
-           Above Ground Biomass = 87.16 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 67.53 (g/m^2)
 29 December 1998(Day of year=363), operations: 
       Sending apply message to irrigation
       Sending apply message to fertiliser
@@ -504,110 +504,33 @@ Paddock:
 10 February 1999(Day of year=41), operations: 
       Sending apply message to irrigation
 18/02/1999 - FinalLeaf
-                            LAI = 5.26 (m^2/m^2)
-           Above Ground Biomass = 1158.08 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 428.28 (g/m^2)
 19 February 1999(Day of year=50), operations: 
       Sending apply message to irrigation
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
+Removing Leaves from plant
 2/05/1999 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1670.73 (g/m^2)
-2/05/1999 - Maturity
+           Above Ground Biomass = 159.68 (g/m^2)
+26/05/1999 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1670.73 (g/m^2)
-2 May 1999(Day of year=122), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-3 May 1999(Day of year=123), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-4 May 1999(Day of year=124), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-5 May 1999(Day of year=125), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-6 May 1999(Day of year=126), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-7 May 1999(Day of year=127), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-8 May 1999(Day of year=128), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-9 May 1999(Day of year=129), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-10 May 1999(Day of year=130), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-11 May 1999(Day of year=131), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-12 May 1999(Day of year=132), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-13 May 1999(Day of year=133), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-14 May 1999(Day of year=134), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-15 May 1999(Day of year=135), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-16 May 1999(Day of year=136), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-17 May 1999(Day of year=137), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-18 May 1999(Day of year=138), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-19 May 1999(Day of year=139), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-20 May 1999(Day of year=140), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-21 May 1999(Day of year=141), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-22 May 1999(Day of year=142), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-23 May 1999(Day of year=143), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-24 May 1999(Day of year=144), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-25 May 1999(Day of year=145), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+           Above Ground Biomass = 159.68 (g/m^2)
 26 May 1999(Day of year=146), Harvesting rule: 
      Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+     Manager sending message :- potato2 endcrop
+27 May 1999(Day of year=147): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "stagecodevalue".
+     Variables should have a value before they are used in an expression.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 27 May 1999(Day of year=147), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-28 May 1999(Day of year=148), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-29 May 1999(Day of year=149), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-30 May 1999(Day of year=150), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-31 May 1999(Day of year=151), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
-1 June 1999(Day of year=152), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 end_crop
+     Manager creating a new local real variable : stagecodevalue = 0.00000
 1 June 1999(Day of year=152), clock: 
      Simulation is terminating due to end criteria being met.

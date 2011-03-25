@@ -92,7 +92,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,11 +156,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -206,7 +206,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      END of rules
      
@@ -249,7 +249,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -277,7 +277,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -309,7 +309,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -465,27 +465,23 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 12/08/2001 - FloralInitiation
-                            LAI = 0.25 (m^2/m^2)
-           Above Ground Biomass = 10.62 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 22.27 (g/m^2)
 14/08/2001 - TuberInitiation
-                            LAI = 0.35 (m^2/m^2)
-           Above Ground Biomass = 15.15 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 30.24 (g/m^2)
 14/09/2001 - FinalLeaf
-                            LAI = 3.29 (m^2/m^2)
-           Above Ground Biomass = 236.81 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 68.73 (g/m^2)
 19/11/2001 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 441.03 (g/m^2)
-19/11/2001 - Maturity
+           Above Ground Biomass = 78.84 (g/m^2)
+Removing Leaves from plant
+2/12/2001 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 441.03 (g/m^2)
-19 November 2001(Day of year=323): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Mass Balance Error in Photosynthesis DM Allocation
-     Component name: potato2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+           Above Ground Biomass = 11.54 (g/m^2)
+2 December 2001(Day of year=336), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 endcrop
+30 December 2001(Day of year=364), clock: 
+     Simulation is terminating due to end criteria being met.

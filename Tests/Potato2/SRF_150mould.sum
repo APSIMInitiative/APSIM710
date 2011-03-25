@@ -92,7 +92,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -156,11 +156,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -208,7 +208,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      END of rules
      
@@ -289,7 +289,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      no3_30cm = 0
      nh4_30cm = 0
@@ -320,7 +320,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -357,7 +357,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
      Manager creating a new local real variable : no3_30cm = 0.00000
      Manager creating a new local real variable : nh4_30cm = 0.00000
@@ -551,13 +551,13 @@ Paddock:
        150.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
 20/01/2003 - FloralInitiation
-                            LAI = 1.00 (m^2/m^2)
-           Above Ground Biomass = 69.42 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 79.19 (g/m^2)
 21 January 2003(Day of year=21), operations: 
       Sending apply message to irrigation
 21/01/2003 - TuberInitiation
-                            LAI = 1.11 (m^2/m^2)
-           Above Ground Biomass = 85.31 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 94.91 (g/m^2)
 25 January 2003(Day of year=25), Potato Sowing Rule: 
      Manager sending message :- fertiliser apply  amount = 10 (kg/ha), type = urea_n, depth = 10 (mm)
 25 January 2003(Day of year=25), fertiliser: 
@@ -611,8 +611,8 @@ Paddock:
                                          added at depth   10.00 (layer   1)
      Manager sending message :- fertiliser apply  amount = 1 (kg/ha), type = urea_n, depth = 170 (mm)
 6/03/2003 - FinalLeaf
-                            LAI = 8.33 (m^2/m^2)
-           Above Ground Biomass = 1101.11 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 401.90 (g/m^2)
      
    - Reading Fertiliser Type Parameters
          1.00 of N as urea (urea_n)

@@ -93,7 +93,7 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt
+        LeafDeadWt2
         LeafLiveWt2
         StemDeadWt
         StemLiveWt
@@ -122,9 +122,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNconc
-        LeafNpercent
-        StemliveNConc
+        TuberLiveNConc3
+        LeafLiveNConc3
+        StemLiveNConc3
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -157,11 +157,11 @@ Paddock:
         GrainPartitionFractionValue
         FloretPartitionFractionValue
         RootPartitionFractionValue
-        GrainStructuralNConcValue
-        FloretStructuralNConcValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
         LeafMinimumNConcValue
-        StemStructuralNConcValue
-        TuberStructuralNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
         GrainMaximumNConcValue
         FloretMaximumNConcValue
         LeafMaximumNConcValue
@@ -199,7 +199,7 @@ Paddock:
      SECTION:- end_of_day
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
-       potato2  end_crop
+       potato2  endcrop
                 endif
      END of rules
      
@@ -235,7 +235,6 @@ Paddock:
      co2 = 350
      END of rules
      
-     Manager creating a new local real variable : co2 = 350.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -260,7 +259,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leafnpercent = 0
+     leaflivenconc3 = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -288,7 +287,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt2 > 0 then
-     leafnpercent = (potato2.leafliven2/potato2.leaflivewt2)
+     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -320,7 +319,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leafnpercent = 0.00000
+     Manager creating a new local real variable : leaflivenconc3 = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -1766,8 +1765,8 @@ Paddock:
      
      
 6/12/1987 - FloralInitiation
-                            LAI = 0.86 (m^2/m^2)
-           Above Ground Biomass = 66.87 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 55.85 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -1815,8 +1814,8 @@ Paddock:
      
      
 8/12/1987 - TuberInitiation
-                            LAI = 0.97 (m^2/m^2)
-           Above Ground Biomass = 79.84 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 70.70 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -3304,8 +3303,8 @@ Paddock:
      
      
 10/02/1988 - FinalLeaf
-                            LAI = 1.38 (m^2/m^2)
-           Above Ground Biomass = 589.06 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 198.38 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -5056,7 +5055,20 @@ Paddock:
      
 26/04/1988 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 675.32 (g/m^2)
+           Above Ground Biomass = 218.04 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+Removing Leaves from plant
+27 April 1988(Day of year=118): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -5069,11 +5081,749 @@ Paddock:
      
      
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
+                      APSIM Warning Error
                       -------------------
-     Mass Balance Error in Photosynthesis DM Allocation
-     Component name: potato2
-     
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+28 April 1988(Day of year=119): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 April 1988(Day of year=120): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 April 1988(Day of year=121): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 May 1988(Day of year=122): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 May 1988(Day of year=123): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 May 1988(Day of year=124): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 May 1988(Day of year=125): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 May 1988(Day of year=126): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 May 1988(Day of year=127): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 May 1988(Day of year=128): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 May 1988(Day of year=129): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 May 1988(Day of year=130): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 May 1988(Day of year=131): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 May 1988(Day of year=132): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 May 1988(Day of year=133): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 May 1988(Day of year=134): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 May 1988(Day of year=135): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 May 1988(Day of year=136): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 May 1988(Day of year=137): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 May 1988(Day of year=138): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 May 1988(Day of year=139): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 May 1988(Day of year=140): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 May 1988(Day of year=141): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 May 1988(Day of year=142): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 May 1988(Day of year=143): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 May 1988(Day of year=144): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 May 1988(Day of year=145): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 May 1988(Day of year=146): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25/05/1988 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 48.29 (g/m^2)
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 May 1988(Day of year=146), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 endcrop
+26 May 1988(Day of year=147): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 May 1988(Day of year=148): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 May 1988(Day of year=149): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 May 1988(Day of year=150): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 May 1988(Day of year=151): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 May 1988(Day of year=152): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 June 1988(Day of year=153): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      saturation of     0.440000      in layer   5
+              is above acceptable value of     0.396226
+     You must adjust bulk density (bd) to below      1.48400
+     OR saturation (sat) to below     0.396226
+     Component name: Templeton Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 June 1988(Day of year=153), clock: 
+     Simulation is terminating due to end criteria being met.

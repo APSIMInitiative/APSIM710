@@ -34,7 +34,7 @@ class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
         Dead.Clear();
     }
 
-    public double TuberStartDMDemand = 0;
+    public double TuberStartDMDemand = 0; //Fixme, I think this is now redundant
     private double PotentialDMAllocation = 0;
 
     public override double DMDemand
