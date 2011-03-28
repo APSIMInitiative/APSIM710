@@ -136,10 +136,9 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     double   value;
     protocol::BuyStockType buystock;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo( * v.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(v);
 
-    if (incomingApsimVariant.get("number", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("number", value4) == true)
     {
          buystock.number = value4;
 
@@ -151,7 +150,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.number = 0;
 
-    if (incomingApsimVariant.get("genotype", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("genotype", valuestr) == true)
     {
          buystock.genotype = valuestr;
 
@@ -162,7 +161,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.genotype = "";
 
-    if (incomingApsimVariant.get("sex", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("sex", valuestr) == true)
     {
          buystock.sex = valuestr;
 
@@ -173,7 +172,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.sex = "";
 
-    if (incomingApsimVariant.get("age", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("age", value) == true)
     {
          buystock.age = value;
 
@@ -184,7 +183,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.age = 0.0;
 
-    if (incomingApsimVariant.get("weight", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("weight", value) == true)
     {
          buystock.weight = value;
 
@@ -196,7 +195,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.weight = 0.0;
 
-    if (incomingApsimVariant.get("fleece_wt", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("fleece_wt", value) == true)
     {
          buystock.fleece_wt = value;
 
@@ -207,7 +206,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.fleece_wt = 0.0;
 
-    if (incomingApsimVariant.get("cond_score", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("cond_score", value) == true)
     {
          buystock.cond_score = value;
 
@@ -218,32 +217,32 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     else
          buystock.cond_score = 0.0;
 
-    if (incomingApsimVariant.get("mated_to", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("mated_to", valuestr) == true)
          buystock.mated_to = valuestr;
     else
          buystock.mated_to = "";
 
-    if (incomingApsimVariant.get("pregnant", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("pregnant", value4) == true)
          buystock.pregnant = value4;
     else
          buystock.pregnant = 0;
 
-    if (incomingApsimVariant.get("lactating", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("lactating", value4) == true)
          buystock.lactating = value4;
     else
          buystock.lactating = 0;
 
-    if (incomingApsimVariant.get("no_young", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("no_young", value4) == true)
          buystock.no_young = value4;
     else
          buystock.no_young = 0;
 
-    if (incomingApsimVariant.get("young_wt", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("young_wt", value) == true)
          buystock.young_wt = value;
     else
          buystock.young_wt = 0.0;
 
-    if (incomingApsimVariant.get("young_fleece_wt", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("young_fleece_wt", value) == true)
          buystock.young_fleece_wt = value;
     else
          buystock.young_fleece_wt = 0.0;
@@ -259,10 +258,9 @@ void NonHerbageConverter::stockSell (protocol::Variant &v/*(INPUT) message varia
     ostringstream msg;
     msg << "Sell stock :-" << endl;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(*v.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(v);
 
-    if (incomingApsimVariant.get("number", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("number", value4) == true)
     {
          sellstock.number = value4;
 
@@ -273,7 +271,7 @@ void NonHerbageConverter::stockSell (protocol::Variant &v/*(INPUT) message varia
          sellstock.number = 0;
     }
 
-    if (incomingApsimVariant.get("group", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("group", value4) == true)
     {
          sellstock.group = value4;
 
@@ -298,10 +296,9 @@ void NonHerbageConverter::stockMove (protocol::Variant &v/*(INPUT) message varia
     ostringstream msg;
     msg << "Name stock :-" << endl;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(*v.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(v);
 
-    if (incomingApsimVariant.get("group", protocol::DTint4, false, value4) == true)
+    if (incomingApsimVariant.get("group", value4) == true)
     {
          movestock.group = value4;
 
@@ -312,7 +309,7 @@ void NonHerbageConverter::stockMove (protocol::Variant &v/*(INPUT) message varia
          movestock.group = 0;
     }
 
-    if (incomingApsimVariant.get("paddock", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("paddock", valuestr) == true)
     {
          movestock.paddock = valuestr;
          msg << " paddock = " << setw(10) << valuestr << " (-)" << endl;
@@ -329,7 +326,7 @@ void NonHerbageConverter::stockMove (protocol::Variant &v/*(INPUT) message varia
 
 void NonHerbageConverter::sendAddSurfaceOMEvent (const string& omName, const string& omType, protocol::AddExcretafaeces_omType faecesOM)
 {
-    protocol::ApsimVariant outgoingApsimVariant(this);
+    protocol::ApsimVariant outgoingApsimVariant;
     outgoingApsimVariant.store("name", protocol::DTstring, false, FString(omName.c_str()));
     outgoingApsimVariant.store("type", protocol::DTstring, false, FString(omType.c_str()));
 

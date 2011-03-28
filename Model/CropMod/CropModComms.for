@@ -59,7 +59,7 @@
 
        call Crop_Read_Constants()
 
-
+ 
       g%current_stage = real (plant_end)
       g%plant_status = status_out
 
@@ -70,7 +70,7 @@
       end subroutine
 
 *     ===========================================================
-      subroutine Start_Crop ()
+      subroutine Start_Crop (variant)
 *     ===========================================================
             Use infrastructure
       implicit none
@@ -89,17 +89,22 @@
       parameter (my_name  = 'Start_Crop')
 
 *+  Local Variables
+      integer, intent(in) :: variant
+
       character  cultivar*20           ! name of cultivar
       integer    numvals               ! number of values found in array
       character  string*200            ! output string
       character  skip*20               ! skip type solid,single,double
       character  module_name*50      ! module name
+      type(SowType) :: Sow
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
       call print_routine (my_name)
 
+      call unpack_Sow(variant, Sow)
+      
       if (g%plant_status.eq.status_out) then
          if (.not. g%plant_status_out_today) then
 
@@ -108,36 +113,23 @@
          !-----------------------------------------------------------
          call Write_string ( 'Sowing initiate')
 
-         call collect_char_var ('cultivar', '()'
-     :                        , cultivar, numvals)
+         cultivar = Sow%Cultivar
+         g%plants = Sow%plants
+         g%sowing_depth = Sow%sowing_depth
+         g%row_spacing = Sow%row_spacing
 
-         call collect_real_var ('plants', '()'
-     :                        , g%plants, numvals, 0.0, 400.0)
-
-         call collect_real_var (
-     :                          'sowing_depth', '(mm)'
-     :                        , g%sowing_depth, numvals
-     :                        , 0.0, 100.0)
-
-         call collect_real_var_optional (
-     :                          'row_spacing', '(m)'
-     :                        , g%row_spacing, numvals
-     :                        , 0.0, 2000.0)
-
-         if (numvals.eq.0) then
+         if (g%row_spacing.eq.0) then
              g%row_spacing = c%row_spacing_default
          elseif (g%row_spacing .gt. 20.0) then
             g%row_spacing = g%row_spacing / 1000;    ! Row spacing converted from mm to m
          endif
 
          g%skip_row = c%skip_row_default
-         call collect_real_var_optional (
-     :                         'skiprow', '()'
-     :                        , g%skip_row, numvals
-     :                        , 0.0, 2.0)
-         if (numvals.eq.0) then
-            call collect_char_var_optional ('skip', '()', skip, numvals)
-            if (numvals.ne.0) then
+         if (Sow%SkipRow .ne. 0) then
+            g%skip_row = Sow%SkipRow
+         else
+            skip = Sow%Skip
+            if (skip .ne. ' ') then
                if (skip .eq. 'single') then
                   g%skip_row = 1.0
                elseif (skip .eq. 'double') then
@@ -152,23 +144,19 @@
             else
                ! uses default value
             endif
-         else
-            ! uses collected value
          endif
 
          g%skip_row_fac = (2.0 + g%skip_row)/2.0
 
 
             !scc added FTN 11/10/95
-         call collect_real_var_optional (
-     :                      'tiller_no_fertile', '()'
-     :                    , g%tiller_no_fertile, numvals
-     :                    , 0.0, 10.0)
-
-         if (numvals.eq.0) then
-            g%tiller_no_fertile = 0.0
+         if (Sow%tiller_no_fertile .ne. ' ') then
+            call String_to_real_var(Sow%tiller_no_fertile, 
+     :                              g%tiller_no_fertile, numvals)
          else
+            g%tiller_no_fertile = 0.0
          endif
+         
         call publish_null(id%sowing)
       !-----------------------------------------------------------
       !Report sowing information

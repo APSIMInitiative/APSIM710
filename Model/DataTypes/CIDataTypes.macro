@@ -15,6 +15,7 @@
 #include <ComponentInterface/MessageDataExt.h>
 #include <ComponentInterface/Type.h>
 #include <ComponentInterface/Interfaces.h>
+#include <ComponentInterface/ApsimVariant.h>
 
 // Maximum Array Size for fortran arrays
 #define max_array_size 100
@@ -70,6 +71,18 @@ inline protocol::MessageData& operator>>(protocol::MessageData& messageData, [ty
    [endfor]
    return messageData;
    }
+inline void unpack(protocol::ApsimVariant& apsimVar, [type.name]Type& data)
+   {
+   [foreach type.field]
+   [if [field.arrayofstructures] = T]
+   throw runtime_error("Cannot unpack a complex structure from an APSIMVariant");
+   [elseif [field.structure] = T]
+   throw runtime_error("Cannot unpack a complex structure from an APSIMVariant");
+   [else]
+   apsimVar.get("[field.name]", data.[field.name]);
+   [endif]
+   [endfor]
+   }   
 std::string EXPORT DDML(const [type.name]Type& value);
 std::string EXPORT DDML(const F[type.name]Type& value);
 inline unsigned int memorySize(const [type.name]Type& data)
@@ -284,13 +297,42 @@ namespace protocol {
       return messageData;
       }
 }
+void unpack(protocol::ApsimVariant& apsimVar, protocol::F[type.name]Type& data)
+   {
+   [foreach type.field]
+   [if [field.arrayofstructures] = T]
+   throw std::runtime_error("APSIMVariant cannot be used for complex types"); 	
+   [elseif [field.structure] = T]
+   throw std::runtime_error("APSIMVariant cannot be used for complex types"); 	
+   [elseif [field.arrayandstring] = T]
+   FStrings [field.name]Values(data.[field.name], max_array_size, max_array_size, 0);  
+   apsimVar.get("[field.name]", [field.name]Values);
+   data.num_[field.name] = [field.name]Values.getNumElements();
+   [elseif [field.array] = T]
+   throw std::runtime_error("APSIMVariant array types not implemented"); 	
+   [elseif [field.rawcpptype] = std::string]
+   FString [field.name]String(data.[field.name], max_array_size, EmptyString);
+   FString [field.name]Alias;
+   apsimVar.get("[field.name]", [field.name]Alias);
+   [field.name]String = [field.name]Alias;
+   [else]
+   apsimVar.get("[field.name]", data.[field.name]);
+   [endif]
+   [endfor]
+   }
 extern "C" void EXPORT STDCALL publish_[type.name](unsigned* id, const protocol::F[type.name]Type* data)
    {
    FortranWrapper::currentInstance->publish(*id, *data);
    }
 extern "C" void EXPORT STDCALL unpack_[type.name](protocol::Variant* variant, protocol::F[type.name]Type* data)
    {
-   variant->unpack(*data);
+   if (variant->isApsimVariant())
+      {
+      protocol::ApsimVariant ApsimVar(*variant);
+      unpack(ApsimVar, *data);
+      }
+   else
+      variant->unpack(*data);
    }
 [endfor]
 

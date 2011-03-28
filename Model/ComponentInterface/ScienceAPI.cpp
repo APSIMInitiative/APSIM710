@@ -547,6 +547,38 @@ class CMPMethod1 : public DeletableThing
          }
       void invoke(unsigned &, unsigned &, protocol::Variant& variant)
          {
+         if (variant.isApsimVariant())
+            {
+            protocol::ApsimVariant ApsimVar(variant);
+            unpack(ApsimVar, dummy);
+            }
+         else
+            variant.unpack(NULL, NULL,  dummy);
+         setter(dummy);
+         }
+      const char* DDML() {return ddml.c_str();}
+
+   };
+
+// -------------------------------------------------------------------
+// A wrapper class for CMP events that take a simple built in type 
+// e.g. float as an arguemnt.
+// -------------------------------------------------------------------
+template <class FT, class T>
+class CMPMethodBuiltIn : public DeletableThing
+   {
+   private:
+      FT setter;
+      T dummy;
+      std::string ddml;
+   public:
+      CMPMethodBuiltIn(FT& fn)
+         {
+         setter = fn;
+         ddml = protocol::DDML(dummy);
+         }
+      void invoke(unsigned &, unsigned &, protocol::Variant& variant)
+         {
          variant.unpack(NULL, NULL,  dummy);
          setter(dummy);
          }
@@ -616,8 +648,7 @@ class ApsimVariantWrapper : public DeletableThing
          }
       void invoke(unsigned &, unsigned &, protocol::Variant& variant)
          {
-         protocol::ApsimVariant ApsimVar(comp);
-         ApsimVar.aliasTo(* variant.getMessageData());
+         protocol::ApsimVariant ApsimVar(variant);
          setter(ApsimVar);
          }
       const char* DDML()
@@ -655,7 +686,40 @@ void ScienceAPI::subscribe(const std::string& name, NullFunctionWithNameType han
    }
 void ScienceAPI::subscribe(const std::string& name, FloatFunctionType handler)
    {
-   typedef CMPMethod1<FloatFunctionType, float> WrapperType;
+   typedef CMPMethodBuiltIn<FloatFunctionType, float> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler);
+   stuffToDelete.push_back(wrapper);
+
+   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
+   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   component->addEvent(name.c_str(),
+                       fn, wrapper->DDML());
+   }
+void ScienceAPI::subscribe(const std::string& name, SowFunctionType handler)
+   {
+   typedef CMPMethod1<SowFunctionType, protocol::SowType> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler);
+   stuffToDelete.push_back(wrapper);
+
+   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
+   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   component->addEvent(name.c_str(),
+                       fn, wrapper->DDML());
+   }
+void ScienceAPI::subscribe(const std::string& name, HarvestFunctionType handler)
+   {
+   typedef CMPMethod1<HarvestFunctionType, protocol::HarvestType> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler);
+   stuffToDelete.push_back(wrapper);
+
+   boost::function3<void, unsigned &, unsigned &, protocol::Variant &> fn;
+   fn = boost::bind(&WrapperType::invoke, wrapper, _1, _2, _3);
+   component->addEvent(name.c_str(),
+                       fn, wrapper->DDML());
+   }
+void ScienceAPI::subscribe(const std::string& name, KillStemFunctionType handler)
+   {
+   typedef CMPMethod1<KillStemFunctionType, protocol::KillStemType> WrapperType;
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 

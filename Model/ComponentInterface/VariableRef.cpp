@@ -67,7 +67,7 @@ VariableRef::VariableRef(std::vector<bool>& value)
    // Constructor for a vector of bools.
    // -------------------------------------------------
    {
-   data = new WrapBuiltInRef<vector<bool> >(value);
+   data = new WrapBuiltInRef<std::vector<bool> >(value);
    }
 
 VariableRef::VariableRef(const VariableRef& rhs)

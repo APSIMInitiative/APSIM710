@@ -51,12 +51,15 @@ namespace Graph
       private void FindNestedDataSeries()
          {
          // Find our ApsimFile.Component class. 
-         ApsimFile.Component OurComponent = Controller.ApsimData.Find(NodePath);
+         if (Controller != null && NodePath != "")
+            {
+            ApsimFile.Component OurComponent = Controller.ApsimData.Find(NodePath);
 
-         List<string> DefaultFileNames = new List<string>();
-         UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
-         foreach (DataTable Source in OurComponent.DataSources(DefaultFileNames))
-            AddDataSource(Source);
+            List<string> DefaultFileNames = new List<string>();
+            UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
+            foreach (DataTable Source in OurComponent.DataSources(DefaultFileNames))
+               AddDataSource(Source);
+            }
          }
 
       /// <summary>

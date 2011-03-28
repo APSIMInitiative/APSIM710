@@ -816,7 +816,13 @@ namespace ApsimFile
       /// </summary>
       public static Soil.Variable GetOptional(XmlNode SoilNode, string VariableName)
          {
-         Soil.Variable Var = GetCalculated(SoilNode, VariableName);
+         Soil.Variable Var = null;
+         try
+            {
+            Var = GetCalculated(SoilNode, VariableName);
+            }
+         catch (Exception err)
+            { }
          if (Var == null)
             {
             XmlNode ParentNode = FindVariableParentOptional(SoilNode, VariableName, false);
@@ -1801,6 +1807,9 @@ namespace ApsimFile
       /// </summary>
       public static string CheckForErrors(XmlNode SoilNode, bool IgnoreWaterAndNitrogen)
          {
+         if (Types.Instance.TypeNames.Length == 0)
+            PlugIns.LoadAll();
+
          XmlNode ApsimToSimNode = Types.Instance.ApsimToSim("soil");
          if (ApsimToSimNode == null)
             throw new Exception("Cannot find an <ApsimToSim> for soil type");
@@ -1865,7 +1874,7 @@ namespace ApsimFile
          ph.Units = "1:5 water";
 
          // Check crop variables.
-         foreach (string Crop in Crops(SoilNode))
+         foreach (string Crop in CropsMeasured(SoilNode))
             {
             Soil.Variable ll = Soil.Get(SoilNode, Crop + " LL");
             ll.Units = "mm/mm";
@@ -2015,14 +2024,16 @@ namespace ApsimFile
          {
          string errorMessages = "";
 
+         Soil.Variable sw = Soil.Get(SoilNode, "sw");
+         sw.Units = "mm/mm";
+
          Soil.Variable airdry = Soil.Get(SoilNode, "AirDry");
          airdry.Units = "mm/mm";
+         airdry.ThicknessMM = sw.ThicknessMM;
 
          Soil.Variable sat = Soil.Get(SoilNode, "sat");
          sat.Units = "mm/mm";
-
-         Soil.Variable sw = Soil.Get(SoilNode, "sw");
-         sw.Units = "mm/mm";
+         sat.ThicknessMM = sw.ThicknessMM;
 
          if (sw.Doubles.Length > 0)
             {

@@ -21,6 +21,7 @@ class MessageData;
 
    void EXPORT pack(MessageData& messageData, const Null& data);
    void EXPORT unpack(MessageData& messageData, Null& data);
+   void EXPORT unpack(MessageData& messageData, Null& data, const std::string& sourceDDML);
    unsigned EXPORT memorySize(const Null& data);
    std::string EXPORT DDML(const Null& data);
 
@@ -35,6 +36,7 @@ class MessageData;
 
    void EXPORT pack(MessageData& messageData, const [type.name]Type& data);
    void EXPORT unpack(MessageData& messageData, [type.name]Type& data);
+   void EXPORT unpack(MessageData& messageData, [type.name]Type& data, const std::string& sourceDDML);
    unsigned EXPORT memorySize(const [type.name]Type& data);
    std::string EXPORT DDML(const [type.name]Type& data);
 
@@ -52,10 +54,12 @@ class MessageData;
 #include "DataTypes.h"
 #include "Interfaces.h"
 #include "BuiltIns.h"
+#include "StructureConverter.h"
 
    //------ Null ------
    void EXPORT pack(MessageData& messageData, const Null& data) { }
    void EXPORT unpack(MessageData& messageData, Null& data) { }
+   void EXPORT unpack(MessageData& messageData, Null& data, const std::string& sourceDDML) { }
    unsigned EXPORT memorySize(const Null& data) {return 0;}
    std::string EXPORT DDML(const Null& data) {return "<type/>";}
 
@@ -73,6 +77,24 @@ class MessageData;
       {
       [foreach type.field]
       unpack(messageData, data.[field.name]);
+      [endfor]
+      }
+   void EXPORT unpack(MessageData& messageData, [type.name]Type& data, const std::string& sourceDDML)
+      {
+      [foreach type.field]
+      [if [field.arrayandstring] = T]
+      unpack(messageData, data.[field.name]);
+      [elseif [field.arrayofstructures] = T]
+      unpack(messageData, data.[field.name]);
+      [elseif [field.rawcpptype] = std::string]
+      unpackField(messageData, sourceDDML, data.[field.name], "[field.name]");
+      [elseif [field.array] = T]
+      unpack(messageData, data.[field.name]);
+      [elseif [field.structure] = T]
+      unpack(messageData, data.[field.name], sourceDDML);
+      [else]
+      unpackField(messageData, sourceDDML, data.[field.name], "[field.name]");
+      [endif]
       [endfor]
       }
    unsigned EXPORT memorySize(const [type.name]Type& data)
@@ -432,7 +454,7 @@ void ScienceAPI2Impl::publish(const std::string& name, [builtin.cpptype]& data)
 [endfor]
 [foreach types.type]
 void ScienceAPI2Impl::subscribe(const std::string& name, boost::function1<void, [type.name]Type&> handler)
-     {componentInterface.subscribe(name, new Method<boost::function1<void, [type.name]Type&>, [type.name]Type > (handler));}
+     {componentInterface.subscribe(name, new MethodWithStructureConverter<boost::function1<void, [type.name]Type&>, [type.name]Type > (handler));}
 void ScienceAPI2Impl::publish(const std::string& name, [type.name]Type& data)
      {componentInterface.publish(name, new PackableWrapper< [type.name]Type& >(data));}
 

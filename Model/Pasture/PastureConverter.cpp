@@ -217,10 +217,9 @@ double PastureConverter::getVariableValue (protocol::Variant& variant, string ev
 //===========================================================================
 {
     double   value;
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(* variant.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(variant);
 
-    if (incomingApsimVariant.get(variableName.c_str(), protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get(variableName.c_str(), value) == true)
     {
          ostringstream msg;
          msg << "Pasture " << eventName << " " << variableName << " = " << value << " " << unitName << ends;

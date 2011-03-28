@@ -81,6 +81,10 @@ class EXPORT Type
       const FString& getTypeString(void) const {return type;}
 
       static FString codeToString(DataTypeCode code);
+      bool isApsimVariant()
+         {
+         return (type.find("param1_name") != FString::npos);
+         }
    private:
       FString type;
       mutable DataTypeCode code;
@@ -109,10 +113,16 @@ inline unsigned int memorySize(const Type& type)
 inline DataTypeCode dataTypeCodeOf(bool)   {return DTboolean;}
 inline DataTypeCode dataTypeCodeOf(int)    {return DTint4;}
 inline DataTypeCode dataTypeCodeOf(float)  {return DTsingle;}
-inline DataTypeCode dataTypeCodeOf(const std::vector<float>&)  {return DTsingle;}
 inline DataTypeCode dataTypeCodeOf(double) {return DTdouble;}
 inline DataTypeCode dataTypeCodeOf(char)   {return DTchar;}
 inline DataTypeCode dataTypeCodeOf(char *) {return DTstring;}
+inline DataTypeCode dataTypeCodeOf(FString&) {return DTstring;}
+inline DataTypeCode dataTypeCodeOf(std::string&) {return DTstring;}
+
+inline DataTypeCode dataTypeCodeOf(const std::vector<int>&) {return DTint4;}
+inline DataTypeCode dataTypeCodeOf(const std::vector<float>&) {return DTsingle;}
+inline DataTypeCode dataTypeCodeOf(const std::vector<double>&) {return DTdouble;}
+inline DataTypeCode dataTypeCodeOf(const std::vector<std::string>&) {return DTstring;}
 
 
 } // namespace protocol

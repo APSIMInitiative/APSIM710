@@ -513,7 +513,7 @@
 
 
 *     ===========================================================
-      subroutine oryza_start_crop ()
+      subroutine oryza_start_crop (variant)
 *     ===========================================================
       Use Infrastructure
       implicit none
@@ -532,6 +532,9 @@
       REAL    num_layers
       character esection*80
 
+      integer, intent(in) :: variant
+      type(SowType) :: Sow
+
 *+  Constant Values
       character  my_name*(*)           ! name of procedure
       parameter (my_name  = 'oryza_start_crop')
@@ -540,6 +543,7 @@
 
       call push_routine (my_name)
 
+     
       if (g%plant_status.ne.status_out) then
          call fatal_error(err_user, 
      :      'Already in the ground - did you forget to "end_crop"?')
@@ -548,13 +552,12 @@
 
          call oryza_read_param ()
          
-         call collect_char_var ('cultivar', '()'
-     :                         , g%cultivar, numvals)
+         call unpack_Sow(variant, Sow)
+         g%cultivar = Sow%cultivar
          
          call oryza_read_cultivar_params ()
-         
-         call collect_char_var ('establishment', '()'
-     :                         , p%ESTAB, numvals)
+
+         p%ESTAB = Sow%Establishment
          
          g%plant_status = status_alive
          
@@ -568,42 +571,33 @@
          IF (p%ESTAB.EQ.'transplant' ) then
 
 !              sbdur - duration of the seed on nursery bed (days)
-               call collect_integer_var ('sbdur', '(days)'
-     :                                     , p%sbdur, numvals
-     :                                     , 0, 100)
-
-               if (numvals.eq.0) then 
+               p%sbdur = Sow%sbdur
+               if (p%sbdur.eq.0) then 
                 call fatal_error(err_user, 
      :          'In the sowing line, please specify a value for SBDUR')
                endif
 
 
 !              nplh - number of plants per hill ()
-               call collect_real_var ('nplh', '()'
-     :                                     , p%nplh, numvals
-     :                                     , 0.0, 1000.0)
+               p%nplh = Sow%nplh
 
-               if (numvals.eq.0) then 
+               if (p%nplh.eq.0) then 
                 call fatal_error(err_user, 
      :          'In the sowing line, please specify a value for NPLH')
                endif
 
 !              nh - number of hills ()
-               call collect_real_var ('nh', '()'
-     :                                     , p%nh, numvals
-     :                                     , 0.0, 1000.0)
+               p%nh = Sow%nh
       
-               if (numvals.eq.0) then 
+               if (p%nh.eq.0) then 
                 call fatal_error(err_user, 
      :          'In the sowing line, please specify a value for NH')
                endif
 
 !              nplsb - number of plants in seed-bed ()
-               call collect_real_var ('nplsb', '()'
-     :                                     , p%nplsb, numvals
-     :                                     , 0.0, 1000.0)
+               p%nplsb = Sow%nplsb
       
-               if (numvals.eq.0) then 
+               if (p%nplsb.eq.0) then 
                 call fatal_error(err_user, 
      :          'In the sowing line, please specify a value for NPLSB')
                endif
@@ -614,12 +608,10 @@
          ELSEIF (p%ESTAB.EQ.'direct-seed') then
 
 !              nplds - number of plants in seed-bed ()
-               call collect_real_var ('nplds', '()'
-     :                                     , p%nplds, numvals
-     :                                     , 0.0, 1000.0)
+               p%nplds = Sow%nplds
 
 
-               if (numvals.eq.0) then 
+               if (p%nplds.eq.0) then 
                 call fatal_error(err_user, 
      :          'In the sowing line, please specify a value for NPLDS')
                endif
@@ -5891,9 +5883,6 @@
          call write_string ('   - Initialising')
          call oryza_Init ()
 
-      elseif (action.eq.ACTION_sow) then
-         call Oryza_start_crop ()
-
       else if (Action.eq.ACTION_Prepare) then
          call oryza_prepare ()
 
@@ -5953,6 +5942,8 @@
          call oryza_ONnewmet(variant)
       elseif (eventID .eq. id%new_profile) then
          call oryza_ONNew_Profile(variant)
+      elseif (eventID .eq. id%sow) then
+         call Oryza_start_crop (variant)
       else
          ! Nothing I know about??
       endif

@@ -49,42 +49,46 @@ void PlantSpatial::read(ScienceAPI& scienceAPI)
    scienceAPI.read("skiprow_default", skip_row_default, 0.0f, 2.0f);
    }
 
-void PlantSpatial::startCrop(protocol::ApsimVariant& incomingApsimVariant)
+void PlantSpatial::startCrop(protocol::SowType& Sow)
    //===========================================================================
-    {
+   {
            // get other sowing criteria
-           if (incomingApsimVariant.get("plants", protocol::DTsingle, false, plants) == false)
-               {
-               throw std::invalid_argument("plant density ('plants') not specified");
-               }
-           bound_check_real_var(scienceAPI, plants, 0.0, 1000.0, "plants");
+   plants = Sow.plants;
+   if (Sow.plants == 0)
+      {
+      throw std::invalid_argument("plant density ('plants') not specified");
+      }
+   bound_check_real_var(scienceAPI, plants, 0.0, 1000.0, "plants");
 
-           if (incomingApsimVariant.get("sowing_depth", protocol::DTsingle, false, sowing_depth) == false)
-               {
-               throw std::invalid_argument("sowing_depth not specified");
-               }
-           bound_check_real_var(scienceAPI, sowing_depth, 10.0, 200.0, "sowing_depth");
+   sowing_depth = Sow.sowing_depth;
+   if (sowing_depth == 0)
+      {
+      throw std::invalid_argument("sowing_depth not specified");
+      }
+   bound_check_real_var(scienceAPI, sowing_depth, 10.0, 200.0, "sowing_depth");
 
-           if (incomingApsimVariant.get("row_spacing", protocol::DTsingle, false, row_spacing) == false)
-               {
-               row_spacing = row_spacing_default;
-               }
-           bound_check_real_var(scienceAPI, row_spacing, 0.0, 2000.0, "row_spacing");
+   row_spacing = Sow.row_spacing;
+   if (row_spacing == 0)
+      {
+      row_spacing = row_spacing_default;
+      }
+   bound_check_real_var(scienceAPI, row_spacing, 0.0, 2000.0, "row_spacing");
 
+   skip_plant = Sow.SkipPlant;
+   if (skip_plant == 0)
+      {
+      skip_plant = skip_plant_default;
+      }
+   bound_check_real_var(scienceAPI, skip_plant, 0.0, 2.0, "skipplant");
+   skip_plant_fac = (2.0 + skip_plant)/2.0;
 
-           if (incomingApsimVariant.get("skipplant", protocol::DTsingle, false, skip_plant) == false)
-               {
-               skip_plant = skip_plant_default;
-               }
-           bound_check_real_var(scienceAPI, skip_plant, 0.0, 2.0, "skipplant");
-           skip_plant_fac = (2.0 + skip_plant)/2.0;
-
-           if (incomingApsimVariant.get("skiprow", protocol::DTsingle, false, skip_row) == false)
-               {
-               skip_row = skip_row_default;
-               }
-           bound_check_real_var(scienceAPI, skip_row, 0.0, 2.0, "skiprow");
-           skip_row_fac = (2.0 + skip_row)/2.0;
+   skip_row = Sow.SkipRow;
+   if (skip_row == 0)
+      {
+      skip_row = skip_row_default;
+      }
+   bound_check_real_var(scienceAPI, skip_row, 0.0, 2.0, "skiprow");
+   skip_row_fac = (2.0 + skip_row)/2.0;
     }
 
 

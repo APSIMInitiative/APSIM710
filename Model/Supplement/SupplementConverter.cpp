@@ -115,10 +115,9 @@ void SupplementConverter::dobuySupplement(unsigned int& fromID, unsigned int& ev
     ostringstream msg;
     msg << "Supplement buy:" << endl;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(*variant.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(variant);
 
-    if (incomingApsimVariant.get("supplement", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("supplement", valuestr) == true)
     {
          SupplementBuy.supplement = valuestr;
 
@@ -127,7 +126,7 @@ void SupplementConverter::dobuySupplement(unsigned int& fromID, unsigned int& ev
     else
          SupplementBuy.supplement = "";
 
-    if (incomingApsimVariant.get("amount", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("amount", value) == true)
     {
          SupplementBuy.amount = value;
 
@@ -153,10 +152,9 @@ void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& e
     ostringstream msg;
     msg << "Supplement feed:" << endl;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(*variant.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(variant);
 
-    if (incomingApsimVariant.get("supplement", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("supplement", valuestr) == true)
     {
          SupplementFeed.supplement = valuestr;
 
@@ -165,7 +163,7 @@ void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& e
     else
          SupplementFeed.supplement = "";
 
-    if (incomingApsimVariant.get("amount", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("amount", value) == true)
     {
          SupplementFeed.amount = value;
 
@@ -174,7 +172,7 @@ void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& e
     else
          SupplementFeed.amount = 0.0;
 
-    if (incomingApsimVariant.get("paddock", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("paddock", valuestr) == true)
     {
          SupplementFeed.paddock = valuestr;
 
@@ -200,10 +198,9 @@ void SupplementConverter::domixSupplement(unsigned int& fromID, unsigned int& ev
     ostringstream msg;
     msg << "Supplement mix:" << endl;
 
-    protocol::ApsimVariant incomingApsimVariant(this);
-    incomingApsimVariant.aliasTo(*variant.getMessageData());
+    protocol::ApsimVariant incomingApsimVariant(variant);
 
-    if (incomingApsimVariant.get("src_store", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("src_store", valuestr) == true)
     {
          SupplementMix.src_store = valuestr;
 
@@ -212,7 +209,7 @@ void SupplementConverter::domixSupplement(unsigned int& fromID, unsigned int& ev
     else
          SupplementMix.src_store = "";
 
-    if (incomingApsimVariant.get("amount", protocol::DTdouble, false, value) == true)
+    if (incomingApsimVariant.get("amount", value) == true)
     {
          SupplementMix.amount = value;
 
@@ -221,7 +218,7 @@ void SupplementConverter::domixSupplement(unsigned int& fromID, unsigned int& ev
     else
          SupplementMix.amount = 0.0;
 
-    if (incomingApsimVariant.get("dest_store", protocol::DTstring, false, valuestr) == true)
+    if (incomingApsimVariant.get("dest_store", valuestr) == true)
     {
          SupplementMix.dest_store = valuestr;
 

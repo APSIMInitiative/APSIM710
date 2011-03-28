@@ -105,11 +105,11 @@ void Plant::onInit1(void)
 
    scienceAPI.subscribe("prepare",    NullFunction(&Plant::onPrepare));
    scienceAPI.subscribe("process",    NullFunction(&Plant::onProcess));
-   scienceAPI.subscribe("sow",        ApsimVariantFunction(&Plant::onSow));
-   scienceAPI.subscribe("harvest",    ApsimVariantFunction(&Plant::onHarvest));
+   scienceAPI.subscribe("sow",        SowFunction(&Plant::onSow));
+   scienceAPI.subscribe("harvest",    HarvestFunction(&Plant::onHarvest));
    scienceAPI.subscribe("end_crop",   NullFunction(&Plant::onEndCrop));
    scienceAPI.subscribe("end_run",    NullFunction(&Plant::onEndRun));
-   scienceAPI.subscribe("kill_stem",  ApsimVariantFunction(&Plant::onKillStem));
+   scienceAPI.subscribe("kill_stem",  KillStemFunction(&Plant::onKillStem));
    scienceAPI.subscribe("remove_crop_biomass",    RemoveCropDmFunction(&Plant::onRemoveCropBiomass));
    scienceAPI.subscribe("detach_crop_biomass_rate", FloatFunction(&Plant::onDetachCropBiomass));
 
@@ -453,15 +453,15 @@ void Plant::onProcess()
       }
    }
 
-void Plant::onSow(protocol::ApsimVariant& variant)
+void Plant::onSow(protocol::SowType& Sow)
    {
    //=======================================================================================
    // Event Handler for Sowing Event
    plant_get_other_variables (); // request and receive variables from owner-modules
-   plant_start_crop(variant);    // start crop and do  more initialisations
+   plant_start_crop(Sow);    // start crop and do  more initialisations
    }
 
-void Plant::onHarvest(protocol::ApsimVariant &variant)
+void Plant::onHarvest(protocol::HarvestType &Harvest)
    {
    // =======================================================================================
    // Event Handler for a Harvest Event
@@ -470,11 +470,11 @@ void Plant::onHarvest(protocol::ApsimVariant &variant)
    if (g.plant_status != out)
       {
       // crop harvested. Report status
-      if (variant.get("report", protocol::DTstring, false, report_flag) == false ||
-          report_flag == "yes")
+      report_flag = Harvest.Report;
+      if (report_flag == "" || report_flag == "yes")
          plant_harvest_report();
       plant_auto_class_change("harvest");
-      plant_harvest_update(variant);
+      plant_harvest_update(Harvest);
       }
     else
       scienceAPI.warning(g.module_name + " is not in the ground - unable to harvest.");
@@ -488,7 +488,7 @@ void Plant::onEndCrop()
   }
 
 
-void Plant::onKillStem(protocol::ApsimVariant &variant)
+void Plant::onKillStem(protocol::KillStemType &KillStem)
 //=======================================================================================
 // Event Handler for a Kill Stem Event
    {
@@ -499,8 +499,8 @@ void Plant::onKillStem(protocol::ApsimVariant &variant)
       // determine the new stem density
       // ==============================
       float temp;
-      if (variant.get("plants", protocol::DTsingle, false, temp) == true)
-        population().SetPlants(temp);
+      if (KillStem.Plants != 0)
+        population().SetPlants(KillStem.Plants);
 
       // Update biomass and N pools.
       plant.onKillStem();
@@ -806,54 +806,8 @@ void Plant::plant_event(const std::string& newStageName)
       }
    }
 
-//+  Purpose
-//       Report occurence of harvest and the current status of specific
-//       variables.
-void Plant::plant_dormancy (protocol::Variant &v/*(INPUT) incoming message variant*/)
-    {
 
-//+  Local Variables
-    string  dormancy_flag;
-    string  previous_class;
-
-//- Implementation Section ----------------------------------
-
-
-    protocol::ApsimVariant incomingApsimVariant(parent);
-    incomingApsimVariant.aliasTo(* v.getMessageData());
-
-// crop harvested. Report status
-    if (incomingApsimVariant.get("state", protocol::DTstring, false, dormancy_flag) == false)
-         {
-         throw std::invalid_argument("dormancy state must be specified");
-         }
-
-    if (dormancy_flag == "on")
-        {
-        previous_class = g.crop_class.c_str();
-        plant_auto_class_change("dormancy");
-        if (previous_class != g.crop_class)
-            {
-            g.pre_dormancy_crop_class = previous_class;
-            }
-        else
-            {
-            // still dormant
-            }
-        }
-    else if (dormancy_flag == "off")
-        {
-        g.crop_class = g.pre_dormancy_crop_class;
-        read();
-        }
-    else
-        {
-        // unknown dormancy_flag
-        throw std::invalid_argument ("dormancy state is unknown - neither on nor off");
-        }
-    }
-
-void Plant::plant_harvest_update(protocol::ApsimVariant& incomingApsimVariant)
+void Plant::plant_harvest_update(protocol::HarvestType &Harvest)
    {
    // Update states after a harvest
    float dm_chopped;                             // dry matter added to chopped pool (kg/ha)
@@ -885,19 +839,15 @@ void Plant::plant_harvest_update(protocol::ApsimVariant& incomingApsimVariant)
 
    // determine the new stem density
    // ==============================
-   if (incomingApsimVariant.get("plants", protocol::DTsingle, false, temp) == true)
+   temp = Harvest.Plants;
+   if (temp != 0)
        population().SetPlants(temp);
 
-   if (incomingApsimVariant.get("remove", protocol::DTsingle, false, remove_fr) == false)
-      remove_fr = 0.0;
-
+   remove_fr = Harvest.Remove;
    bound_check_real_var(scienceAPI,remove_fr, 0.0, 1.0, "remove");
 
    // determine the cutting height
-   if (incomingApsimVariant.get("height", protocol::DTsingle, false, height) == false)
-      {
-      height = 0.0;
-      }
+   height = Harvest.Height;
    bound_check_real_var(scienceAPI,height, 0.0, 1000.0, "height");
 
    vector<string> dm_type;
@@ -1147,7 +1097,7 @@ void Plant::plant_zero_daily_variables (void)
 
 //+  Purpose
 //       Start crop using parameters specified in passed record
-void Plant::plant_start_crop(protocol::ApsimVariant& incomingApsimVariant)
+void Plant::plant_start_crop(protocol::SowType& Sow)
     {
 
 //+  Local Variables
@@ -1162,14 +1112,8 @@ void Plant::plant_start_crop(protocol::ApsimVariant& incomingApsimVariant)
          {
            parent->writeString ( "Crop Sow");
 
-           // Check anachronisms
-           if (incomingApsimVariant.get("crop_type", protocol::DTstring, false, dummy) != false)
-               {
-               scienceAPI.warning("crop type no longer used in sowing command");
-               }
-
            // get species parameters
-           if (incomingApsimVariant.get("crop_class", protocol::DTstring, false, dummy) == false)
+           if (Sow.crop_class == "")
                {
                // crop class was not specified
                scienceAPI.read("default_crop_class", c.default_crop_class);
@@ -1178,31 +1122,30 @@ void Plant::plant_start_crop(protocol::ApsimVariant& incomingApsimVariant)
                }
            else
                {
-               g.crop_class = dummy;
-               g.crop_class = g.crop_class.substr(0,dummy.length());
-               scienceAPI.setClass2(dummy);
+               g.crop_class = Sow.crop_class;
+               scienceAPI.setClass2(Sow.crop_class);
                }
 
            // get cultivar parameters
-           if (incomingApsimVariant.get("cultivar", protocol::DTstring, false, dummy) == false)
+           if (Sow.Cultivar == "")
                {
                throw std::invalid_argument("Cultivar not specified");
                }
            else
                {
-               g.cultivar = dummy;
-               scienceAPI.setClass1(g.cultivar);
+               g.cultivar = Sow.Cultivar;
+               scienceAPI.setClass1(Sow.Cultivar);
                }
 
            read();
 
            // get other sowing criteria
            float temp;
-           if (incomingApsimVariant.get("plants", protocol::DTsingle, false, temp) == false)
+           if (Sow.plants == 0)
                {
                throw std::invalid_argument("plant density ('plants') not specified");
                }
-           population().SetPlants(temp);
+           population().SetPlants(Sow.plants);
 
            parent->writeString ("   ------------------------------------------------");
            sprintf (msg, "   %s%s",  "cultivar                   = ", g.cultivar.c_str());
@@ -1219,8 +1162,8 @@ void Plant::plant_start_crop(protocol::ApsimVariant& incomingApsimVariant)
                 , " times eo.");
            parent->writeString (msg);
 
-           plantSpatial.startCrop(incomingApsimVariant);
-           phenology().onSow(incomingApsimVariant);
+           plantSpatial.startCrop(Sow);
+           phenology().onSow(Sow);
            UpdateCanopy();
 
            // Bang.

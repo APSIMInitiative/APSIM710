@@ -268,6 +268,41 @@ class Method : public Packable
 // data item as an arguemnt.
 // -------------------------------------------------------------------
 template <class FT, class T>
+class MethodWithStructureConverter : public Packable
+   {
+   private:
+      FT f;
+      T variable;
+   public:
+      MethodWithStructureConverter(FT& fn) : f(fn) { }
+
+      virtual unsigned memorySize()
+         {
+         f(variable);
+         return ::memorySize(variable);
+         }
+      virtual void pack(MessageData& messageData)
+         {
+         // Assumes that memorySize was called immediately before this method.
+         // No need to call it again.
+         ::pack(messageData, variable);
+         }
+      virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
+         {
+         ::unpack(messageData, variable, sourceDDML);
+         f(variable);
+         }
+      virtual std::string ddml()
+         {
+         return DDML(variable);
+         }
+   };
+
+// -------------------------------------------------------------------
+// A wrapper class for CMP events, gets and sets that take a single
+// data item as an arguemnt.
+// -------------------------------------------------------------------
+template <class FT, class T>
 class DualMethod : public Packable
    {
    private:

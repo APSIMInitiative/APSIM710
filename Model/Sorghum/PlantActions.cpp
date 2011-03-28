@@ -15,7 +15,7 @@ void Plant::doRegistrations(void)
    scienceAPI.subscribe("tick",        TimeFunction(&Plant::onTick));
    scienceAPI.subscribe("newmet",      NewMetFunction(&Plant::onNewMet));
    scienceAPI.subscribe("new_profile", NewProfileFunction(&Plant::onNewProfile));
-   scienceAPI.subscribe("sow",         VariantFunction(&Plant::onSowCrop));
+   scienceAPI.subscribe("sow",         SowFunction(&Plant::onSowCrop));
    scienceAPI.subscribe("harvest",     nullFunction(&Plant::onHarvest));
    scienceAPI.subscribe("end_crop",    nullFunction(&Plant::onEndCrop));
    scienceAPI.subscribe("kill_crop",   nullFunction(&Plant::onKillCrop));

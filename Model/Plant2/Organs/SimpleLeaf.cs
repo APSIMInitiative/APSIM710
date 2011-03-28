@@ -135,7 +135,7 @@ class SimpleLeaf : BaseOrgan
       get { return 1.0 - Math.Exp(-KDead * LAIDead); }
       }
 
-   [EventHandler]public void OnSow(SowType Data)
+   [EventHandler]public void OnSow(SowPlant2Type Data)
       {
       PublishNewPotentialGrowth();
       PublishNewCanopyEvent();

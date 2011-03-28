@@ -160,7 +160,7 @@ void ApsimComponent::messageToLogic (char* message)
    		   }
    		else if (IsPlant)
 		      {
-            SowType^ sowDummy = gcnew SowType();
+            SowPlant2Type^ sowDummy = gcnew SowPlant2Type();
             CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
             CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
             CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");
@@ -412,7 +412,7 @@ void ApsimComponent::OnSow(char* messageData)
 	// ----------------------------------------------
 	// A sowing event has occurred.
 	// ----------------------------------------------
-   SowType^ Sow = gcnew SowType();
+   SowPlant2Type^ Sow = gcnew SowPlant2Type();
    Sow->unpack(messageData);
 
    if (Sow->Cultivar == nullptr)
@@ -443,7 +443,7 @@ void ApsimComponent::OnSow(char* messageData)
    CallEventHandlers("Sow", Sow);
    }
 
-void ApsimComponent::CallEventHandlers(String^ EventName, SowType^ Data)
+void ApsimComponent::CallEventHandlers(String^ EventName, SowPlant2Type^ Data)
    {
    //array<Object^>^ Parameters = gcnew array<Object^>(1);
    //Parameters[0] = Data;
@@ -492,7 +492,7 @@ void ApsimComponent::OnPost(char* messageData)
 	  }
       Model = nullptr;
       ManagerEventType^ dummy = gcnew ManagerEventType();
-      SowType^ sowDummy = gcnew SowType();
+      SowPlant2Type^ sowDummy = gcnew SowPlant2Type();
       CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
       CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
       CISubscribe(ComponentI, "Post", &::CallBack, instanceNumber, POSTINDEX, "<type/>");

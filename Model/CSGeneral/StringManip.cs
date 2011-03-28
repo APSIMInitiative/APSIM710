@@ -277,5 +277,29 @@ namespace CSGeneral
             Arr[i] = Value;
          return Arr;
          }
+
+
+      public static int FindMatchingClosingBracket(string Contents, int StartPos, char OpenBracket, char CloseBracket)
+         {
+         char[] CharSet = new char[2] {OpenBracket, CloseBracket};
+         int Pos = Contents.IndexOfAny(CharSet, StartPos);
+
+         int Count = 0;
+         while (Pos != -1)
+            {
+            if (Contents[Pos] == OpenBracket)
+               Count++;
+            else
+               Count--;
+            if (Count == 0)
+               return Pos;
+
+            Pos = Contents.IndexOfAny(CharSet, StartPos);
+            }
+
+         return -1;
+         }
+
+
       }
    }

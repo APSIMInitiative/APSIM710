@@ -1901,7 +1901,7 @@ cjh special for erik - end
 
 *     ===========================================================
       Recursive
-     :subroutine millet_start_crop ()
+     :subroutine millet_start_crop (variant)
 *     ===========================================================
       Use infrastructure
       implicit none
@@ -1923,48 +1923,38 @@ cjh special for erik - end
       parameter (my_name  = 'millet_start_crop')
 
 *+  Local Variables
+      integer, intent(in) :: variant
+
       integer    numvals               ! number of values found in array
       character  string*200            ! output string
       character  module_name*50      ! module name
+      type(SowType) :: Sow
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
-!gd
-!         call get_name (module_name)
-!         write(*,*) 'len_trim', len_trim(module_name)
+      
+      call unpack_Sow(variant, Sow)
+
       if (g%plant_status.eq.status_out) then
          if (.not. g%plant_status_out_today) then
 
 
-      call Write_string ( 'Sow')
+         call Write_string ( 'Sow')
 
-cjh      if (data_record.ne.blank) then
-
-         call collect_real_var ('plants', '()'
-     :                        , g%plants, numvals, 0.0, 100.0)
-!cpsc
-         call collect_real_var_optional (
-     :                          'row_spacing', '(m)'
-     :                        , g%row_spacing, numvals
-     :                        , 0.0, 2.0)
+         g%plants = Sow%plants
+         g%row_spacing = Sow%row_spacing
 
          if (g%row_spacing .eq. 0.0) then
            g%row_spacing = c%row_spacing_default
          endif
+         
+         g%sowing_depth = Sow%sowing_depth
+         g%cultivar = Sow%Cultivar
 
-         call collect_real_var (
-     :                          'sowing_depth', '(mm)'
-     :                        , g%sowing_depth, numvals
-     :                        , 0.0, 100.0)
+         call publish_null(id%sowing)
 
-         call collect_char_var ('cultivar', '()'
-     :                        , g%cultivar, numvals)
-
-
-      call publish_null(id%sowing)
-
-             ! report
+         ! report
 
          call write_string (new_line//new_line)
 
@@ -4020,47 +4010,6 @@ cejvo
       call pop_routine (my_name)
       return
       end subroutine
-*     ===========================================================
-      Recursive
-     :logical function millet_my_type ()
-*     ===========================================================
-      Use infrastructure
-      implicit none
-
-*+  Purpose
-*       Returns true if 'type' is equal to the crop type or is absent.
-
-*+  Assumptions
-*       If type is not specified, it is assumed the message was addressed
-*        directly to the module.
-
-*+  Changes
-*      211294 jngh specified and programmed
-*     220696 jngh changed extract to collect
-
-*+  Constant Values
-      character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'millet_my_type')
-
-*+  Local Variables
-      character  crop_type*50          ! crop type in data string
-      integer    numvals               ! number of values returned
-
-*- Implementation Section ----------------------------------
-      call push_routine (my_name)
-
-      call collect_char_var_optional ('type', '()'
-     :                              , crop_type, numvals)
-
-      if (crop_type.eq.c%crop_type .or. numvals.eq.0) then
-         millet_my_type = .true.
-      else
-         millet_my_type = .false.
-      endif
-
-      call pop_routine (my_name)
-      return
-      end function
 
 
 *     ===========================================================
@@ -5307,63 +5256,23 @@ cpsc
          call millet_get_other_parameters ()
          call millet_get_other_variables ()
 
-      elseif (action.eq.ACTION_sow) then
-
-!         write (string, *) ' DEBUG ACTION_sow received: ',trim(action)
-!         call write_string (string)
-         if (millet_my_type ()) then
-
-            if (g%stem_class .eq. class_tiller) then
-               call fatal_error (err_user,
-     :                      'Cannot sow initiated tiller!')
-            else
-
-              ! request and receive variables from owner-modules
-               call millet_get_other_variables ()
-               ! start crop and do  more initialisations
-               call millet_start_crop ()
-            endif
-         else
-            ! not my type!
-            call message_unused ()
-         endif
+ 
 
       elseif (action.eq.ACTION_initiate_crop) then
 
-         if (millet_my_type ()) then
-
-            if (g%stem_class .eq. class_main) then
-               call fatal_error (err_user,
-     :                      'Cannot initiate main tiller!')
-            else
-               ! request and receive variables from owner-modules
-               call millet_get_other_variables ()
-               ! start crop and do  more initialisations
-               call millet_initiate ()
-            endif
-
+         if (g%stem_class .eq. class_main) then
+            call fatal_error (err_user,
+     :                        'Cannot initiate main tiller!')
          else
-            ! not my type!
-            call message_unused ()
-         endif
-
-      elseif (action.eq.ACTION_harvest) then
-         if (millet_my_type ()) then
-               ! harvest crop - turn into residue
-              call millet_harvest ()
-         else
-            ! not my type!
-            call message_unused ()
+            ! request and receive variables from owner-modules
+            call millet_get_other_variables ()
+            ! start crop and do  more initialisations
+            call millet_initiate ()
          endif
 
       elseif (action.eq.ACTION_end_crop) then
-         if (millet_my_type ()) then
-               ! end crop - turn into residue
-            call millet_end_crop ()
-         else
-            ! not my type!
-            call message_unused ()
-         endif
+         ! end crop - turn into residue
+         call millet_end_crop ()
 
       elseif (action.eq.ACTION_kill_crop) then
                ! kill crop - die
@@ -5375,13 +5284,8 @@ cpsc
 
 cjh special for erik - start
       elseif (action.eq.'stop_growth') then
-         if (millet_my_type ()) then
-               ! stop crop growth and development
-            call millet_stop_growth (.true.)
-         else
-            ! not my type!
-            call message_unused ()
-         endif
+         ! stop crop growth and development
+         call millet_stop_growth (.true.)
 cjh special for erik - end
 
       else
@@ -5424,7 +5328,21 @@ cjh special for erik - end
          call millet_ONtick(variant)
       else if (eventID .eq. id%newmet) then
          call millet_ONnewmet(variant)
+      else if (eventID.eq.id%sow) then
+         if (g%stem_class .eq. class_tiller) then
+            call fatal_error (err_user,
+     :                      'Cannot sow initiated tiller!')
+         else
+
+           ! request and receive variables from owner-modules
+            call millet_get_other_variables ()
+            ! start crop and do  more initialisations
+            call millet_start_crop (variant)
+         endif
+      else if (eventID.eq.id%harvest) then
+         call millet_harvest ()
       endif
+      
       return
       end subroutine respondToEvent
 

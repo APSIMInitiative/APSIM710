@@ -3,6 +3,7 @@ using CSGeneral;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace ApsimFile
    {
@@ -911,7 +912,7 @@ namespace ApsimFile
             {
             System.Windows.Forms.RichTextBox RichText = new System.Windows.Forms.RichTextBox();
             RichText.Rtf = CSGeneral.Utility.EncodeBase64ToString(Node.InnerXml);
-            XmlHelper.SetValue(Node, "", RichText.Text.Replace("\n","\r\n"));
+            XmlHelper.SetValue(Node, "", RichText.Text.Replace("\n", "\r\n"));
             }
          }
 
@@ -1330,7 +1331,10 @@ namespace ApsimFile
                   {
                   XmlNode NewLayerNode = SampleNode.AppendChild(SoilNode.OwnerDocument.CreateElement("Layer"));
                   SetValue(NewLayerNode, "Thickness", XmlHelper.Value(LayerNode, "Thickness"), "mm");
-                  SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "mm/mm");
+                  if (XmlHelper.Value(OldSampleNode, "WaterFormat") == "GravimetricPercent")
+                     SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "grav. mm/mm");
+                  else
+                     SetValue(NewLayerNode, "SW", XmlHelper.Value(LayerNode, "sw"), "mm/mm");
                   SetValue(NewLayerNode, "NO3", XmlHelper.Value(LayerNode, "no3"), "ppm");
                   SetValue(NewLayerNode, "NH4", XmlHelper.Value(LayerNode, "nh4"), "ppm");
                   SetValue(NewLayerNode, "OC", XmlHelper.Value(LayerNode, "oc"), "Total %");

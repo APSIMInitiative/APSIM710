@@ -1795,7 +1795,7 @@ cnh     :                 ' Initialising')
 
 
 *     ===========================================================
-      subroutine sugar_start_crop ()
+      subroutine sugar_start_crop (variant)
 *     ===========================================================
 
       Use infrastructure
@@ -1818,92 +1818,85 @@ cnh     :                 ' Initialising')
       parameter (my_name  = 'sugar_start_crop')
 
 *+  Local Variables
+      integer, intent(in) :: variant
+
       character  cultivar*20           ! name of cultivar
       integer    numvals               ! number of values found in array
       character  string*200            ! output string
       character  cultivar_ratoon*30    ! name of cultivar ratoon section
       character  module_name*50      ! module name
+      type(SowType) :: Sow
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
+      call unpack_Sow(variant, Sow)
+      
       if (g%crop_status.eq.crop_out) then
          if (.not. g%plant_status_out_today) then
 
-      ! request and receive variables from owner-modules
-      call sugar_get_met_variables ()
-      call sugar_get_soil_variables ()
+            ! request and receive variables from owner-modules
+            call sugar_get_met_variables ()
+            call sugar_get_soil_variables ()
 
-      call write_string ( 'Sowing initiate')
-      call Publish_null (id%sowing)
+            call write_string ( 'Sowing initiate')
+            call Publish_null (id%sowing)
 
-         call collect_real_var ('plants', '()'
-     :                        , g%plants, numvals, 0.0, 100.0)
-         g%initial_plant_density = g%plants
-
-         call collect_integer_var_optional ('ratoon', '()'
-     :                        , g%ratoon_no, numvals, 0, 10)
-         if (numvals.eq.0) then
-            g%ratoon_no = 0
-         else
-         endif
-
-         call collect_real_var ('sowing_depth', '(mm)'
-     :                        , g%sowing_depth, numvals
-     :                        , 0.0, 500.0)
-
-         call collect_char_var ('cultivar', '()'
-     :                        , cultivar, numvals)
+            g%plants = Sow%plants
+            g%initial_plant_density = g%plants
+            g%ratoon_no = Sow%Ratoon
+            g%sowing_depth = Sow%sowing_depth
+            cultivar = Sow%Cultivar
 
              ! report
 
-         call write_string (new_line//new_line)
+            call write_string (new_line//new_line)
 
-         string = '                 Crop Sowing Data'
-         call write_string (string)
+            string = '                 Crop Sowing Data'
+            call write_string (string)
 
-         string = '    ------------------------------------------------'
-         call write_string (string)
+            string = 
+     :         '    ------------------------------------------------'
+            call write_string (string)
 
-         call write_string ('    Sowing  Depth Plants Cultivar')
+            call write_string ('    Sowing  Depth Plants Cultivar')
 
-         call write_string ('    Day no   mm     m^2    Name   ')
+            call write_string ('    Day no   mm     m^2    Name   ')
 
-         string = '    ------------------------------------------------'
-         call write_string (string)
+            call write_string (string)
 
-         write (string, '(3x, i7, 2f7.1, 1x, a10)')
+            write (string, '(3x, i7, 2f7.1, 1x, a10)')
      :                   g%day_of_year, g%sowing_depth
      :                 , g%plants, cultivar
-         call write_string (string)
+            call write_string (string)
 
-         string = '    ------------------------------------------------'
-         call write_string (string)
+            string = 
+     :         '    ------------------------------------------------'
+            call write_string (string)
 
-                 ! get cultivar parameters
+                    ! get cultivar parameters
+            if (g%ratoon_no .eq. 0) then
+               call sugar_read_crop_constants ('plant_crop')
+               call sugar_read_cultivar_params (cultivar)
+            else
+               call sugar_read_crop_constants ('ratoon_crop')
+               cultivar_ratoon = string_concat(cultivar,'_ratoon')
+               call sugar_read_cultivar_params (cultivar_ratoon)
+            endif
 
-         if (g%ratoon_no .eq. 0) then
-            call sugar_read_crop_constants ('plant_crop')
-            call sugar_read_cultivar_params (cultivar)
-         else
-            call sugar_read_crop_constants ('ratoon_crop')
-            cultivar_ratoon = string_concat(cultivar,'_ratoon')
-            call sugar_read_cultivar_params (cultivar_ratoon)
-         endif
+                    ! get root profile parameters
 
-                 ! get root profile parameters
+            call sugar_read_root_params ()
 
-         call sugar_read_root_params ()
+            if (g%ratoon_no.eq.0) then
+               g%current_stage = real (sowing)
+            else
+               g%current_stage = real (sowing)
+            endif
 
-         if (g%ratoon_no.eq.0) then
-            g%current_stage = real (sowing)
-         else
-            g%current_stage = real (sowing)
-         endif
-
-         g%crop_status = crop_alive
-         g%crop_cultivar = cultivar
+            g%crop_status = crop_alive
+            g%crop_cultivar = cultivar
 
          else
             call get_name (module_name)
@@ -5110,31 +5103,9 @@ cnh      c%crop_type = ' '
             ! crop not in
             call sugar_zero_variables ()
          endif
-      elseif (action.eq.ACTION_sow) then
-         if (crop_my_type (c%crop_type)) then
-               ! start crop and do  more initialisations
-            call sugar_start_crop ()
-         else
-            ! not my type!
-            call message_unused ()
-         endif
-       elseif (action.eq.ACTION_harvest) then
-         if (crop_my_type (c%crop_type)) then
-               ! harvest crop - turn into residue
-            call sugar_harvest ()
-         else
-            ! not my type!
-            call message_unused ()
-         endif
 
       elseif (action.eq.ACTION_end_crop) then
-         if (crop_my_type (c%crop_type)) then
-               ! end crop - turn into residue
-            call sugar_end_crop ()
-         else
-            ! not my type!
-            call message_unused ()
-         endif
+         call sugar_end_crop ()
 
       elseif (action.eq.ACTION_kill_crop) then
                ! kill crop - die
@@ -5196,6 +5167,12 @@ cnh      c%crop_type = ' '
 
       if (eventID .eq. id%tick) then
          call Sugar_ONtick(variant)
+
+      elseif (eventID .eq. id%sow) then
+         call sugar_start_crop (variant)
+
+      elseif (eventID .eq. id%harvest) then
+         call sugar_harvest ()
       endif
       return
       end subroutine respondToEvent

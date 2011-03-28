@@ -33,10 +33,12 @@ using namespace System::Runtime::InteropServices;
    public delegate void NullTypeDelegate();
 [foreach types.builtin]
    //------ [builtin.name] ------
-   public ref class [builtin.name]Type : public ApsimType
+   public ref class [builtin.dotnettypename]Type : public ApsimType
       {
       public:
-      [builtin.dotnettype] Value;
+         [builtin.dotnettype] Value;
+         [builtin.dotnettypename]Type() {}
+         [builtin.dotnettypename]Type([builtin.dotnettype] value) {Value = value;}
          virtual void pack(char* MessageData);
          virtual void unpack(char* MessageData);
          virtual unsigned memorySize();
@@ -69,15 +71,15 @@ using namespace System::Runtime::InteropServices;
 
 [foreach types.builtin]
    //------ [builtin.name] ------
-   void [builtin.name]Type::pack(char* MessageData)
+   void [builtin.dotnettypename]Type::pack(char* MessageData)
       { ::pack(MessageData, Value);	}
-   void [builtin.name]Type::unpack(char* MessageData)
+   void [builtin.dotnettypename]Type::unpack(char* MessageData)
       { ::unpackWithConverter(MessageData, Value); }
-   unsigned [builtin.name]Type::memorySize()
+   unsigned [builtin.dotnettypename]Type::memorySize()
       { return ::memorySize(Value); }
-   String^ [builtin.name]Type::DDML()
+   String^ [builtin.dotnettypename]Type::DDML()
       { return [builtin.cddml]; } 
-   public delegate void [builtin.name]Delegate([builtin.name]Type^ Data);
+   public delegate void [builtin.dotnettypename]Delegate([builtin.dotnettypename]Type^ Data);
 [endfor]
 [foreach types.type]
    // ------ [type.name] ------

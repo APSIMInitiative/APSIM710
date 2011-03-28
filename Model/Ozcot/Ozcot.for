@@ -5982,49 +5982,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       end subroutine
 
 *     ===========================================================
-      logical function ozcot_my_type ()
-*     ===========================================================
-      Use Infrastructure
-      implicit none
-
-*+  Purpose
-*       Returns true if 'type' is equal to the crop type or is absent.
-
-*+  Assumptions
-*       If type is not specified, it is assumed the message was addressed
-*        directly to the module.
-
-*+  Changes
-*      211294 jngh specified and programmed
-*     220696 jngh changed extract to collect
-
-*+  Constant Values
-      character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'ozcot_my_type')
-
-*+  Local Variables
-      character  crop_type*50          ! crop type in data string
-      integer    numvals               ! number of values returned
-
-*- Implementation Section ----------------------------------
-      call push_routine (my_name)
-
-      call collect_char_var_optional ('type', '()'
-     :                              , crop_type, numvals)
-
-      if (crop_type.eq.c%crop_type .or. numvals.eq.0) then
-         ozcot_my_type = .true.
-      else
-         ozcot_my_type = .false.
-      endif
-
-      call pop_routine (my_name)
-      return
-      end function
-
-
-
-*     ===========================================================
       subroutine ozcot_read_constants ()
 *     ===========================================================
       Use Infrastructure
@@ -6496,7 +6453,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 
 *     ===========================================================
-      subroutine ozcot_start_crop ()
+      subroutine ozcot_start_crop (variant)
 *     ===========================================================
       Use Infrastructure
       implicit none
@@ -6514,6 +6471,8 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       parameter (my_name  = 'ozcot_start_crop')
 
 *+  Local Variables
+      integer, intent(in) :: variant
+      type(SowType) :: Sow
       integer    numvals               ! number of values found in array
       character  string*200            ! output string
       real       sdepth_mm             ! sowing depth in mm
@@ -6532,12 +6491,11 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
               ! get cultivar parameters
 
+      call unpack_Sow(variant, Sow)
+              
       sdepth_mm = 0.0
       row_space_mm = 0.0
-      g%cultivar = 'undefined'
-      
-      call collect_char_var ('cultivar', '()'
-     :                      , g%cultivar, numvals)
+      g%cultivar = Sow%Cultivar
 
       call ozcot_read_cultivar_params ()
 
@@ -6548,29 +6506,18 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
          ! cultivar, sowing_depth, row_spacing, plants_pm
 
 
-      call collect_real_var ('plants_pm', '()'
-     :                      , g%ppm_row, numvals, 0.0, 1000.0)
-
-      call collect_real_var (
-     :                       'sowing_depth', '(mm)'
-     :                      , sdepth_mm, numvals
-     :                      , 0.0, 100.0)
-
-      call collect_real_var_optional (
-     :                         'row_spacing', '(mm)'
-     :                        , row_space_mm, numvals
-     :                        , 0.0, 2000.)
-      if (numvals.eq.0) then
+      g%ppm_row = Sow%plants_pm
+      sdepth_mm = Sow%sowing_depth
+      row_space_mm = Sow%row_spacing
+      
+      if (row_space_mm.eq.0) then
          row_space = c%row_spacing_default
       else
          row_space = row_space_mm /1000.0
       endif
 
-      call collect_real_var_optional (
-     :                         'skiprow', '()'
-     :                        , g%nskip, numvals
-     :                        , 0.0, 2.0)
-      if (numvals.eq.0) then
+      g%nskip = Sow%SkipRow
+      if (g%nskip.lt.0 .or. g%nskip.gt.2) then
          g%nskip = c%nskip_default
       else
       endif
@@ -7584,51 +7531,13 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !jh      else if (Action .eq. 'sow' .or. action .eq. 'harvest') then
 !jh         call ozcot_manager (Action, data_string)
 
-      elseif (action.eq.ACTION_sow) then
-         if (ozcot_my_type ()) then
-               ! request and receive variables from owner-modules
-!jh            call ozcot_get_other_variables ()
-            if (g%zero_variables) then
-               call ozcot_zero_variables()
-               call ozcot_init()
-
-            else
-               ! No need to zero variables.
-            endif
-               ! start crop and do  more initialisations
-            call ozcot_start_crop ()
-         else
-            ! not my type!
-            call message_unused ()
-         endif
-
-      elseif (action.eq.ACTION_harvest) then
-         if (ozcot_my_type ()) then
-               ! harvest crop - turn into residue
-            if (g%crop_in) then
-               call ozcot_manager('harvest', ' ')
-            else
-            endif
-
-         else
-            ! not my type!
-            call message_unused ()
-         endif
-
       elseif (action.eq.ACTION_end_crop) then
-         if (ozcot_my_type ()) then
-               ! end crop - turn into residue
-            if (g%crop_in) then
-               call ozcot_end_crop ()
-            else
-            endif
-         else
-            ! not my type!
-            call message_unused ()
+         ! end crop - turn into residue
+         if (g%crop_in) then
+            call ozcot_end_crop ()
          endif
 
       elseif (action.eq.ACTION_kill_crop) then
-         if (ozcot_my_type ()) then
                ! kill crop - die
 !            call ozcot_kill_crop
 !     :               (
@@ -7637,10 +7546,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !     :              , g%dm_senesced
 !     :              , g%plant_status
 !     :               )
-         else
-            ! not my type!
-            call message_unused ()
-         endif
       else if (Action .eq. ACTION_End_run) then
          call ozcot_end_run ()
 
@@ -7683,7 +7588,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       id%end_run = add_registration(respondToEventReg, 'end_run',
      :                              nullTypeDDML, '')
       id%sow = add_registration(respondToEventReg, 'sow',
-     :                          nullTypeDDML, '')
+     :                          sowTypeDDML, '')
       id%harvest = add_registration(respondToEventReg, 'harvest',
      :                              nullTypeDDML, '')
       id%end_crop = add_registration(respondToEventReg, 'end_crop',
@@ -7855,6 +7760,23 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
          call Ozcot_ONtick(variant)
       else if (eventID .eq. id%newmet) then
          call Ozcot_ONNew_Met(variant)
+      elseif (eventID .eq. id%sow) then
+         ! request and receive variables from owner-modules
+            if (g%zero_variables) then
+               call ozcot_zero_variables()
+               call ozcot_init()
+
+            else
+               ! No need to zero variables.
+            endif
+               ! start crop and do  more initialisations
+            call ozcot_start_crop (variant)
+
+      elseif (eventID .eq. id%harvest) then
+         ! harvest crop - turn into residue
+         if (g%crop_in) then
+            call ozcot_manager('harvest', ' ')
+         endif
       endif
       return
       end subroutine respondToEvent

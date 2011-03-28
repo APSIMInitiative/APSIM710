@@ -6298,75 +6298,19 @@ cpsc need to develop leaf senescence functions for crop
             !crop not in, do nothing
          endif
 
-      elseif (action.eq.ACTION_sow) then
-
-         if (crop_my_type (c%crop_type)) then
-
-            !request and receive variables from owner-modules
-            call Get_Other_Variables ()
-
-            !start crop, read the sow information and do  more initialisations
-            call Start_Crop ()
-
-         else
-
-            ! not my type!
-            call Message_unused ()
-
-         endif
-
-      elseif (action.eq.ACTION_harvest) then
-
-         if (Crop_my_type (c%crop_type)) then
-               ! harvest crop - report harvest information
-               call Crop_Harvest (
-     .          g%dm_green,
-     .          g%dm_dead,
-     .          c%grn_water_cont,
-     .          g%grain_no,
-     .          g%plants,
-     .          g%dm_senesced,
-     .          g%leaf_no,
-     .          g%N_green,
-     .          g%N_dead,
-     .          g%N_senesced,
-     .          g%flowering_date,
-     .          g%maturity_date,
-     .          g%flowering_das,
-     .          g%maturity_das,
-     .          g%lai_max,
-     .          g%cswd_photo,
-     .          g%days_tot,
-     .          g%cswd_expansion,
-     .          g%cnd_photo,
-     .          g%cnd_grain_conc,
-     .          c%stage_names)
-         else
-            ! not my type!
-            call Message_unused ()
-         endif
-
       elseif (action.eq.ACTION_end_crop) then
 
-         if (crop_my_type (c%crop_type)) then
+         !end crop - turn the stover into residue
+         call End_Crop ()
 
-            !end crop - turn the stover into residue
-            call End_Crop ()
-
-            !Zero all the globals, but not the contants and parameters
+         !Zero all the globals, but not the contants and parameters
 !            call Zero_Variables (.false.)
 
-            !Set plant status to status_out and stage to plant_end subroutine
-            if (g%plant_status.ne.status_out) then
-                g%plant_status  = status_out
-                g%current_stage = real (plant_end)
-            end if
-
-         else
-            ! not my type!
-            call Message_unused ()
-         endif
-
+         !Set plant status to status_out and stage to plant_end subroutine
+         if (g%plant_status.ne.status_out) then
+             g%plant_status  = status_out
+             g%current_stage = real (plant_end)
+         end if
 
       elseif (action.eq.ACTION_kill_crop) then
             ! kill crop - died, but biomass remain in field
@@ -6424,6 +6368,9 @@ cpsc need to develop leaf senescence functions for crop
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       Use infrastructure
+      use CropModData
+      Use MaizeModule
+      use CropLibrary
       implicit none
       ml_external respondToEvent
 
@@ -6431,6 +6378,40 @@ cpsc need to develop leaf senescence functions for crop
       integer, intent(in) :: eventID
       integer, intent(in) :: variant
 
+
+      if (eventID .eq. id%sow) then 
+         !request and receive variables from owner-modules
+         call Get_Other_Variables ()
+
+         !start crop, read the sow information and do  more initialisations
+         call Start_Crop (variant)
+
+      else if (eventID .eq. id%harvest) then 
+               ! harvest crop - report harvest information
+               call Crop_Harvest (
+     .          g%dm_green,
+     .          g%dm_dead,
+     .          c%grn_water_cont,
+     .          g%grain_no,
+     .          g%plants,
+     .          g%dm_senesced,
+     .          g%leaf_no,
+     .          g%N_green,
+     .          g%N_dead,
+     .          g%N_senesced,
+     .          g%flowering_date,
+     .          g%maturity_date,
+     .          g%flowering_das,
+     .          g%maturity_das,
+     .          g%lai_max,
+     .          g%cswd_photo,
+     .          g%days_tot,
+     .          g%cswd_expansion,
+     .          g%cnd_photo,
+     .          g%cnd_grain_conc,
+     .          c%stage_names)
+      endif         
+      
       return
       end subroutine respondToEvent
 

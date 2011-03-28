@@ -11,8 +11,7 @@ class EmergingPhase : GenericPhase
    /// <summary>
    /// On sowing, store the sowing depth so that we can calculate a target later
    /// </summary>
-   [EventHandler]
-   public void OnSow(SowType SowingDetails) 
+   [EventHandler] public void OnSow(SowPlant2Type SowingDetails) 
       {
       SowingDepth = SowingDetails.Depth;
       }

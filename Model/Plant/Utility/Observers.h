@@ -19,7 +19,7 @@ class eventObserver : public plantThing {
      virtual void readConstants (protocol::Component *, const string &) {};
      virtual void readSpeciesParameters (protocol::Component *, vector<string> &) {};
      virtual void readCultivarParameters (protocol::Component *, const string &) {};
-     virtual void onTick(unsigned &, unsigned &, protocol::Variant &v);
+     virtual void onTick(protocol::TimeType );
      virtual void update(void) {};
      virtual void zeroAllGlobals(void) {};
      virtual void zeroDeltas(void) {};

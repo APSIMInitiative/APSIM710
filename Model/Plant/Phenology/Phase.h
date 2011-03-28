@@ -50,7 +50,7 @@ class Phase
      virtual string description(void)  {return "";};
      virtual void read();
      virtual void updateTTTargets(){};
-     virtual void onSow(protocol::ApsimVariant incomingApsimVariant){};
+     //virtual void onSow(protocol::SowType Sow){};
      virtual void setupTTTarget(void){};
    };
 

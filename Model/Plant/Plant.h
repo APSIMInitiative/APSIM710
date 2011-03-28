@@ -1,7 +1,6 @@
 #ifndef PlantH
 #define PlantH
 
-class ApsimVariant;
 class Phenology;
 class plantPart;
 class SimplePart;
@@ -112,15 +111,15 @@ public:
    void onInit2(void);
    void onPrepare();
    void onProcess();
-   void onSow(protocol::ApsimVariant& variant);
-   void onHarvest(protocol::ApsimVariant &variant);
+   void onSow(protocol::SowType& Sow);
+   void onHarvest(protocol::HarvestType &Harvest);
    void onEndCrop() ;
-   void onKillStem(protocol::ApsimVariant &variant);
+   void onKillStem(protocol::KillStemType &KillStem);
    void onRemoveCropBiomass(protocol::RemoveCropDmType& dmRemoved);
    void onDetachCropBiomass(float detachRate);
    void onEndRun();
    void onAction(const std::string& eventName);
-   void onTick(unsigned &, unsigned &, protocol::Variant &v) ;
+   void onTick() ;
 
    void doPlantEvent(const string& oldStageName, const string& newStageName, bool phenologyRewound);
 
@@ -138,14 +137,13 @@ public:
 
    void plant_root_depth (int option /* (INPUT) option number*/);
    void doPlantRadnPartition (int option /*(INPUT) option number*/);
-   bool onSetPhase (protocol::QuerySetValueData &v/*(INPUT) message variant*/);
-   void plant_dormancy (protocol::Variant &v/*(INPUT) incoming message variant*/);
-   void plant_harvest_update (protocol::ApsimVariant &v);
+   bool onSetPhase (protocol::QuerySetValueData &v);
+   void plant_harvest_update (protocol::HarvestType &Harvest);
    void plant_remove_biomass_update (protocol::RemoveCropDmType dmRemoved);
    void plant_zero_all_globals (void);
    void plant_zero_variables (void);
    void plant_zero_daily_variables (void);
-   void plant_start_crop(protocol::ApsimVariant& variant);
+   void plant_start_crop(protocol::SowType& Sow);
    void plant_end_crop (void);
    void plant_get_other_variables (void);
    void plant_update_other_variables (void);

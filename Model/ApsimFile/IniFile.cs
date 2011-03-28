@@ -1,6 +1,5 @@
 namespace ApsimFile
    {
-   using System.Windows.Forms;
    using System.IO;
    using System.Text;
    using System.Collections.Specialized;

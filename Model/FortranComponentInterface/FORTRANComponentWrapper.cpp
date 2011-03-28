@@ -32,7 +32,7 @@ bool swapMutexInited = false;
 // constructor
 // ------------------------------------------------------------------
 FortranWrapper::FortranWrapper(void)
-   : outgoingApsimVariant(this), incomingApsimVariant(this), queryData((unsigned)-1, (unsigned)-1)
+   : outgoingApsimVariant(), incomingApsimVariant(), queryData((unsigned)-1, (unsigned)-1)
    {
    vars = NULL;
    }

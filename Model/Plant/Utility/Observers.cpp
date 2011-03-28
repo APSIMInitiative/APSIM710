@@ -27,10 +27,10 @@ void eventObserver::onInit1(protocol::Component *s)
    s->addGettableVar(varName2.c_str(), myDate,
                      "doy", desc2.c_str());
 
-   setupEvent(s, "tick", &eventObserver::onTick, DDML(protocol::TimeType()).c_str());
+   scienceAPI.subscribe("tick", TimeFunction(&eventObserver::onTick));
    }
 
-void eventObserver::onTick(unsigned &, unsigned &, protocol::Variant &)
+void eventObserver::onTick(protocol::TimeType )
    {
    if (dasCounter >= 0) dasCounter++;
    }

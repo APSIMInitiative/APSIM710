@@ -413,14 +413,14 @@ void Phenology::onKillStem()
       publishStageEvent(existingStage, phases[(int)currentStage]->name(), true);
    }
 
-void Phenology::onSow(protocol::ApsimVariant& incomingApsimVariant)
+void Phenology::onSow(protocol::SowType& Sow)
    {
    // --------------------------------------------------------------------------
    // Respond to a sow request
    // --------------------------------------------------------------------------
 
-   float sowing_depth;
-   if (incomingApsimVariant.get("sowing_depth", protocol::DTsingle, false, sowing_depth) == false)
+   float sowing_depth = Sow.sowing_depth;
+   if (sowing_depth == 0)
       throw std::invalid_argument("sowing_depth not specified");
    bound_check_real_var(scienceAPI, sowing_depth, 0.0, 100.0, "sowing_depth");
    currentStage = 1.0;

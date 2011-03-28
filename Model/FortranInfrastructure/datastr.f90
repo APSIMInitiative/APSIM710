@@ -408,7 +408,21 @@ module DataStrModule
    StringToReal = Value
    end function
 
+   integer function StringToInteger(String)
+   ! ---------------------------------------------------------------
+   ! Simpler function to convert a string to an integer when the caller
+   ! doesn't care about a conversion failure.
+   ! ---------------------------------------------------------------
+   implicit none
+   character String*(*)
+   integer Value
+   integer Numvals
 
+   call string_to_integer_var(String, Value, Numvals)
+   StringToInteger = Value
+   end function
+
+   
    ! ====================================================================
       subroutine String_to_real_array(Value_string, array, limit, numvals)
    ! ====================================================================

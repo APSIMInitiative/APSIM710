@@ -576,7 +576,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
       PublishNewPotentialGrowth();
       }
    [EventHandler]
-   public void OnSow(SowType Sow)
+   public void OnSow(SowPlant2Type Sow)
       {
       MaxCover = Sow.MaxCover;
       PrimaryBudNo = Sow.BudNumber;

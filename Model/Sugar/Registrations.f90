@@ -37,7 +37,7 @@ module Registrations
          id%harvesting = add_registration(eventReg, 'harvesting', nullTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
-         id%sow = add_registration(respondToEventReg, 'sow', nullTypeDDML, '')
+         id%sow = add_registration(respondToEventReg, 'sow', sowTypeDDML, '')
          id%harvest = add_registration(respondToEventReg, 'harvest', nullTypeDDML, '')
          id%end_crop = add_registration(respondToEventReg, 'end_crop', nullTypeDDML, '')
          id%kill_crop = add_registration(respondToEventReg, 'kill_crop', nullTypeDDML, '')

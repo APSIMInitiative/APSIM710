@@ -41,7 +41,7 @@ public class Plant : Instance
       }   
    
    // ---------------------------- Events we subscribe to ---------------------------
-   [EventHandler] public void OnSow (SowType Sow)
+   [EventHandler] public void OnSow(SowPlant2Type Sow)
       {
       // Keep a copy of this data for use by other plant classes.
       RowSpacing = Sow.RowSpacing;

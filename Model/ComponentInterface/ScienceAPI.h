@@ -105,6 +105,18 @@ class EXPORT ScienceAPI
       #define NullFunctionWithName(address) NullFunctionWithNameType(boost::bind(address, this, _1))
       void subscribe(const std::string& name, NullFunctionWithNameType handler);
 
+      #define SowFunctionType boost::function1<void, protocol::SowType& >
+      #define SowFunction(address) SowFunctionType(boost::bind(address, this, _1))
+      void subscribe(const std::string& name, SowFunctionType handler);
+
+      #define HarvestFunctionType boost::function1<void, protocol::HarvestType& >
+      #define HarvestFunction(address) HarvestFunctionType(boost::bind(address, this, _1))
+      void subscribe(const std::string& name, HarvestFunctionType handler);
+
+      #define KillStemFunctionType boost::function1<void, protocol::KillStemType& >
+      #define KillStemFunction(address) KillStemFunctionType(boost::bind(address, this, _1))
+      void subscribe(const std::string& name, KillStemFunctionType handler);
+
       #define TimeFunctionType boost::function1<void, protocol::TimeType& >
       #define TimeFunction(address) TimeFunctionType(boost::bind(address, this, _1))
       void subscribe(const std::string& name, TimeFunctionType handler);

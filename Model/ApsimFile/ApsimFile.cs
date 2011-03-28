@@ -7,8 +7,6 @@ namespace ApsimFile
     using System.Text;
     using System.Xml;
     using System.IO;
-    using System.Windows.Forms;
-
     using CSGeneral;
     using System.Diagnostics;
 
@@ -243,22 +241,6 @@ namespace ApsimFile
          ReadOnly = false;
          SetFileName(FileName);
          return Save();
-         }
-
-      public void CopyToClipboard(StringCollection Paths)
-         {
-         XmlDocument Doc = new XmlDocument();
-         XmlNode Root = Doc.AppendChild(Doc.CreateElement("dummy"));
-         foreach (string ComponentPath in Paths)
-            {
-            Component Component = Find(ComponentPath);
-            if (Component != null)
-               {
-               XmlNode Node = Root.AppendChild(Doc.CreateElement(Component.Type));
-               Component.Write(Node);
-               }
-            }
-         Clipboard.SetDataObject(Root.InnerXml, true);
          }
 
       public void ReloadFromFile()

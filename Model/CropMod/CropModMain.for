@@ -1,3 +1,9 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!! This file is only used in CropMod.dll which is only used by sunflower
+!!!!!!!!! MAIZE has it's own CropModMain.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 !     ===========================================================
       subroutine alloc_dealloc_instance(doAllocate)
 !     ===========================================================
@@ -221,26 +227,65 @@ c            endif
             !crop not in, do nothing
          endif
 
-      elseif (action.eq.ACTION_sow) then
+      elseif (action.eq.ACTION_end_crop) then
 
-         if (crop_my_type (c%crop_type)) then
+         !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+c        if (TestTrue)   close (1)
+         !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-            !request and receive variables from owner-modules
-            call Get_Other_Variables ()
+         !end crop - turn the stover into residue
+         call End_Crop ()
 
-            !start crop, read the sow information and do  more initialisations
-            call Start_Crop ()
+!            !Zero all the globals, but not the contants and parameters
+!            call Zero_Variables (.false.)
 
-         else
+         !Set plant status to status_out and stage to plant_end subroutine
+         if (g%plant_status.ne.status_out) then
+             g%plant_status  = status_out
+             g%current_stage = real (plant_end)
+         end if
 
-            ! not my type!
-            call Message_unused ()
+         elseif (action.eq.ACTION_kill_crop) then
+            ! kill crop - died, but biomass remain in field
+            call Kill_Crop (
+     .          g%plant_status,
+     .          g%dm_green,
+     .          g%dm_senesced,
+     .          g%dm_dead)
+      else
+         ! don't use message
+         call Message_unused ()
+      endif
 
-         endif
 
-      elseif (action.eq.ACTION_harvest) then
+      call pop_routine (my_name)
+      return
+      end subroutine
 
-         if (Crop_my_type (c%crop_type)) then
+
+! ====================================================================
+! This routine is the event handler for all events
+! ====================================================================
+      subroutine respondToEvent(fromID, eventID, variant)
+      Use infrastructure
+      use CropModData
+      Use CropModModule
+
+      implicit none
+      ml_external respondToEvent
+
+      integer, intent(in) :: fromID
+      integer, intent(in) :: eventID
+      integer, intent(in) :: variant
+
+      if (eventID .eq. id%sow) then 
+         !request and receive variables from owner-modules
+         call Get_Other_Variables ()
+
+         !start crop, read the sow information and do  more initialisations
+         call Start_Crop (variant)
+
+      else if (eventID .eq. id%harvest) then 
                ! harvest crop - report harvest information
                call Crop_Harvest (
      .          g%dm_green,
@@ -264,67 +309,8 @@ c            endif
      .          g%cnd_photo,
      .          g%cnd_grain_conc,
      .          c%stage_names)
-         else
-            ! not my type!
-            call Message_unused ()
-         endif
-
-      elseif (action.eq.ACTION_end_crop) then
-
-         !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-c        if (TestTrue)   close (1)
-         !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-         if (crop_my_type (c%crop_type)) then
-
-            !end crop - turn the stover into residue
-            call End_Crop ()
-
-!            !Zero all the globals, but not the contants and parameters
-!            call Zero_Variables (.false.)
-
-            !Set plant status to status_out and stage to plant_end subroutine
-            if (g%plant_status.ne.status_out) then
-                g%plant_status  = status_out
-                g%current_stage = real (plant_end)
-            end if
-
-         else
-            ! not my type!
-            call Message_unused ()
-         endif
-
-
-      elseif (action.eq.ACTION_kill_crop) then
-            ! kill crop - died, but biomass remain in field
-            call Kill_Crop (
-     .          g%plant_status,
-     .          g%dm_green,
-     .          g%dm_senesced,
-     .          g%dm_dead)
-      else
-         ! don't use message
-         call Message_unused ()
       endif
-
-
-      call pop_routine (my_name)
-      return
-      end subroutine
-
-
-! ====================================================================
-! This routine is the event handler for all events
-! ====================================================================
-      subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
-      implicit none
-      ml_external respondToEvent
-
-      integer, intent(in) :: fromID
-      integer, intent(in) :: eventID
-      integer, intent(in) :: variant
-
+      
       return
       end subroutine respondToEvent
 

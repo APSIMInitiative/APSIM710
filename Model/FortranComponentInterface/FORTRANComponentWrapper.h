@@ -253,7 +253,7 @@ class FortranWrapper : public protocol::Component
             ok = true;
             }
          else
-            ok = incomingApsimVariant.get(variableName, dataType, isArray, value);
+            ok = incomingApsimVariant.getInternal(variableName, dataType, isArray, value);
          if (!ok)
             {
             if(!isOptional)

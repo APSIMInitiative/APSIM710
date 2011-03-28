@@ -12,7 +12,7 @@ public class Root : BaseOrgan, BelowGround
    private double[] Uptake = null;
    public Biomass[] LayerLive;
    public Biomass[] LayerDead;
-   private SowType SowingInfo = null;
+   private SowPlant2Type SowingInfo = null;
 
    [Event]
    public event FOMLayerDelegate IncorpFOM;
@@ -67,7 +67,7 @@ public class Root : BaseOrgan, BelowGround
       }
 
    [EventHandler]
-   public void OnSow(SowType Sow)
+   public void OnSow(SowPlant2Type Sow)
       {
       SowingInfo = Sow;
       }

@@ -116,7 +116,7 @@ namespace ApsimFile
          foreach (Component Child in ChildNodes)
             Child.ResolveShortcuts();
          }
-      internal void Write(XmlNode Node)
+      public void Write(XmlNode Node)
          {
          // ------------------------------------------------------
          // Write this component to the specified XmlNode. Also

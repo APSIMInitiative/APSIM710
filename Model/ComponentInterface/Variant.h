@@ -115,6 +115,10 @@ class Variant
 	  unsigned size(void) const {return memorySize(type) + messageData.totalBytes();}
 	  MessageData * getMessageData(void) {return &messageData;}
 
+     bool isApsimVariant()
+        {
+        return (type.isApsimVariant());
+        }
    private:
 	  char* newDataPtr;
 	  Type type;

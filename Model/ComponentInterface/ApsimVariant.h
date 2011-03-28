@@ -16,14 +16,14 @@ namespace protocol {
 //
 //---------------------------------------------------------------------------
 
-class ApsimVariant
+class EXPORT ApsimVariant
    {
    public:
-      ApsimVariant(Component* p)
-         : messageData(buffer, sizeof(buffer)), parent(p)
+      ApsimVariant()
+         : messageData(buffer, sizeof(buffer))
          { }
-      ApsimVariant(Component* p, Variant& variant)
-         : messageData(* variant.getMessageData()), parent(p)
+      ApsimVariant(Variant& variant)
+         : messageData(* variant.getMessageData())
          {
          }
 
@@ -52,7 +52,7 @@ class ApsimVariant
          }
 
       template <class T>
-      bool get(const FString& variableName, DataTypeCode typeCode, bool array, T& value)
+      bool getInternal(const FString& variableName, DataTypeCode typeCode, bool array, T& value)
          {
          if (findVariable(variableName))
             {
@@ -76,6 +76,19 @@ class ApsimVariant
          return false;
          }
 
+      bool get(const FString& variableName, bool& value);
+      bool get(const FString& variableName, int& value);
+      bool get(const FString& variableName, float& value);
+      bool get(const FString& variableName, double& value);
+      bool get(const FString& variableName, FString& value);
+      bool get(const FString& variableName, std::string& value);
+      bool get(const FString& variableName, std::vector<int>& value);
+      bool get(const FString& variableName, std::vector<float>& value);
+      bool get(const FString& variableName, std::vector<double>& value);
+      bool get(const FString& variableName, std::vector<std::string>& value);
+      bool get(const FString& variableName, FStrings& value);
+
+
       void aliasTo(const MessageData& fromMessageData)
          {
          messageData = fromMessageData;
@@ -91,7 +104,6 @@ class ApsimVariant
          }
 
    private:
-      Component* parent;
       char buffer[10000];
       Type type;
       MessageData messageData;
@@ -114,6 +126,8 @@ class ApsimVariant
             }
          return found;
          }
+
+
 
    };
 inline MessageData& operator>> (MessageData& messageData, ApsimVariant& variant)

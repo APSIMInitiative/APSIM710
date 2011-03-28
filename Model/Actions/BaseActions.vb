@@ -281,8 +281,19 @@ Public Class BaseActions
         ' --------------------------------------------------------
         ' Perform a clipboard copy operation
         ' --------------------------------------------------------
-        Controller.ApsimData.CopyToClipboard(Controller.SelectedPaths)
-    End Sub
+
+      Dim Doc As New XmlDocument
+      Dim Root As XmlNode = Doc.AppendChild(Doc.CreateElement("dummy"))
+      For Each ComponentPath As String In Controller.SelectedPaths
+         Dim Component As Component = Controller.ApsimData.Find(ComponentPath)
+         If Not IsNothing(Component) Then
+            Dim Node As XmlNode = Root.AppendChild(Doc.CreateElement(Component.Type))
+            Component.Write(Node)
+         End If
+
+      Next
+      Clipboard.SetDataObject(Root.InnerXml, True)
+   End Sub
     Public Shared Sub Paste(ByVal Controller As BaseController)
         ' --------------------------------------------------------
         ' Perform a clipboard paste operation

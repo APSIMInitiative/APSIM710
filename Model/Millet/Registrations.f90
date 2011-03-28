@@ -35,7 +35,7 @@ module Registrations
          id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
-         id%sow = add_registration(respondToEventReg, 'sow', nullTypeDDML, '')
+         id%sow = add_registration(respondToEventReg, 'sow', sowTypeDDML, '')
          id%harvest = add_registration(respondToEventReg, 'harvest', nullTypeDDML, '')
          id%end_crop = add_registration(respondToEventReg, 'end_crop', nullTypeDDML, '')
          id%initiate_crop = add_registration(respondToEventReg, 'initiate_crop', nullTypeDDML, '')

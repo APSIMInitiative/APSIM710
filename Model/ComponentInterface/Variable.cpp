@@ -67,7 +67,7 @@ Variable::Variable(const std::vector<bool>& value)
    // Constructor for a vector of bools.
    // -------------------------------------------------
    {
-   data = new WrapBuiltIn<vector<bool> >(value);
+   data = new WrapBuiltIn<std::vector<bool> >(value);
    }
 
 Variable::Variable(const Variable& rhs)

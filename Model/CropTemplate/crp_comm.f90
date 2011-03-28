@@ -377,56 +377,6 @@
 
 
 
-!     ===========================================================
-      logical function crop_my_type (c_crop_type)
-!     ===========================================================
-
-!      dll_export crop_my_type
-      use Componentinterfacemodule
-      use errorModule
-      implicit none
-
-!+  Sub-Program Arguments
-      character c_crop_type*(*)
-
-!+  Purpose
-!       Returns true if 'type' is equal to the crop type or is absent.
-
-!+  Mission Statement
-!   the crop type = %1
-
-!+  Assumptions
-!       If type is not specified, it is assumed the message was addressed
-!        directly to the module.
-
-!+  Changes
-!     <insert here>
-
-!+  Constant Values
-      character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'crop_my_type')
-
-!+  Local Variables
-      character  crop_type*50          ! crop type in data string
-      integer    numvals               ! number of values returned
-
-!- Implementation Section ----------------------------------
-      call push_routine (my_name)
-
-      call collect_char_var_optional ('type', '()'          &
-                              , crop_type, numvals)
-
-      if (crop_type.eq.c_crop_type .or. numvals.eq.0) then
-         crop_my_type = .true.
-      else
-         crop_my_type = .false.
-      endif
-
-      call pop_routine (my_name)
-      return
-      end function
-
-
 
 ! ====================================================================
       subroutine crop_get_ext_uptakes (uptake_source          &

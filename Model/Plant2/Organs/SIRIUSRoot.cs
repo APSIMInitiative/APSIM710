@@ -11,7 +11,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
    private double[] Uptake = null;
    public Biomass[] LayerLive;
    public Biomass[] LayerDead;
-   private SowType SowingInfo = null;
+   private SowPlant2Type SowingInfo = null;
    [Event]    public event FOMLayerDelegate IncorpFOM;
    [Event]   public event WaterChangedDelegate WaterChanged;
    [Event]   public event NitrogenChangedDelegate NitrogenChanged;
@@ -64,7 +64,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
    }
 
  #region root functions
-   [EventHandler]   public void OnSow(SowType Sow)
+   [EventHandler]   public void OnSow(SowPlant2Type Sow)
       {
       SowingInfo = Sow;
       }

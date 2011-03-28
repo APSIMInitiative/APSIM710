@@ -42,7 +42,7 @@ public ref class ApsimComponent
       Assembly^ CompileScript(XmlNode^ Node);
 
       
-      void CallEventHandlers(String^ EventName, SowType^ Data);
+      void CallEventHandlers(String^ EventName, SowPlant2Type^ Data);
 
 	public:
 		void Warning(String^ msg);
