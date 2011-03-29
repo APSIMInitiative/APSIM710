@@ -885,25 +885,28 @@ end function
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
-   ! Note: C:N ratio factor only based on lying fraction
-   total_C = sum(g%SurfOM(residue)%Lying(1:MaxFr)%C)
-   total_N = sum(g%SurfOM(residue)%Lying(1:MaxFr)%N)
-   total_mineral_n = g%SurfOM(residue)%no3 + g%SurfOM(residue)%nh4
-   cnr =  divide(total_C, (total_N + total_mineral_n), 0.0)
-
-   ! As C:N increases above optcn cnrf decreases exponentially toward zero
-   ! As C:N decreases below optcn cnrf is constrained to one
-
-   if (c%cnrf_optcn .eq. 0) then
-      cnrf = 1.0
+   if (residue .eq. 0) then
+      surfom_cnrf = 1.0
    else
-      cnrf = exp ( - c%cnrf_coeff * ((cnr - c%cnrf_optcn)/c%cnrf_optcn))
+      ! Note: C:N ratio factor only based on lying fraction
+      total_C = sum(g%SurfOM(residue)%Lying(1:MaxFr)%C)
+      total_N = sum(g%SurfOM(residue)%Lying(1:MaxFr)%N)
+      total_mineral_n = g%SurfOM(residue)%no3 + g%SurfOM(residue)%nh4
+      cnr =  divide(total_C, (total_N + total_mineral_n), 0.0)
+
+      ! As C:N increases above optcn cnrf decreases exponentially toward zero
+      ! As C:N decreases below optcn cnrf is constrained to one
+
+      if (c%cnrf_optcn .eq. 0) then
+         cnrf = 1.0
+      else
+         cnrf = exp ( - c%cnrf_coeff * ((cnr - c%cnrf_optcn)/c%cnrf_optcn))
+      endif
+
+      cnrf = bound (cnrf, 0.0, 1.0)
+
+      surfom_cnrf = cnrf
    endif
-
-   cnrf = bound (cnrf, 0.0, 1.0)
-
-   surfom_cnrf = cnrf
-
    call pop_routine (my_name)
    return
 end function
