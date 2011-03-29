@@ -96,7 +96,7 @@ void parseModuleLine(const string& controlFileName, const string& moduleLine,
    int state = READ_MODULE_NAME;
    int currentPos = 0;
    bool inQuotes = false;
-   while (line[currentPos] != 0)
+   while (currentPos < line.size())
       {
       char ch = line[currentPos];
 
