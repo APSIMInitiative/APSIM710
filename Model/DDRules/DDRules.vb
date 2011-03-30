@@ -162,13 +162,13 @@ Public Class DDRules
         End Property
 
         Sub SetupFarmSim(ByVal MyPaddock As PaddockType)
-                Dim FarmSim As ComponentType = MyPaddock.Component("FarmSimGraze")
+        Dim FarmSim As ComponentType = MyPaddock.ComponentByName("RegionalisationOptions")
                 If FarmSim Is Nothing Then
                         Return
                 End If
 
                 Dim UI_StockRate As Double = FarmSim.Variable("UI_StockRate").ToDouble
-                Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToDouble
+        Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToString
 
                 BaseStockingRate = UI_StockRate
                 StockingRate = BaseStockingRate
