@@ -38,7 +38,7 @@
       parameter (max_solutes = 20)            ! applied in irrigation water
 
       integer    max_sources                  ! Maximum number of water sources
-      parameter (max_sources = 20)            ! for irrigation water
+      parameter (max_sources = 100)            ! for irrigation water
 
       integer    module_name_size             ! maximum length of module name
       parameter (module_name_size = 100)
@@ -108,34 +108,18 @@
 
 
 *     ===========================================================
-      subroutine irrigate_irrigate ()
+      subroutine irrigate_ONApply(variant)
 *     ===========================================================
       Use infrastructure
       implicit none
 
 *+  Purpose
-*      This routine responds to an irrigate message from another
+*      This routine responds to an apply message from another
 *      module.  Gets any parameters and irrigates.
 
-*+  Mission Statement
-*     Respond to Irrigate message
+      integer, intent(in) :: variant
+      type(IrrigationApplicationType) :: irrigation
 
-*+  Changes
-*     110395 jngh moved messaging to to apply routine
-*     110496 nih  upgraded routine to use the postbox calls
-*     060696 jngh changed extract to collect routines
-*                 removed data string from argument
-*                 implemented postbox method for data transfer
-*     110996 nih  added increment for g_irr_applied
-*      160399 nih  added irrigation allocation
-*      070600 dsg  added default solute concentration capacity
-
-*+  Constant Values
-      character  my_name*(*)           ! name of procedure
-      parameter (my_name = 'irrigate_irrigate')
-
-
-*+  Local Variables
       integer    numvals               ! number of values collected
       integer    numvals_solute(max_solutes) ! number of values collected for
                                        ! each solute
@@ -147,84 +131,48 @@
       integer    moduleID
       logical    ok
 *- Implementation Section ----------------------------------
-      call push_routine (my_name)
 
+      
       ! Look for all irrigation information
       ! -----------------------------------
 
-
-      Call collect_real_var (
-     :                       'amount'
-     :                     , '(mm)'
-     :                     , g%amount
-     :                     , numvals
-     :                     , 0.0
-     :                     , 1000.0)
-      if (numvals.gt.0) then
-      else
-         call fatal_error (err_user
-     :                   , 'Irrigation amount not specified correctly')
-      endif
-
+      call unpack_IrrigationApplication(variant, irrigation)
+      g%amount = irrigation%Amount
 
       call irrigate_check_allocation(g%amount)
 
-      Call collect_real_var_optional (
-     :                       'duration'
-     :                     , '(min)'
-     :                     , g%duration
-     :                     , numvals
-     :                     , 0.0
-     :                     , 1440.0)
-
-      if (numvals .eq. 0) then
+      g%duration = irrigation%Duration
+      if (g%duration .eq. 0) then
             !set default
          g%duration = p%default_duration
-      else
-          ! got a value
       endif
+      call bound_check_real_var (g%duration, 0.0, 1440.0, 'duration')
 
-      Call collect_char_var_optional (
-     :                       'time'
-     :                     , '(hh:mm)'
-     :                     , g%time
-     :                     , numvals)
-
-      if (numvals .eq. 0) then
+      g%time = irrigation%Time
+      if (g%time .eq. ' ') then
             !set default
          g%time = p%default_time
-      else
-          ! got a value
       endif
 
-! dsg 190603  Check to see whether one or more water sources are specified.
-!             If sources are specified, then collect an irrigated area(ha), and send off
-!             a 'gimme_water' method call to the first specified source.  If sources are
-!             specified then there is no need to check for solute information, because it
-!             will come by default with the source water.
+      ! dsg 190603  Check to see whether one or more water sources are specified.
+      !             If sources are specified, then collect an irrigated area(ha), and send off
+      !             a 'gimme_water' method call to the first specified source.  If sources are
+      !             specified then there is no need to check for solute information, because it
+      !             will come by default with the source water.
 
-      call collect_char_array_optional ('source'
-     :                                  ,max_sources
-     :                                  , '()'
-     :                                  ,g%irrig_source
-     :                                  ,g%tot_num_sources)
-
+      g%irrig_source = irrigation%Source
+      g%tot_num_sources = irrigation%num_Source
+       
       if (g%tot_num_sources.gt.0) then
+         ! Need to get an irrigated area for volume calculations (from event arguemnts)
+         g%area = irrigation%Crop_Area
+         call bound_check_real_var (g%area, 0.0, 100000.0, 'crop_area')
 
-!   need to get an irrigated area for volume calculations (from event arguemnts)
-         call collect_real_var (
-     :                       'crop_area'
-     :                     , '(ha)'
-     :                     , g%area
-     :                     , numvals
-     :                     , 0.0
-     :                     , 100000.0)
-
-! calculate irrigation volume required in Ml
+         ! calculate irrigation volume required in Ml
          volume = g%amount * g%area / 100.0
 
-!         send gimme water
-!  Now send out a gimme_water method call to the first specified source
+         !  Send gimme water
+         !  Now send out a gimme_water method call to the first specified source
          call new_postbox()
          
          call get_fq_name(water_requester)
@@ -252,44 +200,41 @@
          call delete_postbox()
 
       else
-! &&&&&& LOOK FOR SOLUTE INFO&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-      ! look for any solute information in the postbox
-      ! ----------------------------------------------
-         do 100 solnum = 1, g%num_solutes
-            Call collect_real_var_optional (
-     :                          g%solute_names(solnum)
-     :                        , '(kg/ha)'
-     :                        , g%solute(solnum)
-     :                        , numvals_solute(solnum)
-     :                        , 0.0
-     :                        , 1000.0)
-         if (numvals_solute(solnum).eq.0) then
+         ! &&&&&& LOOK FOR SOLUTE INFO&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+         ! look for any solute information in the postbox
+         ! ----------------------------------------------
+         call StoreSolute("NO3", irrigation%NO3, g%amount)
+         call StoreSolute("NH4", irrigation%NH4, g%amount)
+         call StoreSolute("CL", irrigation%CL, g%amount)
 
-*  if there are no solute quantities supplied, apply
-*  default solute concentrations if they are provided
-           g%solute(solnum)= g%amount*p%default_conc_solute(solnum)/100.0
-
-        else
-        endif
-           
-        g%irrigation_solutes(solnum) = g%irrigation_solutes(solnum) +
-     :     g%solute(solnum)
-           
-           
-  100   continue
-
-        call irrigate_sendirrigated()
-
-
-!&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
+      call irrigate_sendirrigated()
       endif
 
-      call pop_routine (my_name)
       return
       end subroutine
 
-
+      ! Store the specified solute amount in the solute array.
+      subroutine StoreSolute(SoluteName, AmountSolute, Amount)
+      Use infrastructure
+      implicit none
+      character*(*) SoluteName
+      real AmountSolute
+      real Amount
+      integer solnum
+      solnum = irrigate_solute_number (SoluteName)
+      if (solnum .gt. 0) then
+         if (AmountSolute .gt. 0) then
+            g%solute(solnum) = AmountSolute
+         else
+            g%solute(solnum)= Amount * p%default_conc_solute(solnum)
+     :                        / 100.0
+         endif
+         g%irrigation_solutes(solnum) = g%irrigation_solutes(solnum)
+     :                                + g%solute(solnum)
+      endif
+      end subroutine
+      
+      
 *     ===========================================================
       subroutine irrigate_sendirrigated ()
 *     ===========================================================
@@ -1451,53 +1396,6 @@
       return
       end subroutine
 
-
-*     ===========================================================
-      subroutine irrigate_onapply (variant)
-*     ===========================================================
-      Use infrastructure
-      implicit none
-
-*+  Purpose
-*      This routine responds to an irrigate message from another
-*      module.  Gets any parameters and irrigates.
-
-*+  Mission Statement
-*     Respond to Irrigate message
-
-*+  Changes
-*     110395 jngh moved messaging to to apply routine
-*     110496 nih  upgraded routine to use the postbox calls
-*     060696 jngh changed extract to collect routines
-*                 removed data string from argument
-*                 implemented postbox method for data transfer
-*     110996 nih  added increment for g_irr_applied
-*      160399 nih  added irrigation allocation
-*      070600 dsg  added default solute concentration capacity
-
-      
-      integer, intent(in) :: variant
-      type(IrrigationApplicationType) :: irrigation
-
-*- Implementation Section ----------------------------------
-
-      ! Look for all irrigation information
-      ! -----------------------------------
-
-      call unpack_IrrigationApplication(variant, irrigation)      
-      g%amount = irrigation%amount
-
-      call irrigate_check_allocation(g%amount)
-
-      !set default
-      g%duration = p%default_duration
-      g%time = p%default_time
-
-      call irrigate_sendirrigated()
-
-      return
-      end subroutine
-
 * ====================================================================
        subroutine irrigate_check_variables ()
 * ====================================================================
@@ -1917,7 +1815,7 @@ cnh note that results may be strange if swdep < ll15
 
       solnum = 0
       do 100 counter = 1, g%num_solutes
-         if (g%solute_names(counter).eq.solname) then
+         if (strings_equal(g%solute_names(counter), solname)) then
             solnum = counter
          else
          endif
@@ -2008,11 +1906,6 @@ cnh note that results may be strange if swdep < ll15
          call irrigate_get_other_variables ()
          call irrigate_process ()
 
-      else if (Action.eq.'apply' .or. Action.eq.'irrigate') then
-         call irrigate_zero_apply_variables()
-         call irrigate_get_other_variables ()
-         call irrigate_irrigate ()
-
       else if (Action.eq.'water_supplied') then
          call irrigate_ONwater_supplied()
 
@@ -2059,9 +1952,10 @@ cnh note that results may be strange if swdep < ll15
 
       if (eventID .eq. id%tick) then
          call irrigate_ONtick(variant)
-      else if (eventID .eq. id%apply2) then
-         call irrigate_ONapply(variant)
-         
+      else if (eventID .eq. id%apply) then
+         call irrigate_zero_apply_variables()
+         call irrigate_get_other_variables ()
+         call irrigate_ONApply(variant)         
       endif
       return
       end subroutine respondToEvent
