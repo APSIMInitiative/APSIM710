@@ -67,6 +67,8 @@ public ref class IrrigationType
          {
          IrrigationApplicationType^ Irrigation = gcnew IrrigationApplicationType();
          Irrigation->Amount = (float) Amount;
-         Comp->Publish("Apply2", Irrigation);
+         Irrigation->source = gcnew array<String^>(0);
+         Irrigation->time = "";
+         Comp->Publish("Apply", Irrigation);
          }
    };
