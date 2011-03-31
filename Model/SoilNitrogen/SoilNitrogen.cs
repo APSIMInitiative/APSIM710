@@ -2,7 +2,9 @@
 using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
+#if !fulldotnet
 using ModelFramework;
+#endif
 using CSGeneral;
 
 /// <summary>
@@ -249,18 +251,18 @@ public class SoilN : Instance
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    [Description("Fraction of carbohydrate in FOM")]
-    public double[] fr_carb;            // carbohydrate fraction of FOM (0-1)          
+    [Description("Fraction of carbohydrate in FOM, for each FOM type")]
+    public double[] fract_carb;            // carbohydrate fraction of FOM (0-1)          
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    [Description("Fraction of cellulose in FOM")]
-    public double[] fr_cell;            // cellulose fraction of FOM (0-1)          
+    [Description("Fraction of cellulose in FOM, for each FOM type")]
+    public double[] fract_cell;            // cellulose fraction of FOM (0-1)          
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
-    [Description("Fraction of lignin in FOM")]
-    public double[] fr_lign;            // lignin fraction of FOM (0-1)          
+    [Description("Fraction of lignin in FOM, for each FOM type")]
+    public double[] fract_lign;            // lignin fraction of FOM (0-1)          
 
     [Param(MinVal = 0.0, MaxVal = 3.0)]
     public double oc2om_factor;         // conversion from OC to OM
@@ -395,7 +397,6 @@ public class SoilN : Instance
         }
     }
 
-
     [Output]
     [Units("kg/ha")]
     [Description("Net NH4 change today")]
@@ -426,7 +427,6 @@ public class SoilN : Instance
             SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
         }
     }
-
 
     [Output]
     [Units("kg/ha")]
@@ -505,6 +505,21 @@ public class SoilN : Instance
     [Description("Number of FOM types")]
     int num_fom_types      // number of fom types read
     { get { return fom_types.Length; } }
+
+    [Output]
+    [Description("Fraction of carbohydrate in FOM")]
+    public double fr_carb            // carbohydrate fraction of FOM (0-1)          
+    { get { return fract_carb[fom_type]; } }
+
+    [Output]
+    [Description("Fraction of cellulose in FOM")]
+    public double fr_cell            // cellulose fraction of FOM (0-1)          
+    { get { return fract_cell[fom_type]; } }
+
+    [Output]
+    [Description("Fraction of lignin in FOM")]
+    public double fr_lign            // lignin fraction of FOM (0-1)          
+    { get { return fract_lign[fom_type]; } }
 
     [Output]
     [Units("kg/ha")]
@@ -1231,13 +1246,13 @@ public class SoilN : Instance
             }
             for (int i = 0; i < nLayers; i++)
             {
-                fom_c_pool1[i] += IncorpFOM.Layer[i].FOM.amount * fr_carb[fom_type] * c_in_fom;
-                fom_c_pool2[i] += IncorpFOM.Layer[i].FOM.amount * fr_cell[fom_type] * c_in_fom;
-                fom_c_pool3[i] += IncorpFOM.Layer[i].FOM.amount * fr_lign[fom_type] * c_in_fom;
+                fom_c_pool1[i] += IncorpFOM.Layer[i].FOM.amount * fract_carb[fom_type] * c_in_fom;
+                fom_c_pool2[i] += IncorpFOM.Layer[i].FOM.amount * fract_cell[fom_type] * c_in_fom;
+                fom_c_pool3[i] += IncorpFOM.Layer[i].FOM.amount * fract_lign[fom_type] * c_in_fom;
 
-                fom_n_pool1[i] += IncorpFOM.Layer[i].FOM.N * fr_carb[fom_type];
-                fom_n_pool2[i] += IncorpFOM.Layer[i].FOM.N * fr_cell[fom_type];
-                fom_n_pool3[i] += IncorpFOM.Layer[i].FOM.N * fr_lign[fom_type];
+                fom_n_pool1[i] += IncorpFOM.Layer[i].FOM.N * fract_carb[fom_type];
+                fom_n_pool2[i] += IncorpFOM.Layer[i].FOM.N * fract_cell[fom_type];
+                fom_n_pool3[i] += IncorpFOM.Layer[i].FOM.N * fract_lign[fom_type];
 
                 // add up fom_n in each layer by adding up each of the pools
                 fom_n[i] = fom_n_pool1[i] + fom_n_pool2[i] + fom_n_pool3[i];
@@ -1411,20 +1426,20 @@ public class SoilN : Instance
         DoubleArrayType arrayVal = new DoubleArrayType();
 
         use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true);
-        if (use_external_st)
+        if (use_external_st && (arrayVal.Value != null))
             st = arrayVal.Value;
 
         else // only need to read these if soil temp is not external
         {
             bool use_external_amp = ParentComponent().Get("amp", val, true);
-            if (use_external_amp)
+            if (use_external_amp && (val.Value != null))
             {
                 amp = val.Value;
                 if (amp < 0.0 || amp > 50.0)
                     throw new Exception("External value for amp out of range");
             }
             use_external_tav_amp = ParentComponent().Get("tav", val, true);
-            if (use_external_tav_amp)
+            if (use_external_tav_amp && (val.Value != null))
             {
                 tav = val.Value;
                 if (tav < 0.0 || tav > 50.0)
@@ -1436,7 +1451,7 @@ public class SoilN : Instance
                 throw new Exception("External AMP with default TAV not permitted");
         }
 
-        use_external_ph = ParentComponent().Get("ph", arrayVal, true);
+        use_external_ph = ParentComponent().Get("ph", arrayVal, true) && (arrayVal.Value != null);
 
         // Check if all values supplied. If not use average C:N ratio in all pools
         if (root_cn_pool == null || root_cn_pool.Length < 3)
@@ -1467,12 +1482,12 @@ public class SoilN : Instance
             else
                 Console.WriteLine("     Using standard soil mineralisation for soil type " + soiltype);
         }
-        if (num_fom_types != fr_carb.Length)
-            throw new Exception("Number of \"fr_carb\" different to \"fom_type\"");
-        if (num_fom_types != fr_cell.Length)
-            throw new Exception("Number of \"fr_cell\" different to \"fom_type\"");
-        if (num_fom_types != fr_lign.Length)
-            throw new Exception("Number of \"fr_lign\" different to \"fom_type\"");
+        if (num_fom_types != fract_carb.Length)
+            throw new Exception("Number of \"fract_carb\" different to \"fom_type\"");
+        if (num_fom_types != fract_cell.Length)
+            throw new Exception("Number of \"fract_cell\" different to \"fom_type\"");
+        if (num_fom_types != fract_lign.Length)
+            throw new Exception("Number of \"fract_lign\" different to \"fom_type\"");
     }
 
     private void ZeroAllGlobals()
@@ -1629,9 +1644,9 @@ public class SoilN : Instance
 
             double fom = MathUtility.Divide(root_wt * root_distrib[layer], root_distrib_tot, 0.0);
 
-            fom_c_pool1[layer] = fom * fr_carb[0] * c_in_fom;
-            fom_c_pool2[layer] = fom * fr_cell[0] * c_in_fom;
-            fom_c_pool3[layer] = fom * fr_lign[0] * c_in_fom;
+            fom_c_pool1[layer] = fom * fract_carb[0] * c_in_fom;
+            fom_c_pool2[layer] = fom * fract_cell[0] * c_in_fom;
+            fom_c_pool3[layer] = fom * fract_lign[0] * c_in_fom;
 
             // Calculate the N in each pool in each layer, fom_n_pool(n)[layer]
             fom_n_pool1[layer] = MathUtility.Divide(fom_c_pool1[layer], root_cn_pool[0], 0.0);
@@ -3187,14 +3202,14 @@ public class SoilN : Instance
         if (p_n_reduction) // ONLY need soil loss if profile reduction is on
         {
             DoubleType value = new DoubleType();
-            if (ParentComponent().Get("soil_loss", value, true))
+            if (ParentComponent().Get("soil_loss", value, true) && (value.Value != null))
               soil_loss = value.Value;
         }
         
         if (use_external_ph)
         {
             DoubleArrayType value = new DoubleArrayType();
-            if (ParentComponent().Get("ph", value, true))
+            if (ParentComponent().Get("ph", value, true) && (value.Value != null))
               ph = value.Value;
         }
         CheckPond();
@@ -3203,7 +3218,7 @@ public class SoilN : Instance
     private void CheckPond()
     {
         StringType stVal = new StringType();
-        if (!ParentComponent().Get("pond_active", stVal, true))
+        if (!ParentComponent().Get("pond_active", stVal, true) || (stVal.Value == null))
             pond_active = "no";
     }
 

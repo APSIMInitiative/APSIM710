@@ -294,10 +294,10 @@ public class SoilErosion : Instance
 
     private void Init()
     {
-        Console.WriteLine("  Initialising:  ");
-        Console.WriteLine();
-        Console.WriteLine("          - Reading Parameters");
-        Console.WriteLine();
+        Console.WriteLine("      Initialising:");
+        Console.WriteLine("     ");
+        Console.WriteLine("        - Reading Parameters");
+        Console.WriteLine("     ");
 
         if (bed_depth < MathUtility.Sum(dlayer))
             throw new Exception("Depth to bedrock is less than profile depth");
@@ -350,67 +350,67 @@ public class SoilErosion : Instance
 
     private void WriteSummary()
     {
-        Console.WriteLine();
-        Console.WriteLine();
-        Console.WriteLine("                 Erosion Parameters");
-        Console.WriteLine("     -----------------------------------------------");
+        Console.WriteLine("     ");
+        Console.WriteLine("     ");
+        Console.WriteLine("                      Erosion Parameters");
+        Console.WriteLine("          -----------------------------------------------");
 
         if (reduce_profile)
         {
-            Console.WriteLine("      Profile reduction:                     on");
-            Console.WriteLine("      Fraction of original layer for merge: {0,4:F3}", profile_layer_merge);
+            Console.WriteLine("           Profile reduction:                     on");
+            Console.WriteLine("           Fraction of original layer for merge: {0,4:F3}", profile_layer_merge);
         }
         else
         {
-            Console.WriteLine("      Profile reduction:                     off");
+            Console.WriteLine("           Profile reduction:                     off");
         }
 
         if (model_type == model_type_enum.freebairn)
         {
-            Console.WriteLine("      Freebairn cover-sediment concentration model");
-            Console.WriteLine();
-            Console.WriteLine("      LS factor:                             {0,6:F4}", ls_factor);
-            Console.WriteLine();
+            Console.WriteLine("           Freebairn cover-sediment concentration model");
+            Console.WriteLine("     ");
+            Console.WriteLine("           LS factor:                             {0,6:F4}", ls_factor);
+            Console.WriteLine("     ");
             if (k_factor_susp <= 0.0)
             {
-                Console.WriteLine("      K factor:                              {0,6:F4}", k_factor_bed);
-                Console.WriteLine();
+                Console.WriteLine("           K factor:                              {0,6:F4}", k_factor_bed);
+                Console.WriteLine("     ");
             }
             else
             {
-                Console.WriteLine("      K factor (bedload):                    {0,6:F4}", k_factor_bed);
-                Console.WriteLine();
-                Console.WriteLine("      K factor (suspended load):             {0,6:F4}", k_factor_susp);
-                Console.WriteLine();
+                Console.WriteLine("           K factor (bedload):                    {0,6:F4}", k_factor_bed);
+                Console.WriteLine("     ");
+                Console.WriteLine("           K factor (suspended load):             {0,6:F4}", k_factor_susp);
+                Console.WriteLine("     ");
             }
-            Console.WriteLine("      P factor:                              {0,6:F4}", p_factor);
-            Console.WriteLine();
+            Console.WriteLine("           P factor:                              {0,6:F4}", p_factor);
+            Console.WriteLine("     ");
         }
         else if (model_type == model_type_enum.rose)
         {
-            Console.WriteLine("      Rose sediment concentration model");
-            Console.WriteLine();
+            Console.WriteLine("           Rose sediment concentration model");
+            Console.WriteLine("     ");
             if (entrain_eff_susp <= 0.0)
             {
-                Console.WriteLine("       Efficiency of entrainment:            {0,6:F4}", entrain_eff_bed);
-                Console.WriteLine();
+                Console.WriteLine("            Efficiency of entrainment:            {0,6:F4}", entrain_eff_bed);
+                Console.WriteLine("     ");
             }
             else
             {
-                Console.WriteLine("       Efficiency of bed load entrainment:   {0,6:F4}", entrain_eff_bed);
-                Console.WriteLine();
-                Console.WriteLine("       Efficiency of susp. load entrainment: {0,6:F4}", entrain_eff_susp);
-                Console.WriteLine();
+                Console.WriteLine("            Efficiency of bed load entrainment:   {0,6:F4}", entrain_eff_bed);
+                Console.WriteLine("     ");
+                Console.WriteLine("            Efficiency of susp. load entrainment: {0,6:F4}", entrain_eff_susp);
+                Console.WriteLine("     ");
             }
-            Console.WriteLine("       Slope (%):                            {0,6:F2}", slope);
-            Console.WriteLine();
+            Console.WriteLine("            Slope (%):                            {0,6:F2}", slope);
+            Console.WriteLine("     ");
         }
         else
         {
-            Console.WriteLine("      ? Unknown model type ?");
-            Console.WriteLine();
+            Console.WriteLine("           ? Unknown model type ?");
+            Console.WriteLine("     ");
         }
-        Console.WriteLine("     -----------------------------------------------");
+        Console.WriteLine("          -----------------------------------------------");
      }
 
     private void Process()
