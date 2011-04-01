@@ -37,11 +37,16 @@ namespace Plant2Doco
                Directory.SetCurrentDirectory(Path.GetDirectoryName(DocName));
             
             XmlDocument XML = new XmlDocument();
-            XML.Load(XMLName);
+            XML.Load(XMLName);         
 
             StreamWriter OutputFile = new StreamWriter(DocName);
             OutputFile.WriteLine("<html>");
-            OutputFile.WriteLine("<link href=\"../ApsimWebStyle.css\" rel=\"stylesheet\" type=\"text/css\">");
+            OutputFile.WriteLine("<head>");
+            OutputFile.WriteLine("<meta http-equiv=\"content-type\"");
+            OutputFile.WriteLine("content=\"text/html; charset=ISO-8859-1\">"); 
+            OutputFile.WriteLine("<link rel=\"stylesheet\" href=\"..\\Documentation\\Plant2.css\" type=\"text/css\">");
+            OutputFile.WriteLine("</head>");
+            OutputFile.WriteLine("<body>");
             string TitleText = "The APSIM "+XmlHelper.Name(XML.DocumentElement)+" Module";
             OutputFile.WriteLine(Title(TitleText));
             OutputFile.WriteLine(Center(Header(TitleText,1)));
@@ -49,6 +54,7 @@ namespace Plant2Doco
             XmlNode PlantNode = XmlHelper.FindByType(XML.DocumentElement, "Model/Plant");
             DocumentNodeAndChildren(OutputFile, PlantNode, 1);
 
+            OutputFile.WriteLine("</body>");
             OutputFile.WriteLine("</html>");
             OutputFile.Close();
             Directory.SetCurrentDirectory(SavedDirectory);
@@ -118,7 +124,28 @@ namespace Plant2Doco
       private static void DocumentProperty(StreamWriter OutputFile, XmlNode N, int Level)
          {
          if (N.Name != "XProperty")
-            OutputFile.WriteLine("<p>" + XmlHelper.Name(N) + " = " + N.InnerText);
+             if (XmlHelper.Name(N).Contains("Stages") || XmlHelper.Name(N).Contains("ll") || XmlHelper.Name(N).Contains("kl"))
+             {
+                 if (XmlHelper.Name(N).Contains("ll") || XmlHelper.Name(N).Contains("Stages"))
+                     OutputFile.WriteLine("<table>");
+                 else
+                     OutputFile.WriteLine("<tr>");
+                 OutputFile.WriteLine("<tbody>\n<tr>");
+                 OutputFile.WriteLine("<td>" + XmlHelper.Name(N) + "<br></td>");
+                 string[] inner = N.InnerText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                 foreach (string s in inner)
+                     OutputFile.WriteLine("<td>" + s + "</td>");
+                 OutputFile.WriteLine("</tr>\n<tr>");
+             }
+             else if (XmlHelper.Name(N).Contains("Codes") || XmlHelper.Name(N).Contains("xf"))
+             {
+                 OutputFile.WriteLine("<td>" + XmlHelper.Name(N) + "<br></td>");
+                 string[] inner = N.InnerText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                 foreach (string s in inner)
+                     OutputFile.WriteLine("<td>" + s + "<br></td>");
+                 OutputFile.WriteLine("</tr>\n</tbody>\n</table>");
+             }else
+                OutputFile.WriteLine("<p>" + XmlHelper.Name(N) + " = " + N.InnerText);
          }
 
 
@@ -206,7 +233,7 @@ namespace Plant2Doco
          }
       static string Header(string text, int Level)
          {
-         return "<H" + Level.ToString() + ">" + text + "</H" + Level.ToString() + ">";
+         return (Level == 3 ? "<br>\n" : "") + "<H" + Level.ToString() + ">" + text + "</H" + Level.ToString() + ">";
          }
       static string Title(string text)
          {
@@ -273,8 +300,8 @@ namespace Plant2Doco
 
          // Set up to write a table.
          OutputFile.WriteLine("<table border=\"0\">");
-         OutputFile.WriteLine("<td></td><td></td>");
-         OutputFile.WriteLine("<tr>");
+      //   OutputFile.WriteLine("<td></td><td></td>");
+      //   OutputFile.WriteLine("<tr>");
 
          // output xy table as a nested table.
          OutputFile.WriteLine("<td>");
