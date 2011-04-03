@@ -360,12 +360,35 @@
       integer i
       integer j
       real    net_radn
+      
+      integer ComponentNo
 
 *- Implementation Section ----------------------------------
 
       call push_routine (myname)
 
-      if (Variable_name.eq.'interception') then
+
+
+CCC  VOS added 4 April 2011 - needed as part of system to allow cops to change their gsmax for climate change work
+CCC
+      if (index(Variable_name,'gsmax_').eq.1) then
+         ComponentNo = position_in_char_array
+     :                   (Variable_name(7:)
+     :                   ,g%ComponentName
+     :                   ,g%NumComponents)
+
+         if (ComponentNo.eq.0) then
+            call fatal_Error(ERR_Internal
+     :                 ,'Unknown Canopy Component: '//Variable_name)
+         else
+            call respond2get_real_var (
+     :               Variable_name,
+     :               '(m/s)',
+     :               g%ComponentGsmax(ComponentNo))
+         endif
+CCC End new code
+
+      elseif (Variable_name.eq.'interception') then
 
       Total_Interception = 0.0
 
@@ -476,6 +499,73 @@
       return
       end subroutine
 
+* ====================================================================
+       subroutine Micromet_set_my_variable (Variable_name)
+* ====================================================================
+
+      Use Infrastructure
+      implicit none
+
+*+  Sub-Program Arguments
+      character Variable_name*(*)      ! (INPUT) Variable name to search for
+
+*+  Purpose
+*     Set one of our variables altered by some other module
+
+*+  Changes
+*    040411  VOS added to allow user to reset gsmaxfor crop for climate change simulations
+
+*+  Constant Values
+      character*(*) myname                 ! Name of this procedure
+      parameter (myname = 'Micromet_set_my_variable')
+
+*+  Local Variables
+      integer numvals                  ! number of values returned
+      integer ComponentNo              ! component number
+      real*4 ub                        ! upper bound for the change
+      real*4 lb                        ! lower bound for the change
+      real*4 dlt_gsmax                 ! temporary variable to hold the change
+
+*- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+
+      if (index(Variable_name,'dlt_gsmax_').eq.1) then
+         ComponentNo = position_in_char_array
+     :                   (Variable_name(11:)
+     :                   ,g%ComponentName
+     :                   ,g%NumComponents)
+
+         if (ComponentNo.eq.0) then
+            call fatal_Error(ERR_Internal
+     :                 ,'Unknown Canopy Component: '//Variable_name)
+         else
+            lb = -0.9 * g%ComponentGsmax(ComponentNo)
+            ub = 0.9 * g%ComponentGsmax(ComponentNo)
+            call collect_real_var (
+     :             variable_name        ! variable name
+     :            ,'(m/s)'              ! units
+     :            ,dlt_gsmax            ! variable
+     :            ,numvals              ! number of elements returned
+     :            ,lb                   ! lower limit for bound check
+     :            ,ub)                  ! upper limit for bound check
+            if (dlt_gsmax .gt. ub) then    !need to cause a fatal not warning error
+               call Fatal_Error (err_internal,'dlt_gsmax too high')
+            elseif (dlt_gsmax .lt. lb) then
+               call Fatal_Error (err_internal,'dlt_gsmax too low')
+            endif
+            g%ComponentGsmax(ComponentNo) = 
+     :                       g%ComponentGsmax(ComponentNo) + dlt_gsmax
+         endif
+
+      else
+         ! Don't know this variable name
+         call Message_Unused ()
+      endif
+
+      call pop_routine (myname)
+      return
+      end subroutine
 
 
 *     ===========================================================
@@ -2677,6 +2767,9 @@
 
       else if (Action.eq.ACTION_Get_variable) then
          call Micromet_Send_my_variable (Data_string)
+
+      else if (Action.eq.ACTION_Set_variable) then      !VOS added 040411
+         call Micromet_Set_my_variable (data_string)
 
       else if (Action.eq.'lai_table') then
          call Micromet_table ('LAI',g%LAI)
