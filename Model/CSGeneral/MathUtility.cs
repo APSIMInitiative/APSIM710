@@ -497,7 +497,7 @@ namespace CSGeneral
       static public double DayLength(double DayOfYear, double SunAngle, double Latitude)
          {
          //+ Constant Values
-         const double aeqnox = 82.25;   //  average day number of autumnal equinox
+         const double aeqnox = 79.25;   //  average day number of autumnal equinox
          const double pi = 3.14159265359;
          const double dg2rdn = (2.0 * pi) / 360.0; // convert degrees to radians
          const double decsol = 23.45116 * dg2rdn; // amplitude of declination of sun

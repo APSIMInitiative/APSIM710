@@ -219,7 +219,7 @@ float day_length (int dyoyr,      // (INPUT) day of year number
 
 
    //+ Constant Values
-   const double  aeqnox = 82.25 ;//  average day number of autumnal equinox
+   const double  aeqnox = 79.25 ;//  average day number of autumnal equinox
 
    const double  pi = 3.14159265359 ;
 

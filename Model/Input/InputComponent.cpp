@@ -199,10 +199,10 @@ void InputComponent::addVariable(Value& value)
 void InputComponent::registerAllVariables(void)
    {
    for_each(data.constantsBegin(), data.constantsEnd(),
-            bind(&InputComponent::addVariable, this, _1));
+            boost::bind(&InputComponent::addVariable, this, _1));
 
    for_each(data.fieldsBegin(), data.fieldsEnd(),
-            bind(&InputComponent::addVariable, this, _1));
+           boost::bind(&InputComponent::addVariable, this, _1));
    }
 // ------------------------------------------------------------------
 // Check to see if we need to handle sparse data or not.
@@ -480,7 +480,7 @@ float bound(float var, float lower, float upper)
 // ------------------------------------------------------------------
 float InputComponent::dayLength(int dyoyr, float lat, float sun_angle)
    {
-   float aeqnox = 82.25;               // equinox
+   float aeqnox = 79.25;               // equinox
    float pi =  3.14159265359;
    float dg2rdn = (2.0*pi) / 360.0;
    float decsol = 23.45116 * dg2rdn;   // amplitude of declination of sun

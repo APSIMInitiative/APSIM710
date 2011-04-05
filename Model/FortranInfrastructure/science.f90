@@ -95,7 +95,7 @@ module ScienceModule
 
    !+ Constant Values
       real       aeqnox                ! average day number of autumnal
-      parameter (aeqnox = 82.25)       !   equinox
+      parameter (aeqnox = 79.25)       !   equinox
    !
       real       pi                    ! pi
       parameter (pi =  3.14159265359)

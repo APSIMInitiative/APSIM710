@@ -25,6 +25,7 @@ namespace Plant2Doco
          {
          int Code;
          string SavedDirectory = Directory.GetCurrentDirectory();
+
          try
             {
             if (args.Length != 2)
@@ -37,14 +38,14 @@ namespace Plant2Doco
                Directory.SetCurrentDirectory(Path.GetDirectoryName(DocName));
             
             XmlDocument XML = new XmlDocument();
-            XML.Load(XMLName);         
+            XML.Load(XMLName);
 
             StreamWriter OutputFile = new StreamWriter(DocName);
             OutputFile.WriteLine("<html>");
             OutputFile.WriteLine("<head>");
             OutputFile.WriteLine("<meta http-equiv=\"content-type\"");
-            OutputFile.WriteLine("content=\"text/html; charset=ISO-8859-1\">"); 
-            OutputFile.WriteLine("<link rel=\"stylesheet\" href=\"..\\Documentation\\Plant2.css\" type=\"text/css\">");
+            OutputFile.WriteLine("content=\"text/html; charset=ISO-8859-1\">");
+            OutputFile.WriteLine("<link rel=\"stylesheet\" type=\"text/css\" href=\"..\\Plant2.css\" >");
             OutputFile.WriteLine("</head>");
             OutputFile.WriteLine("<body>");
             string TitleText = "The APSIM "+XmlHelper.Name(XML.DocumentElement)+" Module";
@@ -330,7 +331,7 @@ namespace Plant2Doco
          OutputFile.WriteLine("</table>");
 
          // Export graph to bitmap file.
-         Rectangle Bounds = new Rectangle(0, 0, 200, 200);
+         Rectangle Bounds = new Rectangle(0, 0, 300, 200);
          Graph.Bounds = Bounds;
          Bitmap b = new Bitmap(Bounds.Width, Bounds.Height);
          Graph.DrawToBitmap(b, Bounds);
@@ -338,8 +339,5 @@ namespace Plant2Doco
 
 
          }
-
-
-
       }
    }

@@ -135,7 +135,7 @@ float Environment::DiffuseLightFactor (void)                    // This was orig
 
 float Environment::Q0(float lat, int day) 						// (PFR)
    {
-   float DEC = 23.45 * sin(2. * 3.14159265 / 365.25 * (day - 82.25));
+   float DEC = 23.45 * sin(2. * 3.14159265 / 365.25 * (day - 79.25));
    float DECr = DEC * 2. * 3.14159265 / 360.;
    float LATr =    lat * 2. * 3.14159265 / 360.;
    float HS = acos(-tan(LATr) * tan(DECr));

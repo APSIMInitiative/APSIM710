@@ -21,7 +21,7 @@ Public Module Radiation
 
         sun_alt = sun_angle * 2.0# * PI / 365.25
 
-        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 82.25))
+        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 79.25))
         DECr = DEC * 2.0# * PI / 360.0#
         LATr = lat * 2.0# * PI / 360.0#
 
@@ -87,7 +87,7 @@ Public Module Radiation
         Dim HS As Single
 
 
-        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 82.25))
+        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 79.25))
         DECr = DEC * 2.0# * PI / 360.0#
         LATr = lat * 2.0# * PI / 360.0#
 
@@ -118,7 +118,7 @@ Public Module Radiation
         HSmax = acos(-Tan(LATr) * Tan(DECr)) ' half daylength
         If (HS <= HSmax) Then
 
-            DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 82.25))
+            DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 79.25))
 
             DECr = DEC * 2.0# * PI / 360.0#
             LATr = lat * 2.0# * PI / 360.0#
@@ -144,7 +144,7 @@ Public Module Radiation
         Dim S1, S2 As Single
         Dim HS As Single
 
-        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 82.25))
+        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 79.25))
         DECr = DEC * 2.0# * PI / 360.0#
         LATr = lat * 2.0# * PI / 360.0#
 
@@ -173,7 +173,7 @@ Public Module Radiation
         Dim HS As Single ' Sunrise hour angle
         Dim M As Single ' Mixing Length
 
-        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 82.25))
+        DEC = 23.45 * Sin(2.0# * PI / 365.25 * (day - 79.25))
         DECr = DEC * 2.0# * PI / 360.0#
         LATr = lat * 2.0# * PI / 360.0#
 
@@ -218,7 +218,7 @@ Public Module Radiation
         Dim LATr As Single
         Dim HSmax As Single
 
-        DEC = 23.45 * Sin(2.0# * 3.14159265 / 365.25 * (day - 82.25))
+        DEC = 23.45 * Sin(2.0# * 3.14159265 / 365.25 * (day - 79.25))
         DECr = DEC * 2.0# * 3.14159265 / 360.0#
         LATr = lat * 2.0# * 3.14159265 / 360.0#
 
