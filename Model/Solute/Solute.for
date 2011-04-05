@@ -624,22 +624,20 @@
       parameter (myname = 'solute_notification')
 
 *+  Local Variables
+      type(NewSoluteType) :: newSolute
 
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
-      call new_postbox()
-
-      call post_char_array (DATA_new_solute_names
-     :                     , '()'
-     :                     , p%solute_names
-     :                     , g%num_solutes)
-
-      call event_send (unknown_module, EVENT_new_solute)
-
-      call delete_postbox()
-
+      newSolute%sender_id = get_ComponentID()
+   
+      newSolute%solutes(1:g%num_solutes) = 
+     :   p%solute_names(1:g%num_solutes)
+      newSolute%num_solutes = g%num_solutes
+   
+      call publish_newSolute(id%new_solute, newSolute)
+	  
       call pop_routine (myname)
       return
       end subroutine

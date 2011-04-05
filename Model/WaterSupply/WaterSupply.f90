@@ -1576,7 +1576,7 @@ end subroutine
 
 
 !  ===========================================================
-subroutine WaterSupply_ONnew_solute ()
+subroutine WaterSupply_ONnew_solute (variant)
 !  ===========================================================
    Use infrastructure
    implicit none
@@ -1601,9 +1601,10 @@ subroutine WaterSupply_ONnew_solute ()
 
 
 !+ Local Variables
+   integer, intent(in) :: variant
+   type(newSoluteType) :: newsolute
    integer numvals
    character names(max_solutes)*32
-   character sender*(max_module_name_size)
    integer counter1
 
    character err_string*200
@@ -1613,17 +1614,17 @@ subroutine WaterSupply_ONnew_solute ()
 
    call push_routine (my_name)
 
-   call collect_char_var (DATA_sender,'()',sender,numvals)
-
-   call collect_char_array (DATA_new_solute_names,max_solutes,'()',names,numvals)
+   call unpack_newsolute(variant, newsolute)
+	  
+   numvals = newsolute%num_solutes
 
    do counter1 = 1, numvals
-     if (WaterSupply_solute_number(names(counter1)) .eq. 0) then
+     if (WaterSupply_solute_number(newsolute%solutes(counter1)) .eq. 0) then
         g%num_solutes = g%num_solutes + 1
         if (g%num_solutes.gt.max_solutes) then
            call fatal_error (ERR_Internal,'Too many solutes for system')
         endif
-        g%solute_names(g%num_solutes) = names(counter1)
+        g%solute_names(g%num_solutes) = newsolute%solutes(counter1)
      else
         ! we already know about it
      endif
@@ -1832,9 +1833,6 @@ subroutine Main (action, data_string)
       call WaterSupply_read_constants ()
       call WaterSupply_sum_report ()
 
-   else if (Action .eq. EVENT_new_solute) then
-      call WaterSupply_ONnew_solute ()
-
    else
       ! don't use message
       call Message_unused ()
@@ -1867,7 +1865,10 @@ subroutine respondToEvent(fromID, eventID, variant)
    elseif (eventID .eq. id%newmet) then
       call WaterSupply_ONnewmet(variant)
 
-   elseif (eventID .eq. id%runoffEvent) then
+   elseif (eventID .eq. id%new_solute) then
+      call WaterSupply_ONnew_solute (variant)
+	   
+  elseif (eventID .eq. id%runoffEvent) then
       call WaterSupply_ONrunoff (fromID, variant)
 
    endif

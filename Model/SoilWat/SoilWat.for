@@ -6783,10 +6783,10 @@ c dsg 070302 added runon
       end subroutine
 
 *     ===========================================================
-      subroutine soilwat2_on_new_solute ()
+      subroutine soilwat2_on_new_solute (variant)
 *     ===========================================================
       Use Infrastructure
-      implicit none
+       implicit none
 
 *+  Purpose
 *     Add new solute to internal list of system solutes
@@ -6803,8 +6803,8 @@ c dsg 070302 added runon
 
        character  section_name*(*)
        parameter (section_name = 'parameters')
+      integer, intent(in) :: variant
 *+  Local Variables
-      character names(max_solute)*32
       integer sender
       integer counter
       integer mobile_no
@@ -6815,31 +6815,24 @@ c dsg 070302 added runon
       character  default_name*100      ! concatenated parameter name for initial solute concentration
       integer dummyID
 
+      type(newSoluteType) :: newsolute
+
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
-      call collect_integer_var (DATA_sender_ID
-     :                          ,'()'
-     :                          ,sender
-     :                          ,numvals
-     :                          ,0
-     :                          ,10000)
-
-      names(:) = blank
-      call collect_char_array (DATA_new_solute_names
-     :                        ,max_solute
-     :                        ,'()'
-     :                        ,names
-     :                        ,numvals)
-
+      call unpack_newsolute(variant, newsolute)
+	  
+      sender = newsolute%sender_id
+      numvals = newsolute%num_solutes
+      	  
       if (g%num_solutes+numvals.gt.max_solute) then
          call fatal_error (ERR_Internal
      :                    ,'Too many solutes for Soilwat2')
       else
          do 100 counter = 1, numvals
             g%num_solutes = g%num_solutes + 1
-            g%solute_names(g%num_solutes) = names(counter)
+            g%solute_names(g%num_solutes) = newsolute%solutes(counter)
             g%solute_owners(g%num_solutes) = sender
 
             mobile_no = position_in_char_array(
@@ -7410,9 +7403,6 @@ c
       else if (action .eq. ACTION_till) then
          call soilwat2_tillage ()
 
-      else if (action .eq. EVENT_new_solute) then
-         call soilwat2_on_new_solute ()
-
       else if (action.eq.ACTION_init) then
          ! Save State
          call soilwat2_save_state ()
@@ -7468,6 +7458,8 @@ c
          call soilwat2_ONnewmet(variant)
       else if (eventID .eq. id%WaterChanged) then
          call OnWaterChanged(variant)
+      else if (eventID .eq. id%New_Solute) then
+         call soilwat2_on_new_solute (variant)
       endif
       return
       end subroutine respondToEvent
@@ -7510,7 +7502,7 @@ c
       id%irrigated = add_registration(respondToEventReg, 'irrigated',
      .                                ApsimVariantTypeDDML, '')
       id%new_solute = add_registration(respondToEventReg, 'new_solute',
-     .                                 ApsimVariantTypeDDML, '')
+     .                                 NewSoluteTypeDDML, '')
       id%process = add_registration(respondToEventReg, 'process',
      .                              nullTypeDDML, '')
       id%prepare = add_registration(respondToEventReg, 'prepare',

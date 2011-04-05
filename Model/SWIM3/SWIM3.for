@@ -6652,7 +6652,7 @@ cnh      end if
 
 
 *     ===========================================================
-      subroutine apswim_on_new_solute ()
+      subroutine apswim_on_new_solute (variant)
 *     ===========================================================
       Use infrastructure
       implicit none
@@ -6661,6 +6661,8 @@ cnh      end if
 *     Find the owner of any run_solutes
 
 *+  Local Variables
+      integer, intent(in) :: variant
+      type(newSoluteType) :: newsolute
       integer numvals
       integer node
       character names(nsol)*32
@@ -6671,21 +6673,12 @@ cnh      end if
 
 *- Implementation Section ----------------------------------
 
-      call collect_integer_var (DATA_sender_ID
-     :                          ,'()'
-     :                          ,sender
-     :                          ,numvals
-     :                          ,0
-     :                          ,10000000)
-
-
-      call collect_char_array (DATA_new_solute_names
-     :                        ,nsol
-     :                        ,'()'
-     :                        ,names
-     :                        ,numvals)
-
-
+      call unpack_newsolute(variant, newsolute)
+	  
+      sender = newsolute%sender_id
+      numvals = newsolute%num_solutes
+      names(1:numvals) = newsolute%solutes(1:numvals)
+	  
       do 100 counter = 1, numvals
 
          if ((names(counter).eq.'no3').or.
@@ -7419,9 +7412,6 @@ c     :                          ,'runoff')
       else if (Action .eq. ACTION_Till) then
          call apswim_tillage ()
 
-      else if (Action .eq. EVENT_new_solute) then
-         call apswim_on_new_solute()
-
       else if (Action .eq. 'subsurfaceflow') then
          call apswim_OnSubSurfaceFlow()
       else
@@ -7459,6 +7449,8 @@ c     :                          ,'runoff')
 
       if (eventID .eq. id%tick) then
          call apswim_ONtick (variant)
+      elseif (eventID .eq. id%new_solute) then
+         call apswim_on_new_solute(variant)
       elseif (eventID .eq. id%prenewmet) then
 !         call apswim_set_rain_variable ()
 !      elseif (eventID .eq. id%subsurfaceflow) then

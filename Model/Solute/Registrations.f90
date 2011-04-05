@@ -16,7 +16,7 @@ module Registrations
          use Infrastructure
          type(IDsType) :: id
 
-         id%new_solute = add_registration(eventReg, 'new_solute', ApsimVariantTypeDDML, '')
+         id%new_solute = add_registration(eventReg, 'new_solute', NewSoluteTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sys_init = add_registration(respondToEventReg, 'sys_init', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')

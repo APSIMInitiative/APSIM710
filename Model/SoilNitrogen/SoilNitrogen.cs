@@ -249,17 +249,14 @@ public class SoilN : Instance
     [Param(Name = "fom_type")]
     public String[] fom_types;           // list of fom types
 
-    [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of carbohydrate in FOM, for each FOM type")]
     public double[] fract_carb;            // carbohydrate fraction of FOM (0-1)          
 
-    [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of cellulose in FOM, for each FOM type")]
     public double[] fract_cell;            // cellulose fraction of FOM (0-1)          
 
-    [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Description("Fraction of lignin in FOM, for each FOM type")]
     public double[] fract_lign;            // lignin fraction of FOM (0-1)          
@@ -1151,12 +1148,12 @@ public class SoilN : Instance
     public event ExternalMassFlowDelegate ExternalMassFlow;
 
     [Event]
-    public event ApsimVariantDelegate new_solute;
+    public event NewSoluteDelegate new_solute;
 
-    [Event]
+    [Event] // Not actually used
     public event ApsimVariantDelegate n_balance;
 
-    [Event]
+    [Event] // Not actually used
     public event ApsimVariantDelegate c_balance;
 
     [Event]
@@ -1227,7 +1224,7 @@ public class SoilN : Instance
 
         if (nSpecified)
         {
-            fom_type = 0; // use as default in fom type not found
+            fom_type = 0; // use as default if fom type not found
             for (int i = 0; i < fom_types.Length; i++)
             {
                 if (fom_types[i] == IncorpFOM.Type)
@@ -1422,7 +1419,7 @@ public class SoilN : Instance
         Console.WriteLine();
         Console.WriteLine("        - Reading Parameters");
         
-        DoubleType val = new DoubleType();
+        DoubleType val = new DoubleType(Double.NaN);
         DoubleArrayType arrayVal = new DoubleArrayType();
 
         use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true);
@@ -1431,15 +1428,16 @@ public class SoilN : Instance
 
         else // only need to read these if soil temp is not external
         {
-            bool use_external_amp = ParentComponent().Get("amp", val, true);
-            if (use_external_amp && (val.Value != null))
+            bool use_external_amp = ParentComponent().Get("amp", val, true) && (!Double.IsNaN(val.Value));
+            if (use_external_amp)
             {
                 amp = val.Value;
                 if (amp < 0.0 || amp > 50.0)
                     throw new Exception("External value for amp out of range");
             }
-            use_external_tav_amp = ParentComponent().Get("tav", val, true);
-            if (use_external_tav_amp && (val.Value != null))
+            val.Value = Double.NaN;
+            use_external_tav_amp = ParentComponent().Get("tav", val, true) && (!Double.IsNaN(val.Value));
+            if (use_external_tav_amp)
             {
                 tav = val.Value;
                 if (tav < 0.0 || tav > 50.0)
@@ -3201,8 +3199,8 @@ public class SoilN : Instance
 
         if (p_n_reduction) // ONLY need soil loss if profile reduction is on
         {
-            DoubleType value = new DoubleType();
-            if (ParentComponent().Get("soil_loss", value, true) && (value.Value != null))
+            DoubleType value = new DoubleType(Double.NaN);
+            if (ParentComponent().Get("soil_loss", value, true) && (!Double.IsNaN(value.Value)))
               soil_loss = value.Value;
         }
         
@@ -3314,10 +3312,19 @@ public class SoilN : Instance
 
     private void SendNBalanceEvent()
     {
+        // This event was sent from the Fortran version, but nothing anywhere ever subscribed
+        // to it. If it's ever used, it should be revised to not use Apsim variants.
+        // It transmitted four arrays (elements correspond to layers) of values:
+        //    nh4_transform_net
+        //    no3_transform_net
+        //    dlt_nh4_net
+        //    dlt_no3_net
+
         // Notify other modules of completion of N balance
         if (n_balance != null)
         {
             int nLayers = dlayer.Length;
+
             ApsimVariantType data = new ApsimVariantType();
             // Need to pack the data and fire off the event
             // DotNetComponentInterface doesn't provide a lot of support
@@ -3393,98 +3400,104 @@ public class SoilN : Instance
 
     private void SendCBalanceEvent()
     {
-        if (c_balance != null)
-        {
-            int nLayers = dlayer.Length;
-            double[] dlt_oc = new double[nLayers]; // change in organic carbon
-            double[] dlt_om = new double[nLayers]; // change in organic matter
+        // This event was sent from the Fortran version, but nothing anywhere ever subscribed
+        // to it. If it's ever used, it should be revised to not use Apsim variants.
+        // It transmitted two arrays  (elements correspond to layers) of values:
+        //    dlt_oc
+        //    dlt_om
+  
+               if (c_balance != null)
+               {
+                   int nLayers = dlayer.Length;
+                   double[] dlt_oc = new double[nLayers]; // change in organic carbon
+                   double[] dlt_om = new double[nLayers]; // change in organic matter
 
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                // OC can increase by flows from FOM
-                // =================================
-                double c_from_FOM = 0.0;
+                   for (int layer = 0; layer < nLayers; layer++)
+                   {
+                       // OC can increase by flows from FOM
+                       // =================================
+                       double c_from_FOM = 0.0;
 
-                for (int fract = 0; fract < 3; fract++)
-                    c_from_FOM += _dlt_fom_c_biom[fract][layer] + _dlt_fom_c_hum[fract][layer];
+                       for (int fract = 0; fract < 3; fract++)
+                           c_from_FOM += _dlt_fom_c_biom[fract][layer] + _dlt_fom_c_hum[fract][layer];
 
-                // OC can increase by flows from residues
-                // =================================
-                double c_from_residues = 0.0;
-                for (int residue = 0; residue < num_residues; residue++)
-                    c_from_residues += _dlt_res_c_biom[layer][residue] + _dlt_res_c_hum[layer][residue];
+                       // OC can increase by flows from residues
+                       // =================================
+                       double c_from_residues = 0.0;
+                       for (int residue = 0; residue < num_residues; residue++)
+                           c_from_residues += _dlt_res_c_biom[layer][residue] + _dlt_res_c_hum[layer][residue];
 
-                // OC can decrease by loss to atmosphere
-                // =================================
-                double c_to_atmosphere = dlt_hum_c_atm[layer] + dlt_biom_c_atm[layer];
+                       // OC can decrease by loss to atmosphere
+                       // =================================
+                       double c_to_atmosphere = dlt_hum_c_atm[layer] + dlt_biom_c_atm[layer];
 
-                // Now calculate new changes to OC
-                // =================================
-                dlt_oc[layer] = c_from_FOM + c_from_residues - c_to_atmosphere;
+                       // Now calculate new changes to OC
+                       // =================================
+                       dlt_oc[layer] = c_from_FOM + c_from_residues - c_to_atmosphere;
 
-                // Change in OM is related by a fixed factor
-                // =================================
-                dlt_om[layer] = dlt_oc[layer] * oc2om_factor;
-            }
+                       // Change in OM is related by a fixed factor
+                       // =================================
+                       dlt_om[layer] = dlt_oc[layer] * oc2om_factor;
+                   }
 
-            ApsimVariantType data = new ApsimVariantType();
-            // Need to pack the data and fire off the event
-            Array.Resize(ref data.param1_value, 1);
-            data.param1_code = 8; // DTstring
-            data.param1_isarray = true;
-            data.param1_name = "sender";
-            data.param1_value[0] = InstanceName;
-            data.param1_numbytes = 9 + 4 + data.param1_value[0].Length;
+                   ApsimVariantType data = new ApsimVariantType();
+                   // Need to pack the data and fire off the event
+                   Array.Resize(ref data.param1_value, 1);
+                   data.param1_code = 8; // DTstring
+                   data.param1_isarray = true;
+                   data.param1_name = "sender";
+                   data.param1_value[0] = InstanceName;
+                   data.param1_numbytes = 9 + 4 + data.param1_value[0].Length;
 
-            Array.Resize(ref data.param2_value, 1);
-            data.param2_code = 8; // DTstring
-            data.param2_isarray = true;
-            data.param2_name = "sender_id";
-            data.param2_value[0] = ParentComponent().GetId().ToString();
-            data.param2_numbytes = 9 + 4 + data.param2_value[0].Length;
+                   Array.Resize(ref data.param2_value, 1);
+                   data.param2_code = 8; // DTstring
+                   data.param2_isarray = true;
+                   data.param2_name = "sender_id";
+                   data.param2_value[0] = ParentComponent().GetId().ToString();
+                   data.param2_numbytes = 9 + 4 + data.param2_value[0].Length;
 
-            Array.Resize(ref data.param3_value, nLayers);
-            data.param3_code = 8; // DTstring
-            data.param3_isarray = true;
-            data.param3_name = "dlt_oc";
-            data.param3_numbytes = 9;
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                data.param3_value[layer] = dlt_oc[layer].ToString();
-                data.param3_numbytes += 4 + data.param3_value[layer].Length;
-            }
+                   Array.Resize(ref data.param3_value, nLayers);
+                   data.param3_code = 8; // DTstring
+                   data.param3_isarray = true;
+                   data.param3_name = "dlt_oc";
+                   data.param3_numbytes = 9;
+                   for (int layer = 0; layer < nLayers; layer++)
+                   {
+                       data.param3_value[layer] = dlt_oc[layer].ToString();
+                       data.param3_numbytes += 4 + data.param3_value[layer].Length;
+                   }
 
-            Array.Resize(ref data.param4_value, nLayers);
-            data.param4_code = 8; // DTstring
-            data.param4_isarray = true;
-            data.param4_name = "dlt_om";
-            data.param4_numbytes = 9;
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                data.param4_value[layer] = dlt_om[layer].ToString();
-                data.param4_numbytes += 4 + data.param4_value[layer].Length;
-            }
+                   Array.Resize(ref data.param4_value, nLayers);
+                   data.param4_code = 8; // DTstring
+                   data.param4_isarray = true;
+                   data.param4_name = "dlt_om";
+                   data.param4_numbytes = 9;
+                   for (int layer = 0; layer < nLayers; layer++)
+                   {
+                       data.param4_value[layer] = dlt_om[layer].ToString();
+                       data.param4_numbytes += 4 + data.param4_value[layer].Length;
+                   }
 
-            Array.Resize(ref data.param5_value, 0);
-            data.param5_code = 8; // DTstring
-            data.param5_isarray = true;
-            data.param5_name = "";
-            data.param5_numbytes = 9;
+                   Array.Resize(ref data.param5_value, 0);
+                   data.param5_code = 8; // DTstring
+                   data.param5_isarray = true;
+                   data.param5_name = "";
+                   data.param5_numbytes = 9;
 
-            Array.Resize(ref data.param6_value, 0);
-            data.param6_code = 8; // DTstring
-            data.param6_isarray = true;
-            data.param6_name = "";
-            data.param6_numbytes = 9;
+                   Array.Resize(ref data.param6_value, 0);
+                   data.param6_code = 8; // DTstring
+                   data.param6_isarray = true;
+                   data.param6_name = "";
+                   data.param6_numbytes = 9;
 
-            Array.Resize(ref data.param7_value, 0);
-            data.param7_code = 8; // DTstring
-            data.param7_isarray = true;
-            data.param7_name = "";
-            data.param7_numbytes = 9;
+                   Array.Resize(ref data.param7_value, 0);
+                   data.param7_code = 8; // DTstring
+                   data.param7_isarray = true;
+                   data.param7_name = "";
+                   data.param7_numbytes = 9;
 
-            c_balance.Invoke(data);
-        }
+                   c_balance.Invoke(data);
+               }
     }
 
     private void Notification()
@@ -3510,53 +3523,9 @@ public class SoilN : Instance
             if (!useOrganicSolutes)  // don't publish the organic solutes
                 Array.Resize(ref solute_names, 3);
 
-            ApsimVariantType data = new ApsimVariantType();
-            // Need to pack the data and fire off the event
-            Array.Resize(ref data.param1_value, 1);
-            data.param1_code = 8; // DTstring
-            data.param1_isarray = true;
-            data.param1_name = "sender";
-            data.param1_value[0] = InstanceName;
-            data.param1_numbytes = 9 + 4 + data.param1_value[0].Length;
-
-            Array.Resize(ref data.param2_value, 1);
-            data.param2_code = 8; // DTstring
-            data.param2_isarray = true;
-            data.param2_name = "sender_id";
-            data.param2_value[0] = ParentComponent().GetId().ToString();
-            data.param2_numbytes = 9 + 4 + data.param2_value[0].Length;
-
-            data.param3_value = solute_names;
-            data.param3_code = 8; // DTstring
-            data.param3_isarray = true;
-            data.param3_name = "solute_names";
-            data.param3_numbytes = 9;
-            for (int i = 0; i < solute_names.Length; i++)
-                data.param3_numbytes += 4 + data.param3_value[i].Length;
-
-            Array.Resize(ref data.param4_value, 0);
-            data.param4_code = 8; // DTstring
-            data.param4_isarray = true;
-            data.param4_name = "";
-            data.param4_numbytes = 9;
-
-            Array.Resize(ref data.param5_value, 0);
-            data.param5_code = 8; // DTstring
-            data.param5_isarray = true;
-            data.param5_name = "";
-            data.param5_numbytes = 9;
-
-            Array.Resize(ref data.param6_value, 0);
-            data.param6_code = 8; // DTstring
-            data.param6_isarray = true;
-            data.param6_name = "";
-            data.param6_numbytes = 9;
-
-            Array.Resize(ref data.param7_value, 0);
-            data.param7_code = 8; // DTstring
-            data.param7_isarray = true;
-            data.param7_name = "";
-            data.param7_numbytes = 9;
+            NewSoluteType data = new NewSoluteType();
+            data.sender_id = ParentComponent().GetId();
+            data.solutes = solute_names;
 
             new_solute.Invoke(data);
         }

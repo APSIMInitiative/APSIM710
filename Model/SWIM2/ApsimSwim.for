@@ -9820,7 +9820,7 @@ cRC            Changes by RCichota, 30/Jan/2010
 
 
 *     ===========================================================
-      subroutine apswim_on_new_solute ()
+      subroutine apswim_on_new_solute (variant)
 *     ===========================================================
 
       Use infrastructure
@@ -9843,8 +9843,9 @@ cRC            Changes by RCichota, 30/Jan/2010
       parameter (my_name = 'apswim_on_new_solute')
 
 *+  Local Variables
+      integer, intent(in) :: variant
+      type(newSoluteType) :: newsolute
       integer numvals
-      character names(nsol)*32
       integer sender
       integer counter
       integer solnum
@@ -9853,24 +9854,14 @@ cRC            Changes by RCichota, 30/Jan/2010
 
       call push_routine (my_name)
 
-      call collect_integer_var (DATA_sender_ID
-     :                          ,'()'
-     :                          ,sender
-     :                          ,numvals
-     :                          ,0
-     :                          ,10000000)
-
-
-      call collect_char_array (DATA_new_solute_names
-     :                        ,nsol
-     :                        ,'()'
-     :                        ,names
-     :                        ,numvals)
-
+      call unpack_newsolute(variant, newsolute)
+	  
+      sender = newsolute%sender_id
+      numvals = newsolute%num_solutes
 
       do 100 counter = 1, numvals
 
-         solnum = apswim_solute_number (names(counter))
+         solnum = apswim_solute_number (newsolute%solutes(counter))
 
          if (solnum.ne.0) then
             g%solute_owners(solnum) = sender
@@ -9878,7 +9869,7 @@ cRC            Changes by RCichota, 30/Jan/2010
              ! not a run_solute
             call Write_string (
      :          'Note - APSwim will not redistribute '
-     :           //names(counter))
+     :           //newsolute%solutes(counter))
          endif
 
   100 continue
@@ -10345,9 +10336,6 @@ cRC            Changes by RCichota, 30/Jan/2010
       else if (Action .eq. ACTION_End_run) then
          call apswim_end_run ()
 
-      else if (Action .eq. EVENT_new_solute) then
-         call apswim_on_new_solute()
-
       else if (Action .eq. 'subsurfaceflow') then
          call apswim_OnSubSurfaceFlow()
       else
@@ -10388,6 +10376,8 @@ cRC            Changes by RCichota, 30/Jan/2010
 
       if (eventID .eq. id%tick) then
          call apswim_ONtick (variant)
+      elseif (eventID .eq. id%new_solute) then
+         call apswim_on_new_solute(variant)
       elseif (eventID .eq. id%prenewmet) then
 !         call apswim_set_rain_variable ()
 !      elseif (eventID .eq. id%subsurfaceflow) then

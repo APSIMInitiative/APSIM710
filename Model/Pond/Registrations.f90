@@ -9,7 +9,6 @@ module Registrations
       integer :: process
       integer :: tick
       integer :: newmet
-      integer :: new_solute
       integer :: potentialresiduedecompositioncalculated
 
    end type IDsType
@@ -27,7 +26,6 @@ module Registrations
          id%actualresiduedecompositioncalculated = add_registration(eventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
-         id%new_solute = add_registration(respondToEventReg, 'new_solute', ApsimVariantTypeDDML, '')
          id%potentialresiduedecompositioncalculated = add_registration(respondToEventReg, 'potentialresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
       end subroutine
 end module Registrations

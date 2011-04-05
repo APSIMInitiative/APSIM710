@@ -42,7 +42,7 @@ module Registrations
          id%end_run = add_registration(respondToEventReg, 'end_run', nullTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%prenewmet = add_registration(respondToEventReg, 'prenewmet', nullTypeDDML, '')
-         id%new_solute = add_registration(respondToEventReg, 'new_solute', nullTypeDDML, '')
+         id%new_solute = add_registration(respondToEventReg, 'new_solute', newSoluteTypeDDML, '')
          id%irrigated = add_registration(respondToEventReg, 'irrigated', nullTypeDDML, '')
          id%subsurfaceflow = add_registration(respondToEventReg, 'subsurfaceflow', nullTypeDDML, '')
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')

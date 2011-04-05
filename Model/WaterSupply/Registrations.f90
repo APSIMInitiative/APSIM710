@@ -25,7 +25,7 @@ module Registrations
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
-         id%new_solute = add_registration(respondToEventReg, 'new_solute', ApsimVariantTypeDDML, '')
+         id%new_solute = add_registration(respondToEventReg, 'new_solute', NewSoluteTypeDDML, '')
          id%runoffEvent = add_registration(respondToEventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
 
       end subroutine

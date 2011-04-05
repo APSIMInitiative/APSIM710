@@ -4645,35 +4645,29 @@ subroutine soiln2_notification ()
    parameter (myname = 'soiln2_notification')
 
 !+  Local Variables
-   character  solute_names(7)*32    ! list of soilN solutes ()
-   integer    numsolutes
+   type(NewSoluteType) :: newSolute
 !- Implementation Section ----------------------------------
    call push_routine (myname)
 
-   call new_postbox()
-
-   solute_names(1) = 'no3'
-   solute_names(2) = 'nh4'
-   solute_names(3) = 'urea'
-   solute_names(4) = 'org_c_pool1'
-   solute_names(5) = 'org_c_pool2'
-   solute_names(6) = 'org_c_pool3'
-   solute_names(7) = 'org_n'
+   newSolute%sender_id = get_ComponentID()
+   
+   newSolute%solutes(1) = 'no3'
+   newSolute%solutes(2) = 'nh4'
+   newSolute%solutes(3) = 'urea'
 
    if (g%use_organic_solutes) then
       ! publish all the solutes including the organic ones
-      numsolutes = 7
+      newSolute%solutes(4) = 'org_c_pool1'
+      newSolute%solutes(5) = 'org_c_pool2'
+      newSolute%solutes(6) = 'org_c_pool3'
+      newSolute%solutes(7) = 'org_n'
+      newSolute%num_solutes = 7
    else
       ! unless the user states they need them - don't publish the organic solutes
-      numsolutes = 3
+      newSolute%num_solutes = 3
    endif
-
-   call post_char_array (DATA_new_solute_names, '()', solute_names, numsolutes)
-
-   call event_send (unknown_module, EVENT_new_solute)
-
-   call delete_postbox()
-
+   
+   call publish_newSolute(id%new_solute, newSolute)
 
    call pop_routine (myname)
    return
@@ -5176,7 +5170,7 @@ subroutine doInit1()
 
    ! events published
    id%ExternalMassFlow = add_registration(eventReg, 'ExternalMassFlow', ExternalMassFlowTypeDDML, '')
-   id%new_solute = add_registration(eventReg, 'new_solute', ApsimVariantTypeDDML, '')
+   id%new_solute = add_registration(eventReg, 'new_solute', NewSoluteTypeDDML, '')
    id%n_balance = add_registration(eventReg, 'n_balance', ApsimVariantTypeDDML, '')
    id%c_balance = add_registration(eventReg, 'c_balance', ApsimVariantTypeDDML, '')
    id%actualresiduedecompositioncalculated = add_registration(eventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')

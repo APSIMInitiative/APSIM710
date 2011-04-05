@@ -62,7 +62,6 @@
          integer  num_solutes
          integer  irr_pointer
          character  solute_names(max_solutes)*32
-         character  solute_owners(max_solutes)*32
          real    sw_dep(max_layer)
          real    ll15_dep(max_layer)
          real    dul_dep(max_layer)
@@ -806,7 +805,6 @@
       g%solute(:) = 0.0
 
       call fill_char_array (g%solute_names, ' ', max_solutes)
-      call fill_char_array (g%solute_owners, ' ', max_solutes)
       g%num_solutes = 0
 
       g%irrigation_solutes_shed(:,:) = 0.0
@@ -1667,7 +1665,7 @@ cnh note that results may be strange if swdep < ll15
 
 
 *     ===========================================================
-      subroutine irrigate_on_new_solute ()
+      subroutine irrigate_on_new_solute (variant)
 *     ===========================================================
       Use infrastructure
       implicit none
@@ -1689,38 +1687,27 @@ cnh note that results may be strange if swdep < ll15
       character  section_name*(*)
       parameter (section_name = 'parameters')
 
+      integer, intent(in) :: variant
+      type(newSoluteType) :: newsolute
 *+  Calls
-
 
 *+  Local Variables
       integer num
       integer numvals
       integer num_irrigs
-      character names(max_solutes)*32
-      character sender * (module_name_size)
       character default_name*200
       character dummy*200
       integer counter1
       integer counter2
       real    temp_solute(max_irrigs)! temp solute array (kg/ha)
-
+	  
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
-
-      call collect_char_var (DATA_sender
-     :                      ,'()'
-     :                      ,sender
-     :                      ,numvals)
-
-      names(:) = blank
-      call collect_char_array (DATA_new_solute_names
-     :                        ,max_solutes
-     :                        ,'()'
-     :                        ,names
-     :                        ,numvals)
-
+      call unpack_newsolute(variant, newsolute)
+	  
+      numvals = newsolute%num_solutes
 
       if (g%num_solutes+numvals.gt.max_solutes) then
          call fatal_error (ERR_Internal
@@ -1730,8 +1717,7 @@ cnh note that results may be strange if swdep < ll15
          do 100 counter1 = 1, numvals
 
             g%num_solutes = g%num_solutes + 1
-            g%solute_names(g%num_solutes) = names(counter1)
-            g%solute_owners(g%num_solutes) = sender
+            g%solute_names(g%num_solutes) = newsolute%solutes(counter1)
             call read_real_array_optional (
      :              section_name         ! Section header
      :            , g%solute_names(g%num_solutes) ! Keyword
@@ -1912,9 +1898,6 @@ cnh note that results may be strange if swdep < ll15
       else if (Action .eq. ACTION_Set_variable) then
          call irrigate_set_my_variable (Data_String)
 
-      else if (Action .eq. EVENT_new_solute) then
-         call irrigate_on_new_solute ()
-
       else
             ! Don't use message
          call Message_unused ()
@@ -1952,6 +1935,8 @@ cnh note that results may be strange if swdep < ll15
 
       if (eventID .eq. id%tick) then
          call irrigate_ONtick(variant)
+      else if (eventID .eq. id%new_solute) then
+         call irrigate_on_new_solute (variant)
       else if (eventID .eq. id%apply) then
          call irrigate_zero_apply_variables()
          call irrigate_get_other_variables ()

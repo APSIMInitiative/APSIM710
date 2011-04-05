@@ -140,6 +140,7 @@ using CMPServices;
                 [field.name][i-1].unpackStructure(DDMLValue.member("[field.name]").item(i));
             }
             [elseif [field.structure] = T]
+            [field.name] = new [field.cstypebase]();
             [field.name].unpackStructure(DDMLValue.member("[field.name]"));
             [else]
             [field.name] = DDMLValue.member("[field.name]").as[field.cstypename]();

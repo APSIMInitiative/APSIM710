@@ -26,7 +26,7 @@ module Registrations
          id%apply = add_registration(respondToEventReg, 'apply', IrrigationApplicationTypeDDML, '')
          id%water_supplied = add_registration(respondToEventReg, 'water_supplied', nullTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', nullTypeDDML, '')
-         id%new_solute = add_registration(respondToEventReg, 'new_solute', ApsimVariantTypeDDML, '')
+         id%new_solute = add_registration(respondToEventReg, 'new_solute', NewSoluteTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
       end subroutine
 end module Registrations
