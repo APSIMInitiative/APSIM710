@@ -319,8 +319,6 @@ module Soiln2Module
       sequence
       integer :: ExternalMassFlow
       integer :: new_solute
-      integer :: n_balance
-      integer :: c_balance
       integer :: actualresiduedecompositioncalculated
       integer :: reset
       integer :: sum_report
@@ -4864,128 +4862,6 @@ subroutine soiln2_OC_percent (oc_percent)
    return
 end subroutine
 
-
-! ====================================================================
-subroutine soiln2_Send_Nbalance_Event ()
-! ====================================================================
-   Use Infrastructure
-   implicit none
-
-!+  Purpose
-!     Notify other modules of completion of N balance.
-
-!+  Mission Statement
-!     Notify other modules of completion of N balance.
-
-!+  Local Variables
-   integer    num_layers            ! number of soil layers
-
-!+  Constant Values
-   character*(*) myname               ! name of current procedure
-   parameter (myname = 'soiln2_Send_Nbalance_Event')
-
-!- Implementation Section ----------------------------------
-   call push_routine (myname)
-
-   call new_postbox ()
-
-   num_layers = count_of_real_vals (g%dlayer, max_layer)
-
-   call post_real_array   (DATA_nh4_transform_net,'(kg/ha)', g%NH4_transform_net, num_layers)
-   call post_real_array   (DATA_no3_transform_net,'(kg/ha)', g%NO3_transform_net, num_layers)
-
-   call post_real_array   (DATA_dlt_nh4_net,'(kg/ha)', g%dlt_NH4_net, num_layers)
-   call post_real_array   (DATA_dlt_no3_net,'(kg/ha)', g%dlt_NO3_net, num_layers)
-
-   call event_send (unknown_module, EVENT_N_balance)
-
-   call delete_postbox ()
-
-
-   call pop_routine (myname)
-   return
-end subroutine
-
-! ====================================================================
-subroutine soiln2_Send_Cbalance_Event ()
-! ====================================================================
-   Use Infrastructure
-   implicit none
-
-!+  Purpose
-!     Notify other modules of completion of C balance.
-
-!+  Mission Statement
-!     Notify other modules of completion of C balance.
-
-!+  Local Variables
-   integer    num_layers            ! number of soil layers
-   integer    layer                 ! simple layer counter
-   integer    fraction              ! simple FOM fraction counter
-   integer    residue               ! simple residue source counter
-   real       c_from_FOM            ! change in OC from FOM flows
-   real       c_from_residues       ! change in OC from residue flows
-   real       c_to_atmosphere       ! loss of OC to atmosphere
-   real       dlt_oc(max_layer)     ! change in organic carbon
-   real       dlt_om(max_layer)     ! change in organic matter
-
-!+  Constant Values
-   character*(*) myname               ! name of current procedure
-   parameter (myname = 'soiln2_Send_Cbalance_Event')
-
-!- Implementation Section ----------------------------------
-   call push_routine (myname)
-
-   call new_postbox ()
-
-   num_layers = count_of_real_vals (g%dlayer, max_layer)
-
-   do layer = 1, num_layers
-
-      ! OC can increase by flows from FOM
-      ! =================================
-      c_from_FOM = 0.0
-
-      do fraction = 1,nfract
-         c_from_FOM = c_from_FOM+ g%dlt_fom_c_biom(fraction,layer)+ g%dlt_fom_c_hum(fraction,layer)
-      end do
-
-      ! OC can increase by flows from residues
-      ! ======================================
-      c_from_residues = 0.0
-
-      do residue = 1, g%num_residues
-         c_from_residues = c_from_residues+ g%dlt_res_c_biom(layer,residue)+ g%dlt_res_c_hum(layer,residue)
-      end do
-
-      ! OC can decrease by loss to atmosphere
-      ! =====================================
-      c_to_atmosphere = g%dlt_hum_c_atm(layer)+ g%dlt_biom_c_atm(layer)
-
-
-      ! Now calculate net changes to OC
-      ! ===============================
-      dlt_oc(layer) = c_from_FOM+ c_from_residues- c_to_atmosphere
-
-      ! Change in OM is related by a fixed factor
-      ! =========================================
-      dlt_om(layer) = dlt_oc(layer) * c%OC2OM_factor
-
-   end do
-
-   call post_real_array   (DATA_dlt_OC,'(kg/ha)', dlt_OC, num_layers)
-   call post_real_array   (DATA_dlt_OM,'(kg/ha)', dlt_OM, num_layers)
-
-   call event_send (unknown_module, EVENT_C_balance)
-
-   call delete_postbox ()
-
-
-   call pop_routine (myname)
-   return
-end subroutine
-
-
 !     ===========================================================
 subroutine Soiln2_ONNew_Profile (variant)
 !     ===========================================================
@@ -5130,8 +5006,6 @@ subroutine Main (action, data_string)
    else if (action.eq.ACTION_process) then
       call soiln2_get_other_variables ()
       call soiln2_process ()
-      call soiln2_send_Nbalance_Event ()
-      call soiln2_send_Cbalance_Event ()
       if (g%pond_active.eq.'no') then
         call Soiln2_sendActualResidueDecompositionCalculated()
       endif
@@ -5171,8 +5045,6 @@ subroutine doInit1()
    ! events published
    id%ExternalMassFlow = add_registration(eventReg, 'ExternalMassFlow', ExternalMassFlowTypeDDML, '')
    id%new_solute = add_registration(eventReg, 'new_solute', NewSoluteTypeDDML, '')
-   id%n_balance = add_registration(eventReg, 'n_balance', ApsimVariantTypeDDML, '')
-   id%c_balance = add_registration(eventReg, 'c_balance', ApsimVariantTypeDDML, '')
    id%actualresiduedecompositioncalculated = add_registration(eventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
 
    ! events subscribed to

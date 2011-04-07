@@ -199,7 +199,11 @@ public ref class FactoryProperty : Instance, ApsimType
          }         
       virtual String^ DDML()
          {
-         return Data->DDML();
+            String^ ddml = Data->DDML();
+			if (Units != "")
+				return ddml->Substring(0, ddml->Length-2) + " unit=\"" + Units + "\"/>";
+			else
+                return ddml;
          }
       String^ GetDescription();
   

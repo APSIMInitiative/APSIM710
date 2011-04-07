@@ -16,8 +16,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
    [Input]   private int Year = 0;
    [Input]   private double Radn = 0;
    [Input]   private double MinT = 0;  //HEB  VS gives a warning that this is not used but it is so don't delete
-   [Event]   public event NewPotentialGrowthDelegate NewPotentialGrowth;
-   [Event]   public event NewCanopyDelegate New_Canopy;
+   [Event]   public new event NewPotentialGrowthDelegate NewPotentialGrowth;
+   [Event]   public new event NewCanopyDelegate New_Canopy;
    [Param("Frgr")]    private double _Frgr;              // Relative Growth Rate Factor
    [Param]   private double KDead = 0;                  // Extinction Coefficient (Dead)
    [Param]   private double MaxNodeNo = 0;              // Maximum Final Leaf Number 
@@ -26,10 +26,10 @@ public class SIRIUSLeaf : Leaf, AboveGround
    [Param]   double[] InitialAges = null;                   // Initial number of leaf nodes
    [Param]   double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
    [Param]   double FinalNodeNoEstimate = 0;
-   [Output]   public double NodeNo = 0;
+   [Output]   public new double NodeNo = 0;
    [Output("Height")]   private double Height = 0;
-   [Param]   [Output]   public double MaxCover;
-   [Param]   [Output]   public double PrimaryBudNo = 1;   
+   [Param]   [Output]   public new double MaxCover;
+   [Param]   [Output]   public new double PrimaryBudNo = 1;   
  #endregion
    
    public override Biomass Live
@@ -541,7 +541,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
  #region Water method calls
    // Method calls communicated with water balance
    [Output]   [Units("mm")]   public override double WaterDemand { get { return PEP; } }
-   [Output]   [Units("mm")]   public double Transpiration { get { return EP; } }
+   [Output]   [Units("mm")]   public new double Transpiration { get { return EP; } }
    public override double WaterAllocation
       {
       get { return _WaterAllocation; }
@@ -551,7 +551,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
          EP = value;
          }
       }
-   [Output]   public double Frgr
+   [Output]   public new double Frgr
       {
       get { return _Frgr; }
       set
@@ -565,24 +565,24 @@ public class SIRIUSLeaf : Leaf, AboveGround
  #region Event functions
    // functions used to trigger leaf events
    [EventHandler]
-   public void OnInit2()
+   public new void OnInit2()
       {
       PublishNewCanopyEvent();
       PublishNewPotentialGrowth();
       }
    [EventHandler]
-   public void OnPrepare()
+   public new void OnPrepare()
       {
       PublishNewPotentialGrowth();
       }
    [EventHandler]
-   public void OnSow(SowPlant2Type Sow)
+   public new void OnSow(SowPlant2Type Sow)
       {
       MaxCover = Sow.MaxCover;
       PrimaryBudNo = Sow.BudNumber;
       }
    [EventHandler]
-   public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
+   public new void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
       {
       for (int i = 0; i != CWB.Canopy.Length; i++)
          {
@@ -643,14 +643,14 @@ public class SIRIUSLeaf : Leaf, AboveGround
     
  #region State variables
    // State variables for reporting and internal calls 
-   [Output]                       public double FinalNodeNo
+   [Output]                       public new double FinalNodeNo
    {
        get
        {
            return Math.Max(_FinalNodeNo, FinalNodeNoEstimate);
        }
    }
-   [Output]                       public double RemainingNodeNo
+   [Output]                       public new double RemainingNodeNo
    {
        get
        {
@@ -743,7 +743,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return n;
        }
    }
-   [Output]   [Units("/stem")]   public double CohortNo
+   [Output]   [Units("/stem")]   public new double CohortNo
    {
        get { return Leaves.Count; }
    }
@@ -751,7 +751,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
    {
        get { return TotalNo / PrimaryBudNo; }
    }
-   [Output]   [Units("/stem")]   public int DeadNodeNo
+   [Output]   [Units("/stem")]   public new int DeadNodeNo
    {
        get
        {
@@ -763,7 +763,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return DNN;
        }
    }
-   [Output]   [Units("/stem")]   public int FullyExpandedNodeNo
+   [Output]   [Units("/stem")]   public new int FullyExpandedNodeNo
    {
        get
        {
@@ -794,7 +794,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                return 0;
        }
    }
-   [Output]                      public double Fw
+   [Output]                      public new double Fw
    {
        get
        {
@@ -806,7 +806,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return F;
        }
    }
-   [Output]                      public double Fn
+   [Output]                      public new double Fn
    {
        get
        {
@@ -823,7 +823,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return F;
        }
    }
-   [Output]   [Units("m^2/m^2")] public double LAI
+   [Output]   [Units("m^2/m^2")] public new double LAI
    {
        get
        {
@@ -833,7 +833,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return value;
        }
    }
-   [Output]   [Units("m^2/m^2")] public double LAIDead
+   [Output]   [Units("m^2/m^2")] public new double LAIDead
    {
        get
        {
@@ -843,7 +843,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return value;
        }
    }
-   [Output("Cover_green")]       public double CoverGreen
+   [Output("Cover_green")]       public new double CoverGreen
    {
        get
        {
@@ -851,11 +851,11 @@ public class SIRIUSLeaf : Leaf, AboveGround
            return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
        }
    }
-   [Output("Cover_tot")]         public double CoverTot
+   [Output("Cover_tot")]         public new double CoverTot
    {
        get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
    }
-   [Output("Cover_dead")]        public double CoverDead
+   [Output("Cover_dead")]        public new double CoverDead
    {
        get { return 1.0 - Math.Exp(-KDead * LAIDead); }
    }
@@ -1318,28 +1318,28 @@ public class SIRIUSLeaf : Leaf, AboveGround
        }
    }
     //FIXME HEB These classes are needed because for some reason the biomass object returns zeros of leaf biomass proberties
-   [Output]   [Units("g/m^2")]   public double LiveN2
+   [Output]   [Units("g/m^2")]   public new double LiveN2
       {
       get
          {
          return Live.N;
          }
       }
-   [Output]   [Units("g/m^2")]   public double DeadN2
+   [Output]   [Units("g/m^2")]   public new double DeadN2
       {
       get
          {
          return Dead.N;
          }
       }
-   [Output]   [Units("g/m^2")]   public double LiveWt2
+   [Output]   [Units("g/m^2")]   public new double LiveWt2
       {
       get
          {
          return Live.Wt;
          }
       }
-   [Output]   [Units("g/m^2")]   public double DeadWt2
+   [Output]   [Units("g/m^2")]   public new double DeadWt2
       {
       get
          {
