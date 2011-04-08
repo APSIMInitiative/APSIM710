@@ -50,7 +50,15 @@ class ApsimToSimExe
 
    private bool ConvertApsimToSim(string ApsimFileName, string[] SimNames)
       {
-      Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimFileName));
+       //if the filename is not 'rooted' then assume that the user intends to use the current working directory as the root
+       if (!Path.IsPathRooted(ApsimFileName))
+           ApsimFileName = Path.Combine(Directory.GetCurrentDirectory(), ApsimFileName);
+
+       //double-check file actually exists before proceeding
+       if (!File.Exists(ApsimFileName))
+           throw new Exception("Error: Specified APSIM File does not exist!\n\t" + ApsimFileName);
+
+       Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimFileName));
 
       PlugIns.LoadAll();
 
