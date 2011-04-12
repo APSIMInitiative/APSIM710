@@ -52,19 +52,19 @@ Public Class ApsimUIActions
         ' Go looking for simulations to run. Look at the
         ' currently selected nodes first and progressively
         ' their parents until some simulations are found.
-      ' ------------------------------------------------
-      If Configuration.Instance.Setting("ReloadPlugInsBeforeRunningAPSIM") = "Yes" Then
-         PlugIns.LoadAll()
-      End If
+        ' ------------------------------------------------
+        If Configuration.Instance.Setting("ReloadPlugInsBeforeRunningAPSIM") = "Yes" Then
+            PlugIns.LoadAll()
+        End If
 
-      BaseActions.FileSave(Controller)
-      Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
-      If RunPanels.Length = 1 Then
+        BaseActions.FileSave(Controller)
+        Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+        If RunPanels.Length = 1 Then
             ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), Controller) '_
             'Controller.ApsimData, _
             'Controller.SelectedPaths)
-      End If
-   End Sub
+        End If
+    End Sub
     Public Shared Sub CreateSIM(ByVal Controller As BaseController)
         ' ------------------------------------------------
         ' Create a .sim file.
@@ -105,10 +105,10 @@ Public Class ApsimUIActions
             If F.ShowDialog = DialogResult.OK Then
                 Cursor.Current = Cursors.WaitCursor
                 If F.FolderOfFiles = "" Then
-               ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.DropFolder, F.Version)
-               MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    ToowoombaCluster.RunOnCluster(Controller.ApsimData, SimulationPaths, F.DropFolder, F.Version)
+                    MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Else
-               Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.DropFolder, F.Version)
+                    Dim FilesRun As List(Of String) = ToowoombaCluster.RunOnCluster(F.FolderOfFiles, F.DropFolder, F.Version)
                     ' Create a msg to show to user.
                     Dim msg As String = ""
                     For Each FileName As String In FilesRun
@@ -140,6 +140,7 @@ Public Class ApsimUIActions
             apsvisFiles(FileNames)
         End If
     End Sub
+
     Public Shared Sub ApsimOutlook(ByVal Controller As BaseController)
         Dim FileNames As String = UIUtility.OutputFileUtility.GetCSVListOfOutputFiles(Controller)
         If FileNames = "" Then
@@ -148,13 +149,21 @@ Public Class ApsimUIActions
             apsimoutlookFiles(FileNames)
         End If
     End Sub
+
     Public Shared Sub Excel(ByVal Controller As BaseController)
         Dim FileNames As String = UIUtility.OutputFileUtility.GetCSVListOfOutputFiles(Controller)
+        Dim exportChooser As ExcelExport = New ExcelExport
         If FileNames = "" Then
-            MessageBox.Show("No output files found")
-        Else
-            excelFiles(FileNames)
+            Return
         End If
+
+        Dim fileList() As String = FileNames.Split(",") 'break up the names into a list
+        For Each s As String In fileList ' load the list into the dialog
+            exportChooser.fileListBox.Items.Add(s, True)
+        Next
+        exportChooser.ShowDialog()
+        FileNames = exportChooser.fileList
+        excelFiles(FileNames)
     End Sub
 #End Region
 
@@ -231,7 +240,8 @@ Public Class ApsimUIActions
     Public Shared Sub Plant2Documentation(ByVal Controller As BaseController)
         BaseActions.FileSave(Controller)
         Dim XmlFileName As String = Controller.ApsimData.FileName
-        Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
+        'Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html" //removed from temp dir as Firefox can't handle abs dirs. JF
+        Dim HtmlFileName As String = "..\Documentation\Plant2Docs\" + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
         Dim Arguments As String = StringManip.DQuote(XmlFileName) + " " + StringManip.DQuote(HtmlFileName)
 
         'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
@@ -249,37 +259,37 @@ Public Class ApsimUIActions
         Utility.CheckProcessExitedProperly(P)
 
         MessageBox.Show("Finished writing to <info> section.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
-   End Sub
+    End Sub
 
 
-   Public Shared Sub CreateDuplicates(ByVal Controller As BaseController)
-      Dim f As New UIBits.DuplicateForm
-      If f.ShowDialog = DialogResult.OK Then
-         Dim Comp As ApsimFile.Component = Controller.Selection
+    Public Shared Sub CreateDuplicates(ByVal Controller As BaseController)
+        Dim f As New UIBits.DuplicateForm
+        If f.ShowDialog = DialogResult.OK Then
+            Dim Comp As ApsimFile.Component = Controller.Selection
 
-         For i As Integer = 1 To f.NumDuplicates
-            Comp.Parent.Duplicate(Comp, f.DoLinkDuplicates)
-         Next
+            For i As Integer = 1 To f.NumDuplicates
+                Comp.Parent.Duplicate(Comp, f.DoLinkDuplicates)
+            Next
 
-      End If
-   End Sub
+        End If
+    End Sub
 
 
-   Public Shared Sub LinkWherePossible(ByVal Controller As BaseController)
-      Cursor.Current = Cursors.WaitCursor
-      Dim Base As ApsimFile.Component = Controller.Selection
-      Dim Siblings As New List(Of ApsimFile.Component)
-      Base.Parent.FindRecursively(Base.Type, Siblings)
+    Public Shared Sub LinkWherePossible(ByVal Controller As BaseController)
+        Cursor.Current = Cursors.WaitCursor
+        Dim Base As ApsimFile.Component = Controller.Selection
+        Dim Siblings As New List(Of ApsimFile.Component)
+        Base.Parent.FindRecursively(Base.Type, Siblings)
 
-      For Each Sibling As ApsimFile.Component In Siblings
-         If Sibling.FullPath <> Base.FullPath Then
-            Sibling.ConvertToShortcutsUsingBase(Base)
-         End If
-      Next
-      Controller.ApsimData.PublishComponentChanged(Controller.ApsimData.RootComponent)
+        For Each Sibling As ApsimFile.Component In Siblings
+            If Sibling.FullPath <> Base.FullPath Then
+                Sibling.ConvertToShortcutsUsingBase(Base)
+            End If
+        Next
+        Controller.ApsimData.PublishComponentChanged(Controller.ApsimData.RootComponent)
 
-      Cursor.Current = Cursors.Default
-   End Sub
+        Cursor.Current = Cursors.Default
+    End Sub
 End Class
 
 
