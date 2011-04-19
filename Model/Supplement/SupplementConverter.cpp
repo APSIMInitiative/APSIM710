@@ -73,9 +73,9 @@ void SupplementConverter::doInit1(const protocol::Init1Data& initData)
    protocol::Component::doInit1(initData);
 //   buyID = addRegistration(RegistrationType::event, 0,"buy", supplementbuyTypeDDML);
    buySupplementID = addRegistration(::respondToEvent, 0,"buysupplement", singleTypeDDML);
-   feedID = addRegistration(::event, 0, "feed", protocol::DDML(protocol::SupplementFeedType()).c_str());
+   feedID = addRegistration(::event, 0, "feed", protocol::DDML(protocol::FeedType()).c_str());
    feedSupplementID = addRegistration(::respondToEvent, 0, "feedsupplement", singleTypeDDML);
-   mixID = addRegistration(::event, 0, "mix", protocol::DDML(protocol::SupplementMixType()).c_str());
+   mixID = addRegistration(::event, 0, "mix", protocol::DDML(protocol::MixType()).c_str());
    mixSupplementID = addRegistration(::respondToEvent, 0, "mixsupplement", singleTypeDDML);
 
    }
@@ -145,7 +145,7 @@ void SupplementConverter::dobuySupplement(unsigned int& fromID, unsigned int& ev
 void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-   protocol::SupplementFeedType SupplementFeed;
+   protocol::FeedType SupplementFeed;
 
     std::string  valuestr;
     double   value;
@@ -191,7 +191,7 @@ void SupplementConverter::dofeedSupplement(unsigned int& fromID, unsigned int& e
 void SupplementConverter::domixSupplement(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-   protocol::SupplementMixType SupplementMix;
+   protocol::MixType SupplementMix;
 
     std::string  valuestr;
     double   value;

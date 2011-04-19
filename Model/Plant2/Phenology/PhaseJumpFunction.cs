@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 
 class PhaseJumpFunction : Instance
@@ -9,12 +10,10 @@ class PhaseJumpFunction : Instance
    [Param] private string End = "";
    [Param] private string PhaseNameToJumpTo = "";
    [Param] private string Event = "";
-
+   [Link] private Paddock MyPaddock;
    public override void  Initialised()
       {
-      PaddockType MyPaddock = new PaddockType(this);
       MyPaddock.Subscribe(Event, OnEvent);
-
       }
 
    public void OnEvent()

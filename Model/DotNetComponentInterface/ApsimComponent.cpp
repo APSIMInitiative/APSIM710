@@ -324,7 +324,8 @@ void ApsimComponent::Subscribe(EvntHandler^ Event)
    {
    int RegistrationIndex = Registrations->Count;
    Registrations->Add(Event);
-   CISubscribe(ComponentI, Event->EventName, &::CallBack, instanceNumber, RegistrationIndex, Event->DDML());
+   if (!Init1)
+      CISubscribe(ComponentI, Event->EventName, &::CallBack, instanceNumber, RegistrationIndex, Event->DDML());
    }   
 void ApsimComponent::TrapAllEvents(Factory^ F)
 	{
@@ -491,7 +492,6 @@ void ApsimComponent::OnPost(char* messageData)
 			Property->regIndex = -1;
 	  }
       Model = nullptr;
-      ManagerEventType^ dummy = gcnew ManagerEventType();
       SowPlant2Type^ sowDummy = gcnew SowPlant2Type();
       CISubscribe(ComponentI, "Sow", &::CallBack, instanceNumber, SOWINDEX, sowDummy->DDML());
       CISubscribe(ComponentI, "EndCrop", &::CallBack, instanceNumber, ENDCROPINDEX, "<type/>");
@@ -522,9 +522,7 @@ Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
             params->WarningLevel = 2;
             params->ReferencedAssemblies->Add("System.dll");
             params->ReferencedAssemblies->Add(Path::GetDirectoryName(DllFileName) + "\\DotNetComponentInterface.dll");
-            List<String^> ManagerHelpers = LoadManagerHelpers::GetManagerHelpers();
-            for each (String^ ManagerHelper in ManagerHelpers)
-               params->ReferencedAssemblies->Add(ManagerHelper);
+            params->ReferencedAssemblies->Add(Types::GetProbeInfoDLLFileName());
             array<String^>^ source = gcnew array<String^>(1);
             source[0] = Node->InnerText;
             CompilerResults^ results = provider->CompileAssemblyFromSource(params, source);
@@ -553,7 +551,7 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
 	// Called by probe tool to return info about model
 	// -----------------------------------------------
 	InitData = InitD;
-	String^ Name = XmlHelper::Name(InitData->ParentNode);
+	Name = XmlHelper::Name(InitData->ParentNode);
 	String^ DLLName = (DllFileName != "") ? DllFileName :
 	     XmlHelper::Attribute(InitData->ParentNode, "executable");
 
@@ -565,6 +563,7 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
    Desc += "   <version>" + versionInfo->FileVersion + "</version>\r\n";
    Desc += "   <author>" + versionInfo->CompanyName + "</author>\r\n";
 
+   Name = ".MasterPM." + Name;
    XmlNode^ ModelDescription = nullptr;
    XmlNode^ CultivarNode = XmlHelper::FindByType(InitData, "Cultivar");
    if (CultivarNode != nullptr)
@@ -586,20 +585,30 @@ String^ ApsimComponent::GetDescription(XmlNode^ InitD)
             Desc += St;
          }
 
+      List<String^>^ EventsAlreadyProcessed = gcnew List<String^>();
+
       // get description for all events.
       for (int i = 0; i != Fact->Events->Count; i++)
          {
          String^ St = Fact->Events[i]->GetDescription();
-         if (St != "")
+         if (St != "" && !EventsAlreadyProcessed->Contains(Fact->Events[i]->EventName))
+            {
             Desc += St;
+            EventsAlreadyProcessed->Add(Fact->Events[i]->EventName);
+            }
          }
+
+      //EventsAlreadyProcessed->Clear();
 
       // get description for all event handlers.
       for (int i = 0; i != Fact->EventHandlers->Count; i++)
          {
          String^ St = Fact->EventHandlers[i]->GetDescription();
-         if (St != "")
+         if (St != "" && !EventsAlreadyProcessed->Contains(Fact->EventHandlers[i]->EventName))
+            {
             Desc += St;
+            EventsAlreadyProcessed->Add(Fact->EventHandlers[i]->EventName);
+            }
          }
 
       }

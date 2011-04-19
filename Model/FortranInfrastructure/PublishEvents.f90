@@ -29,9 +29,6 @@ module PublishEventsModule
       call PublishKillCrop(QualifiedEventName, DataString)
    elseif (EventName == 'incorpfom') then
       call PublishIncorpFOM(QualifiedEventName, DataString)
-   elseif (EventName == 'sow2' .or. EventName == 'prune') then
-      ! Eventually all manager events are to use this.
-      call PublishEvent(QualifiedEventName, DataString)
    else
       ! some other non protocol event - use the old postbox method.
       if (ModuleName == 'publish') then
@@ -236,45 +233,6 @@ module PublishEventsModule
    end do
    IncorpFOMID = add_registration(eventReg, QualifiedEventName, FOMLayerTypeDDML, blank)
    call publish_FOMLayer(IncorpFOMID, IncorpFOM)
-
-   end subroutine
-
-   subroutine PublishEvent(QualifiedEventName, DataString)
-   ! ---------------------------------------------------------------
-   ! Publishes a general event as a string
-   ! ---------------------------------------------------------------
-   use DataTypes
-   use ComponentInterfaceModule
-   use dataTypesInterface
-   implicit none
-
-   character QualifiedEventName*(*)  ! (INPUT) Fully qualified event name (e.g. wheat.kill_crop)
-   character DataString*(*)          ! (INPUT) Should be blank or have a plants_kill_fraction
-
-   integer EventID;
-   type (ManagerEventType) :: EventData
-   integer :: NumKeys
-
-   EventData%num_Key = 0
-   NumKeys = 1
-   call SplitEventLine(DataString,  &
-                       EventData%Key(NumKeys)%Name, &
-                       EventData%Key(NumKeys)%Units, &
-                       EventData%Key(NumKeys)%Values, &
-                       EventData%Key(NumKeys)%Num_Values)
-   do while (EventData%Key(NumKeys)%Num_Values > 0 .and. DataString .ne. ' ')
-      NumKeys = NumKeys + 1
-      call SplitEventLine(DataString,  &
-                          EventData%Key(NumKeys)%Name, &
-                          EventData%Key(NumKeys)%Units, &
-                          EventData%Key(NumKeys)%Values, &
-                          EventData%Key(NumKeys)%Num_Values)
-   enddo
-   EventData%num_Key = NumKeys
-
-   EventID = add_registration(eventReg, QualifiedEventName, ManagerEventTypeDDML, ' ')
-   call publish_ManagerEvent(EventID, EventData)
-
 
    end subroutine
 

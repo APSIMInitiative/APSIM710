@@ -82,7 +82,7 @@ class GenericOrgan : BaseOrgan, AboveGround
          Live.NonStructuralN -= value;
          }
       }
-   [EventHandler] private void OnPrune(ManagerEventType keys)
+   [EventHandler] private void OnPrune(PruneType Prune)
       {
       DateTime Today = new DateTime(Year, 1, 1);
       Today = Today.AddDays(Day - 1);

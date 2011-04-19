@@ -152,6 +152,7 @@ namespace ProcessDataTypesInterface
          XmlHelper.SetValue(NewDataType, "cstype", CalcCSType(Field, true));
          XmlHelper.SetValue(NewDataType, "cstypename", CalcCSTypeName(Field));
          XmlHelper.SetValue(NewDataType, "dotnettype", CalcDotNetType(Field));
+         XmlHelper.SetValue(NewDataType, "dotnetarraytype", CalcDotNetArrayType(Field));
          XmlHelper.SetValue(NewDataType, "dotnettypename", CalcDotNetTypeName(Field));
          XmlHelper.SetValue(NewDataType, "rawcpptype", CalcRawCPPType(Field));
          XmlHelper.SetValue(NewDataType, "cpptype", CalcCPPType(Field));
@@ -291,6 +292,40 @@ namespace ProcessDataTypesInterface
             {
             CTypeName = "array<" + CTypeName;
             CTypeName += ">^";
+            }
+         return CTypeName;
+         }
+
+      private static string CalcDotNetArrayType(XmlNode DataType)
+         {
+         // ------------------------------------------------------------------
+         // convert a DDML 'kind' string to a CPP built in type.
+         // ------------------------------------------------------------------
+         string TypeName = XmlHelper.Attribute(DataType, "kind");
+         if (TypeName == "")
+            TypeName = XmlHelper.Attribute(DataType, "type");
+         if (TypeName == "")
+            TypeName = XmlHelper.Attribute(DataType, "name");
+         string LowerTypeName = TypeName.ToLower();
+         string CTypeName;
+         if (LowerTypeName == "integer4")
+            CTypeName = "Int32";
+         else if (LowerTypeName == "single")
+            CTypeName = "Single";
+         else if (LowerTypeName == "double")
+            CTypeName = "Double";
+         else if (LowerTypeName == "boolean")
+            CTypeName = "Boolean";
+         else if (LowerTypeName == "char")
+            CTypeName = "Char";
+         else if (LowerTypeName == "string")
+            CTypeName = "String^";
+         else
+            CTypeName = TypeName + "Type^";
+         if (XmlHelper.Attribute(DataType, "array") == "T")
+            {
+            CTypeName = "array<" + CTypeName;
+            CTypeName += ">";
             }
          return CTypeName;
          }
@@ -437,6 +472,9 @@ namespace ProcessDataTypesInterface
             if (XmlHelper.Attribute(DDMLDoc.DocumentElement, "array") == "T")
                XmlHelper.DeleteAttribute(DDMLDoc.DocumentElement, "array");
             }
+         if (OldDataType.Name == "type" && XmlHelper.Attribute(DDMLDoc.DocumentElement, "name") != "")
+            XmlHelper.SetAttribute(DDMLDoc.DocumentElement, "typename", XmlHelper.Attribute(DDMLDoc.DocumentElement, "name"));
+
          if (XmlHelper.Attribute(DDMLDoc.DocumentElement, "name") != "")
             XmlHelper.DeleteAttribute(DDMLDoc.DocumentElement, "name");
          if (XmlHelper.Attribute(DDMLDoc.DocumentElement, "boundable") != "")

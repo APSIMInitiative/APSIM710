@@ -149,10 +149,10 @@ void PastureConverter::doInit2(void)
 
    // event
    sowID =            addRegistration(::event, pastureID, "sow", protocol::DDML(protocol::PastureSowType()).c_str());
-   cutID =            addRegistration(::event, pastureID, "cut", protocol::DDML(protocol::PastureCutType()).c_str());
+   cutID =            addRegistration(::event, pastureID, "cut", protocol::DDML(protocol::CutType()).c_str());
    cultivateID =      addRegistration(::event, pastureID, "cultivate", protocol::DDML(protocol::PastureCultivateType()).c_str());
-   killID =           addRegistration(::event, pastureID, "kill", protocol::DDML(protocol::PastureKillType()).c_str());
-   burnID =           addRegistration(::event, pastureID, "burn", protocol::DDML(protocol::PastureBurnType()).c_str());
+   killID =           addRegistration(::event, pastureID, "kill", protocol::DDML(protocol::KillType()).c_str());
+   burnID =           addRegistration(::event, pastureID, "burn", protocol::DDML(protocol::BurnType()).c_str());
    spraytopID =       addRegistration(::event, pastureID, "spraytop", "");
 
    SW->doInit1(pastureID);
@@ -245,7 +245,7 @@ void PastureConverter::dosowPasture(unsigned int& fromID, unsigned int& eventID,
 void PastureConverter::docutPasture(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-   protocol::PastureCutType pastureCut;
+   protocol::CutType pastureCut;
 
    pastureCut.cut_height = getVariableValue (variant, "Cut", "cut_height", "(mm)");
    pastureCut.gathered =   getVariableValue (variant, "Cut", "gathered", "(-)");
@@ -272,7 +272,7 @@ void PastureConverter::docultivatePasture(unsigned int& fromID, unsigned int& ev
 void PastureConverter::dokillPasture(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-   protocol::PastureKillType pastureKill;
+   protocol::KillType pastureKill;
    pastureKill.propn_herbage = getVariableValue (variant, "Kill", "propn_herbage", "(-)");
    pastureKill.propn_seed =    getVariableValue (variant, "Kill", "propn_seed", "(-)");
 
@@ -283,7 +283,7 @@ void PastureConverter::dokillPasture(unsigned int& fromID, unsigned int& eventID
 void PastureConverter::doburnPasture(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-     protocol::PastureBurnType pastureBurn;
+     protocol::BurnType pastureBurn;
    pastureBurn.kill_plants =   getVariableValue (variant, "Burn", "kill_plants", "(-)");
    pastureBurn.kill_seed =     getVariableValue (variant, "Burn", "kill_seed", "(-)");
    pastureBurn.propn_unburnt = getVariableValue (variant, "Burn", "propn_unburnt", "(-)");

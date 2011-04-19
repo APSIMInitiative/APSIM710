@@ -119,3 +119,17 @@ public ref class Model : public System::Attribute
 	{
 	};	
 
+public enum class IsOptional {Yes, No};
+
+[AttributeUsage(AttributeTargets::Field, AllowMultiple = true)]
+public ref class Link : public System::Attribute
+	{
+   public:
+      String^ _Path;
+      IsOptional _IsOptional;
+      Link() {_Path = nullptr; _IsOptional = IsOptional::No;}
+      Link(IsOptional isOptional) {_Path = nullptr; _IsOptional = isOptional;}
+      Link(String^ Path) {_Path = _Path; _IsOptional = IsOptional::No;}
+      Link(String^ Path, IsOptional isOptional) {_Path = Path; _IsOptional = isOptional;}
+	};	
+

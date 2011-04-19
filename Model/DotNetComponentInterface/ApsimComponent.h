@@ -52,8 +52,8 @@ public ref class ApsimComponent
       void Subscribe(EvntHandler^ Event);
       
       String^ GetName() {return Name;}
-	  int GetId() { return ComponentID; }
-
+	   int GetId() { return ComponentID; }
+      bool DoingAGetDescription() {return Init1 == true;}
 	public:
 		ApsimComponent(Assembly^ ModelAssembly, int instanceNumber);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interfaces.h"
+#include "..\DataTypes\DOTNETDataTypes.h"
 #include <string>
 #include <vcclr.h>
 using namespace System::Runtime::InteropServices;
@@ -244,6 +245,35 @@ String^ DDML(array<T>^ values)
 	}
 
 
-
+template <class T>
+public ref class WrapBuiltInVariable : ApsimType
+   {
+   // --------------------------------------------------------------------
+   // This class wraps a FactoryProperty and a built in type (e.g. Single, 
+   // Double etc). It then makes it look like an ApsimType with pack,
+   // unpack methods etc.
+   // --------------------------------------------------------------------
+   public:
+      T Value;
+      WrapBuiltInVariable()
+         {
+         }
+		virtual void pack(char* messageData)
+			{
+			::pack(messageData, (T) Value);
+			}
+		virtual void unpack(char* messageData)
+			{
+			::unpackWithConverter(messageData, Value);
+			}
+		virtual unsigned memorySize()
+			{
+			return ::memorySize((T) Value);
+			}
+      virtual String^ DDML()
+         {
+         return ::DDML(Value);
+         }
+	};
 	
 		

@@ -1,4 +1,5 @@
 #include "Factory.h"
+#include "ApsimComponent.h"
 
 Factory::Factory() 
    {
@@ -9,6 +10,7 @@ Factory::Factory()
    RegisteredProperties = gcnew List<FactoryProperty^>();
    RegisteredEventHandlers = gcnew List<EvntHandler^>();
    RegisteredEvents = gcnew List<FactoryEvent^>();
+   Links = gcnew List<LinkField^>();
    }
 
 void Factory::Create(String^ Xml, 
@@ -58,16 +60,21 @@ Instance^ Factory::CreateInstance(XmlNode^ Node,
    else if (CreatedInstance)
    {
       CreatedInstance->Initialise(XmlHelper::Name(Node), ParentInstance, ParentComponent);
-	  GetAllProperties(CreatedInstance, Parent);
+	   GetAllProperties(CreatedInstance, Parent);
       GetAllEventHandlers(CreatedInstance);
       GetAllEvents(CreatedInstance);
       PopulateParams(CreatedInstance, Node, ParentComponent);
+      
    }
    else
    {
 	   throw gcnew Exception("Class " + Node->Name + " must be derived from the \"Instance\" class");
    }
-   CreatedInstance->Initialised();
+   if (!ParentComponent->DoingAGetDescription())
+      {
+      ResolveLinks();
+      CreatedInstance->Initialised();
+      }
    return CreatedInstance;
    }
 
@@ -90,6 +97,12 @@ void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
              dynamic_cast<Input^>(Attr) != nullptr || 
              dynamic_cast<Output^>(Attr) != nullptr)
              AddProperty = true;
+         if (dynamic_cast<Link^>(Attr) != nullptr)
+            {
+            LinkField^ LinkF = gcnew LinkField(Obj, Property, dynamic_cast<Link^> (Attr));
+            Links->Add(LinkF);
+            }
+
          }
       if (AddProperty)
          {
@@ -342,3 +355,14 @@ void Factory::RemoveShortCuts(XmlNode^ Node)
 	   RemoveShortCuts(Node->ChildNodes[i]);
    }
       
+
+void Factory::ResolveLinks()
+   {
+   // -----------------------------------------------
+   // Resolve all [Links].
+   // -----------------------------------------------
+
+	for (int i = 0; i < Links->Count; i++)
+      Links[i]->Resolve();
+
+   }

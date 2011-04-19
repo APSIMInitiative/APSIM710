@@ -5,7 +5,6 @@ Imports ModelFramework
 Imports System.Xml
 Imports System.Xml.Schema
 Imports CSGeneral
-Imports ManagerHelpers
 
 'Bugs:
 '    Rotation lenghts not being respected. Need to implement the day count type method or fix paddock status
@@ -34,7 +33,7 @@ Imports ManagerHelpers
 Public Class DDRules
         Inherits Instance
         Public myDebugLevel As Integer = 0
-        Private MyPaddock As PaddockType
+   <Link()> Private MyPaddock As Paddock
         Private myFarm As Farm
         Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
@@ -59,10 +58,9 @@ Public Class DDRules
                 End If
 
                 ' ************* Farm testing **********************
-                MyPaddock = New PaddockType(Me)
-                If (TotalFarmArea <= 0) Then
-                        TotalFarmArea = MyPaddock.SubPaddocks.Count 'default to one hectare paddocks if no area set
-                End If
+      If (TotalFarmArea <= 0) Then
+         TotalFarmArea = MyPaddock.SubPaddocks.Count 'default to one hectare paddocks if no area set
+      End If
 
                 myFarm.Init(MyPaddock, year, month, TotalFarmArea)
                 myHerd = myFarm.getHerd()
@@ -161,36 +159,36 @@ Public Class DDRules
                 End Set
         End Property
 
-        Sub SetupFarmSim(ByVal MyPaddock As PaddockType)
-        Dim FarmSim As ComponentType = MyPaddock.ComponentByName("RegionalisationOptions")
-                If FarmSim Is Nothing Then
-                        Return
-                End If
+   Sub SetupFarmSim(ByVal MyPaddock As Paddock)
+      Dim FarmSim As Component = MyPaddock.ComponentByType("FarmSimGraze")
+      If FarmSim Is Nothing Then
+         Return
+      End If
 
-                Dim UI_StockRate As Double = FarmSim.Variable("UI_StockRate").ToDouble
-        Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToString
+      Dim UI_StockRate As Double = FarmSim.Variable("UI_StockRate").ToDouble
+      Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToString
 
-                BaseStockingRate = UI_StockRate
-                StockingRate = BaseStockingRate
+      BaseStockingRate = UI_StockRate
+      StockingRate = BaseStockingRate
 
-                Dim GrassSilage As Integer = 0
-                Dim GrainOrConcentrate As Integer = 1
-                If (UI_SuppType = "GrassSilage") Then
-                        myFarm.SupplementME = 10
-                        myFarm.SupplementN = 0.035
-                        myFarm.SupplementWastage = 0.0
-                        myFarm.SupplementDigestability = 0.7 ' minimum for high quality silage. Source: DairyNZ FarmFact 1-46
-                Else 'GrainOrConcentrate
-                        myFarm.SupplementME = 12
-                        myFarm.SupplementN = 0.018
-                        myFarm.SupplementWastage = 0.0
-                        myFarm.SupplementDigestability = 0.8
-                End If
+      Dim GrassSilage As Integer = 0
+      Dim GrainOrConcentrate As Integer = 1
+      If (UI_SuppType = "GrassSilage") Then
+         myFarm.SupplementME = 10
+         myFarm.SupplementN = 0.035
+         myFarm.SupplementWastage = 0.0
+         myFarm.SupplementDigestability = 0.7 ' minimum for high quality silage. Source: DairyNZ FarmFact 1-46
+      Else 'GrainOrConcentrate
+         myFarm.SupplementME = 12
+         myFarm.SupplementN = 0.018
+         myFarm.SupplementWastage = 0.0
+         myFarm.SupplementDigestability = 0.8
+      End If
 
-                myFarm.EnableSilageStore = False 'all supplement purchase / no silage kept
-                WinterOffDryStock = True 'all stock wintered off farm
-                default_gr = Val_gr
-        End Sub
+      myFarm.EnableSilageStore = False 'all supplement purchase / no silage kept
+      WinterOffDryStock = True 'all stock wintered off farm
+      default_gr = Val_gr
+   End Sub
 
 
 #Region "CowProperties"

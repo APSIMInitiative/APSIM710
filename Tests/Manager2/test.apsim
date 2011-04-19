@@ -1,4 +1,4 @@
-<folder version="23" name="simulations">
+<folder version="27" name="simulations">
   <simulation name="Continuous Wheat">
     <memo>This simulation tests that the new manager module (in script in the paddock) can send a remove_crop_biomass event to a specific crop (lucernce).</memo>
     <metfile name="met">
@@ -40,11 +40,11 @@
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
           </ui>
-          <script name="start_of_day">
-            <text><![CDATA[
-      if (paddock_is_fallow() = 1 and FallowIn <> 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+          <script>
+            <text>
+      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
          if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] >= [raincrit] AND esw >= [esw_amount]) OR
+            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
                 ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
                ChooseNextCrop = 'yes'   ! for rotations
                [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
@@ -54,10 +54,10 @@
             endif
          endif
       endif
-            ]]></text>
+            </text>
             <event>start_of_day</event>
           </script>
-          <script name="init">
+          <script>
             <text>
             nextcrop = 0
             fallowin = 0
@@ -83,12 +83,14 @@
       </outputfile>
       <soil name="Soil">
         <Country>Australia</Country>
-        <State>South Australia</State>
-        <Region>Upper North</Region>
-        <NearestTown>Quorn</NearestTown>
         <Site>Quorn</Site>
-        <ApsoilNumber>605</ApsoilNumber>
+        <Region>Upper North</Region>
+        <LocalName />
         <SoilType>Clay loam over medium clay</SoilType>
+        <NearestTown>Quorn</NearestTown>
+        <NaturalVegetation />
+        <State>South Australia</State>
+        <ApsoilNumber>605</ApsoilNumber>
         <Latitude>-32.321</Latitude>
         <Longitude>138.026</Longitude>
         <LocationAccuracy>+-20m</LocationAccuracy>
@@ -97,57 +99,57 @@
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
-            <BD units="g/cc">1.205</BD>
-            <SAT units="mm/mm">0.515</SAT>
-            <DUL units="mm/mm">0.362</DUL>
-            <LL15 units="mm/mm">0.169</LL15>
-            <Airdry units="mm/mm">0.085</Airdry>
             <KS units="mm/day" />
+            <BD units="g/cc">1.205</BD>
+            <Airdry units="mm/mm">0.085</Airdry>
+            <LL15 units="mm/mm">0.169</LL15>
+            <DUL units="mm/mm">0.362</DUL>
+            <SAT units="mm/mm">0.515</SAT>
           </Layer>
           <Layer>
             <Thickness>100</Thickness>
+            <KS />
             <BD>1.335</BD>
-            <SAT>0.466</SAT>
-            <DUL>0.355</DUL>
-            <LL15>0.187</LL15>
             <Airdry>0.15</Airdry>
-            <KS />
+            <LL15>0.187</LL15>
+            <DUL>0.355</DUL>
+            <SAT>0.466</SAT>
           </Layer>
           <Layer>
             <Thickness>250</Thickness>
+            <KS />
             <BD>1.338</BD>
-            <SAT>0.465</SAT>
-            <DUL>0.347</DUL>
-            <LL15>0.215</LL15>
             <Airdry>0.215</Airdry>
-            <KS />
+            <LL15>0.215</LL15>
+            <DUL>0.347</DUL>
+            <SAT>0.465</SAT>
           </Layer>
           <Layer>
             <Thickness>250</Thickness>
-            <BD>1.396</BD>
-            <SAT>0.443</SAT>
-            <DUL>0.393</DUL>
-            <LL15>0.215</LL15>
-            <Airdry>0.215</Airdry>
             <KS />
+            <BD>1.396</BD>
+            <Airdry>0.215</Airdry>
+            <LL15>0.215</LL15>
+            <DUL>0.393</DUL>
+            <SAT>0.443</SAT>
           </Layer>
           <Layer>
             <Thickness>350</Thickness>
-            <BD>1.405</BD>
-            <SAT>0.44</SAT>
-            <DUL>0.39</DUL>
-            <LL15>0.215</LL15>
-            <Airdry>0.215</Airdry>
             <KS />
+            <BD>1.405</BD>
+            <Airdry>0.215</Airdry>
+            <LL15>0.215</LL15>
+            <DUL>0.39</DUL>
+            <SAT>0.44</SAT>
           </Layer>
           <Layer>
             <Thickness>450</Thickness>
-            <BD>1.396</BD>
-            <SAT>0.443</SAT>
-            <DUL>0.393</DUL>
-            <LL15>0.215</LL15>
-            <Airdry>0.215</Airdry>
             <KS />
+            <BD>1.396</BD>
+            <Airdry>0.215</Airdry>
+            <LL15>0.215</LL15>
+            <DUL>0.393</DUL>
+            <SAT>0.443</SAT>
           </Layer>
           <SoilCrop name="wheat">
             <Layer>
@@ -226,11 +228,12 @@
             </Layer>
           </SoilCrop>
         </Water>
-        <Lab>
+        <Analysis>
           <Layer>
-            <Rocks units="%">0</Rocks>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%">0</Rocks>
             <Texture>Light Clay</Texture>
+            <MunsellColour />
             <EC units="1:5 dS/m">0.3</EC>
             <PH units="1:5 water">8.3</PH>
             <CL units="mg/kg">184</CL>
@@ -248,9 +251,10 @@
             <ParticleSizeClay units="%">45.8</ParticleSizeClay>
           </Layer>
           <Layer>
-            <Rocks>0</Rocks>
             <Thickness>100</Thickness>
+            <Rocks>0</Rocks>
             <Texture>Light Clay</Texture>
+            <MunsellColour />
             <EC>0.3</EC>
             <PH>8.6</PH>
             <CL>255</CL>
@@ -268,9 +272,10 @@
             <ParticleSizeClay>46.6</ParticleSizeClay>
           </Layer>
           <Layer>
-            <Rocks>0</Rocks>
             <Thickness>250</Thickness>
+            <Rocks>0</Rocks>
             <Texture>Medium Clay</Texture>
+            <MunsellColour />
             <EC>0.7</EC>
             <PH>8.9</PH>
             <CL>724</CL>
@@ -288,9 +293,10 @@
             <ParticleSizeClay>54.2</ParticleSizeClay>
           </Layer>
           <Layer>
-            <Rocks>0</Rocks>
             <Thickness>250</Thickness>
+            <Rocks>0</Rocks>
             <Texture>Heavy Clay</Texture>
+            <MunsellColour />
             <EC>1.1</EC>
             <PH>9.1</PH>
             <CL>1073</CL>
@@ -308,9 +314,10 @@
             <ParticleSizeClay>58.3</ParticleSizeClay>
           </Layer>
           <Layer>
-            <Rocks>0</Rocks>
             <Thickness>350</Thickness>
+            <Rocks>0</Rocks>
             <Texture>Heavy Clay</Texture>
+            <MunsellColour />
             <EC>2</EC>
             <PH>8.8</PH>
             <CL>1583</CL>
@@ -328,9 +335,10 @@
             <ParticleSizeClay>61.2</ParticleSizeClay>
           </Layer>
           <Layer>
-            <Rocks>0</Rocks>
             <Thickness>450</Thickness>
+            <Rocks>0</Rocks>
             <Texture>Heavy Clay</Texture>
+            <MunsellColour />
             <EC>3.4</EC>
             <PH>8.4</PH>
             <CL>2449</CL>
@@ -347,49 +355,59 @@
             <ParticleSizeSilt>12.6</ParticleSizeSilt>
             <ParticleSizeClay>59.3</ParticleSizeClay>
           </Layer>
-        </Lab>
+        </Analysis>
         <SoilWat>
-          <SummerU>6</SummerU>
           <SummerCona>3.5</SummerCona>
-          <WinterU>2</WinterU>
-          <WinterCona>2</WinterCona>
+          <SummerU>6</SummerU>
           <SummerDate>1-Nov</SummerDate>
+          <WinterCona>2</WinterCona>
+          <WinterU>2</WinterU>
           <WinterDate>1-Apr</WinterDate>
-          <Salb>0.13</Salb>
           <DiffusConst>88</DiffusConst>
           <DiffusSlope>35</DiffusSlope>
+          <Salb>0.13</Salb>
           <Cn2Bare>73</Cn2Bare>
           <CnRed>20</CnRed>
           <CnCov>0.8</CnCov>
+          <Slope />
+          <DischargeWidth />
+          <CatchmentArea />
+          <MaxPond />
           <Layer>
-            <SWCON units="0-1">0.4</SWCON>
             <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
             <MWCON units="0-1" />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
-            <SWCON>0.3</SWCON>
             <Thickness>100</Thickness>
+            <SWCON>0.3</SWCON>
             <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
-            <SWCON>0.3</SWCON>
             <Thickness>250</Thickness>
+            <SWCON>0.3</SWCON>
             <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
-            <SWCON>0.3</SWCON>
             <Thickness>250</Thickness>
+            <SWCON>0.3</SWCON>
             <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
-            <SWCON>0.3</SWCON>
             <Thickness>350</Thickness>
+            <SWCON>0.3</SWCON>
             <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
-            <SWCON>0.3</SWCON>
             <Thickness>450</Thickness>
+            <SWCON>0.3</SWCON>
             <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
         </SoilWat>
         <SoilOrganicMatter>
@@ -399,61 +417,61 @@
           <EnrACoeff>7.4</EnrACoeff>
           <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
-            <FBIOM units="0-1">0.04</FBIOM>
             <Thickness units="mm">100</Thickness>
-            <FINERT units="0-1">0.4</FINERT>
             <OC units="Walkley Black %">0.77</OC>
+            <FBIOM units="0-1">0.04</FBIOM>
+            <FINERT units="0-1">0.4</FINERT>
           </Layer>
           <Layer>
-            <FBIOM>0.04</FBIOM>
             <Thickness>100</Thickness>
-            <FINERT>0.5</FINERT>
             <OC>0.71</OC>
+            <FBIOM>0.04</FBIOM>
+            <FINERT>0.5</FINERT>
           </Layer>
           <Layer>
-            <FBIOM>0.02</FBIOM>
             <Thickness>250</Thickness>
-            <FINERT>0.6</FINERT>
             <OC>0.42</OC>
-          </Layer>
-          <Layer>
             <FBIOM>0.02</FBIOM>
+            <FINERT>0.6</FINERT>
+          </Layer>
+          <Layer>
             <Thickness>250</Thickness>
-            <FINERT>0.7</FINERT>
             <OC>0.27</OC>
+            <FBIOM>0.02</FBIOM>
+            <FINERT>0.7</FINERT>
           </Layer>
           <Layer>
-            <FBIOM>0.01</FBIOM>
             <Thickness>350</Thickness>
-            <FINERT>0.8</FINERT>
             <OC>0.21</OC>
+            <FBIOM>0.01</FBIOM>
+            <FINERT>0.8</FINERT>
           </Layer>
           <Layer>
-            <FBIOM>0.01</FBIOM>
             <Thickness>450</Thickness>
-            <FINERT>1</FINERT>
             <OC>0.12</OC>
+            <FBIOM>0.01</FBIOM>
+            <FINERT>1</FINERT>
           </Layer>
         </SoilOrganicMatter>
         <Sample>
           <Date type="date" description="Sample date:" />
           <Layer>
+            <Thickness units="mm">200</Thickness>
             <no3 units="kg/ha">30</no3>
             <nh4 units="kg/ha">5</nh4>
             <SW units="mm/mm">0.1</SW>
-            <Depth units="cm">0-20</Depth>
           </Layer>
           <Layer>
+            <Thickness units="mm">180</Thickness>
             <no3 units="kg/ha">20</no3>
             <nh4 units="kg/ha">1</nh4>
             <SW>0.25</SW>
-            <Depth>20-200</Depth>
           </Layer>
           <Layer>
-            <SW>0.25</SW>
-            <NH4>1</NH4>
+            <Thickness units="mm">100</Thickness>
             <NO3>15</NO3>
-            <Depth>200-300</Depth>
+            <NH4>1</NH4>
+            <SW>0.25</SW>
           </Layer>
         </Sample>
       </soil>
@@ -461,17 +479,16 @@
       <wheat />
       <manager2 name="Script">
         <ui />
-        <text><![CDATA[Imports System
+        <text>Imports System
 Imports ModelFramework
 
 Public Class Script
    Inherits Instance
 
-   <Input()> Private Day As Integer
+   &lt;Input()&gt; Private Day As Integer
+   &lt;Link()&gt; Private MyPaddock As Paddock
 
-   <EventHandler()> Public Sub OnPost()
-      Dim MyPaddock As New PaddockType(Me)
-      
+   &lt;EventHandler()&gt; Public Sub OnPost()
       Dim dlt(0) As Double
       dlt(0) = 100
       
@@ -495,14 +512,14 @@ Public Class Script
       
       ' Make sure we can send an event using the Crops method.
       If Day = 305 Then
-         Dim c As CropType = MyPaddock.Crops(0)
+         Dim c As Component = MyPaddock.Crops(0)
          c.Publish("remove_crop_biomass", MyRemoveCropDM)
       End If
       
       
    End Sub
 End Class
-    ]]></text>
+    </text>
       </manager2>
     </area>
   </simulation>

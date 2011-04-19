@@ -607,6 +607,7 @@ namespace ApsimFile
                   int ColumnIndex = Table.Columns.IndexOf(NonCodeColumnName);
                   if (ColumnIndex == -1)
                      throw new Exception("Cannot find column " + NonCodeColumnName);
+
                   Table.Columns[ColumnIndex].ColumnName += " (" + Units + ")";
                   }
                }

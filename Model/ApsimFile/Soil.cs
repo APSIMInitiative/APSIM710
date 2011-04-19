@@ -864,28 +864,29 @@ namespace ApsimFile
             if (VariableNameBits.Length != 2)
                throw new Exception("Unknown soil variable " + VariableName);
 
-            XmlHelper.FindAllRecursively(SoilNode, VariableNameBits[0], ref AllNodes);
-            if (AllNodes.Count == 1)
+            XmlNode WaterNode = XmlHelper.Find(SoilNode, "Water");
+            if (WaterNode != null)
                {
-               XmlNode CropNode = AllNodes[0];
-               AllNodes.Clear();
-               XmlHelper.FindAllRecursively(CropNode, VariableNameBits[1], ref AllNodes);
-               }
-            if (AllNodes.Count == 0)
-               {
-               if (CreateCropVariablesIfNecessary)
+               XmlHelper.FindAllRecursively(WaterNode, VariableNameBits[0], ref AllNodes);
+               if (AllNodes.Count == 1)
                   {
-                  XmlNode WaterNode = XmlHelper.Find(SoilNode, "Water");
-                  if (WaterNode == null)
-                     throw new Exception("Cannot find a water node in soil " + XmlHelper.Name(SoilNode));
-                  XmlNode CropNode = WaterNode.AppendChild(WaterNode.OwnerDocument.CreateElement("SoilCrop"));
-                  XmlHelper.SetName(CropNode, VariableNameBits[0]);
-                  XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/Thickness"), "units", "mm");
-                  XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/ll"), "units", "mm/mm");
-                  XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/kl"), "units", "/day");
-                  XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/xf"), "units", "0-1");
+                  XmlNode CropNode = AllNodes[0];
+                  AllNodes.Clear();
+                  XmlHelper.FindAllRecursively(CropNode, VariableNameBits[1], ref AllNodes);
+                  }
+               if (AllNodes.Count == 0)
+                  {
+                  if (CreateCropVariablesIfNecessary)
+                     {
+                     XmlNode CropNode = WaterNode.AppendChild(WaterNode.OwnerDocument.CreateElement("SoilCrop"));
+                     XmlHelper.SetName(CropNode, VariableNameBits[0]);
+                     XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/Thickness"), "units", "mm");
+                     XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/ll"), "units", "mm/mm");
+                     XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/kl"), "units", "/day");
+                     XmlHelper.SetAttribute(XmlHelper.EnsureNodeExists(CropNode, "Layer/xf"), "units", "0-1");
 
-                  return CropNode;
+                     return CropNode;
+                     }
                   }
                }
             }

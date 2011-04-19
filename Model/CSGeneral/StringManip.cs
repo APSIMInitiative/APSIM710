@@ -294,12 +294,33 @@ namespace CSGeneral
             if (Count == 0)
                return Pos;
 
-            Pos = Contents.IndexOfAny(CharSet, StartPos);
+            Pos = Contents.IndexOfAny(CharSet, Pos+1);
             }
 
          return -1;
          }
 
+      /// <summary>
+      /// Convert a FORTRAN type APSIM name e.g. canopy_water_balance into a camel case name
+      /// like CanopyWaterBalance
+      /// </summary>
+      public static string CamelCase(string Name)
+         {
+         int PosUnderScore = -1;
+         do
+            {
+            string UpperChar = Name[PosUnderScore + 1].ToString();
+            UpperChar = UpperChar.ToUpper();
+            Name = Name.Remove(PosUnderScore + 1, 1);
+            Name = Name.Insert(PosUnderScore + 1, UpperChar);
+
+            if (PosUnderScore != -1)
+               Name = Name.Remove(PosUnderScore, 1);
+            PosUnderScore = Name.IndexOf('_');
+            }
+         while (PosUnderScore != -1);
+         return Name;
+         }
 
       }
    }

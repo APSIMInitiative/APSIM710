@@ -71,6 +71,8 @@ namespace ApsimFile
       internal List<string> ValidUnits(string RawVariableName)
          {
          ReadMetaData();
+         if (RawVariableName.Contains(" "))
+            RawVariableName = RawVariableName.Substring(RawVariableName.IndexOf(" ") + 1);  // crop variable
          XmlNode Variable = XmlHelper.FindRecursively(MetaDataNode, RawVariableName);
          if (Variable == null)
             return new List<string>();

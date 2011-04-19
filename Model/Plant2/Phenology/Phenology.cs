@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 public class Phenology : Instance
    {
-   [Event] public event PhenologyChangedDelegate PhaseChanged;
+   [Event] public event PhaseChangedDelegate PhaseChanged;
    [Event] public event NullTypeDelegate GrowthStage;
+   [Link]   private Paddock MyPaddock;
 
    private NamedList<Phase> Phases = new NamedList<Phase>();
    private int CurrentPhaseIndex;
@@ -130,12 +132,11 @@ public class Phenology : Instance
          // Send a PhaseChanged event.
          if (PhaseChanged != null)
             {
-            PhenologyChangedType PhaseChangedData = new PhenologyChangedType();
+            PhaseChangedType PhaseChangedData = new PhaseChangedType();
             PhaseChangedData.OldPhaseName = OldPhaseName;
             PhaseChangedData.NewPhaseName = CurrentPhase.Name;
             PhaseChanged.Invoke(PhaseChangedData);
 
-            PaddockType MyPaddock = new PaddockType(this);
             MyPaddock.Publish(CurrentPhase.Start, new NullType());
             }
          }

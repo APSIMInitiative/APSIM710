@@ -416,7 +416,7 @@ namespace ApsimFile
          int PosElseIf = 0;
          int PosElse = 0;
          int PosCondition = Contents.IndexOf("[if");
-         while (PosCondition != -1 && PosCondition != Contents.Length)
+         while (PosCondition != -1 && PosCondition < Contents.Length)
             {
             int PosEndMacro = FindMatchingCloseBracket(ref Contents, PosCondition + 1);
             int PosEndIf = Contents.IndexOf("[endif]", PosCondition + 1);

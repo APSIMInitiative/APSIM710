@@ -209,7 +209,7 @@ Public Class SoilActions
             Controller.ApsimData.NewFromFile(SoilsFileName)
             File.Delete(SoilsFileName)
          Else
-            MessageBox.Show("Cannot connection to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.[Error])
+            MessageBox.Show("Cannot connect to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.[Error])
          End If
          response.Close()
          Cursor.Current = Cursors.[Default]
@@ -220,6 +220,35 @@ Public Class SoilActions
         System.Diagnostics.Process.Start(URL)
     End Sub
 
+   Public Shared Sub GoogleEarthSoils(ByVal Controller As BaseController)
+      If Controller.FileSaveAfterPrompt() Then
+         Cursor.Current = Cursors.WaitCursor
+         Dim request As WebRequest = WebRequest.Create("http://www.apsim.info/ApsoilWeb/ApsoilKML.aspx")
+         Dim response As HttpWebResponse = DirectCast(request.GetResponse(), HttpWebResponse)
+         If response.StatusDescription = "OK" Then
+            Dim dataStream As Stream = response.GetResponseStream()
+            Dim reader As New StreamReader(dataStream)
+            Dim responseFromServer As String = reader.ReadToEnd()
+
+            Dim KMLFileName As String = Path.GetTempPath() + "Soils.kmz"
+            Dim KMLFile As New StreamWriter(KMLFileName)
+            KMLFile.Write(responseFromServer)
+            KMLFile.Close()
+            reader.Close()
+            dataStream.Close()
+            Dim P As Process = CSGeneral.Utility.RunProcess(KMLFileName, "", Path.GetTempPath())
+            Dim Errors As String = CSGeneral.Utility.CheckProcessExitedProperly(P)
+            If Errors <> "" Then
+               MessageBox.Show(Errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.[Error])
+            End If
+
+         Else
+            MessageBox.Show("Cannot connect to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.[Error])
+         End If
+         response.Close()
+         Cursor.Current = Cursors.[Default]
+      End If
+   End Sub
 
 
 

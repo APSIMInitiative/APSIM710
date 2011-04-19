@@ -38,8 +38,8 @@ call DoPlant2Documentation.bat
 rem ----------------------------------------------
 rem Probe all models for variables.
 rem ----------------------------------------------
-cd %APSIM%\Model\Build\
-call ProbeAll
+cd %APSIM%\Model
+UpdateDotNetProxy
 
 
 rem ----------------------------------------------

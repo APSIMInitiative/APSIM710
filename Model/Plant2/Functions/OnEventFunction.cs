@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 
 class OnEventFunction : Function
    {
    [Param] private string Event = "";
    private double _Value = 0;
+   [Link] private Paddock MyPaddock;
 
    public override void  Initialised()
       {
-      PaddockType MyPaddock = new PaddockType(this);
       MyPaddock.Subscribe(Event, OnEvent);
-
       }
 
    public void OnEvent()

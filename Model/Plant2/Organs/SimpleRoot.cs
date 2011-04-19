@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
-using ManagerHelpers;
+using ModelFramework;
 
 public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ but changed to base organ to fix bug. Need to check collatoral impacts
    {
@@ -24,8 +24,12 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
    public override double NRetranslocation { set { } }
    public override double NAllocation { set { } }
    public override double NUptake { set { } }
+   public override double WaterDemand { get { return 0; } }
 
-    public override double WaterDemand { get { return 0; } }
+   [Link] Paddock MyPaddock;
+   [Link(IsOptional.Yes)] SoilWat SoilWat;
+
+
    [Output]  [Units("mm")] public double WaterUptake
       {
       get
@@ -47,19 +51,19 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
       {
       get
          {
-         PaddockType MyPaddock = new PaddockType(Root);
-
-         if (MyPaddock.SoilWater != null)
+         if (SoilWat != null)
             {
-            double[] SWSupply = MyPaddock.ComponentByName(Root.Name+"root").Variable("SWSupply").ToDoubleArray();
+            Component RootComp = MyPaddock.ComponentByName(Root.Name + "root");
+            double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
             return MathUtility.Sum(SWSupply);
             }
          else
             {
             double Total = 0;
-            foreach (PaddockType SP in MyPaddock.SubPaddocks)
+            foreach (Paddock SP in MyPaddock.SubPaddocks)
                {
-               double[] SWSupply = SP.ComponentByName(Root.Name+"root").Variable("SWSupply").ToDoubleArray();
+               Component RootComp = SP.ComponentByName(Root.Name + "root");
+               double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
                Total += MathUtility.Sum(SWSupply);
                }
             return Total;
@@ -72,21 +76,21 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
 
    public override void DoWaterUptake(double Amount)
       {
-      PaddockType MyPaddock = new PaddockType(Root);
       Uptake = Amount;
-      if (MyPaddock.SoilWater != null)
+      if (SoilWat != null)
          {
-         MyPaddock.ComponentByName(Root.Name+"root").Variable("SWUptake").Set(Amount);
-
+         Component RootComp = MyPaddock.ComponentByName(Root.Name + "root");
+         RootComp.Variable("SWUptake").Set(Amount);
          }
       else
          {
          double[] Supply = new double[MyPaddock.SubPaddocks.Count];
          int i=0;
          double Total = 0;
-         foreach (PaddockType SP in MyPaddock.SubPaddocks)
+         foreach (Paddock SP in MyPaddock.SubPaddocks)
             {
-            double[] SWSupply = SP.ComponentByName(Root.Name + "root").Variable("SWSupply").ToDoubleArray();
+            Component RootComp = SP.ComponentByName(Root.Name + "root");
+            double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
             Supply[i] = (MathUtility.Sum(SWSupply));
             Total += Supply[i];
             i++;
@@ -95,9 +99,10 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
          if (fraction > 1)
             throw new Exception("Requested SW uptake > Available supplies.");
          i = 0;
-         foreach (PaddockType SP in MyPaddock.SubPaddocks)
+         foreach (Paddock SP in MyPaddock.SubPaddocks)
             {
-            SP.ComponentByName(Root.Name + "root").Variable("SWUptake").Set(Supply[i] * fraction);
+            Component RootComp = SP.ComponentByName(Root.Name + "root");
+            RootComp.Variable("SWUptake").Set(Supply[i] * fraction);
             i++;
             }
 

@@ -38,7 +38,14 @@ using namespace System::Runtime::InteropServices;
       public:
          [builtin.dotnettype] Value;
          [builtin.dotnettypename]Type() {}
-         [builtin.dotnettypename]Type([builtin.dotnettype] value) {Value = value;}
+         [builtin.dotnettypename]Type([builtin.dotnettype] value) 
+            {
+            [if [builtin.array] = T]
+            if (value == nullptr) Value = gcnew [builtin.dotnetarraytype](0); else Value = value;
+            [else]
+            Value = value;
+            [endif]
+            }
          virtual void pack(char* MessageData);
          virtual void unpack(char* MessageData);
          virtual unsigned memorySize();

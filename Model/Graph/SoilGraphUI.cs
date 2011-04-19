@@ -179,14 +179,18 @@ namespace Graph
             // go add series if necessary.
             if (MathUtility.ValuesInArray(x))
                {
+               string Title = ColumnName;
                string CropName = ColumnName.Substring(0, ColumnName.IndexOf(' '));
-               string Title = CropName + " LL";
-               Soil.Variable PAWC = Soil.GetOptional(SoilNode, CropName + " PAWC");
-               if (PAWC != null)
+               if (Array.IndexOf(Soil.Crops(_SoilNode), CropName) != -1)
                   {
-                  PAWC.Units = "mm";
-                  double PAWCValue = MathUtility.Sum(PAWC.Doubles);
-                  Title = CropName + " LL (PAWC: " + PAWCValue.ToString("f0") + "mm)";
+                  Title = CropName + " LL";
+                  Soil.Variable PAWC = Soil.GetOptional(SoilNode, CropName + " PAWC");
+                  if (PAWC != null)
+                     {
+                     PAWC.Units = "mm";
+                     double PAWCValue = MathUtility.Sum(PAWC.Doubles);
+                     Title = CropName + " LL (PAWC: " + PAWCValue.ToString("f0") + "mm)";
+                     }
                   }
 
                Line Line = new Line();

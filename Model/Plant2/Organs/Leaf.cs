@@ -446,16 +446,9 @@ public class Leaf : BaseOrgan, AboveGround
       Console.WriteLine("Removing Leaves from plant");
       }
    [EventHandler]
-   private void OnPrune(ManagerEventType Prune)
+   private void OnPrune(PruneType Prune)
       {
-      foreach (ManagerEventKeyType key in Prune.Key)
-         {
-         if (key.Name == "budno")
-            {
-            double[] Values = CSGeneral.MathUtility.StringsToDoubles(key.Values);
-            PrimaryBudNo = Values[0];
-            }
-         }
+      PrimaryBudNo = Prune.BudNumber;
       ZeroLeaves();
       }
 

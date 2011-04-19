@@ -1743,7 +1743,7 @@ subroutine doInit1()
    dummy = add_registration_with_units(respondToGetReg, 'allocation_renewal_day', intTypeDDML, '')
    dummy = add_registration_with_units(respondToGetReg, 'full', intTypeDDML, '')
    dummy = add_registration_with_units(respondToGetReg, 'filling_event', intTypeDDML, '')
-   dummy = add_registration_with_units(respondToGetReg, 'storage_*', floatTypeDDML, 'ppm')
+   dummy = add_registration_with_units(respondToGetReg, 'storage_xxx', floatTypeDDML, 'ppm')
 
 end subroutine
 

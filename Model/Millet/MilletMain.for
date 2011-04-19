@@ -5354,7 +5354,7 @@ cjh special for erik - end
       integer :: id
       character DDML*128
 
-      DDML = '<type kind="single">'
+      DDML = '<type kind="single" />'
 
          ! WATER
       id = add_registration(respondToGetReg, 'ep'

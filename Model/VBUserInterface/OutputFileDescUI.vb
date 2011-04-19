@@ -482,31 +482,30 @@ Public Class OutputFileDescUI
    End Sub
 
    Private Sub AddVariablesToListView(ByVal ComponentName As String, ByVal ComponentType As String, ByVal PropertyGroup As String)
-      Dim ModelInfo As List(Of XmlNode)
+      Dim ModelInfo As List(Of Types.MetaDataInfo)
       If PropertyGroup = "variables" Then
          ModelInfo = Types.Instance.Variables(ComponentType)
       Else
          ModelInfo = Types.Instance.Events(ComponentType)
       End If
 
-      For Each Variables As XmlNode In ModelInfo
-         Dim GroupName As String = XmlHelper.Attribute(Variables, "name")
-         If GroupName = "" Then
-            GroupName = ComponentName + " " + PropertyGroup
-         End If
-         Dim NewGroup As New ListViewGroup(GroupName)
+      Dim GroupName As String = ComponentName
+      If GroupName = "" Then
+         GroupName = ComponentName + " " + PropertyGroup
+      End If
+      Dim NewGroup As New ListViewGroup(GroupName)
+
+      For Each Variable As Types.MetaDataInfo In ModelInfo
          VariableListView.Groups.Add(NewGroup)
-         For Each Variable As XmlNode In XmlHelper.ChildNodes(Variables, "")
-            Dim ListItem As New ListViewItem(XmlHelper.Name(Variable))
-            ListItem.Group = NewGroup
-            If XmlHelper.Attribute(Variable, "array") = "T" Then
-               ListItem.SubItems.Add("Yes")
-            Else
-               ListItem.SubItems.Add("No")
-            End If
-            ListItem.SubItems.Add(XmlHelper.Attribute(Variable, "description"))
-            VariableListView.Items.Add(ListItem)
-         Next
+         Dim ListItem As New ListViewItem(Variable.Name)
+         ListItem.Group = NewGroup
+         If Variable.IsArray Then
+            ListItem.SubItems.Add("Yes")
+         Else
+            ListItem.SubItems.Add("No")
+         End If
+         ListItem.SubItems.Add(Variable.Description)
+         VariableListView.Items.Add(ListItem)
       Next
    End Sub
    Public Overrides Sub OnSave()

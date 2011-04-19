@@ -19,7 +19,7 @@ class SIRIUSGenericOrgan : BaseOrgan, AboveGround
 
    [Input]   private int Day = 0;
    [Input]   private int Year = 0;
-   [EventHandler]   private void OnPrune(ManagerEventType keys)
+   [EventHandler]   private void OnPrune(PruneType Prune)
    {
        DateTime Today = new DateTime(Year, 1, 1);
        Today = Today.AddDays(Day - 1);

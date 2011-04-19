@@ -22,6 +22,7 @@ module Registrations
       integer :: post
       integer :: WaterUptakesCalculated
       integer :: RunoffEvent
+
    end type IDsType
 
    contains
@@ -29,7 +30,8 @@ module Registrations
       subroutine doRegistrations(id)
          use Infrastructure
          type(IDsType) :: id
-
+         integer :: dummy
+         
          id%swim_timestep_preparation = add_registration(eventReg, 'swim_timestep_preparation', nullTypeDDML, '')
          id%pre_swim_timestep = add_registration(eventReg, 'pre_swim_timestep', nullTypeDDML, '')
          id%post_swim_timestep = add_registration(eventReg, 'post_swim_timestep', nullTypeDDML, '')
@@ -50,6 +52,21 @@ module Registrations
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', nullTypeDDML, '')
          id%RunoffEvent = add_registration(eventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
+         
+      ! variables that are gettable and settable
+      dummy = add_reg(respondToGetSetReg, 'sw', floatarrayTypeDDML, 'mm/mm', 'Soil water content')
+      dummy = add_reg(respondToGetSetReg, 'sw_dep', floatarrayTypeDDML, 'mm', 'Soil water content')
+      dummy = add_reg(respondToGetSetReg, 'dul_dep', floatarrayTypeDDML, 'mm', 'Drained Upper Limit')
+      dummy = add_reg(respondToGetSetReg, 'dul', floatarrayTypeDDML, 'mm/mm', 'Drained Upper Limit')
+      dummy = add_reg(respondToGetSetReg, 'll15_dep', floatarrayTypeDDML, 'mm', '15 bar Lower Limit')
+      dummy = add_reg(respondToGetSetReg, 'll15', floatarrayTypeDDML, 'mm/mm', '15 bar Lower Limit')
+      dummy = add_reg(respondToGetSetReg, 'sat_dep', floatarrayTypeDDML, 'mm', 'Saturated water content')
+      dummy = add_reg(respondToGetSetReg, 'sat', floatarrayTypeDDML, 'mm/mm', 'Saturated water content')
+      dummy = add_reg(respondToGetSetReg, 'air_dry_dep', floatarrayTypeDDML, 'mm', 'Air Dry water content')
+      dummy = add_reg(respondToGetSetReg, 'air_dry', floatarrayTypeDDML, 'mm/mm', 'Air Dry water content')
+      dummy = add_reg(respondToGetSetReg, 'dlayer', floatarrayTypeDDML, 'mm', 'Thickness of profile layer')
+      dummy = add_reg(respondToGetReg, 'bd', floatarrayTypeDDML, 'g/cm^3', 'Bulk density')
+
       end subroutine
 end module Registrations
 

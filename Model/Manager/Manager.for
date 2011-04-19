@@ -49,6 +49,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer Max_token_size           ! Maximum size of a token
       parameter (Max_token_size=700)
 
+       INTEGER MAX_RULE_NAME_SIZE
+       parameter (MAX_RULE_NAME_SIZE=100)
+       
+       INTEGER MAX_RULES
+       PARAMETER (MAX_RULES=100)
+      
       integer        Buffer_size                 ! size of each buffer
       parameter      (Buffer_size = 2000)
 
@@ -238,6 +244,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
          character     and_or_array(Variable_maximum)*(Buffer_size)
          integer       and_or_lens(Variable_maximum) ! Length of strings in and_or_array
 
+         CHARACTER Rule_names(MAX_RULES)*(MAX_RULE_NAME_SIZE)
+                                       ! rule names user has defined
+         
       end type ManagerData
 
       ! instance variables.
@@ -489,10 +498,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character Routine_name*(*)       ! Name of this routine
       parameter (Routine_name='Manager_read_rules')
 
-       INTEGER MAX_RULE_NAME_SIZE
-       parameter (MAX_RULE_NAME_SIZE=100)
-       INTEGER MAX_RULES
-       PARAMETER (MAX_RULES=100)
 
        INTEGER MAX_CONDITION_SIZE
        parameter (MAX_CONDITION_SIZE=20)
@@ -501,8 +506,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        character Rule_Type*(MAX_RULE_NAME_SIZE)
        character dummy*(MAX_RULE_NAME_SIZE)
        integer rule
-       CHARACTER Rule_names(MAX_RULES)*(MAX_RULE_NAME_SIZE)
-                                       ! rule names user has defined
        CHARACTER condition*(MAX_CONDITION_SIZE)
                                        ! condition of each rule
 
@@ -512,19 +515,18 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       call push_routine (Routine_name)
       do rule = 1, MAX_RULES
-         Rule_names(rule) = blank
+         g%Rule_names(rule) = blank
       end do
 
       ! get a list of all rule names that user has defined.
       call apsimcomponentdata_getrulenames(get_componentData(),
-     .                                     Rule_names,
+     .                                     g%Rule_names,
      .                                     MAX_RULES,
      .                                     g%num_rules)
       ! Go tokenize each rule.
       do rule = 1, g%num_rules
-
          call apsimcomponentdata_loadrule(get_componentData(),
-     .                                    Rule_names(rule))
+     .                                    g%Rule_names(rule))
 
          rule_type = blank
          call apsimcomponentdata_getrulecondition(rule_type)
@@ -556,7 +558,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
          g%num_lines = apsimcomponentdata_getnumrulelines()
          call Tokenize ()
       end do
-
       call pop_routine(Routine_name)
       return
       end subroutine
@@ -1017,17 +1018,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer numMonths
       logical IsReal
       integer day, month, year
-      integer nChars
+      integer n
 
 !- Implementation Section ----------------------------------
       Is_apsim_variable = (fast_index(variable_name, '.') .gt. 0)
 
       ! Look for function first.
 
+      n = len_trim(Variable_name)      
+      
       if (variable_name .eq. ' ') then
          ! do nothing
 
-      else if (variable_name(1:5) .eq. 'date(') then
+      else if (n .ge. 5 .and. variable_name(1:5) .eq. 'date(')then
          call Manager_get_params (variable_name, Params)
          call Get_char_var (Unknown_module, 'today', blank, Todaystr,
      .                        numvals)
@@ -1055,7 +1058,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             valueIsReal = .false.
          endif
 
-      else if (variable_name(1:6) .eq. 'month(') then
+      else if (n .ge. 6 .and. variable_name(1:6) .eq. 'month(') then
          call Manager_get_params (variable_name, Params)
          call parse_get_variable(params(1), variable_value, 
      .                            valueIsReal)
@@ -1070,7 +1073,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
          end if
          valueIsReal = .true.
 
-      else if (variable_name(1:12) .eq. 'date_within(') then
+      else if (n .ge. 12 .and. 
+     .         variable_name(1:12) .eq. 'date_within(') then
          ! get parameters from string.
 
          call Manager_get_params (variable_name, Params)
@@ -1086,7 +1090,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
          endif
          valueIsReal = .true.
 
-      else if (variable_name(1:12) .eq. 'nearest_int(') then
+      else if (n .ge. 12 .and. 
+     .         variable_name(1:12) .eq. 'nearest_int(') then
          call Manager_get_params (variable_name, Params)
          call parse_get_variable(params(1), variable_value, 
      .               valueIsReal)
@@ -1100,7 +1105,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
          end if
          valueIsReal = .true.
 
-      else if (variable_name(1:19) .eq. 'paddock_is_fallow()') then
+      else if (n .ge. 19 .and.
+     .         variable_name(1:19) .eq. 'paddock_is_fallow()') then
          crop_in_ground = .false.
          crop = 0
          more_crops_to_check = .true.
@@ -1123,7 +1129,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
          endif
          valueIsReal = .true.
 
-      else if (variable_name(1:11) .eq. 'add_months(') then
+      else if (n .ge. 11 .and. 
+     .         variable_name(1:11) .eq. 'add_months(') then
          call Manager_get_params (variable_name, Params)
          call parse_get_variable(params(1), variable_value, 
      .           valueIsReal)
@@ -1192,12 +1199,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .         'Variables should have a value before they are ' //
      .         'used in an expression.'
                call warning_error(ERR_user, str)
-
+ 
                Variable_value = '0'
                valueIsReal = .true.
-			   nChars = len_trim(Variable_name)
+
                call manager_new_local_variable
-     .             (variable_name(:nChars), Variable_value(:1), 
+     .             (variable_name(:n), Variable_value(:1), 
      .                 .not.valueIsReal)
 
             else
@@ -1906,7 +1913,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        integer       token1
        character     Word_name1*(Buffer_size)
        integer read_status
-       real realValue
+       real realValue 
        integer, parameter :: Ok_status=0
        integer       nChars
        integer       name1_len
@@ -3869,7 +3876,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! ====================================================================
       subroutine doInit1 ()
       use infrastructure
-      use ManagerModule
+      use ManagerModule 
 
       ml_external doInit1
 

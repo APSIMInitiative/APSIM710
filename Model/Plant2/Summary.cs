@@ -8,7 +8,7 @@ using System.Text;
       [Input] private int Day = 0;
       [Input] private int Year = 0;
 
-      [EventHandler] public void OnPhaseChanged(PhenologyChangedType PhaseChange)
+      [EventHandler] public void OnPhaseChanged(PhaseChangedType PhaseChange)
          {
          DateTime Today = new DateTime(Year, 1, 1);
          Today = Today.AddDays(Day - 1);

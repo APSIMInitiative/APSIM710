@@ -33,6 +33,16 @@ extern "C" EXPORT void STDCALL wrapperDLL(char* wrapperDll)
    strcpy(wrapperDll, "");
    }
 
+extern "C" void STDCALL getDescriptionInternal(char* initScript,
+                                                 char* description);   
+// ------------------------------------------------------------------
+// Return component description info.
+// ------------------------------------------------------------------
+extern "C" EXPORT void STDCALL getDescription(char* initScript, char* description)
+   {
+   getDescriptionInternal(initScript, description);
+   }
+   
 // ------------------------------------------------------------------
 // createComponent
 // ------------------------------------------------------------------

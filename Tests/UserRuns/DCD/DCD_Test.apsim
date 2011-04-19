@@ -112,29 +112,31 @@ endif  ! of Do_Cut
             <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
             <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
-Public Class Script
+Public Class Script 
    Inherits Instance
    
    'Parameter variables:
-   <param> Private ApplyDCD_start_date As String
-   <param> Private ApplyDCD_end_date As String
-   <param> Private ApplyDCD_interval As Integer
-   <param> Private DCD_to_add As Single
-   <param> Private Depth_for_DCD As Single
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
+   &lt;Link&gt;  Private MyPaddock As Paddock
+
 
    'Output variables
-   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
 
    Private Ini_Date As Date                     'The date when DCD applications start (in date format)
    Private End_Date As Date                     'The date when DCD applications finish (in date format)
@@ -143,7 +145,7 @@ Public Class Script
    Private SoilDepth As Single                  'The soil depth (mm)
    Private dcd_layer As Integer                 'The layer at which dcd will be applied
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       Ini_Date = ApplyDCD_start_date
@@ -153,17 +155,16 @@ Public Class Script
       'Computes the layer at which dcd will be applied
       Dim Depth_from_surface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
-         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
          Depth_from_surface = Depth_from_surface + dlayer(z)
       Next
       
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -172,13 +173,13 @@ Public Class Script
       dcd_added = 0
 
       'Decide whether it is time to apply DCD:
-      If Today_date >= Ini_date And Today_date <= End_date Then
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
          If Today_date = Ini_date Then
             delta_dcd(dcd_layer) = DCD_to_add
             dcd_added += DCD_to_add
             TimeAfterApplication = 1
          Else
-            If TimeAfterApplication >= ApplyDCD_interval Then
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
                delta_dcd(dcd_layer) = DCD_to_add
                dcd_added += DCD_to_add
                TimeAfterApplication = 1
@@ -198,7 +199,7 @@ Public Class Script
    End Sub
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -216,7 +217,7 @@ End Class
             <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
             <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
@@ -224,29 +225,31 @@ Imports ModelFramework
 
 Public Class Script 
    Inherits Instance
+
+   &lt;Link&gt;  Private MyPaddock As Paddock
    
    'Parameter variables:   
-   <param> Private dcd_x As String
-   <param> Private dcd_y As String
-   <param> Private dcd_degrad_pot As Single
-   <param> Private sw_dcd_x As String
-   <param> Private sw_dcd_y As String
-   <param> Private temp_dcd_x As String
-   <param> Private temp_dcd_y As String
-   <param> Private ph_dcd_x As String
-   <param> Private ph_dcd_y As String
-   <param> Private carbon_dcd_x As String
-   <param> Private carbon_dcd_y As String
+   &lt;param&gt; Private dcd_x As String
+   &lt;param&gt; Private dcd_y As String
+   &lt;param&gt; Private dcd_degrad_pot As Single
+   &lt;param&gt; Private sw_dcd_x As String
+   &lt;param&gt; Private sw_dcd_y As String
+   &lt;param&gt; Private temp_dcd_x As String
+   &lt;param&gt; Private temp_dcd_y As String
+   &lt;param&gt; Private ph_dcd_x As String
+   &lt;param&gt; Private ph_dcd_y As String
+   &lt;param&gt; Private carbon_dcd_x As String
+   &lt;param&gt; Private carbon_dcd_y As String
 
    'Variables read from other modules
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
-   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   &lt;Input(True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
 
    'Output variables
-   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
-   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
-   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_degraded As Single
    
    Private SoilTemp As Single()                 'The soil temperature (oC)
 
@@ -267,7 +270,7 @@ Public Class Script
    Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
    Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Initialise the inhibition factor:
       ReDim dcd_inhibition_effect(dlayer.Length - 1)
@@ -322,21 +325,21 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
-      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -348,7 +351,7 @@ Public Class Script
       dcd_degraded = 0
       For z As Integer = 0 To dlayer.length - 1
          'calculate the dcd_inhibition factor
-         If dcd(z) > 0 Then
+         If dcd(z) &gt; 0 Then
             'Transform dcd from kg/ha to ppm
             Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
             dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
@@ -376,7 +379,7 @@ Public Class Script
       Next
       MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
       MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+      MySoilN.dlt_urea = delta_urea
 
    End Sub
    
@@ -384,9 +387,9 @@ Public Class Script
       
       'make sure that both x and y arrays have the same length (the smallest is chosen if not)
       
-      If MyArray_x.Length > MyArray_y.Length Then
+      If MyArray_x.Length &gt; MyArray_y.Length Then
          ReDim Preserve MyArray_x(MyArray_y.Length - 1)
-      ElseIf MyArray_x.Length < MyArray_y.Length Then
+      ElseIf MyArray_x.Length &lt; MyArray_y.Length Then
          ReDim Preserve MyArray_y(MyArray_x.Length - 1)
       End If
       
@@ -414,10 +417,9 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      
-      Dim MyPaddock As New PaddockType(Me)
-      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
-      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim SoilWaterComp As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
       
       For z As Integer = 0 To SoilWater.Length - 1
@@ -431,13 +433,13 @@ Public Class Script
       
       'Find out the value correspondig to my_x in the function described by the x and y arrays
       
-      If my_x <= x_array(0) Then
+      If my_x &lt;= x_array(0) Then
          InterpolateVals = y_array(0)
-      ElseIf my_x >= x_array(x_array.length - 1)
+      ElseIf my_x &gt;= x_array(x_array.length - 1)
          InterpolateVals = y_array(y_array.length - 1)
       Else
          For i As Integer = 1 To x_array.length - 1
-            If my_x <= x_array(i) Then
+            If my_x &lt;= x_array(i) Then
                InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
                i = x_array.length 
             End If
@@ -447,7 +449,7 @@ Public Class Script
    End Function
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="CentrePivotIrrigation">
           <ui>
@@ -472,54 +474,56 @@ End Class
             <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
             <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 Public Class Script 
    Inherits Instance
    
-   'Parameter variables:
-   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
-   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
-   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
-   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
-   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
-
-   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
-   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   &lt;Link&gt;  Private MyPaddock As Paddock
    
-   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
-   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
-   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
-   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
-   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
-   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
-   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
-   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
-   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+   'Parameter variables:
+   &lt;param&gt; Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   &lt;param&gt; Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   &lt;param&gt; Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   &lt;param&gt; Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   &lt;param&gt; Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+
+   &lt;param&gt; Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   &lt;param&gt; Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   
+   &lt;param&gt; Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   &lt;param&gt; Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   &lt;param&gt; Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   &lt;param&gt; Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   &lt;param&gt; Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   &lt;param&gt; Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   &lt;param&gt; Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   &lt;param&gt; Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   &lt;param&gt; Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String                    'Today's date
-   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
-   <Input> Private rain As Single                           'Rainfall (mm)
+   &lt;Input&gt; Private dd_mmm_yyyy As String                    'Today's date
+   &lt;Input&gt; Private dlayer As Single()                       'Thickness of soil layers (mm)
+   &lt;Input&gt; Private rain As Single                           'Rainfall (mm)
 
    'Output variables
-   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
-   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
-   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
-   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
-   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
-   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
-   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
-   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
-   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+   &lt;Output&gt;&lt;Units("mm")&gt; Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilPAW As Single             'The potencial plant available water (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigReturn As Single         'The return period for irrigation
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigEff As Single            'The irrigaton efficiency (%)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   &lt;Output&gt;&lt;Units("")&gt; Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
 
    'Internal variables
    Private StartDate As Date                                'The date when irrigation start (in date format)
    Private EndDate As Date                                  'The date when irrigation finish (in date format)
    Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
    
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       StartDate = Date.Parse(Irrigation_start_date)
@@ -531,13 +535,17 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      If (SoilWater Is Nothing) Then
+         Console.WriteLine("asdf")
+      End If
+
+      Dim sw_DUL As Single() = SoilWater.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = SoilWater.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilPAW += sw_dul(z) - sw_LL15(z)
          Else
             z = dlayer.Length - 1
@@ -546,10 +554,10 @@ Public Class Script
       
       Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
       Console.WriteLine("")
-      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
-      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
-      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
-      If SoilPAW <= CritPAWForShallow Then
+      Console.WriteLine("   Irrigation season between " &amp; StartDate.ToString("dd MMMM") &amp; " and " &amp; EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " &amp; PAW_depth &amp; " mm")
+      Console.WriteLine("   With plant available water of " &amp; SoilPAW &amp; " mm")
+      If SoilPAW &lt;= CritPAWForShallow Then
          Console.WriteLine("   Soil is considered shallow")
       Else
          Console.WriteLine("   Soil is considered Deep")
@@ -559,11 +567,11 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
-
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      
+      Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
       
       'Calc the amount of rain today plus the previous two days
       RainOnPreviousDays(2) = RainOnPreviousDays(1)
@@ -572,7 +580,7 @@ Public Class Script
       RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
       
       'Calc the number of days paused after large rainfal
-      If RainOnPrevious3Days >= CritRainToPause Then
+      If RainOnPrevious3Days &gt;= CritRainToPause Then
          Days2Pause = DaysToPauseOnCritRain
       Else
          Days2Pause = Days2Pause - 1   'Can go negative, thats OK
@@ -583,7 +591,7 @@ Public Class Script
       SoilWaterDeficit = 0.0         
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
          Else
             z = dlayer.Length - 1
@@ -596,7 +604,7 @@ Public Class Script
          If isBetween(today, StartDate, EndDate) Then
                   
             'Decide whether irrigation is needed
-            If SoilPAW <= CritPAWForShallow Then
+            If SoilPAW &lt;= CritPAWForShallow Then
                'Use shallow soil parameters
                IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
                IrrigReturn = IrrigReturnShallow
@@ -613,14 +621,15 @@ Public Class Script
          
             'Check whether irrigation is paused
             DaysAfterIrrigation = DaysAfterIrrigation + 1
-            If Days2Pause < 0.5 Then
+            If Days2Pause &lt; 0.5 Then
                'Irrigation is not paused, check return
-               If DaysAfterIrrigation > IrrigReturn Then
+               If DaysAfterIrrigation &gt; IrrigReturn Then
                   DaysAfterIrrigation = 1  'irrigation is allowed
 
                   'Check whether soil needs irrigation
-                  If SoilWaterDeficit <= -IrrigDeficit Then
-                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  If SoilWaterDeficit &lt;= -IrrigDeficit Then
+                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
                   End If
                End If
             End If
@@ -637,18 +646,18 @@ Public Class Script
       Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
       Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
 
-      If (date1 > date2) Then
+      If (date1 &gt; date2) Then
          'Irrigation in the middle of the year - ex: summer in the northern hemisphere
-         Return (today >= date1 Or today <= date2)
+         Return (today &gt;= date1 Or today &lt;= date2)
       Else
          'Irrigation in the end of the year - ex: summer in the southern hemisphere
-         Return (today >= date1 And today <= date2)
+         Return (today &gt;= date1 And today &lt;= date2)
       End If
       
    End Function
    
 End Class
-]]></text>
+</text>
         </manager2>
         <operations>
           <operation condition="start_of_day">
@@ -910,7 +919,7 @@ endif  ! of Do_Cut
             <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">0</DCD_to_add>
             <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
@@ -919,20 +928,22 @@ Imports ModelFramework
 Public Class Script
    Inherits Instance
    
+   &lt;Link&gt;  Private MyPaddock As Paddock
+   
    'Parameter variables:
-   <param> Private ApplyDCD_start_date As String
-   <param> Private ApplyDCD_end_date As String
-   <param> Private ApplyDCD_interval As Integer
-   <param> Private DCD_to_add As Single
-   <param> Private Depth_for_DCD As Single
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
 
    'Output variables
-   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
 
    Private Ini_Date As Date                     'The date when DCD applications start (in date format)
    Private End_Date As Date                     'The date when DCD applications finish (in date format)
@@ -941,7 +952,7 @@ Public Class Script
    Private SoilDepth As Single                  'The soil depth (mm)
    Private dcd_layer As Integer                 'The layer at which dcd will be applied
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       Ini_Date = ApplyDCD_start_date
@@ -951,17 +962,16 @@ Public Class Script
       'Computes the layer at which dcd will be applied
       Dim Depth_from_surface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
-         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
          Depth_from_surface = Depth_from_surface + dlayer(z)
       Next
       
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -970,13 +980,13 @@ Public Class Script
       dcd_added = 0
 
       'Decide whether it is time to apply DCD:
-      If Today_date >= Ini_date And Today_date <= End_date Then
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
          If Today_date = Ini_date Then
             delta_dcd(dcd_layer) = DCD_to_add
             dcd_added += DCD_to_add
             TimeAfterApplication = 1
          Else
-            If TimeAfterApplication >= ApplyDCD_interval Then
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
                delta_dcd(dcd_layer) = DCD_to_add
                dcd_added += DCD_to_add
                TimeAfterApplication = 1
@@ -996,7 +1006,7 @@ Public Class Script
    End Sub
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -1014,7 +1024,7 @@ End Class
             <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
             <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
@@ -1022,29 +1032,31 @@ Imports ModelFramework
 
 Public Class Script 
    Inherits Instance
+
+   &lt;Link&gt; Private MyPaddock As Paddock
    
    'Parameter variables:   
-   <param> Private dcd_x As String
-   <param> Private dcd_y As String
-   <param> Private dcd_degrad_pot As Single
-   <param> Private sw_dcd_x As String
-   <param> Private sw_dcd_y As String
-   <param> Private temp_dcd_x As String
-   <param> Private temp_dcd_y As String
-   <param> Private ph_dcd_x As String
-   <param> Private ph_dcd_y As String
-   <param> Private carbon_dcd_x As String
-   <param> Private carbon_dcd_y As String
+   &lt;param&gt; Private dcd_x As String
+   &lt;param&gt; Private dcd_y As String
+   &lt;param&gt; Private dcd_degrad_pot As Single
+   &lt;param&gt; Private sw_dcd_x As String
+   &lt;param&gt; Private sw_dcd_y As String
+   &lt;param&gt; Private temp_dcd_x As String
+   &lt;param&gt; Private temp_dcd_y As String
+   &lt;param&gt; Private ph_dcd_x As String
+   &lt;param&gt; Private ph_dcd_y As String
+   &lt;param&gt; Private carbon_dcd_x As String
+   &lt;param&gt; Private carbon_dcd_y As String
 
    'Variables read from other modules
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
-   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   &lt;Input(True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
 
    'Output variables
-   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
-   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
-   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_degraded As Single
    
    Private SoilTemp As Single()                 'The soil temperature (oC)
 
@@ -1065,7 +1077,7 @@ Public Class Script
    Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
    Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Initialise the inhibition factor:
       ReDim dcd_inhibition_effect(dlayer.Length - 1)
@@ -1120,21 +1132,21 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
-      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -1146,7 +1158,7 @@ Public Class Script
       dcd_degraded = 0
       For z As Integer = 0 To dlayer.length - 1
          'calculate the dcd_inhibition factor
-         If dcd(z) > 0 Then
+         If dcd(z) &gt; 0 Then
             'Transform dcd from kg/ha to ppm
             Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
             dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
@@ -1174,7 +1186,7 @@ Public Class Script
       Next
       MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
       MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+      MySoilN.dlt_urea = delta_urea
 
    End Sub
    
@@ -1182,9 +1194,9 @@ Public Class Script
       
       'make sure that both x and y arrays have the same length (the smallest is chosen if not)
       
-      If MyArray_x.Length > MyArray_y.Length Then
+      If MyArray_x.Length &gt; MyArray_y.Length Then
          ReDim Preserve MyArray_x(MyArray_y.Length - 1)
-      ElseIf MyArray_x.Length < MyArray_y.Length Then
+      ElseIf MyArray_x.Length &lt; MyArray_y.Length Then
          ReDim Preserve MyArray_y(MyArray_x.Length - 1)
       End If
       
@@ -1212,10 +1224,10 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
       
-      Dim MyPaddock As New PaddockType(Me)
-      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
-      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim SAT As Single() = MySoilW.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = MySoilW.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
       
       For z As Integer = 0 To SoilWater.Length - 1
@@ -1229,13 +1241,13 @@ Public Class Script
       
       'Find out the value correspondig to my_x in the function described by the x and y arrays
       
-      If my_x <= x_array(0) Then
+      If my_x &lt;= x_array(0) Then
          InterpolateVals = y_array(0)
-      ElseIf my_x >= x_array(x_array.length - 1)
+      ElseIf my_x &gt;= x_array(x_array.length - 1)
          InterpolateVals = y_array(y_array.length - 1)
       Else
          For i As Integer = 1 To x_array.length - 1
-            If my_x <= x_array(i) Then
+            If my_x &lt;= x_array(i) Then
                InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
                i = x_array.length 
             End If
@@ -1245,7 +1257,7 @@ Public Class Script
    End Function
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="CentrePivotIrrigation">
           <ui>
@@ -1270,54 +1282,56 @@ End Class
             <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
             <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 Public Class Script 
    Inherits Instance
    
-   'Parameter variables:
-   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
-   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
-   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
-   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
-   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
-
-   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
-   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   &lt;Link&gt; Private MyPaddock As Paddock
    
-   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
-   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
-   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
-   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
-   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
-   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
-   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
-   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
-   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+   'Parameter variables:
+   &lt;param&gt; Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   &lt;param&gt; Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   &lt;param&gt; Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   &lt;param&gt; Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   &lt;param&gt; Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+
+   &lt;param&gt; Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   &lt;param&gt; Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   
+   &lt;param&gt; Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   &lt;param&gt; Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   &lt;param&gt; Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   &lt;param&gt; Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   &lt;param&gt; Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   &lt;param&gt; Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   &lt;param&gt; Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   &lt;param&gt; Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   &lt;param&gt; Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String                    'Today's date
-   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
-   <Input> Private rain As Single                           'Rainfall (mm)
+   &lt;Input&gt; Private dd_mmm_yyyy As String                    'Today's date
+   &lt;Input&gt; Private dlayer As Single()                       'Thickness of soil layers (mm)
+   &lt;Input&gt; Private rain As Single                           'Rainfall (mm)
 
    'Output variables
-   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
-   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
-   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
-   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
-   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
-   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
-   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
-   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
-   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+   &lt;Output&gt;&lt;Units("mm")&gt; Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilPAW As Single             'The potencial plant available water (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigReturn As Single         'The return period for irrigation
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigEff As Single            'The irrigaton efficiency (%)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   &lt;Output&gt;&lt;Units("")&gt; Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
 
    'Internal variables
    Private StartDate As Date                                'The date when irrigation start (in date format)
    Private EndDate As Date                                  'The date when irrigation finish (in date format)
    Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
    
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       StartDate = Date.Parse(Irrigation_start_date)
@@ -1329,13 +1343,13 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim sw_DUL As Single() = SoilWater.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = SoilWater.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilPAW += sw_dul(z) - sw_LL15(z)
          Else
             z = dlayer.Length - 1
@@ -1344,10 +1358,10 @@ Public Class Script
       
       Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
       Console.WriteLine("")
-      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
-      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
-      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
-      If SoilPAW <= CritPAWForShallow Then
+      Console.WriteLine("   Irrigation season between " &amp; StartDate.ToString("dd MMMM") &amp; " and " &amp; EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " &amp; PAW_depth &amp; " mm")
+      Console.WriteLine("   With plant available water of " &amp; SoilPAW &amp; " mm")
+      If SoilPAW &lt;= CritPAWForShallow Then
          Console.WriteLine("   Soil is considered shallow")
       Else
          Console.WriteLine("   Soil is considered Deep")
@@ -1357,11 +1371,11 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+      Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
       
       'Calc the amount of rain today plus the previous two days
       RainOnPreviousDays(2) = RainOnPreviousDays(1)
@@ -1370,7 +1384,7 @@ Public Class Script
       RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
       
       'Calc the number of days paused after large rainfal
-      If RainOnPrevious3Days >= CritRainToPause Then
+      If RainOnPrevious3Days &gt;= CritRainToPause Then
          Days2Pause = DaysToPauseOnCritRain
       Else
          Days2Pause = Days2Pause - 1   'Can go negative, thats OK
@@ -1381,7 +1395,7 @@ Public Class Script
       SoilWaterDeficit = 0.0         
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
          Else
             z = dlayer.Length - 1
@@ -1394,7 +1408,7 @@ Public Class Script
          If isBetween(today, StartDate, EndDate) Then
                   
             'Decide whether irrigation is needed
-            If SoilPAW <= CritPAWForShallow Then
+            If SoilPAW &lt;= CritPAWForShallow Then
                'Use shallow soil parameters
                IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
                IrrigReturn = IrrigReturnShallow
@@ -1411,14 +1425,15 @@ Public Class Script
          
             'Check whether irrigation is paused
             DaysAfterIrrigation = DaysAfterIrrigation + 1
-            If Days2Pause < 0.5 Then
+            If Days2Pause &lt; 0.5 Then
                'Irrigation is not paused, check return
-               If DaysAfterIrrigation > IrrigReturn Then
+               If DaysAfterIrrigation &gt; IrrigReturn Then
                   DaysAfterIrrigation = 1  'irrigation is allowed
 
                   'Check whether soil needs irrigation
-                  If SoilWaterDeficit <= -IrrigDeficit Then
-                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  If SoilWaterDeficit &lt;= -IrrigDeficit Then
+                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
                   End If
                End If
             End If
@@ -1435,18 +1450,18 @@ Public Class Script
       Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
       Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
 
-      If (date1 > date2) Then
+      If (date1 &gt; date2) Then
          'Irrigation in the middle of the year - ex: summer in the northern hemisphere
-         Return (today >= date1 Or today <= date2)
+         Return (today &gt;= date1 Or today &lt;= date2)
       Else
          'Irrigation in the end of the year - ex: summer in the southern hemisphere
-         Return (today >= date1 And today <= date2)
+         Return (today &gt;= date1 And today &lt;= date2)
       End If
       
    End Function
    
 End Class
-]]></text>
+</text>
         </manager2>
         <operations>
           <operation condition="start_of_day">
@@ -1708,7 +1723,7 @@ endif  ! of Do_Cut
             <DCD_to_add type="text" description="Type the amount of DCD to apply ((kg/ha):">10</DCD_to_add>
             <Depth_for_DCD type="text" description="Type the depth to apply DCD mm):">1</Depth_for_DCD>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
@@ -1716,21 +1731,23 @@ Imports ModelFramework
 
 Public Class Script
    Inherits Instance
+
+   &lt;Link&gt; Private MyPaddock As Paddock
    
    'Parameter variables:
-   <param> Private ApplyDCD_start_date As String
-   <param> Private ApplyDCD_end_date As String
-   <param> Private ApplyDCD_interval As Integer
-   <param> Private DCD_to_add As Single
-   <param> Private Depth_for_DCD As Single
+   &lt;param&gt; Private ApplyDCD_start_date As String
+   &lt;param&gt; Private ApplyDCD_end_date As String
+   &lt;param&gt; Private ApplyDCD_interval As Integer
+   &lt;param&gt; Private DCD_to_add As Single
+   &lt;param&gt; Private Depth_for_DCD As Single
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()
+   &lt;Input&gt; Private dd_mmm_yyyy As String
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()
 
    'Output variables
-   <Output><Units("kg/ha")> Public dcd_added As Single       'The amount of dcd added
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
 
    Private Ini_Date As Date                     'The date when DCD applications start (in date format)
    Private End_Date As Date                     'The date when DCD applications finish (in date format)
@@ -1739,7 +1756,7 @@ Public Class Script
    Private SoilDepth As Single                  'The soil depth (mm)
    Private dcd_layer As Integer                 'The layer at which dcd will be applied
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       Ini_Date = ApplyDCD_start_date
@@ -1749,17 +1766,16 @@ Public Class Script
       'Computes the layer at which dcd will be applied
       Dim Depth_from_surface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
-         If Depth_from_surface <= Depth_for_DCD Then dcd_layer = z
+         If Depth_from_surface &lt;= Depth_for_DCD Then dcd_layer = z
          Depth_from_surface = Depth_from_surface + dlayer(z)
       Next
       
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -1768,13 +1784,13 @@ Public Class Script
       dcd_added = 0
 
       'Decide whether it is time to apply DCD:
-      If Today_date >= Ini_date And Today_date <= End_date Then
+      If Today_date &gt;= Ini_date And Today_date &lt;= End_date Then
          If Today_date = Ini_date Then
             delta_dcd(dcd_layer) = DCD_to_add
             dcd_added += DCD_to_add
             TimeAfterApplication = 1
          Else
-            If TimeAfterApplication >= ApplyDCD_interval Then
+            If TimeAfterApplication &gt;= ApplyDCD_interval Then
                delta_dcd(dcd_layer) = DCD_to_add
                dcd_added += DCD_to_add
                TimeAfterApplication = 1
@@ -1794,7 +1810,7 @@ Public Class Script
    End Sub
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -1812,7 +1828,7 @@ End Class
             <carbon_dcd_x type="text" description="Type the soil org. carbon[%] (x values for C effect on dcd):">0.1  0.5  1.0  2.0  3.0  4.0</carbon_dcd_x>
             <carbon_dcd_y type="text" description="Type the dcd degrad. (y values for C effect on dcd):">0.00  0.03  0.15  0.55  0.90  1.00</carbon_dcd_y>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
@@ -1821,28 +1837,30 @@ Imports ModelFramework
 Public Class Script 
    Inherits Instance
    
+   &lt;Link&gt; Private MyPaddock As Paddock
+   
    'Parameter variables:   
-   <param> Private dcd_x As String
-   <param> Private dcd_y As String
-   <param> Private dcd_degrad_pot As Single
-   <param> Private sw_dcd_x As String
-   <param> Private sw_dcd_y As String
-   <param> Private temp_dcd_x As String
-   <param> Private temp_dcd_y As String
-   <param> Private ph_dcd_x As String
-   <param> Private ph_dcd_y As String
-   <param> Private carbon_dcd_x As String
-   <param> Private carbon_dcd_y As String
+   &lt;param&gt; Private dcd_x As String
+   &lt;param&gt; Private dcd_y As String
+   &lt;param&gt; Private dcd_degrad_pot As Single
+   &lt;param&gt; Private sw_dcd_x As String
+   &lt;param&gt; Private sw_dcd_y As String
+   &lt;param&gt; Private temp_dcd_x As String
+   &lt;param&gt; Private temp_dcd_y As String
+   &lt;param&gt; Private ph_dcd_x As String
+   &lt;param&gt; Private ph_dcd_y As String
+   &lt;param&gt; Private carbon_dcd_x As String
+   &lt;param&gt; Private carbon_dcd_y As String
 
    'Variables read from other modules
-   <Input> Private dlayer As Single()
-   <Input> Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
-   <Input(True)> Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+   &lt;Input&gt; Private dlayer As Single()
+   &lt;Input&gt; Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
+   &lt;Input(True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
 
    'Output variables
-   <Output><Units(" ")> Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
-   <Output><Units(" ")> Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
-   <Output><Units("kg/ha")> Public dcd_degraded As Single
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
+   &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_degradation As Single()        'The fraction of DCD that is 'oxidised' each day
+   &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_degraded As Single
    
    Private SoilTemp As Single()                 'The soil temperature (oC)
 
@@ -1863,7 +1881,7 @@ Public Class Script
    Private x_carbon_effect_function As Single() 'The values of x of the function describing the effect of soil organic carbon on dcd degradation
    Private y_carbon_effect_function As Single() 'The values of y of the function describing the effect of soil organic carbon on dcd degradation
 
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Initialise the inhibition factor:
       ReDim dcd_inhibition_effect(dlayer.Length - 1)
@@ -1918,21 +1936,21 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim MySoilN As ComponentType = MyPaddock.Component("SoilN")
-      Dim MyDCD As ComponentType = MyPaddock.Component("solute")
-      Dim SoilWater As Single() = MyPaddock.SoilWater.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MyPaddock.SoilNitrogen.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MyPaddock.SoilWater.bd                       'Soil bulk density (g/cm3)
+      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
+      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MyPaddock.SoilNitrogen.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -1944,7 +1962,7 @@ Public Class Script
       dcd_degraded = 0
       For z As Integer = 0 To dlayer.length - 1
          'calculate the dcd_inhibition factor
-         If dcd(z) > 0 Then
+         If dcd(z) &gt; 0 Then
             'Transform dcd from kg/ha to ppm
             Dim dcd_ppm As Single = dcd(z) * 10 / dlayer(z)    'g/L_soil
             dcd_ppm = dcd_ppm * 1000 / SoilDensity(z)          'ppm
@@ -1972,7 +1990,7 @@ Public Class Script
       Next
       MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
       MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MyPaddock.SoilNitrogen.dlt_urea = delta_urea
+      MySoilN.dlt_urea = delta_urea
 
    End Sub
    
@@ -1980,9 +1998,9 @@ Public Class Script
       
       'make sure that both x and y arrays have the same length (the smallest is chosen if not)
       
-      If MyArray_x.Length > MyArray_y.Length Then
+      If MyArray_x.Length &gt; MyArray_y.Length Then
          ReDim Preserve MyArray_x(MyArray_y.Length - 1)
-      ElseIf MyArray_x.Length < MyArray_y.Length Then
+      ElseIf MyArray_x.Length &lt; MyArray_y.Length Then
          ReDim Preserve MyArray_y(MyArray_x.Length - 1)
       End If
       
@@ -2010,10 +2028,11 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
+
+      Dim SoilWaterComp As SWIM2 = MyPaddock.ComponentByType("SWIM2")
       
-      Dim MyPaddock As New PaddockType(Me)
-      Dim SAT As Single() = MyPaddock.SoilWater.sat                       'Soil water content at saturation ()
-      Dim WP As Single() = MyPaddock.SoilWater.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
       
       For z As Integer = 0 To SoilWater.Length - 1
@@ -2027,13 +2046,13 @@ Public Class Script
       
       'Find out the value correspondig to my_x in the function described by the x and y arrays
       
-      If my_x <= x_array(0) Then
+      If my_x &lt;= x_array(0) Then
          InterpolateVals = y_array(0)
-      ElseIf my_x >= x_array(x_array.length - 1)
+      ElseIf my_x &gt;= x_array(x_array.length - 1)
          InterpolateVals = y_array(y_array.length - 1)
       Else
          For i As Integer = 1 To x_array.length - 1
-            If my_x <= x_array(i) Then
+            If my_x &lt;= x_array(i) Then
                InterpolateVals = y_array(i - 1) + ((my_x - x_array(i - 1)) * (y_array(i) - y_array(i - 1)) / (x_array(i) - x_array(i - 1)))
                i = x_array.length 
             End If
@@ -2043,7 +2062,7 @@ Public Class Script
    End Function
 
 End Class
-    ]]></text>
+    </text>
         </manager2>
         <manager2 name="CentrePivotIrrigation">
           <ui>
@@ -2068,54 +2087,56 @@ End Class
             <IrrigAmtDeep type="text" description="Effective irrigation amount (mm):">20</IrrigAmtDeep>
             <IrrigEffDeep type="text" description="Irrigation efficiency for deep soils (%):">85</IrrigEffDeep>
           </ui>
-          <text><![CDATA[Imports System
+          <text>Imports System
 Imports ModelFramework
 
 Public Class Script 
    Inherits Instance
+
+   &lt;Link&gt; Private MyPaddock As Paddock
    
    'Parameter variables:
-   <param> Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
-   <param> Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
-   <param> Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
-   <param> Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
-   <param> Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
+   &lt;param&gt; Private DoIrrigate As String                     'Indicates whether irrigation is on (yes) or off (no)
+   &lt;param&gt; Private Irrigation_start_date As String               'Start of the irrigation season (dd-mmm)
+   &lt;param&gt; Private Irrigation_end_date As String                 'End of the irrigation season (dd-mmm)
+   &lt;param&gt; Private PAW_depth As Single                      'Depth to consider plant available water, and deficit (mm)
+   &lt;param&gt; Private CritPAWForShallow As Single              'Critical TPAW below which soil is considered shalow (mm)
 
-   <param> Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
-   <param> Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
+   &lt;param&gt; Private CritRainToPause As Single                'Value of rain (sum over 3 days) when irrigation is paused (mm)
+   &lt;param&gt; Private DaysToPauseOnCritRain As Single          'Number of days irrigations is paused when CritRain is reached
    
-   <param> Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
-   <param> Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
-   <param> Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
-   <param> Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
-   <param> Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
-   <param> Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
-   <param> Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
-   <param> Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
-   <param> Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
+   &lt;param&gt; Private PercPAWIrrigDeficitShallow As Single     'Water deficit, as percentage of TPAW, that triggers irrigation for shallow soils (%)
+   &lt;param&gt; Private IrrigReturnShallow As Single             'Minimum number of days between irrigation events for shallow soils
+   &lt;param&gt; Private IrrigAmtShallow As Single                'Amount of water added per irrigation event for shallow soils (mm)
+   &lt;param&gt; Private IrrigEffShallow As Single                'Irrigation efficiency for shallow soils (%)
+   &lt;param&gt; Private IrrigDeficitDeep As Single               'Water deficit to trigger start of irrigation for deep soils (mm)
+   &lt;param&gt; Private PercPAWIrrigDeficitDeep As Single        'Percentage of PAW that trigger irrigation in deep soils regardless the IrrigDeficitDeep (%)
+   &lt;param&gt; Private IrrigReturnDeep As Single                'Minimum number of days between irrigation events for deep soils
+   &lt;param&gt; Private IrrigAmtDeep As Single                   'Amount of water added per irrigation event for deep soils (mm)
+   &lt;param&gt; Private IrrigEffDeep As Single                   'Irrigation efficiency for deep soils (%)
 
    'Variables read from other modules
-   <Input> Private dd_mmm_yyyy As String                    'Today's date
-   <Input> Private dlayer As Single()                       'Thickness of soil layers (mm)
-   <Input> Private rain As Single                           'Rainfall (mm)
+   &lt;Input&gt; Private dd_mmm_yyyy As String                    'Today's date
+   &lt;Input&gt; Private dlayer As Single()                       'Thickness of soil layers (mm)
+   &lt;Input&gt; Private rain As Single                           'Rainfall (mm)
 
    'Output variables
-   <Output><Units("mm")> Public SoilWaterDeficit As Single  'Soil water deficit (mm)
-   <Output><Units("")> Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
-   <Output><Units("")> Public SoilPAW As Single             'The potencial plant available water (mm)
-   <Output><Units("")> Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
-   <Output><Units("")> Public IrrigReturn As Single         'The return period for irrigation
-   <Output><Units("")> Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
-   <Output><Units("")> Public IrrigEff As Single            'The irrigaton efficiency (%)
-   <Output><Units("mm")> Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
-   <Output><Units("")> Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
+   &lt;Output&gt;&lt;Units("mm")&gt; Public SoilWaterDeficit As Single  'Soil water deficit (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public DaysAfterIrrigation As Single 'The number of days after irrigation was applied
+   &lt;Output&gt;&lt;Units("")&gt; Public SoilPAW As Single             'The potencial plant available water (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigDeficit As Single        'The soil water deficit that triggers irrigation (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigReturn As Single         'The return period for irrigation
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigAmt As Single            'The amount of water to add in an irrigation event (mm)
+   &lt;Output&gt;&lt;Units("")&gt; Public IrrigEff As Single            'The irrigaton efficiency (%)
+   &lt;Output&gt;&lt;Units("mm")&gt; Public RainOnPrevious3Days As Single 'The amount of rainfall over the previous 3 days
+   &lt;Output&gt;&lt;Units("")&gt; Public Days2Pause As Single          'The number of days irrigation is paused due to large rainfall
 
    'Internal variables
    Private StartDate As Date                                'The date when irrigation start (in date format)
    Private EndDate As Date                                  'The date when irrigation finish (in date format)
    Private RainOnPreviousDays(2) As Single                  'Record the rain of the previous 3 days (mm)
    
-   <EventHandler()> Public Sub OnInit2()
+   &lt;EventHandler()&gt; Public Sub OnInit2()
 
       'Put the dates into date format:
       StartDate = Date.Parse(Irrigation_start_date)
@@ -2127,13 +2148,13 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_DUL As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_LL15 As Single() = MyPaddock.SoilWater.ll15_dep        'sw at LL15 
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim sw_DUL As Single() = MySoilW.dul_dep        'sw at DUL
+      Dim sw_LL15 As Single() = MySoilW.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilPAW += sw_dul(z) - sw_LL15(z)
          Else
             z = dlayer.Length - 1
@@ -2142,10 +2163,10 @@ Public Class Script
       
       Console.WriteLine("------- Irrigation Manager Initialisation ------------------------------------")
       Console.WriteLine("")
-      Console.WriteLine("   Irrigation season between " & StartDate.ToString("dd MMMM") & " and " & EndDate.ToString("dd MMMM"))
-      Console.WriteLine("   Soil Layer to calculate irrigation is  " & PAW_depth & " mm")
-      Console.WriteLine("   With plant available water of " & SoilPAW & " mm")
-      If SoilPAW <= CritPAWForShallow Then
+      Console.WriteLine("   Irrigation season between " &amp; StartDate.ToString("dd MMMM") &amp; " and " &amp; EndDate.ToString("dd MMMM"))
+      Console.WriteLine("   Soil Layer to calculate irrigation is  " &amp; PAW_depth &amp; " mm")
+      Console.WriteLine("   With plant available water of " &amp; SoilPAW &amp; " mm")
+      If SoilPAW &lt;= CritPAWForShallow Then
          Console.WriteLine("   Soil is considered shallow")
       Else
          Console.WriteLine("   Soil is considered Deep")
@@ -2155,11 +2176,12 @@ Public Class Script
 
    End Sub
 
-   <EventHandler()> Public Sub OnPrepare()
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyPaddock As New PaddockType(Me)
-      Dim sw_dul As Single() = MyPaddock.SoilWater.dul_dep        'sw at DUL
-      Dim sw_sw As Single() = MyPaddock.SoilWater.sw_dep          'sw at LL 
+      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      
+      Dim sw_dul As Single() = MySoilW.dul_dep        'sw at DUL
+      Dim sw_sw As Single() = MySoilW.sw_dep          'sw at LL 
       
       'Calc the amount of rain today plus the previous two days
       RainOnPreviousDays(2) = RainOnPreviousDays(1)
@@ -2168,7 +2190,7 @@ Public Class Script
       RainOnPrevious3Days = RainOnPreviousDays(0) + RainOnPreviousDays(1) + RainOnPreviousDays(2)
       
       'Calc the number of days paused after large rainfal
-      If RainOnPrevious3Days >= CritRainToPause Then
+      If RainOnPrevious3Days &gt;= CritRainToPause Then
          Days2Pause = DaysToPauseOnCritRain
       Else
          Days2Pause = Days2Pause - 1   'Can go negative, thats OK
@@ -2179,7 +2201,7 @@ Public Class Script
       SoilWaterDeficit = 0.0         
       For z As Integer = 0 To dlayer.length - 1
          DepthFromSurface += dlayer(z)
-         If DepthFromSurface <= PAW_depth Then
+         If DepthFromSurface &lt;= PAW_depth Then
             SoilWaterDeficit += Math.Min(0, sw_sw(z) - sw_dul(z))
          Else
             z = dlayer.Length - 1
@@ -2192,7 +2214,7 @@ Public Class Script
          If isBetween(today, StartDate, EndDate) Then
                   
             'Decide whether irrigation is needed
-            If SoilPAW <= CritPAWForShallow Then
+            If SoilPAW &lt;= CritPAWForShallow Then
                'Use shallow soil parameters
                IrrigDeficit = PercPAWIrrigDeficitShallow / 100 * SoilPAW
                IrrigReturn = IrrigReturnShallow
@@ -2209,14 +2231,16 @@ Public Class Script
          
             'Check whether irrigation is paused
             DaysAfterIrrigation = DaysAfterIrrigation + 1
-            If Days2Pause < 0.5 Then
+            If Days2Pause &lt; 0.5 Then
                'Irrigation is not paused, check return
-               If DaysAfterIrrigation > IrrigReturn Then
+               If DaysAfterIrrigation &gt; IrrigReturn Then
                   DaysAfterIrrigation = 1  'irrigation is allowed
 
                   'Check whether soil needs irrigation
-                  If SoilWaterDeficit <= -IrrigDeficit Then
-                     MyPaddock.Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01))
+                  If SoilWaterDeficit &lt;= -IrrigDeficit Then
+                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     
+                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
                   End If
                End If
             End If
@@ -2233,18 +2257,18 @@ Public Class Script
       Dim date1 As Date = New Date(today.Year, startdate.Month, startdate.Day)
       Dim date2 As Date = New Date(today.Year, enddate.Month, enddate.Day)
 
-      If (date1 > date2) Then
+      If (date1 &gt; date2) Then
          'Irrigation in the middle of the year - ex: summer in the northern hemisphere
-         Return (today >= date1 Or today <= date2)
+         Return (today &gt;= date1 Or today &lt;= date2)
       Else
          'Irrigation in the end of the year - ex: summer in the southern hemisphere
-         Return (today >= date1 And today <= date2)
+         Return (today &gt;= date1 And today &lt;= date2)
       End If
       
    End Function
    
 End Class
-]]></text>
+</text>
         </manager2>
         <operations>
           <operation condition="start_of_day">

@@ -44,8 +44,8 @@ YPComponent::YPComponent(void)
 void YPComponent::doInit1(const protocol::Init1Data& initData)
    {
    Component::doInit1(initData);
-   static const char* realArrayType = "<type kind=\"single\" array=\"T\"\\>";
-   static const char* doubleType = "<type kind=\"double\"\\>";
+   static const char* realArrayType = "<type kind=\"single\" array=\"T\" />";
+   static const char* doubleType = "<type kind=\"double\" />";
 
    cllID = addRegistration(::respondToGet, 0, "CLLToday", doubleType);
    dulID = addRegistration(::respondToGet, 0, "DULToday", doubleType);

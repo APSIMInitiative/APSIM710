@@ -64,27 +64,35 @@ namespace CSGeneral
             Process PlugInProcess = new Process();
             PlugInProcess.StartInfo.FileName = Executable;
             PlugInProcess.StartInfo.Arguments = Arguments;
-            PlugInProcess.StartInfo.UseShellExecute = false;
+            PlugInProcess.StartInfo.UseShellExecute = Path.GetExtension(Executable) != ".exe";
             PlugInProcess.StartInfo.CreateNoWindow = true;
-            PlugInProcess.StartInfo.RedirectStandardOutput = true;
-            PlugInProcess.StartInfo.RedirectStandardError = true;
+            if (!PlugInProcess.StartInfo.UseShellExecute)
+               {
+               PlugInProcess.StartInfo.RedirectStandardOutput = true;
+               PlugInProcess.StartInfo.RedirectStandardError = true;
+               }
             PlugInProcess.StartInfo.WorkingDirectory = JobFolder;
             PlugInProcess.Start();
             return PlugInProcess;
         }
         public static string CheckProcessExitedProperly(Process PlugInProcess)
-        {
-            string msg = PlugInProcess.StandardOutput.ReadToEnd();
-            PlugInProcess.WaitForExit();
-            if (PlugInProcess.ExitCode != 0)
-            {
-                msg += PlugInProcess.StandardError.ReadToEnd();
-                if (msg != "")
+           {
+           if (!PlugInProcess.StartInfo.UseShellExecute)
+              {
+              string msg = PlugInProcess.StandardOutput.ReadToEnd();
+              PlugInProcess.WaitForExit();
+              if (PlugInProcess.ExitCode != 0)
+                 {
+                 msg += PlugInProcess.StandardError.ReadToEnd();
+                 if (msg != "")
                     throw new System.Exception("Error from " + Path.GetFileName(PlugInProcess.StartInfo.FileName) + ": "
                                                              + msg);
-            }
-            return msg;
-        }
+                 }
+              return msg;
+              }
+           else
+              return "";
+           }
         public static string ConvertURLToPath(string Url)
         {
             Uri uri = new Uri(Url);

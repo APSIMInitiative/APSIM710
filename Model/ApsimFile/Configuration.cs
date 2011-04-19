@@ -34,7 +34,8 @@ namespace ApsimFile
 
          // 2. Update from local data
          SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        Path.Combine("Apsim", Path.Combine(ApsimVersion(), "Apsim.xml")));
+                        Path.Combine("Apsim", ApsimVersion()));
+         SettingsFile = Path.Combine(SettingsFile, "Apsim.xml");
          if (File.Exists(SettingsFile))
              {
              string ExecutableBuildDate = ApsimBuildDate();
@@ -127,6 +128,11 @@ namespace ApsimFile
       public static string ApsimBinDirectory()
          {
          return Path.Combine(ApsimDirectory(), "Model");
+         }
+      public static string LocalSettingsDirectory()
+         {
+         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                             Path.Combine("Apsim", Instance.ApsimVersion()));
          }
 
       // from http://stackoverflow.com/questions/692410/hello-os-with-c-mono

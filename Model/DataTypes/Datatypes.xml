@@ -12,15 +12,6 @@
    <builtin name="DoubleArray" kind="double" array="T" boundable="T"/>
    <builtin name="StringArray" kind="string" array="T"/>
 
-
-   <type name="ManagerEvent">
-      <field name="Key" array="T">
-         <field name="Name" kind="string" />
-         <field name="Units" kind="string" />
-         <field name="Values" kind= "string" array="T" />
-      </field>
-   </type>
-
    <type name="Sow">
       <field name="Cultivar" kind="string" />
       <field name="plants" kind="double" />
@@ -61,6 +52,10 @@
       <field name="Plants" kind="double" />
    </type>
 
+   <type name="Prune">
+      <field name="BudNumber" kind="double" />
+   </type>
+   
    <type name="ApsimVariant">
       <field name="param1_name" kind="string"/>
       <field name="param1_numbytes" kind="integer4"/>
@@ -137,13 +132,27 @@
       <field name="KillFraction" kind="single"/>
    </type>
 
-   <type name="PhenologyChanged">
+   <type name="PhaseChanged">
    	  <field name="OldPhaseName" kind="string"/>
    	  <field name="NewPhaseName" kind="string"/>   	  
    </type>
    <type name="KillLeaf">
       <field name="KillFraction" kind="single"/>
    </type>   
+   <type name="CropChopped">
+      <field name="croptype" descr="" kind="string"/>
+      <field name="dm_type" descr="" kind="string" array="T"/>
+      <field name="dlt_crop_dm" descr="" kind="single" array="T" unit="kg/ha"/>
+      <field name="dlt_dm_n" descr="" kind="single" array="T" unit="kg/ha"/>
+      <field name="dlt_dm_p" descr="" kind="single" array="T" unit="kg/ha"/>
+      <field name="fraction_to_residue" descr="" kind="single" array="T"/>
+   </type>   
+   
+   <type name="Cultivate">
+      <field name="depth" descr="" kind="double" unit="mm"/>
+      <field name="propn_incorp" descr="" kind="double"/>
+      <field name="propn_mixed" descr="" kind="double"/>
+   </type>
 
    <!--      !!!!! MICROMET types !!!!!-->
 
@@ -397,7 +406,7 @@
    <type name="PastureSow">
       <field name="rate" unit="kg/ha" kind="double"/>
    </type>
-   <type name="PastureKill">
+   <type name="Kill">
       <field name="propn_herbage" unit="-" kind="double"/>
       <field name="propn_seed" unit="-" kind="double"/>
    </type>
@@ -408,14 +417,14 @@
       <field name="propn_mixed" unit="-" kind="double"/>
    </type>
 
-   <type name="PastureCut">
+   <type name="Cut">
       <field name="cut_height" unit="mm" kind="double"/>
       <field name="gathered" unit="-" kind="double"/>
       <field name="dmd_loss" unit="-" kind="double"/>
       <field name="dm_content" unit="kg/kg" kind="double"/>
    </type>
 
-   <type name="PastureBurn">
+   <type name="Burn">
       <field name="kill_plants"   unit="-" kind="double"/>
       <field name="kill_seed"     unit="-" kind="double"/>
       <field name="propn_unburnt" unit="-" kind="double"/>
@@ -543,6 +552,32 @@
         <field name = "seed_class"  unit="-" kind="integer4" array="T"/>
       </type>
 
+      <type name="Prioritise">
+         <field name="group" descr="" kind="integer4"/>
+         <field name="value" descr="" kind="integer4"/>
+      </type>
+      
+      <type name="AddAnimals">
+         <field name="genotype" descr="" kind="string"/>
+         <field name="number" descr="" kind="integer4"/>
+         <field name="sex" descr="" kind="string"/>
+         <field name="birth_day" descr="" kind="integer4"/>
+         <field name="min_years" descr="" kind="integer4"/>
+         <field name="max_years" descr="" kind="integer4"/>
+         <field name="mean_weight" descr="" kind="double" unit="kg"/>
+         <field name="cond_score" descr="" kind="double"/>
+         <field name="mean_fleece_wt" descr="" kind="double" unit="kg"/>
+         <field name="shear_day" descr="" kind="integer4"/>
+         <field name="mated_to" descr="" kind="string"/>
+         <field name="pregnant" descr="" kind="integer4" unit="d"/>
+         <field name="foetuses" descr="" kind="double"/>
+         <field name="lactating" descr="" kind="integer4" unit="d"/>
+         <field name="offspring" descr="" kind="double"/>
+         <field name="young_wt" descr="" kind="double" unit="kg"/>
+         <field name="young_cond_score" descr="" kind="double" unit="kg"/>
+         <field name="young_fleece_wt" descr="" kind="double" unit="kg"/>
+      </type>
+      
       <type name="BuyStock">
          <field name="genotype"                        kind="string"/>
          <field name="number"                          kind="integer4"/>
@@ -564,17 +599,17 @@
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
 
-      <type name="CastrateStock">
+      <type name="Castrate">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
 
-      <type name="DryOffStock">
+      <type name="Dryoff">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
 
-      <type name="JoinStock">
+      <type name="Join">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="mate_to"       unit="-"       kind="string"/>
          <field name="mate_days"     unit="d"       kind="integer4"/>
@@ -585,12 +620,12 @@
          <field name="paddock"       unit="-"       kind="string"/>
       </type>
 
-      <type name="ShearStock">
+      <type name="Shear">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="sub_group"     unit="-"       kind="string"/>
       </type>
 
-      <type name="SplitStock">
+      <type name="Split">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="type"          unit="-"       kind="string"/>
          <field name="value"         unit="-"       kind="double"/>
@@ -601,7 +636,7 @@
          <field name="value"         unit="-"       kind="integer4"/>
       </type>
 
-      <type name="WeanStock">
+      <type name="Wean">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="sex"           unit="-"       kind="string"/>
          <field name="number"        unit="-"       kind="integer4"/>
@@ -627,13 +662,13 @@
       <field name="amount" kind="double" unit="kg"/>
    </type>
 
-   <type name="SupplementFeed">
+   <type name="Feed">
       <field name="supplement" kind="string" unit="-"/>
       <field name="amount" kind="double" unit="kg"/>
       <field name="paddock" kind="string" unit="-"/>
    </type>
 
-   <type name="SupplementMix">
+   <type name="Mix">
       <field name="src_store" kind="string" unit="-"/>
       <field name="amount" kind="double" unit="kg"/>
       <field name="dest_store" kind="string" unit="-"/>

@@ -12,6 +12,7 @@ using namespace CSGeneral;
 #include "FactoryProperty.h"
 #include "FactoryEventHandler.h"
 #include "FactoryEvent.h"
+#include "LinkField.h"
 
 public ref class Factory
    {
@@ -39,6 +40,7 @@ public ref class Factory
       List<FactoryProperty^>^ RegisteredProperties;
       List<EvntHandler^>^ RegisteredEventHandlers;
       List<FactoryEvent^>^ RegisteredEvents;
+      List<LinkField^>^ Links;
       Assembly^ CallingAssembly;
       
       Instance^ CreateInstance(XmlNode^ Node, XmlNode^ Parent, Instance^ ParentInstance,
@@ -49,4 +51,5 @@ public ref class Factory
       void RemoveRegisteredOutput(String^ OuptutName);
       FactoryProperty^ FindProperty(XmlNode^ Node);
       void RemoveShortCuts(XmlNode^ Node);
+      void ResolveLinks();
    };

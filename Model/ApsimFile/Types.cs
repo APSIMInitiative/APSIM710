@@ -4,10 +4,13 @@ using CSGeneral;
 using ApsimFile;
 using System.IO;
 using System;
+using System.Reflection;
 
 public class Types
    {
    private static Types Singleton = null;
+   private static Assembly ProbeInfoAssembly = null;
+   private static string ProbeInfoAssemblyFileName = null;
    private XmlDocument TypesDoc = new XmlDocument();
 
    public static Types Instance
@@ -90,39 +93,53 @@ public class Types
          }
       return false;
       }
-   public List<XmlNode> Variables(string TypeName)
+   public struct MetaDataInfo
       {
-      List<XmlNode> VariableNodes = new List<XmlNode>();
-      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
-      foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
-         {
-         XmlNode VariableNode = XmlHelper.FindByType(InfoNode, "variables");
-         if (VariableNode != null)
-            {
-            if (XmlHelper.Name(InfoNode) != "Info")
-               XmlHelper.SetName(VariableNode, XmlHelper.Name(InfoNode));
-            VariableNodes.Add(VariableNode);
-            }
-         }
-      // Return the variables node to the caller for the specified TypeName
-      return VariableNodes;
+      public string Name;
+      public string Description;
+      public bool IsArray;
       }
-   public List<XmlNode> Events(string TypeName)
+   public List<MetaDataInfo> Variables(string TypeName)
       {
-      List<XmlNode> EventNodes = new List<XmlNode>();
-      XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
-      foreach (XmlNode InfoNode in XmlHelper.ChildNodes(TypeNode, "info"))
+      List<MetaDataInfo> Names = new List<MetaDataInfo>();
+      Type T = GetProbeInfoAssembly().GetType("ModelFramework." + StringManip.CamelCase(TypeName));
+      if (T != null)
          {
-         XmlNode EventNode = XmlHelper.FindByType(InfoNode, "events");
-         if (EventNode != null)
+         foreach (PropertyInfo Property in T.GetProperties())
             {
-            if (XmlHelper.Name(InfoNode) != "Info")
-               XmlHelper.SetName(EventNode, XmlHelper.Name(InfoNode));
-            EventNodes.Add(EventNode);
+            string Description = "";
+            foreach (object Attribute in Property.GetCustomAttributes(false))
+               Description = Attribute.ToString();
+            MetaDataInfo Info = new MetaDataInfo();
+            Info.Name = Property.Name;
+            Info.Description = Description;
+            Info.IsArray = Property.DeclaringType.IsArray;
+            Names.Add(Info);
             }
          }
-      // Return the variables node to the caller for the specified TypeName
-      return EventNodes;
+      return Names;
+      }
+   public List<MetaDataInfo> Events(string TypeName)
+      {
+      List<MetaDataInfo> Names = new List<MetaDataInfo>();
+      Type T = GetProbeInfoAssembly().GetType("ModelFramework." + StringManip.CamelCase(TypeName));
+      if (T != null)
+         {
+         foreach (EventInfo Event in T.GetEvents())
+            {
+            string Description = "";
+            foreach (object Attribute in Event.GetCustomAttributes(false))
+               {
+               if (Attribute.ToString() != "Event")
+                  Description = Attribute.ToString();
+               }
+            MetaDataInfo Info = new MetaDataInfo();
+            Info.Name = Event.Name;
+            Info.Description = Description;
+            Names.Add(Info);
+            }
+         }
+      return Names;
       }
    public string[] Cultivars(string TypeName)
       {
@@ -268,4 +285,53 @@ public class Types
       XmlNode TypeNode = XmlHelper.Find(TypesDoc.DocumentElement, TypeName);
       Out.Write(TypeNode.OuterXml);
       }
+
+   public void RefreshProbeInfo(string TypeName)
+      {
+      foreach (string DLLFileName in Dlls(TypeName))
+         {
+         string ClassName = TypeName;
+         if (Dlls(TypeName).Count > 1)
+            ClassName = StringManip.CamelCase(Path.GetFileNameWithoutExtension(DLLFileName));
+         string Contents = DLLProber.CreateProxyClassForDLL(TypeName, ClassName, DLLFileName);
+         DLLProber.InsertClassCodeIntoDotNetProxyFile(ClassName, Contents);
+         }
+      DLLProber.CompileProxyDLL();
+      }
+
+   public void RefreshProbeInfoForAll()
+      {
+      foreach (string TypeName in XmlHelper.ChildNames(TypesDoc.DocumentElement, "type"))
+         {
+         foreach (string DLLFileName in Dlls(TypeName))
+            {
+            string ClassName = TypeName;
+            if (Dlls(TypeName).Count > 1)
+               ClassName = StringManip.CamelCase(Path.GetFileNameWithoutExtension(DLLFileName));
+            string Contents = DLLProber.CreateProxyClassForDLL(TypeName, ClassName, DLLFileName);
+            DLLProber.InsertClassCodeIntoDotNetProxyFile(ClassName, Contents);
+            }
+         }   
+      DLLProber.CompileProxyDLL();
+      }
+
+   public static string GetProbeInfoDLLFileName()
+      {
+      string LocalProbeDLLFileName = Path.Combine(Configuration.LocalSettingsDirectory(), "DotNetProxies.dll");
+      if (File.Exists(LocalProbeDLLFileName))
+         return LocalProbeDLLFileName;
+      else
+         return Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll");
+      }
+
+   public static Assembly GetProbeInfoAssembly()
+      {
+      if (ProbeInfoAssembly == null || ProbeInfoAssemblyFileName != GetProbeInfoDLLFileName())
+         {
+         ProbeInfoAssembly = Assembly.LoadFile(GetProbeInfoDLLFileName());
+         ProbeInfoAssemblyFileName = GetProbeInfoDLLFileName();
+         }
+      return ProbeInfoAssembly;
+      }
+
    }

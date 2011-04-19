@@ -26,6 +26,7 @@ call MakeProject FortranComponentInterface
 call MakeProject FortranComponentInterface2
 call MakeProject CropTemplate
 call MakeProject VBMet
+call MakeProject DotNetProxies
 
 rem -------------------------------------------------------------
 rem Now we can compile all the rest of the APSIM projects.
@@ -50,7 +51,6 @@ call MakeProject Irrigation
 call MakeProject Log
 call MakeProject Maize
 call MakeProject Manager
-call MakeProject ManagerHelpers
 call MakeProject Map
 call MakeProject MicroMet
 call MakeProject Millet
@@ -97,7 +97,6 @@ call MakeProject DDRules
 call MakeProject FarmSimGraze
 
 call MakeProject SetXMLValue
-call MakeProject ProbeDll
 call MakeProject Plant2Documentation
 call MakeProject RunMacro
-
+call MakeProject UpdateDotNetProxies

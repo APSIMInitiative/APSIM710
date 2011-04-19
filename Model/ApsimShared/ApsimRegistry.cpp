@@ -649,10 +649,13 @@ std::string ApsimRegistry::getDescription(int componentID)
                }
          else if (reg->getTypeCode() == ::respondToEvent)
             {
-            string st = "   <event name=\"";
-            st += reg->getName();
-            st += "\" kind=\"subscribed\">";
             XMLDocument* doc = new XMLDocument(reg->getDDML(), XMLDocument::xmlContents);
+            string typeName = doc->documentElement().getAttribute("typename");
+            string st = "   <event name=\"";
+            st += reg->getName() + "\"";
+            if (typeName != "")
+               st += " typename=\"" + typeName + "\"";
+            st += " kind=\"subscribed\">";
             st += doc->documentElement().innerXML();
             delete doc;
             st += "</event>\n";
@@ -660,10 +663,14 @@ std::string ApsimRegistry::getDescription(int componentID)
             }
          else if (reg->getTypeCode() == ::event)
             {
-            string st = "   <event name=\"";
-            st += reg->getName();
-            st += "\" kind=\"published\">";
             XMLDocument* doc = new XMLDocument(reg->getDDML(), XMLDocument::xmlContents);
+            string typeName = doc->documentElement().getAttribute("typename");
+            string st = "   <event name=\"";
+            st += reg->getName() + "\"";
+            if (typeName != "")
+               st += " typename=\"" + typeName + "\"";
+            
+            st += " kind=\"published\">";
             st += doc->documentElement().innerXML();
             delete doc;
             st += "</event>\n";

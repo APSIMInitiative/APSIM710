@@ -102,7 +102,7 @@ void LogComponent::doInit1(const protocol::Init1Data& initData)
    debug_outputID = addRegistration(::respondToSet, 0, "debug_output", "");
    string filename = componentData->getProperty("parameters", "logfile");
    if (filename == "")
-      filename = "log.xml";
+      filename = "logfile.xml";
    out.open(filename.c_str());
    if (!out)
       {
