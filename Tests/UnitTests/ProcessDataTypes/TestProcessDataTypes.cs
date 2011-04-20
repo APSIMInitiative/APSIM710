@@ -184,7 +184,7 @@ public class TestProcessDataTypes
       XmlNode Type1 = New.ChildNodes[2];
 
       Assert.AreEqual(XmlHelper.Find(Type1, "cddml").InnerText,
-         "\"<type>\"\r\n               " +
+         "\"<type typename=\\\"type1\\\">\"\r\n               " +
             "\"<field name=\\\"field1\\\" unit=\\\"kg/ha\\\" kind=\\\"integer4\\\" />\"\r\n               " +
             "\"<field name=\\\"field2\\\" unit=\\\"kg/ha\\\" kind=\\\"single\\\" />\"\r\n               " +
             "\"<field name=\\\"field3\\\" unit=\\\"kg/ha\\\" kind=\\\"double\\\" />\"\r\n               " +
@@ -196,7 +196,7 @@ public class TestProcessDataTypes
       XmlNode Type2 = New.ChildNodes[3];
       Assert.AreEqual(XmlHelper.Name(Type2), "type2");
       Assert.AreEqual(XmlHelper.Find(Type2, "cddml").InnerText,
-         "\"<type>\"\r\n               " +
+         "\"<type typename=\\\"type2\\\">\"\r\n               " +
             "\"<field name=\\\"field7\\\" array=\\\"T\\\">\"\r\n               " +
                "\"<element>\"\r\n               " +
                "\"<field name=\\\"field1\\\" unit=\\\"kg/ha\\\" kind=\\\"integer4\\\" />\"\r\n               " +

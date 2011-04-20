@@ -304,50 +304,53 @@ class DLLProber
 
    public static void InsertClassCodeIntoDotNetProxyFile(string ClassName, string ClassSourceCode)
       {
-      ClassName = StringManip.CamelCase(ClassName);
-
-      // Go open the proxy source file and read it's contents.
-      string Contents;
-      if (File.Exists(WriteableBaseProxyFileName))
+      if (ClassSourceCode != "")
          {
-         StreamReader In = new StreamReader(WriteableBaseProxyFileName);
-         Contents = In.ReadToEnd();
-         In.Close();
+         ClassName = StringManip.CamelCase(ClassName);
+
+         // Go open the proxy source file and read it's contents.
+         string Contents = "";
+         if (File.Exists(WriteableBaseProxyFileName))
+            {
+            StreamReader In = new StreamReader(WriteableBaseProxyFileName);
+            Contents = In.ReadToEnd();
+            In.Close();
+            }
+         if (Contents == "")
+            {
+            Contents = "using System;\r\n" +
+                       "using System.Collections.Generic;\r\n" +
+                       "using System.Text;\r\n" +
+                       "using System.Runtime.InteropServices;\r\n" +
+                       "namespace ModelFramework {\r\n" +
+                       "}\r\n";
+
+            }
+
+         // See if we can find an existing class in the source code.
+         int PosStartClass = Contents.IndexOf("public class " + ClassName + " ");
+         if (PosStartClass != -1)
+            {
+            int PosOpenBracket = Contents.IndexOf("{", PosStartClass);
+            int PosEndClass = StringManip.FindMatchingClosingBracket(Contents, PosStartClass, '{', '}');
+            if (PosEndClass != -1)
+               Contents = Contents.Remove(PosStartClass, PosEndClass - PosStartClass + 5); // also removes 2 x \r\n
+            }
+
+         // Remove the last curly bracket - namespace bracket. We'll add it in later.
+         int PosLastBracket = Contents.LastIndexOf('}');
+         if (PosLastBracket == -1)
+            throw new Exception("Cannot find namespace in DotNetProxies.cs");
+         Contents = Contents.Remove(PosLastBracket);
+
+         // Now add in our class and closing bracket for namespace.
+         Contents = Contents + ClassSourceCode + "\r\n}";
+
+         // Write contents back to proxy file
+         StreamWriter Out = new StreamWriter(WriteableBaseProxyFileName);
+         Out.Write(Contents);
+         Out.Close();
          }
-      else
-         {
-         Contents = "using System;\r\n" +
-                    "using System.Collections.Generic;\r\n" +
-                    "using System.Text;\r\n" +
-                    "using System.Runtime.InteropServices;\r\n" +
-                    "namespace ModelFramework {\r\n" +
-                    "}\r\n";
-
-         }
-
-      // See if we can find an existing class in the source code.
-      int PosStartClass = Contents.IndexOf("public class " + ClassName);
-      if (PosStartClass != -1)
-         {
-         int PosOpenBracket = Contents.IndexOf("{", PosStartClass);
-         int PosEndClass = StringManip.FindMatchingClosingBracket(Contents, PosStartClass, '{', '}');
-         if (PosEndClass != -1)
-            Contents = Contents.Remove(PosStartClass, PosEndClass - PosStartClass + 3); // also removes the \r\n
-         }
-
-      // Remove the last curly bracket - namespace bracket. We'll add it in later.
-      int PosLastBracket = Contents.LastIndexOf('}');
-      if (PosLastBracket == -1)
-         throw new Exception("Cannot find namespace in DotNetProxies.cs");
-      Contents = Contents.Remove(PosLastBracket);
-
-      // Now add in our class and closing bracket for namespace.
-      Contents = Contents + ClassSourceCode + "\r\n}";
-
-      // Write contents back to proxy file
-      StreamWriter Out = new StreamWriter(WriteableBaseProxyFileName);
-      Out.Write(Contents);
-      Out.Close();
       }
 
    public static void CompileProxyDLL()

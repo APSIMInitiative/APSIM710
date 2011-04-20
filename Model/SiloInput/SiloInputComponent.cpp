@@ -64,7 +64,8 @@ SiloInputComponent::SiloInputComponent(void)
 SiloInputComponent::~SiloInputComponent(void)
    {
    data.close();
-   unlink(fileName.c_str());
+   if (fileName != "")
+      unlink(fileName.c_str());
    }
 // ------------------------------------------------------------------
 // INIT 2 - temporary
@@ -86,6 +87,9 @@ void SiloInputComponent::openInputFile(void)
 
    // Now the SILO station number 
    readParameter ("parameters", "station_number", stationNumber, 0, 100000);
+   if (stationNumber == 0)  // This happens during GetDescription call.
+      return;
+   
    baseURL = getProperty("parameters", "url");
    string requestString =
       baseURL +
