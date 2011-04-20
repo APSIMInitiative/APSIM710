@@ -70,7 +70,7 @@ Instance^ Factory::CreateInstance(XmlNode^ Node,
    {
 	   throw gcnew Exception("Class " + Node->Name + " must be derived from the \"Instance\" class");
    }
-   if (!ParentComponent->DoingAGetDescription())
+   if (ParentComponent != nullptr && !ParentComponent->DoingAGetDescription())
       {
       ResolveLinks();
       CreatedInstance->Initialised();
