@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 #if !fulldotnet
-using ModelFramework;
+    using ModelFramework;
 #endif
 using CSGeneral;
 
@@ -1419,7 +1419,7 @@ public class SoilN : Instance
         Console.WriteLine();
         Console.WriteLine("        - Reading Parameters");
         
-        DoubleType val = new DoubleType(Double.NaN);
+        DoubleType val = new DoubleType();
         DoubleArrayType arrayVal = new DoubleArrayType();
 
         use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true);
@@ -1428,7 +1428,9 @@ public class SoilN : Instance
 
         else // only need to read these if soil temp is not external
         {
-            bool use_external_amp = ParentComponent().Get("amp", val, true) && (!Double.IsNaN(val.Value));
+            val.Value = Double.NaN;
+            bool use_external_amp = ParentComponent().Get("amp", val, true);
+            use_external_amp = use_external_amp && (!Double.IsNaN(val.Value));
             if (use_external_amp)
             {
                 amp = val.Value;
@@ -1436,7 +1438,8 @@ public class SoilN : Instance
                     throw new Exception("External value for amp out of range");
             }
             val.Value = Double.NaN;
-            use_external_tav_amp = ParentComponent().Get("tav", val, true) && (!Double.IsNaN(val.Value));
+            use_external_tav_amp = ParentComponent().Get("tav", val, true);
+            use_external_tav_amp = use_external_tav_amp && (!Double.IsNaN(val.Value));
             if (use_external_tav_amp)
             {
                 tav = val.Value;
@@ -1450,6 +1453,7 @@ public class SoilN : Instance
         }
 
         use_external_ph = ParentComponent().Get("ph", arrayVal, true) && (arrayVal.Value != null);
+        use_external_ph = use_external_ph && (arrayVal.Value != null);
 
         // Check if all values supplied. If not use average C:N ratio in all pools
         if (root_cn_pool == null || root_cn_pool.Length < 3)
@@ -2253,13 +2257,13 @@ public class SoilN : Instance
     {
         if (dlayer == null)
         {
-            SingleArrayType dlayer_array = new SingleArrayType();
+            FloatArrayType dlayer_array = new FloatArrayType();
             ParentComponent().Get("dlayer", dlayer_array, false);
             dlayer = dlayer_array.Value;
         }
         if (bd == null)
         {
-            SingleArrayType bd_array = new SingleArrayType();
+            FloatArrayType bd_array = new FloatArrayType();
             ParentComponent().Get("bd", bd_array, false);
             bd = bd_array.Value;
         }
@@ -3181,7 +3185,7 @@ public class SoilN : Instance
     private void GetSiteVariables()
     { // Not really needed. This will happen automagically once we're up and running,
       // but this helps ensure we'll have access to the values during init2
-        SingleType value = new SingleType();
+        FloatType value = new FloatType();
         ParentComponent().Get("latitude", value, false);
         latitude = value.Value;
         ParentComponent().Get("salb", value, false);
@@ -3190,24 +3194,27 @@ public class SoilN : Instance
 
     private void GetOtherVariables()
     {
-        SingleArrayType sw_dep_array = new SingleArrayType();
+        FloatArrayType sw_dep_array = new FloatArrayType();
         ParentComponent().Get("sw_dep", sw_dep_array, false);
         sw_dep = sw_dep_array.Value;
-        SingleArrayType dlayer_array = new SingleArrayType();
+        FloatArrayType dlayer_array = new FloatArrayType();
         ParentComponent().Get("dlayer", dlayer_array, false);
         dlayer = dlayer_array.Value;
 
         if (p_n_reduction) // ONLY need soil loss if profile reduction is on
         {
-            DoubleType value = new DoubleType(Double.NaN);
-            if (ParentComponent().Get("soil_loss", value, true) && (!Double.IsNaN(value.Value)))
+            DoubleType value = new DoubleType();
+            value.Value = Double.NaN;
+            Boolean found = ParentComponent().Get("soil_loss", value, true);
+            if (found && (!Double.IsNaN(value.Value)))
               soil_loss = value.Value;
         }
         
         if (use_external_ph)
         {
             DoubleArrayType value = new DoubleArrayType();
-            if (ParentComponent().Get("ph", value, true) && (value.Value != null))
+            Boolean found = ParentComponent().Get("ph", value, true);
+            if (found && (value.Value != null))
               ph = value.Value;
         }
         CheckPond();
@@ -3216,7 +3223,8 @@ public class SoilN : Instance
     private void CheckPond()
     {
         StringType stVal = new StringType();
-        if (!ParentComponent().Get("pond_active", stVal, true) || (stVal.Value == null))
+        Boolean found = ParentComponent().Get("pond_active", stVal, true);
+        if (!found || (stVal.Value == null))
             pond_active = "no";
     }
 
@@ -3358,9 +3366,10 @@ public class SoilN : Instance
                 Array.Resize(ref solute_names, 3);
 
             NewSoluteType data = new NewSoluteType();
-            data.sender_id = ParentComponent().GetId();
+            data.sender_id = (int)ParentComponent().GetId();
             data.solutes = solute_names;
 
+          
             new_solute.Invoke(data);
         }
     }
