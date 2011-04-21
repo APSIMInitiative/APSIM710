@@ -369,7 +369,7 @@
 
 
 
-CCC  VOS added 4 April 2011 - needed as part of system to allow cops to change their gsmax for climate change work
+CCC  VOS added 4 April 2011 - needed as part of system to allow crops to change their gsmax for climate change work
 CCC
       if (index(Variable_name,'gsmax_').eq.1) then
          ComponentNo = position_in_char_array
@@ -383,7 +383,7 @@ CCC
          else
             call respond2get_real_var (
      :               Variable_name,
-     :               '(m/s)',
+     :               'm/s',
      :               g%ComponentGsmax(ComponentNo))
          endif
 CCC End new code
@@ -401,7 +401,7 @@ CCC End new code
 
          call respond2get_real_var (
      :               variable_name       ! variable name
-     :              ,'(mm)'              ! variable units
+     :              ,'mm'                ! variable units
      :              ,Total_Interception) ! variable
 
 !      elseif
@@ -544,7 +544,7 @@ CCC End new code
             ub = 0.9 * g%ComponentGsmax(ComponentNo)
             call collect_real_var (
      :             variable_name        ! variable name
-     :            ,'(m/s)'              ! units
+     :            ,'m/s'                ! units
      :            ,dlt_gsmax            ! variable
      :            ,numvals              ! number of elements returned
      :            ,lb                   ! lower limit for bound check
@@ -616,7 +616,7 @@ CCC End new code
       call read_real_var_optional (
      :        section_name,          ! Section header
      :        'a_interception',      ! Keyword
-     :        '(mm/mm)',             ! Units
+     :        'mm/mm',               ! Units
      :        p%a_interception,      ! Parameter
      :        numvals,               ! Number of values returned
      :        0.0,                   ! Lower Limit for bound checking
@@ -642,7 +642,7 @@ CCC End new code
       call read_real_var_optional (
      :        section_name,          ! Section header
      :        'c_interception',      ! Keyword
-     :        '(mm)',                ! Units
+     :        'mm',                  ! Units
      :        p%c_interception,      ! Parameter
      :        numvals,               ! Number of values returned
      :        0.0,                   ! Lower Limit for bound checking
@@ -655,7 +655,7 @@ CCC End new code
       call read_real_var_optional (
      :        section_name,          ! Section header
      :        'd_interception',      ! Keyword
-     :        '(mm)',                ! Units
+     :        'mm',                  ! Units
      :        p%d_interception,      ! Parameter
      :        numvals,               ! Number of values returned
      :        0.0,                   ! Lower Limit for bound checking
@@ -705,7 +705,7 @@ CCC End new code
       call read_real_var (
      :           section_name         ! Section header
      :         , 'air_pressure'       ! Keyword
-     :         , '(hPa)'              ! Units
+     :         , 'hPa'  	             ! Units
      :         , c%air_pressure       ! Variable
      :         , numvals              ! Number of values returned
      :         , 900.                 ! Lower Limit for bound checking
@@ -750,7 +750,7 @@ CCC End new code
       call read_real_var (
      :           section_name         ! Section header
      :         , 'windspeed_default'    ! Keyword
-     :         , '(m/s)'                 ! Units
+     :         , 'm/s'                  ! Units
      :         , c%windspeed_default    ! Variable
      :         , numvals              ! Number of values returned
      :         , 0.0                  ! Lower Limit for bound checking
@@ -759,7 +759,7 @@ CCC End new code
       call read_real_var (
      :           section_name         ! Section header
      :         , 'refheight'    ! Keyword
-     :         , '(m)'                 ! Units
+     :         , 'm'                  ! Units
      :         , c%RefHeight    ! Variable
      :         , numvals              ! Number of values returned
      :         , 0.0                  ! Lower Limit for bound checking
@@ -800,7 +800,7 @@ CCC End new code
 
       integer    numvals               ! number of values read
       integer    i
-      logical    alreadyHaveIt
+      integer    senderIdx
 *- Implementation Section ----------------------------------
 
       call push_routine (myname)
@@ -808,13 +808,14 @@ CCC End new code
       call unpack_newcrop(variant, new_crop)
 
       ! See if we know of it
-      alreadyHaveIt = .false.
+      senderIdx = 0
       do 100 i = 1, g%NumComponents
-        if (g%ComponentType(g%NumComponents).eq.new_crop%sender)
-     :            alreadyHaveIt = .true.
+        if (g%ComponentName(g%NumComponents).eq.new_crop%sender)
+     :            senderIdx = i
  100  continue
 
-      if (.not.alreadyHaveIt) then
+      ! If sender is unknown, add it to the list
+      if (senderIdx.eq.0) then
         g%NumComponents = g%NumComponents + 1
         if (g%NumComponents.gt.max_components) then
           call fatal_Error(ERR_Internal
@@ -822,13 +823,21 @@ CCC End new code
         else
           g%ComponentName(g%NumComponents) = new_crop%sender
           g%ComponentType(g%NumComponents) = new_crop%crop_type
+          i = add_registration_with_units(respondToGetReg, 
+     :        'gsmax_'//new_crop%sender, floatTypeDDML, 'm/s')
+          i = add_registration_with_units(respondToSetReg, 
+     :        'dlt_gsmax_'//new_crop%sender, floatTypeDDML, 'm/s')
 
 !      print*,'there'
           ! Read Component Specific Constants
           ! ---------------------------------
           call micromet_component_constants(g%NumComponents)
         endif
-      else
+      else ! update crop type information
+        if (g%ComponentType(senderIdx).ne.new_crop%crop_type) then
+          g%ComponentType(senderIdx) = new_crop%crop_type
+          call micromet_component_constants(senderIdx)		  
+        endif
       endif
 
 !      print*,'end'
@@ -1840,7 +1849,7 @@ CCC End new code
      :           search_order
      :         , num_sections
      :         , 'gsmax'              ! Keyword
-     :         , '(m/s)'              ! Units
+     :         , 'm/s'                ! Units
      :         , g%ComponentGsmax(Cno)  ! Variable
      :         , numvals              ! Number of values returned
      :         , 0.0                  ! Lower Limit for bound checking
@@ -1850,7 +1859,7 @@ CCC End new code
      :           search_order
      :         , num_sections
      :         , 'r50'                ! Keyword
-     :         , '(W/m2)'             ! Units
+     :         , 'W/m2'               ! Units
      :         , g%ComponentR50(Cno)  ! Variable
      :         , numvals              ! Number of values returned
      :         , 0.0                  ! Lower Limit for bound checking
@@ -1960,7 +1969,7 @@ CCC End new code
       call push_routine (myname)
 
       call get_real_var_optional (unknown_module, 'windspeed'
-     :                                    , '(m/s)'
+     :                                    , 'm/s'
      :                                    , g%windspeed, numvals
      :                                    , 0.0, 10.0)
 
