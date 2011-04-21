@@ -678,13 +678,20 @@ public class Leaf : BaseOrgan, AboveGround
       }
    [EventHandler]
    public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
-      {
-      for (int i = 0; i != CWB.Canopy.Length; i++)
-         {
-         if (CWB.Canopy[i].name == Parent.Name)
-            PEP = CWB.Canopy[i].PotentialEp;
-         }
-      }
+   {
+       Boolean found = false;
+       int i = 0;
+       while (!found && (i != CWB.Canopy.Length))
+       {
+           if (CWB.Canopy[i].name.ToLower() == Parent.Name.ToLower())
+           {
+               PEP = CWB.Canopy[i].PotentialEp;
+               found = true;
+           }
+           else
+               i++;
+       }
+   }
 
    private void PublishNewPotentialGrowth()
       {
