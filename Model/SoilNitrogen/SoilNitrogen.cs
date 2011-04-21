@@ -2257,13 +2257,13 @@ public class SoilN : Instance
     {
         if (dlayer == null)
         {
-            FloatArrayType dlayer_array = new FloatArrayType();
+            SingleArrayType dlayer_array = new SingleArrayType();
             ParentComponent().Get("dlayer", dlayer_array, false);
             dlayer = dlayer_array.Value;
         }
         if (bd == null)
         {
-            FloatArrayType bd_array = new FloatArrayType();
+            SingleArrayType bd_array = new SingleArrayType();
             ParentComponent().Get("bd", bd_array, false);
             bd = bd_array.Value;
         }
@@ -3185,7 +3185,7 @@ public class SoilN : Instance
     private void GetSiteVariables()
     { // Not really needed. This will happen automagically once we're up and running,
       // but this helps ensure we'll have access to the values during init2
-        FloatType value = new FloatType();
+        SingleType value = new SingleType();
         ParentComponent().Get("latitude", value, false);
         latitude = value.Value;
         ParentComponent().Get("salb", value, false);
@@ -3194,10 +3194,10 @@ public class SoilN : Instance
 
     private void GetOtherVariables()
     {
-        FloatArrayType sw_dep_array = new FloatArrayType();
+        SingleArrayType sw_dep_array = new SingleArrayType();
         ParentComponent().Get("sw_dep", sw_dep_array, false);
         sw_dep = sw_dep_array.Value;
-        FloatArrayType dlayer_array = new FloatArrayType();
+        SingleArrayType dlayer_array = new SingleArrayType();
         ParentComponent().Get("dlayer", dlayer_array, false);
         dlayer = dlayer_array.Value;
 
