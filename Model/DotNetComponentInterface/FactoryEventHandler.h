@@ -1,5 +1,6 @@
 #pragma once
 using namespace System;
+using namespace System::Xml;
 
 #include "..\DataTypes\DOTNETDataTypes.h"
 public ref class EvntHandler abstract : ApsimType
@@ -30,14 +31,17 @@ public ref class EvntHandler abstract : ApsimType
 	      // ----------------------------------------------
 	      String^ Desc;
          Desc = "   <event name=\"" + EventName + "\" kind=\"subscribed\">\r\n";
-         if (DDML() != "")
-            Desc += "      " + DDML() + "\r\n";
+         String^ ddml = DDML();
+         if (ddml != "")
+         {
+            XmlDocument^ doc = gcnew XmlDocument();
+            doc->LoadXml(ddml);
+            Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
+         }
 
          Desc += "   </event>\r\n";
          return Desc;
          }
-
-
    };
    
    
