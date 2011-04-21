@@ -84,7 +84,7 @@ using CMPServices;
      
 [foreach types.builtin]
    //------ [builtin.name] ------
-   public class [builtin.name]Type : TypeInterpreter, ApsimType
+   public class [builtin.dotnettypename]Type : TypeInterpreter, ApsimType
       {
       public [builtin.cstype] Value;
       public override void pack(out byte[] messageData)
@@ -103,7 +103,7 @@ using CMPServices;
          return [builtin.csddml];
       }
    }
-   public delegate void [builtin.name]Delegate([builtin.name]Type Data);
+   public delegate void [builtin.dotnettypename]Delegate([builtin.dotnettypename]Type Data);
 [endfor]
     
 [foreach types.type]
