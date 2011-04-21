@@ -1,6 +1,7 @@
 #include "FactoryEvent.h"
 #include "ApsimComponent.h"
 using namespace ModelFramework;
+using namespace System::Xml;
 
 //public delegate void NullTypeDelegate();
 public delegate void ApsimTypeDelegate(ApsimType^ Data);
@@ -53,13 +54,16 @@ String^ FactoryEvent::GetDescription()
 	// Creates a field wrapper for the given property.
 	// ----------------------------------------------
 	String^ Desc;
-   Desc = "   <event name=\"" + EventName + "\" kind=\"published\">\r\n";
-   if (DDML() != "")
-      {
-      Desc += "      " + DDML() + "\r\n";
-      }
-   Desc += "   </event>\r\n";
-   return Desc;
+    Desc = "   <event name=\"" + EventName + "\" kind=\"published\">\r\n";
+    String^ ddml = DDML();
+    if (ddml != "")
+    {
+        XmlDocument^ doc = gcnew XmlDocument();
+        doc->LoadXml(ddml);
+        Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
+    }
+    Desc += "   </event>\r\n";
+    return Desc;
    }
    
    
