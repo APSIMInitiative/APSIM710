@@ -58,9 +58,10 @@ String^ FactoryEvent::GetDescription()
     String^ ddml = DDML();
     if (ddml != "")
     {
-        XmlDocument^ doc = gcnew XmlDocument();
-        doc->LoadXml(ddml);
-        Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
+          Desc += "      " + ddml + "\r\n";
+//        XmlDocument^ doc = gcnew XmlDocument();
+//        doc->LoadXml(ddml);
+//        Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
     }
     Desc += "   </event>\r\n";
     return Desc;
