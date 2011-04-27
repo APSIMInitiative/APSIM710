@@ -350,26 +350,28 @@ Public Class LocalPaddockType
       End If
    End Sub
 
-   Public Sub DungApplication(ByVal kgN_ha As Double, ByVal kgDM_ha As Double)
-      If (kgN_ha < 0) Or (kgDM_ha < 0) Then
-         Console.WriteLine("******** WARNING ****************")
-         Console.WriteLine("Error: DDRules Dung Application")
-         Console.WriteLine("Negitive application amount found")
-         Console.WriteLine("     - kg N per ha = " + kgN_ha)
-         Console.WriteLine("     - kg DM per ha = " + kgDM_ha)
-      End If
+        Public Sub DungApplication(ByVal kgN As Double, ByVal kgDM As Double)
+                If (kgN < 0) Or (kgDM < 0) Then
+                        Console.WriteLine("******** WARNING ****************")
+                        Console.WriteLine("Error: DDRules Dung Application")
+                        Console.WriteLine("Negitive application amount found")
+                        Console.WriteLine("     - kg N  = " + kgN)
+                        Console.WriteLine("     - kg DM = " + kgDM)
+                End If
 
-      Dim dung As BiomassRemovedType = New BiomassRemovedType()
-      dung.crop_type = "RuminantDung_PastureFed"
-      dung.dm_type = New String() {"RuminantDung_PastureFed"}
-      dung.dlt_crop_dm = New Single() {kgDM_ha}
-      dung.dlt_dm_n = New Single() {kgN_ha}
-      dung.dlt_dm_p = New Single() {kgDM_ha * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
-      dung.fraction_to_residue = New Single() {1.0}
+                Dim kgN_ha As Double = kgN / Area
+                Dim kgDM_ha As Double = kgDM / Area
+                Dim dung As BiomassRemovedType = New BiomassRemovedType()
+                dung.crop_type = "RuminantDung_PastureFed"
+                dung.dm_type = New String() {"RuminantDung_PastureFed"}
+                dung.dlt_crop_dm = New Single() {kgDM_ha}
+                dung.dlt_dm_n = New Single() {kgN_ha}
+                dung.dlt_dm_p = New Single() {kgDM_ha * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
+                dung.fraction_to_residue = New Single() {1.0}
 
-      Dim SOM As Component = ApSim_SubPaddock.ComponentByType("surfaceom")
-      SOM.Publish("BiomassRemoved", dung)
-   End Sub
+                Dim SOM As Component = ApSim_SubPaddock.ComponentByType("surfaceom")
+                SOM.Publish("BiomassRemoved", dung)
+        End Sub
 #End Region
 
    Public Sub UpdateCovers()

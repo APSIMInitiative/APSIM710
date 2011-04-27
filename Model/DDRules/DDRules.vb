@@ -134,6 +134,7 @@ Public Class DDRules
                 'Console.WriteLine("DDRules heard a BiomassRemoved event")
         End Sub
 #End Region
+
         Private TotalFarmArea As Double = 0
         'Effective farm area [ha]
         <Output()> <Units("ha")> Public Property FarmArea() As Double
@@ -478,6 +479,16 @@ Public Class DDRules
                 End Set
         End Property
 
+        'Proportion of silage lost during feeding out
+        <Output()> <Units("0-1")> Public Property SilageWastage() As Double
+                Get
+                        Return myFarm.SilageWastage * 100
+                End Get
+                Set(ByVal value As Double)
+                        myFarm.SilageWastage = value / 100
+                End Set
+        End Property
+
         'Silage digestability (could this be made read only once the store has been refactored)
         <Output()> <Units("0-1")> Public Property SilageDigestability() As Double
                 Get
@@ -485,16 +496,6 @@ Public Class DDRules
                 End Get
                 Set(ByVal value As Double)
                         myFarm.SilageDigestability = value
-                End Set
-        End Property
-
-        'Supplment/silage loss during cutting
-        <Output()> <Units("%")> Public Property SilageCutWastage() As Double
-                Get
-                        Return myFarm.SilageCutWastage * 100
-                End Get
-                Set(ByVal value As Double)
-                        myFarm.SilageCutWastage = value / 100
                 End Set
         End Property
 #End Region
@@ -531,16 +532,15 @@ Public Class DDRules
                 End Set
         End Property
 
-        'Proportion of silage lost during feeding out
-        <Output()> <Units("0-1")> Public Property SilageWastage() As Double
+        'Supplment/silage loss during cutting
+        <Output()> <Units("%")> Public Property SilageCutWastage() As Double
                 Get
-                        Return myFarm.SilageWastage * 100
+                        Return myFarm.SilageCutWastage * 100
                 End Get
                 Set(ByVal value As Double)
-                        myFarm.SilageWastage = value / 100
+                        myFarm.SilageCutWastage = value / 100
                 End Set
         End Property
-
         'First Conservation Date
         <Output()> <Units("")> Public Property ConservationStart() As String
                 Get
