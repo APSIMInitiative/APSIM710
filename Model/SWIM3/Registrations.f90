@@ -48,7 +48,7 @@ module Registrations
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
-         id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', nullTypeDDML, '')
+         id%WaterUptakesCalculated = add_registration(eventReg, 'WaterUptakesCalculated', WaterUptakesCalculatedTypeDDML, '')
          id%RunoffEvent = add_registration(eventReg, 'RunoffEvent', RunoffEventTypeDDML, '')
       end subroutine
 end module Registrations

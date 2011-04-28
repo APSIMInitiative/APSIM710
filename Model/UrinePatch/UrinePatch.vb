@@ -398,8 +398,12 @@ Public Class UrinePatch
       UrineN_Retained = (UrineN_Retained_Patch * (1.0 - Volat_fac)) * UrinePatchArea
 
       Dim Default_Application_Depth As Double = 10   ' apply N at a depth of 10mm
-      Dim volume As Double = UrinePatchNitrogenConc / 0.08               ' liquid volume of the urine application
-      Fertiliser.Apply(UrineN_Retained, Default_Application_Depth, "urea_n")
+        Dim volume As Double = UrinePatchNitrogenConc / 0.08               ' liquid volume of the urine application
+        Dim fert As FertiliserApplicationType
+        fert.Amount = UrineN_Retained
+        fert.Depth = Default_Application_Depth
+        fert.Type = "urea_n"
+        Fertiliser.Apply(fert)
       'MyPaddock.Irrigation.Apply(volume)
 
    End Sub

@@ -285,12 +285,12 @@ Public Class FarmSimGraze
       dlt_DeadStem = PropDMRemoval * DeadStem
 
 
-      Dim GreenRemoveCropDmDm As New RemoveCropDmdmType
+        Dim GreenRemoveCropDmDm As New RemoveCropBiomassdmType
       GreenRemoveCropDmDm.pool = "green"
       GreenRemoveCropDmDm.part = New String() {"leaf", "stem"}
       GreenRemoveCropDmDm.dlt = New Double() {dlt_GreenLeaf, dlt_GreenStem}
-      Dim MyRemoveCropDM As New RemoveCropDmType
-      Dim DeadRemoveCropDmDm As New RemoveCropDmdmType
+        Dim MyRemoveCropDM As New RemoveCropBiomassType
+        Dim DeadRemoveCropDmDm As New RemoveCropBiomassdmType
       If Crop2Graze.ToLower = "ryegrass_clover" Then
          DeadRemoveCropDmDm.pool = "dead"
       Else
@@ -301,14 +301,14 @@ Public Class FarmSimGraze
          If (dlt_DeadStem) <= 0.0001 Then  'implicitly asumming that if there will not be a possibility of dead stem without dead leaf
             DeadRemoveCropDmDm.part = New String() {"leaf"}
             DeadRemoveCropDmDm.dlt = New Double() {dlt_DeadLeaf}
-            MyRemoveCropDM.dm = New RemoveCropDmdmType() {GreenRemoveCropDmDm, DeadRemoveCropDmDm}
+                MyRemoveCropDM.dm = New RemoveCropBiomassdmType() {GreenRemoveCropDmDm, DeadRemoveCropDmDm}
          Else
             DeadRemoveCropDmDm.part = New String() {"leaf", "stem"}
             DeadRemoveCropDmDm.dlt = New Double() {dlt_DeadLeaf, dlt_DeadStem}
-            MyRemoveCropDM.dm = New RemoveCropDmdmType() {GreenRemoveCropDmDm, DeadRemoveCropDmDm}
+                MyRemoveCropDM.dm = New RemoveCropBiomassdmType() {GreenRemoveCropDmDm, DeadRemoveCropDmDm}
          End If
       Else
-         MyRemoveCropDM.dm = New RemoveCropDmdmType() {GreenRemoveCropDmDm}
+            MyRemoveCropDM.dm = New RemoveCropBiomassdmType() {GreenRemoveCropDmDm}
       End If
 
       MyPaddock.ComponentByName(Crop2Graze).Publish("remove_crop_biomass", MyRemoveCropDM)

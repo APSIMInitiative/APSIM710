@@ -140,21 +140,21 @@ Public Class BioMass
         End Function
 
         'This convienience function is for use with the "remove_crop_biomass" event
-        Public Function toRemoveCropDmType() As RemoveCropDmType
-                Dim result As New RemoveCropDmType
-                Dim green As RemoveCropDmdmType = getDMType("green", gLeaf, gStem)
-                Dim dead As RemoveCropDmdmType = getDMType("dead", dLeaf, dStem)
-                result.dm = New RemoveCropDmdmType() {green, dead}
-                Return result
-        End Function
+    Public Function toRemoveCropDmType() As RemoveCropBiomassType
+        Dim result As New RemoveCropBiomassType
+        Dim green As RemoveCropBiomassdmType = getDMType("green", gLeaf, gStem)
+        Dim dead As RemoveCropBiomassdmType = getDMType("dead", dLeaf, dStem)
+        result.dm = New RemoveCropBiomassdmType() {green, dead}
+        Return result
+    End Function
 
-        Private Function getDMType(ByVal pool As String, ByVal leaf As Double, ByVal stem As Double) As RemoveCropDmdmType
-                Dim result As New RemoveCropDmdmType
-                result.pool = pool
-                result.part = New String() {"leaf", "stem"}
-                result.dlt = New Double() {leaf / 10, stem / 10} 'convert to g/m^2
-                Return result
-        End Function
+    Private Function getDMType(ByVal pool As String, ByVal leaf As Double, ByVal stem As Double) As RemoveCropBiomassdmType
+        Dim result As New RemoveCropBiomassdmType
+        result.pool = pool
+        result.part = New String() {"leaf", "stem"}
+        result.dlt = New Double() {leaf / 10, stem / 10} 'convert to g/m^2
+        Return result
+    End Function
 
         ' ME pasture calculation by component - values from QGraze defaults
         Private Function calcME() As Double

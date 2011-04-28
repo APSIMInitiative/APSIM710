@@ -342,10 +342,23 @@ Public Class LocalPaddockType
          urine.StockType = "DairyCow" 
          UrinePatchComponent.Publish("ApplyUrine", urine)
       Else    ' use simple fertiliser and irrigation events
-         Dim Fertiliser As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
-         Fertiliser.Apply(kgN / Area, Default_Application_Depth, "urea_N")
-         Dim Irrigation As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
-         Irrigation.Apply(v / 10000, 0, 0, Nothing, 0, 0, 0, 0) ' 20107003 - converting litres/ha to mm/ha
+            Dim Fertiliser As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
+            Dim fert As FertiliserApplicationType
+            fert.Amount = kgN / Area
+            fert.Depth = Default_Application_Depth
+            fert.Type = "urea_N"
+            Fertiliser.Apply(fert)
+            Dim Irrigation As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
+            Dim irrigate As IrrigationApplicationType
+            irrigate.Amount = v / 10000  ' 20107003 - converting litres/ha to mm/ha
+            irrigate.Duration = 0
+            irrigate.time = 0
+            irrigate.source = Nothing
+            irrigate.Crop_Area = 0
+            irrigate.NO3 = 0
+            irrigate.NH4 = 0
+            irrigate.CL = 0
+            Irrigation.Apply(irrigate)
          N_Urine = kgN / Area
       End If
    End Sub
@@ -451,14 +464,14 @@ Public Class LocalPaddockType
       result = result & ", Cover " & Cover.ToString("0")
       Return result
    End Function
-   Public Sub print(ByVal removed As RemoveCropDmdmType)
-      If (DebugLevel > 0) Then
-         Console.WriteLine("DDRules.print (debug) - " & removed.pool.ToString())
-         For i As Integer = 0 To removed.part.Length - 1
-            Console.WriteLine("DDRules.print (debug) - " & removed.part(i) & ", " & removed.dlt(i).ToString())
-         Next
-      End If
-   End Sub
+    Public Sub print(ByVal removed As RemoveCropBiomassdmType)
+        If (DebugLevel > 0) Then
+            Console.WriteLine("DDRules.print (debug) - " & removed.pool.ToString())
+            For i As Integer = 0 To removed.part.Length - 1
+                Console.WriteLine("DDRules.print (debug) - " & removed.part(i) & ", " & removed.dlt(i).ToString())
+            Next
+        End If
+    End Sub
 #End Region
 
    Public Function DM_Eaten() As Double
