@@ -49,12 +49,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer Max_token_size           ! Maximum size of a token
       parameter (Max_token_size=700)
 
-       INTEGER MAX_RULE_NAME_SIZE
-       parameter (MAX_RULE_NAME_SIZE=100)
-       
-       INTEGER MAX_RULES
-       PARAMETER (MAX_RULES=100)
-      
       integer        Buffer_size                 ! size of each buffer
       parameter      (Buffer_size = 2000)
 
@@ -244,9 +238,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
          character     and_or_array(Variable_maximum)*(Buffer_size)
          integer       and_or_lens(Variable_maximum) ! Length of strings in and_or_array
 
-         CHARACTER Rule_names(MAX_RULES)*(MAX_RULE_NAME_SIZE)
-                                       ! rule names user has defined
-         
       end type ManagerData
 
       ! instance variables.
@@ -498,6 +489,10 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character Routine_name*(*)       ! Name of this routine
       parameter (Routine_name='Manager_read_rules')
 
+       INTEGER MAX_RULE_NAME_SIZE
+       parameter (MAX_RULE_NAME_SIZE=100)
+       INTEGER MAX_RULES
+       PARAMETER (MAX_RULES=100)
 
        INTEGER MAX_CONDITION_SIZE
        parameter (MAX_CONDITION_SIZE=20)
@@ -506,6 +501,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
        character Rule_Type*(MAX_RULE_NAME_SIZE)
        character dummy*(MAX_RULE_NAME_SIZE)
        integer rule
+       CHARACTER Rule_names(MAX_RULES)*(MAX_RULE_NAME_SIZE)
+                                       ! rule names user has defined
        CHARACTER condition*(MAX_CONDITION_SIZE)
                                        ! condition of each rule
 
@@ -515,18 +512,19 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       call push_routine (Routine_name)
       do rule = 1, MAX_RULES
-         g%Rule_names(rule) = blank
+         Rule_names(rule) = blank
       end do
 
       ! get a list of all rule names that user has defined.
       call apsimcomponentdata_getrulenames(get_componentData(),
-     .                                     g%Rule_names,
+     .                                     Rule_names,
      .                                     MAX_RULES,
      .                                     g%num_rules)
       ! Go tokenize each rule.
       do rule = 1, g%num_rules
+
          call apsimcomponentdata_loadrule(get_componentData(),
-     .                                    g%Rule_names(rule))
+     .                                    Rule_names(rule))
 
          rule_type = blank
          call apsimcomponentdata_getrulecondition(rule_type)
@@ -558,6 +556,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          g%num_lines = apsimcomponentdata_getnumrulelines()
          call Tokenize ()
       end do
+
       call pop_routine(Routine_name)
       return
       end subroutine
