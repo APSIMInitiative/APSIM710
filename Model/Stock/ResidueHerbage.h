@@ -15,7 +15,7 @@ class ResidueHerbage : public HerbageBase
       void doInit1(const protocol::Init1Data&);
       void doInit2(void);
 //      void respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData);
-      void doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropDmType &crop);
+      void doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropBiomassType &crop);
       void doDigestibility (void);
 
       void doRunTimeReg(void);

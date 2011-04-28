@@ -111,7 +111,7 @@ public:
    virtual void  doNRetranslocate( float N_supply, float g_grain_n_demand) = 0;
    virtual void  doNSenescedRetrans(float navail, float n_demand_tot) = 0;
    virtual void  doNSenescence(void) = 0;
-   virtual void  doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report) = 0;
+   virtual void  doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report) = 0;
    virtual void  doSoilNDemand(void) = 0;
    virtual void  doSWDemand(float SWDemandMaxFactor) = 0;
 

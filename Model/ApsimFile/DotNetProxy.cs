@@ -141,7 +141,7 @@ class DLLProber
                {
                if (XmlHelper.Find(Node, "param1_name") == null)  // make sure its not an Apsim Variant.
                   {
-                  if (IsComplexType(Node))
+                  if (IsComplexEventType(Node))
                      {
                      // EVENTS WITH COMPLEX STRUCTURES
                      string CamelName = StringManip.CamelCase(EventName + "Type");
@@ -216,7 +216,15 @@ class DLLProber
          return "";
       }
 
-
+   private static bool IsComplexEventType(XmlNode Node)
+   {
+      foreach (XmlNode Child in Node.ChildNodes)
+      {
+          if (Child.Name == "field")
+              return true;
+      }
+      return false;
+   }
 
    /// <summary>
    /// Return true if the node passed in is a complex type.

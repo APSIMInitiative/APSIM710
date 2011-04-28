@@ -210,7 +210,7 @@ protected:
    virtual float pRetransSupply(void);
    virtual float pRetransDemand(void);
 
-   virtual void  doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report);
+   virtual void  doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report);
    virtual void  removeBiomass(void);
    virtual void  removeBiomass2(float);
 

@@ -13,7 +13,7 @@ class RootSWIM : BaseOrgan, BelowGround
       get { return -MathUtility.Sum(Uptake); }
       }
 
-   [EventHandler] public void OnWaterUptakesCalculated(WaterUptakesType Uptakes)
+   [EventHandler] public void OnWaterUptakesCalculated(WaterUptakesCalculatedType Uptakes)
       {
       for (int i = 0; i != Uptakes.Uptakes.Length; i++)
          {

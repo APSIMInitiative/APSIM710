@@ -819,14 +819,20 @@ std::string CMPComponentInterface::getRegName(NameToRegMap::iterator reg)
 std::string CMPComponentInterface::getEventDescription(NameToRegMap::iterator reg, const string& published)
    {
    string returnString = "   <event name=\"";
-   returnString += getRegName(reg);
-   returnString += "\" kind=\"" + published + "\">\n";
+   returnString += getRegName(reg) + "\"";
+   string ddml = "";
+   string typeName = "";
    if (reg->second != NULL)
       {
       XMLDocument* doc = new XMLDocument(reg->second->ddml, XMLDocument::xmlContents);
-      returnString += doc->documentElement().innerXML();
+      typeName = doc->documentElement().getAttribute("typename");
+      ddml = doc->documentElement().innerXML();
       delete doc;
       }
+   if (typeName != "")
+	   returnString += " typename=\"" + typeName + "\"";
+   returnString += " kind=\"" + published + "\">\n";
+   returnString += ddml;
    returnString += "\n</event>\n";
    return returnString;
    }

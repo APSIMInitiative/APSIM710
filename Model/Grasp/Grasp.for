@@ -5321,9 +5321,9 @@ C     zero a few important state variables
       parameter (my_name = 'Grasp_remove_crop_biomass')
 
 *+  Local Variables
-      type(RemoveCropDmdmType)  greenEaten         ! Structures holding grazed material
-      type(RemoveCropDmdmType) deadEaten
-      type(RemoveCropDmType) :: eaten
+      type(RemoveCropBiomassdmType)  greenEaten         ! Structures holding grazed material
+      type(RemoveCropBiomassdmType) deadEaten
+      type(RemoveCropBiomassType) :: eaten
       character string*1000
       integer greenPart
       integer deadPart
@@ -5335,7 +5335,7 @@ C     zero a few important state variables
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
-      call unpack_RemoveCropDm(variant, eaten)
+      call unpack_RemoveCropBiomass(variant, eaten)
 
       greenPart = 0
       deadPart = 0
@@ -5512,8 +5512,8 @@ C     zero a few important state variables
       parameter (my_name = 'Grasp_detach_crop_biomass')
 
 *+  Local Variables
-      type(RemoveCropDmdmType) deadDetached
-      type(RemoveCropDmType) :: detached
+      type(RemoveCropBiomassdmType) deadDetached
+      type(RemoveCropBiomassType) :: detached
       character string*1000
       integer deadPart
       integer leafPart
@@ -5525,7 +5525,7 @@ C     zero a few important state variables
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
-      call unpack_RemoveCropDm(variant, detached)
+      call unpack_RemoveCropBiomass(variant, detached)
 
       deadPart = 0
       do pool = 1, detached%num_dm

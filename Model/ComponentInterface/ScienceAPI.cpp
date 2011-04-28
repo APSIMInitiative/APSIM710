@@ -787,9 +787,9 @@ void ScienceAPI::subscribe(const std::string& name, CanopyWaterBalanceFunctionTy
    component->addEvent(name.c_str(),
                        fn, wrapper->DDML());
    }
-void ScienceAPI::subscribe(const std::string& name, RemoveCropDmFunctionType handler)
+void ScienceAPI::subscribe(const std::string& name, RemoveCropBiomassFunctionType handler)
    {
-   typedef CMPMethod1<RemoveCropDmFunctionType, protocol::RemoveCropDmType> WrapperType;
+   typedef CMPMethod1<RemoveCropBiomassFunctionType, protocol::RemoveCropBiomassType> WrapperType;
    WrapperType* wrapper = new WrapperType (handler);
    stuffToDelete.push_back(wrapper);
 

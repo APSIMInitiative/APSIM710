@@ -2517,7 +2517,7 @@ CCC End new code
       integer i,j
       real int_radn_tot
       real int_radn_green
-      type(LightProfileType) :: LightProfile
+      type(CanopyEnergyBalanceType) :: LightProfile
 
 
 *- Implementation Section ----------------------------------
@@ -2540,7 +2540,7 @@ CCC End new code
 
   100 continue
 
-      call publish_LightProfile(id%canopy_energy_balance
+      call publish_CanopyEnergyBalance(id%canopy_energy_balance
      :                               , LightProfile)
 
       call pop_routine (myname)

@@ -19,7 +19,7 @@ class PlantHerbage : public HerbageBase
       void doInit1(const protocol::Init1Data&);
       void doInit2(void);
       void respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData);
-      void doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropDmType &crop);
+      void doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropBiomassType &crop);
       void doDigestibility (void);
 
       void doRunTimeReg(void);
@@ -149,7 +149,7 @@ class PlantHerbage : public HerbageBase
    private:
 ////      protocol::Component *system;
       float divide (float dividend, float divisor, float default_value);
-      protocol::RemoveCropDmType crop;
+      protocol::RemoveCropBiomassType crop;
 
       unsigned dmGreenID[max_part];
       unsigned dmSenescedID[max_part];

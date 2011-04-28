@@ -903,7 +903,7 @@ public class AgPasture : Instance
 
     //---------------------------------------------------------------------
     [EventHandler]
-    public void OnCanopy_Energy_Balance(LightProfileType LP)
+    public void OnCanopy_Energy_Balance(CanopyEnergyBalanceType LP)
     {
         canopiesNum = LP.Interception.Length;
         canopiesRadn = new double[canopiesNum];
@@ -1018,7 +1018,7 @@ public class AgPasture : Instance
    
   //----------------------------------------------------------------------
     [EventHandler]
-    public void Onremove_crop_biomass(RemoveCropDmType rm)
+    public void Onremove_crop_biomass(RemoveCropBiomassType rm)
     {   
         //Note: It is resposibility of the calling module to check the
         // amount of herbage in each pools of AbovegroundBiomassWt and set the
@@ -1216,7 +1216,7 @@ public class AgPasture : Instance
 
     //----------------------------------------------------------
     [EventHandler]
-    public void OnWaterUptakesCalculated(WaterUptakesType SoilWater)
+    public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
     {
         // Gets the water uptake for each layer as calculated by an external module (SWIM)
         p_waterUptake = 0;

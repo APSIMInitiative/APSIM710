@@ -153,9 +153,9 @@ class EXPORT ScienceAPI
       #define CanopyWaterBalanceFunction(address) CanopyWaterBalanceFunctionType(boost::bind(address, this, _1))
       void subscribe(const std::string& name, CanopyWaterBalanceFunctionType handler);
 
-      #define RemoveCropDmFunctionType boost::function1<void, protocol::RemoveCropDmType&>
-      #define RemoveCropDmFunction(address) RemoveCropDmFunctionType(boost::bind(address, this, _1))
-      void subscribe(const std::string& name, RemoveCropDmFunctionType handler);
+      #define RemoveCropBiomassFunctionType boost::function1<void, protocol::RemoveCropBiomassType&>
+      #define RemoveCropBiomassFunction(address) RemoveCropBiomassFunctionType(boost::bind(address, this, _1))
+      void subscribe(const std::string& name, RemoveCropBiomassFunctionType handler);
 
       #define BiomassRemovedFunctionType boost::function1<void, protocol::BiomassRemovedType&>
       #define BiomassRemovedFunction(address) BiomassRemovedFunctionType(boost::bind(address, this, _1))

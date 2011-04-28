@@ -54,15 +54,23 @@ String^ FactoryEvent::GetDescription()
 	// Creates a field wrapper for the given property.
 	// ----------------------------------------------
 	String^ Desc;
-    Desc = "   <event name=\"" + EventName + "\" kind=\"published\">\r\n";
+	Desc = "   <event name=\"" + EventName + "\"";
     String^ ddml = DDML();
+	String^ typeName = "";
+	String^ ddmlData = "";
     if (ddml != "")
     {
-          Desc += "      " + ddml + "\r\n";
-//        XmlDocument^ doc = gcnew XmlDocument();
-//        doc->LoadXml(ddml);
-//        Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
+        XmlDocument^ doc = gcnew XmlDocument();
+        doc->LoadXml(ddml);
+        XmlNode^ tnNode = doc->DocumentElement->Attributes->GetNamedItem("typename");
+		if (tnNode != nullptr)
+			typeName = tnNode->Value;
+        ddmlData = doc->DocumentElement->InnerXml;
     }
+    if (typeName != "")
+	   Desc += " typename=\"" + typeName + "\"";
+    Desc += " kind=\"published\">\r\n";
+    Desc += "      " + ddmlData + "\r\n";
     Desc += "   </event>\r\n";
     return Desc;
    }

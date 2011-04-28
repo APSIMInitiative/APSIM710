@@ -51,10 +51,10 @@ void NonHerbageConverter::doInit1(const protocol::Init1Data& initData)
 //   buyID = system->addRegistration(::event, 0, "buy", buystockTypeDDML);
 
    stockMoveID = system->addRegistration(::respondToEvent, 0, "movestock", stringTypeDDML);
-   moveID = system->addRegistration(::event, 0, "move", DDML(protocol::MoveStockType()));
+   moveID = system->addRegistration(::event, 0, "move", DDML(protocol::MoveType()));
 
    stockSellID = system->addRegistration(::respondToEvent, 0, "sellstock", stringTypeDDML);
-   sellID = system->addRegistration(::event, 0, "sell", protocol::DDML(protocol::SellStockType()));
+   sellID = system->addRegistration(::event, 0, "sell", protocol::DDML(protocol::SellType()));
 
    addManureID = system->addRegistration(::event, 0, "add_surfaceom", "");
 
@@ -134,7 +134,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
     std::string  valuestr;
     int      value4;
     double   value;
-    protocol::BuyStockType buystock;
+    protocol::BuyType buystock;
 
     protocol::ApsimVariant incomingApsimVariant(v);
 
@@ -253,7 +253,7 @@ void NonHerbageConverter::stockBuy (protocol::Variant &v/*(INPUT) message varian
 void NonHerbageConverter::stockSell (protocol::Variant &v/*(INPUT) message variant*/)
 {
     int      value4;
-    protocol::SellStockType sellstock;
+    protocol::SellType sellstock;
 
     ostringstream msg;
     msg << "Sell stock :-" << endl;
@@ -291,7 +291,7 @@ void NonHerbageConverter::stockMove (protocol::Variant &v/*(INPUT) message varia
 {
     std::string  valuestr;
     int      value4;
-    protocol::MoveStockType movestock;
+    protocol::MoveType movestock;
 
     ostringstream msg;
     msg << "Name stock :-" << endl;
@@ -440,6 +440,6 @@ void NonHerbageConverter::readParameters ( void )
 
    int stockModuleID = -1;
    system->componentNameToID(stockModuleName, stockModuleID);
-   buyID = system->addRegistration(::event, stockModuleID, "buy", DDML(protocol::BuyStockType()));
+   buyID = system->addRegistration(::event, stockModuleID, "buy", DDML(protocol::BuyType()));
 
 }

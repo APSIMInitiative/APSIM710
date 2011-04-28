@@ -6850,14 +6850,14 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       integer    numvals
       integer    i                      ! Interception counter
       integer    l                      ! Layer counter
-      type(LightProfileType) :: LightProfile
+      type(CanopyEnergyBalanceType) :: LightProfile
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
       if (g%plant_status .eq. status_alive) then
 
           call get_name (module_name)
-          call unpack_LightProfile(variant, LightProfile)
+          call unpack_CanopyEnergyBalance(variant, LightProfile)
 
           g%radn_int = 0.0
           do 100 i=1, LightProfile%Num_Interception

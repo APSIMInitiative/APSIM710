@@ -110,7 +110,7 @@ void Plant::onInit1(void)
    scienceAPI.subscribe("end_crop",   NullFunction(&Plant::onEndCrop));
    scienceAPI.subscribe("end_run",    NullFunction(&Plant::onEndRun));
    scienceAPI.subscribe("kill_stem",  KillStemFunction(&Plant::onKillStem));
-   scienceAPI.subscribe("remove_crop_biomass",    RemoveCropDmFunction(&Plant::onRemoveCropBiomass));
+   scienceAPI.subscribe("remove_crop_biomass",    RemoveCropBiomassFunction(&Plant::onRemoveCropBiomass));
    scienceAPI.subscribe("detach_crop_biomass_rate", FloatFunction(&Plant::onDetachCropBiomass));
 
    // Send My Variable
@@ -531,7 +531,7 @@ void Plant::onEndRun()
    plant_zero_variables ();
    }
 
-void Plant::onRemoveCropBiomass(protocol::RemoveCropDmType& dmRemoved)
+void Plant::onRemoveCropBiomass(protocol::RemoveCropBiomassType& dmRemoved)
 //=======================================================================================
 // Event Handler for a RemoveCropBiomass Event
    {
@@ -560,8 +560,8 @@ void Plant::onDetachCropBiomass(float detachRate)
    {
    //=======================================================================================
    // Event Handler for a DetachCropBiomass Event
-   protocol::RemoveCropDmType dmRemoved;
-   protocol::RemoveCropDmdmType dm;
+   protocol::RemoveCropBiomassType dmRemoved;
+   protocol::RemoveCropBiomassdmType dm;
 
    dm.pool = "green";
 
@@ -959,7 +959,7 @@ void Plant::plant_harvest_update(protocol::HarvestType &Harvest)
    plant.doNConccentrationLimits(co2Modifier->n_conc());
    }
 
-void Plant::plant_remove_biomass_update (protocol::RemoveCropDmType dmRemoved)
+void Plant::plant_remove_biomass_update (protocol::RemoveCropBiomassType dmRemoved)
     {
    // Unpack the DmRemoved structure
    Tops().doRemoveBiomass(dmRemoved, c.remove_biomass_report);

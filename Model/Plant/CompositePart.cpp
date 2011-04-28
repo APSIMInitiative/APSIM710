@@ -542,7 +542,7 @@ void CompositePart::zeroDltNSenescedTrans(void)
 }
 
 
-void CompositePart::doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report)
+void CompositePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report)
 //=======================================================================================
 {
    vector <plantPart *>::iterator part;

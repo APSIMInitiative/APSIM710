@@ -6197,7 +6197,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       implicit none
       integer counter
       integer node
-      type(WaterUptakesType) :: Water
+      type(WaterUptakesCalculatedType) :: Water
       character CropName*200
 
       Water%num_Uptakes = g%num_crops
@@ -6214,7 +6214,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
      .            max(g%pwuptake(counter,node),0d0)
          end do
       end do
-      call publish_WaterUptakes(id%WaterUptakesCalculated, Water);
+      call publish_WaterUptakesCalculated
+     .   (id%WaterUptakesCalculated, Water);
 
       end subroutine
 

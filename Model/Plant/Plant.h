@@ -115,7 +115,7 @@ public:
    void onHarvest(protocol::HarvestType &Harvest);
    void onEndCrop() ;
    void onKillStem(protocol::KillStemType &KillStem);
-   void onRemoveCropBiomass(protocol::RemoveCropDmType& dmRemoved);
+   void onRemoveCropBiomass(protocol::RemoveCropBiomassType& dmRemoved);
    void onDetachCropBiomass(float detachRate);
    void onEndRun();
    void onAction(const std::string& eventName);
@@ -139,7 +139,7 @@ public:
    void doPlantRadnPartition (int option /*(INPUT) option number*/);
    bool onSetPhase (protocol::QuerySetValueData &v);
    void plant_harvest_update (protocol::HarvestType &Harvest);
-   void plant_remove_biomass_update (protocol::RemoveCropDmType dmRemoved);
+   void plant_remove_biomass_update (protocol::RemoveCropBiomassType dmRemoved);
    void plant_zero_all_globals (void);
    void plant_zero_variables (void);
    void plant_zero_daily_variables (void);

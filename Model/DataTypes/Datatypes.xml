@@ -127,7 +127,14 @@
       <field name="solutes" kind="string" array="T"/>
    </type>
    
-<!--      !!!!! CROP types !!!!!-->
+<!--      !!!!! Fertiliser types !!!!!-->
+   <type name="FertiliserApplication">
+      <field name="Amount" kind="single" /> 
+      <field name="Depth" kind="single" /> 
+      <field name="Type" kind="string" /> 
+   </type>
+
+   <!--      !!!!! CROP types !!!!!-->
    <type name="KillCrop">
       <field name="KillFraction" kind="single"/>
    </type>
@@ -156,7 +163,7 @@
 
    <!--      !!!!! MICROMET types !!!!!-->
 
-   <type name="LightProfile">
+   <type name="CanopyEnergyBalance">
       <field name="Interception" array="T">
          <field name="name" kind="string"/>
          <field name="CropType" kind="string"/>
@@ -169,7 +176,6 @@
       <field name="transmission" kind = "single"/>
    </type>
 
-
    <type name="CanopyWaterBalance">
       <field name="Canopy" array="T">
          <field name="name" kind="string"/>
@@ -180,19 +186,6 @@
       <field name="interception" kind = "single"/>
    </type>
 
-   <type name="Canopies">
-      <field name="Canopy" array="T">
-         <field name="name" kind="string"/>
-         <field name="CropType" kind="string"/>
-         <field name="Layer" array="T">
-            <field name="Thickness" kind="single"/>
-            <field name="LAI" kind="single"/>
-            <field name="CoverGreen" kind="single"/>
-            <field name="CoverTotal" kind="single"/>
-         </field>
-         <field name="frgr" kind="single"/>
-      </field>
-   </type>
    <!--      !!!!! Fertiliser types !!!!!  -->
    <type name="FertiliserApplication">
       <field name="Amount" kind="single" />
@@ -215,7 +208,7 @@
    <type name="WaterChanged">
       <field name="DeltaWater" kind="double" array="T"/>
    </type>
-   <type name="WaterUptakes">
+   <type name="WaterUptakesCalculated">
       <field name="Uptakes" array="T">
          <field name="Name" kind="string"/>
          <field name="Amount" kind="double" unit="mm" array="T"/>
@@ -518,6 +511,18 @@
          <field name="seed" unit="kg/ha" kind="double" array="T" />
       </type>
 
+      <type name="AddResidue">
+        <field name="name" descr="" kind="string" /> 
+        <field name="standing" descr="" kind="boolean" /> 
+        <field name="part" descr="" kind="string" /> 
+        <field name="weight" descr="" kind="double" unit="kg/ha" /> 
+        <field name="n" descr="" kind="double" unit="kg/ha" /> 
+        <field name="p" descr="" kind="double" unit="kg/ha" /> 
+        <field name="s" descr="" kind="double" unit="kg/ha" /> 
+        <field name="ash_alk" descr="" kind="double" unit="mol/ha" /> 
+        <field name="dmd" descr="" kind="double" /> 
+      </type>
+
    <type name="SuppEaten">
       <field name="Pool" array="T">
             <field name="paddock"      unit="-"      kind="string"/>
@@ -578,7 +583,7 @@
          <field name="young_fleece_wt" descr="" kind="double" unit="kg"/>
       </type>
       
-      <type name="BuyStock">
+      <type name="Buy">
          <field name="genotype"                        kind="string"/>
          <field name="number"                          kind="integer4"/>
          <field name="sex"                             kind="string"/>
@@ -594,7 +599,7 @@
          <field name="young_fleece_wt"  unit="kg"      kind="double"/>
       </type>
 
-      <type name="SellStock">
+      <type name="Sell">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
@@ -609,13 +614,17 @@
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
 
+      <type name="Draft">
+         <field name="closed" descr="" kind="string" array="T" /> 
+      </type>
+
       <type name="Join">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="mate_to"       unit="-"       kind="string"/>
          <field name="mate_days"     unit="d"       kind="integer4"/>
       </type>
 
-      <type name="MoveStock">
+      <type name="Move">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="paddock"       unit="-"       kind="string"/>
       </type>
@@ -631,7 +640,7 @@
          <field name="value"         unit="-"       kind="double"/>
       </type>
 
-      <type name="TagStock">
+      <type name="Tag">
          <field name="group"         unit="-"       kind="integer4"/>
          <field name="value"         unit="-"       kind="integer4"/>
       </type>
@@ -642,7 +651,7 @@
          <field name="number"        unit="-"       kind="integer4"/>
       </type>
 
-      <type name="RemoveCropDm">
+      <type name="RemoveCropBiomass">
         <field name = "dm" array="T">
             <field name="pool" kind="string"/>
             <field name="part" kind="string" array="T"/>
@@ -667,7 +676,22 @@
       <field name="amount" kind="double" unit="kg"/>
       <field name="paddock" kind="string" unit="-"/>
    </type>
-
+   
+   <type name="OnConserve">
+      <field name="fresh_wt" descr="" kind="double" unit="kg" /> 
+      <field name="dm_content" descr="" kind="double" unit="kg/kg" /> 
+      <field name="dmd" descr="" kind="double" /> 
+      <field name="n_conc" descr="" kind="double" unit="kg/kg" /> 
+      <field name="p_conc" descr="" kind="double" unit="kg/kg" /> 
+      <field name="s_conc" descr="" kind="double" unit="kg/kg" /> 
+      <field name="ash_alk" descr="" kind="double" unit="mol/kg" /> 
+   </type>
+   
+   <type name="Buy">
+      <field name="supplement" descr="" kind="string" /> 
+      <field name="amount" descr="" kind="double" unit="kg" /> 
+   </type>
+   
    <type name="Mix">
       <field name="src_store" kind="string" unit="-"/>
       <field name="amount" kind="double" unit="kg"/>

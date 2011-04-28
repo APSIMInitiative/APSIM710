@@ -93,7 +93,7 @@ void ResidueHerbage::readParameters ( void )
 // ------------------------------------------------------------------
 void ResidueHerbage::doGrazed(protocol::RemoveHerbageType &grazed)
 {
-      protocol::RemoveCropDmType crop;
+      protocol::RemoveCropBiomassType crop;
 
       doDmdPoolsToHerbageParts(grazed, crop);
 
@@ -436,7 +436,7 @@ void ResidueHerbage::doRunTimeReg(void)
 // ------------------------------------------------------------------
 // Event handler.
 // ------------------------------------------------------------------
-void ResidueHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropDmType &crop)
+void ResidueHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropBiomassType &crop)
 {
       for (int pool = 0; pool < numDmdPoolsVeg(); pool++)
       {
@@ -445,7 +445,7 @@ void ResidueHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &graze
          partFractionVeg[pool] = poolDm / dmTot;
       }
 
-      protocol::RemoveCropDmdmType dm;
+      protocol::RemoveCropBiomassdmType dm;
       crop.dm.erase(crop.dm.begin(), crop.dm.end());
       dm.dlt.erase(dm.dlt.begin(), dm.dlt.end());
       dm.part.erase(dm.part.begin(), dm.part.end());

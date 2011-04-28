@@ -334,8 +334,8 @@ void grazComponent::update (void)
    if (dead_leaf_eaten + green_leaf_eaten +
        dead_stem_eaten + green_stem_eaten > 0.0 )
       {
-      RemoveCropDmType dmEaten;
-      RemoveCropDmdmType greenEaten;
+      RemoveCropBiomassType dmEaten;
+      RemoveCropBiomassdmType greenEaten;
 
       greenEaten.pool = "green";
       greenEaten.part.push_back("leaf");
@@ -346,7 +346,7 @@ void grazComponent::update (void)
 
       // NB. our "dead pool" is the plant "senesced pool".. Ideally, we should treat
       //  senesced and dead pools equally.
-      RemoveCropDmdmType deadEaten;
+      RemoveCropBiomassdmType deadEaten;
       deadEaten.pool = "senesced";
       deadEaten.part.push_back("leaf");
       deadEaten.dlt.push_back(
@@ -367,9 +367,9 @@ void grazComponent::update (void)
 
    if (dead_leaf_tramp + dead_stem_tramp > 0.0 )
       {
-      RemoveCropDmType dmTrampled;
+      RemoveCropBiomassType dmTrampled;
 
-      RemoveCropDmdmType deadTrampled;
+      RemoveCropBiomassdmType deadTrampled;
       deadTrampled.pool = "senesced";
       deadTrampled.part.push_back("leaf");
       deadTrampled.dlt.push_back(dead_leaf_tramp * kg2gm / ha2sm);   // send in g/sm

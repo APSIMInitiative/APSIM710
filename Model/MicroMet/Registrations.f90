@@ -2,7 +2,6 @@ module Registrations
    use DataTypes
    type IDsType
       sequence
-      integer :: lightprofilecalculated
       integer :: canopywaterbalancecalculated
       integer :: canopy_energy_balance
       integer :: canopy_water_balance
@@ -18,7 +17,6 @@ module Registrations
       integer :: omega_table
       integer :: tick
       integer :: newmet
-      integer :: canopychanged
       integer :: domicromet
       integer :: process
       integer :: prepare
@@ -37,9 +35,8 @@ module Registrations
          type(IDsType) :: id
 		 integer :: dummy
 
-         id%lightprofilecalculated = add_registration(eventReg, 'lightprofilecalculated', LightProfileTypeDDML, '')
          id%canopywaterbalancecalculated = add_registration(eventReg, 'canopywaterbalancecalculated', CanopyWaterBalanceTypeDDML, '')
-         id%canopy_energy_balance = add_registration(eventReg, 'canopy_energy_balance', nullTypeDDML, '')
+         id%canopy_energy_balance = add_registration(eventReg, 'canopy_energy_balance', CanopyEnergyBalanceTypeDDML, '')
          id%canopy_water_balance = add_registration(eventReg, 'canopy_water_balance', CanopyWaterBalanceTypeDDML, '')
          id%lai_table = add_registration(respondToEventReg, 'lai_table', nullTypeDDML, '')
          id%f_table = add_registration(respondToEventReg, 'f_table', nullTypeDDML, '')
@@ -53,7 +50,6 @@ module Registrations
          id%omega_table = add_registration(respondToEventReg, 'omega_table', nullTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
-         id%canopychanged = add_registration(respondToEventReg, 'canopychanged', CanopiesTypeDDML, '')
          id%domicromet = add_registration(respondToEventReg, 'domicromet', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')

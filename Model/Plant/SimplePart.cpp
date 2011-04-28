@@ -452,7 +452,7 @@ void SimplePart::removeBiomass(void)
    Senesced = Senesced - SenescedRemoved;
    }
 
-void SimplePart::doRemoveBiomass(protocol::RemoveCropDmType dmRemoved, bool c_remove_biomass_report)
+void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report)
 //=======================================================================================
 // deltas have been given from an external module; update states.
 {

@@ -140,7 +140,7 @@ void PlantHerbage::doRunTimeReg(void)
    stageID = system->addRegistration(::get, cHerbageModuleID, "stage", singleTypeDDML);
    stageNameID = system->addRegistration(::get, cHerbageModuleID,"stagename", stringTypeDDML);
 
-    removeCropBiomassID = system->addRegistration(::event, cHerbageModuleID,"remove_crop_biomass", DDML(protocol::RemoveCropDmType()));
+    removeCropBiomassID = system->addRegistration(::event, cHerbageModuleID,"remove_crop_biomass", DDML(protocol::RemoveCropBiomassType()));
     detachRateID = system->addRegistration(::event, cHerbageModuleID, "detach_crop_biomass_rate", "");
 
 //   dmFeedOnOfferID = system->addRegistration(::respondToGet, 0, "dm_feed_on_offer", singleArrayTypeDDML);
@@ -244,7 +244,7 @@ void PlantHerbage::doGrazed(protocol::RemoveHerbageType &grazed)
 // ------------------------------------------------------------------
 // Event handler.
 // ------------------------------------------------------------------
-void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropDmType &crop)
+void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed, protocol::RemoveCropBiomassType &crop)
 {
       for (int pool = 0; pool < numDmdPoolsVeg(); pool++)
       {
@@ -260,7 +260,7 @@ void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed,
          partFractionSeed[pool] = poolDm / dmTot;
       }
 
-      protocol::RemoveCropDmdmType dm;
+      protocol::RemoveCropBiomassdmType dm;
       crop.dm.erase(crop.dm.begin(), crop.dm.end());
       dm.dlt.erase(dm.dlt.begin(), dm.dlt.end());
       dm.part.erase(dm.part.begin(), dm.part.end());

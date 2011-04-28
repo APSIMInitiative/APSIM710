@@ -30,18 +30,26 @@ public ref class EvntHandler abstract : ApsimType
 	      // Creates a field wrapper for the given property.
 	      // ----------------------------------------------
 	      String^ Desc;
-         Desc = "   <event name=\"" + EventName + "\" kind=\"subscribed\">\r\n";
-         String^ ddml = DDML();
-         if (ddml != "")
-         {
-            Desc += "      " + ddml + "\r\n";
-//            XmlDocument^ doc = gcnew XmlDocument();
-//            doc->LoadXml(ddml);
-//            Desc += "      " + doc->DocumentElement->InnerXml + "\r\n";
-         }
+          Desc = "   <event name=\"" + EventName + "\"";
+          String^ ddml = DDML();
+		  String^ typeName = "";
+ 	      String^ ddmlData = "";
+          if (ddml != "")
+          {
+             XmlDocument^ doc = gcnew XmlDocument();
+             doc->LoadXml(ddml);
+             XmlNode^ tnNode = doc->DocumentElement->Attributes->GetNamedItem("typename");
+             if (tnNode != nullptr)
+			    typeName = tnNode->Value;
+             ddmlData = doc->DocumentElement->InnerXml;
+          }
+          if (typeName != "")
+	         Desc += " typename=\"" + typeName + "\"";
+          Desc += " kind=\"subscribed\">\r\n";
+          Desc += "      " + ddmlData + "\r\n";
+          Desc += "   </event>\r\n";
 
-         Desc += "   </event>\r\n";
-         return Desc;
+		  return Desc;
          }
    };
    
