@@ -2,7 +2,7 @@
 #include <General/stl_functions.h>
 
 #include "YPComponent.h"
-#include <ComponentInterface/variant.h>
+#include <ComponentInterface/Variant.h>
 using namespace std;
 using namespace protocol;
 
