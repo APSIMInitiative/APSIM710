@@ -42,8 +42,21 @@ Public Class Script
       For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
          Dim Fertiliser As Fertiliser = SubPaddock.ComponentByType("Fertiliser")
          Dim Irrigation As Irrigation = SubPaddock.ComponentByType("Irrigation")
-         Fertiliser.Apply(50, 10, "NO3_N")
-         Irrigation.Apply(50, 0, "", Nothing, 0, 0, 0, 0)
+         Dim fert As FertiliserApplicationType = New FertiliserApplicationType()
+         fert.Amount = 50
+         fert.Depth = 10
+         fert.Type = "NO3_N"
+         Fertiliser.Apply(fert)
+         Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
+         irrig.Amount = 50
+         irrig.Duration = 0
+         irrig.time = ""
+         ReDim irrig.source(-1)
+         irrig.Crop_Area = 0
+         irrig.NO3 = 0
+         irrig.NH4 = 0
+         irrig.CL = 0
+         Irrigation.Apply(irrig)
       Next
    End Sub
 

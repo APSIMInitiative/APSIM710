@@ -629,7 +629,16 @@ Public Class Script
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
                      Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
-                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
+                     Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
+                     irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
+                     irrig.Duration = 0
+                     irrig.time = ""
+                     ReDim irrig.source(-1)
+                     irrig.Crop_Area = 0
+                     irrig.NO3 = 0
+                     irrig.NH4 = 0
+                     irrig.CL = 0
+                     Irrigation.Apply(irrig)
                   End If
                End If
             End If
@@ -1433,7 +1442,16 @@ Public Class Script
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
                      Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
-                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
+                     Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
+                     irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
+                     irrig.Duration = 0
+                     irrig.time = ""
+                     ReDim irrig.source(-1)
+                     irrig.Crop_Area = 0
+                     irrig.NO3 = 0
+                     irrig.NH4 = 0
+                     irrig.CL = 0
+                     Irrigation.Apply(irrig)
                   End If
                End If
             End If
@@ -2239,8 +2257,16 @@ Public Class Script
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
                      Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
-                     
-                     Irrigation.Apply(IrrigAmt / (IrrigEff * 0.01), 0, "", Nothing, 0, 0, 0, 0)
+                     Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
+                     irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
+                     irrig.Duration = 0
+                     irrig.time = ""
+                     ReDim irrig.source(-1)
+                     irrig.Crop_Area = 0
+                     irrig.NO3 = 0
+                     irrig.NH4 = 0
+                     irrig.CL = 0                     
+                     Irrigation.Apply(irrig)
                   End If
                End If
             End If

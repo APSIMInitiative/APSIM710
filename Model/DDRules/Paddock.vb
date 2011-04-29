@@ -343,17 +343,17 @@ Public Class LocalPaddockType
          UrinePatchComponent.Publish("ApplyUrine", urine)
       Else    ' use simple fertiliser and irrigation events
             Dim Fertiliser As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
-            Dim fert As FertiliserApplicationType
+            Dim fert As FertiliserApplicationType = New FertiliserApplicationType()
             fert.Amount = kgN / Area
             fert.Depth = Default_Application_Depth
             fert.Type = "urea_N"
             Fertiliser.Apply(fert)
             Dim Irrigation As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
-            Dim irrigate As IrrigationApplicationType
+            Dim irrigate As IrrigationApplicationType = New IrrigationApplicationType()
             irrigate.Amount = v / 10000  ' 20107003 - converting litres/ha to mm/ha
             irrigate.Duration = 0
-            irrigate.time = 0
-            irrigate.source = Nothing
+            irrigate.time = ""
+            ReDim irrigate.source(-1)
             irrigate.Crop_Area = 0
             irrigate.NO3 = 0
             irrigate.NH4 = 0

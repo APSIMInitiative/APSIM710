@@ -399,7 +399,7 @@ Public Class UrinePatch
 
       Dim Default_Application_Depth As Double = 10   ' apply N at a depth of 10mm
         Dim volume As Double = UrinePatchNitrogenConc / 0.08               ' liquid volume of the urine application
-        Dim fert As FertiliserApplicationType
+        Dim fert As FertiliserApplicationType = New FertiliserApplicationType()
         fert.Amount = UrineN_Retained
         fert.Depth = Default_Application_Depth
         fert.Type = "urea_n"
