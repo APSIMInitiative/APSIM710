@@ -475,7 +475,8 @@ Public Class MainUI
          ' Load some assemblies for later. The code for some actions are found in
          ' these assemblies.
          Assembly.Load("Actions")
-         Assembly.Load("CSUserInterface")
+            Assembly.Load("CSUserInterface")
+            Assembly.Load("CPIUserInterface")
          Assembly.Load("VBUserInterface")
          Assembly.Load("Graph")
          'Assembly.Load("Soils")
