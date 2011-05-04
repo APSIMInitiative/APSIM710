@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ModelFramework;
+#if !fulldotnet  
+    using ModelFramework;
+#endif
 using VBMet;
 using CSGeneral;
 
