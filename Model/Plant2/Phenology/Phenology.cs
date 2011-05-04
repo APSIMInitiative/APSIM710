@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ModelFramework;
+#if !fulldotnet  
+    using ModelFramework;
+#endif
 
 public class Phenology : Instance
    {
@@ -136,7 +138,7 @@ public class Phenology : Instance
             PhaseChangedData.OldPhaseName = OldPhaseName;
             PhaseChangedData.NewPhaseName = CurrentPhase.Name;
             PhaseChanged.Invoke(PhaseChangedData);
-
+            //MyPaddock is created when ApsimComponent Factory is created
             MyPaddock.Publish(CurrentPhase.Start, new NullType());
             }
          }
