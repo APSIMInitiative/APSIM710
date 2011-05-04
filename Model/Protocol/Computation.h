@@ -7,7 +7,6 @@
 #include <General/platform.h>
 
 #ifdef MONO
-#include <glib.h>
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>

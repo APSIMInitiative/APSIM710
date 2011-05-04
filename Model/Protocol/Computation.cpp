@@ -1,6 +1,7 @@
 #ifdef __WIN32__
    #include <windows.h>
    #include <direct.h>
+   #include <assert.h>
 #else
    #include <dlfcn.h>
    #define MONO
@@ -272,15 +273,9 @@ bool Computation::loadComponent(const std::string& FileName,
 		(FARPROC) messageToLogicProc = GetProcAddress(handle, "messageToLogic");
 #endif
 #else
-		createInstanceProc = (void (*)(const char*,
-			const unsigned int*,
-			const unsigned int*,
-			const int*,
-			coint*,
-			void(*)(const unsigned int*, protocol::Message*)))
-			dlsym(handle, "createInstance");
-		deleteInstanceProc = (void (*)(const int*))dlsym(handle, "deleteInstance");
-		messageToLogicProc = (void (*)(const int*, const protocol::Message*, bool*))dlsym(handle, "messageToLogic");
+		createInstanceProc = (createInstanceProcType *)dlsym(handle, "createInstance");
+		deleteInstanceProc = (deleteInstanceProcType *)dlsym(handle, "deleteInstance");
+		messageToLogicProc = (messageToLogicProcType *)dlsym(handle, "messageToLogic");
 #endif
 
 		if (createInstanceProc == NULL ||
@@ -412,7 +407,6 @@ void Computation::CreateManagedInstance(const std::string& filename,
 #ifdef MONO
 	try 
 	{
-		MonoString *str;
 		MonoImageOpenStatus status;
 
 		MonoAssembly* assembly = mono_assembly_open (filename.c_str(), &status);
@@ -427,7 +421,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			classInstance = mono_object_new (domain, klass);
 
 			// "Pin" the class instance to keep the garbage collector from discarding it.
-			guint32 handle = mono_gchandle_new (classInstance, TRUE);
+			uint32_t handle = mono_gchandle_new (classInstance, TRUE);
 			classInstance = mono_gchandle_get_target (handle);
 
 			MonoMethod* ctor_method = GetMonoMethod(classInstance, "CMPComp.TGCComponent:.ctor");
@@ -439,7 +433,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			void *args [3];
 			args [0] = &compId;
 			args [1] = &parentId;
-			void* fPtr = callback;
+			void* fPtr = (void*)callback;
 			args [2] = &fPtr;
 			/* constructor methods return void, so we ignore the return value,
 			* the constructed object is my_class_instance. */
@@ -467,7 +461,6 @@ void Computation::CreateManagedInstance(const std::string& filename,
 		assert(pDefaultDomain);
 
 		_ObjectHandlePtr pObjectHandle; 
-		SAFEARRAY* psa;
 
 		SAFEARRAY * l_pArray;
 		l_pArray = SafeArrayCreateVectorEx(VT_VARIANT, 0, 3, NULL);
@@ -500,7 +493,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			wide_filename.c_str(),
 			L"CMPComp.TGCComponent",
 			false,
-			BindingFlags::BindingFlags_OptionalParamBinding,
+			BindingFlags_OptionalParamBinding,
 			NULL,
 			l_pArray,
 			NULL,
@@ -638,7 +631,7 @@ CompilationMode IsManaged(const char * filename) {
 
 		// For now, if we're on Linux just see if it has an "ELF" header
 		if (data[0] == 0x7f && data[1] == 'E' && data[2] == 'L' && data[3] == 'F')
-			return CompilationMode::Native;
+			return Native;
 #endif
 		// Verify this is a executable/dll
 		if (*(unsigned short*)&data[0] != 0x5a4d)
@@ -666,7 +659,7 @@ CompilationMode IsManaged(const char * filename) {
 		{
 			unsigned int optionalHdrBase = iWinNTHdr + 24;
 			unsigned short magic = *(unsigned*)&data[optionalHdrBase];
-			bool is64bit = magic & 0x200;
+			bool is64bit = (magic & 0x200) != 0;
 			unsigned int exportTableAddr = *(unsigned*)&data[optionalHdrBase + 96];
 			unsigned int exportTableSize = *(unsigned*)&data[optionalHdrBase + 100];
 			if (exportTableSize > 0)
