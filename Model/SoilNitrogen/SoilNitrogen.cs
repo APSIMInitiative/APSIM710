@@ -1453,7 +1453,6 @@ public class SoilN : Instance
         }
 
         use_external_ph = ParentComponent().Get("ph", arrayVal, true) && (arrayVal.Value != null);
-        use_external_ph = use_external_ph && (arrayVal.Value != null);
 
         // Check if all values supplied. If not use average C:N ratio in all pools
         if (root_cn_pool == null || root_cn_pool.Length < 3)

@@ -59,11 +59,10 @@
                <solute><a>[Swim.SwimSoluteParameters.a]</a><dthc>[Swim.SwimSoluteParameters.dthc]</dthc><dthp>[Swim.SwimSoluteParameters.dthp]</dthp><dis> [Swim.SwimSoluteParameters.dis]</dis><disp>[Swim.SwimSoluteParameters.disp]</disp><NO3Exco>[soil.NO3Exco]</NO3Exco><NO3FIP>[soil.NO3FIP]</NO3FIP><NH4Exco>[soil.NH4Exco]</NH4Exco><NH4FIP>[soil.NH4FIP]</NH4FIP><UreaExco>[soil.UreaExco]</UreaExco><UreaFIP>[soil.UreaFIP]</UreaFIP><ClExco>[soil.ClExco]</ClExco><ClFIP>[soil.ClFIP]</ClFIP><WaterTableNO3>[Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3><WaterTableNH4>[Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4><WaterTableUrea>[Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea><WaterTableCl>[Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl></solute></initdata></component>
       [endfor]
       <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.%dllext%">
-        <componentinterface>%apsim%/Model/dotnetcomponentinterface.dll</componentinterface>
+         <componentinterface>%apsim%/Model/dotnetcomponentinterface.dll</componentinterface>
          <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" />
             <initdata>
-               <SoilN>
-               [Model SoilN]
+               [Model SoilNitrogen]
                [if "[soil.SoilType]"]
                <soiltype>[soil.SoilType]</soiltype>
                [endif]
@@ -79,10 +78,6 @@
                <finert>[soil.FINERT(0-1)]</finert>
                <no3ppm>[soil.NO3(ppm)]</no3ppm>
                <nh4ppm>[soil.NH4(ppm)]</nh4ppm>
-               [if [soil.Rocks(%)]]
-               <rocks>[soil.Rocks(%)]</rocks>
-               [endif]
-               </SoilN>
          </initdata></component>
       [foreach Soil.Phosphorus]
       <component name="Phosphorus" executable="%apsim%/Model/SoilP.%dllext%"><executable name="%apsim%/Model/SoilP.%dllext%" version="1.0" /><initdata>
@@ -215,7 +210,8 @@
       <burn>0.0           0.</burn>
     </tillage>
   </Model>
-  <Model name="SoilN">
+  <Model name="SoilNitrogen">
+    <SoilN>
       <cnrf_coeff description="coeff. to determine the magnitude of C:N effects on decomposition of FOM">0.693  </cnrf_coeff>
       <cnrf_optcn description="C:N above which decomposition rate of FOM declines">25.0   </cnrf_optcn>
       <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.4       </ef_biom>
@@ -370,6 +366,20 @@
              <profile_reduction>on</profile_reduction>
          </Override>
       </SoilType>
+      <soiltype>standard</soiltype>
+      <root_cn>40</root_cn>
+      <root_wt>200</root_wt>
+      <soil_cn>12.5</soil_cn>
+      <enr_a_coeff>7.4</enr_a_coeff>
+      <enr_b_coeff>0.2</enr_b_coeff>
+      <profile_reduction>off</profile_reduction>
+      <oc>1.0 1.0</oc>
+      <ph>7.0 7.0</ph>
+      <fbiom>0.01 0.01</fbiom>
+      <finert>0.9 0.9</finert>
+      <no3ppm>5.0 2.0</no3ppm>
+      <nh4ppm>0.4 0.1</nh4ppm>
+    </SoilN>
   </Model>
   <Model name="SoilP">
     <!--  CHANGES by MEP
@@ -555,7 +565,7 @@
       <event name="runoffevent" description="" />
     </events>
   </Info>
-  <Info name="SoilN">
+  <Info name="SoilNitrogen">
     <variables>
       <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
       <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
