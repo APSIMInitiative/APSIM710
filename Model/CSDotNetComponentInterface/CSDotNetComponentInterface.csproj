@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F5238838-4CC7-4953-8745-312CF93BEBCE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CSDotNetComponentInterface</RootNamespace>
+    <AssemblyName>CSDotNetComponentInterface</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ApsimFile.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DataTypes\DOTNETDataTypes.cs">
+      <Link>DOTNETDataTypes.cs</Link>
+    </Compile>
+    <Compile Include="ApsimAttributes.cs" />
+    <Compile Include="ApsimComponent.cs" />
+    <Compile Include="Component.cs" />
+    <Compile Include="CropType.cs" />
+    <Compile Include="ApsimHost.cs" />
+    <Compile Include="Factory.cs" />
+    <Compile Include="FactoryEvent.cs" />
+    <Compile Include="FactoryEventHandler.cs" />
+    <Compile Include="FactoryProperty.cs" />
+    <Compile Include="FertiliserType.cs" />
+    <Compile Include="Instance.cs" />
+    <Compile Include="IrrigationType.cs" />
+    <Compile Include="LinkField.cs" />
+    <Compile Include="NamedItem.cs" />
+    <Compile Include="Paddock.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuntimeEventHandler.cs" />
+    <Compile Include="SoilNitrogenType.cs" />
+    <Compile Include="SoilWater.cs" />
+    <Compile Include="VariableType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+    <ProjectReference Include="c:\Projects\CMP\common_cs\CMPServices.csproj">
+      <Project>{4A1A4A3C-F937-488D-BE0B-F2435678FCEF}</Project>
+      <Name>CMPServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
