@@ -6,6 +6,18 @@
 
 #include <General/platform.h>
 
+#ifdef MONO
+#include <glib.h>
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/debug-helpers.h>
+#else
+#include <mscoree.h>
+#endif
+
+enum CompilationMode {Invalid, Native, CLR, Mixed };
+CompilationMode IsManaged(const char * filename);
+
 namespace protocol {
 
 typedef EXPORT void (STDCALL CallbackType)(const unsigned int *compInst, Message *message);
@@ -49,8 +61,14 @@ class EXPORT Computation : public IComputation
                                       messageToLogicProc != NULL);}
       virtual void messageToLogic(const Message* message) const
          {
-         bool messageProcessed;
-         (*messageToLogicProc) (&instanceNo, message, &messageProcessed);
+			 if (isManaged) {
+				 messageToManagedLogic((Message*)message);
+			 }
+			 else
+			 {
+               bool messageProcessed;
+               (*messageToLogicProc) (&instanceNo, message, &messageProcessed);
+			 }
          }
       unsigned getInstanceNo(void) const {return instanceNo;}
       std::string getExecutable(void) {return executableFileName;}
@@ -58,7 +76,31 @@ class EXPORT Computation : public IComputation
    private:
       int instanceNo;
       void* handle;
-      std::string executableFileName;
+	  std::string executableFileName;
+
+	  bool isManaged;
+
+#ifdef MONO
+
+	  static MonoDomain *domain;
+	  MonoMethod* handleMsgMethod;
+      MonoMethod* Computation::GetMonoMethod(MonoObject* classInstance, const char* methodName);
+	  MonoObject* classInstance;
+
+#else
+	  HMODULE mscoree;
+	  static ICorRuntimeHost *pHost;
+	  VARIANT vtobj;
+	  void* typePtr;
+
+#endif
+
+	  void InitNETFrameworks();
+
+	  void CreateManagedInstance(const std::string& filename,
+		                         unsigned int componentId,
+                                 unsigned int parentId);
+	  void messageToManagedLogic(Message* message) const;
 
       void createInstance(const std::string& filename,
                           unsigned int componentId,
