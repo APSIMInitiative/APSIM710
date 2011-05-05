@@ -8,7 +8,12 @@ using System.Windows.Forms;
 using System.Xml;
 using CSGeneral;
 using ApsimFile;
-
+//outputfile - use constants to add factorial settings
+//use xml, insert before existing??
+//uses first '=' to separate name and value
+// <Constants> starts this section
+// <test>value</test> is a line
+//If constant is present, it ignores the Title
 
 namespace CSUserInterface
 {
@@ -24,7 +29,7 @@ namespace CSUserInterface
             FactorBuilder builder = new FactorBuilder();
             List<string> SimsToRun = new List<string>();
             ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.RootComponent, ref SimsToRun);
-
+            int iTotalCount = 0;
             foreach (string SimulationPath in SimsToRun)
             {
                 int iCount = 0;
@@ -42,7 +47,22 @@ namespace CSUserInterface
                     if (items.Count > 0)
                         AddFactorsToTreeNode(items[0], treeNode);
                 }
+                iTotalCount += iCount;
+                txtTotalSims.Text = iTotalCount.ToString();
             }
+
+            XmlNode varNode = Data.SelectSingleNode("//settings");
+            string s = XmlHelper.Attribute(varNode, "fn");
+            if (s == "1")
+                radDesc.Checked = true;
+            else
+                radCount.Checked = true;
+
+            s = XmlHelper.Attribute(varNode, "tl");
+            if (s == "1")
+                radMultiple.Checked = true;
+            else
+                radSingle.Checked = true;
         }
         public void AddFactorsToTreeNode(FactorItem factor, TreeNode parentNode)
         {
@@ -57,6 +77,17 @@ namespace CSUserInterface
 
         public override void OnSave()
         {
+            Data.RemoveAll();
+
+            XmlNode node = Data.AppendChild(Data.OwnerDocument.CreateElement("settings"));
+            if (radDesc.Checked)
+            {
+                XmlHelper.SetAttribute(node, "fn", "1");
+            }
+            if (radMultiple.Checked)
+            {
+                XmlHelper.SetAttribute(node, "tl", "1");
+            }
         }
 
 

@@ -359,8 +359,43 @@
             </call>
          </OnInvoke>
       </Duplicate>
-
-
+      <DeleteFactor>
+         <text>Delete</text>
+         <Location>AllNodes</Location>
+         <Description>Delete the selected node</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\delete216.png</SmallIcon>
+         <ShortCut>Delete</ShortCut>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>DeleteFactor</method>
+            </call>
+         </OnInvoke>
+      </DeleteFactor>
+      <AddFactor>
+         <text>Add factor</text>
+         <Description>Add a factor to the selected item</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\cube_green16.png</SmallIcon>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>AddFactor</method>
+            </call>
+         </OnInvoke>
+      </AddFactor>
+      <AddFactorFolder>
+         <text>Add folder</text>
+         <Description>Add a child folder to the selected folder</Description>
+         <SmallIcon>%apsim%\UserInterface\Images\folder_add16.png</SmallIcon>
+         <AppliesTo>Folder</AppliesTo>
+         <AppliesTo>factorial</AppliesTo>
+         <OnInvoke>
+            <call>
+               <class>Actions.BaseActions</class>
+               <method>AddFactorFolder</method>
+            </call>
+         </OnInvoke>
+      </AddFactorFolder>
       <SoilCropManagement>
          <text>Manage crops</text>
          <OnInvoke>
@@ -619,6 +654,7 @@
       <Item>GraphWizard</Item>
       <Item>Excel</Item>
       <Item>Options</Item>
+      <Item>Factorial</Item>
       <Item>Cluster</Item>
       <DropDownItem action="Help">
          <Item>HelpDocumentation</Item>
@@ -655,4 +691,10 @@
    </ContextMenu>
 
 
+   <FactorContextMenu>
+      <ImageSize>SmallIcon</ImageSize>
+      <Item>AddFactor</Item>
+      <Item>DeleteFactor</Item>
+      <Item>AddFactorFolder</Item>
+   </FactorContextMenu>
 </Folder>

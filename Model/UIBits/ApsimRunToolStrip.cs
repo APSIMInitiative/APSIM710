@@ -150,11 +150,19 @@ public class ApsimRunToolStrip
        {
            Component Simulation = _F.Find(SimulationPath);
            string savedName = Simulation.Name;
-           FactorBuilder builder = new FactorBuilder();
-           List<FactorItem> items = builder.BuildFactorItems(Controller.ApsimData.FactorComponent, SimulationPath);
-           foreach (FactorItem item in items)
+           try
            {
-               item.Process(_JobRunner, Simulation, SimulationPath, savedName);
+               FactorBuilder builder = new FactorBuilder();
+               List<FactorItem> items = builder.BuildFactorItems(Controller.ApsimData.FactorComponent, SimulationPath);
+               foreach (FactorItem item in items)
+               {
+                   int counter = 0;
+                   string factorsList = "";
+                   item.Process(_JobRunner, Simulation, SimulationPath, factorsList, ref counter, 1);
+               }
+           }
+           catch (Exception ex)
+           {
            }
            Simulation.Name = savedName;
        }

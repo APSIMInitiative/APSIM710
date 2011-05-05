@@ -106,6 +106,31 @@ Public Class BaseActions
 
         Next
     End Sub
+    Public Shared Sub DeleteFactor(ByVal Controller As BaseController)
+        ' --------------------------------------------------------
+        ' Delete selected nodes
+        ' --------------------------------------------------------
+        Dim CompToDelete As ApsimFile.Component = Controller.FactorialSelection
+        ' find next sibling, or previous sibling, or parent the set SelectedFactorialPath
+        Dim CompToSelect As ApsimFile.Component = CompToDelete.Parent
+
+        Controller.SelectedFactorialPath = CompToSelect.FullPath
+        CompToDelete.Parent.Delete(CompToDelete)
+
+        Controller.Explorer.RefreshCurrentView()
+    End Sub
+    Public Shared Sub AddFactorFolder(ByVal Controller As BaseController)
+        ' --------------------------------------------------------
+        ' Add a folder
+        ' --------------------------------------------------------
+        Controller.FactorialSelection.Add("<folder/>")
+    End Sub
+    Public Shared Sub AddFactor(ByVal Controller As BaseController)
+        ' --------------------------------------------------------
+        ' Add a folder
+        ' --------------------------------------------------------
+        Controller.FactorialSelection.Add("<factor/>")
+    End Sub
 
 #Region "Printing"
     Private Shared ComponentsToPrint As New List(Of String)

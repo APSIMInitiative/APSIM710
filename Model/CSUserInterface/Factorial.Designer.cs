@@ -74,6 +74,16 @@
             this.btnGenerate = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.treeSims = new System.Windows.Forms.TreeView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtTotalSims = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radCount = new System.Windows.Forms.RadioButton();
+            this.radDesc = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.radMultiple = new System.Windows.Forms.RadioButton();
+            this.radSingle = new System.Windows.Forms.RadioButton();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // MyHelpLabel
@@ -102,7 +112,7 @@
             // 
             this.treeSims.ImageIndex = 0;
             this.treeSims.ImageList = this.imageList1;
-            this.treeSims.Location = new System.Drawing.Point(3, 33);
+            this.treeSims.Location = new System.Drawing.Point(3, 56);
             this.treeSims.Name = "treeSims";
             treeNode1.Name = "Node7";
             treeNode1.Text = "15 Oct";
@@ -167,11 +177,99 @@
             this.treeSims.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treeSims.SelectedImageIndex = 0;
-            this.treeSims.Size = new System.Drawing.Size(336, 440);
+            this.treeSims.Size = new System.Drawing.Size(255, 417);
             this.treeSims.TabIndex = 10;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(4, 32);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(90, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Total Simulations:";
+            // 
+            // txtTotalSims
+            // 
+            this.txtTotalSims.Location = new System.Drawing.Point(100, 29);
+            this.txtTotalSims.Name = "txtTotalSims";
+            this.txtTotalSims.ReadOnly = true;
+            this.txtTotalSims.Size = new System.Drawing.Size(75, 20);
+            this.txtTotalSims.TabIndex = 12;
+            this.txtTotalSims.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.radDesc);
+            this.groupBox1.Controls.Add(this.radCount);
+            this.groupBox1.Location = new System.Drawing.Point(275, 50);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(168, 76);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "File Name Options";
+            // 
+            // radCount
+            // 
+            this.radCount.AutoSize = true;
+            this.radCount.Checked = true;
+            this.radCount.Location = new System.Drawing.Point(6, 16);
+            this.radCount.Name = "radCount";
+            this.radCount.Size = new System.Drawing.Size(123, 17);
+            this.radCount.TabIndex = 0;
+            this.radCount.TabStop = true;
+            this.radCount.Text = "Use simulation count";
+            this.radCount.UseVisualStyleBackColor = true;
+            // 
+            // radDesc
+            // 
+            this.radDesc.AutoSize = true;
+            this.radDesc.Location = new System.Drawing.Point(6, 39);
+            this.radDesc.Name = "radDesc";
+            this.radDesc.Size = new System.Drawing.Size(113, 17);
+            this.radDesc.TabIndex = 1;
+            this.radDesc.Text = "Use Factor/Levels";
+            this.radDesc.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.radMultiple);
+            this.groupBox2.Controls.Add(this.radSingle);
+            this.groupBox2.Location = new System.Drawing.Point(275, 138);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(168, 76);
+            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Title Line Options";
+            // 
+            // radMultiple
+            // 
+            this.radMultiple.AutoSize = true;
+            this.radMultiple.Location = new System.Drawing.Point(6, 39);
+            this.radMultiple.Name = "radMultiple";
+            this.radMultiple.Size = new System.Drawing.Size(106, 17);
+            this.radMultiple.TabIndex = 1;
+            this.radMultiple.Text = "Use multiple lines";
+            this.radMultiple.UseVisualStyleBackColor = true;
+            // 
+            // radSingle
+            // 
+            this.radSingle.AutoSize = true;
+            this.radSingle.Checked = true;
+            this.radSingle.Location = new System.Drawing.Point(6, 16);
+            this.radSingle.Name = "radSingle";
+            this.radSingle.Size = new System.Drawing.Size(102, 17);
+            this.radSingle.TabIndex = 0;
+            this.radSingle.TabStop = true;
+            this.radSingle.Text = "Use a single line";
+            this.radSingle.UseVisualStyleBackColor = true;
             // 
             // Factorial
             // 
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.txtTotalSims);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.treeSims);
             this.Controls.Add(this.btnGenerate);
             this.HelpText = "Factorial";
@@ -180,7 +278,16 @@
             this.Controls.SetChildIndex(this.btnGenerate, 0);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.Controls.SetChildIndex(this.treeSims, 0);
+            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.txtTotalSims, 0);
+            this.Controls.SetChildIndex(this.groupBox1, 0);
+            this.Controls.SetChildIndex(this.groupBox2, 0);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -190,5 +297,13 @@
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.TreeView treeSims;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtTotalSims;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radDesc;
+        private System.Windows.Forms.RadioButton radCount;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton radMultiple;
+        private System.Windows.Forms.RadioButton radSingle;
     }
 }

@@ -19,9 +19,6 @@ Public Class ExplorerUI
     Friend WithEvents Label1 As System.Windows.Forms.Label
     Friend WithEvents Panel1 As System.Windows.Forms.Panel
     Friend WithEvents Label2 As System.Windows.Forms.Label
-    Friend WithEvents FactorTabControl As System.Windows.Forms.TabControl
-    Friend WithEvents tabFactorSettings As System.Windows.Forms.TabPage
-    Friend WithEvents tabComponentSettings As System.Windows.Forms.TabPage
     Friend WithEvents pnlPlaceHolder As System.Windows.Forms.Panel
     Friend WithEvents pnlDisplayArea As System.Windows.Forms.Panel
     Friend WithEvents FactorTree As Controllers.FactorTree
@@ -59,21 +56,16 @@ Public Class ExplorerUI
         Me.pnlDisplayArea = New System.Windows.Forms.Panel
         Me.pnlHost = New System.Windows.Forms.Panel
         Me.Panel1 = New System.Windows.Forms.Panel
-        Me.FactorTabControl = New System.Windows.Forms.TabControl
-        Me.tabFactorSettings = New System.Windows.Forms.TabPage
-        Me.tabComponentSettings = New System.Windows.Forms.TabPage
         Me.Splitter1 = New System.Windows.Forms.Splitter
         Me.pnlPlaceHolder = New System.Windows.Forms.Panel
-        Me.FactorTree = New Controllers.FactorTree(Me.components)
         Me.Title = New System.Windows.Forms.Panel
         Me.Label1 = New System.Windows.Forms.Label
         Me.UIPanel = New System.Windows.Forms.Panel
         Me.Label2 = New System.Windows.Forms.Label
+        Me.FactorTree = New Controllers.FactorTree(Me.components)
         Me.DataTree = New Controllers.DataTree
         Me.pnlDisplayArea.SuspendLayout()
         Me.pnlHost.SuspendLayout()
-        Me.Panel1.SuspendLayout()
-        Me.FactorTabControl.SuspendLayout()
         Me.pnlPlaceHolder.SuspendLayout()
         Me.Title.SuspendLayout()
         Me.SuspendLayout()
@@ -113,7 +105,6 @@ Public Class ExplorerUI
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.SystemColors.Window
-        Me.Panel1.Controls.Add(Me.FactorTabControl)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Panel1.ForeColor = System.Drawing.SystemColors.ControlText
         Me.Panel1.Location = New System.Drawing.Point(204, 20)
@@ -121,39 +112,6 @@ Public Class ExplorerUI
         Me.Panel1.Padding = New System.Windows.Forms.Padding(4)
         Me.Panel1.Size = New System.Drawing.Size(247, 808)
         Me.Panel1.TabIndex = 8
-        '
-        'FactorTabControl
-        '
-        Me.FactorTabControl.Controls.Add(Me.tabFactorSettings)
-        Me.FactorTabControl.Controls.Add(Me.tabComponentSettings)
-        Me.FactorTabControl.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FactorTabControl.Location = New System.Drawing.Point(4, 4)
-        Me.FactorTabControl.Margin = New System.Windows.Forms.Padding(0)
-        Me.FactorTabControl.Name = "FactorTabControl"
-        Me.FactorTabControl.Padding = New System.Drawing.Point(6, 6)
-        Me.FactorTabControl.SelectedIndex = 0
-        Me.FactorTabControl.Size = New System.Drawing.Size(239, 800)
-        Me.FactorTabControl.TabIndex = 8
-        '
-        'tabFactorSettings
-        '
-        Me.tabFactorSettings.Location = New System.Drawing.Point(4, 28)
-        Me.tabFactorSettings.Name = "tabFactorSettings"
-        Me.tabFactorSettings.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabFactorSettings.Size = New System.Drawing.Size(231, 768)
-        Me.tabFactorSettings.TabIndex = 0
-        Me.tabFactorSettings.Text = "Factorial Settings"
-        Me.tabFactorSettings.UseVisualStyleBackColor = True
-        '
-        'tabComponentSettings
-        '
-        Me.tabComponentSettings.Location = New System.Drawing.Point(4, 28)
-        Me.tabComponentSettings.Name = "tabComponentSettings"
-        Me.tabComponentSettings.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabComponentSettings.Size = New System.Drawing.Size(231, 768)
-        Me.tabComponentSettings.TabIndex = 1
-        Me.tabComponentSettings.Text = "Component Settings"
-        Me.tabComponentSettings.UseVisualStyleBackColor = True
         '
         'Splitter1
         '
@@ -175,17 +133,6 @@ Public Class ExplorerUI
         Me.pnlPlaceHolder.Padding = New System.Windows.Forms.Padding(4)
         Me.pnlPlaceHolder.Size = New System.Drawing.Size(199, 808)
         Me.pnlPlaceHolder.TabIndex = 9
-        '
-        'FactorTree
-        '
-        Me.FactorTree.AllowDrop = True
-        Me.FactorTree.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.FactorTree.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.FactorTree.HideSelection = False
-        Me.FactorTree.Location = New System.Drawing.Point(4, 4)
-        Me.FactorTree.Name = "FactorTree"
-        Me.FactorTree.Size = New System.Drawing.Size(191, 800)
-        Me.FactorTree.TabIndex = 0
         '
         'Title
         '
@@ -227,6 +174,17 @@ Public Class ExplorerUI
         Me.Label2.TabIndex = 0
         Me.Label2.Text = "Factorial Configuration"
         '
+        'FactorTree
+        '
+        Me.FactorTree.AllowDrop = True
+        Me.FactorTree.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.FactorTree.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.FactorTree.HideSelection = False
+        Me.FactorTree.Location = New System.Drawing.Point(4, 4)
+        Me.FactorTree.Name = "FactorTree"
+        Me.FactorTree.Size = New System.Drawing.Size(191, 800)
+        Me.FactorTree.TabIndex = 0
+        '
         'DataTree
         '
         Me.DataTree.AllowDrop = True
@@ -246,8 +204,6 @@ Public Class ExplorerUI
         Me.Size = New System.Drawing.Size(1020, 828)
         Me.pnlDisplayArea.ResumeLayout(False)
         Me.pnlHost.ResumeLayout(False)
-        Me.Panel1.ResumeLayout(False)
-        Me.FactorTabControl.ResumeLayout(False)
         Me.pnlPlaceHolder.ResumeLayout(False)
         Me.Title.ResumeLayout(False)
         Me.Title.PerformLayout()
@@ -284,36 +240,36 @@ Public Class ExplorerUI
         ' Create and show a specific UI depending on the
         ' currently selected data
         ' -------------------------------------------------
-      'Dim SelectedData As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedPath)
-      If Not IsNothing(SelectedComponent) Then
-         If CurrentUIIndex = -1 OrElse UITypes(CurrentUIIndex) <> SelectedComponent.Type Then
-            CloseUI()
-            CurrentUIIndex = UITypes.IndexOf(SelectedComponent.Type)
-            If CurrentUIIndex = -1 Then
-               Dim View As BaseView = Controller.CreateUI(SelectedComponent.Type)
-               If Not IsNothing(View) Then
-                  UIs.Add(View)
-                  UITypes.Add(SelectedComponent.Type)
-                  CurrentUIIndex = UIs.Count - 1
-               End If
+        'Dim SelectedData As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedPath)
+        If Not IsNothing(SelectedComponent) Then
+            If CurrentUIIndex = -1 OrElse UITypes(CurrentUIIndex) <> SelectedComponent.Type Then
+                CloseUI()
+                CurrentUIIndex = UITypes.IndexOf(SelectedComponent.Type)
+                If CurrentUIIndex = -1 Then
+                    Dim View As BaseView = Controller.CreateUI(SelectedComponent.Type)
+                    If Not IsNothing(View) Then
+                        UIs.Add(View)
+                        UITypes.Add(SelectedComponent.Type)
+                        CurrentUIIndex = UIs.Count - 1
+                    End If
+                End If
+            Else
+                SaveCurrentView()
             End If
-         Else
-            SaveCurrentView()
-         End If
-         If CurrentUIIndex <> -1 Then
-            Try
-               Dim View As BaseView = UIs(CurrentUIIndex)
-               View.OnLoad(Controller, SelectedPath, SelectedComponent.Contents)
-               View.Parent = UIPanel
-               View.Dock = DockStyle.Fill
-               View.Show()
-               View.OnRefresh()
-            Catch ex As Exception
-               MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-         End If
-      End If
-   End Sub
+            If CurrentUIIndex <> -1 Then
+                Try
+                    Dim View As BaseView = UIs(CurrentUIIndex)
+                    View.OnLoad(Controller, SelectedPath, SelectedComponent.Contents)
+                    View.Parent = UIPanel
+                    View.Dock = DockStyle.Fill
+                    View.Show()
+                    View.OnRefresh()
+                Catch ex As Exception
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End Try
+            End If
+        End If
+    End Sub
     Public Sub CloseUI()
         ' -------------------------------------------------
         ' Close the current UI
@@ -379,20 +335,11 @@ Public Class ExplorerUI
         Dim SavedCursor As Cursor = Windows.Forms.Cursor.Current    'store the current cursor object (usually an arrow)
         Windows.Forms.Cursor.Current = Cursors.WaitCursor           'set the cursor object to the default cursor object used for waiting (usually an hourglass) 
 
-        Dim UIVisible As Boolean = True
         'Parent panel is either the main form, or the Component tab within Factorial
         'if Component tab not active then don't display the UI
-        If Controller.FactorialMode Then
-            If FactorTabControl.SelectedTab().Name = tabComponentSettings.Name Then
-                UIPanel.Parent = tabComponentSettings
-            Else
-                UIVisible = False
-            End If
-        Else
+        If Not Controller.FactorialMode Then
             UIPanel.Parent = pnlDisplayArea
-        End If
 
-        If UIVisible Then
             'If there is only 1 node that is selected
             If Controller.SelectedPaths.Count = 1 Then
                 ShowUI(Controller.SelectedPath, Controller.Selection)        'show the corresponding UI for that node in the panel to the right of the tree
@@ -411,16 +358,13 @@ Public Class ExplorerUI
         Dim SavedCursor As Cursor = Windows.Forms.Cursor.Current    'store the current cursor object (usually an arrow)
         Windows.Forms.Cursor.Current = Cursors.WaitCursor           'set the cursor object to the default cursor object used for waiting (usually an hourglass) 
 
-        If (FactorTabControl.SelectedTab().Name = tabFactorSettings.Name) Then
-            UIPanel.Parent = FactorTabControl.SelectedTab()
+        UIPanel.Parent = Panel1
 
-            'If there is only 1 node that is selected
-            If NewSelection <> "" Then
-                ShowUI(Controller.SelectedFactorialPath, Controller.FactorialSelection)        'show the corresponding UI for that node in the panel to the right of the tree
-            Else
-                CloseUI()       'show no UI in the panel to the right of the tree
-            End If
-
+        'If there is only 1 node that is selected
+        If NewSelection <> "" Then
+            ShowUI(Controller.SelectedFactorialPath, Controller.FactorialSelection)        'show the corresponding UI for that node in the panel to the right of the tree
+        Else
+            CloseUI()       'show no UI in the panel to the right of the tree
         End If
 
         Windows.Forms.Cursor.Current = SavedCursor                  'restore the cursor object to what it was before the wait cursor.
@@ -434,8 +378,7 @@ Public Class ExplorerUI
 
         If Controller.FactorialMode Then
             pnlHost.Visible = True
-            FactorTabControl.SelectedIndex = 0
-            UIPanel.Parent = FactorTabControl.SelectedTab() 'tabComponentSettings 'tabComponentSettings
+            UIPanel.Parent = Panel1
             If Controller.SelectedFactorialPath = "" Then
                 Controller.SelectedFactorialPath = Controller.ApsimData.FactorComponent.FullPath
             Else
@@ -449,11 +392,6 @@ Public Class ExplorerUI
         Windows.Forms.Cursor.Current = SavedCursor                  'restore the cursor object to what it was before the wait cursor.
     End Sub
 
-    Private Sub FactorTabControl_Selecting(ByVal sender As System.Object, ByVal e As System.Windows.Forms.TabControlCancelEventArgs) Handles FactorTabControl.Selecting
-        If Controller.FactorialMode And e.TabPage.Name = tabFactorSettings.Name Then
-            OnFactorialSelectionChanged(Controller.SelectedFactorialPath, Controller.SelectedFactorialPath)
-        Else
-            OnSelectionChanged(Controller.SelectedPaths, Controller.SelectedPaths)
-        End If
+    Private Sub FactorTabControl_Selecting(ByVal sender As System.Object, ByVal e As System.Windows.Forms.TabControlCancelEventArgs)
     End Sub
 End Class

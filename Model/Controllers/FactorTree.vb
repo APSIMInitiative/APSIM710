@@ -29,7 +29,7 @@ Public Class FactorTree
         Me.ShowNodeToolTips = True
         Me.Controller = Controller
         Me.ContextMenuStrip = PopupMenu                        'tell the datatree that its context menu is the popup menu
-        Controller.ProvideToolStrip(PopupMenu, "ContextMenu")   'initialise Context Menu for the page using the controller [popup when you right click anywhere on the page]
+        Controller.ProvideToolStrip(PopupMenu, "FactorContextMenu")   'initialise Context Menu for the page using the controller [popup when you right click anywhere on the page]
 
         'initialise Context Menu for the right mouse button drag [popup when you drop the node you were dragging with the right mouse]
         PopupMenuRightDrag.Items.Add("Copy Here")
@@ -346,7 +346,7 @@ Public Class FactorTree
             LabelEdit = False
         End If
         FirstTimeRename = False
-        'Me.ContextMenuStrip.Enabled = True
+        Me.ContextMenuStrip.Enabled = True
     End Sub
 #End Region
 

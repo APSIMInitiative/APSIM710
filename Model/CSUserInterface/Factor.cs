@@ -67,7 +67,7 @@ namespace CSUserInterface
             if (thisComp.ChildNodes.Count == 1)
             {
                 ApsimFile.Component childComp = thisComp.ChildNodes[0];
-                if (childComp.Type == "manager" || childComp.Type == "cropui")
+                if (childComp.Type == "manager" || childComp.Type == "rule" || childComp.Type == "cropui")
                 {
                     Table = CreateTable(childComp);
                 }
