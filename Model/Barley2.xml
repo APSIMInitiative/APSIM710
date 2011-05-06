@@ -433,8 +433,15 @@
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+           <Property>Leaf.Leaves[*].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+           <Property>Leaf.Leaves[*].Dead</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Total">
+           <Property>Leaf.Live Leaf.Dead</Property>
+        </CompositeBiomass>
         <GenericFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>

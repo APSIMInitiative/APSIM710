@@ -128,8 +128,12 @@
         <InitialAges>1</InitialAges>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <MaxNodeNo>24</MaxNodeNo>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+           <Property>Leaf.Leaves[*].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+           <Property>Leaf.Leaves[*].Dead</Property>
+        </CompositeBiomass>
         <Constant name="ExtinctionCoeff">
           <Value>0.5</Value>
         </Constant>

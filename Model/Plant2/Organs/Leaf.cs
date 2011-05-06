@@ -259,37 +259,6 @@ public class Leaf : BaseOrgan, AboveGround
             return 0;
          }
       }
-   public override Biomass Live
-      {
-      get
-         {
-         Biomass total = new Biomass();
-         foreach (LeafCohort L in Leaves)
-            {
-            total.StructuralWt += L.Live.StructuralWt;
-            total.NonStructuralWt += L.Live.NonStructuralWt;
-            total.StructuralN += L.Live.StructuralN;
-            total.NonStructuralN += L.Live.NonStructuralN;
-            }
-         return total;
-         }
-      }
-   public override Biomass Dead
-      {
-      get
-         {
-         Biomass total = new Biomass();
-         foreach (LeafCohort L in Leaves)
-            {
-            total.StructuralWt += L.Dead.StructuralWt;
-            total.NonStructuralWt += L.Dead.NonStructuralWt;
-            total.StructuralN += L.Dead.StructuralN;
-            total.NonStructuralN += L.Dead.NonStructuralN;
-
-            }
-         return total;
-         }
-      }
    [Output]
    [Units("mm^2/g")]
    private double SpecificArea
@@ -551,7 +520,7 @@ public class Leaf : BaseOrgan, AboveGround
                foreach (LeafCohort L in Leaves)
                   {
                   L.DMAllocation = L.DMDemand(ThermalTime.Value) * fraction;
-                  }
+                  } 
                }
             }
 
@@ -717,52 +686,6 @@ public class Leaf : BaseOrgan, AboveGround
          Canopy.cover = (float)CoverGreen;
          Canopy.cover_tot = (float)CoverTot;
          New_Canopy.Invoke(Canopy);
-         }
-      }
-
-   [Output]
-   [Units("g/m^2")]
-   public double LiveN2
-      {
-      get
-         {
-         return Live.N;
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadN2
-      {
-      get
-         {
-         return Dead.N;
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public double LiveWt2
-      {
-      get
-         {
-         return Live.Wt;
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadWt2
-      {
-      get
-         {
-         return Dead.Wt;
-         }
-      }
-   [Output]
-   [Units("g/m^2")]
-   public double DeadN
-      {
-      get
-         {
-         return Dead.N;
          }
       }
 

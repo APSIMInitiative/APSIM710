@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using CSGeneral;
+using System.Collections;
 
 
 
@@ -70,32 +71,75 @@ public class GenericFunction : Function
       throw new Exception("Depth deeper than bottom of soil profile in GenericFunction.");
       }
 
-   static public object GetPropertyValueFromPlant(Plant P, string PropertyName)
+   /// <summary>
+   /// Return the value of the specified property as an object. The PropertyName
+   /// is relative to the RelativeTo argument (usually Plant).
+   /// e.g. Leaf.MinT
+   ///      Leaf.Leaves[*].Live.Wt - sums all live weights of all objects in leaves array.
+   ///      Leaf.Leaves[1].Live.Wt   - returns the live weight of the 2nd element of the leaves array.
+   /// </summary>
+   static public object GetPropertyValueFromPlant(object RelativeTo, string PropertyName)
       {
-      Instance I;
-
-      if (PropertyName.LastIndexOf('.') > 0)
+      while (PropertyName.Contains("."))
          {
-         string Iname = PropertyName.Substring(0, PropertyName.LastIndexOf('.'));
-         I = P.Find(Iname);
+         int PosPeriod = PropertyName.IndexOf('.');
+         object O = null;
+         string NameToLookFor = PropertyName.Substring(0, PosPeriod);
+         string ArraySpecifier = "";
+         if (NameToLookFor.Contains("[") && NameToLookFor.Contains("]"))
+            ArraySpecifier = StringManip.SplitOffBracketedValue(ref NameToLookFor, '[', ']');
+
+         if (RelativeTo is Instance)
+            {
+            // Try and look in the children list first.
+            Instance Inst = (Instance) RelativeTo;
+            if (Inst.Children.Contains(NameToLookFor))
+               O = Inst.Find(NameToLookFor);
+            }
+         if (O == null)
+            {
+            // Look for a field or property
+            O = GetValueOfField(NameToLookFor, RelativeTo); 
+            }
+         if (O == null)
+            throw new Exception("Cannot find property: " + PropertyName);
+
+         if (ArraySpecifier != "")
+            {
+            IList Array = (IList) O;
+            if (ArraySpecifier == "*")
+               {
+               PropertyName = PropertyName.Substring(PosPeriod + 1);
+               double Value = 0;
+               for (int i = 0; i < Array.Count; i++)
+                  Value += Convert.ToDouble(GetPropertyValueFromPlant(Array[i], PropertyName));
+               return Value;
+               }
+            else
+               {
+               int ArrayIndex = Convert.ToInt32(ArraySpecifier);
+               RelativeTo = Array[ArrayIndex];
+               }
+            }
+         RelativeTo = O;
+         PropertyName = PropertyName.Substring(PosPeriod + 1);
          }
-      else
-         I = P;
 
-      string Pname = PropertyName.Substring(PropertyName.LastIndexOf('.') + 1);
+      return GetValueOfField(PropertyName, RelativeTo);
+      }
 
-      FieldInfo FI = I.GetType().GetField(Pname, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-      object v;
+   private static object GetValueOfField(string PropertyName, object I)
+      {
+      FieldInfo FI = I.GetType().GetField(PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+      object v = null;
       if (FI == null)
          {
-         PropertyInfo PI = I.GetType().GetProperty(Pname, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-         if (PI == null)
-            throw new Exception("Unable to get the value of: " + PropertyName);
-         v = PI.GetValue(I, null);
+         PropertyInfo PI = I.GetType().GetProperty(PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+         if (PI != null)
+            v = PI.GetValue(I, null);
          }
       else
          v = FI.GetValue(I);
-
       return v;
       }
    }

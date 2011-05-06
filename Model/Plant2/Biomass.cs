@@ -10,13 +10,13 @@ public class Biomass : Instance
    private double _NonStructuralN = 0;
    private double _PotentialDMAllocation = 0;
 
-   [Output] [Units("g/m^2")] public double NonStructuralN
+   [Output] [Units("g/m^2")] virtual public double NonStructuralN
       {
       get { return _NonStructuralN; }
       set { _NonStructuralN = value; 
          }
       }
-   [Output] [Units("g/m^2")] public double StructuralN
+   [Output] [Units("g/m^2")] virtual public double StructuralN
       {
       get { return _StructuralN; }
       set
@@ -24,7 +24,7 @@ public class Biomass : Instance
          _StructuralN = value;
          }
       }
-   [Output] [Units("g/m^2")] public double NonStructuralWt
+   [Output] [Units("g/m^2")] virtual public double NonStructuralWt
       {
       get { return _NonStructuralWt; }
       set
@@ -32,7 +32,7 @@ public class Biomass : Instance
          _NonStructuralWt = value;
          }
       }
-   [Output] [Units("g/m^2")] public double StructuralWt
+   [Output] [Units("g/m^2")] virtual public double StructuralWt
       {
       get { return _StructuralWt; }
       set
@@ -79,7 +79,7 @@ public class Biomass : Instance
 
 
 
-   public void Clear()
+   virtual public void Clear()
       {
       StructuralWt = 0;
       NonStructuralWt = 0;

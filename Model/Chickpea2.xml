@@ -151,8 +151,12 @@
             <XY>0 0.0</XY>
           </XYPairs>
         </GenericFunction>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+           <Property>Leaf.Leaves[*].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+           <Property>Leaf.Leaves[*].Dead</Property>
+        </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>

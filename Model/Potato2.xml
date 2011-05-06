@@ -460,8 +460,15 @@
             <XY>0 0.0</XY>
           </XYPairs>
         </GenericFunction>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+           <Property>Leaf.Leaves[*].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+           <Property>Leaf.Leaves[*].Dead</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Total">
+           <Property>Leaf.Live Leaf.Dead</Property>
+        </CompositeBiomass>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Constant name="PotentialExtinctionCoeff">

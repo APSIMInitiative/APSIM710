@@ -170,7 +170,7 @@ namespace Graph
       /// <summary>
       /// A helper method to add a series to the chart.
       /// </summary>
-      private Series AddSeries(DataTable Table, string ColumnName)
+      public Series AddSeries(DataTable Table, string ColumnName)
          {
          if (Table.Columns[ColumnName].DataType != typeof(string))
             {

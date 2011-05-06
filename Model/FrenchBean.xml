@@ -110,8 +110,12 @@
         <InitialiseStage>Emergence</InitialiseStage>
         <InitialLeafPrimordia>6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+           <Property>Leaf.Leaves[*].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+           <Property>Leaf.Leaves[*].Dead</Property>
+        </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>

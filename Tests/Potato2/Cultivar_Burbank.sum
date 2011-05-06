@@ -93,8 +93,8 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt2
-        LeafLiveWt2
+        LeafDeadWt
+        LeafLiveWt
         StemDeadWt
         StemLiveWt
         TuberDeadWt
@@ -110,8 +110,8 @@ Paddock:
         TotalN
         TotalLiveN
         TotalDeadN
-        LeafDeadN2
-        LeafLiveN2
+        LeafDeadN
+        LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
@@ -180,14 +180,14 @@ Paddock:
         StemLiveStructuralN
         StemLiveStructuralWt
         StemLiveNonStructuralWt
-        LeafLiveNonStructuralN2
-        LeafLiveNonStructuralWt2
-        LeafLiveStructuralN2
-        LeafLiveStructuralWt2
-        LeafTotalStructuralN2
-        LeafTotalNonStructuralN2
-        LeafTotalStructuralWt2
-        LeafTotalNonStructuralWt2
+        LeafLiveNonStructuralN
+        LeafLiveNonStructuralWt
+        LeafLiveStructuralN
+        LeafLiveStructuralWt
+        LeafTotalStructuralN
+        LeafTotalNonStructuralN
+        LeafTotalStructuralWt
+        LeafTotalNonStructuralWt
 
      Output file = Cultivar_Burbank Plant2 diagnostic variables.out
      Format = normal
@@ -302,7 +302,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -320,11 +320,11 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt2 > 0 then
-     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
+     if potato2.leaflivewt > 0 then
+     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
      endif
-     if potato2.leafdeadwt2 > 0 then
-     leafdeadnconc3 = (potato2.leafdeadn2/potato2.leafdeadwt2)
+     if potato2.leafdeadwt > 0 then
+     leafdeadnconc3 = (potato2.leafdeadn/potato2.leafdeadwt)
      endif
      if potato2.tuberlivewt > 0 then
      tuberlivenconc3 = (potato2.tuberliven/potato2.tuberlivewt)

@@ -92,8 +92,8 @@ Paddock:
         AboveGroundDM
         BelowGroundDM
         TotalDM
-        LeafDeadWt2
-        LeafLiveWt2
+        LeafDeadWt
+        LeafLiveWt
         StemDeadWt
         StemLiveWt
         TuberDeadWt
@@ -109,8 +109,8 @@ Paddock:
         TotalN
         RootLiveN
         RootDeadN
-        LeafDeadN2
-        LeafLiveN2
+        LeafDeadN
+        LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
@@ -403,7 +403,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -421,8 +421,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt2 > 0 then
-     leaflivenconc3 = (potato2.leafliven2/potato2.leaflivewt2)
+     if potato2.leaflivewt > 0 then
+     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue

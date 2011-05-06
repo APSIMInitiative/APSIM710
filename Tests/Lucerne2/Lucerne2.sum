@@ -66,7 +66,7 @@ Paddock:
         BelowGroundDM
         AboveGroundDM
         StemLiveWt
-        LeafLiveWt2
+        LeafLiveWt
         PodLiveWt
         LeafPhotosynthesisFt
         LeafPhotosynthesisFvpd
@@ -78,8 +78,8 @@ Paddock:
         LeafPhotosynthesisFt
         esw
         sw
-        LeafDeadWt2
-        StemDeadWt2
+        LeafDeadWt
+        StemDeadWt
         PrevDayDeadWt
         ShootDeadWt
         DltDMold
@@ -113,16 +113,16 @@ Paddock:
      
      SECTION:- start_of_day
      prevdaydm = abovegrounddm
-     prevdaydeadwt = leafdeadwt2 + stemdeadwt2
+     prevdaydeadwt = leafdeadwt + stemdeadwt
           if stagecodevalue >= 6.0 then
                lucerne2  cut
            endif
      
      SECTION:- end_of_day
-     shootdeadwt = leafdeadwt2 + stemdeadwt2
+     shootdeadwt = leafdeadwt + stemdeadwt
      dltdm = (abovegrounddm - shootdeadwt)- (prevdaydm - prevdaydeadwt)
      dltdmold = abovegrounddm - prevdaydm
-     sumdm = belowgrounddm + stemlivewt + leaflivewt2 + podlivewt
+     sumdm = belowgrounddm + stemlivewt + leaflivewt + podlivewt
      if dltdm <= 0 then
         dltdm = 0
      endif
@@ -316,17 +316,6 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- lucerne2 sow  population = 300, depth = 10, cultivar = hunter_river, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
-1 June 1940(Day of year=153): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "stemdeadwt2".
-     Variables should have a value before they are used in an expression.
-     Component name: dlt_dm
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : stemdeadwt2 = 0.00000
      Manager creating a new local real variable : shootdeadwt = 0.00000
 2/06/1940 - Germination
                             LAI = 0.00 (m^2/m^2)
