@@ -4,7 +4,6 @@
    #include <assert.h>
 #else
    #include <dlfcn.h>
-   #define MONO
 #endif
 
 #include <list>
@@ -17,14 +16,13 @@
 #include "Transport.h"
 
 #ifdef MONO
+
 #pragma comment(lib,"mono.lib")
 MonoDomain * protocol::Computation::domain = NULL;
 
 #else
-// Import mscorlib typelib. Using 1.0 for maximum backwards compatibility
-#import "C:\windows\Microsoft.NET\Framework\v2.0.50727\mscorlib.tlb" auto_rename
-using namespace mscorlib;
 
+using namespace mscorlib;
 ICorRuntimeHost* protocol::Computation::pHost = NULL;
 
 #endif
@@ -67,6 +65,7 @@ Computation::Computation(const string& name,
                          unsigned int componentId,
                          unsigned int parentId) throw (runtime_error)
    {
+	   handle = NULL;
 	   // need to give the component to the transport layer.  Need a better
 	   // way of doing this.
 	   Transport::getTransport().addComponent(componentId, name, this);
@@ -421,7 +420,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			classInstance = mono_object_new (domain, klass);
 
 			// "Pin" the class instance to keep the garbage collector from discarding it.
-			uint32_t handle = mono_gchandle_new (classInstance, TRUE);
+			uint32_t handle = mono_gchandle_new (classInstance, true);
 			classInstance = mono_gchandle_get_target (handle);
 
 			MonoMethod* ctor_method = GetMonoMethod(classInstance, "CMPComp.TGCComponent:.ctor");
@@ -432,7 +431,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			unsigned parent = parentId;
 			void *args [3];
 			args [0] = &compId;
-			args [1] = &parentId;
+			args [1] = &parent;
 			void* fPtr = (void*)callback;
 			args [2] = &fPtr;
 			/* constructor methods return void, so we ignore the return value,
@@ -459,8 +458,6 @@ void Computation::CreateManagedInstance(const std::string& filename,
 
 		hr = pAppDomainPunk->QueryInterface(__uuidof(_AppDomain),(void**) &pDefaultDomain);
 		assert(pDefaultDomain);
-
-		_ObjectHandlePtr pObjectHandle; 
 
 		SAFEARRAY * l_pArray;
 		l_pArray = SafeArrayCreateVectorEx(VT_VARIANT, 0, 3, NULL);
@@ -658,9 +655,9 @@ CompilationMode IsManaged(const char * filename) {
 		else // This uses the CLR, but is it native or mixed? Look for native-style exports
 		{
 			unsigned int optionalHdrBase = iWinNTHdr + 24;
-			unsigned short magic = *(unsigned*)&data[optionalHdrBase];
-			bool is64bit = (magic & 0x200) != 0;
-			unsigned int exportTableAddr = *(unsigned*)&data[optionalHdrBase + 96];
+			// unsigned short magic = *(unsigned*)&data[optionalHdrBase];
+			// bool is64bit = (magic & 0x200) != 0;
+			// unsigned int exportTableAddr = *(unsigned*)&data[optionalHdrBase + 96];
 			unsigned int exportTableSize = *(unsigned*)&data[optionalHdrBase + 100];
 			if (exportTableSize > 0)
 				return Mixed;

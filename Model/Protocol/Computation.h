@@ -5,6 +5,9 @@
 #include <stdexcept>
 
 #include <General/platform.h>
+#ifndef __WIN32__
+ #define MONO
+#endif
 
 #ifdef MONO
 #include <mono/jit/jit.h>
@@ -12,6 +15,7 @@
 #include <mono/metadata/debug-helpers.h>
 #else
 #include <mscoree.h>
+#include "mscorlib.h"
 #endif
 
 enum CompilationMode {Invalid, Native, CLR, Mixed };
@@ -83,7 +87,7 @@ class EXPORT Computation : public IComputation
 
 	  static MonoDomain *domain;
 	  MonoMethod* handleMsgMethod;
-      MonoMethod* Computation::GetMonoMethod(MonoObject* classInstance, const char* methodName);
+      MonoMethod* GetMonoMethod(MonoObject* classInstance, const char* methodName);
 	  MonoObject* classInstance;
 
 #else
@@ -91,6 +95,7 @@ class EXPORT Computation : public IComputation
 	  static ICorRuntimeHost *pHost;
 	  VARIANT vtobj;
 	  void* typePtr;
+	  mscorlib::_ObjectHandlePtr pObjectHandle; 
 
 #endif
 
