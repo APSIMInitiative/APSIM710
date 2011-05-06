@@ -19,7 +19,7 @@ DOTNETDataTypes.h:  Datatypes.xml DOTNETDataTypes.macro
 $(APSIM)/Model/ComponentInterface/DataTypes.h: Datatypes.xml CIDataTypes.macro
 	$(RUN) $(APSIM)/Model/ProcessDataTypesInterface.exe Datatypes.xml CIDataTypes.macro 
 
-DOTNETDataTypes.cs:  Datatypes.xml DOTNETDataTypes.macro
+DOTNETDataTypes.cs:  Datatypes.xml CSDOTNETDataTypes.macro
 	$(RUN) $(APSIM)/Model/ProcessDataTypesInterface.exe Datatypes.xml CSDOTNETDataTypes.macro
 
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make
