@@ -20109,7 +20109,7 @@ ILease : IDispatch
 // Wrapper method implementations
 //
 
-#include "C:\DOCUME~1\zur003\LOCALS~1\Temp\mscorlib.tli"
+#include "mscorlib.tli"
 
 } // namespace mscorlib
 
