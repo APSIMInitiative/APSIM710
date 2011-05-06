@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A0DE87B8-E80C-4C69-B789-1B6FAAD89DB9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -40,6 +40,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSGeneral.dll</HintPath>
     </Reference>
+    <Reference Include="CMPServices, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
+    <Reference Include="CSDotNetComponentInterface, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSDotNetComponentInterface.dll</HintPath>
+	</Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -51,8 +59,20 @@
   <ItemGroup>
     <Compile Include="Arbitrator.cs" />
     <Compile Include="EntryPoints.cs" />
+    <Compile Include="Functions\PhaseBasedSwitch.cs" />
+    <Compile Include="Organs\SIRIUSLeafCohort.cs" />
+    <Compile Include="SIRIUSArbitrator.cs" />
+    <Compile Include="Functions\AddFunction.cs" />
     <Compile Include="Functions\BellCurveFunction.cs" />
-    <Compile Include="Functions\StageBasedInterpolation.cs" />
+    <Compile Include="Functions\ExternalVariable.cs" />
+    <Compile Include="Functions\PhotoperiodDeltaFunction.cs" />
+    <Compile Include="Functions\DivideFunction.cs" />
+    <Compile Include="Functions\ExpressionFunction.cs" />
+    <Compile Include="Functions\MultiplyFunction.cs" />
+    <Compile Include="Functions\PowerFunction.cs" />
+    <Compile Include="Functions\SoilTemperatureFunction.cs" />
+    <Compile Include="Functions\SubtractFunction.cs" />
+    <Compile Include="Functions\Variable.cs" />
     <Compile Include="Functions\WeightedTemperatureFunction.cs" />
     <Compile Include="Functions\OnEventFunction.cs" />
     <Compile Include="Functions\PhotoperiodFunction.cs" />
@@ -61,7 +81,11 @@
     <Compile Include="Functions\Constant.cs" />
     <Compile Include="AnnualPlantArbitrator.cs" />
     <Compile Include="Functions\MinimumFunction.cs" />
-    <Compile Include="Organs\BelowGroundOrgan.cs" />
+    <Compile Include="Organs\SIRIUSGrain.cs" />
+    <Compile Include="Organs\SIRIUSLeaf.cs" />
+    <Compile Include="Organs\SIRIUSTuber.cs" />
+    <Compile Include="Organs\SIRIUSGenericOrgan.cs" />
+    <Compile Include="Organs\SIRIUSRoot.cs" />
     <Compile Include="Organs\HIReproductiveOrgan.cs" />
     <Compile Include="Phenology\EmergingPhase.cs" />
     <Compile Include="Phenology\GerminatingPhase.cs" />
@@ -77,6 +101,7 @@
     <Compile Include="Phenology\GenericPhase.cs" />
     <Compile Include="Phenology\LeafDeathPhase.cs" />
     <Compile Include="Phenology\GotoPhase.cs" />
+    <Compile Include="Functions\StageLookup.cs" />
     <Compile Include="Functions\Function.cs" />
     <Compile Include="Functions\GenericFunction.cs" />
     <Compile Include="Organs\LeafCohort.cs" />
@@ -98,20 +123,11 @@
     <Compile Include="Organs\GenericOrgan.cs" />
     <Compile Include="Summary.cs" />
     <Compile Include="Functions\TemperatureFunction.cs" />
+    <Compile Include="..\Build\VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="UMLBits.cd" />
     <None Include="UMLOrgans.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CMPServices\CMPServices.csproj">
-      <Project>{4A1A4A3C-F937-488D-BE0B-F2435678FCEF}</Project>
-      <Name>CMPServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSDotNetComponentInterface\CSDotNetComponentInterface.csproj">
-      <Project>{F5238838-4CC7-4953-8745-312CF93BEBCE}</Project>
-      <Name>CSDotNetComponentInterface</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

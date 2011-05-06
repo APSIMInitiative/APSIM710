@@ -6,7 +6,7 @@ using CSGeneral;
 
 class GerminatingPhase : Phase
    {
-   [Input] private double[] ESW = null;
+   [Input] private double ESW = 0.0;
 
    /// <summary>
    /// Do our timestep development
@@ -15,7 +15,7 @@ class GerminatingPhase : Phase
       {
       Plant Plant = (Plant)Root;
 
-      bool CanGerminate = !Plant.Phenology.OnDayOf("Sowing") && MathUtility.Sum(ESW) > 0;
+      bool CanGerminate = !Plant.Phenology.OnDayOf("Sowing") && ESW > 0;
 
       if (CanGerminate)
          return 0.00001;

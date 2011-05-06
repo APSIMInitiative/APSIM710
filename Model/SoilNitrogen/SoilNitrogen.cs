@@ -1422,8 +1422,8 @@ public class SoilN : Instance
         DoubleType val = new DoubleType();
         DoubleArrayType arrayVal = new DoubleArrayType();
 
-        use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true);
-        if (use_external_st && (arrayVal.Value != null))
+        use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true) && (arrayVal.Value != null);
+        if (use_external_st)
             st = arrayVal.Value;
 
         else // only need to read these if soil temp is not external

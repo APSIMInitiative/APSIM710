@@ -13,6 +13,7 @@ using CMPServices;
 /// which is a non system component. TBaseComp 
 /// </summary>
 //=========================================================================
+[ComVisible(true)]
 public class TAPSIMHost : TBaseComp
 {
     private int tickID;

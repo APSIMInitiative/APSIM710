@@ -15,11 +15,10 @@ namespace CMPComp
     [ComVisible(true)]
     public class TComponentInstance : TAPSIMHost
     {
-        //set these fields to names applicable to the component
         private static String _STYPE = "SoilNitrogen";
         private static String _SVERSION = "1.0";
         private static String _SAUTHOR = "APSIM";
-        
+
         //=========================================================================
         /// <summary>
         /// Create an instance of a component here
@@ -33,6 +32,7 @@ namespace CMPComp
         {
         }
     }
+
     //============================================================================
     // Component developers should not need to change the code below this point.
     // It exists to provide a wrapping class which enables the component to be
@@ -79,10 +79,10 @@ namespace CMPComp
         {
             // Copy from TMsgHeader to TNativeMsgHeader.
             // The difference is in the nature of the data pointer.
+            TNativeMsgHeader msgPtr = new TNativeMsgHeader();
+            uint nBytes = msg.nDataBytes;
             try
             {
-                TNativeMsgHeader msgPtr = new TNativeMsgHeader();
-                uint nBytes = msg.nDataBytes;
                 try
                 {
                     msgPtr.version = msg.version;
@@ -136,10 +136,30 @@ namespace CMPComp
         {
             // We need to copy the "native" message point into a managed object.
             TNativeMsgHeader src = (TNativeMsgHeader)Marshal.PtrToStructure((IntPtr)inVal, typeof(TNativeMsgHeader));
-            
-            TMsgHeader msgPtr = TMessageInterpreter.NativeMsgToManagedMsg(ref src);
 
-            handleMessage(msgPtr);  //calls the base class function
+            TMsgHeader msgPtr = new TMsgHeader();
+            uint nBytes = src.nDataBytes;
+
+            msgPtr.version = src.version;
+            msgPtr.msgType = src.msgType;
+            msgPtr.from = src.from;
+            msgPtr.to = src.to;
+            msgPtr.msgID = src.msgID;
+            msgPtr.toAck = src.toAck;
+            msgPtr.nDataBytes = nBytes;
+
+            if (nBytes == 0)
+            {
+                msgPtr.dataPtr = null;
+            }
+            else
+            {
+                msgPtr.dataPtr = new Byte[nBytes];
+                Marshal.Copy(src.dataPtr, msgPtr.dataPtr, 0, (int)nBytes);
+            }
+
+            handleMessage(msgPtr);
         }
     }
+
 }
