@@ -1,12 +1,12 @@
-@echo off
+rem @echo off
 rem ----------------------------------------------
 rem Create a release installation.
 rem ----------------------------------------------
 echo Making release msi
-cd %APSIM%\Release
+cd \APSIM\Release
 
 rem Compile our tool first.
-"%VS90COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup\InsertFilesIntoSetup.sln /build release
+"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup\InsertFilesIntoSetup.sln /build release
 
 set InsertFiles=InsertFilesIntoSetup\bin\release\InsertFilesIntoSetup
 
@@ -33,7 +33,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\Tcl8.4.13.license.terms   %%Apsim%%\Model\TclLink
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink
 
-"%VS90COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
+"%VS100COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
 
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:
@@ -63,7 +63,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\Tcl8.4.13.license.terms   %%Apsim%%\Model\TclLink
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink
 
-"%VS90COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
+"%VS100COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
 
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:

@@ -6,11 +6,12 @@ public class RUEModel : Instance
 {
    #region Class Data Members
     private NewMetType MetData;
-    private double defaultCO2 = 350;  
-   [Input] private double MaxT = 0;
+    private double defaultCO2 = 350;
+    [Input] private double MaxT = 0;
    [Input] private double MinT = 0;
    [Input] private double VP = 0;
    [Input(Optional = true)]   [Units("ppm")]   private double CO2 = -1; //This looks for a CO2 value from APSIM and then assigns a value of -1 if APSIM dosn't return an value
+   [Event] public event NewPotentialGrowthDelegate NewPotentialGrowth;
   #endregion
 
    #region Associated variables
@@ -49,48 +50,6 @@ public class RUEModel : Instance
    }
    #endregion
 
-   #region RUE modifying factors
-   [Output]   public double Ft
-      {
-      get
-         {
-         Function FT = (Function)Children["Ft"];
-         return FT.Value;
-         }
-      }
-   [Output]   public double Fvpd
-      {
-      get
-         {
-         Function FVPD = (Function)Children["Fvpd"];
-         return FVPD.Value;
-         }
-      }
-   [Output]   public double Fn
-   {
-       get
-       {
-           Function Fn = (Function)Children["Fn"];
-           return Fn.Value;
-       }
-   }
-   [Output]   public double Fw
-   {
-       get
-       {
-           Function Fw = (Function)Children["Fw"];
-           return Fw.Value;
-       }
-   }   
-   [Output]   public double Fco2
-   {
-       get
-       {
-           Function Fco2 = (Function)Children["Fco2"];
-           return Fco2.Value;
-       }
-   }
-   #endregion
 
    [EventHandler]   public void OnNewMet(NewMetType NewMetData)
    {
@@ -101,6 +60,41 @@ public class RUEModel : Instance
    public double Growth(double RadnInt)
       {
       Function RUE = (Function)Children["RUE"];
-      return RadnInt * RUE.Value * Math.Min(Ft, Fvpd) * Math.Min(Fn, Fw) *Fco2;
+      Function Fco2 = (Function)Children["Fco2"];
+      Function Fn = (Function)Children["Fn"];
+      Function Ft = (Function)Children["Ft"];
+      Function Fw = (Function)Children["Fw"];
+      Function Fvpd = (Function)Children["Fvpd"];
+
+      return RadnInt * RUE.Value * Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value)) * Fw.Value * Fco2.Value;
       }
+   private void PublishNewPotentialGrowth()
+   {
+       // Send out a NewPotentialGrowthEvent.
+       if (NewPotentialGrowth != null)
+       {
+           Function RUE = (Function)Children["RUE"];
+           Function Fn = (Function)Children["Fn"];
+           Function Ft = (Function)Children["Ft"];
+           Function Fvpd = (Function)Children["Fvpd"];
+           NewPotentialGrowthType GrowthType = new NewPotentialGrowthType();
+           GrowthType.sender = Plant.Name;
+           GrowthType.frgr = (float)Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value));
+           NewPotentialGrowth.Invoke(GrowthType);
+       }
+   }
+   public Plant Plant
+   {
+       get { return (Plant)Root; }
+   }
+   [EventHandler]
+   public new void OnInit2()
+   {
+       PublishNewPotentialGrowth();
+   }
+   [EventHandler]
+   public new void OnPrepare()
+   {
+       PublishNewPotentialGrowth();
+   }
    }

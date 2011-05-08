@@ -234,6 +234,8 @@ void Factory::GetAllEvents(Instance^ Obj)
       String^ FQN = CalcParentName(Child);
       for each (FactoryProperty^ Property in RegisteredProperties)
          {
+			 if (FQN == "MaxCover")
+				 int i = 0;
          if (Property->FQN == FQN)
             return Property;
          }

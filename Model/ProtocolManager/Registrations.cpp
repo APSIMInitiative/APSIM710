@@ -134,8 +134,8 @@ class RegistrationsInternal
             // loop through all active registrations and resolve each one.
             Regs& activeRegistrations = getRegsForType(reg.type.opposite());
             for_each_if(activeRegistrations.begin(), activeRegistrations.end(),
-                        bind(&RegistrationsInternal::resolve, this, _1),
-                        bind(&isAMatch, _1, regInternal.destinationId, reg.name, regInternal.details.componentId));
+                        boost::bind(&RegistrationsInternal::resolve, this, _1),
+                        boost::bind(&isAMatch, _1, regInternal.destinationId, reg.name, regInternal.details.componentId));
             }
          else
             findMatching(regInternal.destinationId, reg.name, reg.type.opposite(), regInternal.subscriptions,
@@ -153,7 +153,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(registration.type);
          if (find_if(registrations.begin(),
                      registrations.end(),
-                     bind(&matchOnId, _1, registration.componentId, registration.id))
+                     boost::bind(&matchOnId, _1, registration.componentId, registration.id))
              != registrations.end())
             throw runtime_error("Registration already exists. Cannot re-add. Registration name = " + registration.name);
 
@@ -172,7 +172,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&matchOnId, _1, componentId, regId));
+                                      boost::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
             throw runtime_error("Cannot get registration " + lexical_cast<string>(regId));
 
@@ -186,7 +186,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&isAMatch, _1, componentId, regName, 0));
+                                      boost::bind(&isAMatch, _1, componentId, regName, 0));
          if (reg == registrations.end())
             throw runtime_error("Cannot get registration " + lexical_cast<string>(regName));
 
@@ -201,7 +201,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&matchOnId, _1, componentId, regId));
+                                      boost::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
             throw runtime_error("Cannot erase registration " + lexical_cast<string>(regId));
 
@@ -217,7 +217,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&matchOnId, _1, componentId, regId));
+                                      boost::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
             throw runtime_error("Cannot get subscriptions for registration " + lexical_cast<string>(regId));
          if (reg->details.type.isPassive())
@@ -239,8 +239,8 @@ class RegistrationsInternal
          {
          Regs& registrations = getRegsForType(type);
          for_each_if(registrations.begin(), registrations.end(),
-                     bind(&addRegistration, &matches, _1),
-                     bind(&isAMatch, _1, componentId, name, ourComponentId));
+                     boost::bind(&addRegistration, &matches, _1),
+                     boost::bind(&isAMatch, _1, componentId, name, ourComponentId));
          }
       //---------------------------------------------------------------------------
       // Return true if registration has been resolved.
@@ -250,7 +250,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&matchOnId, _1, componentId, regId));
+                                      boost::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
             throw runtime_error("Cannot get registration " + lexical_cast<string>(regId));
          return reg->resolved;
@@ -263,7 +263,7 @@ class RegistrationsInternal
          Regs& registrations = getRegsForType(type);
          Regs::iterator reg = find_if(registrations.begin(),
                                       registrations.end(),
-                                      bind(&matchOnId, _1, componentId, regId));
+                                      boost::bind(&matchOnId, _1, componentId, regId));
          if (reg == registrations.end())
             throw runtime_error("Cannot find registration " + lexical_cast<string>(regId));
 

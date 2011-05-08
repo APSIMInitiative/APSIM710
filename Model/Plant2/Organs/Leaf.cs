@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
+[Description("Leaf Class")]
 public class Leaf : BaseOrgan, AboveGround
    {
    #region Class Data Members
@@ -25,33 +26,31 @@ public class Leaf : BaseOrgan, AboveGround
    public double NodeNo = 0;
    [Output("Height")]
    private double Height = 0;
-
-   [Event]
-   public event NewPotentialGrowthDelegate NewPotentialGrowth;
    [Event]
    public event NewCanopyDelegate New_Canopy;
 
-   [Param("Frgr")]
-   private double _Frgr;              // Relative Growth Rate Factor
-   [Param]
-   [Output]
-   public double MaxCover;
-   [Param]
-   [Output]
+    [Param]   
+    [Output]   
+    [Description("Max cover")]
+    [Units("max units")]
+    public double MaxCover;
+   [Param]   [Output]   [Description("Primary Bud")]
    public double PrimaryBudNo = 1;
-   [Param]
+   [Param]   [Description("Extinction Coefficient")]
    private double KDead = 0;                  // Extinction Coefficient (Dead)
    [Param]
+   [Description("Maximum Final Leaf Number ")]
    private double MaxNodeNo = 0;              // Maximum Final Leaf Number 
    [Param]
+   [Description("Max Leaf Number")]
    string InitialiseStage = "";
-   [Param]
+   [Param]   [Description("Initial number of leaf nodes")]
    double[] InitialAreas = null;                   // Initial number of leaf nodes
-   [Param]
+   [Param]   [Description("Initial number of leaf nodes")]
    double[] InitialAges = null;                   // Initial number of leaf nodes
-   [Param]
+   [Param]   [Description("Initial number of leaf primordia")]
    double InitialLeafPrimordia = 0;           // Initial number of leaf primordia
-   [Param]
+   [Param]   [Description("Final Node Number")]
    double FinalNodeNoEstimate = 0;
    #endregion
    [Output]
@@ -542,16 +541,6 @@ public class Leaf : BaseOrgan, AboveGround
          }
       }
    [Output]
-   public double Frgr
-      {
-      get { return _Frgr; }
-      set
-         {
-         _Frgr = value;
-         PublishNewCanopyEvent();
-         }
-      }
-   [Output]
    public double Fw
       {
       get
@@ -632,12 +621,6 @@ public class Leaf : BaseOrgan, AboveGround
    public void OnInit2()
       {
       PublishNewCanopyEvent();
-      PublishNewPotentialGrowth();
-      }
-   [EventHandler]
-   public void OnPrepare()
-      {
-      PublishNewPotentialGrowth();
       }
    [EventHandler]
    public void OnSow(SowPlant2Type Sow)
@@ -662,17 +645,6 @@ public class Leaf : BaseOrgan, AboveGround
        }
    }
 
-   private void PublishNewPotentialGrowth()
-      {
-      // Send out a NewPotentialGrowthEvent.
-      if (NewPotentialGrowth != null)
-         {
-         NewPotentialGrowthType GrowthType = new NewPotentialGrowthType();
-         GrowthType.sender = Plant.Name;
-         GrowthType.frgr = (float)Math.Min(Math.Min(Frgr, Photosynthesis.Fvpd), Photosynthesis.Ft);
-         NewPotentialGrowth.Invoke(GrowthType);
-         }
-      }
    private void PublishNewCanopyEvent()
       {
       if (New_Canopy != null)

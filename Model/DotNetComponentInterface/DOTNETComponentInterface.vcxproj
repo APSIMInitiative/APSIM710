@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -47,6 +47,9 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>IF NOT EXIST dllres.res rc -DPROJ=$(ProjectName) -fo dllres.res ..\Build\dll.rc</Command>
+    </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalUsingDirectories>..\;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
@@ -111,8 +114,13 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </Reference>
-    <Reference Include="CSGeneral">
+    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\CSGeneral.dll</HintPath>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="ApsimFile, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\ApsimFile.dll</HintPath>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </Reference>
@@ -121,14 +129,20 @@
     <ClCompile Include="ApsimAttributes.cpp" />
     <ClCompile Include="ApsimComponent.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="..\DataTypes\DOTNETDataTypes.cpp" />
     <ClCompile Include="EntryPoints.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="FactoryEvent.cpp" />
     <ClCompile Include="FactoryProperty.cpp" />
+    <ClCompile Include="GenericType.cpp" />
     <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="LinkField.cpp" />
     <ClCompile Include="MessageData.cpp" />
+    <ClCompile Include="Paddock.cpp" />
+    <ClCompile Include="RunTimeEventHandler.cpp" />
     <ClCompile Include="Stdafx.cpp" />
+    <ClCompile Include="Variable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />
@@ -136,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ApsimComponent.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="..\DataTypes\DOTNETDataTypes.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="FactoryEvent.h" />
@@ -143,9 +158,13 @@
     <ClInclude Include="FactoryProperty.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="Interfaces.h" />
+    <ClInclude Include="LinkField.h" />
     <ClInclude Include="MessageData.h" />
     <ClInclude Include="NamedItem.h" />
+    <ClInclude Include="Paddock.h" />
+    <ClInclude Include="RunTimeEventHandler.h" />
     <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />

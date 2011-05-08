@@ -35,6 +35,10 @@ Field::Field (ScienceAPI2& scienceAPI,
    this->csv = csv;
    this->unitsToOutput = unitsToOutput;
 
+   //fix for VS2010 which no longer null terminates strings. JF 3/5/11
+   if (this->units.empty())
+	   this->units = "()";
+
    if (this->units[0] != '(')
       this->units = "(" + this->units + ")";
 
@@ -267,14 +271,14 @@ void Field::writeValue(ostream& out)
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
-// ------------------------------------------------------------------
+// Changed STDCALL to __stdcall to fix VS2010 issue JF 3/5/11--------
 // Create an instance of the REPORT module
 // ------------------------------------------------------------------
-extern "C" EXPORT ReportComponent* STDCALL createComponent(ScienceAPI2& scienceAPI)
+extern "C" EXPORT ReportComponent* __stdcall createComponent(ScienceAPI2& scienceAPI)
    {
    return new ReportComponent(scienceAPI);
    }
-extern "C" void  EXPORT STDCALL deleteComponent(ReportComponent* component)
+extern "C" void  EXPORT __stdcall deleteComponent(ReportComponent* component)
    {
    delete component;
    }
@@ -310,10 +314,13 @@ void ReportComponent::onInit2(void)
    {
    cout << endl;
    cout << "------- " << scienceAPI.name() << " Initialisation ";
-   cout.width(79-24-scienceAPI.name().length());
-   cout.fill('-');
-   cout << '-' << endl;
-   cout.fill(' ');
+   if (scienceAPI.name().length() < (79-24))
+   {
+	   cout.width(79-24-scienceAPI.name().length());
+	   cout.fill('-');
+	   cout << '-' << endl;
+	   cout.fill(' ');
+   }
 
    // work out a filename.
    string fileName;

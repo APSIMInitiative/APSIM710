@@ -16,7 +16,7 @@ all: $(APSIM)/Model/$(PROJECT).exe
 # the old PLANT model.
 
 $(APSIM)/Model/$(PROJECT).exe: $(SRC) $(APSIM)/Model/$(RESOBJ)
-	$(VS90COMNTOOLS)\..\IDE\devenv $(PROJECT).sln /build debug
+	$(VS100COMNTOOLS)\..\IDE\devenv $(PROJECT).sln /build debug
 
 $(APSIM)/Model/$(RESOBJ): $(APSIM)/Model/Build/dll.rc
 	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<

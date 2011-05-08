@@ -1323,6 +1323,110 @@ endif
           <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1.0</irrigate_efficiency>
         </ui>
       </manager>
+        <manager name="irrigate at sw deficit">
+          <ui>
+            <trigger type="text" description="Enter sw deficit to irrigate at (mm)">50</trigger>
+          </ui>
+          <script>
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>if sw_dep() &gt; [trigger] then        
+            irrigation apply amount = [trigger]
+            endif</text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Irrigate based on rainfall">
+          <ui>
+            <category type="category" description="When should irrigation be applied" />
+            <pastdays type="text" description="If rainfall over the past number of days">7</pastdays>
+            <EnoughRain type="text" description="Is less than (mm)">100</EnoughRain>
+            <category type="category" description="This will happen" />
+            <irrigate_module type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigate_module>
+            <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
+          </ui>
+          <script>
+            <text>!if not enough rain has occured then irrigate. 
+            !Irrigate with the amount that is missing.
+            !Only irrigate if a certain number of days have passed.
+
+            if (rain[[pastdays]] &lt; [EnoughRain]) then
+               '[irrigate_module]' set irrigation_efficiency = [irrigate_efficiency]
+               difference = [EnoughRain] - rain[[pastdays]]
+                '[irrigate_module]' apply amount = difference (mm)
+            endif 
+            </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+            </text>
+            <event>init</event>
+          </script>
+        </manager>
+        <manager name="Irrigate at start of week">
+          <ui>
+            <category description="When should irrigation be applied" type="category" />
+            <pastdays type="text" description="If rainfall over the past number of days">7</pastdays>
+            <EnoughRain type="text" description="Is less than (mm)">100</EnoughRain>
+            <category description="This will happen" type="category" />
+            <irrigate_module type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigate_module>
+            <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
+          </ui>
+          <script>
+            <text>'Every monday check and if not enough rain has occured then irrigate. Irrigate with the amount that is missing
+            if (start_week = 1) then
+            if (rain[[pastdays]] &lt; [EnoughRain]) then
+               '[irrigate_module]' set irrigation_efficiency = [irrigate_efficiency]
+               difference = [EnoughRain] - rain[[pastdays]]
+                '[irrigate_module]' apply amount = difference (mm)
+            endif 
+            endif</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Irrigation cycle">
+          <ui>
+            <category description="When should irrigation be applied" type="category" />
+            <pastdays type="text" description="If rainfall over the past number of days">7</pastdays>
+            <EnoughRain type="text" description="Is less than (mm)">100</EnoughRain>
+            <category description="This will happen" type="category" />
+            <irrigate_module type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigate_module>
+            <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
+            <irrigcycle type="text" description="number of days in irrigation cycle">7</irrigcycle>
+          </ui>
+          <script>
+            <text>!if not enough rain has occured then irrigate. 
+            !Irrigate with the amount that is missing.
+            !Only irrigate if a certain number of days have passed.            
+			!since last irrigation
+
+            if (dai &gt; [irrigcycle]) then
+                if (rain[[pastdays]] &lt; [EnoughRain]) then
+                    '[irrigate_module]' set irrigation_efficiency = [irrigate_efficiency]
+                    difference = [EnoughRain] - rain[[pastdays]]
+                    '[irrigate_module]' apply amount = difference (mm)
+                    dai = 0
+                endif 
+            endif
+            dai = dai + 1</text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+			dai = 0
+            </text>
+            <event>init</event>
+          </script>
+        </manager>  
       <manager name="Tillage on fixed date">
         <script>
           <text>

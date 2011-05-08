@@ -94,7 +94,7 @@ public ref class Units : public System::Attribute
 			}
 
 	};	
-[AttributeUsage(AttributeTargets::Field  | AttributeTargets::Property | AttributeTargets::Class, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets::All, AllowMultiple = true)]
 public ref class Description : public System::Attribute
 	{
 	private:

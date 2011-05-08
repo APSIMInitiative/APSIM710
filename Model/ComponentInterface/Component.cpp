@@ -787,11 +787,13 @@ void Component::writeStringToStream(const std::string& lines, ostream& out,
             out << "------- " << componentName << " Initialisation ";
 			//stop width going negative and report as being about 2 trillion long...
 			if (componentName.length() < (79-24))
-				out.width(79-24-componentName.length());
-            out.fill('-');
-            out << '-' << endl;
-            out.fill(' ');
-            }
+				{
+					out.width(79-24-componentName.length());
+				out.fill('-');
+				out << '-' << endl;
+				out.fill(' ');
+				}
+		    }
          }
       else
          {

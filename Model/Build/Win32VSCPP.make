@@ -1,5 +1,5 @@
 ###########################################
-# make file for MS VS2008
+# make file for MS VS2010
 ###########################################
 
 ######uncomment for debug everything###
@@ -11,7 +11,7 @@ LD="$(VSINSTALLDIR)\VC\bin\link.exe"
 MT="$(WindowsSdkDir)\bin\mt.exe"
 RC=rc
 
-BOOST = $(APSIM)\..\BuildLibraries\boost_1_42_0-msvc
+BOOST = $(APSIM)\..\BuildLibraries\boost_1_44
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
 ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
 TCL = $(APSIM)\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe
@@ -45,23 +45,13 @@ ifdef DEBUG
 #	LIBS := cg32.lib import32.lib $(LIBS)
 	LFLAGS := $(LFLAGS) /DEBUG /PDB:"$(APSIM)\Model\$(PROJECT).pdb"
 	LIBPATH := $(LIBPATH) \
-/LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\thread\build\msvc-9.0\debug\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\debug\asynch-exceptions-on\link-static\threading-multi
+/LIBPATH:$(BOOST)\lib
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
 #	LFLAGS := $(LFLAGS)
 #	LIBS :=  import32.lib $(LIBS)
 	LIBPATH := $(LIBPATH) \
-/LIBPATH:$(BOOST)\bin.v2\libs\filesystem\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\system\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\regex\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\date_time\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\thread\build\msvc-9.0\release\link-static\threading-multi \
-/LIBPATH:$(BOOST)\bin.v2\libs\test\build\msvc-9.0\release\asynch-exceptions-on\link-static\threading-multi
+/LIBPATH:$(BOOST)\lib
 endif
 
 # The rules
@@ -82,7 +72,7 @@ RESOBJ = exeres.res
 
 $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" @$(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" /MANIFEST @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).exe.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).exe;1"
 
 $(RESOBJ): $(APSIM)/Model/Build/exe.rc
@@ -98,10 +88,10 @@ RESOBJ = dllres.res
 #   Then after all that, we embed a manifest into the DLL
 $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" /MANIFEST @$(PROJECT).rsp
 	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" @$(PROJECT).rsp
+	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" /MANIFEST @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc

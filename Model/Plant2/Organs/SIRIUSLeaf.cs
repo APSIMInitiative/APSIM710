@@ -16,9 +16,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
    [Input]   private int Year = 0;
    [Input]   private double Radn = 0;
    [Input]   private double MinT = 0;  //HEB  VS gives a warning that this is not used but it is so don't delete
-   [Event]   public new event NewPotentialGrowthDelegate NewPotentialGrowth;
    [Event]   public new event NewCanopyDelegate New_Canopy;
-   [Param("Frgr")]    private double _Frgr;              // Relative Growth Rate Factor
    [Param]   private double KDead = 0;                  // Extinction Coefficient (Dead)
    [Param]   private double MaxNodeNo = 0;              // Maximum Final Leaf Number 
    [Param]   string InitialiseStage = "";
@@ -173,17 +171,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
       Leaves.Clear();
       Console.WriteLine("Removing Leaves from plant");
       }
-   private void PublishNewPotentialGrowth()
-   {
-       // Send out a NewPotentialGrowthEvent.
-       if (NewPotentialGrowth != null)
-       {
-           NewPotentialGrowthType GrowthType = new NewPotentialGrowthType();
-           GrowthType.sender = Plant.Name;
-           GrowthType.frgr = (float)Math.Min(Math.Min(Frgr, Photosynthesis.Fvpd), Photosynthesis.Ft);
-           NewPotentialGrowth.Invoke(GrowthType);
-       }
-   }
+
    private void PublishNewCanopyEvent()
    {
        if (New_Canopy != null)
@@ -519,15 +507,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
          EP = value;
          }
       }
-   [Output]   public new double Frgr
-      {
-      get { return _Frgr; }
-      set
-         {
-         _Frgr = value;
-         PublishNewCanopyEvent();
-         }
-      }
  #endregion
 
  #region Event functions
@@ -536,12 +515,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
    public new void OnInit2()
       {
       PublishNewCanopyEvent();
-      PublishNewPotentialGrowth();
-      }
-   [EventHandler]
-   public new void OnPrepare()
-      {
-      PublishNewPotentialGrowth();
       }
    [EventHandler]
    public new void OnSow(SowPlant2Type Sow)

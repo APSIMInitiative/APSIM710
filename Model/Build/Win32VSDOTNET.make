@@ -18,11 +18,11 @@ endif
 
 
 $(APSIM)/Model/$(PROJECT).exe: $(SRC)
-	"$(VS90COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
+	"$(VS100COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
 
 
 $(APSIM)/Model/$(PROJECT).dll: $(SRC) $(RESOBJ)
-	"$(VS90COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
+	"$(VS100COMNTOOLS)..\IDE\devenv" $(PROJECT).sln /build release
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
 	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<

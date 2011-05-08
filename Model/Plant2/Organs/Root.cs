@@ -35,19 +35,22 @@ public class Root : BaseOrgan, BelowGround
    [Input]
    public double[] ll15_dep = null;
    [Param]
+   [Description("")]
    public double[] ll = null;
    [Param]
+   [Description("")]
    public double[] kl = null;
    [Param]
+   [Description("")]
    public double[] xf = null;
-   [Param]
-   private double InitialDM = 0;
-   [Param]
-   private double SpecificRootLength = 0;
-   [Param]
-   private double KNO3 = 0;
-   [Param]
-   private double KNH4 = 0;
+   [Param]   [Description("Initial DM")]
+   public double InitialDM = 0;
+   [Param]   [Description("Specific Root Length")]
+   public double SpecificRootLength = 0;
+   [Param]   [Description("Initial KNO3")]
+   public double KNO3 = 0;
+   [Param]   [Description("Initial KNO4")]
+   public double KNH4 = 0;
 
    [Output]
    [Units("mm")]

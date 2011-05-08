@@ -3,7 +3,6 @@
 #include "ApsimRegistrationType.h"
 
 #include <stdexcept>
-using namespace std;
 
 //---------------------------------------------------------------------------
 EventTypeCode stringToTypeCode(const std::string& st)
@@ -21,7 +20,7 @@ EventTypeCode stringToTypeCode(const std::string& st)
    else if (Str_i_Eq(st, "respondToEvent"))
       return  respondToEvent;
 
-   throw runtime_error("Invalid registration type: " + st);
+   throw std::runtime_error("Invalid registration type: " + st);
    }
 //---------------------------------------------------------------------------
 // Return a string representation of the specified registration type.
@@ -40,7 +39,7 @@ const std::string typeCodeToString (EventTypeCode type)
 
       case respondToGetSet  : return "respondToGetSet";
       };
-   throw runtime_error(string("Invalid registration type: ") + itoa(type));
+   throw std::runtime_error(std::string("Invalid registration type: ") + itoa(type));
    }
 //---------------------------------------------------------------------------
 // Return the opposite of the specified type.
@@ -58,5 +57,5 @@ EventTypeCode opposite(EventTypeCode type)
       case respondToSet     : return set;
       case respondToEvent   : return event;
       };
-   throw runtime_error(string("Invalid opposite registration type: ") + itoa(type));
+   throw std::runtime_error(std::string("Invalid opposite registration type: ") + itoa(type));
    }
