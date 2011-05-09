@@ -12,7 +12,7 @@ using System.Text;
          {
          get
             {
-            double Code = Values[0];
+            double Value = Values[0];
             Plant plant = (Plant)Root;
             Phase P = plant.Phenology.CurrentPhase;
             for (int i = 0; i < Stages.Length; i++)
@@ -22,14 +22,14 @@ using System.Text;
 
                if (Stages[i] == P.Start)
                   {
-                  Code = Values[i];
+                  Value = Values[i];
                   if (i<Stages.Length-1)
-                     Code += P.FractionComplete * (Values[i + 1] - Values[i]);
+                     Value += P.FractionComplete * (Values[i + 1] - Values[i]);
                   
                   }
                }
 
-            return Code;
+            return Value;
             }
          }
 
