@@ -44,7 +44,6 @@
       <variable name="LeafDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="LeafWaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
       <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
       <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafLAI" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
       <variable name="LeafLAIDead" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
@@ -53,8 +52,8 @@
       <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFtValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFvpdValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="LeafNodeAppearanceRateFunctionValue" description="" read="T" write="F" kind="double" array="" units="" />
@@ -64,7 +63,7 @@
       <variable name="LeafGrowthDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafLagDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafSenescenceDurationValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafBranchingRateValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafBranchingRateValue" description="" read="T" write="F" kind="double" array="" units="" />  
       <variable name="StemLiveStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="StemLiveWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
@@ -89,7 +88,7 @@
       <variable name="FloretDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="StageCodeValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StageValueValue" description="" read="T" write="F" kind="double" array="" units="" />
     </variables>
     <events>
       <event name="NewCrop" description="" />
@@ -152,9 +151,9 @@
           <Value>Stem</Value>
         </Constant>
       </AnnualPlantArbitrator>
-      <StageBasedInterpolation name="StageCode">
+      <StageBasedInterpolation name="StageValue">
         <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation            Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation   RGFlowering    EndRegrowth</Stages>
-        <Codes type="text" description="Codes">   1               2                  3                  4                         5                            6                   7                    8                       4                       5                            6                        7       </Codes>
+        <Values type="text" description="Values">   1               2                  3                  4                         5                            6                   7                    8                       4                       5                            6                        7       </Values>
       </StageBasedInterpolation>
       <Phenology>
         <PhotoperiodFunction name="Photoperiod">
@@ -295,7 +294,6 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 </Memo>
       </Phenology>
       <Leaf>
-        <Frgr type="text" description="Frgr">1</Frgr>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
@@ -966,7 +964,7 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
         </Constant>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
-          <Codes type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Codes>
+          <Values type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Values>
         </StageBasedInterpolation>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Vegetative">
