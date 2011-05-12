@@ -4,6 +4,7 @@
    #include <assert.h>
 #else
    #include <dlfcn.h>
+   #include <stdio.h>
 #endif
 
 #include <list>
@@ -22,9 +23,11 @@ MonoDomain * protocol::Computation::domain = NULL;
 
 #else
 
+ #ifdef __WIN32__
 using namespace mscorlib;
 ICorRuntimeHost* protocol::Computation::pHost = NULL;
 
+ #endif
 #endif
 
 using namespace std;
@@ -315,10 +318,12 @@ void Computation::InitNETFrameworks()
 	if (!domain)
 	{
        const char* domain_name = "mono_apsim";
-       domain = mono_jit_init (domain_name);
+       // domain = mono_jit_init (domain_name);
+       domain = mono_jit_init_version (domain_name, "v4.0.30319");
 	}
 	return;
 #else
+ #ifdef __WIN32__
 	if (pHost)
 		return;
 
@@ -339,9 +344,14 @@ void Computation::InitNETFrameworks()
 	//
 	HKEY key = NULL;
 	DWORD lastError = 0;
-	lastError = RegOpenKeyEx(HKEY_LOCAL_MACHINE,TEXT("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5"),0,KEY_QUERY_VALUE,&key);
+//	lastError = RegOpenKeyEx(HKEY_LOCAL_MACHINE,TEXT("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5"),0,KEY_QUERY_VALUE,&key);
+//    if(lastError!=ERROR_SUCCESS) {
+//		printf(TEXT("Error opening HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5\n"));
+//		return;
+//	}
+	lastError = RegOpenKeyEx(HKEY_LOCAL_MACHINE,TEXT("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Client"),0,KEY_QUERY_VALUE,&key);
 	if(lastError!=ERROR_SUCCESS) {
-		printf(TEXT("Error opening HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5\n"));
+		printf(TEXT("Error opening HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Client\n"));
 		return;
 	}
 
@@ -352,7 +362,8 @@ void Computation::InitNETFrameworks()
 
 	if(lastError!=ERROR_SUCCESS) {
 		RegCloseKey(key);
-		printf(TEXT("Error querying HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5\\Install\n"));
+//		printf(TEXT("Error querying HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v3.5\\Install\n"));
+		printf(TEXT("Error querying HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Client\\Install\n"));
 		return;
 	}
 
@@ -361,14 +372,16 @@ void Computation::InitNETFrameworks()
 	// Was Install DWORD key value == 1 ??
 	if(data[0]!=1)
 	{
-		printf(TEXT(".NET Framework 3.5 is NOT installed\n"));
+//		printf(TEXT(".NET Framework 3.5 is NOT installed\n"));
+		printf(TEXT(".NET Framework 4 is NOT installed\n"));
 		return;
 	}
 
 	// 
 	// Load the runtime the 3.5 Runtime (CLR version 2.0)
 	//
-	LPWSTR pszVer = L"v2.0.50727";  // .NET Fx 3.5 needs CLR 2.0
+//	LPWSTR pszVer = L"v2.0.50727";  // .NET Fx 3.5 needs CLR 2.0
+	LPWSTR pszVer = L"v4.0.30319";  // .NET Fx 4 needs CLR 4.0
 	LPWSTR pszFlavor = L"wks";
 	pHost = NULL;
 
@@ -395,6 +408,9 @@ void Computation::InitNETFrameworks()
 	pHost->Start(); // Start the CLR
 
 	return;
+ #else
+   throw runtime_error("Support for .NET components has not been compiled into this build of APSIM.");
+ #endif
 #endif
 }
 
@@ -444,6 +460,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 	}
 
 #else
+ #ifdef __WIN32__
 	try {
 		//
 		// Get a pointer to the default domain in the CLR
@@ -506,6 +523,7 @@ void Computation::CreateManagedInstance(const std::string& filename,
 	catch(_com_error& error) {
 		throw runtime_error(std::string(error.Description()).c_str());
 	}
+ #endif
 #endif
 }
 
@@ -516,6 +534,7 @@ void Computation::messageToManagedLogic(Message* message) const
     _args[0] = &message;
     mono_runtime_invoke(handleMsgMethod, classInstance, _args, NULL);
 #else
+ #ifdef __WIN32__
 	try {
 		_ObjectPtr pObject; 
 		_TypePtr pType;
@@ -543,6 +562,7 @@ void Computation::messageToManagedLogic(Message* message) const
 	catch(_com_error& error) {
 		throw runtime_error(std::string(error.Description()).c_str());
 	}
+ #endif
 #endif
 }
 

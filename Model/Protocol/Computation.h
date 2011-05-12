@@ -5,17 +5,16 @@
 #include <stdexcept>
 
 #include <General/platform.h>
-#ifndef __WIN32__
- #define MONO
-#endif
 
 #ifdef MONO
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 #include <mono/metadata/debug-helpers.h>
 #else
+ #ifdef __WIN32__
 #include <mscoree.h>
 #include "mscorlib.h"
+ #endif
 #endif
 
 enum CompilationMode {Invalid, Native, CLR, Mixed };
@@ -91,12 +90,13 @@ class EXPORT Computation : public IComputation
 	  MonoObject* classInstance;
 
 #else
+ #ifdef __WIN32__
 	  HMODULE mscoree;
 	  static ICorRuntimeHost *pHost;
 	  VARIANT vtobj;
 	  void* typePtr;
 	  mscorlib::_ObjectHandlePtr pObjectHandle; 
-
+ #endif
 #endif
 
 	  void InitNETFrameworks();

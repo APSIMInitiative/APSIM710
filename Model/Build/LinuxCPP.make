@@ -6,9 +6,17 @@ BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 
+USE_MONO=1
+ifdef USE_MONO
+MONO_INCLUDEDIR=-I/opt/mono-2.10/include/mono-2.0
+MONO_LIBDIR= -L/opt/mono-2.10/lib
+MONO_LIBS= -lmono-2.0 -lm -lrt -lpthread
+MONO_DEFINE= -DMONO
+endif
+
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-CFLAGS= -Wall $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model \
+CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model \
 -Wno-write-strings -fpermissive -fPIC -O0 $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
@@ -17,7 +25,7 @@ CFLAGS= -Wall $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) -I$(APSIM)/Model \
 # Required libraries
 LIBS:= $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
         $(EXTRALIBS) -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt -lboost_thread-mt \
-        $(XML2_LIBDIR) -lxml2
+        $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 
 ifeq ($(PROJECTTYPE),dll)
@@ -31,7 +39,7 @@ LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),exe)
-LDFLAGS:= --export-dynamic $(LDFLAGS) 
+LDFLAGS:= --export-dynamic $(LDFLAGS)
 endif
 
 
