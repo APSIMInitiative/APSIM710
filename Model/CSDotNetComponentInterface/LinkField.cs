@@ -50,8 +50,6 @@ public class LinkField
     }
     private String FindComponentByName(String NameToFind, String OurName)
     {
-        String Delimiter = ".";
-
         if (NameToFind.Contains(".MasterPM."))
             return NameToFind;   // absolute reference.
         else

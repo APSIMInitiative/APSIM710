@@ -79,10 +79,10 @@ namespace CMPComp
         {
             // Copy from TMsgHeader to TNativeMsgHeader.
             // The difference is in the nature of the data pointer.
-            TNativeMsgHeader msgPtr = new TNativeMsgHeader();
-            uint nBytes = msg.nDataBytes;
             try
             {
+                TNativeMsgHeader msgPtr = new TNativeMsgHeader();
+                uint nBytes = msg.nDataBytes;
                 try
                 {
                     msgPtr.version = msg.version;
@@ -99,6 +99,16 @@ namespace CMPComp
                     }
                     else
                     {
+                        /*
+                        if (nBytes > memAllocSize)
+                        {
+
+                            if (memAllocSize > 0)
+                                Marshal.FreeHGlobal(nativeMem);
+                            nativeMem = Marshal.AllocHGlobal((int)nBytes);
+                            memAllocSize = nBytes;
+                        }
+                        msgPtr.dataPtr = nativeMem; */
                         msgPtr.dataPtr = Marshal.AllocHGlobal((int)nBytes);
                         Marshal.Copy(msg.dataPtr, 0, msgPtr.dataPtr, (int)nBytes);
                     }
@@ -107,8 +117,8 @@ namespace CMPComp
                 }
                 finally
                 {
-                    if (nBytes > 0)
-                        Marshal.FreeHGlobal(msgPtr.dataPtr);
+                   if (nBytes > 0)
+                       Marshal.FreeHGlobal(msgPtr.dataPtr);
                 }
             }
             catch (Exception e)
@@ -118,6 +128,9 @@ namespace CMPComp
                 Console.WriteLine(exmsg);
             }
         }
+
+        //private uint memAllocSize = 0;
+        //private IntPtr nativeMem;
 
         //==============================================================================
         /// <summary>
@@ -137,29 +150,12 @@ namespace CMPComp
             // We need to copy the "native" message point into a managed object.
             TNativeMsgHeader src = (TNativeMsgHeader)Marshal.PtrToStructure((IntPtr)inVal, typeof(TNativeMsgHeader));
 
-            TMsgHeader msgPtr = new TMsgHeader();
-            uint nBytes = src.nDataBytes;
+            TMsgHeader msgPtr = TMessageInterpreter.NativeMsgToManagedMsg(ref src);
 
-            msgPtr.version = src.version;
-            msgPtr.msgType = src.msgType;
-            msgPtr.from = src.from;
-            msgPtr.to = src.to;
-            msgPtr.msgID = src.msgID;
-            msgPtr.toAck = src.toAck;
-            msgPtr.nDataBytes = nBytes;
-
-            if (nBytes == 0)
-            {
-                msgPtr.dataPtr = null;
-            }
-            else
-            {
-                msgPtr.dataPtr = new Byte[nBytes];
-                Marshal.Copy(src.dataPtr, msgPtr.dataPtr, 0, (int)nBytes);
-            }
-
-            handleMessage(msgPtr);
+            handleMessage(msgPtr);  //calls the base class function
         }
+
+
     }
 
 }

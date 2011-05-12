@@ -98,6 +98,16 @@ namespace CMPComp
                     }
                     else
                     {
+                        /*
+                        if (nBytes > memAllocSize)
+                        {
+
+                            if (memAllocSize > 0)
+                                Marshal.FreeHGlobal(nativeMem);
+                            nativeMem = Marshal.AllocHGlobal((int)nBytes);
+                            memAllocSize = nBytes;
+                        }
+                        msgPtr.dataPtr = nativeMem; */
                         msgPtr.dataPtr = Marshal.AllocHGlobal((int)nBytes);
                         Marshal.Copy(msg.dataPtr, 0, msgPtr.dataPtr, (int)nBytes);
                     }
@@ -117,6 +127,9 @@ namespace CMPComp
                 Console.WriteLine(exmsg);
             }
         }
+
+        //private uint memAllocSize = 0;
+        //private IntPtr nativeMem;
 
         //==============================================================================
         /// <summary>

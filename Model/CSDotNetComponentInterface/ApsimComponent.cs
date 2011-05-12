@@ -28,6 +28,7 @@ public class ApsimComponent : Instance
     private String DllFileName;
     private Dictionary<int, FactoryProperty> RegistrationsProp;
     private Dictionary<int, FactoryProperty> RegistrationsDriver;
+    private Dictionary<FactoryProperty, int> ReverseRegDriver;
     private Dictionary<int, ApsimType> RegistrationsDriverExtra;
     private Dictionary<String, int> RegistrationsDriverExtraLookup; //allows the lookup by name for the Get() function
     private Dictionary<int, ApsimType> RegistrationsEvent;
@@ -67,6 +68,7 @@ public class ApsimComponent : Instance
         DllFileName = ModelAssembly.Location;
         RegistrationsProp = new Dictionary<int, FactoryProperty>();
         RegistrationsDriver = new Dictionary<int, FactoryProperty>();
+        ReverseRegDriver = new Dictionary<FactoryProperty, int>();
         RegistrationsDriverExtra = new Dictionary<int, ApsimType>();
         RegistrationsDriverExtraLookup = new Dictionary<String, int>();
         RegistrationsEvent = new Dictionary<int, ApsimType>();
@@ -325,24 +327,30 @@ public class ApsimComponent : Instance
     // ----------------------------------------------
     public void GetAllInputs()
     {
-        bool found = false;
-        for (int i = 0; i != Fact.Properties.Count; i++)
+        foreach (FactoryProperty Property in Fact.Properties)
         {
-            FactoryProperty Property = Fact.Properties[i];
             if (Property.IsInput)
             {
-                foreach (KeyValuePair<int, FactoryProperty> pair in RegistrationsDriver)
+                //bool found = false;
+                int driverId;
+                if (ReverseRegDriver.TryGetValue(Property, out driverId))
                 {
-                    if (pair.Value.Equals(Property))
-                    {
-                        Host.sendDriverRequest(pair.Key, 0);
-                        found = true;
-                    }
+                    Host.sendDriverRequest(driverId, 0);
                 }
-                if (!found)
+                else
+                //foreach (KeyValuePair<int, FactoryProperty> pair in RegistrationsDriver)
+                //{
+                //    if (pair.Value.Equals(Property))
+                //    {
+                //        Host.sendDriverRequest(pair.Key, 0);
+                //        found = true;
+                //    }
+                //}
+                //if (!found)
                 {
                     int RegistrationIndex = Host.driverCount(); //Registrations.Count;
                     RegistrationsDriver.Add(RegistrationIndex, Property);
+                    ReverseRegDriver.Add(Property, RegistrationIndex);
                     Host.registerDriver(Property.Name, RegistrationIndex, Property.OptionalInput ? 0 : 1, 1, Property.Units, false, Property.DDML(), Property.Name, "", 0); //register it
                     Host.sendDriverRequest(RegistrationIndex, 0);
                 }
@@ -370,13 +378,8 @@ public class ApsimComponent : Instance
         }
         else if (RegistrationsDriverExtra.TryGetValue(driverID, out Data))
         {
-            TDDMLValue dest = new TDDMLValue(Data.DDML(), "");
-            dest.setValue(aValue);
-            byte[] data = new byte[dest.sizeBytes()];
-            dest.getData(ref data);
-            Data.unpack(data);
+            ((TypeInterpreter)Data).setValue(aValue);
             result = true;
-            //leave this item registered for subsequent use
         }
         return result;
     }
@@ -395,7 +398,7 @@ public class ApsimComponent : Instance
         Boolean found = false; 
         foreach (KeyValuePair<String, int> pair in RegistrationsDriverExtraLookup)
         {
-            if (pair.Key.ToLower() == PropertyName.ToLower())
+            if (pair.Key.Equals(PropertyName, StringComparison.OrdinalIgnoreCase))
             {
                 found = true;
                 RegistrationIndex = pair.Value;
@@ -636,7 +639,7 @@ public class ApsimComponent : Instance
     public Boolean InsertParameterIntoModel(XmlNode Parameter, XmlNode Node)
     {
         Boolean found = false;
-        if (Node.Name.ToLower() == Parameter.Name.ToLower())
+        if (Node.Name.Equals(Parameter.Name, StringComparison.OrdinalIgnoreCase))
         {
             Node.InnerText = Parameter.InnerText;
             found = true;
@@ -683,6 +686,7 @@ public class ApsimComponent : Instance
                 Host.delDriver(pair.Key);
             }
             RegistrationsDriver.Clear();
+            ReverseRegDriver.Clear();
             //Events
             List<int> keys = new List<int>();   //list of event items to be removed
             foreach (KeyValuePair<int, ApsimType> pair in RegistrationsEvent)
@@ -723,9 +727,7 @@ public class ApsimComponent : Instance
         FactoryProperty Property;
         if (RegistrationsProp.TryGetValue(propertyID, out Property))
         {
-            byte[] data;
-            Property.pack(out data, aValue.sDDML);
-            aValue.setData(data, (int)Property.memorySize(), 0);
+            Property.pack(aValue);
             result = true;
         }
         return result;
@@ -745,12 +747,7 @@ public class ApsimComponent : Instance
         FactoryProperty Property;
         if (RegistrationsProp.TryGetValue(propertyID, out Property))
         {
-            //create a compatible TTypedValue to allow for type conversions
-            TDDMLValue valBuf = new TDDMLValue(Property.DDML(), "");
-            valBuf.setValue(aValue);                                   //do type conversion
-            byte[] data = new byte[valBuf.sizeBytes()];
-            valBuf.getData(ref data);
-            Property.unpack(data);
+            Property.setValue(aValue);
             result = true;
         }
         return result;

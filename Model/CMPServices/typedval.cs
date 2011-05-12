@@ -491,10 +491,9 @@ namespace CMPServices
                 throw (new TypeMisMatchException("Cannot access named members for scalar or array"));
 
             uint i = 1;
-            String lowerName = sName.ToLower();
             while ((nMember == null) && (i <= FMembers.Count))
             {
-                if (item(i).Name.ToLower() == lowerName)//sName.ToLower())
+                if (item(i).Name.Equals(sName, StringComparison.OrdinalIgnoreCase))
                     nMember = item(i);
                 else
                     i++;

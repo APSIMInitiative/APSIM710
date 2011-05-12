@@ -26,11 +26,11 @@ public class VariableType : NamedItem
     /// 
     /// </summary>
     /// <returns></returns>
-    public int ToBoolean()
+    public bool ToBoolean()
     {
         WrapBuiltInVariable<bool> Data = new WrapBuiltInVariable<bool>();
         Component.Get(ComponentName + "." + Name, Data, false);
-        return Data.Value == true ? 1:0;
+        return Data.Value;
     }
     public int ToInt32()
     {
@@ -167,23 +167,23 @@ public class WrapBuiltInVariable<T> : ApsimType
         }
         else if (tType == typeof(int))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
         }
         else if (tType == typeof(Single))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), typeof(T)));
         }
         else if (tType == typeof(double))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), typeof(T)));
         }
         else if (tType == typeof(String))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asStr(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asStr(), typeof(T)));
         }
         else if (tType == typeof(Boolean[]))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
         }
         else if (tType == typeof(int[]))
         {
@@ -191,15 +191,15 @@ public class WrapBuiltInVariable<T> : ApsimType
         }
         else if (tType == typeof(Single[]))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), typeof(T)));
         }
         else if (tType == typeof(double[]))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(T)));
         }
         else if (tType == typeof(String[]))
         {
-            Value = Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), typeof(T)));
+            Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), typeof(T)));
         }
     }
     public uint memorySize()

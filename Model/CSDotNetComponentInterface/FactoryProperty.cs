@@ -285,14 +285,30 @@ public class FactoryProperty : Instance, ApsimType
         //fill a src object with the property value
         byte[] dataBuf;
         Data.pack(out dataBuf);
-        TDDMLValue src = new TDDMLValue(Data.DDML(), "");
-        src.setData(dataBuf, dataBuf.Length);
+        DDMLValue.setData(dataBuf, dataBuf.Length);
         //copy the src value into a destination compatible type
         TDDMLValue dest = new TDDMLValue(sDDML, "");
-        dest.setValue(src);
+        dest.setValue(DDMLValue);
         messageData = new byte[dest.sizeBytes()];
         dest.getData(ref messageData);
     }
+
+    //-------------------------------------------------------------------------
+    /// <summary>
+    /// Pack this variable into the destinatation
+    /// </summary>
+    /// <param name="dest">A typed value to receive the packed data</param>
+    //-------------------------------------------------------------------------
+    public virtual void pack(TTypedValue dest)
+    {
+        //fill a src object with the property value
+        byte[] dataBuf;
+        Data.pack(out dataBuf);
+        DDMLValue.setData(dataBuf, dataBuf.Length);
+        //copy the src value into a destination compatible type
+        dest.setValue(DDMLValue);
+    }
+    
     /// <summary>
     /// useable when types are identical
     /// </summary>
@@ -341,12 +357,10 @@ public class FactoryProperty : Instance, ApsimType
     }
     public virtual String DDML()
     {
-        //return Data.DDML();
-        TDDMLValue value = new TDDMLValue(Data.DDML(), "");
-        value.setUnits(Units);
-        value.Name = OutputName;
-        return value.getText(value, -1, 0);
         //need to ensure that the units for this property are set correctly
+        DDMLValue.setUnits(Units);
+        DDMLValue.Name = OutputName;
+        return DDMLValue.getText(DDMLValue, -1, 0);
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -372,7 +386,7 @@ public class FactoryProperty : Instance, ApsimType
         FQN = CalcParentName(Parent) + this.Name;
         this.OutputName = FQN;
         Data = GetFieldWrapper(TypeName);
-        String sDDML = Data.DDML();
+        sDDML = Data.DDML();
         regIndex = -1;
         if (sDDML.Length > 0)
             DDMLValue = new TDDMLValue(sDDML, "");

@@ -292,12 +292,14 @@ namespace CMPServices
         /// Full description
         /// </summary>
         public String sDescription;
+        public bool isVariant;
 
         public TEventInfo(String sDDMLType, String sShortDescr, String sFullDescr, String sBaseType)
             : base(sDDMLType, sBaseType)
         {
             sDescr = sShortDescr;
             sDescription = sFullDescr;
+            isVariant = false;
         }
     }
 
@@ -746,7 +748,7 @@ namespace CMPServices
                     //systems will not send a replyValue immediately so I don't want to go into readFromPropertyList()
                     getStateProperty(requestedByID, queryMsgID, replyTo);
                 }
-                else
+                else if (propertyID < propertyList.Count)
                 {
                     TPropertyInfo aValue = propertyList[(int)propertyID];                     //Find a TTypedValue to work with
                     //read any standard or default property and any user defined property

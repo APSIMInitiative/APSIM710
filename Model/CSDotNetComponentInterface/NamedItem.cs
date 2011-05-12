@@ -33,26 +33,26 @@ public class NamedList<T> : List<T> where T : NamedItem
         {
             foreach (T Obj in this)
             {
-                if (Obj.Name.ToLower() == Name.ToLower())
+                if (Obj.Name.Equals(Name, StringComparison.OrdinalIgnoreCase))
                     return Obj;
             }
             throw new Exception("Cannot find object: " + ParentName + Name);
         }
     }
-    public bool Contains(String NameToFInd)
+    public bool Contains(String NameToFind)
     {
         foreach (T Obj in this)
         {
-            if (Obj.Name.ToLower() == NameToFInd.ToLower())
+            if (Obj.Name.Equals(NameToFind, StringComparison.OrdinalIgnoreCase))
                 return true;
         }
         return false;
     }
-    public int IndexOf(String NameToFInd)
+    public int IndexOf(String NameToFind)
     {
         for (int i = 0; i < this.Count; i++)
         {
-            if (this[i].Name.ToLower() == NameToFInd.ToLower())
+            if (this[i].Name.Equals(NameToFind, StringComparison.OrdinalIgnoreCase))
                 return i;
         }
         return -1;

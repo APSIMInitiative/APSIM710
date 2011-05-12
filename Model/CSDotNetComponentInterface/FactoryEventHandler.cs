@@ -86,10 +86,7 @@ public class FactoryEventHandler : EvntHandler
     }
     public override void Invoke(Object Parameter)
     {
-        bool IsNullParameter = false;
-        if ((Parameter != null) && Parameter.GetType() == typeof(NullType))
-            IsNullParameter = true;
-        if (Parameter == null || IsNullParameter)
+        if (Parameter == null || Parameter.GetType() == typeof(NullType)) // Order of evaluation does matter here
             Method.Invoke(Obj, null);
         else
         {

@@ -526,35 +526,26 @@ namespace CMPServices
         //============================================================================
         protected virtual void doComplete(uint msgFrom, uint origMsgID)
         {
-            bool bFound;
-            TDriverInfo driver;
-            TQueryStore query;
-
             try
             {
                 eventsManager.completeRequest(origMsgID);
                 //Remove stored information about previously sent queryInfo messages
-                bFound = false;
-                int i = 0;
-                while (!bFound && (i < queryList.Count))
+                foreach (TQueryStore query in queryList)
                 {
-                    query = queryList[i];
-                    bFound = (query.iSentMsgID == origMsgID);
-                    if (bFound)
+                    if (query.iSentMsgID == origMsgID)
                     {
-                        queryList.RemoveAt(i);
+                        queryList.Remove(query);
+                        break;
                     }
-                    else
-                        i++;
                 }
-                int itd = 0;
-                while (itd < driverList.Count)
-                {                                                            //If this "complete" is for a driving
-                    driver = (TDriverInfo)driverList[itd];                   //  property request, then check for
-                    bFound = (driver != null) && driver.bRequestActive && (driver.iRequestMsg == origMsgID); // the correct number of answers
-                    if (bFound)
+                foreach (TDriverInfo driver in driverList)
+                    {                                                            
+                    //  If this "complete" is for a driving
+                    //  property request, then check for
+                    //  the correct number of answers
+                    if ((driver != null) && driver.bRequestActive && (driver.iRequestMsg == origMsgID))
                     {
-                        CheckDriverCount(itd);                                 //index of the driver=driver ID
+                        CheckDriverCount(driver);                                 //index of the driver=driver ID
                         driver.bRequestActive = false;
 
                         //determine if this is a Complete for state variables in a queryValue(state) process (when a system)
@@ -569,8 +560,8 @@ namespace CMPServices
                                 }
                             }
                         }
+                        break;
                     }
-                    itd++;
                 }
 
                 if (bFatalErrorSent && (origMsgID == iFatalErrorID))      // Once a fatal ERROR event has been
@@ -617,10 +608,17 @@ namespace CMPServices
                     eventInfo = (TEventInfo)eventList[eventID];
                     if (eventInfo != null)
                     {
-                        if (!eventInfo.checkCompatibility(publBy, prmDDML))
+                        if (eventInfo.isVariant || !eventInfo.checkCompatibility(publBy, prmDDML))
                         {
-                            string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
-                            throw (new TypeMisMatchException(errorMsg));
+                            if (ConvertApsimVariant(eventInfo, publBy, prmDDML, ref prmData, ref prmSize))
+                            {
+                                eventInfo.isVariant = true;
+                            }
+                            else
+                            {
+                                string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
+                                throw (new TypeMisMatchException(errorMsg));
+                            }
                         }
                         subsParams = eventInfo.sourceValue(publBy);
                         if (subsParams != null)
@@ -640,6 +638,52 @@ namespace CMPServices
             }
 
         }
+
+        //============================================================================
+        /// <summary>
+        /// A bit ugly, but some of the Fortran components (like the manager) still
+        /// generate events with the associated data in the form of an Apsim variant.
+        /// This routine attempts to repackage that data into a more acceptable form.
+        /// </summary>
+        /// <param name="dest">The TEventInfo object associated with the event.</param>
+        /// <param name="publBy">The originator component ID of the published event.</param>
+        /// <param name="prmDDML">DDML description of this event.</param>
+        /// <param name="prmData">Parameter data values.</param>
+        /// <param name="prmSize">Size of parameter data block.</param>
+        //============================================================================
+        private bool ConvertApsimVariant(TEventInfo dest, uint publBy, string prmDDML, ref byte[] prmData, ref uint prmSize)
+        {
+            TDDMLValue src = new TDDMLValue(prmDDML, "");
+            src.setData(prmData, (int)prmSize, 0);
+            for (uint idx = 1; idx < src.count(); idx += 5)
+            {
+                int field = 1 + (int)(idx / 5);
+                string fieldName = src.item(idx).Name.ToLower();
+                if (fieldName != "param" + field.ToString() + "_name")
+                    return false;
+                string name = src.item(idx).asString().ToLower();
+                TTypedValue destField = dest.member(name);
+                if (destField == null)
+                    continue; // Perhaps this should raise an exception?
+                TTypedValue value = null;
+                if (src.item(idx + 4).count() > 0)
+                {
+                    if (destField.isArray())
+                        value = src.item(idx + 4);
+                    else
+                        value = src.item(idx + 4).item(1);
+                }
+                if (name == "sender" || name == "sender_id")
+                    continue;
+                destField.setValue(value);
+            }
+            prmSize = dest.sizeBytes();
+            prmData = new byte[prmSize];
+            dest.getData(ref prmData);                 //makes a copy into a block that has been allocated
+            dest.addSourceValue(publBy, dest);
+            return true;
+        }
+
         //============================================================================
         /// <summary>
         /// Called by the parent component to initialise this component. This function
@@ -1138,15 +1182,13 @@ namespace CMPServices
         /// valid range stored in the TDriverInfo structure. If it fails, then
         /// an error is published to the simulation.
         /// </summary>
-        /// <param name="driverID">Local ID of the driver.</param>
+        /// <param name="driverInfo">Driver to be checked.</param>
         //============================================================================
-        protected void CheckDriverCount(int driverID)
+        protected void CheckDriverCount(TDriverInfo driverInfo)
         {
-            TDriverInfo driverInfo;
+            //TDriverInfo driverInfo;
             bool bValid;
             StringBuilder sMessage;
-
-            driverInfo = (TDriverInfo)driverList[driverID];
 
             bValid = false;
             if ((driverInfo.iConnCount >= driverInfo.iMinConn)
