@@ -21,6 +21,8 @@ call MakeProject Protocol
 call MakeProject ComponentInterface
 call MakeProject ComponentInterface2
 call MakeProject DotNetComponentInterface
+call MakeProject CMPServices
+call MakeProject CSDotNetComponentInterface
 call MakeProject FortranInfrastructure
 call MakeProject FortranComponentInterface
 call MakeProject FortranComponentInterface2
