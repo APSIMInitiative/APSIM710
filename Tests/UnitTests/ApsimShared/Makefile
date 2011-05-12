@@ -13,9 +13,9 @@ ifeq ($(PLATFORM),Linux)
   LIBS = General ApsimShared 
 else 
  ifdef DEBUG
-   LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-gd-1_42
+   LIBS = General ApsimShared libboost_unit_test_framework-vc100-mt-gd-1_44
  else
-   LIBS = General ApsimShared libboost_unit_test_framework-vc90-mt-1_42
+   LIBS = General ApsimShared libboost_unit_test_framework-vc100-mt-1_44
  endif
 endif
 
