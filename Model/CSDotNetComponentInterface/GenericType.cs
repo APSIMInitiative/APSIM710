@@ -18,7 +18,7 @@ public class GenericType : TypeInterpreter
         Fields.Add(Field);
     }
 
-    public virtual String DDML()
+    public override String DDML()
     {
         return TypeDDML;
     }
@@ -28,7 +28,7 @@ public class GenericType : TypeInterpreter
         TypeDDML = value;
     }
 
-    public virtual uint memorySize()
+    public override uint memorySize()
     {
         uint Size = 0;
         foreach (TypeInterpreter Field in Fields)
@@ -36,14 +36,14 @@ public class GenericType : TypeInterpreter
         return Size;
     }
     //this function needs examination and revision - NH
-    public virtual void pack(out byte[] MessageData)
+    public override void pack(out byte[] MessageData)
     {
         MessageData = new byte[memorySize()];
         foreach (TypeInterpreter Field in Fields)
             Field.pack(out MessageData);
     }
     //this function needs examination and revision - NH
-    public virtual void unpack(byte[] MessageData)
+    public override void unpack(byte[] MessageData)
     {
         foreach (TypeInterpreter Field in Fields)
             Field.unpack(MessageData);

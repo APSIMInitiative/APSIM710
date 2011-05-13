@@ -9,7 +9,7 @@ public class CropType
     {
         Comp = c;
     }
-    Variable Variable(String VariableName)
+    VariableType Variable(String VariableName)
     {
         return Comp.Variable(VariableName);
     }

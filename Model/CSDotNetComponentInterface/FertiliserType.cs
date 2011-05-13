@@ -9,7 +9,7 @@ public class FertiliserType
     {
         Comp = c;
     }
-    Variable Variable(String VariableName)
+    VariableType Variable(String VariableName)
     {
         return Comp.Variable(VariableName);
     }
