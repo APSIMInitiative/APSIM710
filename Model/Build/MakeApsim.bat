@@ -8,6 +8,7 @@ rem Need to process the datatypes.interface file and auto-
 rem generate the datatypes.cpp, .h etc.
 rem -------------------------------------------------------------
 call MakeProject CSGeneral
+call MakeProject CMPServices
 call MakeProject ApsimFile
 call MakeProject DataTypes
 
@@ -21,7 +22,6 @@ call MakeProject Protocol
 call MakeProject ComponentInterface
 call MakeProject ComponentInterface2
 call MakeProject DotNetComponentInterface
-call MakeProject CMPServices
 call MakeProject CSDotNetComponentInterface
 call MakeProject FortranInfrastructure
 call MakeProject FortranComponentInterface
