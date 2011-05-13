@@ -27,7 +27,24 @@ using CMPServices;
         {
             DDMLValue = new TDDMLValue(DDML(), "");
         }
+        public TypeInterpreter(ref TDDMLValue template)
+        {
+		    // Parsing the DDML can be a relatively slow operation, so as an optimisation
+			// we do the XML parsing only the first time we create an object of a given
+			// type, and save it as a template. New TDDMLValue objects are then created 
+			// via the copy constructor, which is relatively fast.
+            if (template == null)
+                template = new TDDMLValue(DDML(), "");
+            DDMLValue = new TDDMLValue(template);
+        }
         public virtual String DDML() { return "<type/>"; }
+		public virutal void setValue(TTypedValue typedValue)
+		{
+		    DDMLValue.setValue(typedValue);
+			byte[] data = new byte[DDMLValue.sizeBytes()];
+			DDMLValue.getData(ref data);
+			unpack(data);
+		}
         public virtual void pack(out byte[] messageData)
         {
             messageData = new byte[DDMLValue.sizeBytes()];
@@ -84,7 +101,7 @@ using CMPServices;
      
 [foreach types.builtin]
    //------ [builtin.name] ------
-   public class [builtin.dotnettypename]Type : TypeInterpreter, ApsimType
+   public class [builtin.dotnettypename]Type : TypeInterpreter
       {
       public [builtin.cstype] Value;
       public override void pack(out byte[] messageData)
@@ -109,8 +126,10 @@ using CMPServices;
 [foreach types.type]
 
       //------ [type.name] ------
-      public class [type.name]Type : TypeInterpreter, ApsimType
+      public class [type.name]Type : TypeInterpreter
       {
+	     private static TDDMLValue typeTemplate;
+		 public [type.name]Type() : base (ref typeTemplate) {}
          [foreach type.field]
          public [field.cstype] [field.name];
          [endfor]
