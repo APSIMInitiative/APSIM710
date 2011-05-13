@@ -147,8 +147,8 @@ namespace CMPServices
                     {
                         interpreter.loadMessage(msg);    //take ownership of this msg
                         id = interpreter.getIntField(Msgs.MSG_EVENT_ID);
-                        byte[] dataPtr = new byte[1];
-                        dataSize = interpreter.getValueField(Msgs.MSG_EVENT_PARAMS, ref dataPtr);
+                        byte[] dataPtr;
+                        dataSize = interpreter.getValueField(Msgs.MSG_EVENT_PARAMS, out dataPtr);
                         uint publBy = (uint)interpreter.getIntField(Msgs.MSG_EVENT_PUBLISHEDBY);
                         string DDML = interpreter.getTextField(Msgs.MSG_EVENT_TYPE);
                         doEvent(msgFrom, publBy, id, msgID, (msg.toAck > 0), DDML, dataPtr, dataSize);
@@ -215,8 +215,8 @@ namespace CMPServices
                         iCompID = (uint)interpreter.getIntField(Msgs.MSG_RETURNVALUE_COMPID);
                         iPropertyID = (uint)interpreter.getIntField(Msgs.MSG_RETURNVALUE_ID);
                         string DDML = interpreter.getTextField(Msgs.MSG_RETURNVALUE_TYPE);
-                        byte[] dataPtr = new byte[1];
-                        dataSize = interpreter.getValueField(Msgs.MSG_RETURNVALUE_VALUE, ref dataPtr);
+                        byte[] dataPtr;
+                        dataSize = interpreter.getValueField(Msgs.MSG_RETURNVALUE_VALUE, out dataPtr);
                         doSetDriver(iPropertyID, iCompID, DDML, dataPtr, dataSize);     //this is always the destination
                     }
                     break;
@@ -990,8 +990,8 @@ namespace CMPServices
             iReplyTo = msg.from;
             msgID = msg.msgID;
             iPropertyID = (uint)interpreter.getIntField(Msgs.MSG_QUERYSET_ID);           // Parse the request message
-            byte[] dataPtr = new byte[1];
-            dataSize = interpreter.getValueField(Msgs.MSG_QUERYSET_VALUE, ref dataPtr);
+            byte[] dataPtr;
+            dataSize = interpreter.getValueField(Msgs.MSG_QUERYSET_VALUE, out dataPtr);
             DDML = interpreter.getTextField(Msgs.MSG_QUERYSET_TYPE);
 
             doResetProperty(msgID, iReplyTo, iPropertyID, DDML, dataPtr, dataSize);

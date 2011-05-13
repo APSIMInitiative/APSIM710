@@ -201,8 +201,8 @@ namespace CMPServices
                         {                         //if this is the destination (do same as base class)
                             interpreter.loadMessage(msg);    //take ownership of this msg
                             int id = interpreter.getIntField(Msgs.MSG_EVENT_ID);
-                            byte[] dataPtr = new byte[1];
-                            dataSize = interpreter.getValueField(Msgs.MSG_EVENT_PARAMS, ref dataPtr);
+                            byte[] dataPtr;
+                            dataSize = interpreter.getValueField(Msgs.MSG_EVENT_PARAMS, out dataPtr);
                             uint publBy = (uint)interpreter.getIntField(Msgs.MSG_EVENT_PUBLISHEDBY);
                             String DDML = interpreter.getTextField(Msgs.MSG_EVENT_TYPE);
                             doEvent(msgFrom, publBy, id, msgID, (msg.toAck > 0), DDML, dataPtr, dataSize);
@@ -312,8 +312,8 @@ namespace CMPServices
 
                         interpreter.loadMessage(msg);         //take ownership of this msg
                         eventID = (uint)interpreter.getIntField(Msgs.MSG_PUBLISHEVENT_ID);
-                        byte[] data = new byte[1];
-                        uint paramSize = interpreter.getValueField(Msgs.MSG_PUBLISHEVENT_PARAMS, ref data); //allocates mem
+                        byte[] data;
+                        uint paramSize = interpreter.getValueField(Msgs.MSG_PUBLISHEVENT_PARAMS, out data); //allocates mem
                         sType = interpreter.getTextField(Msgs.MSG_PUBLISHEVENT_TYPE);
 
                         //interpreter->deleteMessage(msg);
@@ -469,8 +469,8 @@ namespace CMPServices
                             iCompID = (uint)interpreter.getIntField(Msgs.MSG_RETURNVALUE_COMPID);
                             iPropertyID = (uint)interpreter.getIntField(Msgs.MSG_RETURNVALUE_ID);
                             String DDML = interpreter.getTextField(Msgs.MSG_RETURNVALUE_TYPE);
-                            byte[] data = new byte[1];
-                            dataSize = interpreter.getValueField(Msgs.MSG_RETURNVALUE_VALUE, ref data);
+                            byte[] data;
+                            dataSize = interpreter.getValueField(Msgs.MSG_RETURNVALUE_VALUE, out data);
                             doSetDriver(iPropertyID, iCompID, DDML, data, dataSize);     //this is the destination
                         }
                         else
@@ -1427,8 +1427,8 @@ namespace CMPServices
 
                 string sDDML = interpreter.getTextField(Msgs.MSG_REPLYVALUE_TYPE);
                 uint valueSize;
-                byte[] data = new byte[1];
-                valueSize = interpreter.getValueField(Msgs.MSG_REPLYVALUE_VALUE, ref data); //allocates mem
+                byte[] data;
+                valueSize = interpreter.getValueField(Msgs.MSG_REPLYVALUE_VALUE, out data); //allocates mem
 
                 //send on to the component that requested it
                 uint valueFromCompID = msg.from;
@@ -1509,8 +1509,8 @@ namespace CMPServices
                 //get the type
                 sType = interpreter.getTextField(Msgs.MSG_REQUESTSET_TYPE);
                 //get the data
-                byte[] dataPtr = new byte[1];
-                dataSize = interpreter.getValueField(Msgs.MSG_REQUESTSET_VALUE, ref dataPtr);
+                byte[] dataPtr;
+                dataSize = interpreter.getValueField(Msgs.MSG_REQUESTSET_VALUE, out dataPtr);
 
                 //create the querySetValue msg
                 newMsg = buildQuerySetValue(targetID, targetProp, sType, dataPtr, dataSize);
@@ -1556,8 +1556,8 @@ namespace CMPServices
                 //now branch all these requests off to the children
                 List<TMsgHeader> msgList = new List<TMsgHeader>();  //temporary store of outgoing msg's
                 uint valueSize;
-                byte[] data = new byte[1];
-                valueSize = interpreter.getValueField(Msgs.MSG_QUERYSET_VALUE, ref data); //allocates mem
+                byte[] data;
+                valueSize = interpreter.getValueField(Msgs.MSG_QUERYSET_VALUE, out data); //allocates mem
                 string sDDML = interpreter.getTextField(Msgs.MSG_QUERYSET_TYPE);
 
                 //retrieve the boolean value that is being transmitted in the msg

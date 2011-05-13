@@ -670,7 +670,7 @@ namespace CMPServices
         /// <param name="data"></param>
         /// <returns></returns>
         //=========================================================================
-        public uint getValueField(int fieldID, ref byte[] data)
+        public uint getValueField(int fieldID, out byte[] data)
         {
             int msgType;
             int iFld;
