@@ -10,7 +10,7 @@ USE_MONO=1
 ifdef USE_MONO
 MONO_INCLUDEDIR=-I/opt/mono-2.10/include/mono-2.0
 MONO_LIBDIR= -L/opt/mono-2.10/lib
-MONO_LIBS= -lmono-2.0 -lm -lrt -lpthread
+EXTRALIBS= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
 MONO_DEFINE= -DMONO
 endif
 

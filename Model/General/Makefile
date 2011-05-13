@@ -19,6 +19,8 @@ SRC =   date_class.cpp		\
 	strptime.cpp
 
 PROJECTTYPE=libdll
+ifeq ($(PLATFORM),WIN32VS)
 LIBS = ShLwApi
+endif
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
