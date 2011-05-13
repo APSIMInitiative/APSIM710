@@ -270,15 +270,13 @@ void Field::writeValue(ostream& out)
    }
 
 // ------------------------------------------------------------------
-// ------------------------------------------------------------------
-// Changed STDCALL to __stdcall to fix VS2010 issue JF 3/5/11--------
 // Create an instance of the REPORT module
 // ------------------------------------------------------------------
-extern "C" EXPORT ReportComponent* __stdcall createComponent(ScienceAPI2& scienceAPI)
+extern "C" EXPORT ReportComponent* STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
    return new ReportComponent(scienceAPI);
    }
-extern "C" void  EXPORT __stdcall deleteComponent(ReportComponent* component)
+extern "C" void  EXPORT STDCALL deleteComponent(ReportComponent* component)
    {
    delete component;
    }
