@@ -32,7 +32,7 @@ class EXPORT  ApsimRegistration
 //           registrationName = registrationName.substr(0, pos);
            }
 
-        pos = registrationName.rfind('(');
+        pos = (unsigned)registrationName.rfind('(');
         if (pos != std::string::npos)
            {
            registrationNameWithoutBrackets = registrationName.substr(0, pos);

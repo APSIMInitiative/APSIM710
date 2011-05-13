@@ -246,7 +246,9 @@ bool Computation::loadComponent(const std::string& FileName,
 				}
 				else 
 				{
-					componentInterface = fileDirName(executableFileName) + "/" + componentInterface;
+                    //check if the componentInterface already has a full path name. Only append the dll path if it is a short name.
+                    if (!( strchr(componentInterface.c_str(), '\\') || strchr(componentInterface.c_str(), '/') ))
+					    componentInterface = fileDirName(executableFileName) + "/" + fileTail(componentInterface);
 					handle = loadDLL(componentInterface.c_str());
 				}
 #else

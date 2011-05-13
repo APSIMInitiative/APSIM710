@@ -49,7 +49,7 @@ class FString
          {
          aliasTo(t, tLength);
          if (stringType == CString)
-            realLen = strlen(t);
+            realLen = (unsigned)strlen(t);
          else if (stringType == EmptyString)
             realLen = 0;
          else
@@ -59,10 +59,10 @@ class FString
       FString(const char* t, unsigned int tLength, StringType stringType)
          {
          if (tLength == 0)
-            tLength = strlen(t);
+            tLength = (unsigned)strlen(t);
          aliasTo(t, tLength);
          if (stringType == CString)
-            realLen = strlen(t);
+            realLen = (unsigned)strlen(t);
          else if (stringType == EmptyString)
             realLen = 0;
 		 else
@@ -102,7 +102,7 @@ class FString
          {
 #ifdef __WIN32__
          return (length() == rhs.length() &&
-                 strnicmp(f_str(), rhs.f_str(), length()) == 0);
+                 _strnicmp(f_str(), rhs.f_str(), length()) == 0);
 #else
 		 return (length() == rhs.length() &&
                  strncasecmp(f_str(), rhs.f_str(), length()) == 0);

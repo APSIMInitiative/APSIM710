@@ -141,6 +141,7 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
 
             vector<string> fieldNames, fieldUnits;
             splitIntoValues(line, " ", fieldUnits);
+            standardiseUnits(fieldUnits);
             splitIntoValues(previousLine, " ", fieldNames);
 
             if (fieldNames.size() != fieldUnits.size())
@@ -169,7 +170,7 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
                if (arrayIndexString == "")
                   newValue = true;
                else
-                  {
+                  { 
                   unsigned arrayIndex = lexical_cast<unsigned>(arrayIndexString);
                   if (arrayIndex <= 0 || (arrayIndex > 1 && arrayIndex != previousArrayIndex+1))
                      throw runtime_error("Invalid array index: " + arrayIndexString
@@ -192,6 +193,30 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
       previousLine = line;
       }
    }
+
+//----------------------------------------------------------------
+// When units are found like (mm), remove the braces.
+// Where possible adjust units to CMP compatible format.
+//----------------------------------------------------------------
+void ApsimDataFile::standardiseUnits(vector<string>& words)
+   {
+   //need to change any MJ/m2 -> MJ/m^2
+   string unit;
+   vector<string>::iterator it;
+   it = words.begin();
+   while (it != words.end()) 
+   {     
+        unit = *it;
+        replaceAll(unit, "(", "");
+        replaceAll(unit, ")", "");
+        if (_strcmpi(unit.c_str(), "Mj/M2") == 0)
+        {
+               unit = "MJ/m^2";
+        }
+        *it = unit;
+        it++;
+    }
+  }
 // ------------------------------------------------------------------
 // Clear all values from the specified temporal object.
 // ------------------------------------------------------------------

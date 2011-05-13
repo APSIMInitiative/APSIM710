@@ -1,6 +1,7 @@
 //---------------------------------------------------------------------------
 #ifndef ApsimDataFileH
 #define ApsimDataFileH
+#include <vector>
 #include <General/platform.h>
 #include <General/string_functions.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -131,6 +132,7 @@ class EXPORT ApsimDataFile
       void readApsimHeader() throw(std::runtime_error);
       bool readNextRecord() throw(std::runtime_error);
       void lookForDateField(void) ;
+      void standardiseUnits(std::vector<std::string>& words);
 
    };
 #endif
