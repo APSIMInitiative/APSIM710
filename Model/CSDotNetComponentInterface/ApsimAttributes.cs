@@ -96,7 +96,7 @@ public class Units : Attribute
     }
 }
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
 public class Description : Attribute
 {
     private String St;
