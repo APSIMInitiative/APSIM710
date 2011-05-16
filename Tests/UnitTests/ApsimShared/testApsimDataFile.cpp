@@ -114,7 +114,7 @@ void testTemporalEnumeration(void)
    BOOST_CHECK(i->values[0] == "1");
    i++;
    BOOST_CHECK(i->name == "radn");
-   BOOST_CHECK(i->units == "(MJ/m2)");
+   BOOST_CHECK(i->units == "(MJ/m^2)");
    BOOST_CHECK(i->values.size() == 1);
    BOOST_CHECK(i->values[0] == "20.74");
    i++;

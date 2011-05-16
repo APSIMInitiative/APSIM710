@@ -2,12 +2,6 @@
 
 using namespace std;
 
-std::string ftoa(double Float, char *fmtwidth)
-   {
-   return (ftoa(Float, ".2"));
-   }
-
-
 // ------------------------------------------------------------------
 // default constructor
 // ------------------------------------------------------------------
