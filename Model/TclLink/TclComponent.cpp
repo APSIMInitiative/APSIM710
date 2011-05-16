@@ -3,27 +3,130 @@
 #include <General/platform.h>
 #include <General/string_functions.h>
 #include <General/stristr.h>
+#include <General/path.h>
+#include <General/dll.h>
 
 #include <ApsimShared/ApsimDirectories.h>
 #include <ApsimShared/ApsimRegistry.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 
+// Ensure we dont link against the tcl library. We pull it in via LoadLibrary
+#define USE_TCL_STUBS
 #include <tcl.h>
+
+typedef Tcl_Interp *(*CREATEINTERPFN)();
 
 #include "TclComponent.h"
 
 using namespace std;
+int apsimGetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimGetOptionalProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimRegisterGetSetProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimSendMessageProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimSendRawMessageProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimWriteToSummaryFileProc(ClientData , Tcl_Interp *, int , Tcl_Obj * CONST []);
+int apsimRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+int apsimSubscribeNull(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+int apsimSubscribeVariant(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+//int apsimUnRegisterEvent(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+//int apsimCatchMessages(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+int apsimGetComponentXML(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+int apsimGetChildren(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
+int apsimGetFQName(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST objv[]);
 
-// Tcl related forward definitions (defined below, and in tclXtras.cpp)
-extern void StartTcl (const char *);
-extern Tcl_Interp *NewInterp (Tcl_Interp *, ClientData, const char *);
-extern void StopTcl(Tcl_Interp *);
 
-static int initialisationState = 0;
+static int hasWrittenCopyright = 0;
+static Tcl_Interp *MainInterpreter = NULL;
 
+//--------------------------- Tcl DLL initialisation
+// Initialise the TCL dll. Call once.
+//   pointers from http://wiki.tcl.tk/2074
+void StartTcl (const std::string &exeName)
+   {
+   void *hTcl = loadDLL(exeName);
+   if (hTcl == NULL) 
+      throw std::runtime_error("Can't load DLL " + exeName);     
+
+  CREATEINTERPFN CreateInterpFn;
+  CreateInterpFn = (CREATEINTERPFN) dllProcAddress(hTcl, "Tcl_CreateInterp");
+  if (CreateInterpFn == NULL) 
+     throw std::runtime_error("Can't find Tcl_CreateInterp in " + exeName);     
+
+  MainInterpreter = CreateInterpFn();
+  if (MainInterpreter == NULL) 
+     throw std::runtime_error("Tcl_CreateInterp failed in " + exeName);     
+
+  Tcl_InitStubs(MainInterpreter, "8.2", 0);
+  Tcl_FindExecutable(exeName.c_str());
+  Tcl_InitMemory(MainInterpreter);
+  Tcl_SetVar(MainInterpreter, "tcl_interactive", "0", TCL_GLOBAL_ONLY);
+  Tcl_Init(MainInterpreter);
+  }
+
+// Create a new interpreter
+Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
+   {
+  if (MainInterpreter == NULL) {throw std::runtime_error("MainInterpreter is NULL in NewInterp"); }
+
+   Tcl_Interp *interp;
+   if (interpName == "") {
+      interp = MainInterpreter;
+   } else {
+      if ((interp = Tcl_CreateSlave(MainInterpreter, interpName.c_str(), 0))== NULL) { 
+         char msg[1024];
+         strcpy(msg,"CreateSlave '");
+         strcat(msg,interpName.c_str());
+         strcat(msg,"' failed.");
+         throw std::runtime_error(msg);
+      }
+   }
+ 
+   Tcl_CreateObjCommand(interp, "apsimGet", apsimGetProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimGetOptional", apsimGetOptionalProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSet", apsimSetProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimRegisterGetSet", apsimRegisterGetSetProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSendMessage", apsimSendMessageProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSendRawMessage", apsimSendRawMessageProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimWriteToSummaryFile", apsimWriteToSummaryFileProc, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimRegisterEvent", apsimRegisterEvent, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSubscribeNull", apsimSubscribeNull, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimSubscribeVariant", apsimSubscribeVariant, cd, NULL);
+//   Tcl_CreateObjCommand(interp, "apsimUnRegisterEvent", apsimUnRegisterEvent, cd, NULL);
+//   Tcl_CreateObjCommand(interp, "apsimCatchMessages", apsimCatchMessages, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimGetComponentXML", apsimGetComponentXML, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimGetChildren", apsimGetChildren, cd, NULL);
+   Tcl_CreateObjCommand(interp, "apsimGetFQName", apsimGetFQName, cd, NULL);
+   return interp;
+   }
+
+// Delete an interpreter
+void StopTcl(Tcl_Interp *interp)
+   {
+   if (!Tcl_InterpDeleted(interp))
+       {
+       Tcl_Eval(interp, "exit");
+       if (!Tcl_InterpDeleted(interp))
+           {
+           Tcl_DeleteInterp(interp);
+           }
+       Tcl_Release((ClientData) interp);
+       }
+   }
+
+//---------------------------APSIM dll entrypoints
 extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
    {
+   string apsimDLL = scienceAPI.getExecutableFileName();
+   replaceAll(apsimDLL, "\\", "/"); 
+#ifdef __WIN32__
+   string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl84.dll";
+#else
+   string tclEXE = "/usr/lib/libtcl8.4.so";
+#endif
+   StartTcl(tclEXE);
+
    return new TclComponent(scienceAPI);
    }
 
@@ -33,30 +136,13 @@ extern "C" void EXPORT STDCALL deleteComponent(TclComponent* component)
      delete component;
    }
 
-// These are called from EntryPoints.cpp:createInstance(). We bypass the wrapping code 
-class CMPComponentInterface;
-unsigned CreateComponent(ScienceAPI2* scienceAPI, CMPComponentInterface*, const char* dllFileName, void* dllHandle)
-   {
-   return (unsigned) createComponent(*scienceAPI);
-   }
-
-void DeleteComponent(unsigned component, void* dllHandle)
-   {
-   deleteComponent((TclComponent *)component);
-   }
-
 // ------------------------------------------------------------------
-// Initialise and destroy the Tcl component.
+// Initialise and destroy the Apsim/Tcl component. 
 // ------------------------------------------------------------------
 TclComponent::TclComponent(ScienceAPI2 & api) : apsimAPI(api)
    {
-   Interp = NULL;
+   Interp = NewInterp(this, apsimAPI.name().c_str());
    hasFatalError = false;
-
-   if (initialisationState == 0) {
-     StartTcl(apsimAPI.getExecutableFileName().c_str());
-     initialisationState = 1;
-   }
 
    apsimAPI.subscribe("error", nullFunction(&TclComponent::onError));
    apsimAPI.subscribe("init2", nullFunction(&TclComponent::onInit2));
@@ -76,13 +162,12 @@ TclComponent::~TclComponent(void)
 // ------------------------------------------------------------------
 void TclComponent::onInit2(void)
    {
-
-   if (initialisationState == 1) {
+   if (hasWrittenCopyright == 0) {
       // write copyright notice(s).
       apsimAPI.write("Copyright (C) 1991-1994 The Regents of the University of California.\n");
       apsimAPI.write("Copyright (C) 1996-1997 Sun Microsystems, Inc.\n");
       apsimAPI.write("Copyright (C) 2001      ActiveState.\n");
-      Interp = NewInterp(NULL, this, apsimAPI.name().c_str());
+      hasWrittenCopyright++;
    } 
 
    Tcl_SetVar(Interp, "apsuite", getApsimDirectory().c_str(), TCL_GLOBAL_ONLY);
@@ -541,3 +626,4 @@ int apsimGetFQName(ClientData cd, Tcl_Interp *interp, int objc, Tcl_Obj * CONST 
    Tcl_SetObjResult(interp, Tcl_NewStringObj(component->apsimAPI.FQName().c_str(), -1));
    return TCL_OK;
 }
+

@@ -10,7 +10,7 @@ else
 OBJS = $(APSIM)/Model/ComponentInterface/EntryPoints.obj
 endif
 
-PROJECTTYPE = dll
+PROJECTTYPE = libdll
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 

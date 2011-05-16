@@ -285,19 +285,24 @@ class FStrings
       template <class CT>
       FStrings& operator= (const CT& strings)
          {
-         unsigned pos = 0;
-         numElements = 0;
          if (strings.size() > maxNumElements)
             throw std::runtime_error("Too many strings for FORTRAN string array");
-         for (typename CT::const_iterator i = strings.begin();
-                                 i != strings.end();
-                                 i++)
+         char *buffer = new char [elementLength*maxNumElements];
+         memset(buffer, ' ', elementLength*maxNumElements);
+         unsigned pos = 0;
+         typename CT::const_iterator i = strings.begin();
+         while (i != strings.end())
             {
-            FString rhs((*i).c_str());
-            st.substr(pos, elementLength) = rhs;
+            if ((*i).length() > elementLength)
+		throw std::runtime_error(std::string("String truncation.  FORTRAN string not long enough\nto hold the string:\n") + *i);
+
+            memcpy(buffer+pos, (*i).c_str(), (*i).length() );
             pos += elementLength;
-            numElements++;
+            i++;
             }
+         st = FString(buffer, elementLength*maxNumElements, FORString);
+         delete [] buffer;
+         numElements = strings.size();
          return *this;
          }
 

@@ -206,12 +206,12 @@ void ApsimDataFile::standardiseUnits(vector<string>& words)
    while (it != words.end()) 
    {     
         unit = *it;
-        if (_strcmpi(unit.c_str(), "(Mj/M2)") == 0)
+        if (Str_i_Cmp(unit.c_str(), "(Mj/M2)") == 0)
         {
                unit = "(MJ/m^2)";
         }
         else {
-            if (_strcmpi(unit.c_str(), "Mj/M2") == 0)
+            if (Str_i_Cmp(unit.c_str(), "Mj/M2") == 0)
             {
                    unit = "MJ/m^2";
             }
@@ -408,7 +408,7 @@ extern "C" unsigned EXPORT STDCALL ApsimDataFile_next
       {
       return (*dataFile)->next();
       }
-   catch (const runtime_error& err)
+   catch (const runtime_error& /*err*/)
       {
       //::MessageBox(NULL, err.what(), "Error", MB_ICONSTOP | MB_OK);
       return false;

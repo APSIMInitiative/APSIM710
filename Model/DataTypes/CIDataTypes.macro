@@ -305,7 +305,7 @@ void unpack(protocol::ApsimVariant& apsimVar, protocol::F[type.name]Type& data)
    [elseif [field.structure] = T]
    throw std::runtime_error("APSIMVariant cannot be used for complex types"); 	
    [elseif [field.arrayandstring] = T]
-   FStrings [field.name]Values(data.[field.name], max_array_size, max_array_size, 0);  
+   FStrings [field.name]Values(data.[field.name], max_array_size, max_array_size, EmptyString);  
    apsimVar.get("[field.name]", [field.name]Values);
    data.num_[field.name] = [field.name]Values.getNumElements();
    [elseif [field.array] = T]
@@ -516,11 +516,21 @@ proc pack_[type.name] {args} {
    foreach {_name _value} $args { set ${_name} ${_value} }
 [foreach type.field]
 [if [field.array] = T]
-   append _msg [binary format d [llength $[field.name]]
+   append _msg [binary format d [llength $[field.name]]]
    for {set i 0} {$i < [llength $[field.name]]} {incr i} {
      set _field [lindex $[field.name] $i]
+[elseif [field.rawcpptype] = double]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0.0 }
+[elseif [field.rawcpptype] = bool]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0 }
+[elseif [field.rawcpptype] = int]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0 }
+[elseif [field.rawcpptype] = float]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  0.0 }
+[elseif [field.rawcpptype] = std::string]
+     if {[info exists [field.name]] } {set _field $[field.name]} else { set _field  "" }
 [else]
-     set _field $[field.name]
+     error "cant deal with [field.rawcpptype] yet"
 [endif]
  [if [field.rawcpptype] = double]
      append _msg [binary format d ${_field}]
@@ -533,9 +543,8 @@ proc pack_[type.name] {args} {
  [elseif [field.rawcpptype] = std::string]
      append _msg [binary format i [string length ${_field}]]
      append _msg [binary format a[string length ${_field}] ${_field}]
- [else]
-     error "cant deal with [field.rawcpptype] yet"
  [endif]
+ 
 [if [field.array] = T]
    }
 [endif]

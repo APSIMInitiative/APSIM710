@@ -79,8 +79,8 @@ module ConstantsModule
    ! maximum allowed size for filenames
    integer, parameter :: Max_file_name_size = 100
 
-   ! maximum allowed size for module names
-   integer, parameter :: Max_module_name_size = 30
+   ! maximum allowed size for module names (can be FQ eg: .masterPM.xyz.abc)
+   integer, parameter :: Max_module_name_size = 512
 
    ! maximum allowed size for module names
    integer, parameter :: Max_inst_name_size = max_module_name_size+3

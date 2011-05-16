@@ -23,10 +23,6 @@ SRC = 	  ComponentInterface.cpp           \
 
 LIBS = General ApsimShared 
 
-ifeq ($(PLATFORM),Linux)
-PROJECTTYPE = dll
-else
 PROJECTTYPE = libdll
-endif
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

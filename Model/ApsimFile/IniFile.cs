@@ -1,5 +1,6 @@
 namespace ApsimFile
    {
+   using System.Windows.Forms;
    using System.IO;
    using System.Text;
    using System.Collections.Specialized;
@@ -46,10 +47,9 @@ namespace ApsimFile
       // ----------------------------------------
       public static string INIReadSection(string INIPath, string SectionName)
          {
-         Int32 n;
          string sData = new string(' ', 32768);
          // allocate some room 
-         n = GetPrivateProfileSection(SectionName, sData, 32768, INIPath);
+         GetPrivateProfileSection(SectionName, sData, 32768, INIPath);
          string[] Values = sData.ToString().Split('\0');
          // change embedded NULLs to pipe chars
          string ReturnString = "";

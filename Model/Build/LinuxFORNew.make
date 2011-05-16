@@ -7,7 +7,7 @@ LD=/usr/bin/ld
 F95 = /usr/local/gfortran/bin/gfortran
 
 # add suffix to all user libraries
-LIBS := $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) /usr/local/gfortran/lib/libgfortran.a -ldl $(LDDEBUGFLAGS)
+LIBS := -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) /usr/local/gfortran/lib/libgfortran.a -ldl $(LDDEBUGFLAGS)
 STATICLIBS := $(foreach library,$(STATICLIBS),$(APSIM)/Model/$(library).a)
 
 F90FLAGS= -cpp -D"ml_external=!" -fno-underscoring -mrtd -ffree-line-length-none -finit-local-zero $(CPPDEBUGFLAGS)

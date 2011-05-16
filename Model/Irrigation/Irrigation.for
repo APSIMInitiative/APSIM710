@@ -124,7 +124,7 @@
                                        ! each solute
       integer    solnum                ! solute number counter variable
       real       volume                ! volume of water required for irrigation (Ml)
-      character  water_requester*200   ! the name of this instance which is
+      character  water_requester*(max_module_name_size)   ! the name of this instance which is
 !                                     requesting a water supply for irrigation from a source
       character err_string*200
       integer    moduleID

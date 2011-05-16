@@ -15,5 +15,5 @@ SRC = 	 FortranComponentInterface.cpp \
 
 
 LIBS = General ApsimShared ComponentInterface
-PROJECTTYPE = dll
+PROJECTTYPE = libdll
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

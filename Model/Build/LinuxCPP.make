@@ -6,12 +6,11 @@ BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 
-USE_MONO=1
-ifdef USE_MONO
-MONO_INCLUDEDIR=-I/opt/mono-2.10/include/mono-2.0
-MONO_LIBDIR= -L/opt/mono-2.10/lib
-EXTRALIBS= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
+MONO_INCLUDEDIR=-I$(MONO)/include/mono-2.0
+MONO_LIBDIR= -L$(MONO)/lib
 MONO_DEFINE= -DMONO
+ifdef USE_MONO
+EXTRALIBS:= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
 endif
 
 CC=/usr/bin/g++
@@ -23,10 +22,9 @@ CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLU
 
 #-----------------------------------------------------------------------
 # Required libraries
-LIBS:= $(foreach library,$(LIBS),$(APSIM)/Model/$(library).so) \
+LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
         $(EXTRALIBS) -lboost_filesystem-mt -lboost_regex-mt -lboost_date_time-mt -lboost_thread-mt \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
-
 
 ifeq ($(PROJECTTYPE),dll)
 LDFLAGS:= --no-allow-shlib-undefined --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions  $(LDFLAGS) 
@@ -61,6 +59,9 @@ $(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(OBJ)
 
 $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
 	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS) $(DEF)
+ifeq ($(PROJECTTYPE),libdll)
+	ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
+endif
 
 clean:
 	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so

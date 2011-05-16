@@ -22,4 +22,7 @@ else
    ECHO=echo
    RM=rm -f 
    MV=mv
+   USE_MONO=1
+   MONO=/opt/mono-2.10
 endif
+

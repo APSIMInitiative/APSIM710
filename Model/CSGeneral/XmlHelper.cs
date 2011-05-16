@@ -52,12 +52,12 @@ namespace CSGeneral
             XmlNode NewNode = Node.OwnerDocument.CreateElement(NewType);
 
             // Copy all attributes
-            while (Node.Attributes.Count > 0)
-               NewNode.Attributes.Append(Node.Attributes[0]);
+            foreach (XmlAttribute attrib in Node.Attributes) 
+               ((XmlElement) NewNode).SetAttribute(attrib.Name, attrib.Value);
 
             // Copy all child nodes
-            while (Node.ChildNodes.Count > 0)
-               NewNode.AppendChild(Node.ChildNodes[0]);
+            foreach (XmlNode child in Node.ChildNodes)
+               NewNode.AppendChild(child);
 
             Node.ParentNode.ReplaceChild(NewNode, Node);
             return NewNode;
@@ -83,14 +83,12 @@ namespace CSGeneral
          // of the form: /RootNode/ChildNode/SubChildNode
          // --------------------------------------------------------
          XmlNode LocalData = Node;
-         string Path = Name(LocalData);
-         LocalData = Parent(LocalData);
-         while (LocalData != null)
-            {
-            Path = Name(LocalData) + Delimiter + Path;
-            LocalData = Parent(LocalData);
-            }
-         return Delimiter + Path;
+         StringBuilder FullPath = new StringBuilder();
+         do {
+		    FullPath.Insert(0, Delimiter);
+            FullPath.Insert(0, Name(LocalData));
+			} while ((LocalData = Parent(LocalData)) != null);
+         return FullPath.ToString();
          }
       public static string ParentPath(string NodePath)
          {

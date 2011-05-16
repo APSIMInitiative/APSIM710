@@ -244,7 +244,7 @@ public class ApsimToSim
       }
    private class ComponentSorter : IComparer
       {
-      private CaseInsensitiveComparer StringComparer = new CaseInsensitiveComparer();
+      //private CaseInsensitiveComparer StringComparer = new CaseInsensitiveComparer();
       private List<string> Components = new List<string>();
       public ComponentSorter()
          {

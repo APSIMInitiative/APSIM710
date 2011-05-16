@@ -5,6 +5,7 @@ PROJECT = Protocol
 SRC = Protocol.cpp Transport.cpp Computation.cpp
 
 LIBS = General ApsimShared
+EXTRALIBS = -L$(MONO)/lib -lmono-2.0 
 PROJECTTYPE = libdll
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

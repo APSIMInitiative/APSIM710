@@ -34,6 +34,13 @@ if ([regexp -line "\<apsim\>.*\</apsim\>$" $text version]) {
   puts $fp "SET BUILD_NUMBER=$releaseNumber"
   close $fp
 
+  set fp [open VersionInfo.sh w]
+  puts $fp "#! /bin/sh"
+  puts $fp "export MAJOR_VERSION=$major"
+  puts $fp "export MINOR_VERSION=$minor"
+  puts $fp "export BUILD_NUMBER=$releaseNumber"
+  close $fp
+
   set fp [open VersionInfo.cs w]
   puts $fp "using System.Reflection;"
 #  puts $fp "\[assembly: AssemblyVersion(\"3.0.0.0\")\]"

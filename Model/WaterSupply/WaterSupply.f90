@@ -53,13 +53,12 @@ module WaterSupplyModule
       real    max_pump_today                       ! maximum amount of water we can pump today (Ml)
       character  top_up_source(max_sources)*(Max_module_name_size) ! String containing the #1 preference top-up water source
       character  solute_names(max_solutes)*32      ! array of system solute names
-      character  solute_owners(max_solutes)*32     ! array of the 'owners' of each of the above solutes
 
    end type WaterSupplyGlobals
    !  ====================================================================
    type WaterSupplyParameters
       sequence
-      character   source_type*(Max_module_name_size)! storage type (eg dam_gully, dam_ring, dam_exc, sump, river or bore)
+      character   source_type*(12)                  ! storage type (eg dam_gully, dam_ring, dam_exc, sump, river or bore)
       integer     catchments(max_sources)           ! module IDs of the water balances we'll take runoff from
       integer     num_catchments
       real        catchment_runoff_factor(max_sources) ! water-shedding factor of catchment cf cropping area ()
@@ -128,9 +127,9 @@ subroutine WaterSupply_read_parameters ()
    logical    ok
    integer    numvals               ! number of values returned
    character  source_type*(Max_module_name_size) ! local variable for source type
-   character  dummy*4096            ! first half of solute concatenation
+   character  dummy*(Max_module_name_size)       ! first half of solute concatenation
    character  default_name*(Max_module_name_size)! concatenated parameter name for initial solute concentration
-   character  moduleName*4096
+   character  moduleName*(Max_module_name_size)
 !- Implementation Section ----------------------------------
 
    call push_routine (my_name)
@@ -281,7 +280,6 @@ subroutine WaterSupply_read_parameters ()
    endif
 
    !********** check for any solute information    *********
-
    do i = 1,g%num_solutes
       dummy = string_concat('init_',g%solute_names(i))
       default_name = string_concat(dummy,'_conc')
@@ -300,7 +298,7 @@ subroutine WaterSupply_read_parameters ()
    end do
 
    !********************************************************************************************
-
+ 
    call pop_routine (my_name)
    return
 end subroutine
@@ -489,7 +487,7 @@ subroutine WaterSupply_rain_capture ()
    !  dsg 050803 Now modify solute concentrations
    if (g%rain_capture.gt.0.0) then
       do i=1,g%num_solutes
-         if ((g%available_water + g%rain_capture).eq.0.0) then
+         if ((g%available_water + g%rain_capture).le.0.0) then
             g%solute_conc(i) = 0.0
          else
             new_solute_conc =divide(((g%solute_conc(i)*g%available_water)+ (p%rainfall_solute_conc(i) * g%rain_capture)),(g%available_water + g%rain_capture),0.0)
@@ -564,7 +562,7 @@ subroutine WaterSupply_ONrunoff (senderID, variant)
 
    ! Now modify solute concentrations
    do i=1,g%num_solutes
-      if ((g%available_water + runoff).eq.0.0) then
+      if ((g%available_water + runoff) .le. 0.0) then
           g%solute_conc(i) = 0.0
       else
           new_solute_conc =divide(  &
@@ -704,8 +702,8 @@ subroutine WaterSupply_check_allocation ()
 
 !+ Local Variables
    integer   day                  ! day of year
-   character msg_string*200       ! message string to summary file
-   character source_name*(Max_module_name_size) ! Module (instance) name of this module
+   character msg_string*(Max_module_name_size + 100) ! message string to summary file
+   character source_name*(Max_module_name_size)      ! Module (instance) name of this module
    integer numvals                ! simple counter
 
 !- Implementation Section ----------------------------------
@@ -729,7 +727,7 @@ subroutine WaterSupply_check_allocation ()
           call get_name(source_name)
 
           write(msg_string,*) &
-          'Annual Allocation granted to ',source_name, &
+          'Annual Allocation granted to ',trim(source_name), &
           '.  Available water now equals ',g%available_water
           call write_string (msg_string)
 
@@ -1097,7 +1095,7 @@ subroutine WaterSupply_ONtop_up ()
 
 !+ Local Variables
    integer    numvals                ! Number of values returned
-   character  water_requester*200    ! the name of this instance which is requesting a top-up from another source
+   character  water_requester*(max_module_name_size)    ! the name of this instance which is requesting a top-up from another source
    integer    i                      ! simple counter
    integer id
    real       top_up_required        ! water amount required for top-up
@@ -1276,7 +1274,7 @@ subroutine WaterSupply_sum_report ()
 !+ Local Variables
    integer    i                     ! simple counter
    character  modname*(max_module_name_size)
-   character  report_string*200     ! string message sent to summary file
+   character  report_string*(max_module_name_size+80)  ! string message sent to summary file
    logical ok
 
 !- Implementation Section ----------------------------------
@@ -1293,10 +1291,10 @@ subroutine WaterSupply_sum_report ()
    else
       do i = 1, p%num_catchments
          if (p%catchments(i) .eq. unknown_module) then
-           write(report_string,*)'This storage directly receives runoff from the catchment'
+           write(report_string,*) 'This storage directly receives runoff from the catchment'
          else
            ok = component_id_to_name(p%catchments(i), modname)
-           write(report_string,*)'This storage directly receives runoff from ', modname
+           write(report_string,'(2a)') 'This storage directly receives runoff from ', trim(modname)
          endif
          call write_string (report_string)
       end do
@@ -1311,7 +1309,7 @@ subroutine WaterSupply_sum_report ()
            write(report_string,*)'This storage directly receives runoff from the paddock'
          else
            ok = component_id_to_name(p%crops(i), modname)
-           write(report_string,*)'This storage directly receives runoff from ', modname
+           write(report_string,*)'This storage directly receives runoff from ', trim(modname)
          endif
          call write_string (report_string)
       end do
@@ -1495,7 +1493,6 @@ subroutine WaterSupply_init ()
    g%overflow = 0.0
    g%top_up_source(:) = ''
    g%solute_names(:) = ''
-   g%solute_owners(:) = ''
    g%max_pump_today = 0.0
    
    call pop_routine (my_name)
@@ -1724,7 +1721,8 @@ subroutine doInit1()
    integer dummy
 
    call doRegistrations(id)
-   call WaterSupply_create()
+   call WaterSupply_init ()
+   call WaterSupply_create ()
 
    dummy = add_registration_with_units(getVariableReg, 'runoff', floatTypeDDML, 'mm')
    dummy = add_registration_with_units(getVariableReg, 'crop_area', floatTypeDDML, 'ha')
@@ -1823,9 +1821,6 @@ subroutine Main (action, data_string)
 
    else if (action.eq.'water_supplied') then
       call WaterSupply_ONwater_supplied ()
-
-   else if (action.eq.ACTION_create) then
-      call WaterSupply_init ()
 
    else if (action.eq.ACTION_init) then
       ! Get all coefficients from file
