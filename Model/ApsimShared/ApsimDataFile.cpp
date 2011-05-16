@@ -195,7 +195,6 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
    }
 
 //----------------------------------------------------------------
-// When units are found like (mm), remove the braces.
 // Where possible adjust units to CMP compatible format.
 //----------------------------------------------------------------
 void ApsimDataFile::standardiseUnits(vector<string>& words)
@@ -207,11 +206,15 @@ void ApsimDataFile::standardiseUnits(vector<string>& words)
    while (it != words.end()) 
    {     
         unit = *it;
-        replaceAll(unit, "(", "");
-        replaceAll(unit, ")", "");
-        if (_strcmpi(unit.c_str(), "Mj/M2") == 0)
+        if (_strcmpi(unit.c_str(), "(Mj/M2)") == 0)
         {
-               unit = "MJ/m^2";
+               unit = "(MJ/m^2)";
+        }
+        else {
+            if (_strcmpi(unit.c_str(), "Mj/M2") == 0)
+            {
+                   unit = "MJ/m^2";
+            }
         }
         *it = unit;
         it++;
