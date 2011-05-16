@@ -1,8 +1,8 @@
 ###########################################
 # Lahey FORTRAN compiler switches.
 ###########################################
-LFLM=C:\LF9556\Bin\lm.exe
-LF95=C:\LF9556\Bin\lf95.exe
+LFLM=lm.exe
+LF95=lf95.exe
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),..\$(library)\$(library).imp)

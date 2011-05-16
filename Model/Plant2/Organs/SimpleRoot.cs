@@ -9,7 +9,7 @@ using CSGeneral;
 public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ but changed to base organ to fix bug. Need to check collatoral impacts
    {
    private double Uptake = 0;
-
+   [Link] Plant Plant = null;
   
    public override Biomass Live { get { return new Biomass(); } }
    public override Biomass Dead { get { return new Biomass(); } }
@@ -55,7 +55,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
          {
          if (SoilWat != null)
             {
-            Component RootComp = MyPaddock.ComponentByName(Root.Name + "root");
+            Component RootComp = MyPaddock.ComponentByName(Plant.Name + "root");
             double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
             return MathUtility.Sum(SWSupply);
             }
@@ -64,7 +64,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
             double Total = 0;
             foreach (Paddock SP in MyPaddock.SubPaddocks)
                {
-               Component RootComp = SP.ComponentByName(Root.Name + "root");
+               Component RootComp = SP.ComponentByName(Plant.Name + "root");
                double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
                Total += MathUtility.Sum(SWSupply);
                }
@@ -81,7 +81,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
       Uptake = Amount;
       if (SoilWat != null)
          {
-         Component RootComp = MyPaddock.ComponentByName(Root.Name + "root");
+         Component RootComp = MyPaddock.ComponentByName(Plant.Name + "root");
          RootComp.Variable("SWUptake").Set(Amount);
          }
       else
@@ -91,7 +91,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
          double Total = 0;
          foreach (Paddock SP in MyPaddock.SubPaddocks)
             {
-            Component RootComp = SP.ComponentByName(Root.Name + "root");
+            Component RootComp = SP.ComponentByName(Plant.Name + "root");
             double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
             Supply[i] = (MathUtility.Sum(SWSupply));
             Total += Supply[i];
@@ -103,7 +103,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
          i = 0;
          foreach (Paddock SP in MyPaddock.SubPaddocks)
             {
-            Component RootComp = SP.ComponentByName(Root.Name + "root");
+            Component RootComp = SP.ComponentByName(Plant.Name + "root");
             RootComp.Variable("SWUptake").Set(Supply[i] * fraction);
             i++;
             }

@@ -15,7 +15,7 @@
 using System;
 using System.Collections;
 
-namespace EB.Math
+namespace EBMath
 {
     /// <summary>
     /// </summary>
@@ -25,6 +25,7 @@ namespace EB.Math
     {
         public string m_name;
         public double m_value;
+        public string m_valueString;
         public Type m_type;
         public override string ToString()
         {
@@ -103,6 +104,7 @@ namespace EB.Math
                         {
                             Symbol sym1 = (Symbol)m_postfix[i];
                             sym1.m_value = sym.m_value;
+                            sym1.m_valueString = sym.m_valueString;
                             m_postfix[i] = sym1;
                         }
                     }
@@ -118,6 +120,7 @@ namespace EB.Math
             int state = 1;
             string temp = "";
             Symbol ctSymbol;
+            ctSymbol.m_valueString = "";
 
             m_bError = false;
             m_sErrorDescription = "None";
@@ -157,8 +160,6 @@ namespace EB.Math
                                     break;
                                 case "(":
                                 case ")":
-                                case "[":
-                                case "]":
                                 case "{":
                                 case "}":
                                     ctSymbol.m_type = Type.Bracket;
@@ -189,8 +190,6 @@ namespace EB.Math
                                     break;
                                 case "(":
                                 case ")":
-                                case "[":
-                                case "]":
                                 case "{":
                                 case "}":
                                     ctSymbol.m_type = Type.Bracket;
@@ -204,7 +203,7 @@ namespace EB.Math
                         }
                         break;
                     case 3:
-                        if (Char.IsLetterOrDigit(equation[i]) || (equation[i] == '.'))
+                        if (Char.IsLetterOrDigit(equation[i]) || (equation[i] == '.') || (equation[i] == '[') || (equation[i] == ']'))
                             temp += equation[i];
                         else
                         {
@@ -231,8 +230,6 @@ namespace EB.Math
                                     break;
                                 case "(":
                                 case ")":
-                                case "[":
-                                case "]":
                                 case "{":
                                 case "}":
                                     ctSymbol.m_type = Type.Bracket;
@@ -277,14 +274,14 @@ namespace EB.Math
             {
                 if ((sym.m_type == Type.Value) || (sym.m_type == Type.Variable))
                     m_postfix.Add(sym);
-                else if ((sym.m_name == "(") || (sym.m_name == "[") || (sym.m_name == "{"))
+                else if ((sym.m_name == "(") || (sym.m_name == "{"))
                     tpStack.Push(sym);
-                else if ((sym.m_name == ")") || (sym.m_name == "]") || (sym.m_name == "}"))
+                else if ((sym.m_name == ")") || (sym.m_name == "}"))
                 {
                     if (tpStack.Count > 0)
                     {
                         tpSym = (Symbol)tpStack.Pop();
-                        while ((tpSym.m_name != "(") && (tpSym.m_name != "[") && (tpSym.m_name != "{"))
+                        while ((tpSym.m_name != "(") && (tpSym.m_name != "{"))
                         {
                             m_postfix.Add(tpSym);
                             tpSym = (Symbol)tpStack.Pop();
@@ -425,6 +422,7 @@ namespace EB.Math
             result.m_name = sym1.m_name + opr.m_name + sym2.m_name;
             result.m_type = Type.Result;
             result.m_value = 0;
+            result.m_valueString = "";
             switch (opr.m_name)
             {
                 case "^":
@@ -467,6 +465,7 @@ namespace EB.Math
             result.m_name = "";
             result.m_type = Type.Result;
             result.m_value = 0;
+            result.m_valueString = "";
             switch (name)
             {
                 case "cos":
@@ -642,6 +641,121 @@ namespace EB.Math
                     {
                         result.m_name = name + "(" + ((Symbol)args[0]).m_value.ToString() + ")";
                         result.m_value = System.Math.Exp(((Symbol)args[0]).m_value);
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "sum":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string Arg in Values)
+                            result.m_value += Convert.ToDouble(Arg);
+                        result.m_name = name + "(" + result.m_valueString  + ")";
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "subtract":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < Values.Length; i++)
+                        {
+                            if (i == 0)
+                                result.m_value = Convert.ToDouble(Values[i]);
+                            else
+                                result.m_value -= Convert.ToDouble(Values[i]);
+                        }
+                        result.m_name = name + "(" + result.m_valueString + ")";
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "multiply":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < Values.Length; i++)
+                        {
+                            if (i == 0)
+                                result.m_value = Convert.ToDouble(Values[i]);
+                            else
+                                result.m_value *= Convert.ToDouble(Values[i]);
+                        }
+                        result.m_name = name + "(" + result.m_valueString + ")";
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "divide":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < Values.Length; i++)
+                        {
+                            if (i == 0)
+                                result.m_value = Convert.ToDouble(Values[i]);
+                            else
+                                result.m_value /= Convert.ToDouble(Values[i]);
+                        }
+                        result.m_name = name + "(" + result.m_valueString + ")";
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "min":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < Values.Length; i++)
+                        {
+                            if (i == 0)
+                                result.m_value = Convert.ToDouble(Values[i]);
+                            else
+                                result.m_value = Math.Min(result.m_value, Convert.ToDouble(Values[i]));
+                        }
+                        result.m_name = name + "(" + result.m_valueString + ")";
+                    }
+                    else
+                    {
+                        result.m_name = "Invalid number of parameters in: " + name + ".";
+                        result.m_type = Type.Error;
+                    }
+                    break;
+                case "max":
+                    if (args.Length == 1)
+                    {
+                        result.m_value = ((Symbol)args[0]).m_value;
+                        string[] Values = ((Symbol)args[0]).m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                        for (int i = 0; i < Values.Length; i++)
+                        {
+                            if (i == 0)
+                                result.m_value = Convert.ToDouble(Values[i]);
+                            else
+                                result.m_value = Math.Max(result.m_value, Convert.ToDouble(Values[i]));
+                        }
+                        result.m_name = name + "(" + result.m_valueString + ")";
                     }
                     else
                     {

@@ -5,32 +5,38 @@ using CSGeneral;
 
 
 class GerminatingPhase : Phase
-   {
-   [Input] private double ESW = 0.0;
+{
+    [Link]
+    Plant Plant = null;
 
-   /// <summary>
-   /// Do our timestep development
-   /// </summary>
-   public override double DoTimeStep(double PropOfDayToUse)
-      {
-      Plant Plant = (Plant)Root;
+    [Link]
+    Phenology Phenology = null;
 
-      bool CanGerminate = !Plant.Phenology.OnDayOf("Sowing") && ESW > 0;
+    [Input]
+    private double ESW = 0;
 
-      if (CanGerminate)
-         return 0.00001;
-      else
-         return 0;
-      }
+    /// <summary>
+    /// Do our timestep development
+    /// </summary>
+    public override double DoTimeStep(double PropOfDayToUse)
+    {
 
-   /// <summary>
-   /// Return a fraction of phase complete.
-   /// </summary>
-   public override double FractionComplete
-      {
-      get
-         {
-         return 1;
-         }
-      }
-   }
+        bool CanGerminate = !Phenology.OnDayOf("Sowing") && ESW > 0;
+
+        if (CanGerminate)
+            return 0.00001;
+        else
+            return 0;
+    }
+
+    /// <summary>
+    /// Return a fraction of phase complete.
+    /// </summary>
+    public override double FractionComplete
+    {
+        get
+        {
+            return 1;
+        }
+    }
+}

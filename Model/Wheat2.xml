@@ -327,6 +327,12 @@
         <InitialiseStage>Emergence</InitialiseStage>
         <InitialLeafPrimordia>4</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
+        <CompositeBiomass name="Live">
+          <Property>Leaf.Leaves[].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Leaf.Leaves[].Dead</Property>
+        </CompositeBiomass>
         <GenericFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -334,12 +340,6 @@
             <XY>0 0</XY>
           </XYPairs>
         </GenericFunction>
-        <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[*].Live</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[*].Dead</Property>
-        </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -391,21 +391,10 @@
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction>
-          <DivideFunction name="Fco2">
+          <ExpressionFunction name="Fco2">
+            <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
             <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-            <ExpressionFunction name="First">
-              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
-              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
-Obs: Expression can contain variable names from Plant2
-</Memo>
-            </ExpressionFunction>
-            <ExpressionFunction name="Second">
-              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
-              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
-Obs: Expression can contain variable names from Plant2
-</Memo>
-            </ExpressionFunction>
-          </DivideFunction>
+          </ExpressionFunction>
         </RUEModel>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
@@ -413,9 +402,9 @@ Obs: Expression can contain variable names from Plant2
         </StageBasedInterpolation>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
-            <XY> 0 0.0</XY>
-            <XY>26 26.0</XY>
-            <XY>34 0.0</XY>
+            <XY>0 0</XY>
+            <XY>26 26</XY>
+            <XY>34 0</XY>
           </XYPairs>
         </TemperatureFunction>
         <PhaseLookupValue name="NodeInitiationRate">
@@ -704,6 +693,21 @@ Obs: Expression can contain variable names from Plant2
         <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
         <Values>   0               5              10            30             37       65          70             85           90      90</Values>
       </StageBasedInterpolation>
+      <CompositeBiomass name="AboveGround">
+          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>      
+      <CompositeBiomass name="BelowGround">
+          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>        
+      <CompositeBiomass name="Total">
+          <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>  
+      <CompositeBiomass name="TotalLive">
+          <Property>Organs[].Live</Property>
+      </CompositeBiomass>       
+      <CompositeBiomass name="TotalDead">
+          <Property>Organs[].Dead</Property>
+      </CompositeBiomass>       
       <Summary />
     </Plant>
   </Model>

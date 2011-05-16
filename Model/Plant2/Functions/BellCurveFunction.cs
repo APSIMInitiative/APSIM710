@@ -7,6 +7,9 @@ using System.Reflection;
 
 public class BellCurveFunction : Function
    {
+   [Link] Plant Plant = null;
+
+
    [Output] public override double Value
       {
       get
@@ -16,7 +19,7 @@ public class BellCurveFunction : Function
          Function Breadth = (Function)Children["Breadth"];
          Function Skewness = (Function)Children["Skewness"];
 
-         Leaf Leaf = (Leaf)Root.Children["Leaf"];
+         Leaf Leaf = (Leaf)Plant.Children["Leaf"];
          double LeafNo = Leaf.NodeNo;
 
          return AreaMax.Value * Math.Exp(Breadth.Value * Math.Pow(LeafNo - LargestLeaf.Value, 2.0)

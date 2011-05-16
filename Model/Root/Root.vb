@@ -10,7 +10,6 @@ Public Class Root
     <Output()> <Param()> Private xf As Double()
     <Output()> <Param()> Private kl As Double()
     <Output()> <Param()> Private ll As Double()
-   <Link()> Private MyPaddock As Paddock
    <Link()> Private SoilWater As ModelFramework.SoilWat
 
     <Output()> Public ReadOnly Property SWSupply() As Double()

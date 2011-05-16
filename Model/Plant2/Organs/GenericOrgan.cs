@@ -5,6 +5,8 @@ using CSGeneral;
 
 class GenericOrgan : BaseOrgan, AboveGround
    {
+   [Link] Plant Plant = null;
+
    [Input]
    private int Day = 0;
    [Input]

@@ -1415,7 +1415,7 @@ DltDMold =0</text>
           <script name="start_of_day">
             <text><![CDATA[
 
-PrevDayDM = AboveGroundDM
+PrevDayDM = AboveGroundWt
 PrevDayDeadWt = LeafDeadWt + StemDeadWt
 
  !     if PhenologyCurrentPhaseName = 'FloweringToStartGrainFill' then
@@ -1428,9 +1428,9 @@ PrevDayDeadWt = LeafDeadWt + StemDeadWt
           <script name="end_of_day">
             <text><![CDATA[
 ShootDeadWt = LeafDeadWt + StemDeadWt
-DltDM = (AboveGroundDM - ShootDeadWt)- (PrevDayDM - PrevDayDeadWt)
-DltDMold = AboveGroundDM - PrevDayDM
-SumDM = BelowGroundDM + StemLiveWt + LeafLiveWt + PodLiveWt
+DltDM = (AboveGroundWt - ShootDeadWt)- (PrevDayDM - PrevDayDeadWt)
+DltDMold = AboveGroundWt - PrevDayDM
+SumDM = BelowGroundWt + StemLiveWt + LeafLiveWt + PodLiveWt
 
 if DltDM <= 0 then
    DltDM = 0
@@ -1481,9 +1481,9 @@ endif]]></text>
           <variable name="LeafTotalNo" array="No" />
           <variable name="RootLengthDensity()" array="Yes" />
           <variable name="LeafLAI" array="No" />
-          <variable name="TotalDM" array="No" />
-          <variable name="BelowGroundDM" array="No" />
-          <variable name="AboveGroundDM" array="No" />
+          <variable name="TotalWt" array="No" />
+          <variable name="BelowGroundWt" array="No" />
+          <variable name="AboveGroundWt" array="No" />
           <variable name="StemLiveWt" array="No" />
           <variable name="LeafLiveWt" />
           <variable name="PodLiveWt" />
@@ -1628,7 +1628,7 @@ endif]]></text>
       <X>Date</X>
       <Y>biomass_wt</Y>
       <Y>green_biomass_wt</Y>
-      <Y>AboveGroundDM</Y>
+      <Y>AboveGroundWt</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
@@ -1666,7 +1666,7 @@ endif]]></text>
       </colour>
       <X>Date</X>
       <Y>roottotalwt</Y>
-      <Y>BelowGroundDM</Y>
+      <Y>BelowGroundWt</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>

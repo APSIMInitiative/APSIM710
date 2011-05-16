@@ -67,32 +67,32 @@ namespace CSGeneral
             PlugInProcess.StartInfo.UseShellExecute = Path.GetExtension(Executable) != ".exe";
             PlugInProcess.StartInfo.CreateNoWindow = true;
             if (!PlugInProcess.StartInfo.UseShellExecute)
-               {
-               PlugInProcess.StartInfo.RedirectStandardOutput = true;
-               PlugInProcess.StartInfo.RedirectStandardError = true;
-               }
+            {
+                PlugInProcess.StartInfo.RedirectStandardOutput = true;
+                PlugInProcess.StartInfo.RedirectStandardError = true;
+            }
             PlugInProcess.StartInfo.WorkingDirectory = JobFolder;
             PlugInProcess.Start();
             return PlugInProcess;
         }
         public static string CheckProcessExitedProperly(Process PlugInProcess)
-           {
-           if (!PlugInProcess.StartInfo.UseShellExecute)
-              {
-              string msg = PlugInProcess.StandardOutput.ReadToEnd();
-              PlugInProcess.WaitForExit();
-              if (PlugInProcess.ExitCode != 0)
-                 {
-                 msg += PlugInProcess.StandardError.ReadToEnd();
-                 if (msg != "")
-                    throw new System.Exception("Error from " + Path.GetFileName(PlugInProcess.StartInfo.FileName) + ": "
-                                                             + msg);
-                 }
-              return msg;
-              }
-           else
-              return "";
-           }
+        {
+            if (!PlugInProcess.StartInfo.UseShellExecute)
+            {
+                string msg = PlugInProcess.StandardOutput.ReadToEnd();
+                PlugInProcess.WaitForExit();
+                if (PlugInProcess.ExitCode != 0)
+                {
+                    msg += PlugInProcess.StandardError.ReadToEnd();
+                    if (msg != "")
+                        throw new System.Exception("Error from " + Path.GetFileName(PlugInProcess.StartInfo.FileName) + ": "
+                                                                 + msg);
+                }
+                return msg;
+            }
+            else
+                return "";
+        }
         public static string ConvertURLToPath(string Url)
         {
             Uri uri = new Uri(Url);
@@ -132,16 +132,16 @@ namespace CSGeneral
 
         public static void FindFiles(string DirectoryName, string FileSpec, ref List<string> FileNames,
                                      bool SearchHiddenFolders)
-           {
-           foreach (string FileName in Directory.GetFiles(DirectoryName, FileSpec))
-              FileNames.Add(FileName);
+        {
+            foreach (string FileName in Directory.GetFiles(DirectoryName, FileSpec))
+                FileNames.Add(FileName);
 
-           foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
-              {
-              if (SearchHiddenFolders || File.GetAttributes(ChildDirectoryName) != FileAttributes.Hidden)
-                 FindFiles(ChildDirectoryName, FileSpec, ref FileNames, SearchHiddenFolders);
-              }
-           }
+            foreach (string ChildDirectoryName in Directory.GetDirectories(DirectoryName))
+            {
+                if (SearchHiddenFolders || File.GetAttributes(ChildDirectoryName) != FileAttributes.Hidden)
+                    FindFiles(ChildDirectoryName, FileSpec, ref FileNames, SearchHiddenFolders);
+            }
+        }
 
 
         public static bool CheckForInvalidChars(string s)
@@ -157,19 +157,36 @@ namespace CSGeneral
         }
 
         public static string FindFileOnPath(string FileName)
-           {
-           string PathVariable = Environment.GetEnvironmentVariable("PATH");
-           if (PathVariable == null)
-              throw new Exception("Cannot find PATH environment variable");
+        {
+            string PathVariable = Environment.GetEnvironmentVariable("PATH");
+            if (PathVariable == null)
+                throw new Exception("Cannot find PATH environment variable");
 
-           string[] Paths = PathVariable.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-           foreach (string DirectoryName in Paths)
-              {
-              string FullPath = Path.Combine(DirectoryName, FileName);
-              if (File.Exists(FullPath))
-                 return FullPath;
-              }
-           return "";
-           }
+            string[] Paths = PathVariable.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            foreach (string DirectoryName in Paths)
+            {
+                string FullPath = Path.Combine(DirectoryName, FileName);
+                if (File.Exists(FullPath))
+                    return FullPath;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Returns true if the specified type T is of type TypeName
+        public static bool IsOfType(Type T, String TypeName)
+        {
+            while (T != null)
+            {
+                if (T.ToString() == TypeName)
+                    return true;
+
+                if (T.GetInterface(TypeName) != null)
+                    return true;
+
+                T = T.BaseType;
+            }
+            return false;
+        }
     }
 }

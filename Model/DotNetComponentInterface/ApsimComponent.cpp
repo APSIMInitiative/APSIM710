@@ -356,6 +356,7 @@ void ApsimComponent::BuildObjects(XmlNode^ XML)
 	// ----------------------------------------------
    Fact = gcnew Factory();
    Fact->Create(XML->OuterXml, modelAssembly, this);
+   Fact->Initialise();
    Model = dynamic_cast<Instance^> (Fact->Root);
    String^ InstanceName = Name;
    if (InstanceName->Contains("."))
@@ -441,6 +442,7 @@ void ApsimComponent::OnSow(char* messageData)
 
    BuildObjects(ModelDescription);
 
+   GetAllInputs();
    CallEventHandlers("Sow", Sow);
    }
 

@@ -9,9 +9,6 @@ public class AnnualPlantArbitrator : Arbitrator
     private Function DMSink = null;
     private Function NSink = null;
 
-  /*  [Link]
-    Plant Plant = null;*/
-
     // DM Arbitration Variables
     private double TotalDMDemand = 0;
     private double TotalReproDMDemand = 0;
@@ -50,7 +47,7 @@ public class AnnualPlantArbitrator : Arbitrator
     }
     public override double NReallocationSupply { get { return 0; } }
 
-    public override void DoDM(NamedList<Organ> Organs)
+    public override void DoDM(List<Organ> Organs)
     {
         double[] DMRetranslocationSupply = new double[Organs.Count];
         double[] DMDemand = new double[Organs.Count];
@@ -106,7 +103,7 @@ public class AnnualPlantArbitrator : Arbitrator
                 }
         }
 
-        if (TotalDMSupply > 0 || (TotalDMDemand - TotalDMAllocated) > 0)
+        if (TotalDMSupply > 0.00001 || (TotalDMDemand - TotalDMAllocated) > 0.00001)
         {
             double fraction = 0;
             fraction = Math.Min(1, (TotalDMSupply - TotalDMAllocated) / (TotalDMDemand - TotalDMAllocated));
@@ -180,7 +177,7 @@ public class AnnualPlantArbitrator : Arbitrator
 
     }
 
-    public override void DoN(NamedList<Organ> Organs)
+    public override void DoN(List<Organ> Organs)
     {
         double[] NRetranslocationSupply = new double[Organs.Count];
         double[] NDemand = new double[Organs.Count];

@@ -13,11 +13,6 @@ public interface Reproductive
    }
 abstract public class Organ : Instance
    {
-   public Plant Plant
-      {
-      get { return (Plant)Root; }
-      }
-
    abstract public Biomass Live { get;}
    abstract public Biomass Dead { get;}
 

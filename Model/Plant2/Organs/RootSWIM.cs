@@ -5,6 +5,8 @@ using CSGeneral;
 
 class RootSWIM : BaseOrgan, BelowGround
    {
+   [Link] Plant Plant = null;
+
    private double[] Uptake = null;
    [Output("rlv")][Param] public double[] rlv = null;
 

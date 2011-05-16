@@ -4,6 +4,8 @@ using System.Text;
 
 class SimpleLeaf : BaseOrgan
    {
+   [Link] Plant Plant = null;
+
    private double _WaterAllocation;
    private double EP = 0;
    private double PEP = 0;

@@ -4,6 +4,8 @@ using System.Text;
 
 public class RUEModel : Instance
 {
+   [Link] Plant Plant = null;
+
    #region Class Data Members
     private NewMetType MetData;
     private double defaultCO2 = 350;
@@ -82,10 +84,6 @@ public class RUEModel : Instance
            GrowthType.frgr = (float)Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value));
            NewPotentialGrowth.Invoke(GrowthType);
        }
-   }
-   public Plant Plant
-   {
-       get { return (Plant)Root; }
    }
    [EventHandler]
    public new void OnInit2()

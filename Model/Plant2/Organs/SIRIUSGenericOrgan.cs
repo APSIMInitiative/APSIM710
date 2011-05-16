@@ -5,6 +5,8 @@ using CSGeneral;
 
 class SIRIUSGenericOrgan : BaseOrgan, AboveGround
 {
+   [Link] Plant Plant = null;
+
  #region Class data members
     private double SenescedFrac = 0;
     private double StartDMRetranslocationSupply = 0;

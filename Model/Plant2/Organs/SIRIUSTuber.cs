@@ -5,6 +5,8 @@ using CSGeneral;
 
 class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
 {
+   [Link] Plant Plant = null;
+
     [Input]    private int Day = 0;
     [Input]    private int Year = 0;
     [EventHandler]    private void OnPrune(PruneType Prune)
@@ -76,8 +78,7 @@ class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             //Only allow tubers to experess demand if they are growing and if the canopy still has some live leaf.
             double LAItest = 1.0;
-            Plant P = (Plant)Root;
-            double LAIpresent = Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant(P, "Leaf.LAI".Trim()));
+            double LAIpresent = Convert.ToDouble(ExpressionFunction.Evaluate("Leaf.LAI".Trim()));
             if (LAIpresent <= 0.02)
                 LAItest = 0.0;
             return NDeficit * NitrogenDemandPhase.Value * LAItest;

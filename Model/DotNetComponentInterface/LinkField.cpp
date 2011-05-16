@@ -11,122 +11,176 @@ void getChildren(String^ ComponentName, System::Text::StringBuilder^ Children);
 [DllImport("ApsimShared.dll", EntryPoint = "getComponentType", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 void getComponentType(String^ ComponentName, System::Text::StringBuilder^ ComponentType); 
 
+/// <summary>
+/// Resolve this [Link]
+/// </summary>
 void LinkField::Resolve()
    {
    if (Field->GetValue(In) == nullptr)
       {
-      // Work out our name and the name of our containing paddock.
-      String^ OurName = Comp->GetName();
+      Object^ ReferencedObject = nullptr;
 
       // Load in the probe info assembly.
       Assembly^ ProbeInfo = Types::GetProbeInfoAssembly();
-      
-      bool TypeIsInDotNetComponentInterface = false;
-      String^ FQN = nullptr;
-      if (LinkAttr->_Path == nullptr)
+
+      String^ TypeToFind = Field->FieldType->Name;
+      String^ NameToFind = Field->Name;
+
+      if (IsAPSIMType(TypeToFind))
          {
-         String^ TypeToFind = Field->FieldType->Name;
-
-         // If the type to find is "Paddock" then don't go looking for children.
-         if (TypeToFind == "Paddock")
-            {
-            String^ PaddockName = OurName->Substring(0, OurName->LastIndexOf('.'));
-            FQN = PaddockName;
-            TypeIsInDotNetComponentInterface = true;
-            }
-         else if (TypeToFind == "Component")
-            {
-            FQN = OurName;
-            TypeIsInDotNetComponentInterface = true;
-            }
-
+         if (LinkAttr->_Path == nullptr)
+            NameToFind = nullptr; // default is not to use name.
          else
             {
-            FQN = FindComponentByType(TypeToFind, OurName);
-            if (FQN == "")
-               {
-               if (LinkAttr->_IsOptional == IsOptional::Yes)
-                  return;
-               throw gcnew Exception("Cannot find [Link] for type: " + TypeToFind);
-               }
+            NameToFind = LinkAttr->_Path;
             }
+         if (NameToFind != nullptr && NameToFind->Contains("."))
+            ReferencedObject = GetSpecificApsimComponent(NameToFind);
+         else
+            ReferencedObject = FindApsimComponent(NameToFind, TypeToFind);
          }
       else
          {
-         // The path must be a name.
-         FQN = FindComponentByName(LinkAttr->_Path, OurName);
+         // Link is an Instance link - use name and type to find the object.
+         ReferencedObject = FindInstanceObject(NameToFind, TypeToFind);
          }
 
-      // Now go create a proxy object
-      String^ ProxyTypeString = Field->FieldType->Name;
-      Type^ ProxyType;
-      if (TypeIsInDotNetComponentInterface)
-         ProxyType = Assembly::GetExecutingAssembly()->GetType("ModelFramework." + ProxyTypeString);
+      // Set the value of the [Link] field to the newly created object.
+      if (ReferencedObject == nullptr)
+         {
+         if (LinkAttr->_IsOptional != IsOptional::Yes)
+            throw gcnew Exception("Cannot find [Link] for type: " + TypeToFind + " " + NameToFind + " in object: " + In->Name);
+         }
       else
-         ProxyType = Types::GetProbeInfoAssembly()->GetType("ModelFramework." + ProxyTypeString);
-
-      if (ProxyType == nullptr)
-         throw gcnew Exception("Cannot find proxy reference: " + ProxyTypeString);
-      array<Object^>^ Parameters = gcnew array<Object^>(2);
-      Parameters[0] = FQN;
-      Parameters[1] = Comp;
-      Object^ ReferencedObject = Activator::CreateInstance(ProxyType, Parameters);
-
-      // Set the value of the [Link] field to the newly created proxy object.
-      Field->SetValue(In, ReferencedObject);
+         Field->SetValue(In, ReferencedObject);
       }
    }
 
-
-// Go find a component IN SCOPE that matches the specified type.
-// IN SCOPE means a component that is a sibling or in the paddock
-// above.
-String^ LinkField::FindComponentByType(String^ TypeToFind, String^ OurName)
+/// <summary>
+/// Search for an Instance object in scope that has the specified name and type.
+/// Returns null if not found.
+/// </summary>
+Object^ LinkField::FindInstanceObject(String^ NameToFind, String^ TypeToFind)
    {
+   // Check our children first.
+   for each (NamedItem^ Child in In->Children)
+      {
+      if (NameToFind == Child->Name && Utility::IsOfType(Child->GetType(), TypeToFind))
+         return Child;
+      }
+
+   // Check our siblings, our parent's siblings and our parent's, parent's siblings etc.
+   Instance^ Parent = In->Parent;
+   while (Parent != nullptr)
+      {
+      if (Parent->Name == TypeToFind)
+         return Parent;
+      for each (NamedItem^ Sibling in Parent->Children)
+         {
+         if (NameToFind == Sibling->Name && Utility::IsOfType(Sibling->GetType(), TypeToFind))
+            return Sibling;
+         }
+      Parent = Parent->Parent;
+      }
+   return nullptr;
+   }
+
+
+/// <summary>
+/// Returns true if the specified typename is an APSIM type.
+/// </summary>
+bool LinkField::IsAPSIMType(String^ TypeToFind)
+   {
+   Type^ ProxyType;
+   if (TypeToFind == "Paddock" || TypeToFind == "Component")
+      return true;
+   else
+      return Types::GetProbeInfoAssembly()->GetType("ModelFramework." + TypeToFind) != nullptr;
+   }
+
+/// <summary>
+/// Create a DotNetProxy class to represent an Apsim component.
+/// </summary>
+Object^ LinkField::CreateDotNetProxy(String^ TypeToFind, String^ FQN)
+   {
+   Type^ ProxyType;
+   if (TypeToFind == "Paddock" || TypeToFind == "Component")
+      ProxyType = Assembly::GetExecutingAssembly()->GetType("ModelFramework." + TypeToFind);
+   else
+      ProxyType = Types::GetProbeInfoAssembly()->GetType("ModelFramework." + TypeToFind);
+
+   if (ProxyType == nullptr)
+      throw gcnew Exception("Cannot find proxy reference: " + TypeToFind);
+   array<Object^>^ Parameters = gcnew array<Object^>(2);
+   Parameters[0] = FQN;
+   Parameters[1] = Comp;
+   return Activator::CreateInstance(ProxyType, Parameters);
+   }
+
+/// <summary>
+/// Go find an Apsim component IN SCOPE that matches the specified name and type.
+/// IN SCOPE means a component that is a sibling or in the paddock
+/// above.
+/// </summary>
+Object^ LinkField::FindApsimComponent(String^ NameToFind, String^ TypeToFind)
+   {
+   String^ OurName = Comp->GetName();
    String^ PaddockName = OurName->Substring(0, OurName->LastIndexOf('.'));
 
-   // Get a list of all paddock children.
-   getChildren(PaddockName, Data);
-   StringCollection^ ChildNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
+   if (TypeToFind == "Paddock")
+      return CreateDotNetProxy(TypeToFind, PaddockName);
+   if (TypeToFind == "Component" && NameToFind == nullptr)
+      return CreateDotNetProxy(TypeToFind, OurName);
 
-   // Go through all children and find a component that has the specified type.
-   for each (String^ ChildName in ChildNames)
+   while (PaddockName != "")
       {
-      String^ ChildNameNoQuotes = ChildName->Replace("\"","");
-      getComponentType(ChildNameNoQuotes, Data);
-      String^ ChildType = Data->ToString();
+      // Get a list of all paddock children.
+      getChildren(PaddockName, Data);
+      StringCollection^ SiblingNames = CSGeneral::StringManip::SplitStringHonouringQuotes(Data->ToString(), ",");
 
-      if (ChildType->ToLower() == TypeToFind->ToLower())
-         return ChildNameNoQuotes;
+      // Go through all siblings and find a component that has the specified type.
+      for each (String^ SiblingName in SiblingNames)
+         {
+         String^ SiblingNameNoQuotes = SiblingName->Replace("\"","");
+         getComponentType(SiblingNameNoQuotes, Data);
+         String^ SiblingType = Data->ToString();
+
+         if (SiblingType->ToLower() == TypeToFind->ToLower())
+            {
+            String^ SiblingShortName = SiblingNameNoQuotes->Substring(SiblingNameNoQuotes->LastIndexOf('.')+1);
+            if (NameToFind == nullptr || NameToFind == SiblingShortName)
+               return CreateDotNetProxy(TypeToFind, SiblingNameNoQuotes);
+            }
+         }
+
+      // Go to parent paddock.
+      PaddockName = PaddockName->Substring(0, PaddockName->LastIndexOf('.'));
       }
 
-   // If we get this far then we need to go to our parent and search it's children.
-   int PosLastPeriod = OurName->LastIndexOf('.');
-   if (PosLastPeriod == -1)
-      return "";
-   String^ ParentName = OurName->Substring(0, PosLastPeriod);
-   if (ParentName == ".MasterPM")
-      return "";
-   return FindComponentByType(TypeToFind, ParentName);
+   // If we get this far then we didn't find the APSIM component.
+   return nullptr;
    }
 
-// Go find a component with the specified name. NameToFind can be either
-// a relative or absolute address.
-String^ LinkField::FindComponentByName(String^ NameToFind, String^ OurName)
+/// <summary>
+/// Go find a component with the specified name. NameToFind can be either
+/// a relative or absolute address.
+/// </summary>
+Object^ LinkField::GetSpecificApsimComponent(String^ NameToFind)
    {
    String^ Delimiter = ".";
 
    if (NameToFind->Contains(".MasterPM."))
-      return NameToFind;   // absolute reference.
+      return CreateDotNetProxy(NameToFind, NameToFind);   // absolute reference.
    else
       {
       // relative reference.
-
+      String^ OurName = Comp->GetName();
       String^ ParentName = "";
       int PosLastPeriod = OurName->LastIndexOf('.');
       if (PosLastPeriod == -1)
          throw gcnew Exception("Invalid component name found: " + OurName);
       ParentName = OurName->Substring(0, PosLastPeriod);
-      return ParentName + "." + NameToFind;
+      return CreateDotNetProxy(NameToFind, ParentName + "." + NameToFind);
       }
    }
+

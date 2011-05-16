@@ -42,10 +42,22 @@ public ref class Instance : NamedItem
       ModelFramework::ApsimComponent^ Component;
    
    protected:
-      Instance^ Parent;
 	  virtual bool Override(Type^ aType, String^ targetName);
-         
+   
+   internal:
+      property Instance^ Root 
+         { 
+         virtual Instance^ get() 
+            { 
+            if (Parent == nullptr)
+               return this;
+            else
+               return Parent->Root;
+            }
+         }
+
    public:
+      Instance^ Parent;
       NamedList<NamedItem^>^ Children;
       Instance();
 
@@ -102,16 +114,7 @@ public ref class Instance : NamedItem
       virtual void Initialised()
          {
          }         
-      property Instance^ Root 
-         { 
-         virtual Instance^ get() 
-            { 
-            if (Parent == nullptr)
-               return this;
-            else
-               return Parent->Root;
-            }
-         }
+  
 	  property String^ InstanceName { String^ get() { return MyFQN(); } }
 
       //property PaddockType^ Paddock 

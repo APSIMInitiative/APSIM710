@@ -6,6 +6,8 @@ using CSGeneral;
 
 class MinimumFunction : Function
    {
+   [Link] Plant Plant = null;
+
    [Param] string[] Property = null;
 
    [Output]
@@ -16,7 +18,7 @@ class MinimumFunction : Function
          double ReturnValue = 999999999;
          foreach (string PropertyName in Property)
             {
-            double Val = Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName));
+                double Val = Convert.ToDouble(ExpressionFunction.Evaluate(PropertyName));
             ReturnValue = Math.Min(ReturnValue, Val);
             }
          return ReturnValue;

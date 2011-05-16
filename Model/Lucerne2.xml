@@ -174,10 +174,10 @@
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
         <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[*].Live</Property>
+           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[*].Dead</Property>
+           <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
@@ -308,21 +308,10 @@
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction>
-		  <DivideFunction name="Fco2">
-            <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-            <ExpressionFunction name="First">
-              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
-              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
-Obs: Expression can contain variable names from Plant2
-</Memo>
-            </ExpressionFunction>
-            <ExpressionFunction name="Second">
-              <ExpressionProperty type="text" description="Math Expression">(Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint)</ExpressionProperty>
-              <Memo>Evaluate a mathematical expression using the EvaluateExpression dll. 
-Obs: Expression can contain variable names from Plant2
-</Memo>
-            </ExpressionFunction>
-          </DivideFunction>
+          <ExpressionFunction name="Fco2">
+              <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
+              <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
+          </ExpressionFunction>
           <StageBasedInterpolation name="RUE">
             <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering StartPodGrowth Maturity   StartRegrowth  RGFloralInitiation RGFlowering  EndRegrowth</Stages>
             <Values type="text" description="Values">0             0                 1.3                 1.25               1.0              0.7             0.55                    0.55               2.4                    2.4               1.6                     1.6</Values>
@@ -597,6 +586,21 @@ Obs: Expression can contain variable names from Plant2
         <Values type="text" description="Values">   1               2                  3            4                    5               6                   7                    8                      4                 5                         6                         7</Values>
       </StageBasedInterpolation>
       <Summary />
+      <CompositeBiomass name="AboveGround">
+          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>      
+      <CompositeBiomass name="BelowGround">
+          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>        
+      <CompositeBiomass name="Total">
+          <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>  
+      <CompositeBiomass name="TotalLive">
+          <Property>Organs[].Live</Property>
+      </CompositeBiomass>       
+      <CompositeBiomass name="TotalDead">
+          <Property>Organs[].Dead</Property>
+      </CompositeBiomass>      
     </Plant>
   </Model>
 </Type>

@@ -5429,7 +5429,7 @@ endif
           </operation>
         </operations>
         <manager name="Aux_Variable">
-          <script name="init">
+          <script>
             <text>treat = 'LL'
 
 rue_day = 0
@@ -5465,26 +5465,26 @@ flagLAI = 1.0 ! Flag for stopping LAI developemnt after a high LAI of 5.0
 </text>
             <event>init</event>
           </script>
-          <script name="start_of_day">
-            <text><![CDATA[if ( today >= date('1-Mar')) then
+          <script>
+            <text>if ( today &gt;= date('1-Mar')) then
 
    season = 3
 
 endif 
 
-if ( today >= date('1-Jun')) then
+if ( today &gt;= date('1-Jun')) then
 
    season = 4
 
 endif 
 
-if ( today >= date('1-Sep')) then
+if ( today &gt;= date('1-Sep')) then
 
    season = 1
    
 endif
    
-if ( today >= date('1-Dec')) then
+if ( today &gt;= date('1-Dec')) then
 
    season = 2
 
@@ -5495,7 +5495,7 @@ endif
 !---------------- This flag stops LAI develoments when LAI is greater than 5.0 -------------
 ! It's a multiplyier of MaxArea in Plant2
 
-if (lucerne2.LeafLAI > 5.0) then
+if (lucerne2.LeafLAI &gt; 5.0) then
    
    flagLAI = 0.001
    
@@ -5533,16 +5533,16 @@ endif
 
 
 
-]]></text>
+</text>
             <event>start_of_day</event>
           </script>
-          <script name="end_of_day">
-            <text><![CDATA[
+          <script>
+            <text>
 ! ------------ calculates daily RUE (g DM/MJ total radiation) ------------
 
  intRad = lucerne2.cover_green * radn
 
-if lucerne2.cover_green > 0 then
+if lucerne2.cover_green &gt; 0 then
 
       rue_day = ArbitratorDMSupply / intRad ! We are guessing this is the dlt_dm from "old" Plant
       
@@ -5556,9 +5556,9 @@ endif
 
 tmean = ( maxt + mint ) * 0.5
 
-! -------------- change class to delay at photoperiod < 12.5 h (Lincoln site!) --------
+! -------------- change class to delay at photoperiod &lt; 12.5 h (Lincoln site!) --------
 
-if ( today > date('04-Apr') AND today < date('09-Sep')) then
+if ( today &gt; date('04-Apr') AND today &lt; date('09-Sep')) then
 
 !      lucerne delay
 
@@ -5599,68 +5599,68 @@ endif
 
 ! ---- Stage counter
 
-if ( stage >= 1) then
+if ( stage &gt;= 1) then
 
    stage_counter = 1
 
 endif 
 
-if ( stage >= 2) then
+if ( stage &gt;= 2) then
 
    stage_counter = 2
 
 endif 
 
-if ( stage >= 3) then
+if ( stage &gt;= 3) then
 
    stage_counter = 3
 
 endif 
 
-if ( stage >= 4) then
+if ( stage &gt;= 4) then
 
    stage_counter = 4
 
 endif 
 
-if ( stage >= 5) then
+if ( stage &gt;= 5) then
 
    stage_counter = 5
 
 endif 
 
 
-if ( stage >= 6) then
+if ( stage &gt;= 6) then
 
    stage_counter = 6
 
 endif 
 
-if ( stage >= 7) then
+if ( stage &gt;= 7) then
 
    stage_counter = 7
 
 endif 
 
-if ( stage >= 8) then
+if ( stage &gt;= 8) then
 
    stage_counter = 8
 
 endif 
 
-if ( stage >= 9) then
+if ( stage &gt;= 9) then
 
    stage_counter = 9
 
 endif 
 
-if ( stage >= 10) then
+if ( stage &gt;= 10) then
 
    stage_counter = 10
 
 endif 
 
-if ( stage >= 11) then
+if ( stage &gt;= 11) then
 
    stage_counter = 11
 
@@ -5676,15 +5676,15 @@ leafDM = lucerne2.LeafLiveWt * 10
 
 stemDM = lucerne2.StemLiveWt * 10
 
-rootDM = lucerne2.BelowGroundDM * 10
+rootDM = lucerne2.BelowGroundWt * 10
 
 shootDM = leafDM + stemDM
 
 
-act_mods end_of_day2 ! This is just an exercise to learn how to create new events]]></text>
+act_mods end_of_day2 ! This is just an exercise to learn how to create new events</text>
             <event>end_of_day</event>
           </script>
-          <script name="end_of_day2">
+          <script>
             <text>
 if (lucerne2.LeafNodeAppearanceRateValue = 0.0) then
    

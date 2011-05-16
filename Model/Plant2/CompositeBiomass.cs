@@ -5,8 +5,10 @@ using System.Collections;
 using System.Reflection;
 
 
-class CompositeBiomass : Biomass
+public class CompositeBiomass : Biomass
    {
+   [Link] Plant Plant = null;
+
    [Param] private string[] Property = null;
 
    [Output]
@@ -17,7 +19,7 @@ class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-            Value += Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName + ".NonStructuralN"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".NonStructuralN)"));
          return Value;
          }
 
@@ -32,7 +34,7 @@ class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-            Value += Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName + ".StructuralN"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" +PropertyName + ".StructuralN)"));
          return Value;
          }
       set { throw new Exception("Cannot set StructuralN in CompositeBiomass"); }
@@ -45,7 +47,7 @@ class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-            Value += Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName + ".NonStructuralWt"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".NonStructuralWt)"));
          return Value;
          }
       set { throw new Exception("Cannot set NonStructuralWt in CompositeBiomass"); }
@@ -58,7 +60,7 @@ class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-            Value += Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, PropertyName + ".StructuralWt"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".StructuralWt)"));
          return Value;
          }
       set { throw new Exception("Cannot set StructuralWt in CompositeBiomass"); }

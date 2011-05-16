@@ -32,9 +32,9 @@ public ref class Factory
          List<FactoryEvent^>^ get() { return RegisteredEvents; }
          }
       void Create(String^ Xml, Assembly^ Assembly, ModelFramework::ApsimComponent^ ParentComponent);
-      //void Create(XmlNode^ Node, Assembly^ Assembly);
       void PopulateParams(Instance^ Obj, XmlNode^ Node, ModelFramework::ApsimComponent^ ParentComponent);
       void CheckParameters();
+      void Initialise();
    private:
       Instance^ _Root;
       List<FactoryProperty^>^ RegisteredProperties;
@@ -52,4 +52,5 @@ public ref class Factory
       FactoryProperty^ FindProperty(XmlNode^ Node);
       void RemoveShortCuts(XmlNode^ Node);
       void ResolveLinks();
+      void CallInitialisedOnAll(Instance^ Obj);
    };

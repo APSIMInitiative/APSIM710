@@ -17,14 +17,21 @@ using namespace System::Runtime::InteropServices;
 using namespace ModelFramework;
 
 /// <summary>
-/// Represents a [Link] attribute. Main responsability is to 
+/// Represents a [Link]. Main responsability is to 
 /// resolve the linkages at runtime of a simulation.
-/// e.g. references
-///    [Link()] Paddock MyPaddock;                      // refers to the current paddock.
-///    [Link()] Component MyComponent;                  // refers to the current component.
-///    [Link()] SoilWat MySoil;                         // refers to the component in scope that has the type 'SoilWat'
-///    [Link("wheat2")] Wheat W;                        // refers to the sibling component named 'wheat2'
-///    [Link(".simulation.paddock1.wheat2")] Wheat W;   // refers to a specific component with the full path '.simulation.paddock1.wheat2'
+/// Links can be to APSIM components (which are by default matched using type only) or
+/// they can be links to Instance objects (which are by default matched using type ane name).
+/// e.g. 
+///    APSIM linkages:
+///    [Link] Paddock MyPaddock;                      // links to the current paddock.
+///    [Link] Component MyComponent;                  // links to the current component.
+///    [Link] SoilWat MySoil;                         // links to the component in scope that has the type 'SoilWat'
+///    [Link("wheat2")] Wheat W;                      // links to the sibling component named 'wheat2'
+///    [Link(".simulation.paddock1.wheat2")] Wheat W; // links to a specific component with the full path '.simulation.paddock1.wheat2'
+/// e.g. 
+///    Instance linkages (cannot specify a link path for instance linkages):
+///    [Link] Function ThermalTime;        // links to an object with type Function and name ThermalTime
+///    [Link] Leaf Leaf;                   // links to an object with type Leaf and name Leaf
 /// <summary>
 public ref class LinkField
    {
@@ -35,8 +42,12 @@ public ref class LinkField
       ModelFramework::ApsimComponent^ Comp;
       static System::Text::StringBuilder^ Data = gcnew System::Text::StringBuilder(10000);
       
-      String^ FindComponentByType(String^ TypeToFind, String^ OurName);
-      String^ FindComponentByName(String^ NameToFind, String^ OurName);
+      Object^ FindInstanceObject(String^ NameToFind, String^ TypeToFind);
+
+      bool IsAPSIMType(String^ TypeToFind);
+      Object^ CreateDotNetProxy(String^ ProxyTypeString, String^ FQN);
+      Object^ FindApsimComponent(String^ NameToFind, String^ TypeToFind);
+      Object^ GetSpecificApsimComponent(String^ NameToFind);
    public:
 
       // Constructor

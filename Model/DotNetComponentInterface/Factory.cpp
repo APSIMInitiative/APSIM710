@@ -28,6 +28,16 @@ void Factory::Create(String^ Xml,
    RemoveShortCuts(Doc->DocumentElement);
    _Root = CreateInstance(Doc->DocumentElement, nullptr, nullptr, ParentComponent);
    }
+
+/// <summary>
+/// Resolve all links and initialise all Instances
+/// </summary>
+void Factory::Initialise()
+   {
+   ResolveLinks();
+   CallInitialisedOnAll(_Root);
+   }
+
 //void Factory::Create(XmlNode^ Node, Assembly^ AssemblyWithTypes)
 //   {
 //   // --------------------------------------------------------------------
@@ -70,11 +80,7 @@ Instance^ Factory::CreateInstance(XmlNode^ Node,
    {
 	   throw gcnew Exception("Class " + Node->Name + " must be derived from the \"Instance\" class");
    }
-   if (ParentComponent != nullptr && !ParentComponent->DoingAGetDescription())
-      {
-      ResolveLinks();
-      CreatedInstance->Initialised();
-      }
+
    return CreatedInstance;
    }
 
@@ -85,7 +91,7 @@ void Factory::GetAllProperties(Instance^ Obj, XmlNode^ Parent)
    // with a 'Param' or 'Input' attribute and add them to our list
    // of registered properties.
    // --------------------------------------------------------------------
-   for each (FieldInfo^ Property in Obj->GetType()->GetFields(BindingFlags::FlattenHierarchy | BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic))
+   for each (FieldInfo^ Property in Obj->GetType()->GetFields(BindingFlags::FlattenHierarchy | BindingFlags::Instance  | BindingFlags::Static | BindingFlags::Public | BindingFlags::NonPublic))
       {
       bool AddProperty = false;
       bool IsOutput = false;
@@ -214,7 +220,7 @@ void Factory::GetAllEvents(Instance^ Obj)
                {
                FactoryProperty^ Parameter = FindProperty(Child);
                if (Parameter == nullptr)
-                  throw gcnew Exception("Cannot set value of property: " + Child->Name + ". The property must have either a [Param] or [Input] attribute.");
+                  throw gcnew Exception("Cannot set value of property: " + Child->Name + " in object: " + Obj->InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                Parameter->Name = XmlHelper::Name(Child);
                bool IsXmlText = (dynamic_cast<XmlText^>(Child->ChildNodes[0]) != nullptr);
                if (IsXmlText)
@@ -367,4 +373,15 @@ void Factory::ResolveLinks()
 	for (int i = 0; i < Links->Count; i++)
       Links[i]->Resolve();
 
+   }
+
+/// <summary>
+/// Do a depth first walk of the Instance tree, calling each Instance's Initialised method.
+/// </summary>
+void Factory::CallInitialisedOnAll(Instance^ Obj)
+   {
+   for each (Instance^ Child in Obj->Children)
+      CallInitialisedOnAll(Child);
+
+   Obj->Initialised();
    }

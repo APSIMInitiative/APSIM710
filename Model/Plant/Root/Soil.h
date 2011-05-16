@@ -129,9 +129,17 @@ class Soil
 
 
       vector<float> kl;                                // root length density factor for water
+      vector<float> cl;
+      vector<float> esp;
+      vector<float> ec;
 
-
-
+      float ClA;
+      float ClB;
+      float ESPA;
+      float ESPB;
+      float ECA;
+      float ECB;
+      float getModifiedKL(int LayerIndex);
    protected:
       ScienceAPI& scienceAPI;
       plantInterface& plant;

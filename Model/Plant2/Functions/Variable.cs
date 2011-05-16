@@ -10,6 +10,8 @@ using CSGeneral;
 
 public class Variable : Function
 {
+   [Link] Plant Plant = null;
+
     [Param]
     private string VariableName = "";
 
@@ -18,7 +20,7 @@ public class Variable : Function
     {
         get
         {
-            return Convert.ToDouble(GenericFunction.GetPropertyValueFromPlant((Plant)Root, VariableName.Trim()));
+            return Convert.ToDouble(ExpressionFunction.Evaluate(VariableName.Trim()));
         }
     }
 

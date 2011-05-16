@@ -62,9 +62,9 @@ Paddock:
         LeafTotalNo
         RootLengthDensity()
         LeafLAI
-        TotalDM
-        BelowGroundDM
-        AboveGroundDM
+        TotalWt
+        BelowGroundWt
+        AboveGroundWt
         StemLiveWt
         LeafLiveWt
         PodLiveWt
@@ -111,7 +111,7 @@ Paddock:
      dltdmold =0
      
      SECTION:- start_of_day
-     prevdaydm = abovegrounddm
+     prevdaydm = abovegroundwt
      prevdaydeadwt = leafdeadwt + stemdeadwt
           if stagecodevalue >= 6.0 then
                lucerne2  cut
@@ -119,9 +119,9 @@ Paddock:
      
      SECTION:- end_of_day
      shootdeadwt = leafdeadwt + stemdeadwt
-     dltdm = (abovegrounddm - shootdeadwt)- (prevdaydm - prevdaydeadwt)
-     dltdmold = abovegrounddm - prevdaydm
-     sumdm = belowgrounddm + stemlivewt + leaflivewt + podlivewt
+     dltdm = (abovegroundwt - shootdeadwt)- (prevdaydm - prevdaydeadwt)
+     dltdmold = abovegroundwt - prevdaydm
+     sumdm = belowgroundwt + stemlivewt + leaflivewt + podlivewt
      if dltdm <= 0 then
         dltdm = 0
      endif

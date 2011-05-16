@@ -4,6 +4,8 @@ using System.Text;
 
 class ReserveOrgan : BaseOrgan  //Neither above or below ground for now
    {
+   [Link] Plant Plant = null;
+
    [Param] private double InitialDM = 0;
    [Param] private double DailyRetransFraction = 0;
    public override void DoPotentialGrowth()

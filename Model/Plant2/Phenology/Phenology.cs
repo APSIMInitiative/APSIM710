@@ -7,6 +7,8 @@ using System.Text;
 
 public class Phenology : Instance
    {
+   [Link] Plant Plant = null;
+
    [Event] public event PhaseChangedDelegate PhaseChanged;
    [Event] public event NullTypeDelegate GrowthStage;
    [Link]   private Paddock MyPaddock;
@@ -14,7 +16,7 @@ public class Phenology : Instance
    private NamedList<Phase> Phases = new NamedList<Phase>();
    private int CurrentPhaseIndex;
    private string CurrentlyOnFirstDayOfPhase = "";
-   private Plant Plant;
+   private bool JustInitialised = true;
 
    /// <summary>
    /// This property is used to retrieve or set the current phase name.
@@ -54,7 +56,11 @@ public class Phenology : Instance
    /// </summary>
    public Phenology() { }
 
-
+   public override void Initialised()
+      {
+      base.Initialised();
+      JustInitialised = true;
+      }
    /// <summary>
    /// Perform our daily timestep function. Get the current phase to do its
    /// development for the day. Any left over TT that it can't use is then
@@ -64,10 +70,10 @@ public class Phenology : Instance
       {
       // If this is the first time through here then setup some variables.
       CurrentlyOnFirstDayOfPhase = "";
-      if (Plant == null)
+      if (JustInitialised)
          {
-         Plant = (Plant)Root;
          CurrentlyOnFirstDayOfPhase = Phases[0].Start;
+         JustInitialised = false;
          }
 
       double FractionOfDayLeftOver = CurrentPhase.DoTimeStep(1.0);

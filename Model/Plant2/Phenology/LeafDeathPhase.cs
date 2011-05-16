@@ -5,26 +5,21 @@ using System.Text;
 
 public class LeafDeathPhase : Phase
    {
-   private double _CumulativeValue;
-
+   [Link]   private Leaf Leaf = null;
+   [Link]   private Function ThermalTime = null;
    [Output] public double CumulativeValue { get { return _CumulativeValue; } }
 
-   /// <summary>
-   /// Initialise everything
-   /// </summary>
-   public override void Initialising() { _CumulativeValue = 0.0; }
+   private double _CumulativeValue = 0.0;
+
 
    /// <summary>
    /// Do our timestep development
    /// </summary>
    public override double DoTimeStep(double PropOfDayToUse)
       {
-      Function F = Children["ThermalTime"] as Function;
-      _CumulativeValue += F.Value;
+      _CumulativeValue += ThermalTime.Value;
 
-      Plant Plant = (Plant)Root;
-      Leaf L = Plant.Organs["Leaf"] as Leaf;
-      if (L.LAI == 0)
+      if (Leaf.LAI == 0)
          return 0.00001;
       else
          return 0; 

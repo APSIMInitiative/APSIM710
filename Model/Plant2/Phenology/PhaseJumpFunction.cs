@@ -6,24 +6,34 @@ using System.Text;
 #endif
 
 class PhaseJumpFunction : Instance
-   {
-   [Param] private string Start = "";
-   [Param] private string End = "";
-   [Param] private string PhaseNameToJumpTo = "";
-   [Param] private string Event = "";
-   [Link] private Paddock MyPaddock;
-   public override void  Initialised()
-      {
-      MyPaddock.Subscribe(Event, OnEvent);
-      }
+{
+    [Link]
+    Plant ParentPlant = null;
 
-   public void OnEvent()
-      {
-      Plant ParentPlant = (Plant) Root;
-      if (ParentPlant.Phenology.Between(Start, End))
-         {
-         ParentPlant.Phenology.CurrentPhaseName = PhaseNameToJumpTo;
-         }
-      }
-   }
+    [Link]
+    Phenology Phenology = null;
+
+    [Param]
+    private string Start = "";
+    [Param]
+    private string End = "";
+    [Param]
+    private string PhaseNameToJumpTo = "";
+    [Param]
+    private string Event = "";
+    [Link]
+    private Paddock MyPaddock;
+    public override void Initialised()
+    {
+        MyPaddock.Subscribe(Event, OnEvent);
+    }
+
+    public void OnEvent()
+    {
+        if (Phenology.Between(Start, End))
+        {
+            Phenology.CurrentPhaseName = PhaseNameToJumpTo;
+        }
+    }
+}
    
