@@ -9,6 +9,7 @@ using System.Xml;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using System.Diagnostics;
 
 using Controllers;
 using CSGeneral;
@@ -685,6 +686,35 @@ namespace CPIUserInterface
         private void button1_Click(object sender, EventArgs e)
         {
             Initialise(FDllFileName);
+        }
+        /// <summary>
+        /// Open help file based on the dll component name.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button2_Click(object sender, EventArgs e)
+        {
+            String helpFileName = Path.ChangeExtension(FDllFileName, "chm");
+            if (File.Exists(helpFileName))
+            {
+                openHelp(helpFileName);
+            }
+            else {
+                helpFileName = Path.ChangeExtension(FDllFileName, "html");
+                if (File.Exists(helpFileName))
+                {
+                    openHelp(helpFileName);
+                }
+                else
+                    MessageBox.Show("Cannot find help file " + helpFileName);
+            }
+        }
+        private void openHelp(String helpFile)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = helpFile;
+            startInfo.Arguments = "";
+            Process.Start(startInfo);
         }
 	} 
 }

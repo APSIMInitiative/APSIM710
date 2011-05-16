@@ -100,7 +100,7 @@ namespace CMPServices
                //now nest into the fields/elements
                for (i = 1; i <= attrInfo.count(); i++)
                {
-                   if (attrInfo.isArray() && (attrInfo.baseType() != TTypedValue.TBaseType.ITYPE_DEF) && (indent > -1))
+                   if (attrInfo.isArray() && (attrInfo.baseType() != TTypedValue.TBaseType.ITYPE_DEF))
                    {
                        xml.Append(new String(' ', oneIndent) + "<val>" + scalarString(attrInfo.item(i)) + "</val>" + CR); // Scalar array, indented format
                    }

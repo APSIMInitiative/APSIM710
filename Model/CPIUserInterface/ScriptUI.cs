@@ -7,7 +7,10 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.IO;
+using System.Diagnostics;
 
+using ApsimFile;
 using Controllers;
 using CSGeneral;
 using CMPServices;
@@ -53,6 +56,7 @@ namespace CPIUserInterface
         {
             InitializeComponent();
             typedvals = new List<TTypedValue>();
+            label1.Text = "Ln 1 Col 1";
         }
         protected override void OnLoad()
         {
@@ -196,22 +200,25 @@ namespace CPIUserInterface
         //=======================================================================
         private void HighlightALine(int lineNumber)
         {
-            int cursorPos = richTextBox1.SelectionStart;
-            int startOfLine = richTextBox1.GetFirstCharIndexFromLine(lineNumber);
-            richTextBox1.SelectionStart = startOfLine;
-            String strLine = richTextBox1.Lines[lineNumber];
-            
-            //now remove the text I am about to parse
-            FILLING = true;
-            richTextBox1.SelectionStart = startOfLine;
-            richTextBox1.SelectionLength = strLine.Length;
-            richTextBox1.Select();
-            richTextBox1.Cut();
-            FILLING = false;
+            if (richTextBox1.Lines.Length > 0)
+            {
+                int cursorPos = richTextBox1.SelectionStart;
+                int startOfLine = richTextBox1.GetFirstCharIndexFromLine(lineNumber);
+                richTextBox1.SelectionStart = startOfLine;
+                String strLine = richTextBox1.Lines[lineNumber];
 
-            ParseLine(strLine);
-            richTextBox1.SelectionStart = cursorPos;
-            FILLING = false;
+                //now remove the text I am about to parse
+                FILLING = true;
+                richTextBox1.SelectionStart = startOfLine;
+                richTextBox1.SelectionLength = strLine.Length;
+                richTextBox1.Select();
+                richTextBox1.Cut();
+                FILLING = false;
+
+                ParseLine(strLine);
+                richTextBox1.SelectionStart = cursorPos;
+                FILLING = false;
+            }
         }
         //=======================================================================
         /// <summary>
@@ -223,14 +230,17 @@ namespace CPIUserInterface
         private void Highlight(String text)
         {
             FILLING = true;
+            richTextBox1.Clear();
             richTextBox1.Font = normalFont;
             richTextBox1.SelectionStart = 0;
             richTextBox1.Enabled = false;
-            String[] lines = rLines.Split(text);
-            foreach (string l in lines)
+            String[] lines = rLines.Split(text);    //adds an extra \n
+            int Count = lines.Length - 1;
+            for (int i = 0; i < Count; i++ )
             {
-                ParseLine(l);
-                richTextBox1.SelectedText = "\n";
+                ParseLine(lines[i]);
+                if (i < Count -1)
+                    richTextBox1.SelectedText = "\n";
             }
             richTextBox1.Enabled = true;
             richTextBox1.Select(0, 0);
@@ -339,6 +349,39 @@ namespace CPIUserInterface
             int col = index - richTextBox1.GetCharIndexFromPosition(pt);
             label1.Text = "Ln " + (++line).ToString() + " Col " + (++col).ToString();
         }
-
+        /// <summary>
+        /// Open help file based on the dll component name.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //find the full path to the dll for the component
+            String ComponentType = Controller.ApsimData.Find(NodePath).Type;
+            List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
+            String DllFileName = DllFileNames[0];
+            DllFileName = Configuration.RemoveMacros(DllFileName).Replace("%dllext%", "dll");
+            String helpFileName = Path.ChangeExtension(DllFileName, "chm");
+            if (File.Exists(helpFileName))
+            {
+                openHelp(helpFileName);
+            }
+            else {
+                helpFileName = Path.ChangeExtension(DllFileName, "html");
+                if (File.Exists(helpFileName))
+                {
+                    openHelp(helpFileName);
+                }
+                else
+                    MessageBox.Show("Cannot find help file " + helpFileName);
+            }
+        }
+        private void openHelp(String helpFile)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = helpFile;
+            startInfo.Arguments = "";
+            Process.Start(startInfo);
+        }
     }
 }
