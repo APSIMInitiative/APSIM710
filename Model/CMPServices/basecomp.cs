@@ -641,51 +641,6 @@ namespace CMPServices
 
         //============================================================================
         /// <summary>
-        /// A bit ugly, but some of the Fortran components (like the manager) still
-        /// generate events with the associated data in the form of an Apsim variant.
-        /// This routine attempts to repackage that data into a more acceptable form.
-        /// </summary>
-        /// <param name="dest">The TEventInfo object associated with the event.</param>
-        /// <param name="publBy">The originator component ID of the published event.</param>
-        /// <param name="prmDDML">DDML description of this event.</param>
-        /// <param name="prmData">Parameter data values.</param>
-        /// <param name="prmSize">Size of parameter data block.</param>
-        //============================================================================
-        private bool ConvertApsimVariant(TEventInfo dest, uint publBy, string prmDDML, ref byte[] prmData, ref uint prmSize)
-        {
-            TDDMLValue src = new TDDMLValue(prmDDML, "");
-            src.setData(prmData, (int)prmSize, 0);
-            for (uint idx = 1; idx < src.count(); idx += 5)
-            {
-                int field = 1 + (int)(idx / 5);
-                string fieldName = src.item(idx).Name.ToLower();
-                if (fieldName != "param" + field.ToString() + "_name")
-                    return false;
-                string name = src.item(idx).asString().ToLower();
-                TTypedValue destField = dest.member(name);
-                if (destField == null)
-                    continue; // Perhaps this should raise an exception?
-                TTypedValue value = null;
-                if (src.item(idx + 4).count() > 0)
-                {
-                    if (destField.isArray())
-                        value = src.item(idx + 4);
-                    else
-                        value = src.item(idx + 4).item(1);
-                }
-                if (name == "sender" || name == "sender_id")
-                    continue;
-                destField.setValue(value);
-            }
-            prmSize = dest.sizeBytes();
-            prmData = new byte[prmSize];
-            dest.getData(ref prmData);                 //makes a copy into a block that has been allocated
-            dest.addSourceValue(publBy, dest);
-            return true;
-        }
-
-        //============================================================================
-        /// <summary>
         /// Called by the parent component to initialise this component. This function
         /// registers the driving properties, events, and properties and then calls the
         /// initialise(1 or 2) routine.

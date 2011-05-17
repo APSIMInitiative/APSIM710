@@ -1273,10 +1273,17 @@ namespace CMPServices
                     eventInfo = (TEventInfo)eventList[eventID];
                     if (eventInfo != null)
                     {
-                        if (!eventInfo.checkCompatibility(publBy, prmDDML))
+                        if (eventInfo.isVariant || !eventInfo.checkCompatibility(publBy, prmDDML))
                         {
-                            string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
-                            throw (new TypeMisMatchException(errorMsg));
+                            if (ConvertApsimVariant(eventInfo, publBy, prmDDML, ref prmData, ref prmSize))
+                            {
+                                eventInfo.isVariant = true;
+                            }
+                            else
+                            {
+                                string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
+                                throw (new TypeMisMatchException(errorMsg));
+                            }
                         }
                         subsParams = eventInfo.sourceValue(publBy);
                         if (subsParams != null)
