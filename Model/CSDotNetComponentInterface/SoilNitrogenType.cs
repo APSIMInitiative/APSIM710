@@ -10,7 +10,7 @@ public class SoilNitrogenType
         Comp = c;
     }
 
-    VariableType Variable(String VariableName)
+    Variable Variable(String VariableName)
     {
         return Comp.Variable(VariableName);
     }

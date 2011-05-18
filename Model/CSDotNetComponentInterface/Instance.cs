@@ -33,7 +33,6 @@ public class Instance : NamedItem
     }
     private ApsimComponent Component;
 
-    protected Instance Parent;
     protected virtual bool Override(Type aType, String targetName)
     {
         // Now look for parameter overrides and apply them as needed
@@ -48,7 +47,7 @@ public class Instance : NamedItem
         }
         return false;
     }
-
+    public Instance Parent;
     public NamedList<NamedItem> Children;
     // --------------------------------------------------------------------
     /// <summary>
@@ -162,7 +161,7 @@ public class Instance : NamedItem
     /// 
     /// </summary>
     // --------------------------------------------------------------------
-    public Instance Root
+    internal Instance Root
     {
         get
         {

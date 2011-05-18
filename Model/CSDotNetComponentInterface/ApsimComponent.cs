@@ -522,6 +522,7 @@ public class ApsimComponent : Instance
     {
         Fact.Clear();   //clear this so it can be reinitialised
         Fact.Create(XML.OuterXml, modelAssembly, this);
+        Fact.Initialise();
         Model = (Instance)(Fact.Root);
         String InstanceName = Name;
         if (InstanceName.Contains("."))
@@ -612,7 +613,7 @@ public class ApsimComponent : Instance
         }
 
         BuildObjects(ModelDescription);
-
+        GetAllInputs();
         CallEventHandlers("Sow", Sow);  //call multiple Sow events
     }
     //============================================================================

@@ -98,9 +98,9 @@ public class Component : TypedItem
     /// <param name="VariableName"></param>
     /// <returns></returns>
     // --------------------------------------------------------------------
-    public VariableType Variable(String VariableName)
+    public Variable Variable(String VariableName)
     {
-        return new VariableType(HostComponent, CompName, VariableName);
+        return new Variable(HostComponent, CompName, VariableName);
     }
     /// <summary>
     /// 

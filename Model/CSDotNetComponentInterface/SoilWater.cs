@@ -10,7 +10,7 @@ public class SoilWat
         Comp = c;
     }
 
-    public VariableType Variable(String VariableName)
+    public Variable Variable(String VariableName)
     {
         return Comp.Variable(VariableName);
     }

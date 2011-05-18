@@ -45,9 +45,11 @@ public class Factory
     {
         get { return RegisteredEvents; }
     }
+    // --------------------------------------------------------------------
     /// <summary>
     /// Clear all the current settings for this Factory.
     /// </summary>
+    // --------------------------------------------------------------------
     public void Clear()
     {
         RegisteredProperties.Clear();
@@ -71,6 +73,16 @@ public class Factory
         Doc.LoadXml(Xml);
         RemoveShortCuts(Doc.DocumentElement);
         _Root = CreateInstance(Doc.DocumentElement, null, null, ParentComponent);
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// Resolve all links and initialise all Instances
+    /// </summary>
+    // --------------------------------------------------------------------
+    public void Initialise()
+    {
+        ResolveLinks();
+        CallInitialisedOnAll(_Root);
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -110,11 +122,6 @@ public class Factory
         {
             throw new Exception("Class " + Node.Name + " must be derived from the \"Instance\" class");
         }
-        if (ParentComponent != null && !ParentComponent.DoingAGetDescription())
-        {
-            ResolveLinks();
-            CreatedInstance.Initialised();
-        }
         
         return CreatedInstance;
     }
@@ -129,7 +136,7 @@ public class Factory
     // --------------------------------------------------------------------
     private void GetAllProperties(Instance Obj, XmlNode Parent)
     {
-        foreach (FieldInfo Property in Obj.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (FieldInfo Property in Obj.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
         {
             bool AddProperty = false;
             bool IsOutput = false;
@@ -274,7 +281,7 @@ public class Factory
                 {
                     FactoryProperty Parameter = FindProperty(Child);
                     if (Parameter == null)
-                        throw new Exception("Cannot set value of property: " + Child.Name + ". The property must have either a [Param] or [Input] attribute.");
+                        throw new Exception("Cannot set value of property: " + Child.Name + " in object: " + Obj.InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                     Parameter.Name = XmlHelper.Name(Child);
                     bool IsXmlText = ( (Child.ChildNodes[0]).GetType() == typeof(XmlText) );// ((XmlText)(Child.ChildNodes[0]) != null);
                     if (IsXmlText)
@@ -449,9 +456,11 @@ public class Factory
             RemoveShortCuts(Node.ChildNodes[i]);
 
     }
+    // --------------------------------------------------------------------
     /// <summary>
     /// Resolve all [Links].
     /// </summary>
+    // --------------------------------------------------------------------
     public void ResolveLinks()
     {
         for (int i = 0; i < Links.Count; i++)
@@ -472,7 +481,19 @@ public class Factory
 
         ParentName = CalcParentName(Node.ParentNode);
         return ParentName + XmlHelper.Name(Node);
-    }   
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// Do a depth first walk of the Instance tree, calling each Instance's Initialised method.
+    /// </summary>
+    // --------------------------------------------------------------------
+    private void CallInitialisedOnAll(Instance Obj)
+    {
+        foreach (Instance Child in Obj.Children)
+            CallInitialisedOnAll(Child);
+
+        Obj.Initialised();
+    }
 }
 
 
