@@ -713,7 +713,7 @@ public class SoilN : Instance
 
     [Output]
     [Units("oC")]
-    [Description("Surface temperature")]
+    [Description("Soil temperature")]
     double[] st;
 
     [Output]
@@ -1128,6 +1128,7 @@ public class SoilN : Instance
     [Units("oC")]
     private double[] ave_soil_temp
     {
+        get { return null; }
         set
         {
             st = value;
