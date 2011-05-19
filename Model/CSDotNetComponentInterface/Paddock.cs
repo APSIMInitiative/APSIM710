@@ -101,83 +101,23 @@ public class Paddock : Component
     {
         HostComponent.Publish(EventName, Data);
     }
-    /// <summary>
-    /// Return the SoilWaterType representing the soilwat component in the paddock
-    /// </summary>
-    public SoilWat SoilWater
-    {
-        get
-        {
-            Component SoilToReturn;
-            SoilToReturn = Component("soilwat");
-            if (SoilToReturn == null)
-                SoilToReturn = Component("swim2");
-
-            if (SoilToReturn != null)
-                return new SoilWat(SoilToReturn);
-            return null;
-        }
-    }
-    public SoilNitrogenType SoilNitrogen
-    {
-        get
-        {
-            Component SoilToReturn;
-            SoilToReturn = Component("soiln");
-            if (SoilToReturn != null)
-                return new SoilNitrogenType(SoilToReturn);
-            return null;
-        }
-    }
     // --------------------------------------------------------------------
     /// <summary>
     /// Return a list of all child crops to caller.
     /// </summary>
     // --------------------------------------------------------------------
-    public List<CropType> Crops
+    public List<Component> Crops
     {
         get
         {
-            List<CropType> Children = new List<CropType>();
+            List<Component> Children = new List<Component>();
             foreach (KeyValuePair<uint, String> pair in HostComponent.SiblingComponents)
             {
                 Component ChildComponent = new Component(pair.Value, HostComponent);
-                if (ChildComponent.IsCrop() || ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2")) 
-                    Children.Add(new CropType(ChildComponent));
+                if (ChildComponent.IsCrop() || ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2"))
+                    Children.Add(ChildComponent);
             }
             return Children; 
-        }
-    }
-    // --------------------------------------------------------------------
-    /// <summary>
-    /// 
-    /// </summary>
-    // --------------------------------------------------------------------
-    public FertiliserType Fertiliser
-    {
-        get
-        {
-            Component C = Component("fertiliser");
-            if (C != null)
-                return new FertiliserType(C);
-            else
-                return null;
-        }
-    }
-    // --------------------------------------------------------------------
-    /// <summary>
-    /// 
-    /// </summary>
-    // --------------------------------------------------------------------
-    public IrrigationType Irrigation
-    {
-        get
-        {
-            Component C = Component("irrigation");
-            if (C != null)
-                return new IrrigationType(C);
-            else
-                return null;
         }
     }
 }

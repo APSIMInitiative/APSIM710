@@ -17,6 +17,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -29,7 +30,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -57,14 +57,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CSGeneral.dll</HintPath>
-    </Reference>
-    <Reference Include="CMPServices, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\CMPServices.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -74,26 +68,39 @@
     <Compile Include="ApsimAttributes.cs" />
     <Compile Include="ApsimComponent.cs" />
     <Compile Include="Component.cs" />
-    <Compile Include="CropType.cs" />
     <Compile Include="ApsimHost.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="FactoryEvent.cs" />
     <Compile Include="FactoryEventHandler.cs" />
     <Compile Include="FactoryProperty.cs" />
-    <Compile Include="FertiliserType.cs" />
     <Compile Include="GenericType.cs" />
     <Compile Include="Instance.cs" />
-    <Compile Include="IrrigationType.cs" />
     <Compile Include="LinkField.cs" />
     <Compile Include="NamedItem.cs" />
     <Compile Include="Paddock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RuntimeEventHandler.cs" />
-    <Compile Include="SoilNitrogenType.cs" />
-    <Compile Include="SoilWater.cs" />
-    <Compile Include="VariableType.cs" />
+    <Compile Include="SoilWater.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Variable.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CMPServices\CMPServices.csproj">
+      <Project>{4A1A4A3C-F937-488D-BE0B-F2435678FCEF}</Project>
+      <Name>CMPServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSGeneral\CSGeneral.csproj">
+      <Project>{D2EDEF3F-995D-4E9D-9E7C-608D46259E9C}</Project>
+      <Name>CSGeneral</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -102,7 +109,7 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
       <Visible>False</Visible>
