@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{283E20E0-CDCF-4132-8AAA-41888C260DC8}</ProjectGuid>
+    <RootNamespace>ComponentInterface</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTINTERFACE_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>StackFrameRuntimeCheck</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\hol353\BuildLibraries\boost_1_44\bin.v2\libs\thread\build\msvc-9.0\debug\link-static\threading-multi;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>ComponentInterface.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>h:\BuildLibraries\boost_1_4_42-msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;COMPONENTINTERFACE_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="ApsimVariant.h" />
+    <ClInclude Include="ArraySpecifier.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="DataTypes.h" />
+    <ClInclude Include="FunctionReturningValue.h" />
+    <ClInclude Include="FunctionTakingValue.h" />
+    <ClInclude Include="Interfaces.h" />
+    <ClInclude Include="message.h" />
+    <ClInclude Include="MessageData.h" />
+    <ClInclude Include="MessageDataExt.h" />
+    <ClInclude Include="Messages.h" />
+    <ClInclude Include="MessageTypes.h" />
+    <ClInclude Include="ProtocolVector.h" />
+    <ClInclude Include="RegistrationType.h" />
+    <ClInclude Include="ScienceAPI.h" />
+    <ClInclude Include="Type.h" />
+    <ClInclude Include="TypeConverter.h" />
+    <ClInclude Include="Variable.h" />
+    <ClInclude Include="VariableRef.h" />
+    <ClInclude Include="Variant.h" />
+    <ClInclude Include="Variants.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ApsimVariant.cpp" />
+    <ClCompile Include="ArraySpecifier.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="ComponentInterface.cpp" />
+    <ClCompile Include="DataTypes.cpp" />
+    <ClCompile Include="message.cpp" />
+    <ClCompile Include="MessageData.cpp" />
+    <ClCompile Include="Messages.cpp" />
+    <ClCompile Include="MessageTypes.cpp" />
+    <ClCompile Include="ProtocolVector.cpp" />
+    <ClCompile Include="RegistrationType.cpp" />
+    <ClCompile Include="ScienceAPI.cpp" />
+    <ClCompile Include="Type.cpp" />
+    <ClCompile Include="TypeConverter.cpp" />
+    <ClCompile Include="Variable.cpp" />
+    <ClCompile Include="VariableRef.cpp" />
+    <ClCompile Include="Variant.cpp" />
+    <ClCompile Include="Variants.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ComponentInterface.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\BuildLibraries\boost_1_44\lib\libboost_thread-vc100-mt-gd-1_44.lib">
+      <FileType>Document</FileType>
+    </Library>
+    <Library Include="..\ApsimShared.lib" />
+    <Library Include="..\General.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

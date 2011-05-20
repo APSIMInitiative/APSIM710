@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2C9FB9B3-CB34-4B19-BBC0-455DC0D2BC7D}</ProjectGuid>
+    <RootNamespace>Plant</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLANT_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>..\..\..\BuildLibraries\boost_1_44\bin.v2\libs\thread\build\msvc-9.0\debug\link-static\threading-multi;..\..\..\BuildLibraries\boost_1_44\bin.v2\libs\date_time\build\msvc-9.0\debug\link-static\threading-multi;..\..\..\BuildLibraries\boost_1_44\bin.v2\libs\regex\build\msvc-9.0\debug\link-static\threading-multi;..\..\..\BuildLibraries\boost_1_44\bin.v2\libs\system\build\msvc-9.0\debug\link-static\threading-multi;..\..\..\BuildLibraries\boost_1_44\bin.v2\libs\filesystem\build\msvc-9.0\debug\link-static\threading-multi;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>Plant.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <MapFileName>
+      </MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLANT_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\data\Apsim\BuildLibraries\boost_1_44;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="arbitrators\Arbitrator.h" />
+    <ClInclude Include="Biomass.h" />
+    <ClInclude Include="Co2Modifier.h" />
+    <ClInclude Include="leaf\CohortingLeaf.h" />
+    <ClInclude Include="CompositeDelta.h" />
+    <ClInclude Include="CompositePart.h" />
+    <ClInclude Include="phenology\CompositePhase.h" />
+    <ClInclude Include="CompositePool.h" />
+    <ClInclude Include="leaf\Culm.h" />
+    <ClInclude Include="phenology\CWEmergentPhase.h" />
+    <ClInclude Include="phenology\CWFixedPhase.h" />
+    <ClInclude Include="phenology\CWInductivePhase.h" />
+    <ClInclude Include="phenology\CWSowingPhase.h" />
+    <ClInclude Include="phenology\CWVernalPhase.h" />
+    <ClInclude Include="Delta.h" />
+    <ClInclude Include="phenology\EmergentPhase.h" />
+    <ClInclude Include="Environment.h" />
+    <ClInclude Include="utility\ExternalFunction.h" />
+    <ClInclude Include="Fixation.h" />
+    <ClInclude Include="phenology\FixedPhase.h" />
+    <ClInclude Include="reproductive\FloretPart.h" />
+    <ClInclude Include="reproductive\FruitCohort.h" />
+    <ClInclude Include="reproductive\FruitCohortFN.h" />
+    <ClInclude Include="arbitrators\GenericArbitrator.h" />
+    <ClInclude Include="arbitrators\GenericArbitratorXY.h" />
+    <ClInclude Include="leaf\GenericLeaf.h" />
+    <ClInclude Include="reproductive\GrainPart.h" />
+    <ClInclude Include="reproductive\GrainPartFN.h" />
+    <ClInclude Include="reproductive\GrainPartGN.h" />
+    <ClInclude Include="reproductive\GrainPartHI.h" />
+    <ClInclude Include="leaf\IndividualLeaf.h" />
+    <ClInclude Include="phenology\InductivePhase.h" />
+    <ClInclude Include="utility\InterpolationFunction.h" />
+    <ClInclude Include="leaf\Leaf.h" />
+    <ClInclude Include="phenology\LeafAppPhase.h" />
+    <ClInclude Include="LivePool.h" />
+    <ClInclude Include="utility\LookupFunction.h" />
+    <ClInclude Include="reproductive\MealPart.h" />
+    <ClInclude Include="root\MultiRoot.h" />
+    <ClInclude Include="root\NoRoot.h" />
+    <ClInclude Include="utility\Observers.h" />
+    <ClInclude Include="reproductive\OilPart.h" />
+    <ClInclude Include="utility\Output.h" />
+    <ClInclude Include="utility\OutputVariable.h" />
+    <ClInclude Include="Parts.h" />
+    <ClInclude Include="phenology\Phase.h" />
+    <ClInclude Include="phenology\Phenology.h" />
+    <ClInclude Include="phenology\PhotoPhase.h" />
+    <ClInclude Include="photosynthesis\PhotosynthesisModel.h" />
+    <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlantComponent.h" />
+    <ClInclude Include="reproductive\PlantFruitCohorting.h" />
+    <ClInclude Include="PlantInterface.h" />
+    <ClInclude Include="PlantLibrary.h" />
+    <ClInclude Include="PlantPart.h" />
+    <ClInclude Include="PlantSpatial.h" />
+    <ClInclude Include="PlantStress.h" />
+    <ClInclude Include="utility\PlantUtility.h" />
+    <ClInclude Include="reproductive\PodPart.h" />
+    <ClInclude Include="reproductive\PodPartFN.h" />
+    <ClInclude Include="Pool.h" />
+    <ClInclude Include="PoolInterface.h" />
+    <ClInclude Include="Population.h" />
+    <ClInclude Include="ReproductivePart.h" />
+    <ClInclude Include="root\RootBase.h" />
+    <ClInclude Include="root\RootGrowthOption1.h" />
+    <ClInclude Include="root\RootGrowthOption2.h" />
+    <ClInclude Include="root\RootPart.h" />
+    <ClInclude Include="photosynthesis\RUEModel.h" />
+    <ClInclude Include="Photosynthesis\RUEWholePlantModel.h" />
+    <ClInclude Include="SimplePart.h" />
+    <ClInclude Include="root\Soil.h" />
+    <ClInclude Include="phenology\SowingPhase.h" />
+    <ClInclude Include="StageBasedInterpolationFunction.h" />
+    <CustomBuild Include="StdPlant.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\data\Apsim\Model\apsim.exe
+</Command>
+    </CustomBuild>
+    <ClInclude Include="Stem.h" />
+    <ClInclude Include="storage\StoragePart.h" />
+    <ClInclude Include="photosynthesis\SUCROSModel.h" />
+    <ClInclude Include="ThingFactory.h" />
+    <ClInclude Include="phenology\VernalPhase.h" />
+    <ClInclude Include="phenology\WaitingPhase.h" />
+    <ClInclude Include="photosynthesis\weather.h" />
+    <ClInclude Include="arbitrators\WholePlantGenericArbitratorXY.h" />
+    <ClInclude Include="Arbitrators\WholePlantSeasonalArbitrator.h" />
+    <ClInclude Include="Arbitrators\WholePlantSeasonalPpArbitrator.h" />
+    <ClInclude Include="phenology\Zadok.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="arbitrators\Arbitrator.cpp" />
+    <ClCompile Include="Biomass.cpp" />
+    <ClCompile Include="Co2Modifier.cpp" />
+    <ClCompile Include="leaf\CohortingLeaf.cpp" />
+    <ClCompile Include="CompositeDelta.cpp" />
+    <ClCompile Include="CompositePart.cpp" />
+    <ClCompile Include="phenology\CompositePhase.cpp" />
+    <ClCompile Include="CompositePool.cpp" />
+    <ClCompile Include="leaf\Culm.cpp" />
+    <ClCompile Include="phenology\CWEmergentPhase.cpp" />
+    <ClCompile Include="phenology\CWFixedPhase.cpp" />
+    <ClCompile Include="phenology\CWInductivePhase.cpp" />
+    <ClCompile Include="phenology\CWSowingPhase.cpp" />
+    <ClCompile Include="phenology\CWVernalPhase.cpp" />
+    <ClCompile Include="utility\Data.cpp" />
+    <ClCompile Include="utility\Date.cpp" />
+    <ClCompile Include="Delta.cpp" />
+    <ClCompile Include="phenology\EmergentPhase.cpp" />
+    <ClCompile Include="..\ComponentInterface\EntryPoints.cpp" />
+    <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="utility\ExternalFunction.cpp" />
+    <ClCompile Include="Fixation.cpp" />
+    <ClCompile Include="phenology\FixedPhase.cpp" />
+    <ClCompile Include="reproductive\FloretPart.cpp" />
+    <ClCompile Include="reproductive\FruitCohort.cpp" />
+    <ClCompile Include="reproductive\FruitCohortFN.cpp" />
+    <ClCompile Include="arbitrators\GenericArbitrator.cpp" />
+    <ClCompile Include="arbitrators\GenericArbitratorXY.cpp" />
+    <ClCompile Include="leaf\GenericLeaf.cpp" />
+    <ClCompile Include="reproductive\GrainPart.cpp" />
+    <ClCompile Include="reproductive\GrainPartFN.cpp" />
+    <ClCompile Include="reproductive\GrainPartGN.cpp" />
+    <ClCompile Include="reproductive\GrainPartHI.cpp" />
+    <ClCompile Include="leaf\IndividualLeaf.cpp" />
+    <ClCompile Include="phenology\InductivePhase.cpp" />
+    <ClCompile Include="utility\InterpolationFunction.cpp" />
+    <ClCompile Include="leaf\Leaf.cpp" />
+    <ClCompile Include="phenology\LeafAppPhase.cpp" />
+    <ClCompile Include="utility\LookupFunction.cpp" />
+    <ClCompile Include="reproductive\MealPart.cpp" />
+    <ClCompile Include="root\MultiRoot.cpp" />
+    <ClCompile Include="root\NoRoot.cpp" />
+    <ClCompile Include="utility\Observers.cpp" />
+    <ClCompile Include="reproductive\OilPart.cpp" />
+    <ClCompile Include="utility\Output.cpp" />
+    <ClCompile Include="utility\OutputVariable.cpp" />
+    <ClCompile Include="Parts.cpp" />
+    <ClCompile Include="phenology\Phase.cpp" />
+    <ClCompile Include="phenology\Phenology.cpp" />
+    <ClCompile Include="phenology\PhotoPhase.cpp" />
+    <ClCompile Include="photosynthesis\PhotosynthesisModel.cpp" />
+    <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="PlantBiomass.cpp" />
+    <ClCompile Include="PlantCanopy.cpp" />
+    <ClCompile Include="PlantComponent.cpp" />
+    <ClCompile Include="reproductive\PlantFruitCohorting.cpp" />
+    <ClCompile Include="PlantLibrary.cpp" />
+    <ClCompile Include="PlantNitrogen.cpp" />
+    <ClCompile Include="PlantP.cpp" />
+    <ClCompile Include="PlantPart.cpp" />
+    <ClCompile Include="PlantSpatial.cpp" />
+    <ClCompile Include="PlantStress.cpp" />
+    <ClCompile Include="utility\PlantUtility.cpp" />
+    <ClCompile Include="reproductive\PodPart.cpp" />
+    <ClCompile Include="reproductive\PodPartFN.cpp" />
+    <ClCompile Include="Pool.cpp" />
+    <ClCompile Include="Population.cpp" />
+    <ClCompile Include="ReproductivePart.cpp" />
+    <ClCompile Include="root\RootBase.cpp" />
+    <ClCompile Include="root\RootGrowthOption1.cpp" />
+    <ClCompile Include="root\RootGrowthOption2.cpp" />
+    <ClCompile Include="root\RootPart.cpp" />
+    <ClCompile Include="photosynthesis\RUEModel.cpp" />
+    <ClCompile Include="Photosynthesis\RUEWholePlantModel.cpp" />
+    <ClCompile Include="utility\Science.cpp" />
+    <ClCompile Include="SimplePart.cpp" />
+    <ClCompile Include="root\Soil.cpp" />
+    <ClCompile Include="phenology\SowingPhase.cpp" />
+    <ClCompile Include="StageBasedInterpolationFunction.cpp" />
+    <ClCompile Include="Stem.cpp" />
+    <ClCompile Include="storage\StoragePart.cpp" />
+    <ClCompile Include="photosynthesis\SUCROSModel.cpp" />
+    <ClCompile Include="ThingFactory.cpp" />
+    <ClCompile Include="phenology\VernalPhase.cpp" />
+    <ClCompile Include="phenology\WaitingPhase.cpp" />
+    <ClCompile Include="photosynthesis\Weather.cpp" />
+    <ClCompile Include="arbitrators\WholePlantGenericArbitratorXY.cpp" />
+    <ClCompile Include="Arbitrators\WholePlantSeasonalArbitrator.cpp" />
+    <ClCompile Include="Arbitrators\WholePlantSeasonalPpArbitrator.cpp" />
+    <ClCompile Include="phenology\Zadok.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Plant.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\ApsimShared.lib" />
+    <Library Include="..\ComponentInterface.lib" />
+    <Library Include="..\General.lib" />
+    <Library Include="..\Protocol.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

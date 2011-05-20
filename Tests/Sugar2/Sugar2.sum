@@ -11,9 +11,9 @@
 
 Version                = 7.4
 Title                  = Sugar2
+   Component          "Diagnostic log file" = %apsim%\Model\Log.dll
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
-   Component                     "Micromet" = %apsim%\Model\Micromet.dll
 Paddock:
    Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
@@ -21,6 +21,7 @@ Paddock:
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component                "Empty manager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
@@ -43,13 +44,6 @@ Paddock:
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: Ingham.met
-
-------- Micromet Initialisation -----------------------------------------------
-     Initialising
-     
-        - Reading Constants
-     
-        - Reading Parameters
 
 ------- Outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -115,9 +109,9 @@ Paddock:
      sla=0
      
      SECTION:- start_of_day
-     calcgreenbiomass=leaflivewt2+stemlivewt
+     calcgreenbiomass=leaflivewt+stemlivewt
      if sugar2.leaflai>0 then
-        sla=sugar2.leaflai/sugar2.leaflivewt2*1000000
+        sla=sugar2.leaflai/sugar2.leaflivewt*1000000
      else
         sla=0
      endif
@@ -126,6 +120,13 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : sla = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -268,13 +269,18 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
       Sending sow message to sugar2
-23 July 1992(Day of year=205): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot set value of property: Frgr. The property must have either a [Param] or [Input] attribute.
-     Component name: sugar2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+     Manager creating a new local real variable : calcgreenbiomass = 0.00000
+23/07/1992 - Sprouted
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23/08/1992 - Emerged
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+26/12/1992 - BeginCane
+                            LAI = 4.90 (m^2/m^2)
+           Above Ground Biomass = 2284.34 (g/m^2)
+21 October 1993(Day of year=294), operations: 
+      Sending harvest message to sugar2
+      Sending end_crop message to sugar2
+21 October 1993(Day of year=294), clock: 
+     Simulation is terminating due to end criteria being met.

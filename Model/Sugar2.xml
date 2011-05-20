@@ -44,7 +44,6 @@
       <variable name="LeafDMAllocation" description="" read="T" write="T" kind="double" array="" units="g/m^2" />
       <variable name="LeafWaterDemand" description="" read="T" write="F" kind="double" array="" units="mm" />
       <variable name="LeafTranspiration" description="" read="T" write="F" kind="double" array="" units="mm" />
-      <variable name="LeafFrgr" description="" read="T" write="T" kind="double" array="" units="" />
       <variable name="LeafFw" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafLAI" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
       <variable name="LeafLAIDead" description="" read="T" write="F" kind="double" array="" units="m^2/m^2" />
@@ -53,8 +52,8 @@
       <variable name="Cover_dead" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafExtinctionCoeffValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafHeightValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafPhotosynthesisFt" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="LeafPhotosynthesisFvpd" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFtValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="LeafPhotosynthesisFvpdValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
       <variable name="LeafThermalTimeValue" description="" read="T" write="F" kind="double" array="" units="0-1" />
       <variable name="LeafNodeAppearanceRateFunctionValue" description="" read="T" write="F" kind="double" array="" units="" />
@@ -90,7 +89,7 @@
       <variable name="FloretDeadNonStructuralWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretDeadWt" description="" read="T" write="F" kind="double" array="" units="g/m^2" />
       <variable name="FloretPartitionFractionValue" description="" read="T" write="F" kind="double" array="" units="" />
-      <variable name="StageCodeValue" description="" read="T" write="F" kind="double" array="" units="" />
+      <variable name="StageValueValue" description="" read="T" write="F" kind="double" array="" units="" />
     </variables>
     <events>
       <event name="NewCrop" description="" />
@@ -201,9 +200,23 @@
           </TemperatureFunction>
         </GenericPhase>
       </Phenology>
+	        <CompositeBiomass name="AboveGround">
+          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>      
+      <CompositeBiomass name="BelowGround">
+          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>        
+      <CompositeBiomass name="Total">
+          <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>  
+      <CompositeBiomass name="TotalLive">
+          <Property>Organs[].Live</Property>
+      </CompositeBiomass>       
+      <CompositeBiomass name="TotalDead">
+          <Property>Organs[].Dead</Property>
+      </CompositeBiomass>  
       <Summary />
       <Leaf>
-        <Frgr type="text" description="Frgr">1</Frgr>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.01</KDead>
@@ -220,8 +233,12 @@
             <XY>0 0</XY>
           </XYPairs>
         </GenericFunction>
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
+        <CompositeBiomass name="Live">
+          <Property>Leaf.Leaves[].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Leaf.Leaves[].Dead</Property>
+        </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -231,7 +248,7 @@
           </XYPairs>
         </GenericFunction>
         <GenericFunction name="Height">
-          <XProperty>StageCode.Value</XProperty>
+          <XProperty>StageValue.Value</XProperty>
           <XYPairs>
             <XY>3 100</XY>
             <XY>5 6000</XY>
@@ -264,10 +281,30 @@
 Increased RUE to account for Root Biomass production.
 Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
 </Memo>
+          <GenericFunction name="FN">
+            <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <GenericFunction name="FW">
+            <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <ExpressionFunction name="Fco2">
+            <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
+            <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
+          </ExpressionFunction>
         </RUEModel>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes">0.0     0.0           0.66      0.16           0</Codes>
+          <Values type="text" description="Values">0.0     0.0           0.66      0.16           0</Values>
         </StageBasedInterpolation>
         <TemperatureFunction name="ThermalTime" shortcut="/sugar2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/sugar2/Model/Plant/Phenology/ThermalTime/XYPairs" />
@@ -472,11 +509,11 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
         </GenericFunction>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes">0.025   0.025      0.015       0.015        0.005</Codes>
+          <Values type="text" description="Values">0.025   0.025      0.015       0.015        0.005</Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MinimumNConc">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes"> 0.015   0.015    0.005      0.005          0.004</Codes>
+          <Values type="text" description="Values"> 0.015   0.015    0.005      0.005          0.004</Values>
         </StageBasedInterpolation>
         <Constant name="StructuralNConc">
           <Value>0.003</Value>
@@ -490,7 +527,7 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
         <Biomass name="Dead" />
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes"> 0.0     0.0          0.0      0.0         0.0 </Codes>
+          <Values type="text" description="Values"> 0.0     0.0          0.0      0.0         0.0 </Values>
         </StageBasedInterpolation>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">
@@ -510,15 +547,15 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
         </PhaseLookup>
         <StageBasedInterpolation name="StructuralNConc">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes">0.0090  0.0090  0.0090  0.0060  0.0035</Codes>
+          <Values type="text" description="Values">0.0090  0.0090  0.0090  0.0060  0.0035</Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes">   0.050     0.050      0.020            0.015    0.010 </Codes>
+          <Values type="text" description="Values">   0.050     0.050      0.020            0.015    0.010 </Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="PartitionFractionOLD">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-          <Codes type="text" description="Codes"> 0.0     0.0          0.296      0.64           0.0 </Codes>
+          <Values type="text" description="Values"> 0.0     0.0          0.296      0.64           0.0 </Values>
         </StageBasedInterpolation>
       </GenericOrgan>
       <Root>
@@ -599,9 +636,9 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
           </PhaseLookupValue>
         </PhaseLookup>
       </Root>
-      <StageBasedInterpolation name="StageCode">
+      <StageBasedInterpolation name="StageValue">
         <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
-        <Codes type="text" description="Codes">1         2              3            4                 5</Codes>
+        <Values type="text" description="Values">1         2              3            4                 5</Values>
       </StageBasedInterpolation>
     </Plant>
   </Model>
