@@ -9,10 +9,6 @@ public class CropType
     {
         Comp = c;
     }
-    Variable Variable(String VariableName)
-    {
-        return Comp.Variable(VariableName);
-    }
 
     void Publish(String EventName, ApsimType Data)
     {

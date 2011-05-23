@@ -846,20 +846,32 @@ public class ApsimComponent : Instance
                     Desc.Append(St);
             }
 
+            List<String> EventsAlreadyProcessed = new List<String>();
+
             // get description for all events.
             for (int i = 0; i != Fact.Events.Count; i++)
             {
-                String St = Fact.Events[i].GetDescription();
-                if (St != "")
-                    Desc.Append(St);
+                if (!EventsAlreadyProcessed.Contains(Fact.Events[i].EventName))
+                {
+                    String St = Fact.Events[i].GetDescription();
+                    if (St != "")
+                        Desc.Append(St);
+                    EventsAlreadyProcessed.Add(Fact.Events[i].EventName);
+                }
             }
+
+            // EventsAlreadyProcessed.Clear();
 
             // get description for all event handlers.
             for (int i = 0; i != Fact.EventHandlers.Count; i++)
             {
-                String St = Fact.EventHandlers[i].GetDescription();
-                if (St != "")
-                    Desc.Append(St);
+                if (!EventsAlreadyProcessed.Contains(Fact.EventHandlers[i].EventName))
+                {
+                    String St = Fact.EventHandlers[i].GetDescription();
+                    if (St != "")
+                        Desc.Append(St);
+                    EventsAlreadyProcessed.Add(Fact.EventHandlers[i].EventName);
+                }
             }
 
         }

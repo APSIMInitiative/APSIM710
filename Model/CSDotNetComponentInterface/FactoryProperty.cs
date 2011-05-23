@@ -273,25 +273,6 @@ public class FactoryProperty : Instance, ApsimType
     {
         Data.pack(out messageData);
     }
-    //-------------------------------------------------------------------------
-    /// <summary>
-    /// Pack this variable into the type specified by the destination DDML.
-    /// </summary>
-    /// <param name="messageData">The data for the variable.</param>
-    /// <param name="sDDML">The DDML type of the destination variable.</param>
-    //-------------------------------------------------------------------------
-    public virtual void pack(out byte[] messageData, String sDDML)
-    {
-        //fill a src object with the property value
-        byte[] dataBuf;
-        Data.pack(out dataBuf);
-        DDMLValue.setData(dataBuf, dataBuf.Length);
-        //copy the src value into a destination compatible type
-        TDDMLValue dest = new TDDMLValue(sDDML, "");
-        dest.setValue(DDMLValue);
-        messageData = new byte[dest.sizeBytes()];
-        dest.getData(ref messageData);
-    }
 
     //-------------------------------------------------------------------------
     /// <summary>
@@ -514,6 +495,7 @@ public class FactoryProperty : Instance, ApsimType
                     XmlHelper.SetAttribute(Doc.DocumentElement, "unit", Units);
                 if (Description != "")
                     XmlHelper.SetAttribute(Doc.DocumentElement, "description", Description);
+                Doc.DocumentElement.RemoveAttribute("name"); // Description XML doesn't include a "name" attribute, and the APSIM infrastructure gets confused if one is present
                 Desc += "      " + Doc.DocumentElement.OuterXml + "\r\n";
             }
             Desc += "   </property>\r\n";
@@ -529,6 +511,7 @@ public class FactoryProperty : Instance, ApsimType
                     XmlHelper.SetAttribute(Doc.DocumentElement, "unit", Units);
                 if (Description != "")
                     XmlHelper.SetAttribute(Doc.DocumentElement, "description", Description);
+                Doc.DocumentElement.RemoveAttribute("name"); // Description XML doesn't include a "name" attribute, and the APSIM infrastructure gets confused if one is present
                 Desc += "      " + Doc.DocumentElement.OuterXml + "\r\n";
             }
             Desc += "   </driver>\r\n";

@@ -39,14 +39,23 @@ public abstract class EvntHandler : ApsimType
         // ----------------------------------------------
         // Creates a field wrapper for the given property.
         // ----------------------------------------------
-        StringBuilder Desc = new StringBuilder("   <event name=\"" + EventName + "\" kind=\"subscribed\">\r\n");
+        StringBuilder Desc = new StringBuilder("   <event name=\"" + EventName + "\"");
         String ddml = DDML();
+        String typeName = "";
+        String ddmlData = "";
         if (ddml != "")
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(ddml);
-            Desc.Append("      " + doc.DocumentElement.InnerXml + "\r\n");
+            XmlNode tnNode = doc.DocumentElement.GetAttributeNode("typename");
+            if (tnNode != null)
+                typeName = tnNode.Value;
+            ddmlData = doc.DocumentElement.InnerXml;
         }
+        if (typeName != "")
+            Desc.Append(" typename=\"" + typeName + "\"");
+        Desc.Append(" kind=\"subscribed\">\r\n");
+        Desc.Append("      " + ddmlData + "\r\n");
         Desc.Append("   </event>\r\n");
         return Desc.ToString();
     }

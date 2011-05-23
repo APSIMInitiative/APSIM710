@@ -26,11 +26,11 @@ public class Variable : NamedItem
     /// 
     /// </summary>
     /// <returns></returns>
-    public int ToBoolean()
+    public bool ToBoolean()
     {
         WrapBuiltInVariable<bool> Data = new WrapBuiltInVariable<bool>();
         Component.Get(ComponentName + "." + Name, Data, false);
-        return Data.Value == true ? 1:0;
+        return Data.Value;
     }
     public int ToInt32()
     {
