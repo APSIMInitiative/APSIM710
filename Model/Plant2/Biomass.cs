@@ -82,7 +82,7 @@ public class Biomass : Instance
         }
     }
     [Output]
-    [Units("g/m^2")]
+    [Units("g/g")]
     public double NConc
     {
         get
