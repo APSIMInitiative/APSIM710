@@ -18,7 +18,7 @@ class MinimumFunction : Function
          double ReturnValue = 999999999;
          foreach (string PropertyName in Property)
             {
-                double Val = Convert.ToDouble(ExpressionFunction.Evaluate(PropertyName));
+                double Val = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, PropertyName));
             ReturnValue = Math.Min(ReturnValue, Val);
             }
          return ReturnValue;

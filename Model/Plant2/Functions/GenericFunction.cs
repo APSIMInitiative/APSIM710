@@ -25,7 +25,7 @@ public class GenericFunction : Function
          string ArraySpec = StringManip.SplitOffBracketedValue(ref PropertyName, '(', ')');
          double XValue;
          if (ArraySpec == "")
-             XValue = Convert.ToDouble(ExpressionFunction.Evaluate(XProperty));
+             XValue = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, XProperty));
             
          else
             {
@@ -35,25 +35,25 @@ public class GenericFunction : Function
             int Index;
             if (ArraySpecBits[0].ToLower() == "depth")
                {
-                   double Depth = Convert.ToDouble(ExpressionFunction.Evaluate(ArraySpecBits[1]));
+                   double Depth = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, ArraySpecBits[1]));
 
                // Assume dlayer comes from the same object as the depth variable.
                int PosLastPeriod = ArraySpecBits[1].LastIndexOf('.');
                if (PosLastPeriod == -1)
                    throw new Exception("Invalid depth specifier in generic funciton. Specifier = " + XProperty);
                string ObjectName = ArraySpecBits[1].Substring(0, PosLastPeriod);
-               double[] dlayer = (double[])ExpressionFunction.Evaluate(ObjectName + ".dlayer");
+               double[] dlayer = (double[])ExpressionFunction.Evaluate(Plant, ObjectName + ".dlayer");
                Index = LayerIndex(Depth, dlayer);
                }
             else if (ArraySpecBits[0].ToLower() == "index")
                {
                if (!Int32.TryParse(ArraySpecBits[1], out Index))
-                   Index = (int)Convert.ToDouble(ExpressionFunction.Evaluate(ArraySpecBits[1]));
+                   Index = (int)Convert.ToDouble(ExpressionFunction.Evaluate(Plant, ArraySpecBits[1]));
                }
             else
                throw new Exception("Invalid depth specifier in generic funciton. Specifier = " + XProperty);
 
-            double[] Values = (double[])ExpressionFunction.Evaluate(PropertyName);
+            double[] Values = (double[])ExpressionFunction.Evaluate(Plant, PropertyName);
             if (Values.Length == 0 || Index >= Values.Length)
                throw new Exception("Index is outside the bounds of array " + PropertyName + " in generic function. Specifier = " + XProperty);
             XValue = Values[Index];

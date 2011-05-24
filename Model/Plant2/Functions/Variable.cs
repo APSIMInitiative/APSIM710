@@ -20,7 +20,7 @@ public class Variable : Function
     {
         get
         {
-            return Convert.ToDouble(ExpressionFunction.Evaluate(VariableName.Trim()));
+            return Convert.ToDouble(ExpressionFunction.Evaluate(Plant, VariableName.Trim()));
         }
     }
 

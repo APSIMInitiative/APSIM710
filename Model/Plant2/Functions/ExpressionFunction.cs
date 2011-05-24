@@ -92,8 +92,9 @@ public class ExpressionFunction : Function
     ///      Leaf.Leaves[1].Live.Wt                  - returns the live weight of the 2nd element of the leaves array.
     ///      sum(Leaf.Leaves[AboveGround].Live.Wt)   - returns the live weight of the 2nd element of the leaves array.
     /// </summary>
-    static public object Evaluate(string Expression)
+    public static object Evaluate(Plant P, string Expression)
     {
+        Plant = P;
         ExpressionEvaluator fn = new ExpressionEvaluator();
         Parse(fn, Expression);
         FillVariableNames(fn);
@@ -113,7 +114,7 @@ public class ExpressionFunction : Function
     ///      Leaf.Leaves[1].Live.Wt             - returns the live weight of the 2nd element of the leaves array.
     ///      Organs[AboveGround].Live.Wt        - returns all the live weights for all above ground organs.
     /// </summary>
-    static public object GetPropertyValueFromPlant(object RelativeTo, string PropertyName)
+    private static object GetPropertyValueFromPlant(object RelativeTo, string PropertyName)
     {
         while (PropertyName.Contains("."))
         {

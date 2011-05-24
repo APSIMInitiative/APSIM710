@@ -78,7 +78,7 @@ class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             //Only allow tubers to experess demand if they are growing and if the canopy still has some live leaf.
             double LAItest = 1.0;
-            double LAIpresent = Convert.ToDouble(ExpressionFunction.Evaluate("Leaf.LAI".Trim()));
+            double LAIpresent = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "Leaf.LAI".Trim()));
             if (LAIpresent <= 0.02)
                 LAItest = 0.0;
             return NDeficit * NitrogenDemandPhase.Value * LAItest;

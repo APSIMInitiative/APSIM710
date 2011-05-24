@@ -19,7 +19,7 @@ public class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".NonStructuralN)"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".NonStructuralN)"));
          return Value;
          }
 
@@ -34,7 +34,7 @@ public class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" +PropertyName + ".StructuralN)"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".StructuralN)"));
          return Value;
          }
       set { throw new Exception("Cannot set StructuralN in CompositeBiomass"); }
@@ -47,7 +47,7 @@ public class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".NonStructuralWt)"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".NonStructuralWt)"));
          return Value;
          }
       set { throw new Exception("Cannot set NonStructuralWt in CompositeBiomass"); }
@@ -60,7 +60,7 @@ public class CompositeBiomass : Biomass
          {
          double Value = 0;
          foreach (string PropertyName in Property)
-             Value += Convert.ToDouble(ExpressionFunction.Evaluate("sum(" + PropertyName + ".StructuralWt)"));
+             Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".StructuralWt)"));
          return Value;
          }
       set { throw new Exception("Cannot set StructuralWt in CompositeBiomass"); }
