@@ -180,8 +180,10 @@ namespace Graph
             if (MathUtility.ValuesInArray(x))
                {
                string Title = ColumnName;
-               string CropName = ColumnName.Substring(0, ColumnName.IndexOf(' '));
-               if (Array.IndexOf(Soil.Crops(_SoilNode), CropName) != -1)
+                string CropName = "";
+                if (ColumnName.IndexOf(' ') != -1)
+                 CropName = ColumnName.Substring(0, ColumnName.IndexOf(' '));
+               if (CropName != "" && Array.IndexOf(Soil.Crops(_SoilNode), CropName) != -1)
                   {
                   Title = CropName + " LL";
                   Soil.Variable PAWC = Soil.GetOptional(SoilNode, CropName + " PAWC");
