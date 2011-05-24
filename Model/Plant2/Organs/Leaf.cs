@@ -7,38 +7,45 @@ using CSGeneral;
 public class Leaf : BaseOrgan, AboveGround
 {
     #region Class Data Members
-    private double _WaterAllocation;
-    private double PEP = 0;
-    private double EP = 0;
-    private List<LeafCohort> Leaves = new List<LeafCohort>();
-    private double _FinalNodeNo = 0;
+    protected double _WaterAllocation;
+    protected double PEP = 0;
+    protected double EP = 0;
+    protected List<LeafCohort> Leaves = new List<LeafCohort>();
+    protected double _FinalNodeNo = 0;
 
     [Link]
-    Plant Plant = null;
+    protected Plant Plant = null;
 
     [Link]
-    Phenology Phenology = null;
+    protected Phenology Phenology = null;
 
     [Link]
-    RUEModel Photosynthesis = null;
+    protected RUEModel Photosynthesis = null;
 
     [Link]
-    TemperatureFunction ThermalTime = null;
+    protected TemperatureFunction ThermalTime = null;
 
     [Input]
-    private int Day = 0;
+    protected int Day = 0;
 
     [Input]
-    private int Year = 0;
+    protected int Year = 0;
 
     [Input]
-    private double Radn = 0;
+    protected double Radn = 0;
 
     [Output]
     public double NodeNo = 0;
 
+    [Output]
+    [Units("/stem")]
+    public double LeafNo
+    {
+        get { return TotalNo / PrimaryBudNo; }
+    }
+
     [Output("Height")]
-    private double Height = 0;
+    protected double Height = 0;
 
     [Event]
     public event NewCanopyDelegate New_Canopy;
@@ -47,40 +54,40 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     [Description("Max cover")]
     [Units("max units")]
-    public double MaxCover;
+    protected double MaxCover;
 
     [Param]
     [Output]
     [Description("Primary Bud")]
-    public double PrimaryBudNo = 1;
+    protected double PrimaryBudNo = 1;
 
     [Param]
     [Description("Extinction Coefficient (Dead)")]
-    private double KDead = 0;
+    protected double KDead = 0;
 
     [Param]
     [Description("Maximum Final Leaf Number ")]
-    private double MaxNodeNo = 0;
+    protected double MaxNodeNo = 0;
 
     [Param]
     [Description("Max Leaf Number")]
-    string InitialiseStage = "";
+    protected string InitialiseStage = "";
 
     [Param]
     [Description("Initial number of leaf nodes")]
-    double[] InitialAreas = null;
+    protected double[] InitialAreas = null;
 
     [Param]
     [Description("Initial number of leaf nodes")]
-    double[] InitialAges = null;
+    protected double[] InitialAges = null;
 
     [Param]
     [Description("Initial number of leaf primordia")]
-    double InitialLeafPrimordia = 0;
+    protected double InitialLeafPrimordia = 0;
 
     [Param]
     [Description("Final Node Number")]
-    double FinalNodeNoEstimate = 0;
+    protected double FinalNodeNoEstimate = 0;
     #endregion
 
     #region Outputs
@@ -91,10 +98,10 @@ public class Leaf : BaseOrgan, AboveGround
     public double RemainingNodeNo { get { return _FinalNodeNo - NodeNo; } }
 
     [Output]
-    double PotentialGrowth { get { return DMDemand; } }
+    public double PotentialGrowth { get { return DMDemand; } }
 
     [Output]
-    double[] Size
+    public double[] Size
     {
         get
         {
@@ -115,7 +122,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    double[] Age
+    public double[] Age
     {
         get
         {
@@ -136,7 +143,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    double[] MaxSize
+    public double[] MaxSize
     {
         get
         {
@@ -157,7 +164,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    double[] MaxLeafArea
+    public double[] MaxLeafArea
     {
         get
         {
@@ -179,7 +186,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("/m2")]
-    private double BranchNo
+    public double BranchNo
     {
         get
         {
@@ -194,7 +201,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("/plant")]
-    private double TotalNo
+    public double TotalNo
     {
         get
         {
@@ -211,7 +218,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("/plant")]
-    private double GreenNo
+    public double GreenNo
     {
         get
         {
@@ -227,7 +234,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    private double ExpandingNodeNo
+    public double ExpandingNodeNo
     {
         get
         {
@@ -243,7 +250,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("/plant")]
-    private double GreenNodeNo
+    public double GreenNodeNo
     {
         get
         {
@@ -258,7 +265,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    private double SenescingNodeNo
+    public double SenescingNodeNo
     {
         get
         {
@@ -273,7 +280,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    private double SLAcheck
+    public double SLAcheck
     {
         get
         {
@@ -286,7 +293,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("mm^2/g")]
-    private double SpecificArea
+    public double SpecificArea
     {
         get
         {
@@ -298,7 +305,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
 
     [Output]
-    public double CohortNo
+    public virtual double CohortNo
     {
         get { return Leaves.Count; }
     }
@@ -369,7 +376,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("m^2/m^2")]
-    public double LAI
+    public virtual double LAI
     {
         get
         {
@@ -382,7 +389,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     [Output]
     [Units("m^2/m^2")]
-    public double LAIDead
+    public virtual double LAIDead
     {
         get
         {
@@ -393,7 +400,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
 
-    [Output("Cover_green")]
+    [Output("Cover_green")] 
     public double CoverGreen
     {
         get
@@ -435,7 +442,6 @@ public class Leaf : BaseOrgan, AboveGround
         if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
             _FinalNodeNo = InitialLeafPrimordia;
 
-        //if ((Leaves.Count == 0) && (NodeAppearanceRate.Value>0 ))
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
@@ -459,8 +465,6 @@ public class Leaf : BaseOrgan, AboveGround
         if (NodeNo > Leaves.Count + 1)
         {
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
-            //Function MaxArea = (Function)Children["MaxArea"];
-            //Function MaxArea = Children["MaxArea"] as Function;
 
             Function BranchingRate = (Function)Children["BranchingRate"];
             Population Population = Plant.Children["Population"] as Population;
@@ -477,8 +481,9 @@ public class Leaf : BaseOrgan, AboveGround
                                    Children["LagDuration"] as Function,
                                    Children["SenescenceDuration"] as Function,
                                    Children["SpecificLeafArea"] as Function,
-                                   0.0, Children["MaximumNConc"] as Function,
-                                      Children["MinimumNConc"] as Function,
+                                   0.0,
+                                   Children["MaximumNConc"] as Function,
+                                   Children["MinimumNConc"] as Function,
                                    Children["StructuralNConc"] as Function,
                                    Children["InitialNConc"] as Function));
         }
@@ -488,8 +493,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
 
     }
-
-    private void InitialiseCohorts()
+    public virtual void InitialiseCohorts()
     {
         for (int i = 0; i < InitialAreas.Length; i++)
         {
@@ -515,7 +519,6 @@ public class Leaf : BaseOrgan, AboveGround
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
 
     }
-
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();
@@ -536,8 +539,7 @@ public class Leaf : BaseOrgan, AboveGround
         PublishNewCanopyEvent();
 
     }
-
-    private void ZeroLeaves()
+    public virtual void ZeroLeaves()
     {
         NodeNo = 0;
         _FinalNodeNo = 0;
@@ -583,13 +585,16 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            //double Fw;
-            //if (PEP > 0)
-            //   Fw = EP / PEP;
-            //else
-            //   Fw = 0;
-            return Photosynthesis.Growth(Radn * CoverGreen);//, Math.Min(Fw, Fn));
+            return Photosynthesis.Growth(Radn * CoverGreen);
         }
+    }
+
+    public override double DMPotentialAllocation
+    {
+        set
+        {
+
+       }
     }
 
     [Output]
@@ -606,7 +611,7 @@ public class Leaf : BaseOrgan, AboveGround
             {
                 double Demand = 0;
                 foreach (LeafCohort L in Leaves)
-                    Demand += L.DMDemand(ThermalTime.Value);
+                    Demand += L.DMDemand;
 
                 if (Demand > 0)
                 {
@@ -618,7 +623,7 @@ public class Leaf : BaseOrgan, AboveGround
 
                     foreach (LeafCohort L in Leaves)
                     {
-                        L.DMAllocation = L.DMDemand(ThermalTime.Value) * fraction;
+                        L.DMAllocation = L.DMDemand * fraction;
                     }
                 }
             }
@@ -649,7 +654,7 @@ public class Leaf : BaseOrgan, AboveGround
             double Demand = 0.0;
             foreach (LeafCohort L in Leaves)
             {
-                Demand += L.NDemand();
+                Demand += L.NDemand;
             }
             return Demand;
         }
@@ -669,7 +674,7 @@ public class Leaf : BaseOrgan, AboveGround
             {
                 double Demand = 0;
                 foreach (LeafCohort L in Leaves)
-                    Demand += L.NDemand();
+                    Demand += L.NDemand;
 
                 double fraction = value / Demand;
                 if (fraction > 1)
@@ -679,7 +684,7 @@ public class Leaf : BaseOrgan, AboveGround
 
                 foreach (LeafCohort L in Leaves)
                 {
-                    L.NAllocation = L.NDemand() * fraction;
+                    L.NAllocation = L.NDemand * fraction;
                 }
             }
 
@@ -706,11 +711,6 @@ public class Leaf : BaseOrgan, AboveGround
                 throw new Exception(Name + " cannot supply that amount for N retranslocation");
             if (value > 0)
             {
-                //double fraction = value/NSupply;
-                //foreach (LeafCohort L in Leaves)
-                //   {
-                //   L.NRetranslocation = fraction * L.NRetranslocationSupply;
-                //   }
                 double remainder = value;
                 foreach (LeafCohort L in Leaves)
                 {
@@ -723,7 +723,33 @@ public class Leaf : BaseOrgan, AboveGround
             }
         }
     }
-
+    public override double NReallocationSupply
+    {
+        get
+        {
+            return 0;
+        }
+    }
+    public override double NReallocation
+    {
+        set
+        {
+        }
+    }
+    public override double MaxNconc
+    {
+        get
+        {
+            return 0;
+        }
+    }
+    public override double MinNconc
+    {
+        get
+        {
+            return 0;
+        }
+    }
     #endregion 
 
     #region Event handlers and publishers
@@ -802,7 +828,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     }
 
-    private void PublishNewCanopyEvent()
+    protected virtual void PublishNewCanopyEvent()
     {
         if (New_Canopy != null)
         {
