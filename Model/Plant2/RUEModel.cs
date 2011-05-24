@@ -32,24 +32,7 @@ public class RUEModel : Instance
          return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
          }
       }
-   [Output]   [Units("ppm")]   public double CO2CompensationPoint
-   {
-       get
-       {
-           double temp = (MaxT + MinT) / 2;
-           return (163.0 - temp) / (5.0 - 0.1 * temp);
 
-       }
-   }
-   [Output]   [Units("ppm")]   public double CO2conc //Test for the presence of a CO2 variable in APSIM and assign a default value if absent
-   {
-       get
-       {
-           if (CO2 < 0)  // if the CO2 [input] did not find a value to assign
-               return defaultCO2;  // assign the default value
-           else return CO2;        // use the value the input found
-       }
-   }
    #endregion
 
 

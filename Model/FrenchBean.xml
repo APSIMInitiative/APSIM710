@@ -137,7 +137,7 @@
 		        <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
 		        <XYPairs>
 	            <XY>5 0.0</XY>
-	            <XY>15 1.0</XY>
+	            <XY>10 1.0</XY>
 	            <XY>28 1.0</XY>
 	            <XY>35 1.0</XY>
 	            <XY>40 0.0</XY>
@@ -167,12 +167,11 @@
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction> 
-          <ExpressionFunction name="Fco2">
-              <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
-              <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-          </ExpressionFunction>          	  
+          <RUECO2Function name="Fco2">
+          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
         </RUEModel>
-        <PhaseLookup name="PartitionFraction">
+        <PhaseLookup name="PartitionFractionOLD">
           <PhaseLookupValue name="Early">
             <Start>Emergence</Start>
             <End>Flowering</End>
@@ -184,10 +183,14 @@
             <Start>Flowering</Start>
             <End>Maturity</End>
             <Constant name="Function">
-              <Value>0.2</Value>
+              <Value>0.55</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
+        <StageBasedInterpolation name="PartitionFraction">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Codes>  0.00         0.70      0.60     0.454         0.10 </Codes>
+        </StageBasedInterpolation>        
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY> 5 9.0</XY>
@@ -266,23 +269,29 @@
             <XY> 8 0.0</XY>
           </XYPairs>
         </GenericFunction>
-        <Constant name="MaximumNConc">
-          <Value>0.01</Value>
-        </Constant>
+        <StageBasedInterpolation name="MaximumNConc">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Codes>  0.053         0.053      0.046    0.042         0.04 </Codes>
+        </StageBasedInterpolation>        
         <Constant name="MinimumNConc">
-          <Value>0.0</Value>
+          <Value>0.03</Value>
         </Constant>
         <Constant name="StructuralNConc">
-          <Value>0.0</Value>
+          <Value>0.03</Value>
         </Constant>
         <Constant name="InitialNConc">
-          <Value>0.01</Value>
+          <Value>0.06</Value>
         </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <PhaseLookup name="PartitionFraction">
+        <StageBasedInterpolation name="PartitionFraction">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Codes>  0.00         0.30      0.40     0.48         0.60 </Codes>
+        </StageBasedInterpolation>        
+        
+        <PhaseLookup name="PartitionFractionOLD">
           <PhaseLookupValue name="Early">
             <Start>Emergence</Start>
             <End>StartPodGrowth</End>
@@ -294,28 +303,32 @@
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
             <Constant name="Function">
-              <Value>0.5</Value>
+              <Value>0.45</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
-        <Constant name="MaximumNConc">
-          <Value>0.01</Value>
-        </Constant>
+        <StageBasedInterpolation name="MaximumNConc">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Codes>  0.035         0.035      0.022    0.022         0.022 </Codes>
+        </StageBasedInterpolation>        
         <Constant name="StructuralNConc">
-          <Value>0.003</Value>
+          <Value>0.01</Value>
         </Constant>
       </GenericOrgan>
       <Root>
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM>0.2</InitialDM>
+        <InitialWt>0.2</InitialWt>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>        
         <SpecificRootLength>40000</SpecificRootLength>
         <KNO3>0.02</KNO3>
-        <KNH4>0.0</KNH4>
+        <KNH4>0.02</KNH4>
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -367,20 +380,40 @@
         <GenericFunction name="NumberFunction">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
-            <XY>0 500</XY>
-            <XY>200 500</XY>
+            <XY>0 250</XY>
+            <XY>200 250</XY>
           </XYPairs>
         </GenericFunction>
+        <PhaseLookup name="Mortality">
+          <PhaseLookupValue name="EarlyPodGrowth">
+            <Start>Flowering</Start>
+            <End>StartPodGrowth</End>
+            <GenericFunction name="Function">
+              <XProperty>Leaf.Fw</XProperty>
+              <XYPairs>
+                <XY> 0.0 0.0</XY>
+                <XY> 1.0 0.0</XY>
+              </XYPairs>
+             </GenericFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="LatePodGrowth">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value>0.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>        
         <PhaseLookup name="FillingRate">
           <PhaseLookupValue name="EarlyPodGrowth">
             <Start>Flowering</Start>
             <End>StartPodGrowth</End>
             <TemperatureFunction name="Function">
               <XYPairs>
-                <XY>5 0.0</XY>
-                <XY>25 0.001</XY>
-                <XY>30 0.001</XY>
-                <XY>35 0.0</XY>
+                <XY> 5 0.002</XY>
+                <XY>25 0.002</XY>
+                <XY>30 0.002</XY>
+                <XY>35 0.002</XY>
               </XYPairs>
             </TemperatureFunction>
           </PhaseLookupValue>
@@ -389,19 +422,43 @@
             <End>Maturity</End>
             <TemperatureFunction name="Function">
               <XYPairs>
-                <XY>5 0.0</XY>
-                <XY>25 0.02</XY>
-                <XY>30 0.02</XY>
-                <XY>35 0.0</XY>
+                <XY>5  0.04</XY>
+                <XY>25 0.04</XY>
+                <XY>30 0.04</XY>
+                <XY>35 0.04</XY>
               </XYPairs>
             </TemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="NFillingRate">
-          <Value>0.00012</Value>
-        </Constant>
+        <PhaseLookup name="NFillingRate">
+          <PhaseLookupValue name="EarlyPodGrowth">
+            <Start>Flowering</Start>
+            <End>StartPodGrowth</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>5  0.00007</XY>
+                <XY>25 0.00007</XY>
+                <XY>30 0.00007</XY>
+                <XY>35 0.00007</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="LatePodGrowth">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>5  0.0014</XY>
+                <XY>25 0.0014</XY>
+                <XY>30 0.0014</XY>
+                <XY>35 0.0014</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
+
         <Constant name="MaxNConcDailyGrowth">
-          <Value>0.03</Value>
+          <Value>0.035</Value>
         </Constant>
         <StageBasedInterpolation name="WaterContent">
           <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>

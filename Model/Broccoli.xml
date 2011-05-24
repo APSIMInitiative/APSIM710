@@ -198,10 +198,10 @@
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction>
-          <ExpressionFunction name="Fco2">
-              <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
-              <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-          </ExpressionFunction>          
+          <RUECO2Function name="Fco2">
+          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
+
         </RUEModel>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
@@ -364,7 +364,7 @@
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM>0.2</InitialDM>
+        <InitialWt>0.2</InitialWt>
         <SpecificRootLength>40000</SpecificRootLength>
         <KNO3>0.02</KNO3>
         <KNH4>0.0</KNH4>
@@ -375,6 +375,9 @@
             <XY> 3.0 1.0</XY>
           </XYPairs>
         </GenericFunction>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>        
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue name="Shock">
             <Start>Transplanting</Start>

@@ -10,19 +10,21 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = ReleasedWheat
+Title                  = Wheat2 With CO2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                       "wheat2" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -42,19 +44,36 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\goond.met
 
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1-jan, 31-dec') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * 0 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 700
+      endif
+     
+     SECTION:- init
+     co2 = 700
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 700.00000
+
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
         post
      Output variables:
         dd/mm/yyyy as Date
-        stage
-        stagename
-        LAI
-        biomass_wt
-        biomass
+        StageCodeValue
+        PhenologyCurrentPhaseName
+        LeafLAI
+        AboveGroundWt
         sw_dep()
 
-     Output file = ReleasedWheat.out
+     Output file = Wheat2 With CO2.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -65,7 +84,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-jun') then
-       wheat sow plants =150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
+       wheat2 sow population =150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
               endif
      END of rules
      
@@ -80,6 +99,13 @@ Paddock:
                 endif
      END of rules
      
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -239,146 +265,34 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
 1 June 1940(Day of year=153), Sow on a fixed date: 
-     Manager sending message :- wheat sow  plants = 150, sowing_depth = 50, cultivar = hartog, row_spacing = 500, crop_class = plant
-1 June 1940(Day of year=153), wheat: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = hartog
-        Phases:
-           out
-           sowing
-           germination
-           emergence
-           end_of_juvenile
-           floral_initiation
-           flowering
-              tt_flowering               =     120 (dd)
-           start_grain_fill
-              tt_start_grain_fill        =     545 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =      35 (dd)
-           maturity
-              tt_maturity                =       1 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =    1000 (dd)
-           end_crop
-              tt_end_crop                =    1000 (dd)
-     
-        grains_per_gram_stem           =       25.0 (/g)
-        potential_grain_filling_rate   =     0.0020 (g/grain/day)
-        potential_grain_growth_rate    =     0.0010 (g/grain/day)
-        max_grain_size                 =     0.0410 (g)
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         150.0     0.100          0.290       1.000
-         150.0     0.100          0.290       1.000
-         300.0     0.080          0.320       1.000
-         300.0     0.060          0.320       1.000
-         300.0     0.040          0.350       1.000
-         300.0     0.020          0.380       1.000
-         300.0     0.010          0.410       1.000
-         300.0     0.000          0.480       0.000
-         300.0     0.000          0.470       0.000
-         300.0     0.000          0.460       0.000
-         300.0     0.000          0.440       0.000
-         -----------------------------------------------
-         Extractable SW:   320mm in  3000mm total depth ( 11%).
-         Crop factor for bounding water use is set to   1.5 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            153   50.0  150.0  500.0   0.0   0.0 hartog
-         ------------------------------------------------
-     
-2 June 1940(Day of year=154), wheat: 
-      stage 2.0 germination
-11 June 1940(Day of year=163), wheat: 
-      stage 3.0 emergence
-                     biomass =           0.69 (g/m^2)   lai          =   0.030 (m^2/m^2)
-                     stover N conc =     5.85 (%)    extractable sw =   26.32 (mm)
-12 June 1940(Day of year=164), wheat: 
-      stage 4.0 end_of_juvenile
-                     biomass =           0.93 (g/m^2)   lai          =   0.034 (m^2/m^2)
-                     stover N conc =     5.83 (%)    extractable sw =   26.17 (mm)
-6 August 1940(Day of year=219), wheat: 
-      stage 5.0 floral_initiation
-                     biomass =         119.14 (g/m^2)   lai          =   1.620 (m^2/m^2)
-                     stover N conc =     1.81 (%)    extractable sw =  196.78 (mm)
-11 September 1940(Day of year=255), wheat: 
-      stage 6.0 flowering
-                     biomass =         354.38 (g/m^2)   lai          =   0.937 (m^2/m^2)
-                     stover N conc =     0.77 (%)    extractable sw =  196.22 (mm)
-17 September 1940(Day of year=261), wheat: 
-      stage 7.0 start_grain_fill
-                     biomass =         401.02 (g/m^2)   lai          =   0.750 (m^2/m^2)
-                     stover N conc =     0.54 (%)    extractable sw =  183.70 (mm)
-15 October 1940(Day of year=289), wheat: 
-      stage 8.0 end_grain_fill
-                     biomass =         441.25 (g/m^2)   lai          =   0.193 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =  175.60 (mm)
-16 October 1940(Day of year=290), wheat: 
-      stage 9.0 maturity
-                     biomass =         441.25 (g/m^2)   lai          =   0.172 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =  175.24 (mm)
-17 October 1940(Day of year=291), wheat: 
-      stage 10.0 harvest_ripe
-                     biomass =         441.25 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     0.32 (%)    extractable sw =  174.86 (mm)
-17 October 1940(Day of year=291), Harvesting rule: 
-     Manager sending message :- wheat harvest
-     
-      flowering day          =  255                           stover (kg/ha)         =     2952.4
-      maturity day           =  290                           grain yield (kg/ha)    =     1460.1
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     1668.7
-      grain wt (g)           =    0.029                       grains/m^2             =     5054.9
-      grains/plant           =   33.7                         maximum lai            =      1.707
-      total above ground biomass (kg/ha)    =     4412.5
-      live above ground biomass (kg/ha)     =     4412.5
-      green above ground biomass (kg/ha)    =     3604.3
-      senesced above ground biomass (kg/ha) =      808.2
-      number of leaves       =     39.4
-      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.33
-      Stover C:N ratio       =   109.30                       Root C:N ratio         =      41.44
-      grain N percent        =     1.51                       total N content (kg/ha)=      32.90
-      grain N uptake (kg/ha) =    22.10                       senesced N content (kg/ha)=    4.04
-      green N content (kg/ha)=     6.76
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
-         end_of_juvenile      to floral_initiation       0.000        0.000        0.235        0.235
-         floral_initiation    to flowering               0.000        0.000        0.286        0.286
-         flowering            to start_grain_fill        0.000        0.000        0.271        0.271
-         start_grain_fill     to end_grain_fill          0.000        0.000        0.368        0.368
-     
-     
-     Crop harvested.
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                2952.4                     0.0
-                          N  (kg/ha) =                  10.80                    0.00
-     
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                1460.1                     0.0
-                          N  (kg/ha) =                  22.10                    0.00
-     
-      stage 4.0 end_of_juvenile
-                     biomass =           0.00 (g/m^2)   lai          =   0.030 (m^2/m^2)
-                     stover N conc =     6.30 (%)    extractable sw =  174.86 (mm)
-     Manager sending message :- wheat end_crop
-     Crop ended. Yield (dw) =     0.0  (kg/ha)
-         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                   0.0                   780.1
-                          N  (kg/ha) =                   0.00                    7.53
-     
+     Manager sending message :- wheat2 sow  population = 150, depth = 50, cultivar = hartog, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
+2/06/1940 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+12/06/1940 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+7/08/1940 - FloralInitiation
+                            LAI = 1.58 (m^2/m^2)
+           Above Ground Biomass = 124.01 (g/m^2)
+23/08/1940 - FlagLeaf
+                            LAI = 1.83 (m^2/m^2)
+           Above Ground Biomass = 201.73 (g/m^2)
+12/09/1940 - Flowering
+                            LAI = 1.13 (m^2/m^2)
+           Above Ground Biomass = 382.10 (g/m^2)
+18/09/1940 - StartGrainFill
+                            LAI = 0.89 (m^2/m^2)
+           Above Ground Biomass = 409.30 (g/m^2)
+15/10/1940 - EndGrainFill
+                            LAI = 0.20 (m^2/m^2)
+           Above Ground Biomass = 416.67 (g/m^2)
+17/10/1940 - Maturity
+                            LAI = 0.17 (m^2/m^2)
+           Above Ground Biomass = 417.76 (g/m^2)
+17/10/1940 - HarvestRipe
+                            LAI = 0.17 (m^2/m^2)
+           Above Ground Biomass = 417.76 (g/m^2)
+Removing Leaves from plant
 31 December 1940(Day of year=366), clock: 
      Simulation is terminating due to end criteria being met.

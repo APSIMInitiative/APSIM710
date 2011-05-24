@@ -187,10 +187,10 @@
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction>
-          <ExpressionFunction name="Fco2">
-              <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
-              <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-          </ExpressionFunction>
+          <RUECO2Function name="Fco2">
+          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
+
         </RUEModel>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -329,13 +329,17 @@
             0.04</kl>
         <xf>1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00
             1.00</xf>
-        <InitialDM>0.01</InitialDM>
+        <InitialWt>0.01</InitialWt>
         <SpecificRootLength>105000</SpecificRootLength>
         <KNO3>0.02</KNO3>
         <KNH4>0.0</KNH4>
         <Constant name="KLModifier">
           <Value>1.0</Value>
         </Constant>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>
+        
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
         </Constant>

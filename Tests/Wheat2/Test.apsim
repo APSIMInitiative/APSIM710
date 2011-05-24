@@ -1,4 +1,4 @@
-<folder version="23" name="simulations">
+<folder version="27" name="simulations">
   <simulation name="ReleasedWheat">
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
@@ -22,9 +22,11 @@
         <State />
         <ApsoilNumber description="Apsoil number" />
         <Latitude description="Latitude (WGS84)" />
-        <Langitude description="Longitude (WGS84)" />
+        <Longitude />
         <LocationAccuracy description="Location accuracy" />
         <DataSource type="multiedit" description="Data source" />
+        <Comments />
+        <Langitude description="Longitude (WGS84)" />
         <Comment type="multiedit" description="Comments" />
         <InitWater name="Initial water">
           <percentmethod>
@@ -35,6 +37,7 @@
         <Water>
           <Layer>
             <Thickness units="mm">150</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.02</BD>
             <AirDry units="mm/mm">0.15</AirDry>
             <LL15 units="mm/mm">0.29</LL15>
@@ -43,6 +46,7 @@
           </Layer>
           <Layer>
             <Thickness>150</Thickness>
+            <KS units="mm/day" />
             <BD>1.03</BD>
             <AirDry>0.26</AirDry>
             <LL15>0.29</LL15>
@@ -51,6 +55,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.02</BD>
             <AirDry>0.29</AirDry>
             <LL15>0.29</LL15>
@@ -59,6 +64,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.02</BD>
             <AirDry>0.29</AirDry>
             <LL15>0.29</LL15>
@@ -67,6 +73,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.06</BD>
             <AirDry>0.3</AirDry>
             <LL15>0.3</LL15>
@@ -75,6 +82,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.11</BD>
             <AirDry>0.31</AirDry>
             <LL15>0.31</LL15>
@@ -83,6 +91,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.12</BD>
             <AirDry>0.32</AirDry>
             <LL15>0.32</LL15>
@@ -91,6 +100,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.15</BD>
             <AirDry>0.33</AirDry>
             <LL15>0.33</LL15>
@@ -99,6 +109,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.18</BD>
             <AirDry>0.34</AirDry>
             <LL15>0.34</LL15>
@@ -107,6 +118,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.2</BD>
             <AirDry>0.35</AirDry>
             <LL15>0.35</LL15>
@@ -115,6 +127,7 @@
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.36</AirDry>
             <LL15>0.36</LL15>
@@ -668,10 +681,10 @@
         </Water>
         <SoilWat>
           <SummerCona>3.5</SummerCona>
-          <WinterCona>3.5</WinterCona>
           <SummerU>6</SummerU>
-          <WinterU>6</WinterU>
           <SummerDate>1-Nov</SummerDate>
+          <WinterCona>3.5</WinterCona>
+          <WinterU>6</WinterU>
           <WinterDate>1-Apr</WinterDate>
           <DiffusConst>40</DiffusConst>
           <DiffusSlope>16</DiffusSlope>
@@ -679,51 +692,6 @@
           <Cn2Bare>73</Cn2Bare>
           <CnRed>20</CnRed>
           <CnCov>0.8</CnCov>
-          <CnCanopyFact>1</CnCanopyFact>
-          <Layer>
-            <Thickness units="mm">150</Thickness>
-            <SWCON units="0-1">0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>150</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.3</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -732,8 +700,79 @@
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCn>40</RootCn>
+          <RootWt>200</RootWt>
+          <SoilCn>12.5</SoilCn>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">150</Thickness>
             <OC units="Total %">1.04</OC>
@@ -800,125 +839,307 @@
             <FBiom>0.01</FBiom>
             <FInert>0.95</FInert>
           </Layer>
-          <RootCn>40</RootCn>
-          <RootWt>200</RootWt>
-          <SoilCn>12.5</SoilCn>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC units="1:5 dS/m">0.2</EC>
             <PH units="1:5 water">8.4</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.25</EC>
             <PH>8.8</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.31</EC>
             <PH>9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.4</EC>
             <PH>9.2</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.59</EC>
             <PH>9.2</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.84</EC>
             <PH>9.1</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>0.93</EC>
             <PH>9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>1.01</EC>
             <PH>9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>1.06</EC>
             <PH>8.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>1.05</EC>
             <PH>8.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
             <EC>1.01</EC>
             <PH>8.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">150</Thickness>
             <NO3 units="ppm">6.50300344798777</NO3>
             <NH4 units="ppm">0.599004378686979</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>150</Thickness>
             <NO3>2.10100111398159</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>2.10100111398159</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>1.70100090189562</NO3>
             <NH4>0.100000730999496</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -934,9 +1155,9 @@
       <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
@@ -955,7 +1176,7 @@
         </manager>
         <manager name="Harvesting rule">
           <ui>
-            <category description="Harvesting criteria" />
+            <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
           </ui>
           <script name="end_of_day">
@@ -973,9 +1194,13 @@
       </folder>
       <outputfile>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="stage" array="No" description="Plant stage" />
-          <variable name="stagename" array="No" description="Plant stage name" />
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="stage" />
+          <variable name="stagename" />
+          <variable name="LAI" />
+          <variable name="biomass_wt" />
+          <variable name="biomass" />
+          <variable name="sw_dep()" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -1001,7 +1226,7 @@
         </Water>
         <SoilWat shortcut="/simulations/ReleasedWheat/paddock/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/simulations/ReleasedWheat/paddock/Soil/SoilOrganicMatter" />
-        <Lab shortcut="/simulations/ReleasedWheat/paddock/Soil/Lab" />
+        <Analysis shortcut="/simulations/ReleasedWheat/paddock/Soil/Analysis" />
         <InitWater name="Initial Water" shortcut="/simulations/ReleasedWheat/paddock/Soil/Initial water" />
         <Sample name="Initial Nitrogen" shortcut="/simulations/ReleasedWheat/paddock/Soil/Initial nitrogen" />
       </soil>
@@ -1010,9 +1235,9 @@
       <folder name="Manager folder" shortcut="/simulations/ReleasedWheat/paddock/Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">wheat2</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">150</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
@@ -1033,9 +1258,12 @@
       </folder>
       <outputfile shortcut="/simulations/ReleasedWheat/paddock/outputfile">
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="StageCodeValue" array="No" description="Plant stage" />
-          <variable name="PhenologyCurrentPhaseName" array="No" description="Plant stage name" />
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="StageCodeValue" />
+          <variable name="PhenologyCurrentPhaseName" />
+          <variable name="LeafLAI" />
+          <variable name="AboveGroundWt" />
+          <variable name="sw_dep()" />
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedWheat/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1047,6 +1275,74 @@
         <c_interception name="c_interception">0.0</c_interception>
         <d_interception name="d_interception">0.0</d_interception>
       </micromet>
+    </area>
+  </simulation>
+  <simulation name="Wheat2 With CO2" shortcut="/simulations/Wheat2">
+    <metfile name="met" shortcut="/simulations/Wheat2/met" />
+    <clock shortcut="/simulations/Wheat2/clock" />
+    <summaryfile shortcut="/simulations/Wheat2/summaryfile" />
+    <manager name="ClimateControl">
+      <ui>
+        <category type="category" description="Climate Control Window" />
+        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+        <category type="category" description="Climate Change Parameters" />
+        <MaxtChange type="text" description="Change in maximum temperature (oC):">0</MaxtChange>
+        <MintChange type="text" description="Change in minimum temperature (oC):">0</MintChange>
+        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">700</CO2>
+      </ui>
+      <script>
+        <text>
+!  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
+! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
+
+if (date_within('[date1], [date2]') = 1) then
+   maxt = maxt + [MaxtChange]
+   mint = mint + [MintChange]
+   rain = rain + rain * [RainChange] / 100
+   radn = radn + radn * [RadnChange] / 100
+   co2 = [CO2]
+ endif
+</text>
+        <event>prenewmet</event>
+      </script>
+      <script>
+        <text>co2 = [CO2]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <area name="paddock" shortcut="/simulations/Wheat2/paddock">
+      <soil name="Soil" shortcut="/simulations/Wheat2/paddock/Soil">
+        <Water shortcut="/simulations/Wheat2/paddock/Soil/Water">
+          <SoilCrop name="Barley" shortcut="/simulations/Wheat2/paddock/Soil/Water/Barley" />
+          <SoilCrop name="Chickpea" shortcut="/simulations/Wheat2/paddock/Soil/Water/Chickpea" />
+          <SoilCrop name="Lucerne" shortcut="/simulations/Wheat2/paddock/Soil/Water/Lucerne" />
+          <SoilCrop name="Maize" shortcut="/simulations/Wheat2/paddock/Soil/Water/Maize" />
+          <SoilCrop name="Perennial Grass" shortcut="/simulations/Wheat2/paddock/Soil/Water/Perennial Grass" />
+          <SoilCrop name="Sorghum" shortcut="/simulations/Wheat2/paddock/Soil/Water/Sorghum" />
+          <SoilCrop name="Wheat" shortcut="/simulations/Wheat2/paddock/Soil/Water/Wheat" />
+          <SoilCrop name="wheat2" shortcut="/simulations/Wheat2/paddock/Soil/Water/wheat2" />
+        </Water>
+        <SoilWat shortcut="/simulations/Wheat2/paddock/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/Wheat2/paddock/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/Wheat2/paddock/Soil/Analysis" />
+        <InitWater name="Initial Water" shortcut="/simulations/Wheat2/paddock/Soil/Initial Water" />
+        <Sample name="Initial Nitrogen" shortcut="/simulations/Wheat2/paddock/Soil/Initial Nitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/simulations/Wheat2/paddock/surface organic matter" />
+      <fertiliser shortcut="/simulations/Wheat2/paddock/fertiliser" />
+      <folder name="Manager folder" shortcut="/simulations/Wheat2/paddock/Manager folder">
+        <manager name="Sow on a fixed date" shortcut="/simulations/Wheat2/paddock/Manager folder/Sow on a fixed date" />
+        <manager name="Harvesting rule" shortcut="/simulations/Wheat2/paddock/Manager folder/Harvesting rule" />
+      </folder>
+      <outputfile shortcut="/simulations/Wheat2/paddock/outputfile">
+        <variables name="Variables" shortcut="/simulations/Wheat2/paddock/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Wheat2/paddock/outputfile/Reporting Frequency" />
+      </outputfile>
+      <wheat2 shortcut="/simulations/Wheat2/paddock/wheat2" />
+      <micromet name="Micromet" shortcut="/simulations/Wheat2/paddock/Micromet" />
     </area>
   </simulation>
 </folder>

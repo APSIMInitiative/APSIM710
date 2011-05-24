@@ -297,10 +297,10 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
               <XY>1.5 1</XY>
             </XYPairs>
           </GenericFunction>
-          <ExpressionFunction name="Fco2">
-            <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
-            <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
-          </ExpressionFunction>
+          <RUECO2Function name="Fco2">
+          	 <PhotosyntheticPathway>C4</PhotosyntheticPathway>
+          </RUECO2Function>
+
         </RUEModel>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sown Sprouted Emerged BeginCane EndCrop</Stages>
@@ -562,10 +562,14 @@ Old value was 1.8 , multiplied by 0.2 and added it to get the 2.25
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM type="text" description="InitialDM">0.2</InitialDM>
+        <InitialWt type="text" description="InitialWt">0.2</InitialWt>
         <SpecificRootLength type="text" description="SpecificRootLength">18000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.05</KNO3>
         <KNH4 type="text" description="KNH4">0.05</KNH4>
+        <Constant name="SoilWaterEffect">
+          <Value>1.0</Value>
+        </Constant>
+        
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
