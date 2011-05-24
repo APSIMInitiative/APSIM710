@@ -101,7 +101,8 @@ void __stdcall getDescription(const char* initScript, char* description)
       }
    catch (System::Exception^ err)
       {
-      MessageBox::Show(err->Message);
+      throw err;
+      //MessageBox::Show(err->Message);
       }
    }
 
@@ -131,7 +132,7 @@ void __stdcall getDescriptionLength(const char* initScript, int* lLength)
       }
    catch (System::Exception^ err)
       {
-      MessageBox::Show(err->Message);
+      throw err;
       }
    }
 
