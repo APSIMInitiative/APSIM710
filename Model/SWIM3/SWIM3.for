@@ -3984,7 +3984,7 @@ c      eqr0  = 0.d0
      :        'no rlv returned from '//g%crop_names(vegnum))
          endif
 
-         call get_double_var (
+         call get_double_var_optional (
      :           g%crop_owners(vegnum),
      :           'sw_demand',
      :           '(mm)',
@@ -3992,6 +3992,17 @@ c      eqr0  = 0.d0
      :           numvals,
      :           0d0,
      :           20d0)
+         if (numvals.eq.0) then
+            call get_double_var (
+     :              g%crop_owners(vegnum),
+     :              'WaterDemand',
+     :              '(mm)',
+     :              g%pep(vegnum),
+     :              numvals,
+     :              0d0,
+     :              20d0)
+
+         endif
 
          if (numvals.gt.0) then
             g%pep(vegnum) = g%pep(vegnum)/10d0 ! convert mm to cm
