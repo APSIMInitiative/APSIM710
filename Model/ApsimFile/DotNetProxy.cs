@@ -378,6 +378,7 @@ class DLLProber
          {
          CompilerParameters Params = new CompilerParameters();
          Params.GenerateInMemory = false;
+         Params.CompilerOptions = "/platform:x86";
          Params.OutputAssembly = Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll");
          Params.TreatWarningsAsErrors = false;
          Params.WarningLevel = 2;
