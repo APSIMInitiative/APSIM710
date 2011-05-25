@@ -75,7 +75,7 @@ class SIRIUSGenericOrgan : BaseOrgan, AboveGround
            if (DMDemand == 0)
                if (value < 0.000000000001) { }//All OK
                else
-                   throw new Exception("Invalid allocation of potential DM in" + Name);
+                   throw new Exception("Invalid allocation of potential DM in " + Name);
            PotentialDMAllocation = value;
        }
    }

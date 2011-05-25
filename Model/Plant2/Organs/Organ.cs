@@ -22,6 +22,7 @@ abstract public class Organ : Instance
    abstract public double DMPotentialAllocation { set; }
    abstract public double DMAllocation {set; }
    abstract public double DMRetranslocation { set;}
+   abstract public double DMRespired { set; }
 
    abstract public double NDemand { get; }
    abstract public double NUptakeSupply { get; }
@@ -29,6 +30,8 @@ abstract public class Organ : Instance
    abstract public double NAllocation { set; }
    abstract public double NRetranslocation { set; }
    abstract public double NUptake { set; }
+   abstract public double NFixationSupply { get ;}
+   abstract public double NFixed { set; }
 
    abstract public double WaterDemand { get; }
    abstract public double WaterSupply { get; }

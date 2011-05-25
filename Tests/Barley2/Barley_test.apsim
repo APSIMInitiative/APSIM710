@@ -1,7 +1,7 @@
 <folder version="27" name="Simulations">
   <simulation name="Barley2_test">
     <metfile name="met">
-      <filename name="filename">lincoln.met</filename>
+      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">20/10/2003</start_date>
@@ -101,27 +101,21 @@
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
         </irrigation>
-        <manager name="Potato Sowing Rule">
+        <manager name="Barley Sowing Rule">
           <ui>
             <sowing_date type="date" description="Sowing date">20/10/2003</sowing_date>
             <emergence_date type="text" description="Emergence date">12/11/2003</emergence_date>
-            <row_width type="text" description="Row width (mm)">770</row_width>
-            <inrow_spacing type="text" description="In-row plant spacing (mm)">280</inrow_spacing>
-            <stem_number type="text" description="Stem number per plant">3</stem_number>
+            <row_width type="text" description="Row width (mm)">150</row_width>
+            <population type="text" description="Emerged population (/m2)">300</population>
+            <stem_number type="text" description="Stem number per plant">1</stem_number>
             <cultivar type="cultivars" description="Cultivar">Dash</cultivar>
-            <sowing_depth type="text" description="Sowing depth (mm)">120</sowing_depth>
+            <sowing_depth type="text" description="Sowing depth (mm)">30</sowing_depth>
             <Harvest_date type="date" description="Harvest date">03/06/2000</Harvest_date>
-            <tt_planting type="text" description="Accumulated tt before planting">700</tt_planting>
           </ui>
           <script>
-            <text>Plant_population = 1/(([row_width]/1000)*([inrow_spacing]/1000))
-
-stemnumber2 = 2 + [tt_planting] * .02 
-
-if today = date('[sowing_date]') then
-   barley2 sow population = Plant_population, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = [stem_number], row_spacing = [row_width], crop_class = plant  
-   !potato2 sow population = 4, depth = 200, cultivar = russet, maxcover = 1.0, budnumber = 6, row_spacing = 650, crop_class = plant  
-endif
+            <text>if today = date('[sowing_date]') then
+   barley2 sow population = [population], depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = [stem_number], row_spacing = [row_width], crop_class = plant  
+ endif
            
       
 </text>
@@ -982,7 +976,7 @@ Measured stem number was 2.4 but I have increased this to account for the likely
         </outputfile>
         <manager name="Diagnostic variables">
           <ui>
-            <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
+            <CropType type="crop" description="Select crop type to report variables for">barley2</CropType>
           </ui>
           <script>
             <text>SimDay = 1

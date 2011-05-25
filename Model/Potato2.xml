@@ -3,7 +3,7 @@
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
     <ShowInMainTree type="text" description="ShowInMainTree">Yes</ShowInMainTree>
-    <Image type="text" description="Image">%apsim%\UserInterface\Images\Potato_king_dick.jpg</Image>
+    <Image type="text" description="Image">%apsim%\UserInterface\Images\CouchPotato.jpg</Image>
     <Description type="text" description="Description">Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process. NOTE THIS MODULE IS A PROTOTYPE ONLY.</Description>
     <Documentation type="text" description="Documentation">%apsim%\Documentation\4 Module Reference\Potato.htm</Documentation>
     <Documentation type="text" description="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
@@ -385,7 +385,7 @@
           </XYPairs>
         </TemperatureFunction>
         <Constant name="MaxDailyNUptake">
-          <Value type="text" description="Value">9</Value>
+          <Value type="text" description="Value">6</Value>
         </Constant>
         <Constant name="SenescenceRate">
           <Value>0.0</Value>
@@ -395,7 +395,7 @@
             <Start type="text" description="Start">Peeping</Start>
             <End type="text" description="End">FinalLeaf</End>
             <Constant>
-              <Value type="text" description="Value">14</Value>
+              <Value type="text" description="Value">10</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -464,19 +464,18 @@
           </XYPairs>
         </GenericFunction>
         <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[].Live</Property>
+          <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[].Dead</Property>
+          <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Total">
-           <Property>Leaf.Live Leaf.Dead</Property>
+          <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
           <RUECO2Function name="Fco2">
           	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
 
-        
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -765,20 +764,20 @@
       </StageBasedInterpolation>
       <Summary />
       <CompositeBiomass name="AboveGround">
-          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
-      </CompositeBiomass>      
+        <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="BelowGround">
-          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
-      </CompositeBiomass>        
+        <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="Total">
-          <Property>Organs[].Live Organs[].Dead</Property>
-      </CompositeBiomass>  
+        <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalLive">
-          <Property>Organs[].Live</Property>
-      </CompositeBiomass>       
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalDead">
-          <Property>Organs[].Dead</Property>
-      </CompositeBiomass>     
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
     </Plant>
   </Model>
 </Type>

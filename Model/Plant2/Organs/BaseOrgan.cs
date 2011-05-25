@@ -20,6 +20,7 @@ public class BaseOrgan : Organ
             throw new Exception(Name + " cannot supply retranslocation");
          }
       }
+   public override double DMRespired { set { } }
    
    public override double NDemand { get { return 0; } }
    public override double NUptakeSupply { get { return 0; } }
@@ -41,6 +42,8 @@ public class BaseOrgan : Organ
             throw new Exception(Name + " cannot supply N Uptake");
          }
       }
+   public override double NFixationSupply { get { return 0; } }
+   public override double NFixed { set { } }
 
    public override double WaterDemand { get { return 0; } }
    public override double WaterSupply { get { return 0; } }

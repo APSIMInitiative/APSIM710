@@ -1,0 +1,699 @@
+<Type version="27" name="FieldPea2">
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\fieldpea.jpg</Image>
+    <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll>%apsim%\Model\Plant2.dll</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+    </drops>
+    <variables link="%apsim%\Documentation\ModelInfo\FieldPea.xml" />
+    <events link="%apsim%\Documentation\ModelInfo\FieldPea.xml" />
+    <ApsimToSim>
+      <component name="[InstanceName]" executable="[dll]">
+        <executable name="[dll]" version="1.0" />
+        <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+        <initdata>
+               [Model]
+               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+  <Model>
+    <Cultivar name="amethyst">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Plant>
+      <CropType type="text" description="CropType">FieldPea</CropType>
+      <Population>
+        <Value>4</Value>
+      </Population>
+      <SIRIUSArbitrator name="Arbitrator">
+        <Constant name="DMSink">
+          <Value>Stem</Value>
+        </Constant>
+        <Constant name="NSink">
+          <Value>Stem</Value>
+        </Constant>
+        <Constant name="DMRetransFact">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+      </SIRIUSArbitrator>
+      <Phenology>
+        <TemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <PhotoperiodFunction name="Photoperiod">
+          <Twilight type="text" description="Twilight">-6</Twilight>
+        </PhotoperiodFunction>
+        <GerminatingPhase name="Germinating">
+          <Start type="text" description="Start">Sowing</Start>
+          <End type="text" description="End">Germination</End>
+        </GerminatingPhase>
+        <EmergingPhase name="Emerging">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Emergence</End>
+          <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
+          <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </EmergingPhase>
+        <GenericPhase name="EmergenceToEndJuvenile">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndJuvenile</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">515</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="EndJuvenileToInitiation">
+          <Start type="text" description="Start">EndJuvenile</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <GenericFunction name="Target">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>10.7 446</XY>
+              <XY>17 0</XY>
+            </XYPairs>
+          </GenericFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="InitiationToFlowering">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">Flowering</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">33</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="FloweringToStartGrainFilling">
+          <Start type="text" description="Start">Flowering</Start>
+          <End type="text" description="End">StartPodGrowth</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">450</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="PodFilling">
+          <Start type="text" description="Start">StartPodGrowth</Start>
+          <End type="text" description="End">EndGrainFill</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">690</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="Maturing">
+          <Start type="text" description="Start">EndGrainFill</Start>
+          <End type="text" description="End">Maturity</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">60</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <GenericPhase name="MaturityToHarvestRipe">
+          <Start type="text" description="Start">Maturity</Start>
+          <End type="text" description="End">HarvestRipe</End>
+          <Constant name="Target">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </GenericPhase>
+        <EndPhase name="ReadyForHarvesting">
+          <Start type="text" description="Start">HarvestRipe</Start>
+          <End type="text" description="End">Unused</End>
+          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+        </EndPhase>
+      </Phenology>
+      <SIRIUSGrain name="Grain">
+        <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
+        <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="NConc">
+          <Value type="text" description="Value">0.003</Value>
+        </Constant>
+        <StageBasedInterpolation name="WaterContent">
+          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Values>  0.93         0.93      0.93    0.93            0.90</Values>
+        </StageBasedInterpolation>
+        <GenericFunction name="NumberFunction">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>1000 25000</XY>
+          </XYPairs>
+        </GenericFunction>
+        <Constant name="MaxNConcDailyGrowth">
+          <Value>0.03</Value>
+        </Constant>
+        <StageBasedInterpolation name="MinimumNConc">
+          <Stages type="text" description="Stages">Germination Emergence Flowering StartPodGrowth Maturity</Stages>
+          <Values type="text" description="Values">0.006           0.006          0.006             0.006      0.006   </Values>
+        </StageBasedInterpolation>
+        <StageBasedInterpolation name="MaximumNConc">
+          <Stages type="text" description="Stages">Germination Emergence Flowering StartPodGrowth Maturity</Stages>
+          <Values type="text" description="Values">0.022           0.022          0.022             0.022      0.022       </Values>
+        </StageBasedInterpolation>
+        <PhaseLookup name="FillingRate">
+          <PhaseLookupValue name="EarlyGrainGrowth">
+            <Start>Flowering</Start>
+            <End>StartPodGrowth</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>0 0.0</XY>
+                <XY>26 0.001</XY>
+                <XY>30 0.001</XY>
+                <XY>35 0.001</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="LateGrainGrowth">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>0 0.0</XY>
+                <XY>26 0.002</XY>
+                <XY>30 0.002</XY>
+                <XY>35 0.002</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="NFillingRate">
+          <PhaseLookupValue name="EarlyGrainGrowth">
+            <Start>Flowering</Start>
+            <End>Maturity</End>
+            <TemperatureFunction name="Function">
+              <XYPairs>
+                <XY>0 0.0</XY>
+                <XY>25 0.000055</XY>
+                <XY>30 0.000055</XY>
+                <XY>35 0.000055</XY>
+              </XYPairs>
+            </TemperatureFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseBasedSwitch name="NitrogenDemandPhase">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+        </PhaseBasedSwitch>
+      </SIRIUSGrain>
+      <SIRIUSRoot name="Root">
+        <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM>0.2</InitialDM>
+        <SpecificRootLength>40000</SpecificRootLength>
+        <KNO3>0.02</KNO3>
+        <KNH4>0.0</KNH4>
+        <GenericFunction name="KLModifier">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>3 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <TemperatureFunction name="TemperatureEffect">
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>26 1</XY>
+            <XY>35 1</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <Constant name="MaxDailyNUptake">
+          <Value>6.0</Value>
+        </Constant>
+        <Constant name="SenescenceRate">
+          <Value>0.0</Value>
+        </Constant>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
+        <Constant name="MaximumNConc">
+          <Value type="text" description="Value">0.01</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value type="text" description="Value">0.01</Value>
+        </Constant>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Middle">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="RootFrontVelocity">
+          <PhaseLookupValue name="PreEmergence">
+            <Start>Germination</Start>
+            <End>Emergence</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">3</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">15</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="late">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">17</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseBasedSwitch name="NitrogenDemandPhase">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+        </PhaseBasedSwitch>
+      </SIRIUSRoot>
+      <Nodule>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Middle">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.25</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="SenescenceRate">
+          <Value>0.0</Value>
+        </Constant>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="MaximumSpecificFixation">
+          <Value type="text" description="Value">12</Value>
+        </Constant>
+        <TemperatureFunction name="FT">
+          <XYPairs>
+            <XY>5 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <GenericFunction name="FW">
+          <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>1 1</XY>
+            <XY>1.5 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <Constant name="FixationCost">
+          <Value type="text" description="Value">401</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value>0.01</Value>
+        </Constant>
+      </Nodule>
+      <SIRIUSLeaf name="Leaf">
+        <PrimaryBudNo>1</PrimaryBudNo>
+        <MaxCover>1.0</MaxCover>
+        <KDead>0.3</KDead>
+        <MaxNodeNo>40</MaxNodeNo>
+        <InitialAreas>1000 </InitialAreas>
+        <InitialAges>10  </InitialAges>
+        <InitialiseStage>Emergence</InitialiseStage>
+        <InitialLeafPrimordia>6</InitialLeafPrimordia>
+        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
+        <CompositeBiomass name="Live">
+          <Property>Leaf.Leaves[].Live</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Leaf.Leaves[].Dead</Property>
+        </CompositeBiomass>
+        <GenericFunction name="ExpansionStress">
+          <XProperty>WaterSupplyDemandRatio</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>1 1</XY>
+          </XYPairs>
+        </GenericFunction>
+        <RUEModel name="Photosynthesis">
+          <Constant name="RUE">
+            <Value type="text" description="Value">0.93</Value>
+          </Constant>
+          <WeightedTemperatureFunction name="FT">
+            <MaximumTemperatureWeighting type="text" description="MaximumTemperatureWeighting">0.5</MaximumTemperatureWeighting>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>15 1</XY>
+              <XY>30 1</XY>
+              <XY>40 0</XY>
+            </XYPairs>
+          </WeightedTemperatureFunction>
+          <GenericFunction name="FVPD">
+            <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
+            <XYPairs>
+              <XY>0 1</XY>
+              <XY>10 1</XY>
+              <XY>50 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <GenericFunction name="FN">
+            <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <GenericFunction name="FW">
+            <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+          </GenericFunction>
+          <RUECO2Function name="Fco2">
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+          </RUECO2Function>
+        </RUEModel>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">.5</Value>
+        </Constant>
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
+        <Constant name="NRetranslocationRate">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <PhaseLookupValue name="NodeInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">StartPodGrowth</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">40</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="NodeAppearanceRate">
+          <Start>Emergence</Start>
+          <End>Maturity</End>
+          <GenericFunction name="Function">
+            <XProperty>Leaf.NodeNo</XProperty>
+            <XYPairs>
+              <XY>1 46</XY>
+              <XY>3 46</XY>
+              <XY>6 46</XY>
+              <XY>30 46</XY>
+            </XYPairs>
+          </GenericFunction>
+        </PhaseLookupValue>
+        <GenericFunction name="ExtinctionCoeff">
+          <XProperty>Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 0.55</XY>
+            <XY>0.5 0.55</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 10</XY>
+            <XY>300 750</XY>
+          </XYPairs>
+        </GenericFunction>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.36</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="middle">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.30</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <TemperatureFunction name="ThermalTime">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <GenericFunction name="MaxArea">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>9 300</XY>
+            <XY>10 600</XY>
+            <XY>30 600</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="SpecificLeafArea">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 60000</XY>
+            <XY>4 18000</XY>
+            <XY>6 10000</XY>
+            <XY>8 5500</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="GrowthDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 230</XY>
+            <XY>30 230</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="LagDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 700</XY>
+            <XY>30 700</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="SenescenceDuration">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 170</XY>
+            <XY>30 170</XY>
+          </XYPairs>
+        </GenericFunction>
+        <GenericFunction name="BranchingRate">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>8 0</XY>
+            <XY>9 12.4</XY>
+            <XY>10 0</XY>
+            <XY>11 0</XY>
+          </XYPairs>
+        </GenericFunction>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value>0.0</Value>
+        </Constant>
+        <Constant name="InitialNConc">
+          <Value>0.1</Value>
+        </Constant>
+        <GenericFunction name="FrostFraction">
+          <XProperty>Leaf.MinT</XProperty>
+          <XYPairs>
+            <XY>-1 0.0</XY>
+            <XY>0 0.0</XY>
+          </XYPairs>
+        </GenericFunction>
+      </SIRIUSLeaf>
+      <SIRIUSGenericOrgan name="Pod">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="NRetranslocationRate">
+          <Value type="text" description="Value">0.1</Value>
+        </Constant>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.2</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.7</Value>
+        </Constant>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <PhaseBasedSwitch name="NitrogenDemandPhase">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+        </PhaseBasedSwitch>
+      </SIRIUSGenericOrgan>
+      <SIRIUSGenericOrgan name="Stem">
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="NRetranslocationRate">
+          <Value type="text" description="Value">0.1</Value>
+        </Constant>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Flowering</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.39</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="middle">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.45</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="PostMaturity">
+            <Start type="text" description="Start">Maturity</Start>
+            <End type="text" description="End">Unused</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.3</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="StructuralFraction">
+          <PhaseLookupValue name="Early">
+            <Start>Emergence</Start>
+            <End>StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.8</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <StageBasedInterpolation name="MinimumNConc">
+          <Stages type="text" description="Stages">Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Values type="text" description="Values">   0.003     0.003      0.003            0.003    0.003         </Values>
+        </StageBasedInterpolation>
+        <PhaseBasedSwitch name="NitrogenDemandPhase">
+          <Start type="text" description="Start">Germination</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+        </PhaseBasedSwitch>
+      </SIRIUSGenericOrgan>
+      <StageBasedInterpolation name="StageCode">
+        <Stages type="text" description="Stages">Germination     Emergence      EndJuvenile     FloralInitiation   Flowering    StartPodGrowth      EndGrainFill      Maturity       HarvestRipe</Stages>
+        <Values type="text" description="Values"> 1                     2                      3                      4                      5                  6                            7                       8                  9</Values>
+      </StageBasedInterpolation>
+      <Summary />
+      <CompositeBiomass name="AboveGround">
+        <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="BelowGround">
+        <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="Total">
+        <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="TotalLive">
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
+      <CompositeBiomass name="TotalDead">
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
+    </Plant>
+  </Model>
+</Type>
