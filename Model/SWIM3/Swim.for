@@ -1634,24 +1634,18 @@ cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
 
 
 * =====================================================================
-      subroutine apswim_runoff(ttt,tth,ttroff,roffh)
+      subroutine apswim_runoff(t,h,roff,roffh)
 * =====================================================================
 *     Short Description:
 *     gets runoff rate
-*
-*     g%t was renamed to ttt as g%t already exists in common
-*     g%h was renamed to tth as g%h already exists in common
-*     g%roff was renamed to ttroff as g%roff already exists in common
 
-            Use infrastructure
+      Use infrastructure
       implicit none
 
-*     Global Variables
-
 *     Subroutine Arguments
-      double precision ttt
-      double precision tth
-      double precision ttroff
+      double precision t
+      double precision h
+      double precision roff
       double precision roffh
 
 *     Internal Variables
@@ -1660,20 +1654,17 @@ cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
 *     Constant Values
 *     none
 
-*
-      if(tth.gt.g%hmin)then
-         v=p%roff0*(tth-g%hmin)**(p%roff1-1d0)
-         ttroff=v*(tth-g%hmin)
+      if(h.gt.g%hmin)then
+         v=p%roff0*(h-g%hmin)**(p%roff1-1d0)
+         roff=v*(h-g%hmin)
          roffh=p%roff1*v
       else
-         ttroff=0d0
+         roff=0d0
          roffh=0d0
       end if
 
       return
       end subroutine
-
-
 *
       subroutine map(n,x,y,M,u,v)
 *     maps concentration in y into v so that integral is conserved

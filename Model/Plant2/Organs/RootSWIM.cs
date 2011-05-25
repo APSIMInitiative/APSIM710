@@ -10,7 +10,7 @@ class RootSWIM : BaseOrgan, BelowGround
    private double[] Uptake = null;
    [Output("rlv")][Param] public double[] rlv = null;
 
-   [Output][Units("mm")] public double WaterUptake
+   [Output][Units("mm")] public override double WaterUptake
       {
       get { return -MathUtility.Sum(Uptake); }
       }

@@ -44,6 +44,11 @@ public class BaseOrgan : Organ
 
    public override double WaterDemand { get { return 0; } }
    public override double WaterSupply { get { return 0; } }
+   public override double WaterUptake
+      {
+      get { return 0; }
+      set { throw new Exception("Cannot set water uptake for " + Name); }
+      }
    public override double WaterAllocation
       {
       get { return 0; }

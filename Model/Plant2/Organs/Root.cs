@@ -249,7 +249,8 @@ public class Root : BaseOrgan, BelowGround
          return Total;
          }
       }
-   [Output]
+   [Output("RootLengthDensity")]
+   [Output("rlv")]
    double[] LengthDensity
       {
       get
@@ -317,7 +318,7 @@ public class Root : BaseOrgan, BelowGround
       }
    [Output]
    [Units("mm")]
-   public double WaterUptake
+   public override double WaterUptake
       {
       get { return -MathUtility.Sum(Uptake); }
       }
@@ -519,6 +520,27 @@ public class Root : BaseOrgan, BelowGround
          if (!MathUtility.FloatsAreEqual(NAllocated - Supply, 0.0))
             {
             throw new Exception("Error in N Allocation: " + Name);
+            }
+         }
+      }
+
+   [EventHandler]
+   public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
+      {
+      // Gets the water uptake for each layer as calculated by an external module (SWIM)
+
+      Uptake = new double[dlayer.Length];
+
+      for (int i = 0; i != SoilWater.Uptakes.Length; i++)
+         {
+         string UName = SoilWater.Uptakes[i].Name;
+         if (UName == Plant.CropType)
+            {
+            int length = SoilWater.Uptakes[i].Amount.Length;
+            for (int layer = 0; layer < length; layer++)
+               {
+               Uptake[layer] = -(float)SoilWater.Uptakes[i].Amount[layer];
+               }
             }
          }
       }

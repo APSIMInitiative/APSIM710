@@ -33,6 +33,7 @@ abstract public class Organ : Instance
    abstract public double WaterDemand { get; }
    abstract public double WaterSupply { get; }
    abstract public double WaterAllocation { get; set;}
+   abstract public double WaterUptake { get; set; }
    virtual public void DoWaterUptake(double Demand) { }
    virtual public void DoPotentialGrowth() { }
    virtual public void DoActualGrowth() { }

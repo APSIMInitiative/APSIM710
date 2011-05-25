@@ -284,7 +284,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     }
     [Output]
     [Units("mm")]
-    public double WaterUptake
+    public override double WaterUptake
     {
         get { return -MathUtility.Sum(Uptake); }
     }
@@ -483,7 +483,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         {
             //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
             double TotalDeficit = 0.0;
-            double Ndemandtoday = 0.0;
             Function MaximumNConc = Children["MaximumNConc"] as Function;
             Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
             foreach (Biomass Layer in LayerLive)

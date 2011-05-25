@@ -23,6 +23,8 @@ public class Plant : Instance
         get { return _Organs; }
     }
 
+    [Input(true)] Single swim3 = 0;
+
     #region Outputs
     [Output("Crop_Type")]
     [Param]
@@ -77,37 +79,71 @@ public class Plant : Instance
             Phenology.DoTimeStep();
     }
     private void DoWater()
-    {
-        double Supply = 0;
-        double Demand = 0;
-        foreach (Organ o in Organs)
-        {
-            Supply += o.WaterSupply;
-            Demand += o.WaterDemand;
-        }
+       {
+       if (swim3 == 0)
+          {
+          double Supply = 0;
+          double Demand = 0;
+          foreach (Organ o in Organs)
+             {
+             Supply += o.WaterSupply;
+             Demand += o.WaterDemand;
+             }
 
-        if (Demand > 0)
-            WaterSupplyDemandRatio = Supply / Demand;
-        else
-            WaterSupplyDemandRatio = 0;
+          if (Demand > 0)
+             WaterSupplyDemandRatio = Supply / Demand;
+          else
+             WaterSupplyDemandRatio = 0;
 
-        double fraction = 1;
-        if (Demand > 0)
-            fraction = Math.Min(1.0, Supply / Demand);
+          double fraction = 1;
+          if (Demand > 0)
+             fraction = Math.Min(1.0, Supply / Demand);
 
-        foreach (Organ o in Organs)
-        {
-            if (o.WaterDemand > 0)
+          foreach (Organ o in Organs)
+             {
+             if (o.WaterDemand > 0)
                 o.WaterAllocation = fraction * o.WaterDemand;
-        }
+             }
 
-        double FractionUsed = 0;
-        if (Supply > 0)
-            FractionUsed = Math.Min(1.0, Demand / Supply);
+          double FractionUsed = 0;
+          if (Supply > 0)
+             FractionUsed = Math.Min(1.0, Demand / Supply);
 
-        foreach (Organ o in Organs)
-            o.DoWaterUptake(FractionUsed * Supply);
-    }
+          foreach (Organ o in Organs)
+             o.DoWaterUptake(FractionUsed * Supply);
+          }
+       else
+          {
+          double Uptake = 0;
+          double Demand = 0;
+          double Supply = 0;
+          foreach (Organ o in Organs)
+             {
+             Supply += o.WaterSupply;
+             Uptake += o.WaterUptake;
+             Demand += o.WaterDemand;
+             }
+          // It is REALLY dodgy that we need to do this at all
+          if (Demand > 0)
+             WaterSupplyDemandRatio = Supply / Demand;
+          else
+             WaterSupplyDemandRatio = 0;
+
+          double fraction = 1;
+          if (Demand > 0)
+             fraction = Uptake / Demand;
+          if (fraction > 1.001)
+             throw new Exception("Water uptake exceeds total crop demand.");
+
+          foreach (Organ o in Organs)
+             {
+             if (o.WaterDemand > 0)
+                o.WaterAllocation = fraction * o.WaterDemand;
+             }
+
+          //throw new Exception("Cannot talk to swim3 yet");
+          }
+       }
     #endregion
 
     #region Event handlers and publishers

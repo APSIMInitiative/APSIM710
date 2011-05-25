@@ -2841,12 +2841,12 @@ cnh
       call apswim_get_other_variables ()
       call apswim_get_solute_variables ()
 
-      if (.not. g%crops_found) then
+      !if (.not. g%crops_found) then
          call apswim_find_crops()
          call apswim_assign_crop_params ()
          call apswim_register_crop_outputs()
-         g%crops_found = .true.
-      endif
+      !   g%crops_found = .true.
+      !endif
       call apswim_get_crop_variables ()
       call apswim_get_residue_variables ()
       call apswim_remove_interception ()
@@ -3814,6 +3814,8 @@ c      eqr0  = 0.d0
                g%num_crops = g%num_crops + 1
                g%crop_names(g%num_crops) = crpname
                g%crop_owners(g%num_crops) = get_posting_module()
+
+
             else
                call fatal_error (err_internal, 'too many crops')
             endif
@@ -3947,6 +3949,7 @@ c      eqr0  = 0.d0
       integer   solnum                 ! solute number for array index
       character solute_demand_name*(strsize)  ! key name for solute demand
       double precision length          ! total length of roots for a plant (mm/mm2)
+      character*200 line
 *- Implementation Section ----------------------------------
 
       bare = 1.0
@@ -3958,7 +3961,7 @@ c      eqr0  = 0.d0
             rlv_l(layer) = 0d0
    10    continue
 
-         call get_double_array (
+         call get_double_array(
      :           g%crop_owners(vegnum),
      :           'rlv',
      :           p%n+1,
@@ -3967,6 +3970,19 @@ c      eqr0  = 0.d0
      :           numvals,
      :           0d0,
      :           1d0)
+         if (numvals.eq.0) then
+         call get_double_array (
+     :           g%crop_owners(vegnum),
+     :           'rootlengthdensity',
+     :           p%n+1,
+     :           '(mm/mm^3)',
+     :           rlv_l,
+     :           numvals,
+     :           0d0,
+     :           1d0)
+
+         endif
+
          if (numvals.gt.0) then            !  convert mm/mm^3 to cm/cc
             length = 0d0
             do 60 layer = 1,p%n+1            !       /
@@ -4006,6 +4022,7 @@ c      eqr0  = 0.d0
 
          if (numvals.gt.0) then
             g%pep(vegnum) = g%pep(vegnum)/10d0 ! convert mm to cm
+
          else
             call fatal_error (Err_Internal,
      :        'no sw demand returned from '//g%crop_names(vegnum))
@@ -4399,6 +4416,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
       do counter = 1, g%num_crops
          CropName = g%crop_names(counter)
+
          call NullTermString(CropName)                         ! YUK - need to fix this.
          Water%Uptakes(counter)%Name = CropName
          Water%Uptakes(counter)%Num_amount = p%n+1
@@ -4407,6 +4425,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
             ! uptake may be very small -ve - assume error small
             Water%Uptakes(counter)%Amount(node+1) =
      .            max(g%pwuptake(counter,node),0d0)
+
          end do
       end do
       call publish_WaterUptakesCalculated
