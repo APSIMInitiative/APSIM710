@@ -10,23 +10,22 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Cultivar_Burbank
+Title                  = Fieldpea2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                       "Plant2" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
-   Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
-   Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
-   Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
+   Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
-   Component           "Templeton Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                      "potato2" = %apsim%\Model\Plant2.dll
+   Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "FieldPea2" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -38,15 +37,52 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date = 20/10/2003
-     Simulation end date   = 23/05/2004
+     Simulation start date =  1/09/1990
+     Simulation end date   = 31/05/1991
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        PhenologyCurrentPhaseName
+        AboveGroundWt
+        StemLiveWt
+        PodLiveWt
+        PodHI
+        PodHIIncrementValue
+        phenologythermaltimevalue
+        RootDepth
+        LeafNodeNo
+        LeafGreenNo
+        LeafCohortNo
+        LeafDeadNodeNo
+        LeafFullyExpandedNodeNo
+        LeafFinalNodeNo
+        LeafTotalNo
+        LeafLAI
+        LeafBranchNo
+        AboveGroundWt
+        leafLiveWt
+        stemLiveWt
+        Height
+        LeafFw
+        StemLiveWt
+        GrainLiveWt
+        GrainHI
+        sw_dep()
+        LeafTranspiration
+        LeafPhotosynthesisFtValue
+
+     Output file = Fieldpea2.out
+     Format = normal
+
+------- Plant2 Initialisation -------------------------------------------------
      Output frequency:
         post
      Output variables:
@@ -89,11 +125,11 @@ Paddock:
         AccumIrrigation
         AccumOutflowLat
         SoilWaterDeficit
-        AboveGroundWT
-        BelowGroundWt
-        TotalWt
-        LeafDeadWt
-        LeafLiveWt
+        AboveGroundDM
+        BelowGroundDM
+        TotalDM
+        LeafDeadWt2
+        LeafLiveWt2
         StemDeadWt
         StemLiveWt
         TuberDeadWt
@@ -109,8 +145,8 @@ Paddock:
         TotalN
         TotalLiveN
         TotalDeadN
-        LeafDeadN
-        LeafLiveN
+        LeafDeadN2
+        LeafLiveN2
         StemDeadN
         StemLiveN
         TuberDeadN
@@ -178,75 +214,45 @@ Paddock:
         StemLiveStructuralN
         StemLiveStructuralWt
         StemLiveNonStructuralWt
-        LeafLiveNonStructuralN
-        LeafLiveNonStructuralWt
-        LeafLiveStructuralN
-        LeafLiveStructuralWt
-        LeafTotalStructuralN
-        LeafTotalNonStructuralN
-        LeafTotalStructuralWt
-        LeafTotalNonStructuralWt
+        LeafLiveNonStructuralN2
+        LeafLiveNonStructuralWt2
+        LeafLiveStructuralN2
+        LeafLiveStructuralWt2
+        LeafTotalStructuralN2
+        LeafTotalNonStructuralN2
+        LeafTotalStructuralWt2
+        LeafTotalNonStructuralWt2
+        NoduleLiveWt
+        NoduleLiveN
+        NoduleNFixation
+        NoduleLiveNconc
 
-     Output file = Cultivar_Burbank Plant2 diagnostic variables.out
+     Output file = Fieldpea2 Plant2.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
 
-------- operations Initialisation ---------------------------------------------
-     Operations Schedule
-     ===================
-     20/10/2003  Prepare      fertiliser apply amount= 100 (kg/ha), type= urea_N (), depth= 10 (mm)
-     25/11/2003  Prepare      fertiliser apply amount= 69 (kg/ha), type= urea_N (), depth= 10 (mm)
-     26/11/2003  Prepare      irrigation apply amount= 15 (mm)
-      4/12/2003  Prepare      irrigation apply amount= 50 (mm)
-     16/12/2003  Prepare      irrigation apply amount= 15 (mm)
-     22/12/2003  Prepare      irrigation apply amount= 50 (mm)
-     30/12/2003  Prepare      irrigation apply amount= 50 (mm)
-       8/1/2004  Prepare      irrigation apply amount= 50 (mm)
-      21/1/2004  Prepare      irrigation apply amount= 50 (mm)
-      31/1/2004  Prepare      irrigation apply amount= 50 (mm)
-      27/2/2004  Prepare      irrigation apply amount= 25 (mm)
-     25/12/2003  Prepare      fertiliser apply amount= 0 (kg/ha), type= urea_N (), depth= 10 (mm)
-
-------- Irrigation Initialisation ---------------------------------------------
-      Initialising
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
      
-        - Reading Parameters
-                      Irrigation parameters
-          -----------------------------------------------
-           Automatic Irrigation Application (Disabled)
-           critical fraction of available soil water =  0.50
-           depth for calculating available soil water =     600.00
-           Irrigation Allocation Budget (Disabled)
-          -----------------------------------------------
+     SECTION:- start_of_day
+             if (today = date('1-sep') then
+       fieldpea2 sow population =30, depth = 50, cultivar = primo, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class = plant
+              endif
+     END of rules
+     
 
 ------- Harvesting rule Initialisation ----------------------------------------
      Manager rules:
      
      SECTION:- end_of_day
-                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
-       potato2  harvest
-       potato2  endcrop
+                if chickpea2.phenologycurrentphasename = 'readyforharvesting'  then
+       chickpea2  harvest
+       chickpea2  endcrop
                 endif
      END of rules
      
-
-------- Potato Sowing Rule Initialisation -------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-     plant_population = 1/((770/1000)*(280/1000))
-     stemnumber2 = 2 + 700 * .02
-     if today = date('20/10/2003') then
-        potato2 sow population = plant_population, depth = 120, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 770, crop_class = plant
-     endif
-     
-     SECTION:- init
-     plant_population = 0
-     END of rules
-     
-     Manager creating a new local real variable : plant_population = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -284,7 +290,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  (0 - fieldpea2.leafliven2 - fieldpea2.leafdeadn2 - fieldpea2.stemliven - fieldpea2.stemdeadn - fieldpea2.tuberliven - fieldpea2.tuberdeadn ) * 10
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -294,7 +300,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     accumep = accumep - potato2.leaftranspiration
+     accumep = accumep - fieldpea2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -302,22 +308,22 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
+     if fieldpea2.leaflivewt2 > 0 then
+     leaflivenconc3 = (fieldpea2.leafliven2/fieldpea2.leaflivewt2)
      endif
-     if potato2.leafdeadwt > 0 then
-     leafdeadnconc3 = (potato2.leafdeadn/potato2.leafdeadwt)
+     if fieldpea2.leafdeadwt2 > 0 then
+     leafdeadnconc3 = (fieldpea2.leafdeadn2/fieldpea2.leafdeadwt2)
      endif
-     if potato2.tuberlivewt > 0 then
-     tuberlivenconc3 = (potato2.tuberliven/potato2.tuberlivewt)
+     if fieldpea2.tuberlivewt > 0 then
+     tuberlivenconc3 = (fieldpea2.tuberliven/fieldpea2.tuberlivewt)
      endif
-     if potato2.stemlivewt > 0 then
-     stemlivenconc3 = (potato2.stemliven/potato2.stemlivewt)
+     if fieldpea2.stemlivewt > 0 then
+     stemlivenconc3 = (fieldpea2.stemliven/fieldpea2.stemlivewt)
      endif
-     if potato2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+     if fieldpea2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
      endif
-     leavesperstem = potato2.leaftotalno / 3
+     leavesperstem = fieldpea2.leaftotalno / 3
      
      SECTION:- end_of_day
      if simday = 1 then
@@ -359,28 +365,36 @@ Paddock:
      
         - Reading Parameters
 
-------- Templeton Water Initialisation ----------------------------------------
+------- Templeton deep 1  Water Initialisation --------------------------------
      
          - Reading constants
      
         - Reading Soil Property Parameters
      
         - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Templeton deep 1  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
      Initial soilwater distributed using "sw" parameter.
      
      
      
                       Soil Profile Properties
         ---------------------------------------------------------------------
-              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
-                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
-            0.-  100.  0.080  0.160  0.330  0.500  0.330  1.200  0.613  0.550
-          100.-  300.  0.160  0.160  0.330  0.500  0.330  1.200  0.340  0.550
-          300.-  600.  0.150  0.150  0.310  0.440  0.310  1.200  0.048  0.550
-          600.-  900.  0.130  0.130  0.270  0.460  0.270  1.200  0.000  0.550
-          900.- 1200.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
-         1200.- 1500.  0.150  0.150  0.300  0.440  0.300  1.200  0.000  0.550
+            0.-  180.  0.077  0.154  0.374  0.456  0.374  1.311  0.823  0.496*******
+          180.-  330.  0.201  0.201  0.332  0.394  0.332  1.524  0.144  0.366389.229
+          330.-  730.  0.201  0.201  0.338  0.359  0.338  1.650  0.032  0.097 16.362
+          730.- 1000.  0.162  0.162  0.325  0.376  0.325  1.601  0.000  0.306 97.995
+         1000.- 1500.  0.162  0.162  0.325  0.376  0.325  1.601  0.000  0.306 97.995
         ---------------------------------------------------------------------
      
      
@@ -391,14 +405,13 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  100.      16.00      17.00      17.00      17.00
-          100.-  300.      32.00      34.00      34.00      34.00
-          300.-  600.      45.00      48.00      48.00      39.00
-          600.-  900.      39.00      42.00      42.00      57.00
-          900.- 1200.      45.00      45.00      45.00      42.00
-         1200.- 1500.      45.00      45.00      45.00      42.00
+            0.-  180.      27.72      39.60      39.60      14.76
+          180.-  330.      30.15      19.65      19.65       9.30
+          330.-  730.      80.40      54.80      54.80       8.40
+          730.- 1000.      43.74      44.01      44.01      13.77
+         1000.- 1500.      81.00      81.50      81.50      25.50
           ---------------------------------------------------------
-               Totals     222.00     231.00     231.00     231.00
+               Totals     263.01     239.56     239.56      71.73
           ---------------------------------------------------------
      
      
@@ -410,7 +423,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.18       88.00       35.40
+                   0.00        0.13       88.00       35.00
           ---------------------------------------------------------
      
      
@@ -419,14 +432,18 @@ Paddock:
                 Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
                                            mm
           ---------------------------------------------------------
-              68.00   20.00    0.80  450.00
+              73.00   20.00    0.80  450.00
           ---------------------------------------------------------
      
      
      
            Using Ritchie evaporation model
-            Cuml evap (U):            9.00 (mm^0.5)
-            CONA:                     4.40 ()
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
             Eo from priestly-taylor
 
 ------- surface organic matter Initialisation ---------------------------------
@@ -442,17 +459,18 @@ Paddock:
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          wheat     wheat         2000.0   800.0    10.0     0.0   0.632     0.0
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.6
+                      Effective Cover from Surface Materials =   0.4
      
 
-------- Templeton Nitrogen Initialisation -------------------------------------
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
      
         - Reading Parameters
      
         - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
      
      
      
@@ -465,14 +483,13 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  3.50   40.00    0.10    0.00
-             2     6.20  2.50   30.00    0.10    0.00
-             3     5.70  1.20   14.00    0.10    0.00
-             4     5.50  1.03   14.00    0.10    0.00
-             5     5.50  0.47    1.39    0.10    0.00
-             6     5.50  0.47    1.39    0.10    0.00
+             1     6.00  2.63   26.58    4.43    0.00
+             2     6.00  1.25    5.33    0.67    0.00
+             3     6.00  0.32    6.32    0.32    0.00
+             4     6.00  0.21    4.14    0.21    0.00
+             5     6.00  0.20    7.66    0.38    0.00
           ------------------------------------------------
-           Totals              100.78    0.60    0.00
+           Totals               50.02    6.01    0.00
           ------------------------------------------------
      
      
@@ -485,77 +502,54 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      41282.9  3589.8   717.1    89.6   497.6    16.6
-             2      59122.0  5141.0   878.0   109.8   333.5    11.1
-             3      43040.4  3742.6   159.6    20.0   183.0     6.1
-             4      37043.3  3221.2    36.7     4.6   100.5     3.3
-             5      16913.3  1470.7     6.7     0.8    55.1     1.8
-             6      16913.3  1470.7     6.7     0.8    30.3     1.0
+             1      60830.6  5530.1  1114.1   139.3   171.0     4.3
+             2      28324.1  2574.9   182.3    22.8   126.7     3.2
+             3      20818.9  1892.6    37.1     4.6    56.9     1.4
+             4       8986.3   816.9     4.9     0.6    33.2     0.8
+             5      16007.3  1455.2     2.7     0.3    12.2     0.3
           ---------------------------------------------------------
-           Totals  214315.2 18636.1  1804.8   225.6  1200.0    40.0
+           Totals  134967.3 12269.8  1341.1   167.6   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-      Sending apply message to fertiliser
-fertiliser: 
+     Manager sending message :- fieldpea2 sow  population = 30, depth = 50, cultivar = primo, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class = plant
+     Manager creating a new local real variable : initialsoilomn = 12447.39160
+     Manager creating a new local real variable : initialsurfaceomn = 5.00000
+     Manager creating a new local real variable : initialmineraln = 56.02629
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "irrigation".
+     Variables should have a value before they are used in an expression.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-   - Reading Fertiliser Type Parameters
-       100.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-     Manager creating a new local real variable : stemnumber2 = 2.00000
-     Manager creating a new local real variable : initialsoilomn = 18901.70700
-     Manager creating a new local real variable : initialsurfaceomn = 10.00000
-     Manager creating a new local real variable : initialmineraln = 201.38321
-20/10/2003 - Peeping
+     
+     Manager creating a new local real variable : irrigation = 0.00000
+2/09/1990 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-11/11/2003 - Emergence
+16/09/1990 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-25 November 2003(Day of year=329), operations: 
-      Sending apply message to fertiliser
-25 November 2003(Day of year=329), fertiliser: 
+4/11/1990 - EndJuvenile
+                            LAI = 0.32 (m^2/m^2)
+           Above Ground Biomass = 14.27 (g/m^2)
+11/11/1990 - FloralInitiation
+                            LAI = 0.77 (m^2/m^2)
+           Above Ground Biomass = 34.03 (g/m^2)
+12/11/1990 - Flowering
+                            LAI = 0.86 (m^2/m^2)
+           Above Ground Biomass = 37.54 (g/m^2)
+14/12/1990 - StartPodGrowth
+                            LAI = 2.60 (m^2/m^2)
+           Above Ground Biomass = 189.15 (g/m^2)
+21 December 1990(Day of year=355): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Invalid allocation of potential DM in Stem
+     Component name: FieldPea2
      
-   - Reading Fertiliser Type Parameters
-        69.00 of N as urea (urea_n)
-                                         added at depth   10.00 (layer   1)
-26 November 2003(Day of year=330), operations: 
-      Sending apply message to irrigation
-4 December 2003(Day of year=338), operations: 
-      Sending apply message to irrigation
-8/12/2003 - FloralInitiation
-                            LAI = 1.06 (m^2/m^2)
-           Above Ground Biomass = 83.42 (g/m^2)
-10/12/2003 - TuberInitiation
-                            LAI = 1.35 (m^2/m^2)
-           Above Ground Biomass = 106.01 (g/m^2)
-16 December 2003(Day of year=350), operations: 
-      Sending apply message to irrigation
-22 December 2003(Day of year=356), operations: 
-      Sending apply message to irrigation
-25 December 2003(Day of year=359), operations: 
-      Sending apply message to fertiliser
-30 December 2003(Day of year=364), operations: 
-      Sending apply message to irrigation
-8 January 2004(Day of year=8), operations: 
-      Sending apply message to irrigation
-21 January 2004(Day of year=21), operations: 
-      Sending apply message to irrigation
-31 January 2004(Day of year=31), operations: 
-      Sending apply message to irrigation
-9/02/2004 - FinalLeaf
-                            LAI = 3.40 (m^2/m^2)
-           Above Ground Biomass = 451.33 (g/m^2)
-27 February 2004(Day of year=58), operations: 
-      Sending apply message to irrigation
-Removing Leaves from plant
-30/04/2004 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 144.35 (g/m^2)
-23/05/2004 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 144.35 (g/m^2)
-23 May 2004(Day of year=144), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 endcrop
-23 May 2004(Day of year=144), clock: 
-     Simulation is terminating due to end criteria being met.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
