@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-public partial class SurfaceOM2 : Instance
+public partial class SurfaceOrganicMatter : Instance
 {
     /*
             /// <summary>

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using System.Text;
 using System.Xml;
 
-
-public partial class SurfaceOM2 : Instance
+public partial class SurfaceOrganicMatter : Instance
 {
+    const double acceptableErr = 1e-4;
+
     #region Residue/Tillage Types
 
     public class ResiduesType
@@ -170,25 +170,6 @@ public partial class SurfaceOM2 : Instance
     
     #endregion
 
-    struct DecompReturnStruct
-    {
-        public float[] C_decomp, N_decomp, P_decomp;
-
-        public DecompReturnStruct(int len)
-        {
-            C_decomp = new float[len];
-            N_decomp = new float[len];
-            P_decomp = new float[len];
-        }
-
-        public DecompReturnStruct(float[] C_decomp, float[] N_decomp, float[] P_decomp)
-        {
-            this.C_decomp = C_decomp;
-            this.N_decomp = N_decomp;
-            this.P_decomp = P_decomp;
-        }
-    }
-
     #region Math Operations
 
     static float bound(float tobound, float lower, float upper)
@@ -237,7 +218,7 @@ public partial class SurfaceOM2 : Instance
     const string apsim_bounds_warning_error =
 @"     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                      APSIM  Warning  Error
-                      ---------------------
+                     ---------------------
      '{0}' out of bounds!
      {1} < {2} < {3} evaluates 'FALSE'
      Component name: SurfaceOMdotNET

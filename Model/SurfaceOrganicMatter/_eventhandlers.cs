@@ -2,28 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-
-public partial class SurfaceOM2 : Instance
+public partial class SurfaceOrganicMatter : Instance
 {
-    /* EVENT MASTER LIST FROM LOGS
-     *      
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="tick" type="type description='Change in the simulation system time and the duration of the new time step'   field name='startday' kind='integer4' description='Day number of the start of the timestep'    field name='startsec' kind='integer4' description='Seconds past midnight of the start of the timestep (0-86399)'    field name='startsecpart' kind='double' description='Fraction of a second of the start of the timestep (0-1)'    field name='endday' kind='integer4' description='Day number of the end of the timestep'    field name='endsec' kind='integer4' description='Seconds past midnight of the end of the timestep (0-86399)'    field name='endsecpart' kind='double' description='Fraction of a second of the end of the timestep (0-1)'    type"/>     
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="tillage" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="tillage_single" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="add_surfaceom" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="sysinit" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="reset" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="create" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="sum_report" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="remove_surfaceom" type="type   field name='Pool' array='T'   element   field name='Name' kind='string'    field name='OrganicMatterType' kind='string'    field name='PotDecompRate' kind='single' unit='day^-1'    field name='no3' kind='single' unit='kgha'    field name='nh4' kind='single' unit='kgha'    field name='po4' kind='single' unit='kgha'    field name='StandingFraction' array='T'   element   field name='amount' kind='single' unit='kgha'    field name='C' kind='single' unit='kgha'    field name='N' kind='single' unit='kgha'    field name='P' kind='single' unit='kgha'    field name='AshAlk' kind='single' unit='kgha'    element   field   field name='LyingFraction' array='T'   element   field name='amount' kind='single' unit='kgha'    field name='C' kind='single' unit='kgha'    field name='N' kind='single' unit='kgha'    field name='P' kind='single' unit='kgha'    field name='AshAlk' kind='single' unit='kgha'    element   field   element   field   type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="newmet" type="type   field name='today' kind='double'    field name='radn' kind='single' lower_bound='0.0' upper_bound='50.0' unit='MJm^2'    field name='maxt' kind='single' lower_bound='-10.0' upper_bound='70.0' unit='oC'    field name='mint' kind='single' lower_bound='-20.0' upper_bound='50.0' unit='oC'    field name='rain' kind='single' lower_bound='0.0' upper_bound='1000.0' unit='mm'    field name='vp' kind='single' unit='hPa'    type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="irrigated" type="type   field name='param1_name' kind='string'    field name='param1_numbytes' kind='integer4'    field name='param1_code' kind='integer4'    field name='param1_isarray' kind='boolean'    field name='param1_value' kind='string' array='T'    field name='param2_name' kind='string'    field name='param2_numbytes' kind='integer4'    field name='param2_code' kind='integer4'    field name='param2_isarray' kind='boolean'    field name='param2_value' kind='string' array='T'    field name='param3_name' kind='string'    field name='param3_numbytes' kind='integer4'    field name='param3_code' kind='integer4'    field name='param3_isarray' kind='boolean'    field name='param3_value' kind='string' array='T'    field name='param4_name' kind='string'    field name='param4_numbytes' kind='integer4'    field name='param4_code' kind='integer4'    field name='param4_isarray' kind='boolean'    field name='param4_value' kind='string' array='T'    field name='param5_name' kind='string'    field name='param5_numbytes' kind='integer4'    field name='param5_code' kind='integer4'    field name='param5_isarray' kind='boolean'    field name='param5_value' kind='string' array='T'    field name='param6_name' kind='string'    field name='param6_numbytes' kind='integer4'    field name='param6_code' kind='integer4'    field name='param6_isarray' kind='boolean'    field name='param6_value' kind='string' array='T'    field name='param7_name' kind='string'    field name='param7_numbytes' kind='integer4'    field name='param7_code' kind='integer4'    field name='param7_isarray' kind='boolean'    field name='param7_value' kind='string' array='T'    type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="crop_chopped" type="type   field name='param1_name' kind='string'    field name='param1_numbytes' kind='integer4'    field name='param1_code' kind='integer4'    field name='param1_isarray' kind='boolean'    field name='param1_value' kind='string' array='T'    field name='param2_name' kind='string'    field name='param2_numbytes' kind='integer4'    field name='param2_code' kind='integer4'    field name='param2_isarray' kind='boolean'    field name='param2_value' kind='string' array='T'    field name='param3_name' kind='string'    field name='param3_numbytes' kind='integer4'    field name='param3_code' kind='integer4'    field name='param3_isarray' kind='boolean'    field name='param3_value' kind='string' array='T'    field name='param4_name' kind='string'    field name='param4_numbytes' kind='integer4'    field name='param4_code' kind='integer4'    field name='param4_isarray' kind='boolean'    field name='param4_value' kind='string' array='T'    field name='param5_name' kind='string'    field name='param5_numbytes' kind='integer4'    field name='param5_code' kind='integer4'    field name='param5_isarray' kind='boolean'    field name='param5_value' kind='string' array='T'    field name='param6_name' kind='string'    field name='param6_numbytes' kind='integer4'    field name='param6_code' kind='integer4'    field name='param6_isarray' kind='boolean'    field name='param6_value' kind='string' array='T'    field name='param7_name' kind='string'    field name='param7_numbytes' kind='integer4'    field name='param7_code' kind='integer4'    field name='param7_isarray' kind='boolean'    field name='param7_value' kind='string' array='T'    type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="BiomassRemoved" type="type   field name='crop_type' kind='string'    field name='dm_type' kind='string' array='T'    field name='dlt_crop_dm' kind='single' array='T'    field name='dlt_dm_n' kind='single' array='T'    field name='dlt_dm_p' kind='single' array='T'    field name='fraction_to_residue' kind='single' array='T'    type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="process" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="post" type="type"/>
-    <message4 to=".MasterPM.paddock" msgtype="Register" ack="false" kind="respondToEvent" name="actualresiduedecompositioncalculated" type="type   field name='Pool' array='T'   element   field name='Name' kind='string'    field name='OrganicMatterType' kind='string'    field name='FOM'   field name='amount' kind='single' unit='kgha'    field name='C' kind='single' unit='kgha'    field name='N' kind='single' unit='kgha'    field name='P' kind='single' unit='kgha'    field name='AshAlk' kind='single' unit='kgha'    field   element   field   type"/>
-     */
 
     [EventHandler]
     public void OnTick() { }
@@ -38,7 +18,7 @@ public partial class SurfaceOM2 : Instance
     public void OnAdd_surfaceom() { surfom_add_surfom(); }
     
     [EventHandler]
-    public void OnInit2() { surfom_Reset(); }
+    public void OnInit1() { surfom_Reset(); }
     
     [EventHandler]
     public void OnReset() { surfom_Reset(); }
@@ -281,12 +261,7 @@ public partial class SurfaceOM2 : Instance
 
 
             //calculate potential decompostion of C, N, and P;
-            DecompReturnStruct d = surfom_Pot_Decomp();
-
-
-            c_pot_decomp = d.C_decomp;
-            n_pot_decomp = d.N_decomp;
-            p_pot_decomp = d.P_decomp;
+            surfom_Pot_Decomp(out c_pot_decomp, out n_pot_decomp, out p_pot_decomp);
 
             for (int counter = 0; counter < num_surfom; counter++)
             {
@@ -298,7 +273,7 @@ public partial class SurfaceOM2 : Instance
                 tot_c_decomp = SOMDecomp.Pool[counter].FOM.C;
                 tot_n_decomp = SOMDecomp.Pool[counter].FOM.N;
 
-                Bound_check_real_var(tot_n_decomp, 0.0f, d.N_decomp[residue_no], "total n decompostion");
+                Bound_check_real_var(tot_n_decomp, 0.0f, n_pot_decomp[residue_no], "total n decompostion");
 
                 //check if C:N ratio of decomposed material is correct;
                 for (int i = 0; i < g.SurfOM[residue_no].Standing.Length; i++)
@@ -313,14 +288,14 @@ public partial class SurfaceOM2 : Instance
                 {
                     //all OK - nothing happening;
                 }
-                else if (tot_c_decomp > c_pot_decomp[residue_no] + float.Epsilon)
+                else if (tot_c_decomp > c_pot_decomp[residue_no] + acceptableErr)
                 {
                     throw new Exception("SurfaceOM - C decomposition exceeds potential rate");
                 }
-                else if (tot_n_decomp > n_pot_decomp[residue_no] + float.Epsilon)
+                else if (tot_n_decomp > n_pot_decomp[residue_no] + acceptableErr)
                 {
                     throw new Exception("SurfaceOM - N decomposition exceeds potential rate");
-                    //NIH - If both the following tests are empty { they can both be deleted.
+                    //NIH - If both the following tests are empty then they can both be deleted.
                 }
                 else if (reals_are_equal(divide(tot_c_decomp, tot_n_decomp, 0.0f), SOMcnr))
                 {

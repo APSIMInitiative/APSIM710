@@ -1,4 +1,4 @@
-﻿<Type version="25" name="SurfaceOM2">
+﻿<Type version="25" name="SurfaceOrganicMatter">
   <MetaData>
     <UItype>VBUserInterface.GenericUI</UItype>
     <ShowInMainTree>Yes</ShowInMainTree>
@@ -6,7 +6,7 @@
     <Documentation name="Science documentation">../apsim/surfaceom/docs/surfaceom_science.htm</Documentation>
     <LargeIcon>%apsim%/UserInterface/Images/som32.png</LargeIcon>
     <SmallIcon>%apsim%/UserInterface/Images/som16.png</SmallIcon>
-    <dll>%apsim%/Model/SurfaceOM2.%dllext%</dll>
+    <dll>%apsim%/Model/SurfaceOrganicMatter.%dllext%</dll>
     <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
@@ -19,27 +19,27 @@
       <bound name="cnr" min="0.0" />
     </bounds>
     <ApsimToSim>
-      <component name="[SurfaceOM2.name]" executable="[dll]">
+      <component name="[SurfaceOrganicMatter.name]" executable="[dll]">
         <componentinterface>%apsim%/Model/dotnetcomponentinterface.dll</componentinterface>
         <executable>[dll]</executable>
         <initdata>
           [Model]
-            <name>[SurfaceOM2.PoolName]</name>
-            <type>[SurfaceOM2.type]</type>
-            <mass>[SurfaceOM2.mass]</mass>
-            <cnr>[SurfaceOM2.cnr]</cnr>
+            <name>[SurfaceOrganicMatter.PoolName]</name>
+            <type>[SurfaceOrganicMatter.type]</type>
+            <mass>[SurfaceOrganicMatter.mass]</mass>
+            <cnr>[SurfaceOrganicMatter.cnr]</cnr>
           
-            [if [SurfaceOM2.cpr]]
-              <cpr>[SurfaceOM2.cpr]</cpr>
+            [if [SurfaceOrganicMatter.cpr]]
+              <cpr>[SurfaceOrganicMatter.cpr]</cpr>
             [endif]
             
-            <standing_fraction>[SurfaceOM2.standing_fraction]</standing_fraction>
+            <standing_fraction>[SurfaceOrganicMatter.standing_fraction]</standing_fraction>
         </initdata>
       </component>
     </ApsimToSim>
   </MetaData>
   <Model>
-    <SurfaceOM2>
+    <SurfaceOrganicMatter>
       <PoolName description="Organic Matter pool name">wheat_stubble</PoolName>
       <type type="list" description="Organic Matter type" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat">wheat</type>
       <mass description="Initial surface residue (kg/ha)">1000.</mass>
@@ -474,7 +474,44 @@
         <carry_cereal_forage>   0.95          0  </carry_cereal_forage>
 
       </tillage>
-    </SurfaceOM2>
+    </SurfaceOrganicMatter>
   </Model>
-  
+  <Info>
+    <variables>
+      <variable name="surfaceom_wt" description="Total mass of all surface organic materials"/>
+      <variable name="surfaceom_c" description="Total mass of all surface organic carbon"/>
+      <variable name="surfaceom_n" description="Total mass of all surface organic nitrogen"/>
+      <variable name="surfaceom_p" description="Total mass of all surface organic phosphor"/>
+      <variable name="surfaceom_no3" description="Total mass of nitrate"/>
+      <variable name="surfaceom_nh4" description="Total mass of ammonium"/>
+      <variable name="surfaceom_labile_p" description="Total mass of labile phosphorus"/>
+      <variable name="surfaceom_cover" description="Fraction of ground covered by all surface OMs"/>
+      <variable name="tf" description="Temperature factor for decomposition"/>
+      <variable name="cf" description="Contact factor for decomposition"/>
+      <variable name="surfaceom_wt_rice" description="Mass of organic matter named wheat"/>
+      <variable name="surfaceom_wt_algae" description="Mass of organic matter named algae"/>
+      <variable name="surfaceom_wt_all" description="Mass of organic matter named all pools"/>
+      <variable name="surfaceom_c_all"  description="Mass of organic carbon in all pools"/>
+      <variable name="surfaceom_n_all"  description="Mass of organic nitrogen in all pools"/>
+      <variable name="surfaceom_p_all"  description="Mass of organic phosphor in all pools"/>
+      <variable name="surfaceom_no3_all" description="Mass of nitrate in all pools"/>
+      <variable name="surfaceom_nh4_all" description="Mass of ammonium in all pools"/>
+      <variable name="surfaceom_labile_p_all" description="Mass of labile phosphorus in all pools"/>
+      <variable name="surfaceom_c1_all" description="Mass of organic carbon in all pools in fpool1"/>
+      <variable name="surfaceom_c2_all" description="Mass of organic carbon in all pools in fpool2"/>
+      <variable name="surfaceom_c3_all" description="Mass of organic carbon in all pools in fpool3"/>
+      <variable name="surfaceom_n1_all" description="Mass of organic nitrogen in all pools in fpool1"/>
+      <variable name="surfaceom_n2_all" description="Mass of organic nitrogen in all pools in fpool2"/>
+      <variable name="surfaceom_n3_all" description="Mass of organic nitrogen in all pools in fpool3"/>
+      <variable name="surfaceom_p1_all" description="Mass of organic phosphorous in all pools in fpool1"/>
+      <variable name="surfaceom_p2_all" description="Mass of organic phosphorous in all pools in fpool2"/>
+      <variable name="surfaceom_p3_all" description="Mass of organic phosphorous in all pools in fpool3"/>
+      <variable name="pot_c_decomp_all" description="Potential organic C decomposition in all pools"/>
+      <variable name="pot_n_decomp_all" description="Potential organic N decomposition in all pools"/>
+      <variable name="pot_p_decomp_all" description="Potential organic P decomposition in all pools"/>
+      <variable name="standing_fr_all" description="Fraction of all pools which is inert, ie not in contact with the ground"/>
+      <variable name="surfaceom_cover_all" description="Fraction of ground covered by all pools"/>
+      <variable name="cnrf_all" description="C:N ratio factor for decomposition for all pools"/>
+    </variables>
+  </Info>
 </Type>

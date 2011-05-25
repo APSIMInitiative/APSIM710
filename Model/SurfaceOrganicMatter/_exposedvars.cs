@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-
-
-public partial class SurfaceOM2 : Instance
+public partial class SurfaceOrganicMatter : Instance
 {
     #region BensParams
 
@@ -183,7 +181,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of all surface organic materials
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_wt
     {
         get
@@ -204,7 +202,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of all surface organic carbon
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_c
     {
         get
@@ -221,7 +219,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of all surface organic nitrogen
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_n
     {
         get
@@ -238,7 +236,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of all surface organic phosphor
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_p
     {
         get
@@ -269,7 +267,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of nitrate
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_no3
     {
         get
@@ -285,7 +283,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of ammonium
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_nh4
     {
         get
@@ -301,7 +299,7 @@ public partial class SurfaceOM2 : Instance
     ///Total mass of labile phosphorus
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float surfaceom_labile_p
     {
         get
@@ -317,20 +315,8 @@ public partial class SurfaceOM2 : Instance
     ///Fraction of ground covered by all surface OMs
     ///</summary>
     [Output]
-    [Units("")]
-    public float surfaceom_cover {
-        get
-        {
-            //try
-            {
-                return surfom_cover_total();
-            }
-            //catch(Exception e)
-           // {
-                //return 0;
-            //}
-        }
-    }
+    [Units("m^2/m^2")]
+    public float surfaceom_cover { get { return surfom_cover_total(); } }
 
     ///<summary>
     ///Temperature factor for decomposition
@@ -353,10 +339,6 @@ public partial class SurfaceOM2 : Instance
     [Output]
     [Units("")]
     public float leaching_fr { get { return g.leaching_fr; } }
-
-    [Output]
-    [Units("")]
-    public SurfaceOrganicMatterType surface_organic_matter { get { return respond2get_SurfaceOrganicMatter(); } }
 
     ///<summary>
     ///Mass of organic matter named wheat
@@ -711,21 +693,48 @@ public partial class SurfaceOM2 : Instance
     ///</summary>
     [Output]
     [Units("")]
-    public float[] pot_c_decomp_all { get { return surfom_Pot_Decomp().C_decomp; } }
+    public float[] pot_c_decomp_all
+    {
+        get
+        {
+            float[] c, n, p;
+            surfom_Pot_Decomp(out c, out n, out p);
+
+            return c;
+        }
+    }
 
     ///<summary>
     ///Potential organic N decomposition in all pools
     ///</summary>
     [Output]
     [Units("")]
-    public float[] pot_n_decomp_all { get { return surfom_Pot_Decomp().N_decomp; } }
+    public float[] pot_n_decomp_all
+    {
+        get
+        {
+            float[] c, n, p;
+            surfom_Pot_Decomp(out c, out n, out p);
+
+            return n;
+        }
+    }
 
     ///<summary>
     ///Potential organic P decomposition in all pools
     ///</summary>
     [Output]
     [Units("")]
-    public float[] pot_p_decomp_all { get { return surfom_Pot_Decomp().P_decomp; } }
+    public float[] pot_p_decomp_all
+    {
+        get
+        {
+            float[] c, n, p;
+            surfom_Pot_Decomp(out c, out n, out p);
+
+            return p;
+        }
+    }
 
     ///<summary>
     ///Fraction of all pools which is inert, ie not in contact with the ground
