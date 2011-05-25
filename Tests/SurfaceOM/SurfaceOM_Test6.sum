@@ -10,19 +10,21 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Surface Organic Matter Module Test 6
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+Title                  = SurfaceOM_Test6
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                       "canola" = %apsim%\Model\Plant.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
-   Component                      "sorghum" = %apsim%\Model\sorghum.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -38,48 +40,50 @@ Title                  = Surface Organic Matter Module Test 6
      Simulation end date   = 31/12/1993
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
-     Output variables:
-        clock.day
-        clock.year
-        wheat.biomass as wht_biomass
-        sorghum.biomass as sor_biomass
-        canola.biomass as can_biomass
-        SurfaceOM.surfaceom_wt
-        SurfaceOM.surfaceom_wt_old_wheat
-        SurfaceOM.surfaceom_wt_wheat
-        SurfaceOM.surfaceom_wt_sorghum
-        SurfaceOM.surfaceom_wt_canola
-        SurfaceOM.surfaceom_cover
-        SurfaceOM.surfaceom_cover_old_wheat
-        SurfaceOM.surfaceom_cover_wheat
-        SurfaceOM.surfaceom_cover_sorghum
-        SurfaceOM.surfaceom_cover_canola
-
-     Output file = test6.out
-     Format = normal
-
-------- Met Initialisation ----------------------------------------------------
+------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: optimum_long.met
 
-------- Irrigation Initialisation ---------------------------------------------
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        year
+        wheat.biomass as wht_biomass
+        sorghum.biomass as sor_biomass
+        canola.biomass as can_biomass
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_old_wheat
+        surfaceom.surfaceom_wt_wheat
+        surfaceom.surfaceom_wt_sorghum
+        surfaceom.surfaceom_wt_canola
+        surfaceom.surfaceom_cover
+        surfaceom.surfaceom_cover_old_wheat
+        surfaceom.surfaceom_cover_wheat
+        surfaceom.surfaceom_cover_sorghum
+        surfaceom.surfaceom_cover_canola
+
+     Output file = SurfaceOM_Test6 report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- irrigation Initialisation ---------------------------------------------
       Initialising
      
         - Reading Parameters
                       Irrigation parameters
           -----------------------------------------------
            Automatic Irrigation Application (Disabled)
-           critical fraction of available soil water =  0.00
-           depth for calculating available soil water =       0.00
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
 ------- manager Initialisation ------------------------------------------------
      Manager rules:
-     
-     SECTION:- end_of_day
-     report do_output
      
      SECTION:- start_of_day
      if day = 169 and year = 1986 then
@@ -121,7 +125,7 @@ Title                  = Surface Organic Matter Module Test 6
      END of rules
      
 
-------- SoilWat Initialisation ------------------------------------------------
+------- soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -174,7 +178,7 @@ Title                  = Surface Organic Matter Module Test 6
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   2.00        0.13       88.00       35.40
+                   0.00        0.13       88.00       35.40
           ---------------------------------------------------------
      
      
@@ -215,7 +219,7 @@ Title                  = Surface Organic Matter Module Test 6
                       Effective Cover from Surface Materials =   0.9
      
 
-------- SoilN Initialisation --------------------------------------------------
+------- soil Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      
@@ -447,7 +451,7 @@ Title                  = Surface Organic Matter Module Test 6
      
      Manager sending message :- irrigation apply  amount = 150 (mm)
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
-1 November 1986(Day of year=305), Fertiliser: 
+1 November 1986(Day of year=305), fertiliser: 
      
    - Reading Fertiliser Type Parameters
        100.00 of N as nitrate (no3_n)
@@ -531,7 +535,7 @@ Title                  = Surface Organic Matter Module Test 6
                          P  (kg/ha) =                  0.00		    0.00
 10 May 1989(Day of year=130), manager: 
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = no3_n
-10 May 1989(Day of year=130), Fertiliser: 
+10 May 1989(Day of year=130), fertiliser: 
      
    - Reading Fertiliser Type Parameters
        100.00 of N as nitrate (no3_n)

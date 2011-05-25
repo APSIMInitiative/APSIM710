@@ -10,14 +10,15 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Surface Organic Matter Module Test 4
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+Title                  = SurfaceOM_Test1
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -33,36 +34,32 @@ Title                  = Surface Organic Matter Module Test 4
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
-     Output variables:
-        clock.day
-        clock.year
-        SurfaceOM.surfaceom_wt
-        SurfaceOM.surfaceom_wt_residue1
-        SurfaceOM.surfaceom_wt_residue2
-        SurfaceOM.surfaceom_cover_residue1
-        SurfaceOM.surfaceom_cover_residue2
-        SurfaceOM.surfaceom_cover
-        SurfaceOM.tf
-        SurfaceOM.wf
-        SurfaceOM.cf
-
-     Output file = test4.out
-     Format = normal
-
-------- Met Initialisation ----------------------------------------------------
+------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: optimum.MET
 
-------- manager Initialisation ------------------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-     report do_output
-     END of rules
-     
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        year
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_residue1
+        surfaceom.surfaceom_wt_residue2
+        surfaceom.surfaceom_n_residue1
+        surfaceom.surfaceom_n_residue2
+        surfaceom.tf
+        surfaceom.wf
+        surfaceom.cf
 
-------- SoilWat Initialisation ------------------------------------------------
+     Output file = SurfaceOM_Test1 report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -115,7 +112,7 @@ Title                  = Surface Organic Matter Module Test 4
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   2.00        0.13       88.00       35.40
+                   0.00        0.13       88.00       35.40
           ---------------------------------------------------------
      
      
@@ -147,14 +144,14 @@ Title                  = Surface Organic Matter Module Test 4
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          residue1  lucerne      20000.0  8000.0   800.0     0.0   0.982     0.0
-          residue2  lucerne      20000.0  8000.0   800.0     0.0   0.982     0.5
+          residue1  lucerne       4000.0  1600.0   160.0     0.0   0.551     0.0
+          residue2  lucerne       4000.0  1600.0   160.0     0.0   0.551     0.5
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   1.0
+                      Effective Cover from Surface Materials =   0.8
      
 
-------- SoilN Initialisation --------------------------------------------------
+------- soil Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      

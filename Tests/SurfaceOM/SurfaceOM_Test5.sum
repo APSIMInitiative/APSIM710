@@ -10,14 +10,19 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Surface Organic Matter Module Test 3
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+Title                  = SurfaceOM_Test5
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                "Planting rule" = %apsim%\Model\Manager.dll
+   Component                 "Cutting rule" = %apsim%\Model\Manager.dll
+   Component                "Kill Bambatsi" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "bambatsi" = %apsim%\Model\Growth.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -33,35 +38,63 @@ Title                  = Surface Organic Matter Module Test 3
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
-     Output variables:
-        clock.day
-        clock.year
-        SurfaceOM.surfaceom_wt
-        SurfaceOM.surfaceom_wt_residue1
-        SurfaceOM.surfaceom_wt_residue2
-        SurfaceOM.surfaceom_n_residue1
-        SurfaceOM.surfaceom_n_residue2
-        SurfaceOM.tf
-        SurfaceOM.wf
-        SurfaceOM.cf
-
-     Output file = test3.out
-     Format = normal
-
-------- Met Initialisation ----------------------------------------------------
+------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: optimum.MET
 
-------- manager Initialisation ------------------------------------------------
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        year
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_residue1
+        surfaceom.surfaceom_wt_residue2
+        surfaceom.surfaceom_wt_bambatsi
+        bambatsi.foliage_mass
+        bambatsi.adm_green(1)  as stem_mass
+
+     Output file = SurfaceOM_Test5 report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Planting rule Initialisation ------------------------------------------
      Manager rules:
+     
+     SECTION:- start_of_day
+              if (date('10-jan') = today) and bambatsi.plant_status = 'out' then
+        bambatsi  establish plants =1000000, init_section = seedling
+              endif
+     END of rules
+     
+
+------- Cutting rule Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (bambatsi.biomass > 2000 and bambatsi.plant_status = 'alive' then
+        bambatsi  cut foliage_remove_fr = 0.9, adm_remove_fr = 0.9
+              endif
+     END of rules
+     
+
+------- Kill Bambatsi Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 11 then
+        bambatsi  kill
+     endif
      
      SECTION:- end_of_day
      report do_output
      END of rules
      
 
-------- SoilWat Initialisation ------------------------------------------------
+------- soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -114,7 +147,7 @@ Title                  = Surface Organic Matter Module Test 3
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   2.00        0.13       88.00       35.40
+                   0.00        0.13       88.00       35.40
           ---------------------------------------------------------
      
      
@@ -146,14 +179,15 @@ Title                  = Surface Organic Matter Module Test 3
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          residue1  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.0
-          residue2  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.5
+          residue1  bambatsi       200.0    80.0     8.0     0.0   0.095     0.0
+          residue2  bambatsi       200.0    80.0     8.0     0.0   0.095     0.5
+          bambatsi  bambatsi         0.0     0.0     0.0     0.0   0.000     0.0
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.8
+                      Effective Cover from Surface Materials =   0.2
      
 
-------- SoilN Initialisation --------------------------------------------------
+------- soil Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      
@@ -202,5 +236,13 @@ Title                  = Surface Organic Matter Module Test 3
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+10 January 1988(Day of year=10), Planting rule: 
+     Manager sending message :- bambatsi establish  plants = 1000000, init_section = seedling
+10 January 1988(Day of year=10), bambatsi: 
+     Establishing
+11 January 1988(Day of year=11), Kill Bambatsi: 
+     Manager sending message :- bambatsi kill
+11 January 1988(Day of year=11), bambatsi: 
+     Killing
 30 January 1988(Day of year=30), clock: 
      Simulation is terminating due to end criteria being met.

@@ -10,15 +10,15 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Surface Organic Matter Module Test 5
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+Title                  = SurfaceOM_Test3
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                        "SoilN" = %apsim%\Model\SoilN.dll
-   Component                     "bambatsi" = %apsim%\Model\growth.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -34,41 +34,32 @@ Title                  = Surface Organic Matter Module Test 5
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
-     Output variables:
-        clock.day
-        clock.year
-        SurfaceOM.surfaceom_wt
-        SurfaceOM.surfaceom_wt_residue1
-        SurfaceOM.surfaceom_wt_residue2
-        SurfaceOM.surfaceom_wt_bambatsi
-        bambatsi.foliage_mass
-        bambatsi.adm_green(1)  as stem_mass
-
-     Output file = test5.out
-     Format = normal
-
-------- Met Initialisation ----------------------------------------------------
+------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: optimum.MET
 
-------- manager Initialisation ------------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-     if day = 10 then
-        bambatsi establish plants = 1000000 (/ha), init_section = dummy
-        report do_output
-        bambatsi  kill
-        report do_output
-     endif
-     
-     SECTION:- end_of_day
-     report do_output
-     END of rules
-     
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        year
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_residue1
+        surfaceom.surfaceom_wt_residue2
+        surfaceom.surfaceom_n_residue1
+        surfaceom.surfaceom_n_residue2
+        surfaceom.tf
+        surfaceom.wf
+        surfaceom.cf
 
-------- SoilWat Initialisation ------------------------------------------------
+     Output file = SurfaceOM_Test3 report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -121,7 +112,7 @@ Title                  = Surface Organic Matter Module Test 5
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   2.00        0.13       88.00       35.40
+                   0.00        0.13       88.00       35.40
           ---------------------------------------------------------
      
      
@@ -153,15 +144,14 @@ Title                  = Surface Organic Matter Module Test 5
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          residue1  bambatsi       200.0    80.0     8.0     0.0   0.095     0.0
-          residue2  bambatsi       200.0    80.0     8.0     0.0   0.095     0.5
-          bambatsi  bambatsi         0.0     0.0     0.0     0.0   0.000     0.0
+          residue1  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.0
+          residue2  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.5
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.2
+                      Effective Cover from Surface Materials =   0.8
      
 
-------- SoilN Initialisation --------------------------------------------------
+------- soil Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      
@@ -210,11 +200,5 @@ Title                  = Surface Organic Matter Module Test 5
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-10 January 1988(Day of year=10), manager: 
-     Manager sending message :- bambatsi establish  plants = 1000000 (/ha), init_section = dummy
-10 January 1988(Day of year=10), bambatsi: 
-     Establishing
-     Manager sending message :- bambatsi kill
-     Killing
 30 January 1988(Day of year=30), clock: 
      Simulation is terminating due to end criteria being met.

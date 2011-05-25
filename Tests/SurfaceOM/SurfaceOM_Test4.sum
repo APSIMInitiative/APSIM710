@@ -10,14 +10,15 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Surface Organic Matter Module Test 2
-   Component                        "clock" = %apsim%\Model\clock.dll
-   Component                       "report" = %apsim%\Model\report.dll
-   Component                          "Met" = %apsim%\Model\input.dll
-   Component                      "manager" = %apsim%\Model\manager.dll
-   Component                      "SoilWat" = %apsim%\Model\SoilWat.dll
+Title                  = SurfaceOM_Test4
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
-   Component                        "SoilN" = %apsim%\Model\SoilN.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -33,50 +34,33 @@ Title                  = Surface Organic Matter Module Test 2
      Simulation end date   = 30/01/1988
      Time step =           = 1440 (mins)
 
-------- report Initialisation -------------------------------------------------
-     Output variables:
-        clock.day
-        clock.year
-        SurfaceOM.surfaceom_wt
-        SurfaceOM.surfaceom_wt_residue1
-        SurfaceOM.surfaceom_wt_residue2
-        SurfaceOM.surfaceom_wt_residue3
-        SurfaceOM.surfaceom_n_residue1
-        SurfaceOM.surfaceom_n_residue2
-        SurfaceOM.surfaceom_n_residue3
-        SoilN.fom_c()
-        SoilN.fom_c
-
-     Output file = test2.out
-     Format = normal
-
-------- Met Initialisation ----------------------------------------------------
+------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: optimum.MET
 
-------- manager Initialisation ------------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-     if day = 10 then
-        surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 100.
-     endif
-     if day = 15 then
-        surfaceom tillage type = disc, f_incorp = 0.5, tillage_depth = 0.
-     endif
-     if day = 20 then
-        surfaceom add_surfaceom name=residue1, type = inert, mass=2000, cnr = 10, cpr = 100
-     endif
-     if day = 25 then
-        surfaceom add_surfaceom name=residue3, type = inert, mass=2000, cnr = 10, cpr = 100
-     endif
-     
-     SECTION:- end_of_day
-     report do_output
-     END of rules
-     
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        year
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_residue1
+        surfaceom.surfaceom_wt_residue2
+        surfaceom.surfaceom_cover_residue1
+        surfaceom.surfaceom_cover_residue2
+        surfaceom.surfaceom_cover
+        surfaceom.tf
+        surfaceom.wf
+        surfaceom.cf
 
-------- SoilWat Initialisation ------------------------------------------------
+     Output file = SurfaceOM_Test4 report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- soil Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -129,7 +113,7 @@ Title                  = Surface Organic Matter Module Test 2
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   2.00        0.13       88.00       35.40
+                   0.00        0.13       88.00       35.40
           ---------------------------------------------------------
      
      
@@ -161,14 +145,14 @@ Title                  = Surface Organic Matter Module Test 2
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          residue1  inert         4000.0  1600.0   160.0     0.0   0.865     0.0
-          residue2  inert         4000.0  1600.0   160.0     0.0   0.865     0.5
+          residue1  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.0
+          residue2  lucerne       4000.0  1600.0    13.3     0.0   0.551     0.5
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   1.0
+                      Effective Cover from Surface Materials =   0.8
      
 
-------- SoilN Initialisation --------------------------------------------------
+------- soil Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      
@@ -217,21 +201,5 @@ Title                  = Surface Organic Matter Module Test 2
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-10 January 1988(Day of year=10), manager: 
-     Manager sending message :- surfaceom tillage  type = disc, f_incorp = 0.5, tillage_depth = 100.
-10 January 1988(Day of year=10), SurfaceOM: 
-     Residue removed using disc
-                                             Fraction Incorporated =     0.50
-                                             Incorporated Depth    =   100.00
-15 January 1988(Day of year=15), manager: 
-     Manager sending message :- surfaceom tillage  type = disc, f_incorp = 0.5, tillage_depth = 0.
-15 January 1988(Day of year=15), SurfaceOM: 
-     Residue removed using disc
-                                             Fraction Incorporated =     0.50
-                                             Incorporated Depth    =     0.00
-20 January 1988(Day of year=20), manager: 
-     Manager sending message :- surfaceom add_surfaceom  name = residue1, type = inert, mass = 2000, cnr = 10, cpr = 100
-25 January 1988(Day of year=25), manager: 
-     Manager sending message :- surfaceom add_surfaceom  name = residue3, type = inert, mass = 2000, cnr = 10, cpr = 100
 30 January 1988(Day of year=30), clock: 
      Simulation is terminating due to end criteria being met.
