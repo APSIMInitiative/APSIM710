@@ -97,7 +97,31 @@ public class Biomass : Instance
     }
 
 
+    [Output]
+    [Units("g/g")]
+    public double StructuralNConc
+    {
+        get
+        {
+            if (StructuralWt > 0)
+                return StructuralN / StructuralWt;
+            else
+                return 0.0;
+        }
+    }
 
+    [Output]
+    [Units("g/g")]
+    public double NonStructuralNConc
+    {
+        get
+        {
+            if (NonStructuralWt > 0)
+                return NonStructuralN / NonStructuralWt;
+            else
+                return 0.0;
+        }
+    }
 
     virtual public void Clear()
     {

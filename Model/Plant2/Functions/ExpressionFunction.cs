@@ -99,7 +99,10 @@ public class ExpressionFunction : Function
         Parse(fn, Expression);
         FillVariableNames(fn);
         Evaluate(fn);
-        return fn.Result;
+        if (fn.Results != null)
+            return fn.Results;
+        else
+            return fn.Result;
     }
 
     /// <summary>

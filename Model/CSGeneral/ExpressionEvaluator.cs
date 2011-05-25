@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace EBMath
 {
@@ -40,6 +41,14 @@ namespace EBMath
             get
             {
                 return m_result;
+            }
+        }
+
+        public double[] Results
+        {
+            get
+            {
+                return m_results;
             }
         }
 
@@ -387,6 +396,13 @@ namespace EBMath
             {
                 tpResult = (Symbol)tpStack.Pop();
                 m_result = tpResult.m_value;
+                if (tpResult.m_valueString != "")
+                {
+                    List<double> Values = new List<double>();
+                    foreach (string Value in tpResult.m_valueString.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                        Values.Add(Convert.ToDouble(Value));
+                    m_results = Values.ToArray();
+                }
             }
         }
 
@@ -656,6 +672,7 @@ namespace EBMath
                         foreach (string Arg in Values)
                             result.m_value += Convert.ToDouble(Arg);
                         result.m_name = name + "(" + result.m_valueString  + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -676,6 +693,7 @@ namespace EBMath
                                 result.m_value -= Convert.ToDouble(Values[i]);
                         }
                         result.m_name = name + "(" + result.m_valueString + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -696,6 +714,7 @@ namespace EBMath
                                 result.m_value *= Convert.ToDouble(Values[i]);
                         }
                         result.m_name = name + "(" + result.m_valueString + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -716,6 +735,7 @@ namespace EBMath
                                 result.m_value /= Convert.ToDouble(Values[i]);
                         }
                         result.m_name = name + "(" + result.m_valueString + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -736,6 +756,7 @@ namespace EBMath
                                 result.m_value = Math.Min(result.m_value, Convert.ToDouble(Values[i]));
                         }
                         result.m_name = name + "(" + result.m_valueString + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -756,6 +777,7 @@ namespace EBMath
                                 result.m_value = Math.Max(result.m_value, Convert.ToDouble(Values[i]));
                         }
                         result.m_name = name + "(" + result.m_valueString + ")";
+                        result.m_valueString = "";
                     }
                     else
                     {
@@ -779,6 +801,7 @@ namespace EBMath
         protected bool m_bError = false;
         protected string m_sErrorDescription = "None";
         protected double m_result = 0;
+        protected double[] m_results = null;
         protected ArrayList m_equation = new ArrayList();
         protected ArrayList m_postfix = new ArrayList();
         protected EvaluateFunctionDelegate m_defaultFunctionEvaluation;

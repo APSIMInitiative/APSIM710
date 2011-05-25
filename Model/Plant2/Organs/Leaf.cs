@@ -65,6 +65,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Extinction Coefficient (Dead)")]
     protected double KDead = 0;
 
+    [Output]
     [Param]
     [Description("Maximum Final Leaf Number ")]
     protected double MaxNodeNo = 0;
