@@ -614,18 +614,20 @@ public class Leaf : BaseOrgan, AboveGround
                     Demand += L.DMDemand;
 
                 if (Demand > 0)
-                {
-                    double fraction = value / Demand;
-                    if (fraction > 1)
-                    { }
+                   {
+                   double fraction = value / Demand;
+                   if (fraction > 1)
+                   { }
 
-                    //Console.WriteLine(fraction.ToString());
+                   //Console.WriteLine(fraction.ToString());
 
-                    foreach (LeafCohort L in Leaves)
-                    {
-                        L.DMAllocation = L.DMDemand * fraction;
-                    }
-                }
+                   foreach (LeafCohort L in Leaves)
+                      {
+                      L.DMAllocation = L.DMDemand * fraction;
+                      }
+                   }
+                else
+                   throw new Exception("Biomass allocated to leaves when no leaf cohort has a demand");
             }
 
         }
