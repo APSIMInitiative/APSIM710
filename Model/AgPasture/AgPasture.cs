@@ -266,6 +266,35 @@ public class AgPasture : Instance
     /// </summary>
     private void InitParameters()
     {
+
+// VOS hacked in to get an easier rlvp - 25 May 2011
+        if (rlvp.Length == 2) 
+        { 
+            double[] CumDepth = null;
+            CumDepth = new double[dlayer.Length];
+            double rlvp0;
+            double rlvp1;
+            double fract;
+
+            rlvp0 = rlvp[0];
+            rlvp1 = rlvp[1];
+            rlvp = new double[dlayer.Length];
+
+            CumDepth[0] = dlayer[0];
+            fract = (CumDepth[0] - rlvp0) / (rlvp1 - rlvp0);
+            rlvp[0] = 1.0 - Math.Max(0.0, Math.Min(1.0, fract));
+            for (int layer = 1; layer <= (dlayer.Length - 1); layer++)
+            {
+                CumDepth[layer] = CumDepth[layer - 1] + dlayer[layer];
+                fract = (CumDepth[layer] - rlvp0) / (rlvp1 - rlvp0);
+                rlvp[layer] = 1.0 - Math.Max(0.0, Math.Min(1.0, fract));
+            }
+            rlvp0 = rlvp0;
+        
+        }
+        
+        
+        
         //Create and initialise each species  
         Nsp = (int)Nspecies;      
         ftArray = new float[Nsp]; 
