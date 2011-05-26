@@ -1,5 +1,4 @@
-<Type version="24" name="ChickPea2">
-  
+<Type version="27" name="ChickPea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -105,7 +104,7 @@
         </GenericPhase>
         <GenericPhase name="PodFilling">
           <Start type="text" description="Start">StartPodGrowth</Start>
-          <End type="text" description="End">Maturity</End>
+          <End type="text" description="End">EndGrainFill</End>
           <Constant name="Target">
             <Value type="text" description="Value">690</Value>
           </Constant>
@@ -151,10 +150,10 @@
           </XYPairs>
         </GenericFunction>
         <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[].Live</Property>
+          <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[].Dead</Property>
+          <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
         <GenericFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
@@ -307,7 +306,7 @@
               <XY>50 1</XY>
             </XYPairs>
           </GenericFunction>
-		  <GenericFunction name="FN">
+          <GenericFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
@@ -324,9 +323,8 @@
             </XYPairs>
           </GenericFunction>
           <RUECO2Function name="Fco2">
-          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
-
         </RUEModel>
       </Leaf>
       <GenericOrgan name="Stem">
@@ -388,7 +386,7 @@
         <KNH4>0.0</KNH4>
         <Constant name="SenescenceRate">
           <Value>0.0</Value>
-        </Constant>        
+        </Constant>
         <GenericFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -398,7 +396,7 @@
         </GenericFunction>
         <Constant name="SoilWaterEffect">
           <Value>1.0</Value>
-        </Constant>        
+        </Constant>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
             <Start type="text" description="Start">Emergence</Start>
@@ -521,20 +519,20 @@
         </Constant>
       </GenericOrgan>
       <CompositeBiomass name="AboveGround">
-          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
-      </CompositeBiomass>      
+        <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="BelowGround">
-          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
-      </CompositeBiomass>        
+        <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="Total">
-          <Property>Organs[].Live Organs[].Dead</Property>
-      </CompositeBiomass>  
+        <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalLive">
-          <Property>Organs[].Live</Property>
-      </CompositeBiomass>       
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalDead">
-          <Property>Organs[].Dead</Property>
-      </CompositeBiomass>      
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
     </Plant>
   </Model>
 </Type>
