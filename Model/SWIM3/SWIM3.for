@@ -166,7 +166,8 @@
                                      ! because it is not used.
 
          character crop_names (MV)*(strsize)
-         integer crop_owners (MV)
+         character crop_owners (MV)*(strsize)
+         logical   crop_in(MV)
          integer num_crops
          integer          nveg
          double precision root_radius(MV)
@@ -2842,9 +2843,9 @@ cnh
       call apswim_get_solute_variables ()
 
       !if (.not. g%crops_found) then
-         call apswim_find_crops()
-         call apswim_assign_crop_params ()
-         call apswim_register_crop_outputs()
+      !   call apswim_find_crops()
+      !   call apswim_assign_crop_params ()
+      !   call apswim_register_crop_outputs()
       !   g%crops_found = .true.
       !endif
       call apswim_get_crop_variables ()
@@ -3774,56 +3775,89 @@ c      eqr0  = 0.d0
       return
       end subroutine
 
-
-
-* ====================================================================
-       subroutine apswim_find_crops ()
-* ====================================================================
-      Use infrastructure
+*     ===========================================================
+      subroutine apswim_OnNewCrop (variant)
+*     ===========================================================
+      Use Infrastructure
       implicit none
+      integer, intent(in) :: variant
+
+*+  Purpose
+*       Register presence of a new crop
 
 *+  Local Variables
-       character owner_module*(max_module_name_size)
-       character crpname*(strsize)
-       integer numvals
-       integer request_no
+      type(NewCropType) :: new_crop
+
+      integer    numvals               ! number of values read
+      integer    i
+      integer    senderIdx
+*- Implementation Section ----------------------------------
+
+
+      call unpack_newcrop(variant, new_crop)
+
+      ! See if we know of it
+      senderIdx = 0
+      do 100 i = 1, g%Num_Crops
+        if (g%crop_owners(i).eq.new_crop%sender)
+     :            senderIdx = i
+ 100  continue
+
+      ! If sender is unknown, add it to the list
+      
+      if (senderIdx.eq.0) then
+         g%Num_Crops = g%Num_Crops + 1
+         g%nveg = g%num_crops
+         if (g%num_crops.gt.MV) then
+            call fatal_Error(ERR_Internal
+     :                   ,'Too many crops in the system for swim')
+         else
+            g%crop_owners(g%Num_Crops) = new_crop%sender
+            g%crop_names(g%Num_Crops) = new_crop%crop_type
+            g%crop_in(g%Num_Crops) = .true.
+
+          ! Read Component Specific Constants
+          ! ---------------------------------
+            call apswim_assign_crop_params ()
+            call apswim_register_crop_outputs()
+         
+         endif
+      else
+         g%crop_in(senderIdx) = .true.
+      endif
+
+      return
+      end subroutine
+
+*     ===========================================================
+      subroutine apswim_OnCropEnding (variant)
+*     ===========================================================
+      Use Infrastructure
+      implicit none
+      integer, intent(in) :: variant
+
+*+  Purpose
+*       Register ending of a crop
+
+*+  Local Variables
+      type(NewCropType) :: new_crop
+
+
+      integer    i
 
 *- Implementation Section ----------------------------------
 
-      request_no = 0
-      g%num_crops = 0
 
-   10 continue
-         request_no = request_no + 1
-
-         call get_char_vars(
-     :           request_no,
-     :           'crop_type',
-     :           '()',
-     :           crpname,
-     :           numvals)
-
-         if (numvals.eq.0) then
-            ! no more crops out there - get out of here!!!
-            goto 999
-
-         else
-            if (crpname.eq.'inactive') then
-               ! do not add this crop to the list
-            elseif (g%num_crops.lt.MV) then
-               g%num_crops = g%num_crops + 1
-               g%crop_names(g%num_crops) = crpname
-               g%crop_owners(g%num_crops) = get_posting_module()
+      call unpack_newcrop(variant, new_crop)
 
 
-            else
-               call fatal_error (err_internal, 'too many crops')
-            endif
-         endif
-      goto 10
-  999 continue
+      do 100 i = 1, g%Num_Crops
+        if (g%crop_owners(i).eq.new_crop%sender) then
+           g%crop_in(i) = .false.
+        endif
 
-      g%nveg = g%num_crops
+ 100  continue
+
 
       return
       end subroutine
@@ -3949,20 +3983,27 @@ c      eqr0  = 0.d0
       integer   solnum                 ! solute number for array index
       character solute_demand_name*(strsize)  ! key name for solute demand
       double precision length          ! total length of roots for a plant (mm/mm2)
-      character*200 line
+
+      integer id
+      logical OK
+
 *- Implementation Section ----------------------------------
 
       bare = 1.0
 
       do 100 vegnum = 1, g%num_crops
 
+         if (g%crop_in(vegnum)) then
+
          ! Initialise tempory varaibles to zero
          do 10 layer = 1,M+1
             rlv_l(layer) = 0d0
    10    continue
+         OK= component_name_to_id(g%crop_owners(vegnum),id)
 
+                  
          call get_double_array(
-     :           g%crop_owners(vegnum),
+     :           id,
      :           'rlv',
      :           p%n+1,
      :           '(mm/mm^3)',
@@ -3972,7 +4013,7 @@ c      eqr0  = 0.d0
      :           1d0)
          if (numvals.eq.0) then
          call get_double_array (
-     :           g%crop_owners(vegnum),
+     :           id,
      :           'rootlengthdensity',
      :           p%n+1,
      :           '(mm/mm^3)',
@@ -3980,6 +4021,7 @@ c      eqr0  = 0.d0
      :           numvals,
      :           0d0,
      :           1d0)
+
 
          endif
 
@@ -4001,7 +4043,7 @@ c      eqr0  = 0.d0
          endif
 
          call get_double_var_optional (
-     :           g%crop_owners(vegnum),
+     :           id,
      :           'sw_demand',
      :           '(mm)',
      :           g%pep(vegnum),
@@ -4010,7 +4052,7 @@ c      eqr0  = 0.d0
      :           20d0)
          if (numvals.eq.0) then
             call get_double_var (
-     :              g%crop_owners(vegnum),
+     :              id,
      :              'WaterDemand',
      :              '(mm)',
      :              g%pep(vegnum),
@@ -4029,7 +4071,7 @@ c      eqr0  = 0.d0
          endif
 
          call get_real_var (
-     :           g%crop_owners(vegnum),
+     :           id,
      :           'height',
      :           '(mm)',
      :           g%canopy_height(vegnum),
@@ -4038,7 +4080,7 @@ c      eqr0  = 0.d0
      :           50e3)
 
          call get_real_var (
-     :           g%crop_owners(vegnum),
+     :           id,
      :           'cover_tot',
      :           '()',
      :           g%cover_tot(vegnum),
@@ -4052,7 +4094,7 @@ c      eqr0  = 0.d0
             solute_demand_name = string_concat(p%solute_names(solnum),
      :                                         '_demand')
             call get_double_var_optional (
-     :           g%crop_owners(vegnum),
+     :           id,
      :           solute_demand_name,
      :           '(kg/ha)',
      :           g%solute_demand (vegnum,solnum),
@@ -4062,9 +4104,18 @@ c      eqr0  = 0.d0
 
    99    continue
 
+         else
+            g%rld(:,vegnum)=0.0
+            g%pep(vegnum) = 0.0
+            g%canopy_height(vegnum) = 0.0
+            g%cover_tot(vegnum) = 0.0
+            g%solute_demand (vegnum,:)=0.0
+         endif
+         
   100 continue
 
       g%crop_cover = 1.0 - bare
+      
 
       return
       end subroutine
@@ -4415,7 +4466,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       Water%num_Uptakes = g%num_crops
 
       do counter = 1, g%num_crops
-         CropName = g%crop_names(counter)
+         CropName = g%crop_owners(counter)
 
          call NullTermString(CropName)                         ! YUK - need to fix this.
          Water%Uptakes(counter)%Name = CropName
@@ -4428,6 +4479,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
          end do
       end do
+
       call publish_WaterUptakesCalculated
      .     (id%WaterUptakesCalculated, Water);
 
@@ -7482,6 +7534,10 @@ c     :                          ,'runoff')
          call apswim_ONtick (variant)
       elseif (eventID .eq. id%new_solute) then
          call apswim_on_new_solute(variant)
+      elseif (eventID .eq. id%newcrop) then
+         call apswim_OnNewCrop(variant)
+      elseif (eventID .eq. id%cropending) then
+         call apswim_OnCropEnding(variant)
       elseif (eventID .eq. id%prenewmet) then
 !         call apswim_set_rain_variable ()
 !      elseif (eventID .eq. id%subsurfaceflow) then

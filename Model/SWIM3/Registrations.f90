@@ -15,6 +15,8 @@ module Registrations
       integer :: tick
       integer :: prenewmet
       integer :: new_solute
+      integer :: newcrop
+      integer :: cropending
       integer :: irrigated
       integer :: subsurfaceflow
       integer :: prepare
@@ -43,6 +45,8 @@ module Registrations
          id%tick = add_registration(respondToEventReg, 'tick', TimeTypeDDML, '')
          id%prenewmet = add_registration(respondToEventReg, 'prenewmet', nullTypeDDML, '')
          id%new_solute = add_registration(respondToEventReg, 'new_solute', newSoluteTypeDDML, '')
+         id%newcrop = add_registration(respondToEventReg, 'newcrop', NewCropTypeDDML, '')         
+         id%cropending = add_registration(respondToEventReg, 'cropending', NewCropTypeDDML, '')                  
          id%irrigated = add_registration(respondToEventReg, 'irrigated', nullTypeDDML, '')
          id%subsurfaceflow = add_registration(respondToEventReg, 'subsurfaceflow', nullTypeDDML, '')
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')
