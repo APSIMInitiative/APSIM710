@@ -69,6 +69,12 @@ Computation::Computation(const string& name,
                          unsigned int parentId) throw (runtime_error)
    {
 	   handle = NULL;
+#ifndef MONO
+ #ifdef __WIN32__
+	   psa = NULL;
+	   typePtr = NULL;
+ #endif
+#endif
 	   // need to give the component to the transport layer.  Need a better
 	   // way of doing this.
 	   Transport::getTransport().addComponent(componentId, name, this);
@@ -93,6 +99,15 @@ Computation::~Computation(void)
    if (isOk())
       deleteInstance();
    unloadComponent();
+#ifndef MONO
+ #ifdef __WIN32__
+   if (psa)
+   {
+		SafeArrayDestroy(psa);                                                                   // Destroy safearray
+		VariantClear(&vtobj);
+   }
+#endif
+#endif
    }
 
 // ------------------------------------------------------------------
@@ -291,6 +306,16 @@ bool Computation::loadComponent(const std::string& FileName,
 			throw runtime_error(msg);
 		}
 	}
+#ifndef MONO
+ #ifdef __WIN32__
+	if (typePtr)
+	{
+		((_Type*)typePtr)->Release();
+		typePtr = NULL;
+	}
+
+#endif
+#endif
 
 	return true;
 }
@@ -469,8 +494,6 @@ void Computation::CreateManagedInstance(const std::string& filename,
 		//
 		_AppDomainPtr pDefaultDomain = NULL;
 		IUnknownPtr   pAppDomainPunk = NULL;
-		_ObjectPtr pObject; 
-		_TypePtr pType;
 
 		HRESULT hr = pHost->GetDefaultDomain(&pAppDomainPunk);
 		assert(pAppDomainPunk); 
@@ -517,10 +540,12 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			NULL);
 
 		SafeArrayDestroy(l_pArray);
+		psa = SafeArrayCreateVector(VT_VARIANT,0,1);                                // Create a safearray (length 1) for later re-use
 
-		vtobj = pObjectHandle->Unwrap();                                     // Get an _Object (as variant) from the _ObjectHandle
-		vtobj.pdispVal->QueryInterface(__uuidof(_Object),(void**)&pObject);            // QI the variant for the Object iface
-		pType = pObject->GetType();                                                    // Get the _Type iface
+		vtobj = pObjectHandle->Unwrap();                                            // Get an _Object (as variant) from the _ObjectHandle
+   	    _ObjectPtr pObject; 
+		vtobj.pdispVal->QueryInterface(__uuidof(_Object),(void**)&pObject);     // QI the variant for the Object iface for our component class
+    	(void*)typePtr = (void*)pObject->GetType();
 	}
 	catch(_com_error& error) {
 		throw runtime_error(std::string(error.Description()).c_str());
@@ -538,12 +563,14 @@ void Computation::messageToManagedLogic(Message* message) const
 #else
  #ifdef __WIN32__
 	try {
-		_ObjectPtr pObject; 
-		_TypePtr pType;
-		vtobj.pdispVal->QueryInterface(__uuidof(_Object),(void**)&pObject);            // QI the variant for the Object iface
-		pType = pObject->GetType();                                                    // Get the _Type iface
+		if (!typePtr)
+		{
+			_ObjectPtr pObject; 
+			vtobj.pdispVal->QueryInterface(__uuidof(_Object),(void**)&pObject);     // QI the variant for the Object iface for our component class
+			//_TypePtr pType = pObject->GetType();                                  // Get the _Type iface
+			(void*)typePtr = (void*)pObject->GetType();
+		}
 
-		SAFEARRAY* psa = SafeArrayCreateVector(VT_VARIANT,0,1);                                // Create a safearray (length 1)
 		VARIANTARG val;
 		long l_Index;
 		VariantInit(&val);
@@ -553,13 +580,12 @@ void Computation::messageToManagedLogic(Message* message) const
 		SafeArrayPutElement (psa, &l_Index, &val);
 		VariantClear(&val);
 
-		VARIANT descript = pType->InvokeMember_3("handleMessage",                                                     // Invoke "Test" method on pType
+		/*pType*/ ((_Type*)typePtr)->InvokeMember_3("handleMessage",                // Invoke "handleMessage" method on pType
 			BindingFlags_InvokeMethod,
 			NULL,
 			vtobj,
 			psa );
 
-		SafeArrayDestroy(psa);                                                                   // Destroy safearray
 	}
 	catch(_com_error& error) {
 		throw runtime_error(std::string(error.Description()).c_str());

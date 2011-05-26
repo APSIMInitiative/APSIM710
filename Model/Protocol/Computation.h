@@ -94,6 +94,7 @@ class EXPORT Computation : public IComputation
 	  HMODULE mscoree;
 	  static ICorRuntimeHost *pHost;
 	  VARIANT vtobj;
+	  SAFEARRAY* psa;
 	  void* typePtr;
 	  mscorlib::_ObjectHandlePtr pObjectHandle; 
  #endif
