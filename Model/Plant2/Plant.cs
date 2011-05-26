@@ -156,6 +156,9 @@ public class Plant : Instance
     [Event]
     public event NullTypeDelegate Cutting;
 
+    [Event]
+    public event NewCropDelegate CropEnding;
+
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
@@ -187,6 +190,15 @@ public class Plant : Instance
         DoWater();
         DoArbitrator();
         DoActualGrowth();
+    }
+
+    [EventHandler]
+    private void OnEndCrop()
+    {
+        NewCropType Crop = new NewCropType();
+        Crop.crop_type = CropType;
+        Crop.sender = Name;
+        CropEnding.Invoke(Crop);
     }
 
     [EventHandler]

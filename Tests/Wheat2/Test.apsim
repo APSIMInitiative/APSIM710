@@ -4,8 +4,8 @@
       <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">1/4/1940</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/12/1940</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/04/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/1941</end_date>
     </clock>
     <summaryfile>
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
@@ -1161,7 +1161,7 @@
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
         if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
@@ -1197,6 +1197,8 @@
           <variable name="biomass_wt" />
           <variable name="biomass" />
           <variable name="sw_dep()" />
+          <variable name="surfaceom_wt" />
+          <variable name="no3()" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -1250,7 +1252,7 @@
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Harvesting rule" shortcut="/simulations/ReleasedWheat/paddock/Manager folder/Harvesting rule" />
+        <manager name="Harvesting rule" shortcut="/simulations/Wheat2WithSWIM3/paddock/Manager folder/Harvesting rule" />
       </folder>
       <outputfile shortcut="/simulations/ReleasedWheat/paddock/outputfile">
         <variables name="Variables">
@@ -1265,6 +1267,8 @@
           <variable name="LeafTranspiration" />
           <variable name="LeafWaterDemand" />
           <variable name="RootWaterUptake" />
+          <variable name="surfaceom_wt" />
+          <variable name="no3()" />
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedWheat/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1336,7 +1340,23 @@ if (date_within('[date1], [date2]') = 1) then
       <fertiliser shortcut="/simulations/Wheat2/paddock/fertiliser" />
       <folder name="Manager folder" shortcut="/simulations/Wheat2/paddock/Manager folder">
         <manager name="Sow on a fixed date" shortcut="/simulations/Wheat2/paddock/Manager folder/Sow on a fixed date" />
-        <manager name="Harvesting rule" shortcut="/simulations/Wheat2/paddock/Manager folder/Harvesting rule" />
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat2</crop>
+          </ui>
+          <script>
+            <text>
+
+           if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' then
+              [crop]  harvest
+              [crop]  endcrop
+           endif
+
+            </text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
       </folder>
       <outputfile shortcut="/simulations/Wheat2/paddock/outputfile">
         <variables name="Variables" shortcut="/simulations/Wheat2/paddock/outputfile/Variables" />
@@ -1368,7 +1388,7 @@ if (date_within('[date1], [date2]') = 1) then
         <Sample name="Initial Nitrogen" shortcut="/simulations/Wheat2/paddock/Soil/Initial Nitrogen" />
         <Swim>
           <Salb type="text" description="Bare Soil Albedo">0.13</Salb>
-          <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">75</Cn2Bare>
+          <Cn2Bare type="text" description="Bare Soil Runoff Curve Number">73</Cn2Bare>
           <CnRed type="text" description="Max. Reduction in Curve Number due to cover">20</CnRed>
           <CnCov type="text" description="Cover for max Curve Number reduction">0.8</CnCov>
           <Kdul type="text" description="Hydraulic Conductivity at DUL (mm/d)">.1</Kdul>
@@ -1433,7 +1453,7 @@ if (date_within('[date1], [date2]') = 1) then
       <fertiliser shortcut="/simulations/Wheat2/paddock/fertiliser" />
       <folder name="Manager folder" shortcut="/simulations/Wheat2/paddock/Manager folder">
         <manager name="Sow on a fixed date" shortcut="/simulations/Wheat2/paddock/Manager folder/Sow on a fixed date" />
-        <manager name="Harvesting rule" shortcut="/simulations/Wheat2/paddock/Manager folder/Harvesting rule" />
+        <manager name="Harvesting rule" shortcut="/simulations/Wheat2 With CO2/paddock/Manager folder/Harvesting rule" />
       </folder>
       <outputfile shortcut="/simulations/Wheat2/paddock/outputfile">
         <variables name="Variables" shortcut="/simulations/Wheat2/paddock/outputfile/Variables" />
@@ -1463,6 +1483,28 @@ if (date_within('[date1], [date2]') = 1) then
       </colour>
       <X>Date</X>
       <Y>sw_dep()</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Stubble">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>surfaceom_wt</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="NO3">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>no3()</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
