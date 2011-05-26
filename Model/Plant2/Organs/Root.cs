@@ -255,13 +255,13 @@ public class Root : BaseOrgan, BelowGround
       }
    
    [Output("rlv")]
-//   double[] rlv
- //     {
- //     get
- //        {
- //        return LengthDensity;
- //        }
- //     }
+   double[] rlv
+      {
+      get
+         {
+         return LengthDensity;
+         }
+      }
    [Output]
    double[] LengthDensity
       {
