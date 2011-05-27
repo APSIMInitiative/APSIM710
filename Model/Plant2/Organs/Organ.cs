@@ -44,8 +44,6 @@ abstract public class Organ : Instance
 
    abstract public double MaxNconc { get; }
    abstract public double MinNconc { get; }
-   abstract public double StrucNconc { get; }
-   //abstract public double StrucDMfrac { get; }
    abstract public double NReallocationSupply { get; }
    abstract public double NReallocation { set; }
    }

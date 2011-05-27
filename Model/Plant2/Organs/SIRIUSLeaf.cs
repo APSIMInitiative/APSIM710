@@ -304,7 +304,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             if (NDemand == 0)
                 if (value == 0) { }//All OK
                 else
-                    throw new Exception("Invalid allocation of N");
+                    throw new Exception("Invalid allocation of N to leaf");
 
             if (value == 0.0)
             { }// do nothing

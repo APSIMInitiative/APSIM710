@@ -64,8 +64,6 @@ public class BaseOrgan : Organ
 
    public override double MaxNconc { get { return 0; } }
    public override double MinNconc { get { return 0; } }
-   public override double StrucNconc { get { return 0; } }
-   //public override double StrucDMfrac { get { return 0; } }
    public override double NReallocationSupply { get { return 0; } }
    public override double NReallocation
    {

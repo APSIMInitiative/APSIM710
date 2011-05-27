@@ -8,23 +8,17 @@ class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 
     #region Class data members
     private double SenescedFrac = 0;
-    private double StartDMRetranslocationSupply = 0;
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
-    private double StartStructuralN = 0;
     private double StartNonStructuralN = 0;
-    private double StartStructuralWt = 0;
     private double StartNonStructuralWt = 0;
     private double PotentialDMAllocation = 0;
     #endregion
 
     public override void DoStartSet()
     {
-        StartStructuralN = Live.StructuralN;
         StartNonStructuralN = Live.NonStructuralN;
-        StartStructuralWt = Live.StructuralWt;
         StartNonStructuralWt = Live.NonStructuralWt;
-        StartDMRetranslocationSupply = DMRetranslocationSupply;
         StartNReallocationSupply = NReallocationSupply;
         StartNRetranslocationSupply = NRetranslocationSupply;
     }

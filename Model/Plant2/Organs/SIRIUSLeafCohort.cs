@@ -169,9 +169,7 @@ class SIRIUSLeafCohort : LeafCohort
     public override void DoStartSet(double TT)
     {
         SenescedFrac = FractionSenescing(TT);
-        LeafStartStructuralN = Live.StructuralN;
         LeafStartNonStructuralN = Live.NonStructuralN;
-        LeafStartStructuralWt = Live.StructuralWt;
         LeafStartNonStructuralWt = Live.NonStructuralWt;
         LeafStartDMRetranslocationSupply = DMRetranslocationSupply;
         LeafStartNReallocationSupply = NReallocationSupply();
