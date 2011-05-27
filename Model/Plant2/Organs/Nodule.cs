@@ -12,7 +12,7 @@ public class Nodule : BaseOrgan, BelowGround
     private SowPlant2Type SowingInfo = null;
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;
-    public double FixedN = 0;
+    public double NFixationToday = 0;
     private double PotentialDMAllocation = 0;
     #endregion
     
@@ -72,18 +72,18 @@ public class Nodule : BaseOrgan, BelowGround
         }
     }
     [Output]
-    public double NFixation
+    public double NFixed
     { 
         get
         {
-            return FixedN;
+            return NFixationToday;
         }
     }
-    public override double NFixed
+    public override double NFixation
     {
         set
         {
-            FixedN = value;
+            NFixationToday = value;
         }
     }
     public override double NDemand

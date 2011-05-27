@@ -432,18 +432,11 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         {
             double[] no3supply = new double[dlayer.Length];
             double[] nh4supply = new double[dlayer.Length];
-            double UptakeDemand = 0;
             SoilNSupply(no3supply, nh4supply);
-
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            UptakeDemand = Math.Max(0.0, A.NDemand - A.NReallocationSupply);
             Function MaxDailyNUptake = Children["MaxDailyNUptake"] as Function;
-
             double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
-            //return Math.Min(A.NDemand, NSupply);
-            return Math.Min(UptakeDemand, NSupply);
-
-        }
+            return NSupply;
+         }
     }
 
     public override double NUptake

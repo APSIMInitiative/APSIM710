@@ -42,7 +42,6 @@ public class SimpleArbitrator :  Arbitrator
          return TotalNDemand;
          }
       }
-   public override double NReallocationSupply { get { return 0; } }
    public override void DoDM(List<Organ> Organs)
       {
       double [] DMRetranslocationSupply = new double[Organs.Count];
