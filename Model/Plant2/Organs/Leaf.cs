@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ModelFramework;
 
 [Description("Leaf Class")]
 public class Leaf : BaseOrgan, AboveGround
@@ -12,6 +13,9 @@ public class Leaf : BaseOrgan, AboveGround
     protected double EP = 0;
     protected List<LeafCohort> Leaves = new List<LeafCohort>();
     protected double _FinalNodeNo = 0;
+
+    [Link]
+    Wheat w;
 
     [Link]
     protected Plant Plant = null;

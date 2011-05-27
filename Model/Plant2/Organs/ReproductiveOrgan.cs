@@ -4,26 +4,34 @@ using System.Text;
 
 class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
 {
+    #region Class data members
     [Link]
-    Plant Plant = null;
+    protected Plant Plant = null;
 
     [Link]
-    Phenology Phenology = null;
+    protected Phenology Phenology = null;
 
-    private bool _ReadyForHarvest = false;
     [Input]
-    private int Day = 0;
-    [Input]
-    private int Year = 0;
-    [Param]
-    private double MaximumSize = 0;
-    [Param]
-    private string RipeStage = "";
-    private double DailyGrowth = 0;
+    protected int Day = 0;
 
+    [Input]
+    protected int Year = 0;
+
+    [Param]
+    protected double MaximumSize = 0;
+
+    [Param]
+    protected string RipeStage = "";
+
+    protected bool _ReadyForHarvest = false;
+    protected double DailyGrowth = 0;
+    #endregion
+
+    #region Outputs
     [Output]
     [Units("/m^2")]
     public double Number = 0;
+
     [Output]
     [Units("g/m^2")]
     public double LiveFWt
@@ -37,6 +45,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0.0;
         }
     }
+
     [Output]
     [Units("g")]
     private double Size
@@ -49,6 +58,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
+
     [Output]
     [Units("g")]
     private double FSize
@@ -67,6 +77,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
+
     [Output]
     private int ReadyForHarvest
     {
@@ -78,8 +89,12 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
                 return 0;
         }
     }
+    #endregion
+
+    #region Event handlers
     [Event]
     public event NullTypeDelegate Harvesting;
+
     [EventHandler]
     private void OnHarvest()
     {
@@ -105,6 +120,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
+
     [EventHandler]
     private void OnCut()
     {
@@ -121,7 +137,9 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         Number = 0;
         _ReadyForHarvest = false;
     }
+    #endregion
 
+    #region Arbitrator methods
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();
@@ -170,5 +188,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
             Live.StructuralN += value;
         }
     }
+    #endregion
 }
 

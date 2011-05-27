@@ -36,7 +36,6 @@ class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
         Dead.Clear();
     }
 
-    public double TuberStartDMDemand = 0; //Fixme, I think this is now redundant
     private double PotentialDMAllocation = 0;
 
     public override double DMDemand
@@ -95,7 +94,7 @@ class SIRIUSTuber : BaseOrgan, Reproductive, BelowGround
             Live.StructuralN += StructuralAllocation;
             Live.NonStructuralN += (value - StructuralAllocation);
         }
-    }
+    }   
     public override double MaxNconc
     {
         get
