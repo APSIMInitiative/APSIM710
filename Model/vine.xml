@@ -136,20 +136,20 @@
         <Constant name="ExtinctionCoeff">
           <Value>0.5</Value>
         </Constant>
-        <GenericFunction name="Height">
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 1800.0</XY>
             <XY>500 1800.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="FrostFraction">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0.0</XY>
             <XY>0 0.0</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
             <Value type="text" description="Value">0.8</Value>
@@ -163,30 +163,30 @@
               <XY>45 0.0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
-          <GenericFunction name="FVPD">
+          <LinearInterpolationFunction name="FVPD">
             <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
             <XYPairs>
               <XY>0 1.0</XY>
               <XY>10 1.0</XY>
               <XY>50 1.0</XY>
             </XYPairs>
-          </GenericFunction>
-          <GenericFunction name="FN">
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
-          <GenericFunction name="FW">
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
+          </LinearInterpolationFunction>
           <RUECO2Function name="Fco2">
           	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
@@ -214,50 +214,50 @@
             <Value>30.0</Value>
           </Constant>
         </PhaseLookupValue>
-        <GenericFunction name="MaxArea">
+        <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>1 5000.0</XY>
             <XY>4 15000.0</XY>
             <XY>30 10000.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="SpecificLeafArea">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafArea">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>1 20000.0</XY>
             <XY>30 19000.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="GrowthDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>4 150.0</XY>
             <XY>5 150.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="LagDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>5 1500.0</XY>
             <XY>20 2500.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="SenescenceDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>5 500.0</XY>
             <XY>30 500.0</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="BranchingRate">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>5 0.0</XY>
             <XY>10 0.0</XY>
             <XY>11 0.0</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
             <Start>BudBurst</Start>
@@ -267,13 +267,13 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <GenericFunction name="ExpansionStress">
+        <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY> 0.0 1</XY>
             <XY> 1.0 1</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <Constant name="MaximumNConc">
           <Value>0.0001</Value>
         </Constant>
@@ -371,13 +371,13 @@
         <RipeStage>Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <GenericFunction name="NumberFunction">
+        <LinearInterpolationFunction name="NumberFunction">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 0</XY>
             <XY>1000 150000</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PhaseLookup name="FillingRate">
           <PhaseLookupValue name="EarlyBerryGrowth">
             <Start>Flowering</Start>

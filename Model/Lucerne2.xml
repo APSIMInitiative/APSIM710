@@ -157,13 +157,13 @@
         </GotoPhase>
       </Phenology>
       <Leaf>
-        <GenericFunction name="FrostFraction">
+        <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0.0</XY>
             <XY>0 0.0</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
@@ -179,40 +179,40 @@
         <CompositeBiomass name="Dead">
            <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <GenericFunction name="ExtinctionCoeff">
+        <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 0.8</XY>
             <XY>0.5 0.8</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="Height">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 100</XY>
             <XY>300 750</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering StartPodGrowth Maturity   StartRegrowth RGFloralInitiation RGFlowering  EndRegrowth</Stages>
           <Values type="text" description="%Partition">0                0                     0.25          0.25       0.2                0.1             0.1                 0                       0.4                  0.4                         0.2               0.1</Values>
         </StageBasedInterpolation>
-        <GenericFunction name="ExpansionStress">
+        <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY>0.1 0</XY>
             <XY>1.1 1</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="MaxArea">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 0</XY>
             <XY>4 400</XY>
             <XY>15 1200</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="SpecificLeafArea">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafArea">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 30000</XY>
@@ -220,36 +220,36 @@
             <XY>3 30000</XY>
             <XY>5 30000</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="GrowthDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>4 153</XY>
             <XY>5 153</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="LagDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>1 1224</XY>
             <XY>6 1224</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="SenescenceDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>5 102</XY>
             <XY>30 102</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="BranchingRate">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>4 0</XY>
             <XY>5 0</XY>
             <XY>8 0</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Vegetative">
             <Start type="text" description="Start">Emergence</Start>
@@ -284,30 +284,30 @@
               <XY>40 0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
-          <GenericFunction name="FVPD">
+          <LinearInterpolationFunction name="FVPD">
             <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
             <XYPairs>
               <XY>0 1</XY>
               <XY>10 1</XY>
               <XY>50 1</XY>
             </XYPairs>
-          </GenericFunction>
-		  <GenericFunction name="FN">
+          </LinearInterpolationFunction>
+		  <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
-          <GenericFunction name="FW">
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
+          </LinearInterpolationFunction>
           <RUECO2Function name="Fco2">
           	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
@@ -448,13 +448,13 @@
         <SpecificRootLength type="text" description="SpecificRootLength">60000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.02</KNO3>
         <KNH4 type="text" description="KNH4">0.0</KNH4>
-        <GenericFunction name="KLModifier">
+        <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 1</XY>
             <XY>3 1</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue name="PreEmergence">
             <Start>Germination</Start>

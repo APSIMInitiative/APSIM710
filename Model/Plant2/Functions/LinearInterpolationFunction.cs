@@ -7,7 +7,7 @@ using System.Collections;
 
 
 
-public class GenericFunction : Function
+public class LinearInterpolationFunction : Function
    {
    [Link] Plant Plant = null;
 

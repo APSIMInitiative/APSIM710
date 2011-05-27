@@ -286,14 +286,14 @@
       <End type="text" description="End stage name">Emergence</End>
       <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
       <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
-      <GenericFunction name="ThermalTime">
+      <LinearInterpolationFunction name="ThermalTime">
         <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
         <XYPairs>
           <XY> 0 0</XY>
           <XY> 26  26</XY>
           <XY> 34  0</XY>
         </XYPairs>
-      </GenericFunction>
+      </LinearInterpolationFunction>
     </EmergingPhase>
     <GenericPhase>
       <Start type="text" description="Start stage name">Germination</Start>
@@ -360,13 +360,13 @@
       <MinimumFunction name="Stress">
         <Property type="text" description="Property">Phenology.Vernalisation.VernEff Phenology.Vernalisation.PhotopEff</Property>
       </MinimumFunction>
-      <GenericFunction name="Thermal Time">
+      <LinearInterpolationFunction name="Thermal Time">
         <XProperty type="text" description="XProperty">Phenology.Vernalisation.CumulativeVD</XProperty>
         <XYPairs>
           <XY>0 515</XY>
           <XY>100 515</XY>
         </XYPairs>
-      </GenericFunction>
+      </LinearInterpolationFunction>
     </GenericPhase>
     <PhaseJumpFunction>
       <Start type="text" description="Start stage name:">Germination</Start>
@@ -431,61 +431,61 @@
           <XY>40 0</XY>
         </XYPairs>
       </WeightedTemperatureFunction>
-      <GenericFunction name="FVPD">
+      <LinearInterpolationFunction name="FVPD">
         <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
         <XYPairs>
           <XY> 0  1.0</XY>
           <XY> 10 1.0</XY>
           <XY> 50 1.0</XY>
         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="FN">
+      </LinearInterpolationFunction>
+      <LinearInterpolationFunction name="FN">
         <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
         <XYPairs>
           <XY> 0   1.0</XY>
           <XY> 1   1.0</XY>
           <XY> 1.5 1.0</XY>
         </XYPairs>
-      </GenericFunction>
-      <GenericFunction name="FW">
+      </LinearInterpolationFunction>
+      <LinearInterpolationFunction name="FW">
         <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
         <XYPairs>
           <XY> 0   1.0</XY>
           <XY> 1   1.0</XY>
           <XY> 1.5 1.0</XY>
         </XYPairs>
-      </GenericFunction>
+      </LinearInterpolationFunction>
     </RUEModel>
     <Summary />
     <OnEventFunction>
       <Event />
-      <GenericFunction name="Function">
+      <LinearInterpolationFunction name="Function">
         <XProperty type="text" description="XProperty">
         </XProperty>
         <XYPairs />
-      </GenericFunction>
+      </LinearInterpolationFunction>
     </OnEventFunction>
     <BellCurveFunction>
-      <GenericFunction name="LargestLeaf">
+      <LinearInterpolationFunction name="LargestLeaf">
         <XProperty type="text" description="XProperty">
         </XProperty>
         <XYPairs />
-      </GenericFunction>
-      <GenericFunction name="AreaMax">
+      </LinearInterpolationFunction>
+      <LinearInterpolationFunction name="AreaMax">
         <XProperty type="text" description="XProperty">
         </XProperty>
         <XYPairs />
-      </GenericFunction>
-      <GenericFunction name="Breadth">
+      </LinearInterpolationFunction>
+      <LinearInterpolationFunction name="Breadth">
         <XProperty type="text" description="XProperty">
         </XProperty>
         <XYPairs />
-      </GenericFunction>
-      <GenericFunction name="Skewness">
+      </LinearInterpolationFunction>
+      <LinearInterpolationFunction name="Skewness">
         <XProperty type="text" description="XProperty">
         </XProperty>
         <XYPairs />
-      </GenericFunction>
+      </LinearInterpolationFunction>
     </BellCurveFunction>
     <TemperatureFunction>
       <XYPairs>
@@ -494,14 +494,14 @@
         <XY>40 0</XY>
       </XYPairs>
     </TemperatureFunction>
-    <GenericFunction>
+    <LinearInterpolationFunction>
       <XProperty type="text" description="XProperty">Phenology.Vernalisation.CrownTemperature</XProperty>
       <XYPairs>
         <XY> 0 0</XY>
         <XY> 26  26</XY>
         <XY> 34  0</XY>
       </XYPairs>
-    </GenericFunction>
+    </LinearInterpolationFunction>
     <Constant>
       <Value type="text" description="Value">401</Value>
     </Constant>

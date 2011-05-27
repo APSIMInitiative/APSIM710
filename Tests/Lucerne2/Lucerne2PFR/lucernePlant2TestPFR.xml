@@ -94,7 +94,7 @@
           <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
             <Event type="text" description="Event">EndJuvenile</Event>
-            <GenericFunction name="TemporaryTarget">
+            <LinearInterpolationFunction name="TemporaryTarget">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 700</XY>
@@ -103,7 +103,7 @@
                 <XY>16.5 243</XY>
                 <XY>24 243</XY>
               </XYPairs>
-            </GenericFunction>
+            </LinearInterpolationFunction>
           </OnEventFunction>
         </GenericPhase>
         <GenericPhase name="InitiationToFlowering">
@@ -150,7 +150,7 @@
           <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
             <Event type="text" description="Event">StartRegrowth</Event>
-            <GenericFunction name="TemporaryTarget">
+            <LinearInterpolationFunction name="TemporaryTarget">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 700</XY>
@@ -159,7 +159,7 @@
                 <XY>16.5 243</XY>
                 <XY>24 243</XY>
               </XYPairs>
-            </GenericFunction>
+            </LinearInterpolationFunction>
           </OnEventFunction>
         </GenericPhase>
         <GenericPhase name="RGInitiationtoFlowering">
@@ -203,13 +203,13 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
-        <GenericFunction name="FrostFraction">
+        <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0</XY>
             <XY>0 0</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <CompositeBiomass name="Live">
            <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -229,14 +229,14 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <End type="text" description="End">Flowering</End>
             <OnEventFunction name="Target">
               <Event type="text" description="Event">EndJuvenile</Event>
-              <GenericFunction name="TemporaryTarget">
+              <LinearInterpolationFunction name="TemporaryTarget">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
                   <XY>12.5 34</XY>
                   <XY>24 34</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
             </OnEventFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="RepSeedling">
@@ -251,14 +251,14 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <End type="text" description="End">RGFlowering</End>
             <OnEventFunction name="Target">
               <Event type="text" description="Event">StartRegrowth</Event>
-              <GenericFunction name="TemporaryTarget">
+              <LinearInterpolationFunction name="TemporaryTarget">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
                   <XY>12.5 34</XY>
                   <XY>24 34</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
             </OnEventFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="RepRegrowth">
@@ -282,14 +282,14 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <End type="text" description="End">Flowering</End>
             <OnEventFunction name="Target">
               <Event type="text" description="Event">EndJuvenile</Event>
-              <GenericFunction name="TemporaryTarget">
+              <LinearInterpolationFunction name="TemporaryTarget">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
                   <XY>12.5 34</XY>
                   <XY>24 34</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
             </OnEventFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="RepSeedling">
@@ -304,14 +304,14 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <End type="text" description="End">RGFlowering</End>
             <OnEventFunction name="Target">
               <Event type="text" description="Event">StartRegrowth</Event>
-              <GenericFunction name="TemporaryTarget">
+              <LinearInterpolationFunction name="TemporaryTarget">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
                   <XY>12.5 34</XY>
                   <XY>24 34</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
             </OnEventFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="RepRegrowth">
@@ -345,14 +345,14 @@ Shorter phyllochrons 34 to 51oCd as f = (photoperiod) during vegetative stages
 - We adapted the canopy expansion vs. photoperiod from Teixeira E. I., Moot D. J., Pollock K. J., Brown H. E., 2007. European Journal of Agronomy 27, 154-164.
 
 LAI expansion needs attention in the future.</Memo>
-          <GenericFunction name="PpFct">
+          <LinearInterpolationFunction name="PpFct">
             <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
             <XYPairs>
               <XY>10 0</XY>
               <XY>12.5 1</XY>
               <XY>24 1</XY>
             </XYPairs>
-          </GenericFunction>
+          </LinearInterpolationFunction>
           <PhaseLookup name="PotMaxArea">
             <PhaseLookupValue name="Seedling">
               <Start type="text" description="Start">Emergence</Start>
@@ -370,7 +370,7 @@ LAI expansion needs attention in the future.</Memo>
             </PhaseLookupValue>
           </PhaseLookup>
         </MultiplyFunction>
-        <GenericFunction name="SpecificLeafArea">
+        <LinearInterpolationFunction name="SpecificLeafArea">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 3000000</XY>
@@ -378,16 +378,16 @@ LAI expansion needs attention in the future.</Memo>
             <XY>3 3000000</XY>
             <XY>5 3000000</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="GrowthDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>4 100</XY>
             <XY>5 100</XY>
           </XYPairs>
           <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
-        </GenericFunction>
-        <GenericFunction name="LagDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="LagDuration">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
             <XY>1 300</XY>
@@ -395,8 +395,8 @@ LAI expansion needs attention in the future.</Memo>
             <XY>5 5</XY>
           </XYPairs>
           <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
-        </GenericFunction>
-        <GenericFunction name="SenescenceDuration">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
             <XY>1 100</XY>
@@ -404,23 +404,23 @@ LAI expansion needs attention in the future.</Memo>
             <XY>5 10</XY>
           </XYPairs>
           <Memo>This is totally empirical, we need proper parameterization here later.</Memo>
-        </GenericFunction>
-        <GenericFunction name="BranchingRate">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="BranchingRate">
           <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>2 0</XY>
             <XY>5 0</XY>
           </XYPairs>
           <Memo>this is causing a crash in the program when set to any value (guess: is it because SLA was artifitialy made very high?)</Memo>
-        </GenericFunction>
-        <GenericFunction name="ExtinctionCoeff">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 0.81</XY>
             <XY>0.5 0.81</XY>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="Height">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 1</XY>
@@ -430,14 +430,14 @@ LAI expansion needs attention in the future.</Memo>
               <XY>300 750</XY>
             </XYPairs>
           </XYPairs>
-        </GenericFunction>
-        <GenericFunction name="ExpansionStress">
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY>0.1 0</XY>
             <XY>1.1 1</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <RUEModel name="Photosynthesis">
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting type="text" description="MaximumTemperatureWeighting">0.5</MaximumTemperatureWeighting>
@@ -449,30 +449,30 @@ LAI expansion needs attention in the future.</Memo>
               <XY>40 1</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
-          <GenericFunction name="FVPD">
+          <LinearInterpolationFunction name="FVPD">
             <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
             <XYPairs>
               <XY>0 1</XY>
               <XY>10 1</XY>
               <XY>50 1</XY>
             </XYPairs>
-          </GenericFunction>
-		  		  <GenericFunction name="FN">
+          </LinearInterpolationFunction>
+		  		  <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
-          <GenericFunction name="FW">
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
-          </GenericFunction>
+          </LinearInterpolationFunction>
           <ExpressionFunction name="Fco2">
               <Expression type="text" description="Math Expression">((Leaf.Photosynthesis.CO2conc - Leaf.Photosynthesis.CO2CompensationPoint) * (350.0 + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint)) / ((Leaf.Photosynthesis.CO2conc + 2.0 *  Leaf.Photosynthesis.CO2CompensationPoint) * (350 - Leaf.Photosynthesis.CO2CompensationPoint))</Expression>
               <Memo>This aims to reproduce the co2 response function in plant but is not yet tested</Memo>
@@ -542,7 +542,7 @@ LAI expansion needs attention in the future.</Memo>
           <Value type="text" description="Value">0.5</Value>
         </Constant>
         <MultiplyFunction name="PartitionFraction">
-          <GenericFunction name="LeafToShootFraction">
+          <LinearInterpolationFunction name="LeafToShootFraction">
             <XProperty type="text" description="XProperty">AboveGroundDM</XProperty>
             <XYPairs>
               <XY>0 0.7</XY>
@@ -551,20 +551,20 @@ LAI expansion needs attention in the future.</Memo>
               <XY>200 0.34</XY>
               <XY>1000 0.26</XY>
             </XYPairs>
-          </GenericFunction>
+          </LinearInterpolationFunction>
           <SubtractFunction name="ShootPartitionFraction">
             <Constant name="One">
               <Value type="text" description="Value">1</Value>
             </Constant>
             <SubtractFunction name="RootPartitionFraction">
-              <GenericFunction name="BaseFraction">
+              <LinearInterpolationFunction name="BaseFraction">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10 0.1</XY>
                   <XY>16.5 0.44</XY>
                   <XY>24 0.44</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
               <MultiplyFunction name="CorrectionFactor">
                 <Constant name="ScaleFactor">
                   <Value type="text" description="Value">0.8</Value>
@@ -638,15 +638,15 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
             <Value type="text" description="Value">1</Value>
           </Constant>
           <MultiplyFunction name="LeafPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction">
-            <GenericFunction name="LeafToShootFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction">
+            <LinearInterpolationFunction name="LeafToShootFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction">
               <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction/XYPairs" />
-            </GenericFunction>
+            </LinearInterpolationFunction>
             <SubtractFunction name="ShootPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction">
               <Constant name="One" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/One" />
               <SubtractFunction name="PartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction">
-                <GenericFunction name="BaseFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction">
+                <LinearInterpolationFunction name="BaseFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction">
                   <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction/XYPairs" />
-                </GenericFunction>
+                </LinearInterpolationFunction>
                 <MultiplyFunction name="CorrectionFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor">
                   <Constant name="ScaleFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/ScaleFactor" />
                   <PhotoperiodDeltaFunction shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/PhotoperiodDeltaFunction" />
@@ -655,14 +655,14 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
             </SubtractFunction>
           </MultiplyFunction>
           <SubtractFunction name="RootPartitionFraction">
-            <GenericFunction name="BaseFraction">
+            <LinearInterpolationFunction name="BaseFraction">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 0.1</XY>
                 <XY>16.5 0.44</XY>
                 <XY>24 0.44</XY>
               </XYPairs>
-            </GenericFunction>
+            </LinearInterpolationFunction>
             <MultiplyFunction name="CorrectionFactor">
               <Constant name="ScaleFactor">
                 <Value type="text" description="Value">0.8</Value>
@@ -685,13 +685,13 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
         <SpecificRootLength type="text" description="SpecificRootLength">60000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.02</KNO3>
         <KNH4 type="text" description="KNH4">0.0</KNH4>
-        <GenericFunction name="KLModifier">
+        <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 1</XY>
             <XY>3 1</XY>
           </XYPairs>
-        </GenericFunction>
+        </LinearInterpolationFunction>
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue name="PreEmergence">
             <Start>Germination</Start>
@@ -784,7 +784,7 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
         </PhaseLookup>
         <MultiplyFunction name="SenescenceRate">
           <SubtractFunction name="SeasRespRate">
-            <GenericFunction name="BaseFraction">
+            <LinearInterpolationFunction name="BaseFraction">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 0.002</XY>
@@ -792,7 +792,7 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
                 <XY>16 0.023</XY>
                 <XY>16.7 0.032</XY>
               </XYPairs>
-            </GenericFunction>
+            </LinearInterpolationFunction>
             <MultiplyFunction name="CorrectionFactor">
               <Constant name="ScaleFactor">
                 <Value type="text" description="Value">-0.067</Value>
@@ -821,14 +821,14 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
             <Start type="text" description="Start">StartRegrowth</Start>
             <End type="text" description="End">EndRegrowth</End>
             <SubtractFunction name="RegPartFrac">
-              <GenericFunction name="BaseFraction">
+              <LinearInterpolationFunction name="BaseFraction">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10 0.06</XY>
                   <XY>16.5 0.4</XY>
                   <XY>24 0.4</XY>
                 </XYPairs>
-              </GenericFunction>
+              </LinearInterpolationFunction>
               <MultiplyFunction name="CorrectionFactor">
                 <Constant name="ScaleFactor">
                   <Value type="text" description="Value">.8</Value>
