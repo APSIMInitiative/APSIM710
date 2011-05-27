@@ -15,9 +15,6 @@ public class Leaf : BaseOrgan, AboveGround
     protected double _FinalNodeNo = 0;
 
     [Link]
-    Wheat w;
-
-    [Link]
     protected Plant Plant = null;
 
     [Link]
