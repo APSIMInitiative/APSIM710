@@ -68,7 +68,7 @@ public class Nodule : BaseOrgan, BelowGround
             Function PartitionFraction = Children["PartitionFraction"] as Function;
             double MaximumPropFixation = 0.2; //Fixme.  Need to decide if this is to stay and if so put in IDE
             Double MaximumFixation = MaximumPropFixation * A.DMSupply * PartitionFraction.Value;
-            return Math.Max(MaximumSpecificFixation.Value * FT.Value * FW.Value, MaximumFixation);
+            return Math.Min(MaximumSpecificFixation.Value * FT.Value * FW.Value, MaximumFixation);
         }
     }
     [Output]

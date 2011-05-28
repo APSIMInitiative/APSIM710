@@ -107,6 +107,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         {
             Population Population = Plant.Children["Population"] as Population;
             LayerLive[0].StructuralWt = InitialDM * Population.Value;
+            LayerLive[0].StructuralN = InitialDM * MaxNconc * Population.Value;
             Depth = SowingInfo.Depth;
         }
 

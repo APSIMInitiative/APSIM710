@@ -22,10 +22,10 @@ class SIRIUSGrain : ReproductiveOrgan
         get
         {
             Function NFillingRate = Children["NFillingRate"] as Function;
-            Function MaxNConcDailyGrowth = Children["MaxNConcDailyGrowth"] as Function;
+            Function MaxNconc = Children["MaximumNconc"] as Function;
             Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
             double demand = Number * NFillingRate.Value;
-            return Math.Min(demand, MaxNConcDailyGrowth.Value * DailyGrowth) * NitrogenDemandPhase.Value;
+            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * NitrogenDemandPhase.Value;
         }
 
     }
