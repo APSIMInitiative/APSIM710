@@ -11,19 +11,18 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
   #region Class Data Members
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;
-    public double NFixationToday = 0;
+    public double _NFixed = 0;
   #endregion
 
     public override void DoStartSet()
     { }
     
  #region Fixation methods
-    [Output]
     public override double NFixation
     {
         set
         {
-            NFixationToday = value;
+            _NFixed = value;
         }
     }
     [Output]
@@ -54,11 +53,12 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
             RespiredWt = value;
         }
     }
+    [Output]
     public double NFixed
     {
         get
         {
-            return NFixationToday;
+            return _NFixed;
         }
     }
  #endregion

@@ -95,8 +95,6 @@ public class Biomass : Instance
                 return 0.0;
         }
     }
-
-
     [Output]
     [Units("g/g")]
     public double StructuralNConc
@@ -109,7 +107,6 @@ public class Biomass : Instance
                 return 0.0;
         }
     }
-
     [Output]
     [Units("g/g")]
     public double NonStructuralNConc

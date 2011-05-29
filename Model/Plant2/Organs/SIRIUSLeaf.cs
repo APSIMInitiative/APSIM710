@@ -6,8 +6,7 @@ using CSGeneral;
 public class SIRIUSLeaf : Leaf, AboveGround
 {
 
-    #region Outputs
-
+    #region Outputs Variables
     [Output]
     double[] CohortSize
     {
@@ -28,7 +27,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
-
     [Output]
     double[] CohortAge
     {
@@ -49,7 +47,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
-
     [Output]
     double[] CohortMaxSize
     {
@@ -70,7 +67,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
-
     [Output]
     double[] CohortMaxArea
     {
@@ -91,7 +87,26 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
+    [Output]
+    double[] CohortPotSize
+    {
+        get
+        {
+            int i = 0;
 
+            double[] values = new double[(int)MaxNodeNo];
+            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+                values[i] = 0;
+            i = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+            {
+                values[i] = L.PotentialSize;
+                i++;
+            }
+
+            return values;
+        }
+    }
     #endregion
 
     #region Leaf functions
@@ -495,30 +510,5 @@ public class SIRIUSLeaf : Leaf, AboveGround
     }
     #endregion 
 
-    #region State variables
-    // State variables for reporting and internal calls 
-
-    [Output]
-    double[] CohortPotSize
-    {
-        get
-        {
-            int i = 0;
-
-            double[] values = new double[(int)MaxNodeNo];
-            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-                values[i] = 0;
-            i = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-            {
-                values[i] = L.PotentialSize;
-                i++;
-            }
-
-            return values;
-        }
-    }
-
-    #endregion
 }
    

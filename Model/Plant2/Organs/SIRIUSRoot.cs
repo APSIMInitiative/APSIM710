@@ -9,8 +9,10 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     Plant Plant = null;
     [Link(IsOptional.Yes)]
     Function NitrogenDemandPhase = null;
+    [Link(IsOptional.Yes)]
+    Function SenescenceRate = null;
 
-    #region Class Data Members
+ #region Class Data Members
     const double kgha2gsm = 0.1;
     private double[] SWSupply = null;
     private double[] Uptake = null;
@@ -20,12 +22,8 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     public Biomass[] LayerLive;
     public Biomass[] LayerDead;
     private SowPlant2Type SowingInfo = null;
-    [Event]
-    public event FOMLayerDelegate IncorpFOM;
-    [Event]
-    public event WaterChangedDelegate WaterChanged;
-    [Event]
-    public event NitrogenChangedDelegate NitrogenChanged;
+    private double _SenescenceRate = 0;
+
     [Input]
     public double[] sw_dep = null;
     [Input]
@@ -54,11 +52,9 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     private double KNO3 = 0;
     [Param]
     private double KNH4 = 0;
-    [Output]
-    [Units("mm")]
-    public double Depth = 0;
-    #endregion
+ #endregion
 
+ #region bits to be superseeded by the biomass class
     public override Biomass Live
     {
         get
@@ -89,24 +85,57 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             return Total;
         }
     }
-
-    #region root functions
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public double LiveN
     {
-        SowingInfo = Sow;
-        if (LayerLive == null)
+        get
         {
-            LayerLive = new Biomass[dlayer.Length];
-            LayerDead = new Biomass[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-            {
-                LayerLive[i] = new Biomass();
-                LayerDead[i] = new Biomass();
-            }
+            return Live.N;
         }
-        DeltaNO3 = new double[dlayer.Length];
-        DeltaNH4 = new double[dlayer.Length];
+    }
+    [Output]
+    [Units("g/m2")]
+    public double DeadN
+    {
+        get
+        {
+            return Dead.N;
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public double LiveWt
+    {
+        get
+        {
+            return Live.Wt;
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public double DeadWt
+    {
+        get
+        {
+            return Dead.Wt;
+        }
+    }
+    [Output]
+    [Units("g/g")]
+    public double LiveNConc
+    {
+        get
+        {
+            return Live.NConc;
+        }
+    }
+ #endregion
+
+ #region Root functions and events
+    public override void DoStartSet()
+    {
+        _SenescenceRate = 0;
+        if (SenescenceRate != null) //Default of zero means no senescence
+            _SenescenceRate = SenescenceRate.Value; 
     }
     public override void DoPotentialGrowth()
     {
@@ -143,17 +172,17 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         Depth = Math.Min(Depth, MaxDepth);
 
         // Do Root Senescence
-        Function SenescenceRate = Children["SenescenceRate"] as Function;
+        //Function SenescenceRate = Children["SenescenceRate"] as Function;
         FOMLayerLayerType[] FOMLayers = new FOMLayerLayerType[dlayer.Length];
 
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
-            double DM = LayerLive[layer].Wt * SenescenceRate.Value * 10.0;
-            double N = LayerLive[layer].StructuralN * SenescenceRate.Value * 10.0;
-            LayerLive[layer].StructuralWt *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].NonStructuralWt *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].StructuralN *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].NonStructuralN *= (1.0 - SenescenceRate.Value);
+            double DM = LayerLive[layer].Wt * _SenescenceRate * 10.0;
+            double N = LayerLive[layer].StructuralN * _SenescenceRate * 10.0;
+            LayerLive[layer].StructuralWt *= (1.0 - _SenescenceRate);
+            LayerLive[layer].NonStructuralWt *= (1.0 - _SenescenceRate);
+            LayerLive[layer].StructuralN *= (1.0 - _SenescenceRate);
+            LayerLive[layer].NonStructuralN *= (1.0 - _SenescenceRate);
 
 
 
@@ -243,6 +272,29 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             }
         }
     }
+    [Event]
+    public event FOMLayerDelegate IncorpFOM;
+    [Event]
+    public event WaterChangedDelegate WaterChanged;
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
+    [EventHandler]
+    public void OnSow(SowPlant2Type Sow)
+    {
+        SowingInfo = Sow;
+        if (LayerLive == null)
+        {
+            LayerLive = new Biomass[dlayer.Length];
+            LayerDead = new Biomass[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+            {
+                LayerLive[i] = new Biomass();
+                LayerDead[i] = new Biomass();
+            }
+        }
+        DeltaNO3 = new double[dlayer.Length];
+        DeltaNH4 = new double[dlayer.Length];
+    }
     [EventHandler]
     public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
     {
@@ -263,114 +315,9 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             }
         }
     }
-    #endregion
+ #endregion
 
-    #region state variables and deltas
-    [Output]
-    [Units("mm")]
-    double[] LLdep
-    {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = ll[i] * dlayer[i];
-            return value;
-        }
-    }
-    [Output]
-    [Units("??mm/mm3")]
-    double[] LengthDensity
-    {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
-            return value;
-        }
-    }
-    [Output]
-    [Units("mm")]
-    public override double WaterSupply
-    {
-        get
-        {
-            if (SWSupply == null || SWSupply.Length != dlayer.Length)
-                SWSupply = new double[dlayer.Length];
-
-            Function KLModifier = Children["KLModifier"] as Function;
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-                if (layer <= LayerIndex(Depth))
-                    SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (sw_dep[layer] - ll[layer] * dlayer[layer]) * RootProportion(layer, Depth));
-                else
-                    SWSupply[layer] = 0;
-
-            return MathUtility.Sum(SWSupply);
-        }
-    }
-    [Output]
-    [Units("mm")]
-    public override double WaterUptake
-    {
-        get { return -MathUtility.Sum(Uptake); }
-    }
-    [Output]
-    [Units("g/m2")]
-    public double LiveN
-    {
-        get
-        {
-            return Live.N;
-        }
-    }
-    [Output]
-    [Units("g/m2")]
-    public double DeadN
-    {
-        get
-        {
-            return Dead.N;
-        }
-    }
-    [Output]
-    [Units("g/m2")]
-    public double LiveWt
-    {
-        get
-        {
-            return Live.Wt;
-        }
-    }
-    [Output]
-    [Units("g/m2")]
-    public double DeadWt
-    {
-        get
-        {
-            return Dead.Wt;
-        }
-    }
-    [Output]
-    [Units("g/g")]
-    public double LiveNConc
-    {
-        get
-        {
-            return Live.NConc;
-        }
-    }
-    [Output("rlv")]
-    double[] rlv
-    {
-        get
-        {
-            return LengthDensity;
-        }
-    }
-    [Output]
-    [Units("g/m2")]
+ #region Arbitrator method calls
     public override double DMDemand
     {
         get
@@ -490,6 +437,24 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     }
     [Output]
     [Units("g/m2")]
+    public override double NDemand
+    {
+        get
+        {
+            //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
+            double TotalDeficit = 0.0;
+            Function MaximumNConc = Children["MaximumNConc"] as Function;
+            double _NitrogenDemandPhase = 1;
+            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandPhase = NitrogenDemandPhase.Value;
+            foreach (Biomass Layer in LayerLive)
+            {
+                double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
+                TotalDeficit += NDeficit;
+            }
+            return TotalDeficit * _NitrogenDemandPhase;
+        }
+    } 
     public override double NUptakeSupply
     {
         get
@@ -500,9 +465,10 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             Function MaxDailyNUptake = Children["MaxDailyNUptake"] as Function;
             double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
             return NSupply;
-         }
+        }
     }
-
+    [Output]
+    [Units("g/m2")]
     public override double NUptake
     {
         set
@@ -534,24 +500,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                     NitrogenChanged.Invoke(NitrogenUptake);
 
             }
-        }
-    }
-    public override double NDemand
-    {
-        get
-        {
-            //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
-            double TotalDeficit = 0.0;
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
-            double _NitrogenDemandPhase = 1;
-            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandPhase = NitrogenDemandPhase.Value;
-            foreach (Biomass Layer in LayerLive)
-            {
-                double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
-                TotalDeficit += NDeficit;
-            }
-            return TotalDeficit * _NitrogenDemandPhase;
         }
     }
     public override double NAllocation
@@ -605,6 +553,74 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             return MinimumNConc.Value;
         }
     }
-    #endregion
+    [Output]
+    [Units("mm")]
+    public override double WaterSupply
+    {
+        get
+        {
+            if (SWSupply == null || SWSupply.Length != dlayer.Length)
+                SWSupply = new double[dlayer.Length];
+
+            Function KLModifier = Children["KLModifier"] as Function;
+
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                if (layer <= LayerIndex(Depth))
+                    SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (sw_dep[layer] - ll[layer] * dlayer[layer]) * RootProportion(layer, Depth));
+                else
+                    SWSupply[layer] = 0;
+
+            return MathUtility.Sum(SWSupply);
+        }
+    }
+    [Output]
+    [Units("mm")]
+    public override double WaterUptake
+    {
+        get { return -MathUtility.Sum(Uptake); }
+    }
+    [Output]
+    [Units("g/m2")]
+ #endregion
+
+ #region Output Variables
+    [Output]
+    [Units("mm")]
+    double[] LLdep
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = ll[i] * dlayer[i];
+            return value;
+        }
+    }
+    [Output]
+    [Units("??mm/mm3")]
+    double[] LengthDensity
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
+            return value;
+        }
+    }
+    [Output("rlv")]
+    [Units("??km/mm3")]
+    double[] rlv
+    {
+        get
+        {
+            return LengthDensity;
+        }
+    }
+    [Output]
+    [Units("mm")]
+    public double Depth = 0;
+ #endregion
+
 }
 

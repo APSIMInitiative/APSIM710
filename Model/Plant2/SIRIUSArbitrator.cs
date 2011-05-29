@@ -6,15 +6,20 @@ using CSGeneral;
 
 public class SIRIUSArbitrator : Arbitrator
 {
+ #region Setup Class Members
     // IDE set paramaters
     [Link(IsOptional.Yes)]
     Function FixationMetabolicCost = null;
-    private Function DMRetransFact = null;
-    
+    [Link(IsOptional.Yes)]
+    Function RetransWtNRatio = null;
+    double _RetransWtNRatio = 0.0;
     public override void Initialised()
     {
         base.Initialised();
-        DMRetransFact = (Function)Children["DMRetransFact"];
+        _RetransWtNRatio = 0;
+        if (RetransWtNRatio != null) //Default of zero means no biomass will be moved with reallocated N
+            _RetransWtNRatio = RetransWtNRatio.Value; 
+        //DMRetransFact = (Function)Children["DMRetransFact"];
     }
     private void Or(bool p)
     {
@@ -40,10 +45,11 @@ public class SIRIUSArbitrator : Arbitrator
             return TotalNDemand;
         }
     }
-   
+ #endregion
+
     public override void DoDM(List<Organ> Organs)
     {
-
+//Fixme  The only biomass retranslocation is associated with N retranslocation.  Need something to move sugars to reproductive organs
  #region Setup Biomass calculations
         //create organ specific variables
         double[] DMSupply = new double[Organs.Count];
@@ -174,7 +180,7 @@ public class SIRIUSArbitrator : Arbitrator
                     Allocation = Math.Min(TotalNReallocationSupply * RelativeNDemand[i], Requirement);
                     NAllocated[i] += Allocation;
                     NReallocationAllocated += Allocation;
-                    DMAllocation[i] += Allocation * DMRetransFact.Value;  // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    DMAllocation[i] += Allocation * _RetransWtNRatio;  // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
                 }
             }
 
@@ -185,7 +191,7 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NReallocationSupply[i] / TotalNReallocationSupply;
                     NReallocation[i] += NReallocationAllocated * RelativeSupply;
-                    DMRetranslocation[i] += NReallocationAllocated * RelativeSupply * DMRetransFact.Value; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    DMRetranslocation[i] += NReallocationAllocated * RelativeSupply * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
                 }
             }
         }
@@ -262,7 +268,7 @@ public class SIRIUSArbitrator : Arbitrator
             // Calculate how much retranslocation N (and associated biomass) each demanding organ gets based on relative demands
             for (int i = 0; i < Organs.Count; i++)
             {
-                double PriorityFactor = 1.0;
+                double PriorityFactor = 1.0;  // NOTE: Setting this below 1.0 did not effect retrans in potatoes becasue the RetransFactor was dominating.  Reducing this in Peas reduced fixation.  This is because N demand for grain is based only on daily increment but other organs is based no deficit.  Increasing retranslocation to grain will increase deficit in other organs and increase fixation.
                 double Requirement = Math.Max(0.0, NDemand[i] * PriorityFactor - NAllocated[i]); 
                 double Allocation = 0.0;
                 if (Requirement > 0.00000000001)
@@ -270,8 +276,8 @@ public class SIRIUSArbitrator : Arbitrator
                     Allocation = Math.Min(TotalNRetranslocationSupply * RelativeNDemand[i], Requirement);
                     NAllocated[i] += Allocation;
                     NRetranslocationAllocated += Allocation;
-                    DMAllocation[i] += Allocation * DMRetransFact.Value; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                    TotalWtAllocated += Allocation * DMRetransFact.Value;
+                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    TotalWtAllocated += Allocation * _RetransWtNRatio;
                 }
             }
 
@@ -282,7 +288,7 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NRetranslocationSupply[i] / TotalNRetranslocationSupply;
                     NRetranslocation[i] += NRetranslocationAllocated * RelativeSupply;
-                    DMRetranslocation[i] += NRetranslocationAllocated * RelativeSupply * DMRetransFact.Value; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    DMRetranslocation[i] += NRetranslocationAllocated * RelativeSupply * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
                 }
             }
         }
