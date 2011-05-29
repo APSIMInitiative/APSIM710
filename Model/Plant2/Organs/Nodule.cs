@@ -61,14 +61,11 @@ public class Nodule : BaseOrgan, BelowGround
     {
         get
         {
-            Function MaximumSpecificFixation = Children["MaximumSpecificFixation"] as Function;
+            Function SpecificNitrogenaseActivity = Children["SpecificNitrogenaseActivity"] as Function;
             Function FT = Children["FT"] as Function;
             Function FW = Children["FW"] as Function;
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            double MaximumPropFixation = 0.2; //Fixme.  Need to decide if this is to stay and if so put in IDE
-            Double MaximumFixation = MaximumPropFixation * A.DMSupply * PartitionFraction.Value;
-            return Math.Min(MaximumSpecificFixation.Value * FT.Value * FW.Value, MaximumFixation);
+            //Fixme Need to add water logging factor
+            return Live.StructuralWt * SpecificNitrogenaseActivity.Value * FT.Value * FW.Value;
         }
     }
     [Output]

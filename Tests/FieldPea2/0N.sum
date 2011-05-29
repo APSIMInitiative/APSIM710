@@ -16,6 +16,7 @@ Title                  = 0N
    Component                     "Micromet" = %apsim%\Model\Micromet.dll
 Paddock:
    Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
@@ -196,6 +197,22 @@ Paddock:
         NoduleNfixed
 
      Output file = 0N Plant2 diagnostic variables.out
+     Format = normal
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafCohortLiveStructuralNconc
+        LeafCohortLiveNonStructuralNconc
+        LeafCohortLiveNconc
+        LeafMaximumNConcValue
+        LeafMinimumNConcValue
+        LeafCohortliveStructuralwt
+        LeafCohortlivenonstructuralwt
+
+     Output file = 0N.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -457,10 +474,10 @@ Paddock:
             Name   Type        Dry matter   C        N        P    Cover  Standing_fr
                                 (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
          ----------------------------------------------------------------------
-          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+          wheat_stubwheat            0.0     0.0     0.0     0.0   0.000     0.0
          ----------------------------------------------------------------------
      
-                      Effective Cover from Surface Materials =   0.4
+                      Effective Cover from Surface Materials =   0.0
      
 
 ------- Wakanui Nitrogen Initialisation ---------------------------------------
@@ -480,30 +497,30 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  0.05    2.26    0.23    0.00
-             2     6.20  0.05    1.28    0.13    0.00
-             3     5.70  0.05    1.46    0.15    0.00
-             4     5.50  0.05    1.58    0.16    0.00
-             5     5.50  0.05    1.49    0.15    0.00
-             6     5.50  0.05    1.40    0.14    0.00
-             7     5.50  0.47    1.37    0.14    0.00
-             8     5.50  0.47    1.41    0.14    0.00
-             9     5.50  0.47    1.38    0.14    0.00
-            10     5.50  0.47    1.43    0.14    0.00
-            11     5.50  0.47    1.43    0.14    0.00
-            12     5.50  0.47    1.43    0.14    0.00
-            13     5.50  0.47    1.39    0.14    0.00
-            14     5.50  0.47    1.39    0.14    0.00
-            15     5.50  0.47    1.39    0.14    0.00
-            16     5.50  0.47    1.39    0.14    0.00
-            17     5.50  0.47    1.39    0.14    0.00
-            18     5.50  0.47    1.39    0.14    0.00
-            19     5.50  0.47    1.39    0.14    0.00
-            20     5.50  0.47    1.39    0.14    0.00
-            21     5.50  0.47    1.39    0.14    0.00
-            22     5.50  0.47    1.39    0.14    0.00
+             1     6.60  0.10    0.23    0.23    0.00
+             2     6.20  0.10    0.13    0.13    0.00
+             3     5.70  0.10    0.15    0.15    0.00
+             4     5.50  0.10    0.16    0.16    0.00
+             5     5.50  0.10    0.15    0.15    0.00
+             6     5.50  0.10    0.14    0.14    0.00
+             7     5.50  0.10    0.14    0.14    0.00
+             8     5.50  0.10    0.14    0.14    0.00
+             9     5.50  0.10    0.14    0.14    0.00
+            10     5.50  0.10    0.14    0.14    0.00
+            11     5.50  0.47    0.14    0.14    0.00
+            12     5.50  0.47    0.14    0.14    0.00
+            13     5.50  0.47    0.14    0.14    0.00
+            14     5.50  0.47    0.14    0.14    0.00
+            15     5.50  0.47    0.14    0.14    0.00
+            16     5.50  0.47    0.14    0.14    0.00
+            17     5.50  0.47    0.14    0.14    0.00
+            18     5.50  0.47    0.14    0.14    0.00
+            19     5.50  0.47    0.14    0.14    0.00
+            20     5.50  0.47    0.14    0.14    0.00
+            21     5.50  0.47    0.14    0.14    0.00
+            22     5.50  0.47    0.14    0.14    0.00
           ------------------------------------------------
-           Totals               31.82    3.18    0.00
+           Totals                3.18    3.18    0.00
           ------------------------------------------------
      
      
@@ -516,16 +533,16 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1       1114.8    76.9    15.2     1.9     0.0     0.0
-             2        633.8    43.7     6.2     0.8     0.0     0.0
-             3        727.3    50.2     2.7     0.3     0.0     0.0
-             4        789.2    54.4     0.8     0.1     0.0     0.0
-             5        744.7    51.4     0.3     0.0     0.0     0.0
-             6        699.7    48.3     0.3     0.0     0.0     0.0
-             7       6436.4   443.9     2.6     0.3     0.0     0.0
-             8       6624.4   456.9     2.6     0.3     0.0     0.0
-             9       6483.4   447.1     2.6     0.3     0.0     0.0
-            10       6718.3   463.3     2.7     0.3     0.0     0.0
+             1       2257.8   155.7     2.2     0.3     0.0     0.0
+             2       1278.8    88.2     1.2     0.2     0.0     0.0
+             3       1459.1   100.6     0.9     0.1     0.0     0.0
+             4       1579.4   108.9     0.6     0.1     0.0     0.0
+             5       1489.4   102.7     0.6     0.1     0.0     0.0
+             6       1399.4    96.5     0.6     0.1     0.0     0.0
+             7       1369.5    94.4     0.5     0.1     0.0     0.0
+             8       1409.4    97.2     0.6     0.1     0.0     0.0
+             9       1379.5    95.1     0.5     0.1     0.0     0.0
+            10       1429.4    98.6     0.6     0.1     0.0     0.0
             11       6718.3   463.3     2.7     0.3     0.0     0.0
             12       6718.3   463.3     2.7     0.3     0.0     0.0
             13       6530.4   450.4     2.6     0.3     0.0     0.0
@@ -539,13 +556,13 @@ Paddock:
             21       6530.4   450.4     2.6     0.3     0.0     0.0
             22       6530.4   450.4     2.6     0.3     0.0     0.0
           ---------------------------------------------------------
-           Totals  109713.0  7566.4    67.1     8.4     0.0     0.0
+           Totals   93792.5  6468.4    39.5     4.9     0.0     0.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- fieldpea2 sow  population = 50, depth = 30, cultivar = primo, maxcover = 1.0, budnumber = 1, row_spacing = 200, crop_class = plant
-     Manager creating a new local real variable : initialsoilomn = 7574.79004
-     Manager creating a new local real variable : initialsurfaceomn = 5.00000
-     Manager creating a new local real variable : initialmineraln = 35.00199
+     Manager creating a new local real variable : initialsoilomn = 6473.38428
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 6.36400
 17/12/1997 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -553,17 +570,17 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 18/01/1998 - EndJuvenile
-                            LAI = 0.25 (m^2/m^2)
-           Above Ground Biomass = 16.30 (g/m^2)
+                            LAI = 0.22 (m^2/m^2)
+           Above Ground Biomass = 14.31 (g/m^2)
 25/01/1998 - FloralInitiation
-                            LAI = 0.80 (m^2/m^2)
-           Above Ground Biomass = 50.03 (g/m^2)
+                            LAI = 0.75 (m^2/m^2)
+           Above Ground Biomass = 48.96 (g/m^2)
 27/01/1998 - Flowering
                             LAI = 1.11 (m^2/m^2)
-           Above Ground Biomass = 70.68 (g/m^2)
+           Above Ground Biomass = 71.81 (g/m^2)
 21/02/1998 - StartPodGrowth
-                            LAI = 3.58 (m^2/m^2)
-           Above Ground Biomass = 444.71 (g/m^2)
+                            LAI = 4.12 (m^2/m^2)
+           Above Ground Biomass = 466.59 (g/m^2)
 Removing Leaves from plant
 31 March 1998(Day of year=90), clock: 
      Simulation is terminating due to end criteria being met.

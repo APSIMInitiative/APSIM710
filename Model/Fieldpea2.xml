@@ -44,7 +44,8 @@
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="FixationMetabolicCost">
-          <Value type="text" description="Value">20</Value>
+          <Value type="text" description="Value">7</Value>
+          <Memo>How much biomass is burned per g of N fixed.  Value taken from CropGro for soybean</Memo>
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
@@ -218,13 +219,13 @@
         </PhaseBasedSwitch>
       </SIRIUSGrain>
       <SIRIUSRoot name="Root">
-        <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
-        <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
-        <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM>0.2</InitialDM>
-        <SpecificRootLength>40000</SpecificRootLength>
-        <KNO3>0.02</KNO3>
-        <KNH4>0.0</KNH4>
+        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM type="text" description="InitialDM">0.02</InitialDM>
+        <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
+        <KNO3 type="text" description="KNO3">0.02</KNO3>
+        <KNH4 type="text" description="KNH4">0.0</KNH4>
         <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -273,7 +274,7 @@
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
             <Constant name="Function">
-              <Value type="text" description="Value">0.25</Value>
+              <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -311,42 +312,11 @@
       <Nodule>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">FloralInitiation</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.25</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Middle">
-            <Start type="text" description="Start">FloralInitiation</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.25</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.25</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <Constant name="SenescenceRate">
-          <Value>0.0</Value>
-        </Constant>
-        <Constant name="MaximumNConc">
-          <Value>0.01</Value>
-        </Constant>
-        <Constant name="MaximumSpecificFixation">
-          <Value type="text" description="Value">12</Value>
-        </Constant>
         <TemperatureFunction name="FT">
           <XYPairs>
             <XY>5 0</XY>
-            <XY>30 30</XY>
+            <XY>20 1</XY>
+            <XY>30 1</XY>
             <XY>40 0</XY>
           </XYPairs>
         </TemperatureFunction>
@@ -358,12 +328,43 @@
             <XY>1.5 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <Constant name="FixationCost">
-          <Value type="text" description="Value">401</Value>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
         </Constant>
         <Constant name="MinimumNConc">
           <Value>0.01</Value>
         </Constant>
+        <Constant name="SpecificNitrogenaseActivity">
+          <Value type="text" description="Value">45</Value>
+          <Memo>Maximum potential N fixation defined as g of N fixed per g of root node in the absence of stresses and under high fixation demand.  Value taken from CropGro soybean model</Memo>
+        </Constant>
+        <Constant name="SenescenceRate">
+          <Value>0.0</Value>
+        </Constant>
+        <PhaseLookup name="PartitionFraction">
+          <PhaseLookupValue name="Early">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.03</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Middle">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.02</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Late">
+            <Start>StartPodGrowth</Start>
+            <End>Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">0.01</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
+        </PhaseLookup>
       </Nodule>
       <SIRIUSGenericOrgan name="PodWall">
         <Biomass name="Live" />
@@ -539,7 +540,7 @@
             <XY>3 2000</XY>
             <XY>4 3000</XY>
             <XY>5 4000</XY>
-            <XY>6 4000</XY>
+            <XY>6 2000</XY>
             <XY>7 0</XY>
             <XY>8 0</XY>
           </XYPairs>
@@ -631,6 +632,14 @@
             <XY>7 1000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <ArrayBiomass name="CohortLive">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
+        </ArrayBiomass>
+        <ArrayBiomass name="CohortDead">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />
