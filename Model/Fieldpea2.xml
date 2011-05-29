@@ -328,6 +328,15 @@
             <XY>1.5 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="FWlog">
+          <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>1 1</XY>
+            <XY>1.5 1</XY>
+          </XYPairs>
+          <Memo>This is just here at the moment.  I have not set it to respond to a sensible x variable</Memo>
+        </LinearInterpolationFunction>
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
         </Constant>
@@ -365,6 +374,13 @@
           </PhaseLookupValue>
           <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
         </PhaseLookup>
+        <PhaseBasedSwitch name="NitrogenDemandPhase">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">Maturity</End>
+          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
+		Applied in model code but can not be nested with other functions.
+        </Memo>
+        </PhaseBasedSwitch>
       </Nodule>
       <SIRIUSGenericOrgan name="PodWall">
         <Biomass name="Live" />

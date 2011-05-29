@@ -190,6 +190,17 @@ public class SIRIUSLeaf : Leaf, AboveGround
             L.DoStartSet(ThermalTime.Value);
         }
     }
+    public double CoverAboveCohort(double cohortno)
+    {
+        double LAIabove = 0;
+        for (int i = Leaves.Count - 1; i > cohortno-1; i--)
+        {
+            LAIabove += Leaves[i].LiveArea*Leaves[i].Population*1000000;
+        }
+            Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
+            return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
+    }
+
     #endregion
 
     #region Arbitrator methods
@@ -304,7 +315,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             if (NDemand == 0)
                 if (value == 0) { }//All OK
                 else
-                    throw new Exception("Invalid allocation of N to leaf");
+                    throw new Exception("Invalid allocation of N");
 
             if (value == 0.0)
             { }// do nothing

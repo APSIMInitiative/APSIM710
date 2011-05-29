@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-class GenericOrgan : BaseOrgan, AboveGround
+public class GenericOrgan : BaseOrgan, AboveGround
 {
     [Link]
     protected Plant Plant = null;

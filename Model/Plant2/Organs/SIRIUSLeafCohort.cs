@@ -6,6 +6,8 @@ using CSGeneral;
 class SIRIUSLeafCohort : LeafCohort
 {
  #region Class Data Members
+    [Link]
+    SIRIUSLeaf ParentLeafOrgan = null;
     private double SenescedFrac = 0;
     public double PotentialSize = 0;
     public double PotentialArea = 0; 
@@ -31,8 +33,9 @@ class SIRIUSLeafCohort : LeafCohort
     {
         get
         {
+            //double CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank);  Fixme.  This is throwing an error at the moment
             double NDeficit = Math.Max(0.0, MaximumNConc * (Live.Wt + PotentialDMAllocation) - Live.N);
-            if (IsNotSenescing)
+            if (IsNotSenescing)// && CoverAbove < 0.9) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
                 return Math.Max(0.0, NDeficit);
             else
                 return 0.0;

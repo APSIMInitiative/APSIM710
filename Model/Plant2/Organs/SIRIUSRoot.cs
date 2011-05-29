@@ -12,6 +12,9 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     const double kgha2gsm = 0.1;
     private double[] SWSupply = null;
     private double[] Uptake = null;
+    private double[] DeltaNH4;
+    private double[] DeltaNO3;
+
     public Biomass[] LayerLive;
     public Biomass[] LayerDead;
     private SowPlant2Type SowingInfo = null;
@@ -100,6 +103,8 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                 LayerDead[i] = new Biomass();
             }
         }
+        DeltaNO3 = new double[dlayer.Length];
+        DeltaNH4 = new double[dlayer.Length];
     }
     public override void DoPotentialGrowth()
     {
@@ -236,6 +241,26 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             }
         }
     }
+    [EventHandler]
+    public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
+    {
+        // Gets the water uptake for each layer as calculated by an external module (SWIM)
+
+        Uptake = new double[dlayer.Length];
+
+        for (int i = 0; i != SoilWater.Uptakes.Length; i++)
+        {
+            string UName = SoilWater.Uptakes[i].Name;
+            if (UName == Plant.Name)
+            {
+                int length = SoilWater.Uptakes[i].Amount.Length;
+                for (int layer = 0; layer < length; layer++)
+                {
+                    Uptake[layer] = -(float)SoilWater.Uptakes[i].Amount[layer];
+                }
+            }
+        }
+    }
     #endregion
 
     #region state variables and deltas
@@ -334,7 +359,14 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             return Live.NConc;
         }
     }
-
+    [Output("rlv")]
+    double[] rlv
+    {
+        get
+        {
+            return LengthDensity;
+        }
+    }
     [Output]
     [Units("g/m2")]
     public override double DMDemand
@@ -355,9 +387,11 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
 
-            // Calculate Root Activity Values
+            // Calculate Root Activity Values for water and nitrogen
             double[] RAw = new double[dlayer.Length];
+            double[] RAn = new double[dlayer.Length];
             double TotalRAw = 0;
+            double TotalRAn = 0; ;
 
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
@@ -368,12 +402,24 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                                    * dlayer[layer]
                                    * RootProportion(layer, Depth);
                         RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+
+                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
+                                       * dlayer[layer]
+                                       * RootProportion(layer, Depth);
+                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
                     }
                     else
+                    {
                         RAw[layer] = RAw[layer - 1];
+                        RAn[layer] = RAn[layer - 1];
+                    }
                 else
+                {
                     RAw[layer] = 0;
+                    RAn[layer] = 0;
+                }
                 TotalRAw += RAw[layer];
+                TotalRAn += RAn[layer];
             }
             double allocated = 0;
             for (int layer = 0; layer < dlayer.Length; layer++)
@@ -393,9 +439,11 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         set
         {
-            // Calculate Root Activity Values
-            double[] RAw = new double[dlayer.Length]; //FIXME need to make RAw a seperate function populating a higher level array bacause the code to calculate it is repeated in two places
+            // Calculate Root Activity Values for water and nitrogen
+            double[] RAw = new double[dlayer.Length];
+            double[] RAn = new double[dlayer.Length];
             double TotalRAw = 0;
+            double TotalRAn = 0;
 
             for (int layer = 0; layer < dlayer.Length; layer++)
             {
@@ -406,12 +454,25 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                                    * dlayer[layer]
                                    * RootProportion(layer, Depth);
                         RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+
+                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
+                                   * dlayer[layer]
+                                   * RootProportion(layer, Depth);
+                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
+
                     }
                     else
+                    {
                         RAw[layer] = RAw[layer - 1];
+                        RAn[layer] = RAn[layer - 1];
+                    }
                 else
+                {
                     RAw[layer] = 0;
+                    RAn[layer] = 0;
+                }
                 TotalRAw += RAw[layer];
+                TotalRAn += RAn[layer];
             }
             double allocated = 0;
             for (int layer = 0; layer < dlayer.Length; layer++)
@@ -462,8 +523,10 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
 
                 for (int layer = 0; layer <= dlayer.Length - 1; layer++)
                 {
-                    NitrogenUptake.DeltaNO3[layer] = -no3supply[layer] * fraction;
-                    NitrogenUptake.DeltaNH4[layer] = -nh4supply[layer] * fraction;
+                    DeltaNO3[layer] = -no3supply[layer] * fraction;
+                    DeltaNH4[layer] = -nh4supply[layer] * fraction;
+                    NitrogenUptake.DeltaNO3[layer] = DeltaNO3[layer];
+                    NitrogenUptake.DeltaNH4[layer] = DeltaNH4[layer];
                 }
                 if (NitrogenChanged != null)
                     NitrogenChanged.Invoke(NitrogenUptake);

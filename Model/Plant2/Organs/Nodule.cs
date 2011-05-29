@@ -3,101 +3,27 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-public class Nodule : BaseOrgan, BelowGround
+public class Nodule : SIRIUSGenericOrgan, BelowGround
 {
     [Link]
     Plant Plant = null;
 
-    #region Class Data Members
-    private SowPlant2Type SowingInfo = null;
+  #region Class Data Members
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;
     public double NFixationToday = 0;
-    private double PotentialDMAllocation = 0;
-    #endregion
+  #endregion
+
+    public override void DoStartSet()
+    { }
     
-    public override double DMDemand
-    {
-        get
-        {
-            /// This DM demand is for DM to grow the structure of nodules.
-            double StructureDemand = 0; 
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            StructureDemand = A.DMSupply * PartitionFraction.Value;
-            return StructureDemand;
-        }
-    }   
-    public override double DMPotentialAllocation
-    {
-        set
-        {
-            if (DMDemand == 0)
-                if (value < 0.000000000001) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of potential DM in " + Name);
-            PotentialDMAllocation = value;
-        }
-    }    
+ #region Fixation methods
     [Output]
-    public override double DMAllocation
-    {
-        set
-        {
-           // allocating structural DM to nodule organ
-            Live.StructuralWt += value; 
-        }
-    }
-    [Output]
-    public override double DMRespired
-    {
-        set
-        //This is the DM that is consumed to fix N.  this is calculated by the arbitrator and passed to the nodule to report
-        {
-            RespiredWt = value;
-        }
-    }
-    public override double NFixationSupply
-    {
-        get
-        {
-            Function SpecificNitrogenaseActivity = Children["SpecificNitrogenaseActivity"] as Function;
-            Function FT = Children["FT"] as Function;
-            Function FW = Children["FW"] as Function;
-            //Fixme Need to add water logging factor
-            return Live.StructuralWt * SpecificNitrogenaseActivity.Value * FT.Value * FW.Value;
-        }
-    }
-    [Output]
-    public double NFixed
-    { 
-        get
-        {
-            return NFixationToday;
-        }
-    }
     public override double NFixation
     {
         set
         {
             NFixationToday = value;
-        }
-    }
-    public override double NDemand
-    {
-        get
-        {
-            //Calculate N demand based on how much N is needed to grow nodule wt
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
-            double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
-            return NDeficit;
-        }
-    }
-    public override double NAllocation
-    {
-        set
-        {
-            Live.StructuralN += value;
         }
     }
     [Output]
@@ -108,21 +34,75 @@ public class Nodule : BaseOrgan, BelowGround
             return RespiredWt;
         }
     }
-    public override double MaxNconc
+    [Output]
+    public override double NFixationSupply
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
-            return MaximumNConc.Value;
+            Function SpecificNitrogenaseActivity = Children["SpecificNitrogenaseActivity"] as Function;
+            Function FT = Children["FT"] as Function;
+            Function FW = Children["FW"] as Function;
+            Function FWlog = Children["FWlog"] as Function;
+            return Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
         }
     }
-    public override double MinNconc
+    public override double DMRespired
+    {
+        set
+        //This is the DM that is consumed to fix N.  this is calculated by the arbitrator and passed to the nodule to report
+        {
+            RespiredWt = value;
+        }
+    }
+    public double NFixed
     {
         get
         {
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
-            return MinimumNConc.Value;
+            return NFixationToday;
         }
     }
- }
+ #endregion
+
+ #region Arbitrator methods
+    public override double DMRetranslocationSupply { get { return 0; } }
+    public override double DMRetranslocation
+    {
+        set
+        {
+            if (value > 0)
+                throw new Exception(Name + " cannot supply retranslocation");
+        }
+    }
+    public override double DMAllocation
+    {
+        set
+        {
+           // allocating structural DM to nodule organ
+            Live.StructuralWt += value; 
+        }
+    }
+    public override double NRetranslocationSupply { get { return 0; } }
+    public override double NRetranslocation
+    {
+        set
+        {
+            if (value > 0)
+                throw new Exception(Name + " cannot supply N retranslocation");
+        }
+    }
+    public override double NReallocationSupply { get { return 0; } }
+    public override double NReallocation
+    {
+        set
+        {
+            if (value > 0)
+                throw new Exception(Name + " cannot supply N reallocation");
+        }
+    }
+ #endregion
+
+
+
+
+}
 

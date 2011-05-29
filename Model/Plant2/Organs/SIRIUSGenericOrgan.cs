@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-class SIRIUSGenericOrgan : GenericOrgan, AboveGround
+public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 {
 
     #region Class data members
@@ -23,7 +23,7 @@ class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         StartNRetranslocationSupply = NRetranslocationSupply;
     }
 
-    #region Arbitrator methods
+ #region Arbitrator methods
     public override double DMPotentialAllocation
     {
         set
@@ -31,7 +31,7 @@ class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             if (DMDemand == 0)
                 if (value < 0.000000000001) { }//All OK
                 else
-                    throw new Exception("Invalid allocation of potential DM in" + Name);
+                    throw new Exception("Invalid allocation of potential DM in " + Name);
             PotentialDMAllocation = value;
         }
     }
@@ -55,11 +55,10 @@ class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            //Calculate demand based on how much N is required to bring organ N up to maximum N concentration
-            double NDeficit = 0.0;
+            //Calculate N demand based on how much N is needed to grow nodule wt
             Function MaximumNConc = Children["MaximumNConc"] as Function;
             Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
-            NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
+            double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             //Only allow organ to express demand if organ is growing
             return NDeficit * NitrogenDemandPhase.Value;
         }
