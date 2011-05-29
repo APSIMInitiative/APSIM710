@@ -50,6 +50,7 @@ Public Class MainUI
     Private CurrentStartDate As Date
     Private CurrentEndDate As Date
     Private CurrentSummaryFile As StreamWriter = Nothing
+    Private CurrentToolBoxButton As ToolStripButton = Nothing
     Friend WithEvents RunToolStrip As System.Windows.Forms.ToolStrip
     Friend WithEvents RunProgress As System.Windows.Forms.ToolStripProgressBar
    Friend WithEvents StopButton As System.Windows.Forms.ToolStripButton
@@ -58,78 +59,81 @@ Public Class MainUI
    Friend WithEvents PercentLabel As System.Windows.Forms.ToolStripLabel
    Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
    Friend WithEvents ProgressBar As System.Windows.Forms.ToolStripProgressBar
-   Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
-   Private CurrentErrors As New StringCollection
+    Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
+    Friend WithEvents ToolboxClose As System.Windows.Forms.Button
+    Private CurrentErrors As New StringCollection
 
 
 
 #Region "Constructor / Destructor / Main"
-   <System.STAThread()> _
-   Public Shared Sub Main(ByVal Args() As String)
-      Application.EnableVisualStyles()
-      Application.DoEvents()
-      Application.DoEvents()
-      Application.Run(New MainUI(Args))
-      Application.DoEvents()
-      Application.DoEvents()
-   End Sub
-   Public Sub New(ByVal cmdArgs() As String)
-      MyBase.New()
+    Dim ToolStripButton As Type
 
-      Try
+    <System.STAThread()> _
+    Public Shared Sub Main(ByVal Args() As String)
+        Application.EnableVisualStyles()
+        Application.DoEvents()
+        Application.DoEvents()
+        Application.Run(New MainUI(Args))
+        Application.DoEvents()
+        Application.DoEvents()
+    End Sub
+    Public Sub New(ByVal cmdArgs() As String)
+        MyBase.New()
 
-         'This call is required by the Windows Form Designer.
-         InitializeComponent()
+        Try
 
-         ' Get application name.
-         ApplicationName = ""
-         If Not IsNothing(cmdArgs) Then
-            For Each Arg As String In cmdArgs
-               If (ApplicationName = "" And Arg(0) = "/") Then
-                  ApplicationName = Arg.Substring(1)
-               Else
-                  Args.Add(Arg)
-               End If
-            Next
-         End If
-         If ApplicationName = "" Then
-            ApplicationName = "ApsimUI"
-         End If
-         RunToolStrip.Visible = ApplicationName = "ApsimUI"
+            'This call is required by the Windows Form Designer.
+            InitializeComponent()
 
-         ' Create our controller
-         Configuration.Instance.ApplicationName = ApplicationName
-         PlugIns.LoadAll()
-         SimulationController = New BaseController(Me, ApplicationName, True)
-
-
-         ' Display splash screen
-         If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
-            Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
-            If Configuration.Instance.Setting("SplashScreenButtonVisible").ToLower = "yes" Then
-               SplashForm.ShowDialog()
-            Else
-               SplashForm.Show()
-               Application.DoEvents()
+            ' Get application name.
+            ApplicationName = ""
+            If Not IsNothing(cmdArgs) Then
+                For Each Arg As String In cmdArgs
+                    If (ApplicationName = "" And Arg(0) = "/") Then
+                        ApplicationName = Arg.Substring(1)
+                    Else
+                        Args.Add(Arg)
+                    End If
+                Next
             End If
-         End If
-      Catch ex As Exception
-         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-      End Try
+            If ApplicationName = "" Then
+                ApplicationName = "ApsimUI"
+            End If
+            RunToolStrip.Visible = ApplicationName = "ApsimUI"
 
-      ' Position window correctly.
-      Try
-         Dim inifile As New IniFile
-         WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
-         Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
-         Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
-         If (Left < 0 Or Left > Width) Then
-            Left = 1
-         End If
-         If (Top < 0 Or Top > Height) Then
-            Top = 1
-         End If
-         Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
+            ' Create our controller
+            Configuration.Instance.ApplicationName = ApplicationName
+            PlugIns.LoadAll()
+            SimulationController = New BaseController(Me, ApplicationName, True)
+
+
+            ' Display splash screen
+            If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
+                Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
+                If Configuration.Instance.Setting("SplashScreenButtonVisible").ToLower = "yes" Then
+                    SplashForm.ShowDialog()
+                Else
+                    SplashForm.Show()
+                    Application.DoEvents()
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+        ' Position window correctly.
+        Try
+            Dim inifile As New IniFile
+            WindowState = Convert.ToInt32(Configuration.Instance.Setting("windowstate"))
+            Top = Convert.ToInt32(Configuration.Instance.Setting("top"))
+            Left = Convert.ToInt32(Configuration.Instance.Setting("left"))
+            If (Left < 0 Or Left > Width) Then
+                Left = 1
+            End If
+            If (Top < 0 Or Top > Height) Then
+                Top = 1
+            End If
+            Height = Convert.ToInt32(Configuration.Instance.Setting("height"))
             Width = Convert.ToInt32(Configuration.Instance.Setting("width"))
 
             If (Height = 0 Or Width = 0) Then
@@ -138,41 +142,42 @@ Public Class MainUI
             End If
             Me.Height = Height
             Me.Width = Width
-      Catch ex As System.Exception
-         Me.WindowState = FormWindowState.Maximized
-      End Try
+        Catch ex As System.Exception
+            Me.WindowState = FormWindowState.Maximized
+        End Try
 
-   End Sub
-   Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
-      If disposing Then
-         If Not (components Is Nothing) Then
-            components.Dispose()
-         End If
-      End If
-      MyBase.Dispose(disposing)
-   End Sub
-   Public Sub Go(ByVal CommandLine As String)
-      Args = StringManip.SplitStringHonouringQuotes(CommandLine, " ")
-      Me.Show()
-      Application.Run(Me)
-   End Sub
+    End Sub
+    Protected Overloads Overrides Sub Dispose(ByVal disposing As Boolean)
+        If disposing Then
+            If Not (components Is Nothing) Then
+                components.Dispose()
+            End If
+        End If
+        MyBase.Dispose(disposing)
+    End Sub
+    Public Sub Go(ByVal CommandLine As String)
+        Args = StringManip.SplitStringHonouringQuotes(CommandLine, " ")
+        Me.Show()
+        Application.Run(Me)
+    End Sub
 #End Region
 
 #Region "Windows Form Designer generated code "
 
 
-   'Required by the Windows Form Designer
-   Private components As System.ComponentModel.IContainer
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
 
-   'NOTE: The following procedure is required by the Windows Form Designer
-   'It can be modified using the Windows Form Designer.
-   'Do not modify it using the code editor.
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.
+    'Do not modify it using the code editor.
 
-   <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
+    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainUI))
         Me.ToolBoxPanel = New System.Windows.Forms.Panel()
         Me.ToolBoxToolBarPanel = New System.Windows.Forms.Panel()
+        Me.ToolboxClose = New System.Windows.Forms.Button()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.ToolboxButtonClose = New System.Windows.Forms.Button()
@@ -217,6 +222,7 @@ Public Class MainUI
         'ToolBoxToolBarPanel
         '
         Me.ToolBoxToolBarPanel.BackColor = System.Drawing.SystemColors.Highlight
+        Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxClose)
         Me.ToolBoxToolBarPanel.Controls.Add(Me.Label6)
         Me.ToolBoxToolBarPanel.Controls.Add(Me.Label5)
         Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxButtonClose)
@@ -226,6 +232,16 @@ Public Class MainUI
         Me.ToolBoxToolBarPanel.Name = "ToolBoxToolBarPanel"
         Me.ToolBoxToolBarPanel.Size = New System.Drawing.Size(735, 28)
         Me.ToolBoxToolBarPanel.TabIndex = 19
+        '
+        'ToolboxClose
+        '
+        Me.ToolboxClose.Dock = System.Windows.Forms.DockStyle.Right
+        Me.ToolboxClose.Location = New System.Drawing.Point(707, 0)
+        Me.ToolboxClose.Name = "ToolboxClose"
+        Me.ToolboxClose.Size = New System.Drawing.Size(28, 28)
+        Me.ToolboxClose.TabIndex = 23
+        Me.ToolboxClose.Text = "X"
+        Me.ToolboxClose.UseVisualStyleBackColor = True
         '
         'Label6
         '
@@ -322,7 +338,7 @@ Public Class MainUI
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProgressBar})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 25)
         Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(119, 22)
+        Me.StatusStrip1.Size = New System.Drawing.Size(139, 22)
         Me.StatusStrip1.TabIndex = 3
         Me.StatusStrip1.Visible = False
         '
@@ -467,291 +483,301 @@ Public Class MainUI
 
 #End Region
 
-   Private Sub OnMainFormLoad(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
-      Try
+    Private Sub OnMainFormLoad(ByVal sender As Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Try
 
-         AddHandler SimulationController.ApsimData.DirtyChanged, AddressOf OnDirtyChanged
+            AddHandler SimulationController.ApsimData.DirtyChanged, AddressOf OnDirtyChanged
 
-         ' Load some assemblies for later. The code for some actions are found in
-         ' these assemblies.
-         Assembly.Load("Actions")
+            ' Load some assemblies for later. The code for some actions are found in
+            ' these assemblies.
+            Assembly.Load("Actions")
             Assembly.Load("CSUserInterface")
             Assembly.Load("CPIUserInterface")
-         Assembly.Load("VBUserInterface")
-         Assembly.Load("Graph")
-         'Assembly.Load("Soils")
+            Assembly.Load("VBUserInterface")
+            Assembly.Load("Graph")
+            'Assembly.Load("Soils")
 
-         'Try and load an icon from configuration. (Splash Screen?)
-         Dim IconFileName As String = Configuration.Instance.Setting("Icon")
-         If IconFileName <> "" AndAlso File.Exists(IconFileName) Then
-            Icon = New System.Drawing.Icon(IconFileName)
-         End If
+            'Try and load an icon from configuration. (Splash Screen?)
+            Dim IconFileName As String = Configuration.Instance.Setting("Icon")
+            If IconFileName <> "" AndAlso File.Exists(IconFileName) Then
+                Icon = New System.Drawing.Icon(IconFileName)
+            End If
 
-         'Create the MainToolBar
-         SimulationController.ProvideToolStrip(SimulationToolStrip, "MainToolBar")
-         If Configuration.Instance.Setting("HideMainMenu") = "Yes" Then
-            SimulationToolStrip.Visible = False
-         End If
+            'Create the MainToolBar
+            SimulationController.ProvideToolStrip(SimulationToolStrip, "MainToolBar")
+            If Configuration.Instance.Setting("HideMainMenu") = "Yes" Then
+                SimulationToolStrip.Visible = False
+            End If
 
-         'Show the Simulation Explorer.
-         SimulationExplorer.OnLoad(SimulationController)
-         SimulationController.Explorer = SimulationExplorer    'give the explorer ui to the controller.
+            'Show the Simulation Explorer.
+            SimulationExplorer.OnLoad(SimulationController)
+            SimulationController.Explorer = SimulationExplorer    'give the explorer ui to the controller.
 
-         ' Process command line arguments.
-         ' Load a file if one was specified on the command line.
-         Dim ExportDirectory As String = ""
-         Dim ExportExtension As String = ""
-         If Control.ModifierKeys <> Keys.Control And Args.Count > 0 Then
-            For Each Arg As String In Args
-               If Arg = "Export" And Args.Count = 4 Then
-                  ExportDirectory = Args(2)
-                  ExportExtension = Args(3)
-                  Exit For
-               Else
-                  Dim FileName As String = Arg.Replace("""", "")
-                  If FileName.Length() > 0 Then
-                     If Path.GetFileName(FileName).ToLower() = "response.file" Then
-                        Dim Wizard As New GraphWizardForm
-                        Wizard.Go(SimulationController, FileName)
-                        Wizard.ShowDialog()
-                     Else
-                        SimulationController.ApsimData.OpenFile(FileName)
-                     End If
-                  End If
-               End If
+            ' Process command line arguments.
+            ' Load a file if one was specified on the command line.
+            Dim ExportDirectory As String = ""
+            Dim ExportExtension As String = ""
+            If Control.ModifierKeys <> Keys.Control And Args.Count > 0 Then
+                For Each Arg As String In Args
+                    If Arg = "Export" And Args.Count = 4 Then
+                        ExportDirectory = Args(2)
+                        ExportExtension = Args(3)
+                        Exit For
+                    Else
+                        Dim FileName As String = Arg.Replace("""", "")
+                        If FileName.Length() > 0 Then
+                            If Path.GetFileName(FileName).ToLower() = "response.file" Then
+                                Dim Wizard As New GraphWizardForm
+                                Wizard.Go(SimulationController, FileName)
+                                Wizard.ShowDialog()
+                            Else
+                                SimulationController.ApsimData.OpenFile(FileName)
+                            End If
+                        End If
+                    End If
 
-            Next
-         End If
+                Next
+            End If
 
-         ' If no file loaded then load previous one.
-         If Control.ModifierKeys <> Keys.Control And SimulationController.ApsimData.FileName = Nothing Then
-            SimulationController.LoadPreviousFile()
-         End If
+            ' If no file loaded then load previous one.
+            If Control.ModifierKeys <> Keys.Control And SimulationController.ApsimData.FileName = Nothing Then
+                SimulationController.LoadPreviousFile()
+            End If
 
-         ' If we have an export file name then do an export.
-         If ExportDirectory <> "" Then
-            Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportDirectory, ExportExtension)
-            Close()
-         Else
-            'Create the Toolbox Explorer
-            Dim ToolboxesVisible As Boolean = Configuration.Instance.Setting("ToolboxesVisible").ToLower = "yes"
-            If ToolboxesVisible Then
-               ' Setup but don't show the Toolbox Explorer.
-               ToolboxController = New BaseController(Nothing, ApplicationName, False)
-
-               ToolboxExplorer = New ExplorerUI()
-               ToolboxExplorer.Name = "ToolboxExplorer"
-               ToolboxExplorer.Parent = ToolBoxPanel
-               ToolboxExplorer.Dock = DockStyle.Fill
-               ToolboxExplorer.BringToFront()
-               ToolboxExplorer.OnLoad(ToolboxController)
-
-               ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
-               Try
-                  PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
-               Catch ex As Exception
-                  MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-               End Try
-
+            ' If we have an export file name then do an export.
+            If ExportDirectory <> "" Then
+                Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportDirectory, ExportExtension)
+                Close()
             Else
-               ToolBoxesToolStrip.Visible = False
-            End If
-         End If
+                'Create the Toolbox Explorer
+                Dim ToolboxesVisible As Boolean = Configuration.Instance.Setting("ToolboxesVisible").ToLower = "yes"
+                If ToolboxesVisible Then
+                    ' Setup but don't show the Toolbox Explorer.
+                    ToolboxController = New BaseController(Nothing, ApplicationName, False)
 
-      Catch ex As Exception
-         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-      End Try
+                    ToolboxExplorer = New ExplorerUI()
+                    ToolboxExplorer.Name = "ToolboxExplorer"
+                    ToolboxExplorer.Parent = ToolBoxPanel
+                    ToolboxExplorer.Dock = DockStyle.Fill
+                    ToolboxExplorer.BringToFront()
+                    ToolboxExplorer.OnLoad(ToolboxController)
 
-   End Sub
-   Private Sub OnMainFormClosing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
-      ' User is closing down - save our work.
-      e.Cancel = Not SimulationController.FileSaveAfterPrompt()
-      If Not e.Cancel Then
-         'on closing save the current window state (normal, minimised, maximized) and save the position and height and width of window, 
-         'to apsim.xml (see between <ApsimUI> tags)
-         Try
-            If Not (Me.WindowState = 1) Then    'don't save the state if the window was minimised when it was closed. 
-               Configuration.Instance.SetSetting("windowstate", Str(Me.WindowState))
-            End If
-            If (Me.Top >= 0) And (Me.Left >= 0) And (Me.Width > 0) And (Me.Height > 0) Then   'must be sensible values (non negative)    
-               Configuration.Instance.SetSetting("top", Str(Me.Top))
-               Configuration.Instance.SetSetting("left", Str(Me.Left))
-               Configuration.Instance.SetSetting("width", Str(Me.Width))
-               Configuration.Instance.SetSetting("height", Str(Me.Height))
-            End If
-         Catch ex As System.Exception
-         End Try
+                    ToolboxController.Explorer = ToolboxExplorer    'give the toolbox ExplorerUI to the toolbox controller.
+                    Try
+                        PopulateToolBoxStrip()                          'populate the Toolbox Strip with all the different Toolboxes
+                    Catch ex As Exception
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
 
-         If Not IsNothing(ToolboxExplorer) AndAlso ToolboxExplorer.Visible AndAlso Not ToolboxController.ApsimData.IsReadOnly Then
-            ToolboxController.ApsimData.Save()
-         End If
-         ApsimRunToolStrip.Instance.OnStop()
-      End If
-   End Sub
-   Private Sub OnDirtyChanged(ByVal IsDirty As Boolean)
-      UpdateCaption()
-   End Sub
-   Private Sub OnFileNameChanged(ByVal FileName As String)
-      UpdateCaption()
-   End Sub
-   Private Sub UpdateCaption()
-      ' ----------------------------------------
-      ' Called to update the main form's caption
-      ' ----------------------------------------
-      If SimulationController.ApsimData.IsReadOnly Then
-         Text = ApplicationName + " - " + SimulationController.ApsimData.FileName + " [readonly]"
-      ElseIf SimulationController.ApsimData.IsDirty Then
-         Text = ApplicationName + " - " + SimulationController.ApsimData.FileName + " * "
-      Else
-         Text = ApplicationName + " - " + SimulationController.ApsimData.FileName
-      End If
-   End Sub
+                Else
+                    ToolBoxesToolStrip.Visible = False
+                End If
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+    End Sub
+    Private Sub OnMainFormClosing(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles MyBase.Closing
+        ' User is closing down - save our work.
+        e.Cancel = Not SimulationController.FileSaveAfterPrompt()
+        If Not e.Cancel Then
+            'on closing save the current window state (normal, minimised, maximized) and save the position and height and width of window, 
+            'to apsim.xml (see between <ApsimUI> tags)
+            Try
+                If Not (Me.WindowState = 1) Then    'don't save the state if the window was minimised when it was closed. 
+                    Configuration.Instance.SetSetting("windowstate", Str(Me.WindowState))
+                End If
+                If (Me.Top >= 0) And (Me.Left >= 0) And (Me.Width > 0) And (Me.Height > 0) Then   'must be sensible values (non negative)    
+                    Configuration.Instance.SetSetting("top", Str(Me.Top))
+                    Configuration.Instance.SetSetting("left", Str(Me.Left))
+                    Configuration.Instance.SetSetting("width", Str(Me.Width))
+                    Configuration.Instance.SetSetting("height", Str(Me.Height))
+                End If
+            Catch ex As System.Exception
+            End Try
+
+            If Not IsNothing(ToolboxExplorer) AndAlso ToolboxExplorer.Visible AndAlso Not ToolboxController.ApsimData.IsReadOnly Then
+                ToolboxController.ApsimData.Save()
+            End If
+            ApsimRunToolStrip.Instance.OnStop()
+        End If
+    End Sub
+    Private Sub OnDirtyChanged(ByVal IsDirty As Boolean)
+        UpdateCaption()
+    End Sub
+    Private Sub OnFileNameChanged(ByVal FileName As String)
+        UpdateCaption()
+    End Sub
+    Private Sub UpdateCaption()
+        ' ----------------------------------------
+        ' Called to update the main form's caption
+        ' ----------------------------------------
+        If SimulationController.ApsimData.IsReadOnly Then
+            Text = ApplicationName + " - " + SimulationController.ApsimData.FileName + " [readonly]"
+        ElseIf SimulationController.ApsimData.IsDirty Then
+            Text = ApplicationName + " - " + SimulationController.ApsimData.FileName + " * "
+        Else
+            Text = ApplicationName + " - " + SimulationController.ApsimData.FileName
+        End If
+    End Sub
 #Region "Toolbox button bar"
 
 
-   Public Shared Sub Options(ByVal Controller As BaseController)
-      ' ---------------------------------------------------------------
-      ' User wants to modify user interface options.
-      ' ---------------------------------------------------------------
-      Dim Form As New OptionsForm
-      Form.ShowDialog()
-      Dim F As MainUI = Controller.MainForm
-      PlugIns.LoadAll()
-      F.PopulateToolBoxStrip()
-      F.SimulationToolStrip.Visible = Configuration.Instance.Setting("HideMainMenu") <> "Yes"
-   End Sub
+    Public Shared Sub Options(ByVal Controller As BaseController)
+        ' ---------------------------------------------------------------
+        ' User wants to modify user interface options.
+        ' ---------------------------------------------------------------
+        Dim Form As New OptionsForm
+        Form.ShowDialog()
+        Dim F As MainUI = Controller.MainForm
+        PlugIns.LoadAll()
+        F.PopulateToolBoxStrip()
+        F.SimulationToolStrip.Visible = Configuration.Instance.Setting("HideMainMenu") <> "Yes"
+    End Sub
 
-   Public Sub PopulateToolBoxStrip()
-      ' ---------------------------------------------------------------
-      ' Populate the toolbox strip with buttons for each toolbox.
-      ' ---------------------------------------------------------------
+    Public Sub PopulateToolBoxStrip()
+        ' ---------------------------------------------------------------
+        ' Populate the toolbox strip with buttons for each toolbox.
+        ' ---------------------------------------------------------------
 
-      'Remove existing buttons first.
-      ToolBoxesToolStrip.Items.Clear()
+        'Remove existing buttons first.
+        ToolBoxesToolStrip.Items.Clear()
 
-      ' Loop through each of the known toolboxes
-      For Each FileName As String In Toolboxes.Instance.AllToolBoxes
-         If File.Exists(FileName) Then
-            Dim Doc As New XmlDocument
-            Doc.Load(FileName)
+        ' Loop through each of the known toolboxes
+        For Each FileName As String In Toolboxes.Instance.AllToolBoxes
+            If File.Exists(FileName) Then
+                Dim Doc As New XmlDocument
+                Doc.Load(FileName)
 
-            ' Get the image attribute from the root node of the loaded xml file
-            Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
-            If ImageFileName = "" Then
-               ImageFileName = "%apsim%\UserInterface\Images\Toolbox24.png"
+                ' Get the image attribute from the root node of the loaded xml file
+                Dim ImageFileName As String = XmlHelper.Attribute(Doc.DocumentElement, "image")
+                If ImageFileName = "" Then
+                    ImageFileName = "%apsim%\UserInterface\Images\Toolbox24.png"
+                End If
+                ImageFileName = Configuration.RemoveMacros(ImageFileName)
+
+                Dim ToolBoxName As String = Path.GetFileNameWithoutExtension(FileName)
+                Dim NewItem As New ToolStripButton(ToolBoxName, New System.Drawing.Bitmap(ImageFileName))
+                NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
+                NewItem.ImageScaling = ToolStripItemImageScaling.None
+                NewItem.CheckOnClick = True
+                NewItem.ToolTipText = ""
+                NewItem.Tag = FileName
+                AddHandler NewItem.Click, AddressOf OnToolBoxClick
+                ToolBoxesToolStrip.Items.Add(NewItem)
+            Else
+                MessageBox.Show("Cannot find toolbox file: " + FileName, _
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End If
-            ImageFileName = Configuration.RemoveMacros(ImageFileName)
 
-            Dim ToolBoxName As String = Path.GetFileNameWithoutExtension(FileName)
-            Dim NewItem As New ToolStripButton(ToolBoxName, New System.Drawing.Bitmap(ImageFileName))
-            NewItem.TextImageRelation = TextImageRelation.ImageBeforeText
-            NewItem.ImageScaling = ToolStripItemImageScaling.None
-            NewItem.CheckOnClick = True
-            NewItem.ToolTipText = ""
-            NewItem.Tag = FileName
-            AddHandler NewItem.Click, AddressOf OnToolBoxClick
-            ToolBoxesToolStrip.Items.Add(NewItem)
-         Else
-            MessageBox.Show("Cannot find toolbox file: " + FileName, _
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-         End If
+        Next
+    End Sub
+    Private Sub OnToolBoxClick(ByVal Sender As Object, ByVal e As System.EventArgs)
+        ' ---------------------------------------------------------------
+        ' Display the given ToolBoxName in the toolbox panel at
+        ' ---------------------------------------------------------------
+        ToolboxController.ApsimData.Save()    'Save any changes made to the Toolbox.
 
-      Next
-   End Sub
-   Private Sub OnToolBoxClick(ByVal Sender As Object, ByVal e As System.EventArgs)
-      ' ---------------------------------------------------------------
-      ' Display the given ToolBoxName in the toolbox panel at
-      ' ---------------------------------------------------------------
-      ToolboxController.ApsimData.Save()    'Save any changes made to the Toolbox.
+        If Sender.GetType().ToString = "System.Windows.Forms.ToolStripButton" Then
+            CurrentToolBoxButton = Sender
+        Else
+            CurrentToolBoxButton.Checked = False
+        End If
 
-      Dim ButtonThatWasClicked As ToolStripButton = Sender
-      If Not ButtonThatWasClicked.Checked Then
-         HideToolBoxWindow(ButtonThatWasClicked, e)
-      Else
-         ' Turn off the checked status of all toolbox buttons - except the one
-         ' that was just clicked.
-         For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
+        Dim ButtonThatWasClicked As ToolStripButton = CurrentToolBoxButton
+        If Not ButtonThatWasClicked.Checked Then
+            HideToolBoxWindow(ButtonThatWasClicked, e)
+        Else
+            ' Turn off the checked status of all toolbox buttons - except the one
+            ' that was just clicked.
+            For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
+                Dim Button As ToolStripButton = ToolBoxesToolStrip.Items(i)
+                If Not Button Is ButtonThatWasClicked Then
+                    Button.Checked = False
+                End If
+            Next
+
+            Dim inifile As New IniFile
+            ToolBoxPanel.Height = Val(Configuration.Instance.Setting("toolboxheight"))
+            ToolBoxPanel.Height = ToolBoxPanel.Height - 1
+            ToolBoxPanel.Height = ToolBoxPanel.Height + 1
+
+            ToolboxSplitter.Visible = True
+            ToolBoxPanel.Visible = True
+            Me.ToolBoxSplitterPoint = ToolboxSplitter.SplitPosition
+
+            Dim ToolBoxButton As ToolStripButton = CurrentToolBoxButton
+            Dim filename As String = ToolBoxButton.Tag
+            Cursor.Current = Cursors.WaitCursor
+
+            ToolboxController.ApsimData.OpenFile(filename)
+            Cursor.Current = Cursors.Default
+
+        End If
+    End Sub
+    Private Sub HideToolBoxWindow(ByVal Sender As Object, ByVal e As EventArgs)
+        ' ---------------------------------------------------------------
+        ' Hide the toolbox window.
+        ' ---------------------------------------------------------------
+
+        'This is what closes the toolbox when you hit the close button. It does not actually close anything it just makes the Toolbox ExplorerUI invisible
+
+        ' Turn off the checked status of all toolbox buttons.           'a particular toolbox button is checked on the toolbox strip when it is open in ToolboxExplorer 
+        For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
             Dim Button As ToolStripButton = ToolBoxesToolStrip.Items(i)
-            If Not Button Is ButtonThatWasClicked Then
-               Button.Checked = False
-            End If
-         Next
+            Button.Checked = False
+        Next
 
-         Dim inifile As New IniFile
-         ToolBoxPanel.Height = Val(Configuration.Instance.Setting("toolboxheight"))
-         ToolBoxPanel.Height = ToolBoxPanel.Height - 1
-         ToolBoxPanel.Height = ToolBoxPanel.Height + 1
+        Try
+            ToolboxController.ApsimData.Save()                                'Save any changes made to the Toolbox.
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
 
-         ToolboxSplitter.Visible = True
-         ToolBoxPanel.Visible = True
-         Me.ToolBoxSplitterPoint = ToolboxSplitter.SplitPosition
-
-         Dim ToolBoxButton As ToolStripButton = Sender
-         Dim filename As String = ToolBoxButton.Tag
-         Cursor.Current = Cursors.WaitCursor
-
-         ToolboxController.ApsimData.OpenFile(filename)
-         Cursor.Current = Cursors.Default
-
-      End If
-   End Sub
-   Private Sub HideToolBoxWindow(ByVal Sender As Object, ByVal e As EventArgs) Handles ToolboxButtonClose.Click
-      ' ---------------------------------------------------------------
-      ' Hide the toolbox window.
-      ' ---------------------------------------------------------------
-
-      'This is what closes the toolbox when you hit the close button. It does not actually close anything it just makes the Toolbox ExplorerUI invisible
-
-      ' Turn off the checked status of all toolbox buttons.           'a particular toolbox button is checked on the toolbox strip when it is open in ToolboxExplorer 
-      For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
-         Dim Button As ToolStripButton = ToolBoxesToolStrip.Items(i)
-         Button.Checked = False
-      Next
-
-      Try
-         ToolboxController.ApsimData.Save()                                'Save any changes made to the Toolbox.
-      Catch ex As Exception
-         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-      End Try
-
-      ToolBoxPanel.Visible = False                            'This is what makes the toolbox disappear. There is no actual close.
-      ToolboxSplitter.Visible = ToolBoxPanel.Visible
-   End Sub
-   Private Sub ToolBoxSplitter_LocationChanged(ByVal sender As Object, ByVal e As SplitterEventArgs) Handles ToolboxSplitter.SplitterMoved
-      ' ---------------------------------------------------------------
-      ' Whenever the user moves the toolbox splitter, save the position
-      ' ---------------------------------------------------------------
-      If ToolBoxPanel.Visible Then
-         Configuration.Instance.SetSetting("toolboxheight", Str(ToolBoxPanel.Height))
-      End If
-   End Sub
+        ToolBoxPanel.Visible = False                            'This is what makes the toolbox disappear. There is no actual close.
+        ToolboxSplitter.Visible = ToolBoxPanel.Visible
+    End Sub
+    Private Sub ToolBoxSplitter_LocationChanged(ByVal sender As Object, ByVal e As SplitterEventArgs) Handles ToolboxSplitter.SplitterMoved
+        ' ---------------------------------------------------------------
+        ' Whenever the user moves the toolbox splitter, save the position
+        ' ---------------------------------------------------------------
+        If ToolBoxPanel.Visible Then
+            Configuration.Instance.SetSetting("toolboxheight", Str(ToolBoxPanel.Height))
+        End If
+    End Sub
 
 #End Region
 
 
-   Private Sub OnRunButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RunButton.Click
-      SimulationController.InvokeAction(Nothing, "Run")
-   End Sub
+    Private Sub OnRunButtonClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RunButton.Click
+        SimulationController.InvokeAction(Nothing, "Run")
+    End Sub
 
 
-   Private Sub OnErrorsClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ErrorsButton.Click
-      Dim SimulationName As String = ApsimRunToolStrip.Instance.GetSimulationWithError()
-      If SimulationName <> "" Then
-         Dim Simulation As Component = SimulationController.ApsimData.RootComponent.FindRecursively(SimulationName, "simulation")
-         If Not IsNothing(Simulation) Then
-            Dim SummaryComponent As Component = Simulation.Find("SummaryFile")
-            If Not IsNothing(SummaryComponent) Then
-               SimulationController.SelectedPath = SummaryComponent.FullPath
+    Private Sub OnErrorsClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ErrorsButton.Click
+        Dim SimulationName As String = ApsimRunToolStrip.Instance.GetSimulationWithError()
+        If SimulationName <> "" Then
+            Dim Simulation As Component = SimulationController.ApsimData.RootComponent.FindRecursively(SimulationName, "simulation")
+            If Not IsNothing(Simulation) Then
+                Dim SummaryComponent As Component = Simulation.Find("SummaryFile")
+                If Not IsNothing(SummaryComponent) Then
+                    SimulationController.SelectedPath = SummaryComponent.FullPath
+                End If
             End If
-         End If
-      End If
-   End Sub
+        End If
+    End Sub
 
-   Private Sub OnStopClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StopButton.Click
-      ApsimRunToolStrip.Instance.OnStop()
-   End Sub
+    Private Sub OnStopClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles StopButton.Click
+        ApsimRunToolStrip.Instance.OnStop()
+    End Sub
 
-   Private Sub OnCreateSimClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ToolStripButton1.Click
-      Actions.ApsimUIActions.CreateSIM(SimulationController)
-   End Sub
+    Private Sub OnCreateSimClick(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ToolStripButton1.Click
+        Actions.ApsimUIActions.CreateSIM(SimulationController)
+    End Sub
+
+    Private Sub ToolboxClose_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ToolboxClose.Click
+        OnToolBoxClick(sender, e)
+    End Sub
 End Class

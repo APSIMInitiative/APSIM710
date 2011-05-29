@@ -7,6 +7,9 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Data;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ApsimFile
    {
@@ -23,6 +26,7 @@ namespace ApsimFile
       private ApsimFile MyFile = null;
       private Component MyParent = null;
       private string TempShortCutName = "";
+
       private void EnsureNameIsUnique()
          {
          // -------------------------------------------------------------
@@ -36,11 +40,11 @@ namespace ApsimFile
             for (int i = 1; i != 10000; i++)
                {
                int Count = 0;
-               foreach (Component Sibling in Parent.ChildNodes)
-                  {
-                  if (Sibling.Name.ToLower() == UniqueChildName.ToLower())
-                     Count++;
-                  }
+                   foreach (Component Sibling in Parent.ChildNodes)
+                   {
+                       if (Sibling.Name.ToLower() == UniqueChildName.ToLower())
+                           Count++;
+                   }
                if (Count == 1)
                   return;
                UniqueChildName = BaseName + i.ToString();
@@ -89,17 +93,20 @@ namespace ApsimFile
             TempShortCutName = XmlHelper.Attribute(Node, "shortcut");
          if (XmlHelper.Attribute(Node, "enabled") == "no")
             MyEnabled = false;
-         foreach (XmlNode Child in Node.ChildNodes)
-            {
-            if (Types.Instance.IsVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
+          
+         //Parallel.ForEach(Node.ChildNodes.Cast<XmlNode>(), Child =>
+            foreach (XmlNode Child in Node.ChildNodes)
+           {
+               if (Types.Instance.IsVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
                {
-               Component ChildComponent = new Component(MyFile, this);
-               ChildNodes.Add(ChildComponent);
-               ChildComponent.Read(Child);
+                   Component ChildComponent = new Component(MyFile, this);
+                   ChildNodes.Add(ChildComponent);
+                   ChildComponent.Read(Child);
+
                }
-            else
-               MyContents += Child.OuterXml;
-            }
+               else
+                   MyContents += Child.OuterXml;
+           }//);
          }
       internal void ResolveShortcuts()
          {
