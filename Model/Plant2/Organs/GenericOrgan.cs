@@ -7,6 +7,8 @@ public class GenericOrgan : BaseOrgan, AboveGround
 {
     [Link]
     protected Plant Plant = null;
+    [Link(IsOptional.Yes)]
+    Function StructuralFraction = null;
 
     [Input]
     protected int Day = 0;
@@ -44,9 +46,11 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            Function StructuralFraction = Children["StructuralFraction"] as Function;
-            Live.StructuralWt += value * StructuralFraction.Value;
-            Live.NonStructuralWt += value * (1 - StructuralFraction.Value);
+            double _StructuralFraction = 1.0; //Default is all DM is structural
+            if (StructuralFraction != null)
+                _StructuralFraction = StructuralFraction.Value;
+            Live.StructuralWt += value * _StructuralFraction;
+            Live.NonStructuralWt += value * (1-_StructuralFraction);
 
         }
     }

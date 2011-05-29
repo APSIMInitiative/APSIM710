@@ -200,7 +200,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
-
     #endregion
 
     #region Arbitrator methods

@@ -7,6 +7,8 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
 {
     [Link]
     Plant Plant = null;
+    [Link(IsOptional.Yes)]
+    Function NitrogenDemandPhase = null;
 
     #region Class Data Members
     const double kgha2gsm = 0.1;
@@ -541,13 +543,15 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
             double TotalDeficit = 0.0;
             Function MaximumNConc = Children["MaximumNConc"] as Function;
-            Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
+            double _NitrogenDemandPhase = 1;
+            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandPhase = NitrogenDemandPhase.Value;
             foreach (Biomass Layer in LayerLive)
             {
                 double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
                 TotalDeficit += NDeficit;
             }
-            return TotalDeficit * NitrogenDemandPhase.Value;
+            return TotalDeficit * _NitrogenDemandPhase;
         }
     }
     public override double NAllocation

@@ -363,7 +363,7 @@
         <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
         <InitialDM>0.2</InitialDM>
-		<SpecificRootLength>40000</SpecificRootLength>
+        <SpecificRootLength>40000</SpecificRootLength>
         <KNO3>0.02</KNO3>
         <KNH4>0.0</KNH4>
         <LinearInterpolationFunction name="KLModifier">
@@ -376,7 +376,6 @@
         <Constant name="SoilWaterEffect">
           <Value>1.0</Value>
         </Constant>
-        
         <TemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
@@ -472,10 +471,9 @@
         <CompositeBiomass name="Total">
           <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
-          <RUECO2Function name="Fco2">
-          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
-          </RUECO2Function>
-
+        <RUECO2Function name="Fco2">
+          <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+        </RUECO2Function>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -616,9 +614,8 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <RUECO2Function name="Fco2">
-          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
-
         </RUEModel>
         <MultiplyFunction name="BranchingRate">
           <Memo>Multiplies the values of the children of this node</Memo>
@@ -692,12 +689,12 @@
           <Values type="text" description="Values">0.065     0.065     0.065          0.065              0.065              0.065      0.065                 0.065 </Values>
         </StageBasedInterpolation>
         <ArrayBiomass name="CohortLive">
-           <ArraySize>Leaf.MaxNodeNo</ArraySize>
-           <Property>Leaf.Leaves[].Live</Property>
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
         </ArrayBiomass>
         <ArrayBiomass name="CohortDead">
-           <ArraySize>Leaf.MaxNodeNo</ArraySize>
-           <Property>Leaf.Leaves[].Dead</Property>
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
@@ -747,7 +744,7 @@
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">0</Value>
         </Constant>
-        <Constant name="NRetranslocationRate">
+        <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <PhaseBasedSwitch name="NitrogenDemandPhase">

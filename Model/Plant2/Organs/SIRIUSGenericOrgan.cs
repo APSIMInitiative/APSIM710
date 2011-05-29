@@ -6,22 +6,47 @@ using CSGeneral;
 public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 {
 
-    #region Class data members
-    private double SenescedFrac = 0;
+ #region Optional IDE input field
+    [Link(IsOptional.Yes)]
+    Function SenescenceRate = null;
+    [Link(IsOptional.Yes)]
+    Function NReallocationFactor = null;
+    [Link(IsOptional.Yes)]
+    Function NRetranslocationFactor = null;
+    [Link(IsOptional.Yes)]
+    Function NitrogenDemandPhase = null;
+ #endregion
+
+ #region Class data members
+    private double _SenescenceRate = 0;
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     private double StartNonStructuralN = 0;
     private double StartNonStructuralWt = 0;
     private double PotentialDMAllocation = 0;
-    #endregion
+ #endregion
 
+ #region Organ functions
     public override void DoStartSet()
     {
+        _SenescenceRate = 0;
+        if (SenescenceRate != null) //Default of zero means no senescence
+            _SenescenceRate = SenescenceRate.Value; 
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
         StartNReallocationSupply = NReallocationSupply;
         StartNRetranslocationSupply = NRetranslocationSupply;
     }
+    public override void DoActualGrowth()
+    {
+        base.DoActualGrowth();
+
+        Live.StructuralWt *= (1.0 - _SenescenceRate);
+        Live.NonStructuralWt *= (1.0 - _SenescenceRate);
+        Live.StructuralN *= (1.0 - _SenescenceRate);
+        Live.NonStructuralN *= (1.0 - _SenescenceRate);
+    }
+ #endregion
 
  #region Arbitrator methods
     public override double DMPotentialAllocation
@@ -55,12 +80,12 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            //Calculate N demand based on how much N is needed to grow nodule wt
+            double _NitrogenDemandPhase = 1;
+            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandPhase = NitrogenDemandPhase.Value; 
             Function MaximumNConc = Children["MaximumNConc"] as Function;
-            Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
-            //Only allow organ to express demand if organ is growing
-            return NDeficit * NitrogenDemandPhase.Value;
+            return NDeficit * _NitrogenDemandPhase;
         }
     }
     public override double NAllocation
@@ -81,8 +106,10 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            Function NReallocationFactor = Children["NReallocationFactor"] as Function;
-            return SenescedFrac * StartNonStructuralN * NReallocationFactor.Value; //FIXME organ won't reallocate at the moment because I havent written code to asign a value to SenFrac
+            double _NReallocationFactor = 0;
+            if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
+                _NReallocationFactor = NReallocationFactor.Value;
+            return _SenescenceRate * StartNonStructuralN * _NReallocationFactor; 
         }
     }
     public override double NReallocation
@@ -100,10 +127,12 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
+            double _NRetranslocationFactor = 0;
+            if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
+                _NRetranslocationFactor = NRetranslocationFactor.Value;
             Function MinimumNConc = Children["MinimumNConc"] as Function;
-            Function NRetranslocationRate = Children["NRetranslocationRate"] as Function;
             double LabileN = Math.Max(0, StartNonStructuralN - StartNonStructuralWt * MinimumNConc.Value);
-            double Nretrans = (LabileN - StartNReallocationSupply) * NRetranslocationRate.Value;
+            double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
             return Nretrans;
         }
     }
@@ -134,5 +163,5 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             return MinimumNConc.Value;
         }
     }
-    #endregion
+ #endregion
 }

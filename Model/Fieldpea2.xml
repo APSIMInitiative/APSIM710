@@ -246,9 +246,6 @@
         <Constant name="SenescenceRate">
           <Value>0.0</Value>
         </Constant>
-        <Constant name="StructuralFraction">
-          <Value type="text" description="Value">1</Value>
-        </Constant>
         <Constant name="MaximumNConc">
           <Value type="text" description="Value">0.01</Value>
         </Constant>
@@ -301,13 +298,6 @@
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <PhaseBasedSwitch name="NitrogenDemandPhase">
-          <Start type="text" description="Start">Germination</Start>
-          <End type="text" description="End">Maturity</End>
-          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
-		Applied in model code but can not be nested with other functions.
-        </Memo>
-        </PhaseBasedSwitch>
       </SIRIUSRoot>
       <Nodule>
         <Biomass name="Live" />
@@ -374,13 +364,6 @@
           </PhaseLookupValue>
           <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
         </PhaseLookup>
-        <PhaseBasedSwitch name="NitrogenDemandPhase">
-          <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">Maturity</End>
-          <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
-		Applied in model code but can not be nested with other functions.
-        </Memo>
-        </PhaseBasedSwitch>
       </Nodule>
       <SIRIUSGenericOrgan name="PodWall">
         <Biomass name="Live" />
@@ -663,7 +646,7 @@
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">0</Value>
         </Constant>
-        <Constant name="NRetranslocationRate">
+        <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <PhaseLookup name="PartitionFraction">
