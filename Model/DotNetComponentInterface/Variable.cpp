@@ -10,7 +10,11 @@ using namespace System::Runtime::InteropServices;
 using namespace ModelFramework;
 
 
-
+bool Variable::Exists()
+   {
+   WrapBuiltInVariable<String^>^ Data = gcnew WrapBuiltInVariable<String^>();
+   return Component->Get(ComponentName + "." + Name, Data, false);
+   }
 bool Variable::ToBoolean()
    {
    WrapBuiltInVariable<bool>^ Data = gcnew WrapBuiltInVariable<bool>();

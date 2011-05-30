@@ -22,52 +22,57 @@ class DLLProber
     static private string ProbeDLLForDescriptionXML(string TypeName, string DllFileName)
     {
         DllFileName = Configuration.RemoveMacros(DllFileName).Replace("%dllext%", "dll");
-        string ModuleName = Path.GetFileNameWithoutExtension(DllFileName);
-        string ModelConfiguration = Types.Instance.ModelContents(TypeName);
-        if (ModelConfiguration == "")
-            ModelConfiguration = Types.Instance.ModelContents(TypeName, ModuleName);
+        if (File.Exists(DllFileName))
+        {
+            string ModuleName = Path.GetFileNameWithoutExtension(DllFileName);
+            string ModelConfiguration = Types.Instance.ModelContents(TypeName);
+            if (ModelConfiguration == "")
+                ModelConfiguration = Types.Instance.ModelContents(TypeName, ModuleName);
 
-        // Write some .sim script to pass to the DLL.
-        string initScript = "<component name=\"" + ModuleName + "\" executable=\"" + DllFileName + "\">\r\n";
-        initScript += "   <initdata>\r\n";
-        initScript += ModelConfiguration + "\r\n";
-        initScript += "   </initdata>\r\n";
-        initScript += "</component>";
+            // Write some .sim script to pass to the DLL.
+            string initScript = "<component name=\"" + ModuleName + "\" executable=\"" + DllFileName + "\">\r\n";
+            initScript += "   <initdata>\r\n";
+            initScript += ModelConfiguration + "\r\n";
+            initScript += "   </initdata>\r\n";
+            initScript += "</component>";
 
-        // IF this is a .net component then redirect request to the wrapper DLL.
-        XmlNode DotNetNode = Configuration.Instance.GetSettingsNode("DotNetcomponents");
-        string[] DotNetNames = XmlHelper.ChildNames(DotNetNode, "");
-        if (StringManip.IndexOfCaseInsensitive(DotNetNames, ModuleName) != -1)
-            DllFileName = Configuration.ApsimBinDirectory() + "\\DotNetComponentInterface.dll";
-        if (!File.Exists(DllFileName))
-            throw new Exception("Cannot find DLL: " + DllFileName);
+            // IF this is a .net component then redirect request to the wrapper DLL.
+            XmlNode DotNetNode = Configuration.Instance.GetSettingsNode("DotNetcomponents");
+            string[] DotNetNames = XmlHelper.ChildNames(DotNetNode, "");
+            if (StringManip.IndexOfCaseInsensitive(DotNetNames, ModuleName) != -1)
+                DllFileName = Configuration.ApsimBinDirectory() + "\\DotNetComponentInterface.dll";
+            if (!File.Exists(DllFileName))
+                throw new Exception("Cannot find DLL: " + DllFileName);
 
-        StringBuilder Description = new StringBuilder(500000);
+            StringBuilder Description = new StringBuilder(500000);
 
-        // Dynamically create a method for the entry point we're going to call.
-        AppDomain currentDomain = AppDomain.CurrentDomain;
-        AssemblyName myAssemblyName = new AssemblyName();
-        myAssemblyName.Name = ModuleName + "Assembly";
-        AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
-        ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
-        MethodBuilder method;
-        method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
-                                           MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-                                         CallingConventions.Standard,
-                                         typeof(void),
-                                         new Type[] { typeof(string), typeof(StringBuilder) },
-                                         CallingConvention.StdCall,
-                                         CharSet.Ansi);
-        method.SetImplementationFlags(MethodImplAttributes.PreserveSig |
-        method.GetMethodImplementationFlags());
-        moduleBuilder.CreateGlobalFunctions();
-        MethodInfo mi = moduleBuilder.GetMethod("getDescription");
+            // Dynamically create a method for the entry point we're going to call.
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            AssemblyName myAssemblyName = new AssemblyName();
+            myAssemblyName.Name = ModuleName + "Assembly";
+            AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
+            ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
+            MethodBuilder method;
+            method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
+                                               MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
+                                             CallingConventions.Standard,
+                                             typeof(void),
+                                             new Type[] { typeof(string), typeof(StringBuilder) },
+                                             CallingConvention.StdCall,
+                                             CharSet.Ansi);
+            method.SetImplementationFlags(MethodImplAttributes.PreserveSig |
+            method.GetMethodImplementationFlags());
+            moduleBuilder.CreateGlobalFunctions();
+            MethodInfo mi = moduleBuilder.GetMethod("getDescription");
 
-        // Call the DLL
-        object[] Parameters = new object[] { initScript, Description };
-        mi.Invoke(null, Parameters);
+            // Call the DLL
+            object[] Parameters = new object[] { initScript, Description };
+            mi.Invoke(null, Parameters);
 
-        return Description.ToString();
+            return Description.ToString();
+        }
+        else
+            return "";
     }
 
     /// <summary>
@@ -141,9 +146,10 @@ class DLLProber
                 {
                     if (XmlHelper.Find(Node, "param1_name") == null)  // make sure its not an Apsim Variant.
                     {
-                        if (IsComplexType(Node))
+                        bool NullType = (XmlHelper.ChildNodes(Node, "field").Count == 0);
+                        if (!NullType)
                         {
-                            // EVENTS WITH COMPLEX STRUCTURES
+                            // Create a method that takes a structure for an argument.
                             string CamelName = StringManip.CamelCase(EventName + "Type");
                             if (XmlHelper.Attribute(Node, "typename") != "")
                                 CamelName = StringManip.CamelCase(XmlHelper.Attribute(Node, "typename") + "Type");
@@ -153,15 +159,17 @@ class DLLProber
                                 if (TypeNode != null && XmlHelper.Attribute(TypeNode, "typename") != "")
                                     CamelName = StringManip.CamelCase(XmlHelper.Attribute(TypeNode, "typename") + "Type");
                             }
-                            EventCode = "   public void $CAMELEVENTNAME$(" + CamelName + " Data)\r\n";
+                            EventCode += "   public void $CAMELEVENTNAME$(" + CamelName + " Data)\r\n";
                             EventCode += "      {\r\n";
+                            EventCode += "      Publish(\"$EVENTNAME$\", Data);\r\n";
+                            EventCode += "      }\r\n";
                         }
-                        else
+                        if (!IsComplexType(Node))
                         {
                             // SIMPLE EVENTS
 
                             // Simple structure - no nesting of types.
-                            EventCode = "   public void $CAMELEVENTNAME$(";
+                            EventCode += "   public void $CAMELEVENTNAME$(";
                             bool First = true;
                             foreach (XmlNode Field in XmlHelper.ChildNodes(Node, "field"))
                             {
@@ -186,10 +194,9 @@ class DLLProber
                             string DDML = MakeDDML(Node);
                             DDML = DDML.Replace("\"", "\\\"");
                             EventCode += "      Data.SetDDML(\"" + DDML + "\");\r\n";
+                            EventCode += "      Publish(\"$EVENTNAME$\", Data);\r\n";
+                            EventCode += "      }\r\n";
                         }
-                        EventCode += "      Publish(\"$EVENTNAME$\", Data);\r\n";
-                        EventCode += "      }\r\n";
-
                     }
                     EventCode = EventCode.Replace("$CAMELEVENTNAME$", StringManip.CamelCase(EventName));
                     string EventTypeName = XmlHelper.Attribute(Node, "typename");

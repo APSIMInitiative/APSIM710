@@ -25,6 +25,9 @@ public ref class Variable
          ComponentName = Componentname;
          Name = VariableName;
          }
+
+      bool Exists();
+         
       // getters.
       bool ToBoolean();
       int ToInt32();
