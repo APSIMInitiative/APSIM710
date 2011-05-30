@@ -6,7 +6,7 @@ using CSGeneral;
 public class SIRIUSLeaf : Leaf, AboveGround
 {
 
-    #region Outputs Variables
+ #region Outputs Variables
     [Output]
     double[] CohortSize
     {
@@ -107,9 +107,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
-    #endregion
+ #endregion
 
-    #region Leaf functions
+ #region Leaf functions
     public override void DoPotentialGrowth()
     {
         EP = 0;
@@ -217,10 +217,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
             Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
-    #endregion
+ #endregion
 
-    #region Arbitrator methods
-
+ #region Arbitrator methods
     [Output]
     [Units("g/m^2")]
     public override double DMDemand
@@ -235,8 +234,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return Demand;
         }
     }
-
-
     public override double DMPotentialAllocation
     {
         set
@@ -321,7 +318,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             }
         }
     }
-
     [Output]
     [Units("g/m^2")]
     public override double NAllocation
@@ -510,7 +506,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return MinimumNConc.Value;
         }
     }
-    #endregion 
+ #endregion 
 
 }
    

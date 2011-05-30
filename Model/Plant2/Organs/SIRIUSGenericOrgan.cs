@@ -14,7 +14,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     [Link(IsOptional.Yes)]
     Function NRetranslocationFactor = null;
     [Link(IsOptional.Yes)]
-    Function NitrogenDemandPhase = null;
+    Function NitrogenDemandSwitch = null;
  #endregion
 
  #region Class data members
@@ -80,12 +80,12 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            double _NitrogenDemandPhase = 1;
-            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandPhase = NitrogenDemandPhase.Value; 
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value; 
             Function MaximumNConc = Children["MaximumNConc"] as Function;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
-            return NDeficit * _NitrogenDemandPhase;
+            return NDeficit * _NitrogenDemandSwitch;
         }
     }
     public override double NAllocation

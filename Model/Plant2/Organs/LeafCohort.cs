@@ -5,7 +5,7 @@ using CSGeneral;
 
 public class LeafCohort
 {
-    #region Class Data Members
+ #region Class Data Members
     protected double _Population = 0;
     protected double Age = 0;
     protected double Rank = 0;
@@ -27,8 +27,79 @@ public class LeafCohort
     public double DeadArea = 0;
     public double MaxArea = 0;
     public double DeltaWt = 0;
+#endregion
+    
+ #region arbitration methods
+    public double DMDemand
+    {
+        get
+        {
+            if (IsGrowing)
+                return PotentialAreaGrowth / SpecificLeafAreaMax;
+            else
+                return 0.0;
+        }
+    }
+    virtual public double NDemand
+    {
+        get
+        {
+            double NDeficit = Math.Max(0.0, MaximumNConc * Live.Wt - Live.N);
+            return NDeficit;
+        }
+    }
+    virtual public double DMAllocation
+    {
+        set
+        {
+            if (value < -0.00001)
+                throw new Exception("Leaf cohort allocation -ve DM value");
+            Live.StructuralWt += value;
+            //LiveArea += Math.Min(PotentialAreaGrowth,value * SpecificLeafAreaMax);
+            LiveArea += PotentialAreaGrowth;
+            LiveArea = Math.Min(LiveArea, Live.StructuralWt * SpecificLeafAreaMax);
+            DeltaWt = value;
+        }
+    }
+    virtual public double NAllocation
+    {
+        set
+        {
+            double StructN = Live.StructuralWt * StructuralNConc;
+            double Ndmd = StructN - Live.StructuralN;
+            if (Ndmd < 0)
+                Ndmd = 0.0;
+            if (Ndmd > value)
+                Ndmd = value;
 
-    #endregion
+            Live.StructuralN += Ndmd;
+            Live.NonStructuralN += value - Ndmd;
+
+            //Live.StructuralN += value/3.0;
+            //Live.NonStructuralN += 2.0*value/3.0;
+        }
+    }
+    virtual public double NRetranslocationSupply
+    {
+        get
+        {
+            double Nf = NFac();
+            //return Live.NonStructuralN *Nf;
+            return Live.NonStructuralN;
+        }
+    }
+    virtual public double NRetranslocation
+    {
+        set
+        {
+            if (value > Live.NonStructuralN)
+                throw new Exception("A leaf cohort cannot supply that amount for N retranslocation");
+            Live.NonStructuralN = Live.NonStructuralN - value;
+        }
+    }
+ #endregion
+
+ #region Cohort phenology
     public double NodeAge
     {
         get { return Age; }
@@ -40,7 +111,47 @@ public class LeafCohort
             return Age > (GrowthDuration + LagDuration + SenescenceDuration);
         }
     }
+    public bool IsGrowing
+    {
+        get { return (Age < GrowthDuration); }
+    }
+    public bool IsGreen
+    {
+        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration)); }
+    }
+    public bool IsSenescing
+    {
+        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration) && (Age > (GrowthDuration + LagDuration))); }
+    }
+    public bool IsNotSenescing
+    {
+        get { return (Age < (GrowthDuration + LagDuration)); }
+    }
+    public bool ShouldBeDead
+    {
+        get { return (Age > (GrowthDuration + LagDuration + SenescenceDuration)); }
+    }
+    public bool IsAlive
+    {
+        get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
+    }
+    public bool IsDead
+    {
+        get
+        {
+            return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
+        }
+    }
+    public bool IsFullyExpanded
+    {
+        get
+        {
+            return (Age > GrowthDuration);
+        }
+    }
+ #endregion
 
+ #region Cohort leaf expansion 
     public double MaxSize
     {
         get
@@ -48,7 +159,6 @@ public class LeafCohort
             return MaxLiveArea / Population;
         }
     }
-
     public double Population
     {
         get
@@ -63,7 +173,23 @@ public class LeafCohort
             return LiveArea / Population;
         }
     }
+    virtual public double PotentialAreaGrowthFunction(double TT) // Potential delta LAI
+    {
+        //return MaxArea*Population * Math.Min(TT, Math.Max(0, GrowthDuration - Age)) / GrowthDuration;
 
+        double growth = Population * (SizeFunction(Age + TT) - SizeFunction(Age));
+        return growth;
+    }
+    protected double SizeFunction(double TT)
+    {
+        double alpha = -Math.Log((1 / 0.99 - 1) / (MaxArea / (MaxArea * 0.01) - 1)) / GrowthDuration;
+        double leafsize = MaxArea / (1 + (MaxArea / (MaxArea * 0.01) - 1) * Math.Exp(-alpha * TT));
+        return leafsize;
+
+    }
+ #endregion
+
+ #region Leaf cohort functions
     public LeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC, Function MNC, Function SNC, Function INC)
     {
         _Population = popn;
@@ -94,130 +220,12 @@ public class LeafCohort
         Live.StructuralN = Live.StructuralWt * InitialNConc;
 
     }
-
     virtual public void DoStartSet(double TT)
     {
     }
-    
-    public bool IsGrowing
-    {
-        get { return (Age < GrowthDuration); }
-    }
-    public bool IsGreen
-    {
-        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration)); }
-    }
-    public bool IsSenescing
-    {
-        get { return (Age < (GrowthDuration + LagDuration + SenescenceDuration) && (Age > (GrowthDuration + LagDuration))); }
-    }
-    public bool IsNotSenescing
-    {
-        get { return (Age < (GrowthDuration + LagDuration)); }
-    }
-
-    public bool ShouldBeDead
-    {
-        get { return (Age > (GrowthDuration + LagDuration + SenescenceDuration)); }
-    }
-    public bool IsAlive
-    {
-        get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
-    }
-    public bool IsDead
-    {
-        get
-        {
-            return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
-        }
-    }
-    public bool IsFullyExpanded
-    {
-        get
-        {
-            return (Age > GrowthDuration);
-        }
-    }
-    public double FractionExpanded
-    {
-        get
-        {
-            if (Age < GrowthDuration)
-                return Age / GrowthDuration;
-            else
-                return 1.0;
-        }
-    }
-
     virtual public void DoPotentialGrowth(double TT)
     {
         PotentialAreaGrowth = PotentialAreaGrowthFunction(TT);
-    }
-    virtual public double PotentialAreaGrowthFunction(double TT) // Potential delta LAI
-    {
-        //return MaxArea*Population * Math.Min(TT, Math.Max(0, GrowthDuration - Age)) / GrowthDuration;
-
-        double growth = Population * (SizeFunction(Age + TT) - SizeFunction(Age));
-        return growth;
-    }
-    protected double SizeFunction(double TT)
-    {
-        double alpha = -Math.Log((1 / 0.99 - 1) / (MaxArea / (MaxArea * 0.01) - 1)) / GrowthDuration;
-        double leafsize = MaxArea / (1 + (MaxArea / (MaxArea * 0.01) - 1) * Math.Exp(-alpha * TT));
-        return leafsize;
-
-    }
-
-    public double DMDemand
-    {
-        get
-        {
-            if (IsGrowing)
-                return PotentialAreaGrowth / SpecificLeafAreaMax;
-            else
-                return 0.0;
-        }
-    }
-
-    virtual public double NDemand
-    {
-        get
-        {
-            double NDeficit = Math.Max(0.0, MaximumNConc * Live.Wt - Live.N);
-            return NDeficit;
-        }
-    }
-    virtual public double DMAllocation
-    {
-        set
-        {
-            if (value < -0.00001)
-                throw new Exception("Leaf cohort allocation -ve DM value");
-            Live.StructuralWt += value;
-            //LiveArea += Math.Min(PotentialAreaGrowth,value * SpecificLeafAreaMax);
-            LiveArea += PotentialAreaGrowth;
-            LiveArea = Math.Min(LiveArea, Live.StructuralWt * SpecificLeafAreaMax);
-            DeltaWt = value;
-        }
-    }
-
-    virtual public double NAllocation
-    {
-        set
-        {
-            double StructN = Live.StructuralWt * StructuralNConc;
-            double Ndmd = StructN - Live.StructuralN;
-            if (Ndmd < 0)
-                Ndmd = 0.0;
-            if (Ndmd > value)
-                Ndmd = value;
-
-            Live.StructuralN += Ndmd;
-            Live.NonStructuralN += value - Ndmd;
-
-            //Live.StructuralN += value/3.0;
-            //Live.NonStructuralN += 2.0*value/3.0;
-        }
     }
     virtual public void DoActualGrowth(double TT)
     {
@@ -266,13 +274,11 @@ public class LeafCohort
             Senescing = FractionSenescing * Live.StructuralN;
             Live.StructuralN -= Senescing;
             Dead.StructuralN += Senescing;
-
         }
 
         Age = Age + TT;
 
     }
-
     private double NFac()
     {
         double Nconc = Live.NConc;
@@ -303,28 +309,25 @@ public class LeafCohort
         Dead.NonStructuralN += change;
 
     }
-
     virtual public void DoFrost(double fraction)
     {
         DoKill(fraction);
-    }
-    virtual public double NRetranslocationSupply
+    }    
+    public double FractionExpanded
     {
         get
         {
-            double Nf = NFac();
-            //return Live.NonStructuralN *Nf;
-            return Live.NonStructuralN;
+            if (Age < GrowthDuration)
+                return Age / GrowthDuration;
+            else
+                return 1.0;
         }
     }
-    virtual public double NRetranslocation
-    {
-        set
-        {
-            if (value > Live.NonStructuralN)
-                throw new Exception("A leaf cohort cannot supply that amount for N retranslocation");
-            Live.NonStructuralN = Live.NonStructuralN - value;
-        }
-    }
+#endregion
+    
+
+    
+
+
 }
    

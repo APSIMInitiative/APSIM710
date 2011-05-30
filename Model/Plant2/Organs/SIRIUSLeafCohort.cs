@@ -215,7 +215,6 @@ class SIRIUSLeafCohort : LeafCohort
 
         Age = Age + TT;
     }
-
     public double FractionSenescing(double TT)
     {
         double fracSen = 0;
@@ -244,8 +243,6 @@ class SIRIUSLeafCohort : LeafCohort
         }
         return fracSen;
     }
-
-
  #endregion
 }
    

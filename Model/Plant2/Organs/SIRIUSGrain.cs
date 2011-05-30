@@ -23,9 +23,9 @@ class SIRIUSGrain : ReproductiveOrgan
         {
             Function NFillingRate = Children["NFillingRate"] as Function;
             Function MaxNconc = Children["MaximumNconc"] as Function;
-            Function NitrogenDemandPhase = Children["NitrogenDemandPhase"] as Function;
+            Function NitrogenDemandSwitch = Children["NitrogenDemandSwitch"] as Function;
             double demand = Number * NFillingRate.Value;
-            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * NitrogenDemandPhase.Value;
+            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * NitrogenDemandSwitch.Value;
         }
 
     }

@@ -62,47 +62,5 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
         }
     }
  #endregion
-
- #region Arbitrator methods
-    //public override double DMRetranslocationSupply { get { return 0; } }
-    /*public override double DMRetranslocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply retranslocation");
-        }
-    }*/
-   /* public override double DMAllocation
-    {
-        set
-        {
-           // allocating structural DM to nodule organ
-            Live.StructuralWt += value; 
-        }
-    }*/
-   // public override double NRetranslocationSupply { get { return 0; } }
-   /*public override double NRetranslocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply N retranslocation");
-        }
-    }*/
-    //public override double NReallocationSupply { get { return 0; } }
-    /*public override double NReallocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply N reallocation");
-        }
-    }*/
- #endregion
-
-
-
-
 }
 

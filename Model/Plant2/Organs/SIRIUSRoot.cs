@@ -8,7 +8,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     [Link]
     Plant Plant = null;
     [Link(IsOptional.Yes)]
-    Function NitrogenDemandPhase = null;
+    Function NitrogenDemandSwitch = null;
     [Link(IsOptional.Yes)]
     Function SenescenceRate = null;
 
@@ -444,15 +444,15 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
             double TotalDeficit = 0.0;
             Function MaximumNConc = Children["MaximumNConc"] as Function;
-            double _NitrogenDemandPhase = 1;
-            if (NitrogenDemandPhase != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandPhase = NitrogenDemandPhase.Value;
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             foreach (Biomass Layer in LayerLive)
             {
                 double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
                 TotalDeficit += NDeficit;
             }
-            return TotalDeficit * _NitrogenDemandPhase;
+            return TotalDeficit * _NitrogenDemandSwitch;
         }
     } 
     public override double NUptakeSupply

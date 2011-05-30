@@ -25,21 +25,18 @@ public class Plant : Instance
 
     [Input(true)] Single swim3 = 0;
 
-    #region Outputs
+ #region Outputs
     [Output("Crop_Type")]
     [Param]
     public string CropType = "";
-
     [Output]
     private double WaterSupplyDemandRatio = 0;
-
     [Output]
     public string PlantStatus
     {
         get
         { return "in"; }
     }
-
     [Output]
     [Units("mm")]
     private double WaterDemand   // Needed for SWIM2
@@ -52,9 +49,9 @@ public class Plant : Instance
             return Demand;
         }
     }
-    #endregion
+ #endregion
 
-    #region Plant functions
+ #region Plant functions
     private void DoArbitrator()
     {
         if (Arbitrator != null)
@@ -144,21 +141,17 @@ public class Plant : Instance
           //throw new Exception("Cannot talk to swim3 yet");
           }
        }
-    #endregion
+ #endregion
 
-    #region Event handlers and publishers
+ #region Event handlers and publishers
     [Event]
     public event NewCropDelegate NewCrop;
-
     [Event]
     public event NullTypeDelegate Sowing;
-
     [Event]
     public event NullTypeDelegate Cutting;
-
     [Event]
     public event NewCropDelegate CropEnding;
-
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
@@ -180,18 +173,15 @@ public class Plant : Instance
         if (Sowing != null)
             Sowing.Invoke();
     }
-
     [EventHandler]
     public void OnProcess()
     {
         DoPhenology();
         DoPotentialGrowth();
-
         DoWater();
         DoArbitrator();
         DoActualGrowth();
     }
-
     [EventHandler]
     private void OnEndCrop()
     {
@@ -200,14 +190,12 @@ public class Plant : Instance
         Crop.sender = Name;
         CropEnding.Invoke(Crop);
     }
-
     [EventHandler]
     private void OnCut()
     {
         Cutting.Invoke();
     }
-
-    #endregion
+ #endregion
 
 }
    

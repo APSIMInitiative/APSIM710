@@ -249,13 +249,22 @@
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
           <Values type="text" description="Values">0.032       0.032       0.032             0.017              0.016         0.006      0.005                   0.005</Values>
         </StageBasedInterpolation>
-        <PhaseBasedSwitch name="NitrogenDemandPhase">
+        <PhaseBasedSwitch name="xNitrogenDemandSwitch">
           <Start type="text" description="Start">TuberInitiation</Start>
-          <End type="text" description="End">Maturity</End>
+          <End type="text" description="End">FullSenescence</End>
           <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <LinearInterpolationFunction name="NitrogenDemandSwitch">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.02 0</XY>
+            <XY>0.0201 1</XY>
+            <XY>10 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSTuber>
       <SIRIUSRoot name="Root">
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -333,7 +342,7 @@
         <Constant name="MinimumNConc">
           <Value>0.01</Value>
         </Constant>
-        <PhaseBasedSwitch name="NitrogenDemandPhase">
+        <PhaseBasedSwitch name="NitrogenDemandSwitch">
           <Start type="text" description="Start">Planting</Start>
           <End type="text" description="End">FinalLeaf</End>
           <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
@@ -643,7 +652,7 @@
         <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
-        <PhaseBasedSwitch name="NitrogenDemandPhase">
+        <PhaseBasedSwitch name="NitrogenDemandSwitch">
           <Start type="text" description="Start">Planting</Start>
           <End type="text" description="End">FinalLeaf</End>
           <Memo>Returns a value of 1 if crop is between start and finish stages and zero if not.  
