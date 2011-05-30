@@ -163,7 +163,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["InitialNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationRate"] as Function));
+                                   Children["NRetranslocationRate"] as Function,
+                                   this));
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -192,7 +193,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["InitialNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationRate"] as Function));
+                                   Children["NRetranslocationRate"] as Function,
+                                   this));
         }
         // Add fraction of top leaf expanded to node number.
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;

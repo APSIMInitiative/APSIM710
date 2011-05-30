@@ -6,8 +6,7 @@ using CSGeneral;
 class SIRIUSLeafCohort : LeafCohort
 {
  #region Class Data Members
-    [Link]
-    SIRIUSLeaf ParentLeafOrgan = null;
+    public SIRIUSLeaf ParentLeafOrgan = null;
     private double SenescedFrac = 0;
     public double PotentialSize = 0;
     public double PotentialArea = 0; 
@@ -33,7 +32,7 @@ class SIRIUSLeafCohort : LeafCohort
     {
         get
         {
-            //double CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank);  Fixme.  This is throwing an error at the moment
+            double CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank); // Fixme.  This is throwing an error at the moment
             double NDeficit = Math.Max(0.0, MaximumNConc * (Live.Wt + PotentialDMAllocation) - Live.N);
             if (IsNotSenescing)// && CoverAbove < 0.9) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
                 return Math.Max(0.0, NDeficit);
@@ -146,7 +145,7 @@ class SIRIUSLeafCohort : LeafCohort
 
  #region Leaf Cohort Functions
     // Functions used to produce leaf cohort behaviour
-    public SIRIUSLeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC, Function MNC, Function INC, Function SF, Function NRF, Function NRR)    
+    public SIRIUSLeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC, Function MNC, Function INC, Function SF, Function NRF, Function NRR, SIRIUSLeaf Parent)    
         :base(popn, age,rank,ma,gd,ld,sd,sla,InitialArea,CNC, MNC, null, null)
 {
         _Population = popn;
@@ -168,6 +167,7 @@ class SIRIUSLeafCohort : LeafCohort
         Live.NonStructuralN = Live.NonStructuralWt * MaximumNConc;
         NReallocationFactor = NRF.Value;
         NRetranslocationRate = NRR.Value;
+        ParentLeafOrgan = Parent;
     }
     public override void DoStartSet(double TT)
     {
