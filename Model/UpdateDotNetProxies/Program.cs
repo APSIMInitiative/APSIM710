@@ -16,39 +16,43 @@ using System.CodeDom.Compiler;
 
 
 class Program
-   {
+{
 
-   /// <summary>
-   /// Main program - will return non zero on error.
-   /// </summary>
-   static int Main(string[] args)
-      {
-      try
-         {
-         PlugIns.LoadAll();
-         if (args.Length == 0)
-            Types.Instance.RefreshProbeInfoForAll();
+    /// <summary>
+    /// Main program - will return non zero on error.
+    /// </summary>
+    static int Main(string[] args)
+    {
+        try
+        {
+            PlugIns.LoadAll();
+            if (args.Length == 0)
+                Types.Instance.RefreshProbeInfoForAll();
 
-         else if (args.Length == 1)
-            Types.Instance.RefreshProbeInfo(args[0]);
-         
-         else
-            throw new Exception("Usage: UpdateDotNetProxies [XMLPlugInFileName]");
-         return 0;
-         }
-      catch (TargetInvocationException err)
-         {
-         Console.WriteLine(err.InnerException.Message + " Component name: " + args[0]);
-         return 1;
-         }
+            else if (args.Length == 1)
+                Types.Instance.RefreshProbeInfo(args[0]);
 
-      catch (Exception err)
-         {
-         if (args.Length > 0)
-            Console.WriteLine(err.Message + " Component name: " + args[0]);
-         else
-            Console.WriteLine(err.Message);
-         return 1;
-         }
-      }
-   }
+            else
+                throw new Exception("Usage: UpdateDotNetProxies [XMLPlugInFileName]");
+            return 0;
+        }
+        catch (TargetInvocationException err)
+        {
+            string msg = err.InnerException.Message;
+            if (args.Length > 0)
+                msg += "Component name: " + args[0];
+            Console.WriteLine(msg);
+            return 1;
+        }
+
+        catch (Exception err)
+        {
+            string msg = err.Message;
+            if (args.Length > 0)
+                msg += "Component name: " + args[0];
+
+            Console.WriteLine(msg);
+            return 1;
+        }
+    }
+}
