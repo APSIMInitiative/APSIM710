@@ -1,0 +1,1658 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Maize_Wheat_Potato_Wheat
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component      "HawkesBay base Rotation" = %apsim%\Model\Manager.dll
+   Component       "Roto-rainer_irrigation" = %apsim%\Model\Manager.dll
+   Component           "Full nitrogen rule" = %apsim%\Model\Manager.dll
+   Component             "Heavy Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component          "Heavy Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+   Component                       "wheat2" = %apsim%\Model\Plant2.dll
+   Component                      "potato2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1972
+     Simulation end date   = 31/12/1992
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Plant2\Waikato_base.met
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1-jan, 31-dec') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * 0 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 352
+      endif
+     
+     SECTION:- init
+     co2 = 352
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 352.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        rotation_counter
+        PTirrig
+        PTeo
+        PTes
+        PTep
+        PTrunoff
+        PTdrain
+        PTfert
+        PTleach
+        PTmin
+        PTmin_res
+        PTdnit
+        topsgreenwt
+        yield
+        tubergreenwt
+        nit_tot
+        carbon_tot
+        hum_n
+        lai
+        zadok_stage
+        stage
+        biomass
+        TotalWt
+
+     Output file = Maize_Wheat_Potato_Wheat.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- HawkesBay base Rotation Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     rotation_counter = 0
+     days_after_harvest = 0
+     reset_pt = 0
+     swd = 0
+     swd_top = 0
+     ptirrig = 0
+     ptes = 0
+     pteo = 0
+     ptep = 0
+     ptrain = 0
+     ptrunoff = 0
+     ptdrain = 0
+     ptfert = 0
+     ptleach = 0
+     ptmin = 0
+     ptmin_res = 0
+     ptdnit = 0
+      ptcropn = 0
+     
+     SECTION:- start_of_day
+     swd = ((sw(1) +sw(2) +sw(3)) - (ll15(1) + ll15(2) +ll15(3)))/((dul(1) + dul(2) + dul(3)) - (ll15(1) + ll15(2) +ll15(3)))
+     swd_top = (sw(1) - ll15(1))/(dul(1) - ll15(1))
+     days_after_harvest = days_after_harvest+1
+     reset_pt = 0
+     if (date_within('1-oct,1-nov') = 1) and
+     (rotation_counter = 0) and (days_after_harvest > 2) and (swd_top<=1)  then
+        maize sow plants =10, sowing_depth =30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+        outputfile do_output
+        rotation_counter = 1
+        reset_pt = 1
+     elseif (date_within('2-nov,1-dec') = 1) and
+     (rotation_counter = 0) and (days_after_harvest > 2) and (swd_top<=1)then
+        maize sow plants =10, sowing_depth =30, cultivar  pioneer_3153, row_spacing = 0.762, crop_class = plant
+        outputfile do_output
+        rotation_counter = 1
+        reset_pt = 1
+     elseif (today=date('2-dec') and
+     (rotation_counter = 0) then
+        outputfile do_output
+        rotation_counter = 2
+        reset_pt = 1
+     endif
+     if           (rotation_counter = 1) and (maize.stagename = 'end_grain_fill' or maize.plant_status = 'dead' or today=date('31-may')) then
+        outputfile do_output
+        maize harvest height = 0.1 (mm) , remove = 0.98 ()
+        maize end_crop
+        rotation_counter = 2
+        days_after_harvest = 0
+        reset_pt = 1
+     endif
+     if           today<date('1-jul') and
+      (rotation_counter = 2) and (days_after_harvest > 2) and (swd_top<=1)  then
+          wheat2 sow population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+        outputfile do_output
+        rotation_counter = 3
+        reset_pt = 1
+     elseif  (today=date('2-jul') and
+      (rotation_counter = 2) then
+        outputfile do_output
+        rotation_counter = 4
+        reset_pt = 1
+     endif
+     if           (rotation_counter = 3) and (wheat.phenologycurrentphasename = 'readyforharvesting' or wheat2.plant_status = 'dead' or today = date('23-jul')) then
+        outputfile do_output
+        wheat2  harvest height = 0.1 (mm) , remove = 0.98 ()
+        wheat2  endcrop
+        rotation_counter = 4
+        days_after_harvest = 0
+        reset_pt = 1
+     endif
+     if          (date_within('1-sep,1-dec') = 1) and
+     (rotation_counter = 4) and (days_after_harvest > 2) and (swd_top<=20)  then
+      potato2 sow population = 4, depth = 150, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 800, crop_class = plant
+        outputfile do_output
+        rotation_counter = 5
+        reset_pt = 1
+     elseif (today=date('2-dec') and
+     (rotation_counter = 4) then
+        outputfile do_output
+     rotation_counter = 6
+        reset_pt = 1
+     endif
+     if           ((rotation_counter = 5) and (potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead')) then
+        outputfile do_output
+        potato2 harvest height = 0.1 (mm) , remove = 0.98 ()
+        potato2 endcrop
+      days_after_harvest = 0
+     rotation_counter = 6
+        reset_pt_variables = 1
+        reset_pt = 1
+     endif
+     if          (today<date('1-jun') and
+     (rotation_counter = 6) and (days_after_harvest > 2) and (swd_top<=1)  then
+        wheat2 sow population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+        outputfile do_output
+        rotation_counter = 7
+        reset_pt = 1
+     elseif  (today=date('2-may') and
+      (rotation_counter = 6) then
+        outputfile do_output
+        rotation_counter = 0
+        reset_pt = 1
+     endif
+     if           (rotation_counter = 7) and (wheat.phenologycurrentphasename = 'readyforharvesting' or wheat2.plant_status = 'dead' or today = date('1-may')) then
+        outputfile do_output
+        wheat2  harvest height = 0.1 (mm) , remove = 0.98 ()
+        wheat2  endcrop
+        rotation_counter = 0
+        reset_pt = 1
+        days_after_harvest = 0
+     endif
+     
+     SECTION:- end_of_day
+     ptirrig = ptirrig + irrigation
+     ptes = ptes + es
+     pteo = pteo + eo
+     ptep = ptep + wheat.ep + barley.ep + fieldpea.ep  + wmaize.ep + potato.ep +canola.ep
+     ptrain = ptrain + rain
+     ptrunoff = ptrunoff + runoff
+     ptdrain = ptdrain + drain
+     ptfert = ptfert + fertiliser
+     ptleach = ptleach + no3_leach(7) + nh4_leach(7)
+     ptmin = ptmin + dlt_n_min()
+     ptmin_res = ptmin_res + dlt_n_min_res()
+     ptdnit = ptdnit + dnit()
+      ptcropn = ptcropn + wheat.no3_uptake() + barley.no3_uptake() + fieldpea.no3_uptake() + canola.no3_uptake() + wmaize.no3_uptake() + potato.no3_uptake()
+     if          (reset_pt = 1) then
+        ptirrig = 0
+        ptes = 0
+        pteo = 0
+        ptep = 0
+        ptrunoff = 0
+        ptdrain = 0
+        ptfert = 0
+        ptleach = 0
+        ptmin = 0
+        ptmin_res = 0
+       ptdnit = 0
+      ptcropn = 0
+      ptcropn = 0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : rotation_counter = 0.00000
+     Manager creating a new local real variable : days_after_harvest = 0.00000
+     Manager creating a new local real variable : reset_pt = 0.00000
+     Manager creating a new local real variable : swd = 0.00000
+     Manager creating a new local real variable : swd_top = 0.00000
+     Manager creating a new local real variable : ptirrig = 0.00000
+     Manager creating a new local real variable : ptes = 0.00000
+     Manager creating a new local real variable : pteo = 0.00000
+     Manager creating a new local real variable : ptep = 0.00000
+     Manager creating a new local real variable : ptrain = 0.00000
+     Manager creating a new local real variable : ptrunoff = 0.00000
+     Manager creating a new local real variable : ptdrain = 0.00000
+     Manager creating a new local real variable : ptfert = 0.00000
+     Manager creating a new local real variable : ptleach = 0.00000
+     Manager creating a new local real variable : ptmin = 0.00000
+     Manager creating a new local real variable : ptmin_res = 0.00000
+     Manager creating a new local real variable : ptdnit = 0.00000
+     Manager creating a new local real variable : ptcropn = 0.00000
+
+------- Roto-rainer_irrigation Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     irrigation_period = 1
+     number_of_paddocks = 7
+     paddock = 0
+     days_since_rain_event = 0
+     rain_event_trigger = 30
+     rain_event_pause_time = 3
+     irrigation_amount = 50
+     trigger_deficit = 0.5
+     
+     SECTION:- start_of_day
+     if        (date_within('1-jun,1-aug') = 1) then
+     irrigation_period=0
+     paddock=0
+     endif
+     if       (swd_top<trigger_deficit) then
+      irrigation_period=1
+     endif
+     if        (rain>=rain_event_trigger) then
+       days_since_rain_event = 0
+     else     days_since_rain_event = days_since_rain_event +1
+     endif
+     if           (irrigation_period =1) and (paddock = 0) and (days_since_rain_event > rain_event_pause_time) then
+        paddock = paddock +2
+           if  (swd_top<trigger_deficit) and (paddock_is_fallow()=0) then
+                  irrigation apply amount = irrigation_amount
+                  paddock = paddock -1
+           endif
+     elseif  (irrigation_period =1) and (paddock = number_of_paddocks) and (days_since_rain_event > rain_event_pause_time) then
+        paddock = 0
+     elseif  (irrigation_period =1) and (paddock > 0) and (days_since_rain_event > rain_event_pause_time) then
+        paddock = paddock +1
+     endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : irrigation_period = 1.00000
+     Manager creating a new local real variable : number_of_paddocks = 7.00000
+     Manager creating a new local real variable : paddock = 0.00000
+     Manager creating a new local real variable : days_since_rain_event = 0.00000
+     Manager creating a new local real variable : rain_event_trigger = 30.00000
+     Manager creating a new local real variable : rain_event_pause_time = 3.00000
+     Manager creating a new local real variable : irrigation_amount = 50.00000
+     Manager creating a new local real variable : trigger_deficit = 0.50000
+
+------- Full nitrogen rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     runningmeantemp = 15
+     fertilising_window = 1
+      trigger_level = 45
+      n_application_amount = 50
+      n_available = 0
+     
+     SECTION:- start_of_day
+     n_available = no3(1) + no3(2) + no3(3) + nh4(1) + nh4(2) + nh4(3)  + urea(1) + urea(2) + urea(3)
+     deep_n = no3(4) + no3(5) + no3(6) + no3(7) + nh4(4) + nh4(5) + nh4(6) + nh4(7) + urea(4) + urea(5) + urea(6) + urea(7)
+     runningmeantemp = (runningmeantemp * 13 + mean) / 14
+     if           (date_within('1-jan, 20-jul') = 1) and
+      runningmeantemp < 10 then
+      fertilising_window = 0
+     elseif  (date_within('21-jul, 31-dec') = 1) and
+      runningmeantemp < 8 then
+      fertilising_window = 0
+     else    fertilising_window = 1
+     endif
+     if               (wheat.plant_status = 'alive')           and
+          (n_available < trigger_level)          and
+          (wheat.stage > 3)                                 and
+          fertilising_window = 1                        and
+          (wheat.stage < 6)                                          then
+     fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+     elseif      (barley.plant_status = 'alive')          and
+          (n_available < trigger_level)          and
+          (barley.stage > 3)                                and
+          fertilising_window = 1                        and
+          (barley.stage < 6)                                         then
+     fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+     elseif      (wmaize.plant_status = 'alive')           and
+          (n_available < trigger_level)          and
+          (wmaize.stage > 3)                                and
+          fertilising_window = 1                        and
+          (wmaize.stage < 7)                                          then
+     fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+     elseif      (canola.plant_status = 'alive')           and
+          (n_available < trigger_level)            and
+          (canola.stage > 3)                                and
+          fertilising_window = 1                         and
+          (canola.stage < 5)                                         then
+     fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+     elseif      (potato.plant_status = 'alive')           and
+          (n_available < trigger_level)           and
+          (potato.stage > 3)                                 and
+          fertilising_window = 1                        and
+          (potato.stage < 6.3)                                      then
+     fertiliser apply amount = n_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : runningmeantemp = 15.00000
+     Manager creating a new local real variable : fertilising_window = 1.00000
+     Manager creating a new local real variable : trigger_level = 45.00000
+     Manager creating a new local real variable : n_application_amount = 50.00000
+     Manager creating a new local real variable : n_available = 0.00000
+
+------- Heavy Soil Water Initialisation ---------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     cn2_bare =     0.000000
+             less than lower limit of    1.000000
+     Component name: Heavy Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Lower bound (    0.000000    ) exceeds upper bound (  -0.9000000E-04)
+             Variable is not checked
+     Component name: Heavy Soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.300  0.390  0.440  0.390  1.400  0.762  0.600
+          150.-  300.  0.240  0.300  0.390  0.440  0.390  1.400  0.190  0.600
+          300.-  600.  0.300  0.300  0.430  0.500  0.430  1.300  0.048  0.300
+          600.-  900.  0.300  0.300  0.430  0.500  0.430  1.300  0.000  0.300
+          900.- 1200.  0.300  0.300  0.430  0.500  0.430  1.300  0.000  0.300
+         1200.- 1500.  0.300  0.300  0.430  0.500  0.430  1.300  0.000  0.300
+         1500.- 1800.  0.300  0.300  0.430  0.500  0.430  1.300  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      45.00      13.50      13.50       7.50
+          150.-  300.      45.00      13.50      13.50       7.50
+          300.-  600.      90.00      39.00      39.00      21.00
+          600.-  900.      90.00      39.00      39.00      21.00
+          900.- 1200.      90.00      39.00      39.00      21.00
+         1200.- 1500.      90.00      39.00      39.00      21.00
+         1500.- 1800.      90.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     540.00     222.00     222.00     120.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+               0.00    0.00    0.00  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Heavy Soil Nitrogen Initialisation ------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Generic NZ heavy
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  3.90   13.65    1.26    0.00
+             2     7.00  3.00    4.41    0.21    0.00
+             3     7.00  1.50    8.19    0.39    0.00
+             4     7.00  0.70    6.63    0.39    0.00
+             5     7.00  0.30    6.63    0.39    0.00
+             6     7.00  0.10    6.63    0.39    0.00
+             7     7.00  0.10    6.63    0.39    0.00
+          ------------------------------------------------
+           Totals               52.77    3.42    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      80468.7  6437.5  1431.3   178.9    27.8     0.7
+             2      62505.9  5000.5   494.1    61.8    21.6     0.5
+             3      58384.2  4670.7   115.8    14.5    13.1     0.3
+             4      27273.0  2181.8    27.0     3.4     8.0     0.2
+             5      11694.2   935.5     5.8     0.7     4.8     0.1
+             6       3898.1   311.8     1.9     0.2     2.9     0.1
+             7       3898.1   311.8     1.9     0.2     1.8     0.0
+          ---------------------------------------------------------
+           Totals  248122.1 19849.8  2077.9   259.7    80.0     2.0
+          ---------------------------------------------------------
+
+------- maize Initialisation --------------------------------------------------
+      Initialising, V1.0 2000.01.21
+     
+         - Reading constants
+     
+         - Reading constants
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : deep_n = 28.08000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "no3_leach(7)".
+     Variables should have a value before they are used in an expression.
+     Component name: HawkesBay base Rotation
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : no3_leach(7) = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "nh4_leach(7)".
+     Variables should have a value before they are used in an expression.
+     Component name: HawkesBay base Rotation
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : nh4_leach(7) = 0.00000
+1 October 1972(Day of year=275), HawkesBay base Rotation: 
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+1 October 1972(Day of year=275), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            275   30.0   10.0    0.8    0.0   pioneer_31    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.100    0.300    1.000
+          150.000    0.100    0.300    1.000
+          300.000    0.080    0.300    1.000
+          300.000    0.060    0.300    1.000
+          300.000    0.040    0.300    1.000
+          300.000    0.020    0.300    1.000
+          300.000    0.010    0.300    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = pioneer_3153
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  300.00
+         tt_flower_to_maturity    =  980.00
+         head_grain_no_max        =  750.00
+         grain_gth_rate           =    8.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+7 October 1972(Day of year=281), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 October 1972(Day of year=281), maize: 
+      stage    2.0 germination
+10 October 1972(Day of year=284), maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.399999       extractable sw =    14.93818
+19 October 1972(Day of year=293), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+27 October 1972(Day of year=301), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+4 November 1972(Day of year=309), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+12 November 1972(Day of year=317), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+15 November 1972(Day of year=320), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           11.61196       lai =    0.9908620E-01
+                          stover N conc =    3.566444       extractable sw =    63.67027
+16 November 1972(Day of year=321), maize: 
+      stage    5.0 floral_initiation
+                          biomass =           12.70172       lai =    0.1070119
+                          stover N conc =    3.552565       extractable sw =    108.3697
+20 November 1972(Day of year=325), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+28 November 1972(Day of year=333), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+6 December 1972(Day of year=341), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+21 December 1972(Day of year=356), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+5 January 1973(Day of year=5), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+27 January 1973(Day of year=27), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           637.9055       lai =     3.402407
+                          stover N conc =    1.002292       extractable sw =    225.2628
+1 February 1973(Day of year=32), maize: 
+      stage    7.0 flowering
+                          biomass =           691.6660       lai =     3.323766
+                          stover N conc =   0.9630678       extractable sw =    215.9766
+10 February 1973(Day of year=41), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+10 February 1973(Day of year=41), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           784.8043       lai =     3.091606
+                          stover N conc =   0.9013885       extractable sw =    238.6250
+25 February 1973(Day of year=56), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+2 April 1973(Day of year=92), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 May 1973(Day of year=127), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           1234.106       lai =    0.9961913
+                          stover N conc =   0.9310343       extractable sw =    250.9611
+8 May 1973(Day of year=128), HawkesBay base Rotation: 
+     Manager sending message :- maize harvest  height = 0.1 (mm), remove = 0.98
+8 May 1973(Day of year=128), maize: 
+     
+     
+     
+     flowering (DAS) =  124                                maturity (DAS)  =       0
+      flowering day  =   32                                 stover (kg/ha) =    7956.8
+      maturity day        =    0                            grain yield (kg/ha) =    4384.2
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    5188.4
+      grain wt (g) =     0.504                              grains/m^2   =   869.498
+      grains/head =  86.9                                   maximum lai = 3.448
+      total above ground biomass (kg/ha) =   12341.1
+      live above ground biomass (kg/ha) =   12341.1
+      green above ground biomass (kg/ha) =   11016.3
+      senesced above ground biomass (kg/ha) =    1324.7
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.5
+      grain N percent =      1.24                           total N content (kg/ha) =    109.19
+      grain N uptake (kg/ha) =     54.16                    senesced N content (kg/ha) =      6.62
+      green N content (kg/ha) =     48.41                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.064
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.092
+         floral_initiation   to flag_leaf               0.000        0.000        0.283        0.383
+         flag_leaf           to flowering               0.000        0.000        0.616        0.693
+         flowering           to start_grain_fill        0.000        0.000        0.620        0.696
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.507        0.605
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               4384.23                    0.00
+                          N  (kg/ha) =                 54.16                    0.00
+     
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               7956.83                 1869.07
+                          N  (kg/ha) =                 55.03                   14.94
+                          P  (kg/ha) =                  0.00                    0.00
+     
+25 May 1973(Day of year=145), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+26/05/1973 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+3/06/1973 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 July 1973(Day of year=204), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     23/07/1973  - Harvesting Grain from wheat2
+     -----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1/09/1973 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+28/09/1973 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+22/10/1973 - FloralInitiation
+                            LAI = 0.05 (m^2/m^2)
+           Above Ground Biomass = 2.58 (g/m^2)
+23/10/1973 - TuberInitiation
+                            LAI = 0.05 (m^2/m^2)
+           Above Ground Biomass = 2.70 (g/m^2)
+22/12/1973 - FinalLeaf
+                            LAI = 0.27 (m^2/m^2)
+           Above Ground Biomass = 23.42 (g/m^2)
+Removing Leaves from plant
+24/02/1974 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 8.68 (g/m^2)
+10/03/1974 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 8.68 (g/m^2)
+11 March 1974(Day of year=70), HawkesBay base Rotation: 
+     Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
+     Manager sending message :- potato2 endcrop
+     Manager creating a new local real variable : reset_pt_variables = 1.00000
+14 March 1974(Day of year=73), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+15/03/1974 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+20/03/1974 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1 May 1974(Day of year=121), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     1/05/1974  - Harvesting Grain from wheat2
+     ----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1 October 1974(Day of year=274), HawkesBay base Rotation: 
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+1 October 1974(Day of year=274), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            274   30.0   10.0    0.8    0.0   pioneer_31    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.100    0.300    1.000
+          150.000    0.100    0.300    1.000
+          300.000    0.080    0.300    1.000
+          300.000    0.060    0.300    1.000
+          300.000    0.040    0.300    1.000
+          300.000    0.020    0.300    1.000
+          300.000    0.010    0.300    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = pioneer_3153
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  300.00
+         tt_flower_to_maturity    =  980.00
+         head_grain_no_max        =  750.00
+         grain_gth_rate           =    8.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+2 October 1974(Day of year=275), maize: 
+      stage    2.0 germination
+3 October 1974(Day of year=276), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 October 1974(Day of year=280), maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.399999       extractable sw =    5.335030
+18 October 1974(Day of year=291), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+26 October 1974(Day of year=299), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+3 November 1974(Day of year=307), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+11 November 1974(Day of year=315), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+13 November 1974(Day of year=317), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           12.89083       lai =    0.1031795
+                          stover N conc =    3.453881       extractable sw =    119.5597
+14 November 1974(Day of year=318), maize: 
+      stage    5.0 floral_initiation
+                          biomass =           13.98124       lai =    0.1100194
+                          stover N conc =    3.517153       extractable sw =    113.6086
+19 November 1974(Day of year=323), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+27 November 1974(Day of year=331), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+15 January 1975(Day of year=15), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           486.2899       lai =     2.965672
+                          stover N conc =    1.089356       extractable sw =    245.4610
+20 January 1975(Day of year=20), maize: 
+      stage    7.0 flowering
+                          biomass =           542.3833       lai =     2.890067
+                          stover N conc =    1.050386       extractable sw =    250.6576
+31 January 1975(Day of year=31), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           667.5125       lai =     2.670604
+                          stover N conc =   0.9484035       extractable sw =    224.9662
+3 February 1975(Day of year=34), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+18 February 1975(Day of year=49), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+19 April 1975(Day of year=109), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           1120.614       lai =    0.7745231
+                          stover N conc =   0.9955509       extractable sw =    211.7135
+20 April 1975(Day of year=110), HawkesBay base Rotation: 
+     Manager sending message :- maize harvest  height = 0.1 (mm), remove = 0.98
+20 April 1975(Day of year=110), maize: 
+     
+     
+     
+     flowering (DAS) =  112                                maturity (DAS)  =       0
+      flowering day  =   20                                 stover (kg/ha) =    6172.5
+      maturity day        =    0                            grain yield (kg/ha) =    5033.7
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    5957.0
+      grain wt (g) =     0.491                              grains/m^2   =  1025.707
+      grains/head = 102.6                                   maximum lai = 3.007
+      total above ground biomass (kg/ha) =   11206.1
+      live above ground biomass (kg/ha) =   11206.1
+      green above ground biomass (kg/ha) =   10090.3
+      senesced above ground biomass (kg/ha) =    1115.9
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.6
+      grain N percent =      1.26                           total N content (kg/ha) =    106.03
+      grain N uptake (kg/ha) =     63.58                    senesced N content (kg/ha) =      5.58
+      green N content (kg/ha) =     36.87                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.076
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.118
+         floral_initiation   to flag_leaf               0.000        0.000        0.312        0.422
+         flag_leaf           to flowering               0.000        0.000        0.552        0.641
+         flowering           to start_grain_fill        0.000        0.000        0.563        0.650
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.424        0.539
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               5033.69                    0.00
+                          N  (kg/ha) =                 63.58                    0.00
+     
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               6172.46                 1546.90
+                          N  (kg/ha) =                 42.45                   14.59
+                          P  (kg/ha) =                  0.00                    0.00
+     
+23 April 1975(Day of year=113), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+24/04/1975 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1/05/1975 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 July 1975(Day of year=204), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     23/07/1975  - Harvesting Grain from wheat2
+     -----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1/09/1975 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+29/09/1975 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+22/10/1975 - FloralInitiation
+                            LAI = 0.07 (m^2/m^2)
+           Above Ground Biomass = 4.27 (g/m^2)
+24/10/1975 - TuberInitiation
+                            LAI = 0.08 (m^2/m^2)
+           Above Ground Biomass = 4.75 (g/m^2)
+26/12/1975 - FinalLeaf
+                            LAI = 0.35 (m^2/m^2)
+           Above Ground Biomass = 34.60 (g/m^2)
+26/02/1976 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 44.91 (g/m^2)
+Removing Leaves from plant
+13/03/1976 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 15.05 (g/m^2)
+14 March 1976(Day of year=74), HawkesBay base Rotation: 
+     Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
+     Manager sending message :- potato2 endcrop
+17 March 1976(Day of year=77), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+18/03/1976 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23/03/1976 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1 May 1976(Day of year=122), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     1/05/1976  - Harvesting Grain from wheat2
+     ----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1 October 1976(Day of year=275), HawkesBay base Rotation: 
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+1 October 1976(Day of year=275), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            275   30.0   10.0    0.8    0.0   pioneer_31    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.100    0.300    1.000
+          150.000    0.100    0.300    1.000
+          300.000    0.080    0.300    1.000
+          300.000    0.060    0.300    1.000
+          300.000    0.040    0.300    1.000
+          300.000    0.020    0.300    1.000
+          300.000    0.010    0.300    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = pioneer_3153
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  300.00
+         tt_flower_to_maturity    =  980.00
+         head_grain_no_max        =  750.00
+         grain_gth_rate           =    8.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+2 October 1976(Day of year=276), maize: 
+      stage    2.0 germination
+7 October 1976(Day of year=281), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 October 1976(Day of year=281), maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.399999       extractable sw =    15.35226
+26 October 1976(Day of year=300), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+3 November 1976(Day of year=308), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+11 November 1976(Day of year=316), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+17 November 1976(Day of year=322), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           10.83152       lai =    0.1042314
+                          stover N conc =    3.786229       extractable sw =    102.0128
+18 November 1976(Day of year=323), maize: 
+      stage    5.0 floral_initiation
+                          biomass =           12.37768       lai =    0.1122350
+                          stover N conc =    3.562297       extractable sw =    99.17874
+19 November 1976(Day of year=324), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+27 November 1976(Day of year=332), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+5 December 1976(Day of year=340), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+13 December 1976(Day of year=348), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+28 December 1976(Day of year=363), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+30 January 1977(Day of year=30), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           631.8095       lai =     3.489473
+                          stover N conc =   0.9595417       extractable sw =    220.4943
+4 February 1977(Day of year=35), maize: 
+      stage    7.0 flowering
+                          biomass =           683.9905       lai =     3.415802
+                          stover N conc =   0.9193453       extractable sw =    207.4022
+6 February 1977(Day of year=37), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+15 February 1977(Day of year=46), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           789.8298       lai =     3.194058
+                          stover N conc =   0.8881572       extractable sw =    236.9180
+21 February 1977(Day of year=52), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+8 March 1977(Day of year=67), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+23 March 1977(Day of year=82), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+20 May 1977(Day of year=140), maize: 
+      crop failure because of total leaf senescence.
+         kill. Standing above-ground dm = 11781.4 (kg/ha)
+21 May 1977(Day of year=141), HawkesBay base Rotation: 
+     Manager sending message :- maize harvest  height = 0.1 (mm), remove = 0.98
+21 May 1977(Day of year=141), maize: 
+     
+     
+     
+     flowering (DAS) =  127                                maturity (DAS)  =       0
+      flowering day  =   35                                 stover (kg/ha) =    7709.2
+      maturity day        =    0                            grain yield (kg/ha) =    4072.2
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    4819.2
+      grain wt (g) =     0.000                              grains/m^2   =     0.000
+      grains/head =   0.0                                   maximum lai = 3.533
+      total above ground biomass (kg/ha) =   11781.4
+      live above ground biomass (kg/ha) =       0.0
+      green above ground biomass (kg/ha) =       0.0
+      senesced above ground biomass (kg/ha) =       0.0
+      dead above ground biomass (kg/ha) =   11781.4
+      number of leaves =  20.4
+      grain N percent =      1.22                           total N content (kg/ha) =    110.06
+      grain N uptake (kg/ha) =     49.75                    senesced N content (kg/ha) =      0.00
+      green N content (kg/ha) =      0.00                   dead N content (kg/ha) =     60.31
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.057
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.004
+         floral_initiation   to flag_leaf               0.000        0.000        0.320        0.415
+         flag_leaf           to flowering               0.000        0.000        0.645        0.716
+         flowering           to start_grain_fill        0.000        0.000        0.644        0.715
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.435        0.542
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               4072.25                    0.00
+                          N  (kg/ha) =                 49.75                    0.00
+     
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               7709.20                 1815.96
+                          N  (kg/ha) =                 60.31                   15.16
+                          P  (kg/ha) =                  0.00                    0.00
+     
+30 May 1977(Day of year=150), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+31/05/1977 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+10/06/1977 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 July 1977(Day of year=204), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     23/07/1977  - Harvesting Grain from wheat2
+     -----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1/09/1977 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+5/10/1977 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1/11/1977 - FloralInitiation
+                            LAI = 0.03 (m^2/m^2)
+           Above Ground Biomass = 1.66 (g/m^2)
+4/11/1977 - TuberInitiation
+                            LAI = 0.03 (m^2/m^2)
+           Above Ground Biomass = 1.95 (g/m^2)
+8/01/1978 - FinalLeaf
+                            LAI = 0.22 (m^2/m^2)
+           Above Ground Biomass = 17.51 (g/m^2)
+11/03/1978 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 25.25 (g/m^2)
+Removing Leaves from plant
+27/03/1978 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 6.31 (g/m^2)
+28 March 1978(Day of year=87), HawkesBay base Rotation: 
+     Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
+     Manager sending message :- potato2 endcrop
+31 March 1978(Day of year=90), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+1/04/1978 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+6/04/1978 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1 May 1978(Day of year=121), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     1/05/1978  - Harvesting Grain from wheat2
+     ----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1 October 1978(Day of year=274), HawkesBay base Rotation: 
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+1 October 1978(Day of year=274), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            274   30.0   10.0    0.8    0.0   pioneer_31    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.100    0.300    1.000
+          150.000    0.100    0.300    1.000
+          300.000    0.080    0.300    1.000
+          300.000    0.060    0.300    1.000
+          300.000    0.040    0.300    1.000
+          300.000    0.020    0.300    1.000
+          300.000    0.010    0.300    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = pioneer_3153
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  300.00
+         tt_flower_to_maturity    =  980.00
+         head_grain_no_max        =  750.00
+         grain_gth_rate           =    8.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+2 October 1978(Day of year=275), maize: 
+      stage    2.0 germination
+3 October 1978(Day of year=276), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+6 October 1978(Day of year=279), maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.399999       extractable sw =    5.636314
+11 October 1978(Day of year=284), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+19 October 1978(Day of year=292), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+31 October 1978(Day of year=304), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+8 November 1978(Day of year=312), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+18 November 1978(Day of year=322), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           11.57138       lai =    0.1042626
+                          stover N conc =    3.624991       extractable sw =    106.1351
+19 November 1978(Day of year=323), maize: 
+      stage    5.0 floral_initiation
+                          biomass =           13.03878       lai =    0.1111520
+                          stover N conc =    3.536941       extractable sw =    102.4626
+21 November 1978(Day of year=325), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+29 November 1978(Day of year=333), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+28 December 1978(Day of year=362), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+5 January 1979(Day of year=5), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+13 January 1979(Day of year=13), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+21 January 1979(Day of year=21), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+26 January 1979(Day of year=26), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           527.0413       lai =     3.176977
+                          stover N conc =    1.003155       extractable sw =    251.9156
+31 January 1979(Day of year=31), maize: 
+      stage    7.0 flowering
+                          biomass =           576.3153       lai =     3.103325
+                          stover N conc =   0.9794993       extractable sw =    228.3461
+5 February 1979(Day of year=36), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+9 February 1979(Day of year=40), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           657.3130       lai =     2.924242
+                          stover N conc =   0.9679335       extractable sw =    260.2267
+28 February 1979(Day of year=59), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+5 April 1979(Day of year=95), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 May 1979(Day of year=127), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           1126.995       lai =    0.8914193
+                          stover N conc =   0.9958956       extractable sw =    235.2315
+8 May 1979(Day of year=128), HawkesBay base Rotation: 
+     Manager sending message :- maize harvest  height = 0.1 (mm), remove = 0.98
+8 May 1979(Day of year=128), maize: 
+     
+     
+     
+     flowering (DAS) =  123                                maturity (DAS)  =       0
+      flowering day  =   31                                 stover (kg/ha) =    7773.7
+      maturity day        =    0                            grain yield (kg/ha) =    3496.3
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    4137.6
+      grain wt (g) =     0.511                              grains/m^2   =   683.561
+      grains/head =  68.4                                   maximum lai = 3.209
+      total above ground biomass (kg/ha) =   11270.0
+      live above ground biomass (kg/ha) =   11270.0
+      green above ground biomass (kg/ha) =   10136.5
+      senesced above ground biomass (kg/ha) =    1133.5
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.4
+      grain N percent =      1.39                           total N content (kg/ha) =    106.62
+      grain N uptake (kg/ha) =     48.44                    senesced N content (kg/ha) =      5.67
+      green N content (kg/ha) =     52.51                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.037
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.059
+         floral_initiation   to flag_leaf               0.000        0.000        0.354        0.465
+         flag_leaf           to flowering               0.000        0.000        0.612        0.689
+         flowering           to start_grain_fill        0.000        0.000        0.597        0.678
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.409        0.527
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               3496.30                    0.00
+                          N  (kg/ha) =                 48.44                    0.00
+     
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               7773.65                 1569.55
+                          N  (kg/ha) =                 58.18                   14.04
+                          P  (kg/ha) =                  0.00                    0.00
+     
+20 May 1979(Day of year=140), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+21/05/1979 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+31/05/1979 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 July 1979(Day of year=204), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     23/07/1979  - Harvesting Grain from wheat2
+     -----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1/09/1979 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+29/09/1979 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+24/10/1979 - FloralInitiation
+                            LAI = 0.03 (m^2/m^2)
+           Above Ground Biomass = 1.96 (g/m^2)
+26/10/1979 - TuberInitiation
+                            LAI = 0.04 (m^2/m^2)
+           Above Ground Biomass = 2.25 (g/m^2)
+26/12/1979 - FinalLeaf
+                            LAI = 0.26 (m^2/m^2)
+           Above Ground Biomass = 20.92 (g/m^2)
+25/02/1980 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 28.54 (g/m^2)
+Removing Leaves from plant
+10/03/1980 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 7.70 (g/m^2)
+11 March 1980(Day of year=71), HawkesBay base Rotation: 
+     Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
+     Manager sending message :- potato2 endcrop
+14 March 1980(Day of year=74), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+15/03/1980 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+21/03/1980 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1 May 1980(Day of year=122), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     1/05/1980  - Harvesting Grain from wheat2
+     ----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1 October 1980(Day of year=275), HawkesBay base Rotation: 
+     Manager sending message :- maize sow  plants = 10, sowing_depth = 30, cultivar = pioneer_3153, row_spacing = 0.762, crop_class = plant
+1 October 1980(Day of year=275), maize: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no    mm      m^2    m      code     name       no
+         -------------------------------------------------------
+            275   30.0   10.0    0.8    0.0   pioneer_31    0.00
+         -------------------------------------------------------
+     
+        - Reading root profile parameters
+     Uptake of NO3 and water calculated by maize
+     
+     
+     
+     
+                         Root Profile
+         ------------------------------------------------
+           Layer      Kl      Lower Exploration
+           Depth              limit   Factor
+           (mm)       ()     (mm/mm)    ()
+         ------------------------------------------------
+          150.000    0.100    0.300    1.000
+          150.000    0.100    0.300    1.000
+          300.000    0.080    0.300    1.000
+          300.000    0.060    0.300    1.000
+          300.000    0.040    0.300    1.000
+          300.000    0.020    0.300    1.000
+          300.000    0.010    0.300    1.000
+          ------------------------------------------------
+     
+            Crop factor for bounding water use is set to  100.0  times eo.
+     
+     
+     
+     
+        - Reading Cultivar Parameters
+         ------------------------------------------------
+         Cultivar                 = pioneer_3153
+         est_days_endjuv_to_init  =      20
+         tt_emerg_to_endjuv       =  300.00
+         tt_flower_to_maturity    =  980.00
+         head_grain_no_max        =  750.00
+         grain_gth_rate           =    8.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         x_stem_wt      =     0.0   80.0
+         y_height      =     0.0 2000.0
+         ------------------------------------------------
+     
+     
+     
+2 October 1980(Day of year=276), maize: 
+      stage    2.0 germination
+6 October 1980(Day of year=280), maize: 
+      stage    3.0 emergence
+                          biomass =          0.2000000       lai =    0.3800000E-02
+                          stover N conc =    4.399999       extractable sw =   0.6136322
+7 October 1980(Day of year=281), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+15 October 1980(Day of year=289), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+30 October 1980(Day of year=304), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+13 November 1980(Day of year=318), maize: 
+      stage    4.0 end_of_juvenile
+                          biomass =           10.56568       lai =    0.1017642
+                          stover N conc =    3.626043       extractable sw =    64.63045
+14 November 1980(Day of year=319), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+14 November 1980(Day of year=319), maize: 
+      stage    5.0 floral_initiation
+                          biomass =           11.95200       lai =    0.1083230
+                          stover N conc =    3.579438       extractable sw =    135.5505
+22 November 1980(Day of year=327), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+11 December 1980(Day of year=346), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+19 December 1980(Day of year=354), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+7 January 1981(Day of year=7), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+23 January 1981(Day of year=23), maize: 
+      stage    6.0 flag_leaf
+                          biomass =           619.0811       lai =     3.716118
+                          stover N conc =    1.110571       extractable sw =    259.7228
+27 January 1981(Day of year=27), maize: 
+      stage    7.0 flowering
+                          biomass =           681.4486       lai =     3.640308
+                          stover N conc =    1.048332       extractable sw =    241.2580
+5 February 1981(Day of year=36), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+6 February 1981(Day of year=37), maize: 
+      stage    8.0 start_grain_fill
+                          biomass =           796.8990       lai =     3.408536
+                          stover N conc =   0.9709418       extractable sw =    252.6886
+27 February 1981(Day of year=58), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+11 April 1981(Day of year=101), Roto-rainer_irrigation: 
+     Manager sending message :- irrigation apply  amount = 50.00000
+24 April 1981(Day of year=114), maize: 
+      stage    9.0 end_grain_fill
+                          biomass =           1295.399       lai =    0.9251084
+                          stover N conc =   0.9717620       extractable sw =    249.7219
+25 April 1981(Day of year=115), HawkesBay base Rotation: 
+     Manager sending message :- maize harvest  height = 0.1 (mm), remove = 0.98
+25 April 1981(Day of year=115), maize: 
+     
+     
+     
+     flowering (DAS) =  119                                maturity (DAS)  =       0
+      flowering day  =   27                                 stover (kg/ha) =    6909.4
+      maturity day        =    0                            grain yield (kg/ha) =    6044.6
+      grain % water content   =   15.5                      grain yield wet (kg/ha) =    7153.3
+      grain wt (g) =     0.482                              grains/m^2   =  1254.595
+      grains/head = 125.5                                   maximum lai = 3.782
+      total above ground biomass (kg/ha) =   12954.0
+      live above ground biomass (kg/ha) =   12954.0
+      green above ground biomass (kg/ha) =   11564.8
+      senesced above ground biomass (kg/ha) =    1389.2
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  20.1
+      grain N percent =      1.17                           total N content (kg/ha) =    119.33
+      grain N uptake (kg/ha) =     71.00                    senesced N content (kg/ha) =      6.95
+      green N content (kg/ha) =     41.38                   dead N content (kg/ha) =      0.00
+     
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence           to end_of_juvenile         0.000        0.000        0.000        0.055
+         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.057
+         floral_initiation   to flag_leaf               0.000        0.000        0.201        0.298
+         flag_leaf           to flowering               0.000        0.000        0.539        0.631
+         flowering           to start_grain_fill        0.000        0.000        0.564        0.651
+         start_grain_fill    to end_grain_fill          0.000        0.000        0.408        0.526
+     
+     Crop harvested.
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =               6044.55                    0.00
+                          N  (kg/ha) =                 71.00                    0.00
+     
+     Manager sending message :- maize end_crop
+         Crop ended. Yield (dw) =     0.0
+         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
+                          DM (kg/ha) =               6909.44                 1887.55
+                          N  (kg/ha) =                 48.33                   17.01
+                          P  (kg/ha) =                  0.00                    0.00
+     
+28 April 1981(Day of year=118), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+29/04/1981 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+6/05/1981 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+23 July 1981(Day of year=204), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 harvest  height = 0.1 (mm), remove = 0.98
+
+     23/07/1981  - Harvesting Grain from wheat2
+     -----------------------------------------------
+     Grain Yield DWt: 0.00 (g/m^2)
+     Grain Size: 0.00 (g)
+     Grain Number: 0.00 (/m^2)
+
+     Manager sending message :- wheat2 endcrop
+1/09/1981 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+1/10/1981 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+26/10/1981 - FloralInitiation
+                            LAI = 0.04 (m^2/m^2)
+           Above Ground Biomass = 2.29 (g/m^2)
+28/10/1981 - TuberInitiation
+                            LAI = 0.04 (m^2/m^2)
+           Above Ground Biomass = 2.59 (g/m^2)
+27/12/1981 - FinalLeaf
+                            LAI = 0.30 (m^2/m^2)
+           Above Ground Biomass = 23.30 (g/m^2)
+26/02/1982 - FullSenescence
+                            LAI = 0.01 (m^2/m^2)
+           Above Ground Biomass = 32.99 (g/m^2)
+Removing Leaves from plant
+12/03/1982 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 7.69 (g/m^2)
+13 March 1982(Day of year=72), HawkesBay base Rotation: 
+     Manager sending message :- potato2 harvest  height = 0.1 (mm), remove = 0.98
+     Manager sending message :- potato2 endcrop
+16 March 1982(Day of year=75), HawkesBay base Rotation: 
+     Manager sending message :- wheat2 sow  population = 400, depth = 30, cultivar = avalon, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+16 March 1982(Day of year=75): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Too many canopy components in system
+     Component name: Micromet
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     

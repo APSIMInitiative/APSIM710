@@ -30,12 +30,12 @@ public class SIRIUSArbitrator : Arbitrator
     }
 
     //  Class arrays
-    double[] DMSupplyPlant = null;
+    double[] DMSupplyOrgan = null;
     double[] DMDemand = null;
     double[] DMAllocation = null;
     double[] DMRetranslocation = null;
     
-    double[] NDemandPlant = null;
+    double[] NDemandOrgan = null;
     double[] RelativeNDemand = null;
     double[] NReallocationSupply = null;
     double[] NUptakeSupply = null;
@@ -75,7 +75,7 @@ public class SIRIUSArbitrator : Arbitrator
 //Fixme  The only biomass retranslocation is associated with N retranslocation.  Need something to move sugars to reproductive organs
  #region Setup Biomass calculations
         //create organ specific variables
-        DMSupplyPlant = new double[Organs.Count];
+        DMSupplyOrgan = new double[Organs.Count];
         DMDemand = new double[Organs.Count];
         DMAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
@@ -87,8 +87,8 @@ public class SIRIUSArbitrator : Arbitrator
 
         // GET SUPPLIES AND CALCULATE TOTAL
         for (int i = 0; i < Organs.Count; i++)
-            DMSupplyPlant[i] = Organs[i].DMSupply;
-        TotalDMSupply = MathUtility.Sum(DMSupplyPlant);
+            DMSupplyOrgan[i] = Organs[i].DMSupply;
+        TotalDMSupply = MathUtility.Sum(DMSupplyOrgan);
 
         // set start values once TotalDMSupply is determined but before any arbitration has been done
         foreach (Organ o in Organs)
@@ -143,7 +143,7 @@ public class SIRIUSArbitrator : Arbitrator
 
  #region Set up Nitorgen calculations
         // Create organ specific variables       
-        NDemandPlant = new double[Organs.Count];
+        NDemandOrgan = new double[Organs.Count];
         RelativeNDemand = new double[Organs.Count];
         NReallocationSupply = new double[Organs.Count];
         NUptakeSupply = new double[Organs.Count];
@@ -165,7 +165,7 @@ public class SIRIUSArbitrator : Arbitrator
         // GET ALL SUPPLIES AND DEMANDS AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {
-            NDemandPlant[i] = Organs[i].NDemand;
+            NDemandOrgan[i] = Organs[i].NDemand;
             NReallocationSupply[i] = Organs[i].NReallocationSupply;
             NUptakeSupply[i] = Organs[i].NUptakeSupply;
             NFixationSupply[i] = Organs[i].NFixationSupply;
@@ -177,7 +177,7 @@ public class SIRIUSArbitrator : Arbitrator
             NAllocated[i] = 0;            
             FixationWtLoss[i] = 0;
         }
-               TotalNDemand = MathUtility.Sum(NDemandPlant);
+               TotalNDemand = MathUtility.Sum(NDemandOrgan);
         double TotalNReallocationSupply = MathUtility.Sum(NReallocationSupply);
         double TotalNUptakeSupply = MathUtility.Sum(NUptakeSupply);
         double TotalNFixationSupply = MathUtility.Sum(NFixationSupply);
@@ -185,7 +185,7 @@ public class SIRIUSArbitrator : Arbitrator
 
         //Set relative N demands of each organ
         for (int i = 0; i< Organs.Count; i++)
-            RelativeNDemand[i] = Organs[i].NDemand / TotalNDemand;
+            RelativeNDemand[i] = Organs[i].NDemand / TotalNDemand;  //Fixme rename fractional N demand  ????
 #endregion
 
  #region Reallocate Senesced Nitrogen
@@ -325,7 +325,7 @@ public class SIRIUSArbitrator : Arbitrator
         // Calculate posible growth based on Minimum N requirement of organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            if (NAllocated[i] >= NDemandPlant[i])
+            if (NAllocated[i] >= NDemandOrgan[i])
                 NLimitedGrowth[i] = 100000000; //given high value so where there is no N deficit in organ and N limitation to growth  
             else
                 NLimitedGrowth[i] = NAllocated[i] / Organs[i].MinNconc;
@@ -396,7 +396,7 @@ public class SIRIUSArbitrator : Arbitrator
     {
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -418,7 +418,7 @@ public class SIRIUSArbitrator : Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -437,12 +437,12 @@ public class SIRIUSArbitrator : Arbitrator
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
                 //Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
-                Allocation = Math.Min(NDemandPlant[i] - NAllocated[i], NotAllocated); // Allow the organs to get the rest of their demand     
+                Allocation = Math.Min(NDemandOrgan[i] - NAllocated[i], NotAllocated); // Allow the organs to get the rest of their demand     
                 NAllocated[i] += Allocation;
                 NotAllocated -= Allocation;
                 TotalAllocated += Allocation;
@@ -460,7 +460,7 @@ public class SIRIUSArbitrator : Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
@@ -479,7 +479,7 @@ public class SIRIUSArbitrator : Arbitrator
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
