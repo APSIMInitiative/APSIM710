@@ -131,14 +131,12 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
  #endregion
 
  #region Root functions and events
-    public override void DoStartSet()
+    public override void DoPotentialGrowth()
     {
         _SenescenceRate = 0;
         if (SenescenceRate != null) //Default of zero means no senescence
             _SenescenceRate = SenescenceRate.Value; 
-    }
-    public override void DoPotentialGrowth()
-    {
+        
         if (Live.Wt == 0)
         {
             Population Population = Plant.Children["Population"] as Population;

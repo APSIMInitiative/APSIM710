@@ -13,10 +13,7 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
     public double PropFixationDemand = 0;
     public double _NFixed = 0;
   #endregion
-
- public override void DoStartSet()
-    { }
-    
+        
  #region Fixation methods
     public override double NFixation
     {

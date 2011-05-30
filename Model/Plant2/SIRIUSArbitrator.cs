@@ -90,12 +90,6 @@ public class SIRIUSArbitrator : Arbitrator
             DMSupplyOrgan[i] = Organs[i].DMSupply;
         TotalDMSupply = MathUtility.Sum(DMSupplyOrgan);
 
-        // set start values once TotalDMSupply is determined but before any arbitration has been done
-        foreach (Organ o in Organs)
-        {
-            o.DoStartSet();
-        }
-
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
         {

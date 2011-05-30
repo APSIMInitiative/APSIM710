@@ -200,13 +200,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
 
     }
-    public override void DoStartSet()
-    {
-        foreach (LeafCohort L in Leaves)
-        {
-            L.DoStartSet(ThermalTime.Value);
-        }
-    }
     public double CoverAboveCohort(double cohortno)
     {
         double LAIabove = 0;

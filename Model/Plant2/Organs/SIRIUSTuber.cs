@@ -5,6 +5,8 @@ using CSGeneral;
 
 public class SIRIUSTuber : SIRIUSGenericOrgan, Reproductive, BelowGround
 {
+
+    //Fixme this is being recoginised as an above ground organ
     [Link(IsOptional.Yes)]
     Function NitrogenDemandSwitch = null;
     

@@ -27,16 +27,26 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
  #endregion
 
  #region Organ functions
-    public override void DoStartSet()
+    public override void DoPotentialGrowth()
     {
         _SenescenceRate = 0;
         if (SenescenceRate != null) //Default of zero means no senescence
-            _SenescenceRate = SenescenceRate.Value; 
+            _SenescenceRate = SenescenceRate.Value;
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
         StartNReallocationSupply = NReallocationSupply;
         StartNRetranslocationSupply = NRetranslocationSupply;
     }
+    //public override void DoStartSet()
+    //{
+      /*  _SenescenceRate = 0;
+        if (SenescenceRate != null) //Default of zero means no senescence
+            _SenescenceRate = SenescenceRate.Value; 
+        StartNonStructuralN = Live.NonStructuralN;
+        StartNonStructuralWt = Live.NonStructuralWt;
+        StartNReallocationSupply = NReallocationSupply;
+        StartNRetranslocationSupply = NRetranslocationSupply;*/
+    //}
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();

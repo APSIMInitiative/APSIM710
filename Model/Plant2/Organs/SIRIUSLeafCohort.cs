@@ -171,6 +171,22 @@ class SIRIUSLeafCohort : LeafCohort
     }
     public override void DoStartSet(double TT)
     {
+      /*  SenescedFrac = FractionSenescing(TT);
+        LeafStartNonStructuralN = Live.NonStructuralN;
+        LeafStartNonStructuralWt = Live.NonStructuralWt;
+        LeafStartDMRetranslocationSupply = DMRetranslocationSupply;
+        LeafStartNReallocationSupply = NReallocationSupply();
+        LeafStartNRetranslocationSupply = NRetranslocationSupply;
+        PotentialAreaGrowth = PotentialAreaGrowthFunction(TT);
+        PotentialArea = PotentialArea + PotentialAreaGrowth - (PotentialArea * FractionSenescing(TT));
+        PotentialSize = PotentialArea / Population;
+        //zero set detlas
+        DeltaWt = 0;
+        DeltaStructuralWt = 0;
+        DeltaNonStructuralWt = 0;*/
+    }
+    public override void DoPotentialGrowth(double TT)
+    {
         SenescedFrac = FractionSenescing(TT);
         LeafStartNonStructuralN = Live.NonStructuralN;
         LeafStartNonStructuralWt = Live.NonStructuralWt;
@@ -184,9 +200,7 @@ class SIRIUSLeafCohort : LeafCohort
         DeltaWt = 0;
         DeltaStructuralWt = 0;
         DeltaNonStructuralWt = 0;
-    }
-    public override void DoPotentialGrowth(double TT)
-    {
+        
         // All these bits have been moved into dostartset which is invoked before arbitration
     }
     public override void DoActualGrowth(double TT)
