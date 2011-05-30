@@ -13,6 +13,10 @@ public class SIRIUSArbitrator : Arbitrator
     [Link(IsOptional.Yes)]
     Function RetransWtNRatio = null;
     double _RetransWtNRatio = 0.0;
+    [Param]
+    [Description("Select method used for Arbitration")]
+    protected string ArbitrationOption = "";
+
     public override void Initialised()
     {
         base.Initialised();
@@ -44,8 +48,7 @@ public class SIRIUSArbitrator : Arbitrator
     double[] FixationWtLoss = null;
     double[] NLimitedGrowth = null;
     double[] NAllocated = null;
-        
-
+    
     // Public Arbitrator variables
     private double TotalDMSupply = 0;
     [Output]
@@ -189,12 +192,17 @@ public class SIRIUSArbitrator : Arbitrator
         double NReallocationAllocated = 0;
         if (TotalNReallocationSupply > 0.00000000001)
         {
-            //Calculate how much reallocated N (and associated biomass) each demanding organ gets based on relative demands
+            //Calculate how much reallocated N (and associated biomass) each demanding organ is allocated based on relative demands
             double NDemandFactor = 1.0;
             double DMretranslocationFactor = 1.0;
-            Allocate(Organs, TotalNReallocationSupply, ref NReallocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
+                RelativeAllocation(Organs, TotalNReallocationSupply, ref NReallocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
+                PriorityAllocation(Organs, TotalNReallocationSupply, ref NReallocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
+                PrioritythenRelativeAllocation(Organs, TotalNReallocationSupply, ref NReallocationAllocated, NDemandFactor, DMretranslocationFactor);
 
-            //Then calculate how much N (and associated biomass) is realloced from each supplying organ based on relative supply
+            //Then calculate how much N (and associated biomass) is realloced from each supplying organ based on relative reallocation supply
             for (int i = 0; i < Organs.Count; i++)
             {
                 if (NReallocationSupply[i] > 0)
@@ -211,12 +219,17 @@ public class SIRIUSArbitrator : Arbitrator
         double NUptakeAllocated = 0;
         if (TotalNUptakeSupply > 0.00000000001)
         {
-            // Calculate how much uptake N each demanding organ gets based on relative demands
+            // Calculate how much uptake N each demanding organ is allocated based on relative demands
             double NDemandFactor = 1.0;
             double DMretranslocationFactor = 0.0;
-            Allocate(Organs, TotalNUptakeSupply, ref NUptakeAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
+                RelativeAllocation(Organs, TotalNUptakeSupply, ref NUptakeAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
+                PriorityAllocation(Organs, TotalNUptakeSupply, ref NUptakeAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
+                PrioritythenRelativeAllocation(Organs, TotalNUptakeSupply, ref NUptakeAllocated, NDemandFactor, DMretranslocationFactor);
 
-            // Then calculate how much N is taken up by each supplying organ based on relative supply
+            // Then calculate how much N is taken up by each supplying organ based on relative uptake supply
             for (int i = 0; i < Organs.Count; i++)
             {
                 if (NUptakeSupply[i] > 0.00000000001)
@@ -231,14 +244,19 @@ public class SIRIUSArbitrator : Arbitrator
  #region Determine Nitrogen Fixation
         double NFixationAllocated = 0;
         double TotalFixationWtloss = 0;
-        if (TotalNFixationSupply > 0.00000000001)
+        if (TotalNFixationSupply > 0.00000000001 && TotalDMSupply > 0.00000000001)
         {
-            // Calculate how much fixation N each demanding organ gets based on relative demands
+            // Calculate how much fixation N each demanding organ is allocated based on relative demands
             double NDemandFactor = 0.7;
             double DMretranslocationFactor = 1.0;
-            Allocate(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
+                RelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
+                PriorityAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
+                PrioritythenRelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
 
-            // Then calculate how much N is fixed from each supplying organ based on relative supply
+            // Then calculate how much N is fixed from each supplying organ based on relative fixation supply
             for (int i = 0; i < Organs.Count; i++)
             {
                 if (NFixationSupply[i] > 0.00000000001)
@@ -255,14 +273,19 @@ public class SIRIUSArbitrator : Arbitrator
         
  #region Retranslocate Nitrogen
         double NRetranslocationAllocated = 0;
-        if (TotalNReallocationSupply > 0.00000000001) //Fixme this is labeled wrong
+        if (TotalNRetranslocationSupply > 0.00000000001)
         {
-            // Calculate how much retranslocation N (and associated biomass) each demanding organ gets based on relative demands
+            // Calculate how much retranslocation N (and associated biomass) each demanding organ is allocated based on relative demands
             double NDemandFactor = 1.0;  // NOTE: Setting this below 1.0 did not effect retrans in potatoes becasue the RetransFactor was dominating.  Reducing this in Peas reduced fixation.  This is because N demand for grain is based only on daily increment but other organs is based no deficit.  Increasing retranslocation to grain will increase deficit in other organs and increase fixation.
             double DMretranslocationFactor = 1.0;
-            Allocate(Organs, TotalNRetranslocationSupply, ref NRetranslocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
+                RelativeAllocation(Organs, TotalNRetranslocationSupply, ref NRetranslocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
+                PriorityAllocation(Organs, TotalNRetranslocationSupply, ref NRetranslocationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
+                PrioritythenRelativeAllocation(Organs, TotalNRetranslocationSupply, ref NRetranslocationAllocated, NDemandFactor, DMretranslocationFactor);
 
-            /// Then calculate how much N (and associated biomass) is retranslocated from each supplying organ based on relative supply
+            /// Then calculate how much N (and associated biomass) is retranslocated from each supplying organ based on relative retranslocation supply
             for (int i = 0; i < Organs.Count; i++)
             {
                 if (NRetranslocationSupply[i] > 0.00000000001)
@@ -369,7 +392,7 @@ public class SIRIUSArbitrator : Arbitrator
 
     }
 
-    private void Allocate(List<Organ> Organs, double TotalNReallocationSupply, ref double NReallocationAllocated, double NDemandFactor, double DMretranslocationFactor)
+    private void RelativeAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
     {
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -377,9 +400,92 @@ public class SIRIUSArbitrator : Arbitrator
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
-                Allocation = Math.Min(TotalNReallocationSupply * RelativeNDemand[i], Requirement);
+                Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
                 NAllocated[i] += Allocation;
-                NReallocationAllocated += Allocation;
+                TotalAllocated += Allocation;
+                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
+                {
+                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                }
+            }
+        }
+    }
+
+    //Note the two allocation methods below have not been tested yet.
+    private void PriorityAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
+    {
+        double NotAllocated = TotalSupply;
+        ////First time round allocate to met priority demands of each organ
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Allocation = 0.0;
+            if (Requirement > 0.0)
+            {
+                Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
+                //Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                NAllocated[i] += Allocation;
+                NotAllocated -= Allocation;
+                TotalAllocated += Allocation;
+                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
+                {
+                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                }
+            }
+        }
+       
+        // Second time round if there is still N to allocate let organs take N up to their Maximum
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Allocation = 0.0;
+            if (Requirement > 0.0)
+            {
+                //Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
+                Allocation = Math.Min(NDemandPlant[i] - NAllocated[i], NotAllocated); // Allow the organs to get the rest of their demand     
+                NAllocated[i] += Allocation;
+                NotAllocated -= Allocation;
+                TotalAllocated += Allocation;
+                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
+                {
+                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                }
+            }
+        }
+    }
+
+    private void PrioritythenRelativeAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
+    {
+        double NotAllocated = TotalSupply;
+        ////First time round allocate to met priority demands of each organ
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Allocation = 0.0;
+            if (Requirement > 0.0)
+            {
+                Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
+                //Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                NAllocated[i] += Allocation;
+                NotAllocated -= Allocation;
+                TotalAllocated += Allocation;
+                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
+                {
+                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                }
+            }
+        }
+
+        // Second time round if there is still N to allocate let organs take N up to their Maximum
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            double Requirement = Math.Max(0.0, NDemandPlant[i] * NDemandFactor - NAllocated[i]);
+            double Allocation = 0.0;
+            if (Requirement > 0.0)
+            {
+                Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                NAllocated[i] += Allocation;
+                TotalAllocated += Allocation;
                 if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
                 {
                     DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 

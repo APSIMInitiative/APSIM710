@@ -27,7 +27,7 @@ class SIRIUSLeafCohort : LeafCohort
     public double PotentialDMAllocation = 0;
  #endregion
     
- #region Biomass state variables and deltas
+ #region Arbitrator method calls
     public override double NDemand
     {
         get
