@@ -110,7 +110,7 @@ namespace ApsimRun
             }
             else if (Path.GetExtension(FileName).ToLower() == ".con")
                 SimulationsToRun = ConFile.GetSimsInConFile(FileName);
-            else if (Path.GetExtension(FileName).ToLower() == ".apsim" && !JustDoIt)
+            else if (Path.GetExtension(FileName).ToLower() == ".apsim")
                 SimulationsToRun = ApsimFile.ApsimFile.GetSimsInApsimFile(FileName);
             else if (Path.GetExtension(FileName).ToLower() == ".txt")
             {

@@ -517,6 +517,7 @@ public class Leaf : BaseOrgan, AboveGround
                                    Children["InitialNConc"] as Function));
 
         }
+        
         // Add fraction of top leaf expanded to node number.
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
 
@@ -560,9 +561,11 @@ public class Leaf : BaseOrgan, AboveGround
 
             double Demand = 0;
 
-            // No longer model DM demand using individual leaf demands
-            //foreach (LeafCohort L in Leaves)
-            //   Demand = Demand + L.DMDemand(ThermalTime.Value);
+            // Check to see if we have any LeafCohort demands. If not then return 0.
+            foreach (LeafCohort L in Leaves)
+               Demand = Demand + L.DMDemand;
+            if (Demand == 0)
+                return 0;
 
             Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
             Function PartitionFraction = Children["PartitionFraction"] as Function;
