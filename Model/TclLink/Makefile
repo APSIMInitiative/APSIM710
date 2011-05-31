@@ -1,9 +1,7 @@
 # Makefile for tcl component
 # Uses stock 8.5.9 distribution 
-# These are stored in $(DISTDIR) and copied here the 1st time
+# These are stored in the runtimes dir and extracted here the 1st time
 # this makefile is called.
-
-DISTDIR=$(APSIM)\..\BuildLibraries\Tcl
 
 include $(APSIM)/Model/Build/Platform.make
 
@@ -44,13 +42,7 @@ include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 # ---------------------------------------------------------------------------
 dummy:
 ifeq ($(PLATFORM),WIN32VS)
-# Sources (needed for build)
-	if not exist .\tcl$(TCLVER) xcopy $(DISTDIR)\tcl$(TCLVER) .\tcl$(TCLVER) /E /Y /I /Q
-	if not exist .\tk$(TCLVER) xcopy $(DISTDIR)\tk$(TCLVER) .\tk$(TCLVER) /E /Y /I /Q
-# Binaries (for install)
-	if not exist $(APSIM)\Model\TclLink\bin\nul              xcopy $(DISTDIR)\Tcl\bin                 $(APSIM)\Model\TclLink\bin /E /Y /I /Q
-	if not exist $(APSIM)\Model\TclLink\lib\nul              xcopy $(DISTDIR)\Tcl\lib                 $(APSIM)\Model\TclLink\lib /E /Y /I /Q
-	if not exist $(APSIM)\Model\TclLink\include\nul          xcopy $(DISTDIR)\Tcl\include             $(APSIM)\Model\TclLink\include /E /Y /I /Q
+	if not exist $(APSIM)\Model\TclLink\include\nul $(APSIM)\Model\RunTime\Tcl8.5.9.exe x -o"$(APSIM)\Model\TclLink" -y
 else
 	#if [ -s $(APSIM)/Model/TclLink/lib ]; then 
 
@@ -58,10 +50,9 @@ endif
 
 clean:
 ifeq ($(PLATFORM),WIN32VS)
-	@if exist $(APSIM)\Model\TclLink\tcl$(DOTVER)\nul  rmdir /s /q $(APSIM)\Model\TclLink\tcl$(DOTVER)
-	@if exist $(APSIM)\Model\TclLink\tk$(DOTVER)\nul   rmdir /s /q $(APSIM)\Model\TclLink\tk$(DOTVER)
 	@if exist $(APSIM)\Model\TclLink\bin\nul rmdir /s /q $(APSIM)\Model\TclLink\bin
 	@if exist $(APSIM)\Model\TclLink\lib\nul rmdir /s /q $(APSIM)\Model\TclLink\lib
+	@if exist $(APSIM)\Model\TclLink\include\nul rmdir /s /q $(APSIM)\Model\TclLink\include
 endif
 
 
