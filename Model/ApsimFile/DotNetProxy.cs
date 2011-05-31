@@ -36,14 +36,55 @@ class DLLProber
             initScript += "   </initdata>\r\n";
             initScript += "</component>";
 
-            // IF this is a .net component then redirect request to the wrapper DLL.
-            XmlNode DotNetNode = Configuration.Instance.GetSettingsNode("DotNetcomponents");
-            string[] DotNetNames = XmlHelper.ChildNames(DotNetNode, "");
-            if (StringManip.IndexOfCaseInsensitive(DotNetNames, ModuleName) != -1)
-                DllFileName = Configuration.ApsimBinDirectory() + "\\DotNetComponentInterface.dll";
-            if (!File.Exists(DllFileName))
-                throw new Exception("Cannot find DLL: " + DllFileName);
+            Utility.CompilationMode typeOfAssembly = Utility.isManaged(DllFileName);
+            if (typeOfAssembly == Utility.CompilationMode.CLR)
+            {
+               // Is this a CPI type fully-managed assembly?
+               Assembly modelAssembly = Assembly.LoadFrom(DllFileName);
+               Type[] assemblyTypes = modelAssembly.GetTypes();
+               Type modelType = null;
+               foreach (Type typeInfo in assemblyTypes)
+               {
+                  if (typeInfo.FullName == "CMPComp.TGCComponent")
+                  {
+                      modelType = typeInfo;
+                      break;
+                  }
+              }
 
+              if (modelType != null)
+              {
+                  MethodInfo miGetDescription = modelType.GetMethod("description");
+                  if (miGetDescription != null)
+                  {
+                      try
+                      {
+                          Object[] argArray = new Object[3];
+                          argArray[0] = (uint)0;
+                          argArray[1] = (uint)0;
+                          argArray[2] = (uint)0;
+                          //argArray[2] = (MessageFromLogic)null;
+                          //call the constructor
+                          Object modelObj = Activator.CreateInstance(modelType, argArray);
+                          if (modelObj != null)
+                          {
+                              Object[] args = new Object[1];
+                              args[0] = initScript;
+                              return (string)miGetDescription.Invoke(modelObj, args);
+                          }
+                      }
+                      catch (MissingMethodException e)
+                      {
+                          Console.WriteLine(e.Message);
+                      }
+                  }
+              }
+              else
+                // IF this is a .net component then redirect request to the wrapper DLL.
+                DllFileName = Configuration.ApsimBinDirectory() + "\\DotNetComponentInterface.dll";
+              if (!File.Exists(DllFileName))
+                  throw new Exception("Cannot find DLL: " + DllFileName);
+            }
             StringBuilder Description = new StringBuilder(500000);
 
             // Dynamically create a method for the entry point we're going to call.
@@ -88,9 +129,15 @@ class DLLProber
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(DescriptionXML);
 
+#if !fulldotnet  
             ClassCode = "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
                          "   {\r\n" +
-                         "   public $CLASSNAME$(string _FullName, ModelFramework.ApsimComponent _Comp) { FQN = _FullName; Comp = _Comp; }\r\n";
+                         "   public $CLASSNAME$(string _FullName, ModelFramework.ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
+#else
+            ClassCode = "public class $CLASSNAME$ : Component\r\n" +
+                         "   {\r\n" +
+                         "   public $CLASSNAME$(string _FullName, ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
+#endif
 
             // Write all properties
             foreach (XmlNode Node in XmlHelper.ChildNodes(Doc.DocumentElement, "property"))
@@ -99,6 +146,8 @@ class DLLProber
                 {
 
                     string PropertyCode;
+                    if (XmlHelper.Attribute(Node, "access") == "none")
+                        continue;
                     if (XmlHelper.Attribute(Node, "access") == "read")
                         PropertyCode = "$DESCRIPTION$   public $TYPE$ $NAME$ {$GETTER$}\r\n";
                     else
@@ -381,7 +430,11 @@ class DLLProber
             Params.WarningLevel = 2;
             Params.IncludeDebugInformation = true;
             Params.ReferencedAssemblies.Add("System.dll");
+#if fulldotnet
+            Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
+#else
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetComponentInterface.dll"));
+#endif
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimFile.dll"));
             String[] Source = new String[2];
@@ -469,5 +522,4 @@ class DLLProber
             MakeProtocolDDML(Child);
         }
     }
-
 }
