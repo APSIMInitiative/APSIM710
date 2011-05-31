@@ -8,3 +8,4 @@ PROJECTTYPE = bin
 dummy:
 	copy /Y $(APSIM)\Model\RunTime\*.dll $(APSIM)\Model
 	$(APSIM)\Model\RunTime\Tcl8.5.9.exe x -o"$(APSIM)\Model\TclLink" -y
+   attrib -R "$(APSIM)\Model\TclLink\*.*" /S
