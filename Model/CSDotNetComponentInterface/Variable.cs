@@ -21,7 +21,12 @@ public class Variable : NamedItem
         Name = VariableName;
     }
 
-   
+    public bool Exists()
+    {
+        WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
+        return Component.Get(ComponentName + "." + Name, Data, false);
+    }
+
     /// <summary>
     /// 
     /// </summary>

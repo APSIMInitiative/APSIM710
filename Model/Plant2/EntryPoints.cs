@@ -57,9 +57,11 @@ namespace CMPComp
         // This value is cast to an IntPtr, then mashalled to a delegate
         public TGCComponent(uint compID, uint parentCompID, uint messageCallback)
             : base(compID, parentCompID,
+            messageCallback == 0 ? null :
             (MessageFromLogic)Marshal.GetDelegateForFunctionPointer((IntPtr)messageCallback, typeof(MessageFromLogic)))
         {
-            msgNativeDestFunction = (NativeMessageFromLogic)Marshal.GetDelegateForFunctionPointer((IntPtr)messageCallback, typeof(NativeMessageFromLogic));
+            if (messageCallback != 0)
+                msgNativeDestFunction = (NativeMessageFromLogic)Marshal.GetDelegateForFunctionPointer((IntPtr)messageCallback, typeof(NativeMessageFromLogic));
         }
 
         //[UnmanagedFunctionPointer(CallingConvention.StdCall)]
