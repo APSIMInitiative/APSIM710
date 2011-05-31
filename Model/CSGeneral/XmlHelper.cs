@@ -51,17 +51,13 @@ namespace CSGeneral
             {
             XmlNode NewNode = Node.OwnerDocument.CreateElement(NewType);
 
-            // Copy all attributes
+            // Move all attributes
             while (Node.Attributes.Count > 0)
                 NewNode.Attributes.Append(Node.Attributes[0]);
-//            foreach (XmlAttribute attrib in Node.Attributes) 
-//               ((XmlElement) NewNode).SetAttribute(attrib.Name, attrib.Value);
 
-            // Copy all child nodes
+            // Move all child nodes
             while (Node.ChildNodes.Count > 0)
                 NewNode.AppendChild(Node.ChildNodes[0]);
-//            foreach (XmlNode child in Node.ChildNodes)
-//               NewNode.AppendChild(child);
 
             Node.ParentNode.ReplaceChild(NewNode, Node);
             return NewNode;

@@ -142,6 +142,7 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
          ConvertConModule(moduleInstances[m], out);
 
       out << "</simulation>\n";
+      cout << "Written " << simFileName.c_str() << endl;
       }
    }
 

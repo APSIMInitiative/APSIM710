@@ -58,7 +58,7 @@ void StartTcl (const std::string &exeName)
   if (MainInterpreter == NULL) 
      throw std::runtime_error("Tcl_CreateInterp failed in " + exeName);     
 
-  Tcl_InitStubs(MainInterpreter, "8.2", 0);
+  Tcl_InitStubs(MainInterpreter, "8.5", 0);
   Tcl_FindExecutable(exeName.c_str());
   Tcl_InitMemory(MainInterpreter);
   Tcl_SetVar(MainInterpreter, "tcl_interactive", "0", TCL_GLOBAL_ONLY);
@@ -121,9 +121,9 @@ extern "C" EXPORT TclComponent  * STDCALL createComponent(ScienceAPI2& scienceAP
    string apsimDLL = scienceAPI.getExecutableFileName();
    replaceAll(apsimDLL, "\\", "/"); 
 #ifdef __WIN32__
-   string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl84.dll";
+   string tclEXE = fileDirName(apsimDLL) + "/TclLink/bin/tcl85.dll";
 #else
-   string tclEXE = "/usr/lib/libtcl8.4.so";
+   string tclEXE = "/usr/lib/libtcl8.5.so";
 #endif
    StartTcl(tclEXE);
 
@@ -189,8 +189,9 @@ void TclComponent::onInit2(void)
    apsimAPI.write("--->End\n");
 
    // Do the init rule if specified..
-   if (rules["init"] != "")
-      if (Tcl_Eval(Interp, rules["init"].c_str()) != TCL_OK)
+   string initRule = rules["init"];
+   if (initRule != "")
+      if (Tcl_Eval(Interp, initRule.c_str()) != TCL_OK)
           throw std::runtime_error(string(Tcl_GetStringResult(Interp)));
 
    //char buf[80]; sprintf(buf, "this=%x", this);
@@ -232,7 +233,6 @@ void TclComponent::subscribeNull(const std::string &event, const std::string &sc
 void TclComponent::onNullEventCallback(const std::string &s)
 {
    string rule = rules[s];
-
    if (rule != "") 
    	  {
       if (Tcl_Eval(Interp, rule.c_str()) != TCL_OK)

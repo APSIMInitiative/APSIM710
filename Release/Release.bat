@@ -26,11 +26,9 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% ApsimSetup.vdproj ..\Model\*.xml                             %%Apsim%%\Model
 %InsertFiles% ApsimSetup.vdproj ..\Model\*.exe                             %%Apsim%%\Model
 %InsertFiles% ApsimSetup.vdproj ..\Model\*.dll                             %%Apsim%%\Model
-%InsertFiles% ApsimSetup.vdproj ..\Model\RunTime\*.*                       %%Apsim%%\Model
-%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\bin\*.dll                 %%Apsim%%\Model\TclLink\bin
-%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\bin\*.exe                 %%Apsim%%\Model\TclLink\bin
+%InsertFiles% ApsimSetup.vdproj ..\Model\RunTime\*.dll                     %%Apsim%%\Model
+%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\bin\                      %%Apsim%%\Model\TclLink\bin
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\lib\                      %%Apsim%%\Model\TclLink\lib
-%InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\Tcl8.4.13.license.terms   %%Apsim%%\Model\TclLink
 %InsertFiles% ApsimSetup.vdproj ..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink
 
 "%VS100COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
@@ -56,11 +54,9 @@ rem Now use the tool to insert filenames into the .vdproj file
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\*.xml                             %%Apsim%%\Model
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\*.exe                             %%Apsim%%\Model
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\*.dll                             %%Apsim%%\Model
-%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\RunTime\*.*                       %%Apsim%%\Model
-%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\bin\*.dll                 %%Apsim%%\Model\TclLink\bin
-%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\bin\*.exe                 %%Apsim%%\Model\TclLink\bin
+%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\RunTime\*.dll                     %%Apsim%%\Model
+%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\bin\                      %%Apsim%%\Model\TclLink\bin
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\lib\                      %%Apsim%%\Model\TclLink\lib
-%InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\Tcl8.4.13.license.terms   %%Apsim%%\Model\TclLink
 %InsertFiles% ApsimSetup.vdproj /WithExclusions ..\Model\TclLink\CIDataTypes.tcl           %%Apsim%%\Model\TclLink
 
 "%VS100COMNTOOLS%\..\IDE\devenv" ApsimSetup.sln /build release
@@ -70,6 +66,9 @@ rem This uses IExpress described here:
 rem http://www.itscodingtime.com/post/Combine-Setup-MSI-and-EXE-into-a-single-package-with-IExpress.aspx
 c:\iexpress32\iexpress /N /Q ApsimSetupForRelease.sed
 
+REM "c:\Program Files\7-Zip\7z.exe" a -sfx -r -mx=9 Apsim-%1.exe Model/*.xml Model/*.dll Model/*.exe Model/TclLink/CIDataTypes.tcl Model/TclLink/bin Model/TclLink/lib UserInterface/*.xml UserInterface/ToolBoxes/*.xml 
+
 rem Now copy the 2 releases to the right directory - with the revision number.
 copy ApsimSetup.exe C:\inetpub\wwwroot\Files\%1.ApsimSetup.exe
 copy ApsimSetupForRelease.exe C:\inetpub\wwwroot\Files\%1.ApsimSetupForRelease.exe
+

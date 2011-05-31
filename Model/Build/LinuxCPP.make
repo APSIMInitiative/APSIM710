@@ -46,9 +46,9 @@ OBJ:=	$(SRC:.cpp=.o)
 #-----------------------------------------------------------------------
 # The rules
 ifeq ($(PROJECTTYPE),exe)
-all: $(APSIM)/Model/$(PROJECT).x
+all: $(APSIM)/Model/$(PROJECT).x $(POSTBUILD)
 else
-all: $(APSIM)/Model/$(PROJECT).so
+all: $(APSIM)/Model/$(PROJECT).so $(POSTBUILD)
 endif
 
 %.o:    %.cpp
@@ -62,6 +62,7 @@ $(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
 ifeq ($(PROJECTTYPE),libdll)
 	ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
 endif
+	
 
 clean:
 	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so

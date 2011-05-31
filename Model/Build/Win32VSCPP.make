@@ -14,11 +14,11 @@ RC=rc
 BOOST = $(APSIM)\..\BuildLibraries\boost_1_44
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
 ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
-TCL = $(APSIM)\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe
+TCL = $(APSIM)\Model\TclLink\bin\tclsh85.exe
 
-DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK"
+DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK" $(DEFINES)
 INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include /I $(ICONV)\include $(INCLUDES)
-LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib /LIBPATH:$(ICONV)\lib
+LIBPATH := /LIBPATH:$(APSIM)\Model /LIBPATH:$(LIBXML)\lib /LIBPATH:$(ICONV)\lib 
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
@@ -44,14 +44,12 @@ ifdef DEBUG
 	CFLAGS := $(CFLAGS) /Od /RTCs /ZI /MDd /D "_DEBUG"
 #	LIBS := cg32.lib import32.lib $(LIBS)
 	LFLAGS := $(LFLAGS) /DEBUG /PDB:"$(APSIM)\Model\$(PROJECT).pdb"
-	LIBPATH := $(LIBPATH) \
-/LIBPATH:$(BOOST)\lib
+	LIBPATH := $(LIBPATH) /LIBPATH:$(BOOST)\lib
 else
 	CFLAGS := $(CFLAGS) /O2 /MD /GL
 #	LFLAGS := $(LFLAGS)
 #	LIBS :=  import32.lib $(LIBS)
-	LIBPATH := $(LIBPATH) \
-/LIBPATH:$(BOOST)\lib
+	LIBPATH := $(LIBPATH) /LIBPATH:$(BOOST)\lib
 endif
 
 # The rules
