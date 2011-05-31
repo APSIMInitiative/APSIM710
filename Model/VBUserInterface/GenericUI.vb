@@ -23,7 +23,10 @@ Public Class GenericUI
    Private TypeComboItems As String() = {"text", "date", "yesno", "crop", "cultivars", "classes", "modulename", _
                                          "list", "multilist", "category", "filename", "multiedit"}
    Private YesNoItems As String() = {"yes", "no"}
+   Friend WithEvents TextBox As System.Windows.Forms.TextBox
+   Friend WithEvents Splitter As System.Windows.Forms.Splitter
    Private InRefresh As Boolean
+   Private MemoComponent As Component
 
    ''' <summary>
    ''' Constructor
@@ -58,9 +61,10 @@ Public Class GenericUI
    ''' Do not modify it using the code editor.
    ''' </summary>
    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-      Me.components = New System.ComponentModel.Container
-      Me.PictureBox = New System.Windows.Forms.PictureBox
-      Me.Grid = New UIBits.EnhancedGrid
+      Me.PictureBox = New System.Windows.Forms.PictureBox()
+      Me.Grid = New UIBits.EnhancedGrid()
+      Me.TextBox = New System.Windows.Forms.TextBox()
+      Me.Splitter = New System.Windows.Forms.Splitter()
       CType(Me.PictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
       CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
       Me.SuspendLayout()
@@ -89,21 +93,44 @@ Public Class GenericUI
       Me.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
       Me.Grid.DataSourceTable = Nothing
       Me.Grid.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.Grid.Location = New System.Drawing.Point(125, 16)
+      Me.Grid.Location = New System.Drawing.Point(125, 141)
       Me.Grid.Name = "Grid"
       Me.Grid.RowHeadersVisible = False
-      Me.Grid.Size = New System.Drawing.Size(897, 701)
+      Me.Grid.Size = New System.Drawing.Size(897, 576)
       Me.Grid.TabIndex = 4
+      '
+      'TextBox
+      '
+      Me.TextBox.Dock = System.Windows.Forms.DockStyle.Top
+      Me.TextBox.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+      Me.TextBox.Location = New System.Drawing.Point(125, 16)
+      Me.TextBox.Multiline = True
+      Me.TextBox.Name = "TextBox"
+      Me.TextBox.Size = New System.Drawing.Size(897, 125)
+      Me.TextBox.TabIndex = 5
+      '
+      'Splitter
+      '
+      Me.Splitter.Dock = System.Windows.Forms.DockStyle.Top
+      Me.Splitter.Location = New System.Drawing.Point(125, 141)
+      Me.Splitter.Name = "Splitter"
+      Me.Splitter.Size = New System.Drawing.Size(897, 3)
+      Me.Splitter.TabIndex = 6
+      Me.Splitter.TabStop = False
       '
       'GenericUI
       '
+      Me.Controls.Add(Me.Splitter)
       Me.Controls.Add(Me.Grid)
+      Me.Controls.Add(Me.TextBox)
       Me.Controls.Add(Me.PictureBox)
       Me.Name = "GenericUI"
       Me.Size = New System.Drawing.Size(1022, 717)
       Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
       Me.Controls.SetChildIndex(Me.PictureBox, 0)
+      Me.Controls.SetChildIndex(Me.TextBox, 0)
       Me.Controls.SetChildIndex(Me.Grid, 0)
+      Me.Controls.SetChildIndex(Me.Splitter, 0)
       CType(Me.PictureBox, System.ComponentModel.ISupportInitialize).EndInit()
       CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
       Me.ResumeLayout(False)
@@ -136,6 +163,17 @@ Public Class GenericUI
          PictureBox.Visible = False
       End If
       Me.PictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize
+
+      ' Look for a memo control and enable the TextBox if it exists.
+
+      MemoComponent = Comp.Find("Memo")
+      TextBox.Visible = Not IsNothing(MemoComponent)
+      Splitter.Visible = Not IsNothing(MemoComponent)
+      If Not IsNothing(MemoComponent) Then
+         Dim Doc As New XmlDocument()
+         Doc.LoadXml(MemoComponent.Contents)
+         TextBox.Text = Doc.DocumentElement.InnerText
+      End If
 
       ' Create a DataTable from our data.
       Dim Table As DataTable = CreateTable()
@@ -257,6 +295,11 @@ Public Class GenericUI
             End If
             RowIndex = RowIndex + 1
          Next
+
+         ' Save memo text if necessary
+         If TextBox.Visible Then
+            MemoComponent.Contents = "<Memo>" + TextBox.Text + "</Memo>"
+         End If
       End If
    End Sub
 
@@ -460,5 +503,8 @@ Public Class GenericUI
    End Sub
 
 
+   Private Sub OnMemoTextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox.TextChanged
+      IsDirty = True
+   End Sub
 End Class
 

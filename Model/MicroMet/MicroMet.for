@@ -810,7 +810,7 @@ CCC End new code
       ! See if we know of it
       senderIdx = 0
       do 100 i = 1, g%NumComponents
-        if (g%ComponentName(g%NumComponents).eq.new_crop%sender)
+        if (g%ComponentName(i).eq.Trim(new_crop%sender))
      :            senderIdx = i
  100  continue
 
@@ -821,7 +821,7 @@ CCC End new code
           call fatal_Error(ERR_Internal
      :                   ,'Too many canopy components in system')
         else
-          g%ComponentName(g%NumComponents) = new_crop%sender
+          g%ComponentName(g%NumComponents) = Trim(new_crop%sender)
           g%ComponentType(g%NumComponents) = new_crop%crop_type
           i = add_registration_with_units(respondToGetReg, 
      :        'gsmax_'//new_crop%sender, floatTypeDDML, 'm/s')

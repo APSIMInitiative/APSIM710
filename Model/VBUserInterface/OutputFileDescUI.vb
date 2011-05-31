@@ -624,7 +624,7 @@ Public Class OutputFileDescUI
          For Each Sibling As ApsimFile.Component In Paddock.ChildNodes
             If Sibling.Type.ToLower <> "simulation" And Sibling.Type.ToLower <> "graph" Then
                ComponentNames.Add(Sibling.Name)
-               ComponentTypes.Add(Sibling.Type.ToLower())
+               ComponentTypes.Add(Sibling.Type)
             End If
          Next
       End If
