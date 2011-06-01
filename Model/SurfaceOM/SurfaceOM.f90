@@ -66,6 +66,7 @@ module SurfaceOMModule
       logical    phosphorus_aware
       character  pond_active*10            ! parameter to indicate whether the soil is under flooded & ponded conditions
       type(OMFractionType) :: oldSOMState
+      real       DailyInitialC
    end type SurfaceOMGlobals
 !     ================================================================
    type SurfaceOMParameters
@@ -169,6 +170,7 @@ subroutine surfom_zero_all_globals ()
    g%SurfOM(:)%no3 = 0.0
    g%SurfOM(:)%nh4 = 0.0
    g%SurfOM(:)%po4 = 0.0
+   g%DailyInitialC = 0.0
 
    do pool = 1, MaxFr
      g%SurfOM(:)%Lying(pool)%amount = 0.0
@@ -628,6 +630,8 @@ subroutine surfom_read_param ()
 
    end do
 
+   g%DailyInitialC = sum(tot_c)
+   
    call surfom_Sum_Report ()
 
    call pop_routine (my_name)
@@ -1316,7 +1320,7 @@ subroutine surfom_remove_surfom (variant)
             g%SurfOM(SOMNo)%Standing(pool)%N      = g%SurfOM(SOMNo)%Standing(pool)%N      - SOM%Pool(SOMNo)%StandingFraction(pool)%N
             g%SurfOM(SOMNo)%Standing(pool)%P      = g%SurfOM(SOMNo)%Standing(pool)%P      - SOM%Pool(SOMNo)%StandingFraction(pool)%P
             g%SurfOM(SOMNo)%Standing(pool)%AshAlk = g%SurfOM(SOMNo)%Standing(pool)%AshAlk - SOM%Pool(SOMNo)%StandingFraction(pool)%AshAlk
-
+            
          end do
 
 
@@ -1478,7 +1482,7 @@ subroutine surfom_decompose_surfom (variant)
 
       ! Do actual decomposing - update pools for C, N, and P
       call surfom_decomp (tot_c_decomp, tot_n_decomp, tot_p_decomp, residue_no)
-
+      
    end do
 
    call pop_routine (myname)
@@ -2241,6 +2245,7 @@ subroutine surfom_add_surfom ()
       massBalanceChange%SW = 0.0
 
       call surfom_ExternalMassFlow (massBalanceChange)
+      
    else
          ! nothing to add
    endif
@@ -2436,6 +2441,7 @@ subroutine surfom_Send_my_variable (Variable_name)
    real      total_po4              ! summation of po4 pool over all surfom's (kg/ha)
    real      standing_fraction      ! fraction of surfom standing isolated from soil ()
    character  Err_string*400      ! Event message string
+   real      carbonbalance
 
 
 !- Implementation Section ----------------------------------
@@ -2449,7 +2455,20 @@ subroutine surfom_Send_my_variable (Variable_name)
           total_wt = total_wt + sum(g%SurfOM(i)%Standing(1:MaxFr)%amount) + sum(g%SurfOM(i)%Lying(1:MaxFr)%amount)
       end do
       call respond2get_real_var (variable_name, '(kg/ha)', total_wt)
+   
+   elseif (Variable_name .eq. 'carbonbalance') then
+      
+      total_c = 0.0
+      do i = 1,g%num_surfom
+          total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
+      end do
+      
 
+      CarbonBalance = 0.0 &                      ! Inputs-Losses
+                    - (total_c-g%DailyInitialC)  ! Delta Storage
+
+      call respond2get_real_var (variable_name, '(kg/ha)', carbonbalance)
+      
    else if (Variable_name .eq. 'surfaceom_c') then
    !                       --------
       total_c = 0.0
@@ -3275,6 +3294,38 @@ subroutine surfom_Sum_Report ()
    return
 end subroutine
 
+!     ===========================================================
+subroutine surfaceom_ONtick (variant)
+!     ===========================================================
+   Use Infrastructure
+   implicit none
+
+   integer, intent(in) :: variant
+
+!+  Local Variables
+   type(timeType) :: tick
+   real total_c
+   integer i
+   
+!+  Constant Values
+   character*(*) myname               ! name of current procedure
+   parameter (myname = 'surfaceom_ONtick')
+
+!- Implementation Section ----------------------------------
+   call push_routine (myname)
+
+   call unpack_time(variant, tick)
+
+   ! Calculations for NEW sysbal component
+      total_c = 0.0
+      do i = 1,g%num_surfom
+          total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
+      end do   
+   g%DailyInitialC = total_c
+
+   call pop_routine (myname)
+   return
+end subroutine
 
 end module SurfaceOMModule
 
@@ -3379,6 +3430,8 @@ subroutine Main (action, data_string)
    return
 end subroutine
 
+
+
       ! ====================================================================
       ! do first stage initialisation stuff.
       ! ====================================================================
@@ -3407,7 +3460,9 @@ subroutine respondToEvent(fromID, eventID, variant)
    integer, intent(in) :: eventID
    integer, intent(in) :: variant
 
-   if (eventID .eq. id%newmet) then
+   if (eventID .eq. id%tick) then
+      call surfaceom_ONtick(variant)
+   elseif (eventID .eq. id%newmet) then
       call surfom_ONnewmet(variant)
    elseif (eventID  .eq. id%ActualResidueDecompositionCalculated) then
       call surfom_decompose_surfom(variant)

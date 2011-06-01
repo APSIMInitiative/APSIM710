@@ -214,6 +214,8 @@ module Soiln2Module
       real       dlt_urea_hydrol(max_layer) ! nitrogen moved by hydrolysis (kg/ha)
       real       excess_nh4(max_layer)      ! excess N required above NH4 supply
 
+      real DailyInitialC
+	  real DailyInitialN
       real oldC
       real oldN
 
@@ -425,8 +427,13 @@ subroutine soiln2_save_state ()
 !- Implementation Section ----------------------------------
    call push_routine (myname)
 
+   ! Calculations for OLD sysbal component
    g%oldN = soiln2_total_n()
    g%oldC = soiln2_total_c()
+   
+   ! Calculations for NEW sysbal component
+   g%DailyInitialC = soiln2_total_c()
+   g%DailyInitialC = soiln2_total_n()
 
    call pop_routine (myname)
    return
@@ -790,6 +797,8 @@ subroutine soiln2_zero_all_globals ()
    g%dlt_rntrf_eff(:)         = 0.0
    g%dlt_urea_hydrol(:)   = 0.0
    g%excess_nh4(:)        = 0.0
+   g%DailyInitialC        = 0.0
+   g%DailyInitialN        = 0.0
    g%oldC = 0.0
    g%oldN = 0.0
    g%soiltype           = blank
@@ -1239,10 +1248,32 @@ subroutine soiln2_send_my_variable (variable_name)
    real       org_n (max_layer)     ! organic n
    real       oc_percent(max_layer) ! organic c %
    real       temp(max_layer)
+   real       CarbonBalance
+   real 	  NitrogenBalance
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
-   if (variable_name .eq. 'no3') then
+   if (variable_name .eq. 'carbonbalance') then
+   
+      CarbonBalance = 0.0 &                                ! Inputs
+                     - sum(g%dlt_fom_c_atm(:,:)) &         ! Losses
+                    - sum(g%dlt_hum_c_atm(:)) &
+                    - sum(g%dlt_biom_c_atm(:)) &
+                     - sum(g%dlt_res_c_atm(:,:)) &
+                    - (soiln2_total_c()-g%DailyInitialC)  ! Delta Storage
+                    
+      call respond2get_real_var (variable_name,'()', CarbonBalance)
+	  
+   elseif (variable_name .eq. 'nitrogenbalance') then
+
+      NitrogenBalance = 0.0 & ! Inputs
+				    -  sum(g%dlt_NO3_dnit(:)) &
+					-  sum(g%dlt_NH4_dnit(:)) &
+                    - (soiln2_total_n()-g%DailyInitialN)  ! Delta Storage
+                    
+      call respond2get_real_var (variable_name,'()', NitrogenBalance)
+	  
+   elseif (variable_name .eq. 'no3') then
    !                       ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%no3, num_layers)
@@ -1251,7 +1282,6 @@ subroutine soiln2_send_my_variable (variable_name)
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%dlt_no3_net, num_layers)
-
 
    elseif (variable_name .eq. 'no3ppm') then
    !                           ------
@@ -2331,6 +2361,10 @@ subroutine soiln2_init_calc ()
 
    end do
 
+   ! Calculations for NEW sysbal component
+   g%DailyInitialC = soiln2_total_c()
+   g%DailyInitialN = soiln2_total_n()
+   
    call pop_routine (my_name)
    return
 end subroutine
@@ -4703,7 +4737,10 @@ subroutine soiln2_ONtick (variant)
    g%pot_c_decomp(:) = 0.0
    g%pot_n_decomp(:) = 0.0
 
-
+   ! Calculations for NEW sysbal component
+   g%DailyInitialC = soiln2_total_c()
+   g%DailyInitialN = soiln2_total_n()
+   
    call pop_routine (myname)
    return
 end subroutine
@@ -5072,6 +5109,8 @@ subroutine doInit1()
    dummy = add_registration_with_units(getVariableReg, 'salb', floatTypeDDML, '')
 
    ! variables we own and make available to other modules.
+   dummy = add_reg(respondToGetReg, 'carbonbalance', floatTypeDDML, '', 'Carbon Balance')   
+   dummy = add_reg(respondToGetReg, 'nitrogenbalance', floatTypeDDML, '', 'Nitrogen Balance')  
    dummy = add_reg(respondToGetSetReg, 'no3', floatarrayTypeDDML, 'kg/ha', 'Nitrate nitrogen')
    dummy = add_reg(respondToGetReg, 'dlt_no3_net', floatarrayTypeDDML, 'kg/ha', 'Net NO3 change today')
    dummy = add_reg(respondToGetSetReg, 'no3ppm', floatarrayTypeDDML, 'mg/kg', 'Nitrate nitrogen')

@@ -94,7 +94,6 @@ namespace ApsimFile
          if (XmlHelper.Attribute(Node, "enabled") == "no")
             MyEnabled = false;
           
-         //Parallel.ForEach(Node.ChildNodes.Cast<XmlNode>(), Child =>
             foreach (XmlNode Child in Node.ChildNodes)
            {
                if (Types.Instance.IsVisible(Child.Name) && XmlHelper.Attribute(Child, "invisible") != "yes")
@@ -106,7 +105,7 @@ namespace ApsimFile
                }
                else
                    MyContents += Child.OuterXml;
-           }//);
+           }
          }
       internal void ResolveShortcuts()
          {

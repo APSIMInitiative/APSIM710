@@ -65,7 +65,7 @@ module Registrations
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sum_report = add_registration(respondToEventReg, 'sum_report', nullTypeDDML, '')
          id%remove_surfaceom = add_registration(respondToEventReg, 'remove_surfaceom', SurfaceOrganicMatterTypeDDML, '')
-         id%tick = add_registration(respondToEventReg, 'tick', nullTypeDDML, '')
+         id%tick = add_registration(respondToEventReg, 'tick', timeTypeDDML, '')         
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%irrigated = add_registration(respondToEventReg, 'irrigated', ApsimVariantTypeDDML, '')
          id%crop_chopped = add_registration(respondToEventReg, 'crop_chopped', ApsimVariantTypeDDML, '')
