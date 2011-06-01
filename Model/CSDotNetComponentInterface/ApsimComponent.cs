@@ -395,22 +395,15 @@ public class ApsimComponent : Instance
     {
         //search for any driver that is registered with this PropertyName
         int RegistrationIndex = 0;
-        Boolean found = false; 
-        foreach (KeyValuePair<String, int> pair in RegistrationsDriverExtraLookup)
+        if (!RegistrationsDriverExtraLookup.TryGetValue(PropertyName.ToLower(), out RegistrationIndex))
         {
-            if (pair.Key.Equals(PropertyName, StringComparison.OrdinalIgnoreCase))
-            {
-                found = true;
-                RegistrationIndex = pair.Value;
-            }
-        } 
-        if (!found)
-        {
+            // If it's not already registered, add registration now
             RegistrationIndex = Math.Max(1, Host.driverCount());
-            RegistrationsDriverExtra.Add(RegistrationIndex, Data);
             Host.registerDriver(PropertyName, RegistrationIndex, isOptional ? 0:1, 1, "", false, Data.DDML(), PropertyName, "", 0); //register it
-            RegistrationsDriverExtraLookup.Add(PropertyName, RegistrationIndex);
+            RegistrationsDriverExtraLookup.Add(PropertyName.ToLower(), RegistrationIndex);
         }
+        // Set the data destination so AssignDriver will know where to put it
+        RegistrationsDriverExtra[RegistrationIndex] = Data;
         Host.sendDriverRequest(RegistrationIndex, 0);
         //no need to deregister now 
         return (Data != null);  //true if no errors
