@@ -310,8 +310,8 @@ public class Types
     private string ProxyClassName(string TypeName, string DLLFileName)
     {
         string ClassName = StringManip.CamelCase(Path.GetFileNameWithoutExtension(DLLFileName));
-        if (GetProbeInfoAssembly().GetType("ModelFramework." + ClassName) == null)
-            return StringManip.CamelCase(TypeName);
+        //if (GetProbeInfoAssembly().GetType("ModelFramework." + ClassName) == null)
+        //    return StringManip.CamelCase(TypeName);
         return ClassName;
     }
 
