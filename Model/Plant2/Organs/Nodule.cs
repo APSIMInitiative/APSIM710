@@ -15,6 +15,15 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
   #endregion
         
  #region Fixation methods
+
+    public override double NFixationCost
+    {
+        get
+        {
+            Function FixationMetabolicCost = Children["FixationMetabolicCost"] as Function;
+            return FixationMetabolicCost.Value;
+        }
+    }
     public override double NFixation
     {
         set

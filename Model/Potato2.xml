@@ -376,9 +376,6 @@
         <CompositeBiomass name="Total">
           <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
-        <RUECO2Function name="Fco2">
-          <PhotosyntheticPathway>C3</PhotosyntheticPathway>
-        </RUECO2Function>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -431,7 +428,7 @@
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SpecificLeafArea">
+        <LinearInterpolationFunction name="SpecificLeafAreaMin">
           <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
           <XYPairs>
             <XY>0 20000</XY>
@@ -601,6 +598,14 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>0 40000</XY>
+            <XY>7 60000</XY>
+            <XY>25 60000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />

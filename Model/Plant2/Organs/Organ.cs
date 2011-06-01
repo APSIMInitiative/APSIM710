@@ -31,6 +31,7 @@ abstract public class Organ : Instance
    abstract public double NRetranslocation { set; }
    abstract public double NUptake { set; }
    abstract public double NFixationSupply { get ;}
+   abstract public double NFixationCost { get; }
    abstract public double NFixation { set; }
 
    abstract public double WaterDemand { get; }

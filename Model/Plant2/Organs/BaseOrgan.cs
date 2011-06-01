@@ -43,6 +43,7 @@ public class BaseOrgan : Organ
          }
       }
    public override double NFixationSupply { get { return 0; } }
+   public override double NFixationCost { get { return 0; } }
    public override double NFixation { set { } }
 
    public override double WaterDemand { get { return 0; } }

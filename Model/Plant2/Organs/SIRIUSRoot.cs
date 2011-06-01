@@ -8,9 +8,9 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     [Link]
     Plant Plant = null;
     [Link(IsOptional.Yes)]
-    Function NitrogenDemandSwitch = null;
+    protected Function NitrogenDemandSwitch = null;
     [Link(IsOptional.Yes)]
-    Function SenescenceRate = null;
+    protected Function SenescenceRate = null;
 
  #region Class Data Members
     const double kgha2gsm = 0.1;
@@ -54,7 +54,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     private double KNH4 = 0;
  #endregion
 
- #region bits to be superseeded by the biomass class
+#region bits to be superseeded by the biomass class
     public override Biomass Live
     {
         get

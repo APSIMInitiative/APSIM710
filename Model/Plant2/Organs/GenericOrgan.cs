@@ -8,7 +8,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
     [Link]
     protected Plant Plant = null;
     [Link(IsOptional.Yes)]
-    Function StructuralFraction = null;
+    protected Function StructuralFraction = null;
 
     [Input]
     protected int Day = 0;

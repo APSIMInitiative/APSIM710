@@ -9,8 +9,6 @@ public class SIRIUSArbitrator : Arbitrator
  #region Setup Class Members
     // IDE set paramaters
     [Link(IsOptional.Yes)]
-    Function FixationMetabolicCost = null;
-    [Link(IsOptional.Yes)]
     Function RetransWtNRatio = null;
     double _RetransWtNRatio = 0.0;
     [Param]
@@ -257,7 +255,7 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NFixationSupply[i] / TotalNFixationSupply;
                     NFixation[i] = NFixationAllocated * RelativeSupply;
-                    double Respiration = NFixationAllocated * RelativeSupply * FixationMetabolicCost.Value;  //Calculalte how much respirtion is associated with fixation
+                    double Respiration = NFixationAllocated * RelativeSupply * Organs[i].NFixationCost;  //Calculalte how much respirtion is associated with fixation
                     FixationWtLoss[i] = Respiration; // allocate it to the organ
                     TotalFixationWtloss += Respiration; // total fixation respiration up
                 }

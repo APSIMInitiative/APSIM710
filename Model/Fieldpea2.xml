@@ -41,12 +41,8 @@
       </Population>
       <SIRIUSArbitrator name="Arbitrator">
         <ArbitrationOption>RelativeAllocation</ArbitrationOption>
-		<Constant name="RetransWtNRatio">
+        <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
-        </Constant>
-        <Constant name="FixationMetabolicCost">
-          <Value type="text" description="Value">7</Value>
-          <Memo>How much biomass is burned per g of N fixed.  Value taken from CropGro for soybean</Memo>
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
@@ -303,6 +299,10 @@
       <Nodule>
         <Biomass name="Live" />
         <Biomass name="Dead" />
+        <Constant name="SpecificNitrogenaseActivity">
+          <Value type="text" description="Value">45</Value>
+          <Memo>Maximum potential N fixation defined as g of N fixed per g of root node in the absence of stresses and under high fixation demand.  Value taken from CropGro soybean model</Memo>
+        </Constant>
         <TemperatureFunction name="FT">
           <XYPairs>
             <XY>5 0</XY>
@@ -328,19 +328,6 @@
           </XYPairs>
           <Memo>This is just here at the moment.  I have not set it to respond to a sensible x variable</Memo>
         </LinearInterpolationFunction>
-        <Constant name="MaximumNConc">
-          <Value>0.01</Value>
-        </Constant>
-        <Constant name="MinimumNConc">
-          <Value>0.01</Value>
-        </Constant>
-        <Constant name="SpecificNitrogenaseActivity">
-          <Value type="text" description="Value">45</Value>
-          <Memo>Maximum potential N fixation defined as g of N fixed per g of root node in the absence of stresses and under high fixation demand.  Value taken from CropGro soybean model</Memo>
-        </Constant>
-        <Constant name="SenescenceRate">
-          <Value>0.0</Value>
-        </Constant>
         <PhaseLookup name="PartitionFraction">
           <PhaseLookupValue name="Early">
             <Start type="text" description="Start">Emergence</Start>
@@ -365,6 +352,19 @@
           </PhaseLookupValue>
           <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
         </PhaseLookup>
+        <Constant name="MaximumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="MinimumNConc">
+          <Value>0.01</Value>
+        </Constant>
+        <Constant name="SenescenceRate">
+          <Value>0.0</Value>
+        </Constant>
+        <Constant name="FixationMetabolicCost">
+          <Value type="text" description="Value">7</Value>
+          <Memo>How much biomass is burned per g of N fixed.  Value taken from CropGro for soybean</Memo>
+        </Constant>
       </Nodule>
       <SIRIUSGenericOrgan name="PodWall">
         <Biomass name="Live" />
@@ -418,6 +418,7 @@
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
+        <Memo>test</Memo>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -545,7 +546,7 @@
             <XY>8 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SpecificLeafArea">
+        <LinearInterpolationFunction name="SpecificLeafAreaMin">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 45000</XY>
@@ -640,6 +641,15 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>0 90000</XY>
+            <XY>4 40000</XY>
+            <XY>6 40000</XY>
+            <XY>8 40000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />

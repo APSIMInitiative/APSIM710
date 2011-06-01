@@ -107,6 +107,56 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
+    [Output]
+    [Units("mm2/g")]
+    double[] CohortSLA
+    {
+        get
+        {
+            int i = 0;
+
+            double[] values = new double[(int)MaxNodeNo];
+            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+                values[i] = 0;
+            i = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+            {
+                values[i] = L.SLA;
+                i++;
+            }
+
+            return values;
+        }
+    }
+    [Output]
+    [Units("mm2/g")]
+    double[] CohortStructuralFrac
+    {
+        get
+        {
+            int i = 0;
+
+            double[] values = new double[(int)MaxNodeNo];
+            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+                values[i] = 0;
+            i = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+            {
+                if ((L.Live.StructuralWt + L.Live.NonStructuralWt) > 0.0)
+                {
+                    values[i] = L.Live.StructuralWt / (L.Live.StructuralWt + L.Live.NonStructuralWt);
+                    i++;
+                }
+                else
+                {
+                    values[i] = 0;
+                    i++;
+                }
+            }
+
+            return values;
+        }
+    }
  #endregion
 
  #region Leaf functions
@@ -156,7 +206,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["GrowthDuration"] as Function,
                                    Children["LagDuration"] as Function,
                                    Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafArea"] as Function,
+                                   Children["SpecificLeafAreaMax"] as Function,
                                    0.0,
                                    Children["MaximumNConc"] as Function,
                                    Children["MinimumNConc"] as Function,
@@ -164,6 +214,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
                                    Children["NRetranslocationRate"] as Function,
+                                   Children["ExpansionStress"] as Function,
+                                   Children["SpecificLeafAreaMin"] as Function,
                                    this));
         }
         foreach (LeafCohort L in Leaves)
@@ -186,7 +238,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["GrowthDuration"] as Function,
                                    Children["LagDuration"] as Function,
                                    Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafArea"] as Function,
+                                   Children["SpecificLeafAreaMax"] as Function,
                                    InitialAreas[i],
                                    Children["MaximumNConc"] as Function,
                                    Children["MinimumNConc"] as Function,
@@ -194,6 +246,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
                                    Children["NRetranslocationRate"] as Function,
+                                   Children["ExpansionStress"] as Function,
+                                   Children["SpecificLeafAreaMin"] as Function,
                                    this));
         }
         // Add fraction of top leaf expanded to node number.

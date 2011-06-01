@@ -67,7 +67,7 @@
       </Population>
       <SIRIUSArbitrator name="Arbitrator">
         <ArbitrationOption>RelativeAllocation</ArbitrationOption>
-		<Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
+        <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
                1) it allocates N and DM along a hirachy of priorities
                2) it allocates potential DM then allocates N then limits DM below potential if there is insufficient N to meet Min N content
                3) it reallocates N from senessing leaves before taking N up from the soil, then takes N up from the soil then retranslocates to meet further demand			   
@@ -369,7 +369,7 @@
         </LinearInterpolationFunction>
         <Constant name="SoilWaterEffect">
           <Value>1.0</Value>
-        </Constant>        
+        </Constant>
         <TemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
@@ -437,13 +437,13 @@
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
         <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[].Live</Property>
+          <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[].Dead</Property>
+          <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Total">
-           <Property>Leaf.Live Leaf.Dead</Property>
+          <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
@@ -490,13 +490,9 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <RUECO2Function name="Fco2">
-          	 <PhotosyntheticPathway>C3</PhotosyntheticPathway>
+            <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
-
         </RUEModel>
-        <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.5</Value>
-        </Constant>
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">1</Value>
         </Constant>
@@ -535,10 +531,6 @@
             <XY>6 1200</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.60      0.40             0.0        0.0         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
         <TemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>0 0</XY>
@@ -549,17 +541,10 @@
         <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY> 1  1400.0</XY>
-            <XY> 5  3700.0</XY>
-            <XY> 8  4800.0</XY>
-            <XY>10  5600.0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SpecificLeafArea">
-          <XProperty>Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY> 1 27000.0</XY>
-            <XY> 10 22000.0</XY>
+            <XY>1 1400</XY>
+            <XY>5 3700</XY>
+            <XY>8 2000</XY>
+            <XY>10 1000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="GrowthDuration">
@@ -586,18 +571,18 @@
         <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY> 4 0.0</XY>
-            <XY> 5 0.7</XY>
-            <XY> 8 0.0</XY>
+            <XY>4 0</XY>
+            <XY>5 0.7</XY>
+            <XY>8 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <StageBasedInterpolation name="MaximumNConc">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.063     0.063     0.032            0.020     0.015       0.012         0.008        0.008     0.008 </Values>
+          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values type="text" description="Values">    0.063     0.063      0.063             0.063       0.063         0.063           0.063          0.063       0.063  </Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MinimumNConc">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>   0.025      0.025     0.021            0.016    0.010       0.0075       0.005         0.005     0.005    </Values>
+          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values type="text" description="Values">   0.025      0.025     0.025            0.025    0.025       0.025       0.025         0.025     0.025    </Values>
         </StageBasedInterpolation>
         <Constant name="InitialNConc">
           <Value>0.1</Value>
@@ -609,14 +594,35 @@
             <XY>0 0.0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 54000</XY>
+            <XY>10 54000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMin">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 20000</XY>
+            <XY>10 20000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <ArrayBiomass name="CohortLive">
-           <ArraySize>Leaf.MaxNodeNo</ArraySize>
-           <Property>Leaf.Leaves[].Live</Property>
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
         </ArrayBiomass>
         <ArrayBiomass name="CohortDead">
-           <ArraySize>Leaf.MaxNodeNo</ArraySize>
-           <Property>Leaf.Leaves[].Dead</Property>
-        </ArrayBiomass>        
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">.5</Value>
+        </Constant>
+        <StageBasedInterpolation name="xPartitionFraction">
+          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values>    0.0       0.60      0.40             0.0        0.0         0.0         0.0           0.0     0.0 </Values>
+        </StageBasedInterpolation>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Floret">
         <Biomass name="Live" />
@@ -710,20 +716,20 @@
         <Values>   0               5              10            30             37       65          70             85           90      90</Values>
       </StageBasedInterpolation>
       <CompositeBiomass name="AboveGround">
-          <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
-      </CompositeBiomass>      
+        <Property>Organs[AboveGround].Live Organs[AboveGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="BelowGround">
-          <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
-      </CompositeBiomass>        
+        <Property>Organs[BelowGround].Live Organs[BelowGround].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="Total">
-          <Property>Organs[].Live Organs[].Dead</Property>
-      </CompositeBiomass>  
+        <Property>Organs[].Live Organs[].Dead</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalLive">
-          <Property>Organs[].Live</Property>
-      </CompositeBiomass>       
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalDead">
-          <Property>Organs[].Dead</Property>
-      </CompositeBiomass>  
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
     </Plant>
   </Model>
 </Type>

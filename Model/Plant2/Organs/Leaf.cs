@@ -7,101 +7,78 @@ using ModelFramework;
 [Description("Leaf Class")]
 public class Leaf : BaseOrgan, AboveGround
 {
-    #region Class Data Members
+ #region Class Data Members
     protected double _WaterAllocation;
     protected double PEP = 0;
     protected double EP = 0;
     protected List<LeafCohort> Leaves = new List<LeafCohort>();
     protected double _FinalNodeNo = 0;
-
     [Link]
     protected Plant Plant = null;
-
     [Link]
     protected Phenology Phenology = null;
-
     [Link]
     protected RUEModel Photosynthesis = null;
-
     [Link]
     protected TemperatureFunction ThermalTime = null;
-
     [Input]
     protected int Day = 0;
-
     [Input]
     protected int Year = 0;
-
     [Input]
     protected double Radn = 0;
-
     [Output]
     public double NodeNo = 0;
-
     [Output]
     [Units("/stem")]
     public double LeafNo
     {
         get { return TotalNo / PrimaryBudNo; }
     }
-
     [Output("Height")]
     protected double Height = 0;
-
     [Event]
     public event NewCanopyDelegate New_Canopy;
-
     [Param]
     [Output]
     [Description("Max cover")]
     [Units("max units")]
     protected double MaxCover;
-
     [Param]
     [Output]
     [Description("Primary Bud")]
     protected double PrimaryBudNo = 1;
-
     [Param]
     [Description("Extinction Coefficient (Dead)")]
     protected double KDead = 0;
-
     [Output]
     [Param]
     [Description("Maximum Final Leaf Number ")]
     protected double MaxNodeNo = 0;
-
     [Param]
     [Description("Max Leaf Number")]
     protected string InitialiseStage = "";
-
     [Param]
     [Description("Initial number of leaf nodes")]
     protected double[] InitialAreas = null;
-
     [Param]
     [Description("Initial number of leaf nodes")]
     protected double[] InitialAges = null;
-
     [Param]
     [Description("Initial number of leaf primordia")]
     protected double InitialLeafPrimordia = 0;
-
     [Param]
     [Description("Final Node Number")]
     protected double FinalNodeNoEstimate = 0;
-    #endregion
+ #endregion
 
-    #region Outputs
+ #region Outputs
     [Output]
     public double FinalNodeNo { get { return Math.Max(_FinalNodeNo, FinalNodeNoEstimate); } }
-
     [Output]
     public double RemainingNodeNo { get { return _FinalNodeNo - NodeNo; } }
-
     [Output]
     public double PotentialGrowth { get { return DMDemand; } }
-
     [Output]
     public double[] Size
     {
@@ -122,7 +99,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-
     [Output]
     public double[] Age
     {
@@ -143,7 +119,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-
     [Output]
     public double[] MaxSize
     {
@@ -164,7 +139,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-
     [Output]
     public double[] MaxLeafArea
     {
@@ -185,7 +159,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-
     [Output]
     [Units("/m2")]
     public double BranchNo
@@ -200,7 +173,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n;
         }
     }
-
     [Output]
     [Units("/plant")]
     public double TotalNo
@@ -217,7 +189,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n / Population.Value;
         }
     }
-
     [Output]
     [Units("/plant")]
     public double GreenNo
@@ -234,7 +205,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n / Population.Value;
         }
     }
-
     [Output]
     public double ExpandingNodeNo
     {
@@ -249,7 +219,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n;
         }
     }
-
     [Output]
     [Units("/plant")]
     public double GreenNodeNo
@@ -265,7 +234,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n;
         }
     }
-
     [Output]
     public double SenescingNodeNo
     {
@@ -280,7 +248,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n;
         }
     }
-
     [Output]
     public double SLAcheck
     {
@@ -292,7 +259,6 @@ public class Leaf : BaseOrgan, AboveGround
                 return 0;
         }
     }
-
     [Output]
     [Units("mm^2/g")]
     public double SpecificArea
@@ -305,13 +271,11 @@ public class Leaf : BaseOrgan, AboveGround
                 return 0;
         }
     }
-
     [Output]
     public virtual double CohortNo
     {
         get { return Leaves.Count; }
     }
-
     [Output]
     public int DeadNodeNo
     {
@@ -325,7 +289,6 @@ public class Leaf : BaseOrgan, AboveGround
             return DNN;
         }
     }
-
     [Output]
     public int FullyExpandedNodeNo
     {
@@ -338,11 +301,9 @@ public class Leaf : BaseOrgan, AboveGround
             return FXNN;
         }
     }
-
     [Output]
     [Units("mm")]
     public double Transpiration { get { return EP; } }
-
     [Output]
     public double Fw
     {
@@ -356,7 +317,6 @@ public class Leaf : BaseOrgan, AboveGround
             return F;
         }
     }
-
     [Output]
     public double Fn
     {
@@ -375,7 +335,6 @@ public class Leaf : BaseOrgan, AboveGround
             return F;
         }
     }
-
     [Output]
     [Units("m^2/m^2")]
     public virtual double LAI
@@ -388,7 +347,6 @@ public class Leaf : BaseOrgan, AboveGround
             return value;
         }
     }
-
     [Output]
     [Units("m^2/m^2")]
     public virtual double LAIDead
@@ -401,7 +359,6 @@ public class Leaf : BaseOrgan, AboveGround
             return value;
         }
     }
-
     [Output("Cover_green")] 
     public double CoverGreen
     {
@@ -411,19 +368,16 @@ public class Leaf : BaseOrgan, AboveGround
             return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
         }
     }
-
     [Output("Cover_tot")]
     public double CoverTot
     {
         get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
     }
-
     [Output("Cover_dead")]
     public double CoverDead
     {
         get { return 1.0 - Math.Exp(-KDead * LAIDead); }
     }
-
     [Output]
     public double LiveNConc
     {
@@ -432,9 +386,9 @@ public class Leaf : BaseOrgan, AboveGround
             return Live.NConc;
         }
     }
-    #endregion
+ #endregion
 
-    #region Leaf functions
+ #region Leaf functions
     public override void DoPotentialGrowth()
     {
         EP = 0;
@@ -549,10 +503,9 @@ public class Leaf : BaseOrgan, AboveGround
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
-    #endregion
+ #endregion
 
-    #region Arbitrator methods
-
+ #region Arbitrator methods
     [Output]
     public override double DMDemand
     {
@@ -584,7 +537,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Demand;
         }
     }
-
     [Output]
     public override double DMSupply
     {
@@ -593,7 +545,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Photosynthesis.Growth(Radn * CoverGreen);
         }
     }
-
     public override double DMPotentialAllocation
     {
         set
@@ -601,7 +552,6 @@ public class Leaf : BaseOrgan, AboveGround
 
        }
     }
-
     [Output]
     [Units("g/m^2")]
     public override double DMAllocation
@@ -637,11 +587,9 @@ public class Leaf : BaseOrgan, AboveGround
 
         }
     }
-
     [Output]
     [Units("mm")]
     public override double WaterDemand { get { return PEP; } }
-
     public override double WaterAllocation
     {
       get { return _WaterAllocation; }
@@ -651,7 +599,6 @@ public class Leaf : BaseOrgan, AboveGround
             EP = value;
         }
     }
-
     [Output]
     [Units("g/m^2")]
     public override double NDemand
@@ -666,7 +613,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Demand;
         }
     }
-
     [Output]
     [Units("g/m^2")]
     public override double NAllocation
@@ -697,7 +643,6 @@ public class Leaf : BaseOrgan, AboveGround
 
         }
     }
-
     public override double NRetranslocationSupply
     {
         get
@@ -708,7 +653,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Supply;
         }
     }
-
     public override double NRetranslocation
     {
         set
@@ -757,29 +701,26 @@ public class Leaf : BaseOrgan, AboveGround
             return 0;
         }
     }
-    #endregion 
+ #endregion 
 
-    #region Event handlers and publishers
+ #region Event handlers and publishers
     [EventHandler]
     private void OnPrune(PruneType Prune)
     {
         PrimaryBudNo = Prune.BudNumber;
         ZeroLeaves();
     }
-
     [EventHandler]
     public void OnInit2()
     {
         PublishNewCanopyEvent();
     }
-
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
     }
-
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
     {
@@ -796,7 +737,6 @@ public class Leaf : BaseOrgan, AboveGround
                 i++;
         }
     }
-
     [EventHandler]
     private void OnKillLeaf(KillLeafType KillLeaf)
     {
@@ -814,7 +754,6 @@ public class Leaf : BaseOrgan, AboveGround
         }
 
     }
-
     [EventHandler]
     private void OnCut()
     {
@@ -834,7 +773,6 @@ public class Leaf : BaseOrgan, AboveGround
         InitialiseCohorts();
 
     }
-
     protected virtual void PublishNewCanopyEvent()
     {
         if (New_Canopy != null)
@@ -850,7 +788,7 @@ public class Leaf : BaseOrgan, AboveGround
             New_Canopy.Invoke(Canopy);
         }
     }
-    #endregion
+ #endregion
 
 
 }

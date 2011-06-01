@@ -30,7 +30,7 @@ public class LeafCohort
 #endregion
     
  #region arbitration methods
-    public double DMDemand
+    virtual public double DMDemand
     {
         get
         {
