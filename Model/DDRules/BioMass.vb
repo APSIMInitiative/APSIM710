@@ -1,3 +1,6 @@
+Imports ModelFramework
+Imports CSGeneral
+
 Public Class BioMass
         Public Name As String
         Public gLeaf, gStem, dLeaf, dStem As Double ' drymatter [kg]
@@ -89,7 +92,7 @@ Public Class BioMass
 
         Public Function Add(ByVal other As BioMass) As BioMass
                 Dim t As Double = DM_Total() + other.DM_Total
-                If (Double.IsInfinity(t) Or Double.IsNaN(t)) Then
+                If (t <= 0 Or Double.IsInfinity(t) Or Double.IsNaN(t)) Then
                         Return New BioMass()
                 End If
 
@@ -101,7 +104,11 @@ Public Class BioMass
                 result.N_concentration = (N_Total() + other.N_Total()) / result.DM_Total()
                 If (result.N_concentration.ToString.Contains("NaN")) Then
                         Console.WriteLine("DDRules (debug) - " & "BioMass.Add: N_concentration not a number")
+                        Console.WriteLine("Me = " + ToString())
+                        Console.WriteLine("Other = " + other.ToString())
+                        Console.WriteLine("result = " + result.ToString())
                 End If
+
                 If (result.DM_Total() > 0) Then
                         result.myME = (getME_Total() + other.getME_Total()) / result.DM_Total()
                         result.digestibility = (other.digestibility * other.DM_Total() + digestibility * DM_Total()) / result.DM_Total()
@@ -140,25 +147,25 @@ Public Class BioMass
         End Function
 
         'This convienience function is for use with the "remove_crop_biomass" event
-    Public Function toRemoveCropDmType() As RemoveCropBiomassType
-        Dim result As New RemoveCropBiomassType
-        Dim green As RemoveCropBiomassdmType = getDMType("green", gLeaf, gStem)
-        Dim dead As RemoveCropBiomassdmType = getDMType("dead", dLeaf, dStem)
-        result.dm = New RemoveCropBiomassdmType() {green, dead}
-        Return result
-    End Function
+        Public Function toRemoveCropDmType() As RemoveCropBiomassType
+                Dim result As New RemoveCropBiomassType
+                Dim green As RemoveCropBiomassdmType = getDMType("green", gLeaf, gStem)
+                Dim dead As RemoveCropBiomassdmType = getDMType("dead", dLeaf, dStem)
+                result.dm = New RemoveCropBiomassdmType() {green, dead}
+                Return result
+        End Function
 
-    Private Function getDMType(ByVal pool As String, ByVal leaf As Double, ByVal stem As Double) As RemoveCropBiomassdmType
-        Dim result As New RemoveCropBiomassdmType
-        result.pool = pool
-        result.part = New String() {"leaf", "stem"}
-        result.dlt = New Double() {leaf / 10, stem / 10} 'convert to g/m^2
-        Return result
-    End Function
+        Private Function getDMType(ByVal pool As String, ByVal leaf As Double, ByVal stem As Double) As RemoveCropBiomassdmType
+                Dim result As New RemoveCropBiomassdmType
+                result.pool = pool
+                result.part = New String() {"leaf", "stem"}
+                result.dlt = New Double() {leaf / 10, stem / 10} 'convert to g/m^2
+                Return result
+        End Function
 
         ' ME pasture calculation by component - values from QGraze defaults
         Private Function calcME() As Double
-                Dim l = gLeaf * 12
+                Dim l = gLeaf * 13.0 'increased from 12. Not including clover content
                 Dim s = gStem * 10.5
                 Dim d = DM_Dead() * 9
                 Return l + s + d

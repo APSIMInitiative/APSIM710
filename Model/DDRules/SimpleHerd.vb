@@ -14,6 +14,25 @@
         Dim Total_Supplement_Eaten As BioMass = New BioMass()
         Public ME_Demand As Double
 
+        Public myExcreta As New Excreta()
+        Public myTempExcreta As New Excreta()
+
+        Public Sub New()
+                ReferenceCow = New SimpleCow(2001, 6)
+                setValues(2001, 6, 0, 6)
+        End Sub
+
+        Public Sub New(ByVal Head As Double, ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
+                ReferenceCow = New SimpleCow(Year, Month)
+                setValues(Head, CalvingDate, Year, Month)
+        End Sub
+
+        Public Sub setValues(ByVal Head As Double, ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
+                ReferenceCow.setDate(Year, Month)
+                ReferenceCow.CalvingDate = CalvingDate
+                TotalCows = Head
+        End Sub
+
 #Region "Output Variables - Intake"
 #Region "Output Variables - Intake - Dry Matter"
         Public ReadOnly Property DM_Eaten() As Double
@@ -121,12 +140,6 @@
         End Property
 #End Region
 #End Region
-
-        Public Sub New(ByVal Head As Double, ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
-                ReferenceCow = New SimpleCow(Year, Month)
-                ReferenceCow.CalvingDate = CalvingDate
-                TotalCows = Head
-        End Sub
 
         Public Function RemainingFeedDemand() As Double
                 Return ReferenceCow.RemainingFeedDemand * TotalCows
@@ -289,6 +302,8 @@
 
         Public Sub doNitrogenPartioning()
                 ReferenceCow.doNitrogenPartioning()
+                myExcreta = ReferenceCow.myExcreta.Multiply(TotalCows)
+                myTempExcreta = New Excreta(myExcreta) ' this for returning
         End Sub
 
         'Return all nutrients evenly to the paddocks in the list
@@ -297,21 +312,20 @@
                 Dim urineN As Double = N_to_urine
                 Dim dungN As Double = N_to_feaces
                 Dim dungDM As Double = DM_to_feaces
+
                 Dim totalMERemoved As Double = 0
                 For Each pdk As LocalPaddockType In myPaddocks
                         totalMERemoved += pdk.ME_Eaten
                 Next
 
-                If totalMERemoved <= 0 Then 'if no grazing then distribute evenlly over all allocated paddocks
-                        If (TotalCows > 0 And myPaddocks.Count > 0) Then
+                If (TotalCows > 0 And myPaddocks.Count > 0) Then
+                        If totalMERemoved <= 0 Then 'if no grazing then distribute evenly over all paddocks (should be only grazable)
                                 Dim delta As Double = 1 / myPaddocks.Count
                                 Dim density As Double = delta * TotalCows
                                 For Each pdk As LocalPaddockType In myPaddocks
                                         ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)
                                 Next
-                        End If
-                Else 'if grazed then distribute over paddocks by amount of ME removed
-                        If (TotalCows > 0 And myPaddocks.Count > 0) Then
+                        Else 'if grazed then distribute over paddocks by amount of ME removed
                                 For Each pdk As LocalPaddockType In myPaddocks
                                         Dim delta As Double = pdk.ME_Eaten / totalMERemoved
                                         Dim density As Double = delta * TotalCows
@@ -320,6 +334,25 @@
                         End If
                 End If
         End Sub
+
+        Public Function getNutrientReturns(Optional ByVal proporiton As Double = 1.0)
+                Dim amount As Excreta = myExcreta.Multiply(proporiton)
+                myTempExcreta.Subtract(amount)
+                Return amount
+        End Function
+
+        Public Sub doNutrientReturnsToPaddock(ByVal paddock As LocalPaddockType, Optional ByVal proporiton As Double = 1.0)
+                Dim amount As Excreta = getNutrientReturns(proporiton)
+                ReferenceCow.doNutrientReturns(paddock, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / paddock.Area * proporiton)
+        End Sub
+
+        Public Sub doNutrientReturnsToPaddock(ByVal paddock As LocalPaddockType, ByVal amount As Excreta, Optional ByVal proporiton As Double = 1.0)
+                ReferenceCow.doNutrientReturns(paddock, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / paddock.Area * proporiton)
+        End Sub
+
+        '       Public Sub doNutrientReturns(ByVal myPaddocks As List(Of LocalPaddockType), Optional ByVal proporiton As Double = 1.0)
+
+        '      End Sub
 
         Public Function ME_Demand_Cow() As Double
                 Return ReferenceCow.ME_Total
@@ -363,4 +396,13 @@
         Public Function N_to_urine_Cow() As Double
                 Return ReferenceCow.N_to_urine
         End Function
+
+        Public Sub setMilkSolids(ByVal values As Double())
+                'Todo 20110524 - add checking here
+                ReferenceCow.setMilkSolids(values)
+        End Sub
+        Public Sub setLiveWeight(ByVal values As Double())
+                'Todo 20110524 - add checking here
+                ReferenceCow.setLiveWeight(values)
+        End Sub
 End Class

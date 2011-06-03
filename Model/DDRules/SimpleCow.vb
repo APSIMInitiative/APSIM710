@@ -24,6 +24,9 @@ Public Class SimpleCow
 
         Public N_to_feaces, DM_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double
 
+        Public myExcreta As New Excreta()
+        Public myTempExcreta As New Excreta()
+
 #Region "Output Variables - Intake"
 #Region "Output Variables - Intake - Dry Matter"
         Public ReadOnly Property DM_Eaten() As Double
@@ -102,16 +105,20 @@ Public Class SimpleCow
         'Private LWtChange As Double() = {0, 0, 0, 0, -35.0, 0, 35.0, 0, 0, 0, 0, 0} 'kg LWt/Month
         'Month	1	2	3	4	5	6	7	8	9	10	11	12
         Private BC As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
+        'Private BC As Double() = {3.8, 3.9, 4.2, 4.4, 4.5, 5.1, 5, 5.1, 4, 3.8, 3.9, 3.9} 'dawn
         Private LWt As Double() = {437, 443, 450, 458, 466, 478, 486, 463, 430, 430, 438, 442} 'dawn
+        'Private LWt As Double() = {475, 475, 476, 484, 500, 515, 531, 430, 437, 444, 451, 465} 'LUDF
         Private MS As Double() = {1.5, 1.33, 1.23, 1.13, 1.12, 0, 0, 0.78, 1.69, 1.94, 1.86, 1.68} 'dawn
+        'Private MS(11) As Double ' = {1.6, 1.47, 1.35, 1.14, 0.73, 0, 0.01, 0.59, 1.38, 1.83, 1.87, 1.67} 'LUDF
 
-        '********** Constructor ******************
-        Public Sub New(ByVal Year As Integer, ByVal Month As Integer)
-                Live_Weight = LWt(Month - 1)
+        Public Sub New()
+                setDate(0, 6)
         End Sub
-        '********** Constructor ******************
 
-        '********** Hooks for Apsim Events ******************
+        Public Sub New(ByVal Year As Integer, ByVal Month As Integer)
+                setDate(Year, Month)
+        End Sub
+
         Public Sub OnPrepare(ByVal year As Integer, ByVal month As Integer)
                 setDate(year, month)
                 TodaysEnergyRequirement = ME_Total() 'calculate this early in case it's is needed outside
@@ -120,8 +127,6 @@ Public Class SimpleCow
                 Total_Pasutre_Eaten = New BioMass()
                 Total_Supplement_Eaten = New BioMass()
         End Sub
-        '********** Hooks for Apsim Events ******************
-
 
         Public Function ME_WeightChange()
                 Return ME_Change_In_Liveweight(Change_in_CondistionScore_per_Day * 35)
@@ -232,9 +237,22 @@ Public Class SimpleCow
 
                 Dim DM_out = Total_DM_Eaten.DM_Total * (1 - Total_DM_Eaten.digestibility) 'digestability = 70% grass, 55% hay, 80% grain, time = 18-24, 30-40 & 12-14 Farm Tech manual A-154
                 DM_to_feaces = DM_out
+
+                myExcreta = New Excreta(N_to_urine, N_to_feaces, DM_to_feaces) ' this is used from reporting
+                myTempExcreta = New Excreta(myExcreta) ' this for returning
+
         End Sub
 
         Public Function doNutrientReturns(ByVal pdk As LocalPaddockType, ByVal UrineOut_N As Double, ByVal DungNitrogen As Double, ByVal DungDM As Double, ByVal density As Double) 'ByVal paddock As PaddockHolder)
+                If (UrineOut_N <= 0) Then
+                        Console.WriteLine("DDRules(warning): Returning Zero urine nitrogen to paddock")
+                End If
+                If (DungNitrogen <= 0) Then
+                        Console.WriteLine("DDRules(warning): Returning Zero dung nitrogen to paddock")
+                End If
+                If (DungNitrogen <= 0) Then
+                        Console.WriteLine("DDRules(warning): Returning Zero dung dry matter to paddock")
+                End If
                 pdk.UrineApplication(UrineOut_N, UrineOut_N / 0.08, density) 'urine N concentration of 8g/l
                 pdk.DungApplication(DungNitrogen, DungDM)
                 Return 0
@@ -252,7 +270,7 @@ Public Class SimpleCow
                 End If
         End Sub
 
-        Private Sub setDate(ByVal year As Integer, ByVal mth As Integer)
+        Public Sub setDate(ByVal year As Integer, ByVal mth As Integer)
                 If (mth <> Month) Then
                         Month = mth
                         DoDates(mth)
@@ -279,10 +297,28 @@ Public Class SimpleCow
                 Change_in_CondistionScore_per_Day = deltaBC / days
         End Sub
 
+        Public Sub setMilkSolids(ByVal values As Double())
+                'Todo 20110524 - add checking here?
+                Console.WriteLine("Setting MS values")
+                For i As Integer = 0 To values.Length - 1
+                        MS(i) = values(i)
+                Next
+
+                'For Each x As Double In MS
+                For x As Integer = 0 To 11
+                        Console.WriteLine("    = " + MS(x).ToString("0.00"))
+                Next
+        End Sub
+
+        Public Sub setLiveWeight(ByVal values As Double())
+                LWt = values
+        End Sub
+
         Private Sub setMilkProduction(ByVal year As Integer, ByVal mth As Integer)
                 Dim days As Integer = Date.DaysInMonth(year, mth)
                 Dim indexMth = (mth + 12 - 1) Mod 12
                 MS_per_Day = MS(indexMth)
+                Console.WriteLine("    MS_per_Day = " + MS_per_Day.ToString("0.00"))
                 Dim indexMth2 = (mth + 12) Mod 12
                 Dim deltaMS As Double = MS(indexMth2) - MS(indexMth)
                 Change_in_MS_per_Day = deltaMS / days

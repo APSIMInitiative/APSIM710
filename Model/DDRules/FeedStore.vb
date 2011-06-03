@@ -19,10 +19,10 @@
 
         'This adds a the passed quantity of biomass onto the silage heap
         'The heap is not implement as a list/queue but this could be a good idea
-        Public Sub Add(ByVal silage As BioMass)
-                If (silage.DM_Total > 0) Then
-                        AddedToday = AddedToday.Add(silage)
-                        Total = Total.Add(silage)
+        Public Sub Add(ByVal feed As BioMass)
+                If (feed.DM_Total > 0) Then
+                        AddedToday = AddedToday.Add(feed)
+                        Total = Total.Add(feed)
                 End If
         End Sub
 
@@ -41,6 +41,12 @@
                 Total = Total.Multiply(1 - proportion)
                 RemovedToday = RemovedToday.Add(result)
                 Return result
+        End Function
+
+        'Note: This function removes mass from a heap no matter if the amount is there or not. This is to allow tracking of surchased in feed.
+        Public Function Remove(ByVal amount As BioMass) As BioMass
+                RemovedToday = RemovedToday.Add(amount)
+                Return amount
         End Function
 
         Public Function DMRemovedToday() As Double
@@ -63,4 +69,8 @@
                         Total.setME(value)
                 End Set
         End Property
+
+        Public Overrides Function ToString() As String
+                Return "/n   Added = " + AddedToday.ToString() + "/n   RemovedToday = " + RemovedToday.ToString()
+        End Function
 End Class

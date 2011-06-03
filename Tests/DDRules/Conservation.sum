@@ -1,0 +1,850 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Conservation
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                "Farm Settings" = %apsim%\Model\Manager.dll
+   Component        "Conservation Settings" = %apsim%\Model\Manager.dll
+   Component                      "DDRules" = %apsim%\Model\DDRules.dll
+    MS_per_Day = 0.00
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component          "Canterbury_M  Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Canterbury_M  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component      "Fertilise on fixed date" = %apsim%\Model\Manager.dll
+   Component       "Irrigate on fixed date" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date1" = %apsim%\Model\Manager.dll
+   Component    "Fertilise on fixed date11" = %apsim%\Model\Manager.dll
+   Component    "Fertilise on fixed date12" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component          "Canterbury_M  Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component       "Canterbury_M  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1989
+     Simulation end date   = 30/07/1990
+     Time step =           = 1440 (mins)
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        SilageStore
+        SilageStore_kgha
+        SilageCut_kgha
+        SilageFedOut_kgha
+
+     Output file = Conservation.out
+     Format = normal
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\WinchmoreMet.met
+
+------- Farm Settings Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     ddrules.peakstockingrate = 0
+     ddrules.farmarea = 1.0
+     ddrules.porportionoffarminlaneways = 0.00
+     ddrules.hoursonlaneways = 0
+     ddrules.hoursindairyshed = 0
+     ddrules.effluentpaddockspercentage = 0.0
+     END of rules
+     
+
+------- Conservation Settings Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     conservationstart = '1-sep'
+     conservationfinish = '1-apr'
+     conservationtrigger = 3000
+     conservationresidual = 2000
+     silagecutwastage = cutting_waste
+     if 'yes' = 'yes' then
+        silagestoreenable = 1
+        silageme = 10.5
+        silagestore = 0
+     else
+        silagestoreenable = 0
+        silagestore = 0
+     endif
+     END of rules
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "cutting_waste".
+     Variables should have a value before they are used in an expression.
+     Component name: Conservation Settings
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : cutting_waste = 0.00000
+
+------- DDRules Initialisation ------------------------------------------------
+    MS_per_Day = 0.00
+
+---------- DDRules Initialisation ----------
+     General Farm Description
+             Effective Area          1
+             Total Paddocks          2
+     Stock Management
+             Stocking Rate           0
+             Calving Date            
+             Paddock Count           2
+             Winter Off Dry Stock    True
+     Grazing Management
+             Residules               1600
+             Interval                30
+     Supplementary Feeding
+             ME Content (ME/kgDM)    12
+             N Content               1.8%
+             Wastage                 0%
+     Conservation
+             Start Date              01-Sep
+             Finish Date             01-Apr
+             Trigger Residule        3000
+             Cutting Residule        2000
+             Wastage at cutting      0%
+             Silage Stored on Farm   True
+             ME Content (ME/kgDM)    0
+             N Content               3.5%
+             Wastage (at feeding)    0%
+     Debug Switches
+             Debug Level   0
+             Break Feeding 0
+             Avg length    30
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        AboveGroundWt
+        GLFN
+
+     Output file = Conservation paddock01.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   70.03    4.00    0.00
+             2     6.00  0.49    0.00    0.00    0.00
+             3     6.00  0.23    0.00    0.00    0.00
+             4     6.00  0.20    0.00    0.00    0.00
+             5     6.00  0.20    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals               70.03    4.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
+Warning: Number of layers specified for root length density (rlvp) is different 
+from the number of soil layers.The simulation will run using the minimum of the two.
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        AboveGroundWt
+        AboveGroundLiveWt
+        AboveGroundDeadWt
+        GLFwater
+        GLFN
+
+     Output file = Conservation paddock02.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Fertilise on fixed date Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('1-oct') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 100000) then
+        fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Irrigate on fixed date Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (today = date('01-nov')) then
+        'irrigation' set irrigation_efficiency = 1.0
+        'irrigation' apply amount = 50 (mm)
+     endif
+     END of rules
+     
+
+------- Fertilise on fixed date1 Initialisation -------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('1-nov') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 100000) then
+        fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Fertilise on fixed date11 Initialisation ------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('1-dec') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 100000) then
+        fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Fertilise on fixed date12 Initialisation ------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('1-jan') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 100000) then
+        fertiliser apply amount = 100 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Canterbury_M  Water Initialisation ------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     16800.00
+             exceeds upper limit of    1000.000
+     Component name: Canterbury_M  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  250.  0.077  0.154  0.374  0.456  0.374  1.311  0.915  0.496*******
+          250.-  550.  0.201  0.201  0.332  0.394  0.332  1.524  0.085  0.366389.229
+          550.-  850.  0.201  0.201  0.338  0.359  0.338  1.650  0.000  0.097 16.362
+          850.- 1150.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+         1150.- 1500.  0.012  0.012  0.039  0.120  0.039  0.390  0.000  0.651*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  250.      38.50      55.00      55.00      20.50
+          250.-  550.      60.30      39.30      39.30      18.60
+          550.-  850.      60.30      41.10      41.10       6.30
+          850.- 1150.       3.60       8.10       8.10      24.30
+         1150.- 1500.       4.20       9.45       9.45      28.35
+          ---------------------------------------------------------
+               Totals     166.90     152.95     152.95      98.05
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Canterbury_M  Nitrogen Initialisation ---------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.37   70.03    4.00    0.00
+             2     6.00  0.49    0.00    0.00    0.00
+             3     6.00  0.23    0.00    0.00    0.00
+             4     6.00  0.20    0.00    0.00    0.00
+             5     6.00  0.20    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals               70.03    4.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      76406.0  6946.0  1205.2   150.6   190.7     4.8
+             2      22465.0  2042.3    75.0     9.4   104.7     2.6
+             3      11224.5  1020.4    12.0     1.5    57.4     1.4
+             4       2362.5   214.8     0.9     0.1    31.5     0.8
+             5       2729.6   248.1     0.4     0.1    15.7     0.4
+          ---------------------------------------------------------
+           Totals  115187.5 10471.6  1293.5   161.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- ryegrass_clover Initialisation ----------------------------------------
+Warning: Number of layers specified for root length density (rlvp) is different 
+from the number of soil layers.The simulation will run using the minimum of the two.
+------- Start of simulation  --------------------------------------------------
+    MS_per_Day = 0.78
+    MS_per_Day = 1.69
+    MS_per_Day = 1.94
+1 October 1989(Day of year=274), Fertilise on fixed date: 
+     Manager creating a new local real variable : n_topsoil = 0.00000
+     Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
+1 October 1989(Day of year=274), Fertiliser: 
+
+DDRules.Harvest
+     paddock01
+     + Start Cover = 3264.443
+     - Residual    = 2000
+     = Cut DM      = 1264.443
+     = Proportion  = 38.7338054302066%
+DDRules.Harvest - ryegrass_clover DM = 3264 @ = 12.0me DM[Green=2128, 849, Dead=211, 76]  N = 122.912648133085
+DDRules.Harvest - Finish = 2178.12240648279 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1304, 520, Dead=129, 47]  N = 74.5757092784718
+DDRules.Harvest - Removed (ha) = default DM = 1264 @ = 12.0me DM[Green=824, 329, Dead=82, 29]  N = 47.6087459769835
+DDRules.Harvest - Removed Total= default DM = 632 @ = 12.0me DM[Green=412, 164, Dead=41, 15]  N = 23.8043541625162
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3264.443
+     - Residual    = 2000
+     = Cut DM      = 1264.443
+     = Proportion  = 38.7338054302066%
+DDRules.Harvest - ryegrass_clover DM = 3264 @ = 12.0me DM[Green=2128, 849, Dead=211, 76]  N = 122.912648133085
+DDRules.Harvest - Finish = 2178.12240648279 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1304, 520, Dead=129, 47]  N = 74.5757092784718
+DDRules.Harvest - Removed (ha) = default DM = 1264 @ = 12.0me DM[Green=824, 329, Dead=82, 29]  N = 47.6087459769835
+DDRules.Harvest - Removed Total= default DM = 632 @ = 12.0me DM[Green=412, 164, Dead=41, 15]  N = 23.8043541625162
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3476.575
+     - Residual    = 2000
+     = Cut DM      = 1476.575
+     = Proportion  = 42.4721169541862%
+DDRules.Harvest - ryegrass_clover DM = 3477 @ = 12.1me DM[Green=2297, 956, Dead=162, 61]  N = 137.561844633209
+DDRules.Harvest - Finish = 2251.85737849241 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1322, 550, Dead=93, 35]  N = 77.9380648472517
+DDRules.Harvest - Removed (ha) = default DM = 1477 @ = 12.1me DM[Green=976, 406, Dead=69, 26]  N = 58.4254275369527
+DDRules.Harvest - Removed Total= default DM = 738 @ = 12.1me DM[Green=488, 203, Dead=34, 13]  N = 29.2126939843721
+
+DDRules.Harvest
+     paddock01
+     + Start Cover = 3004.789
+     - Residual    = 2000
+     = Cut DM      = 1004.789
+     = Proportion  = 33.4395859409762%
+DDRules.Harvest - ryegrass_clover DM = 3005 @ = 12.0me DM[Green=1922, 799, Dead=205, 78]  N = 95.0993322570499
+DDRules.Harvest - Finish = 2236.90926418124 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1279, 532, Dead=136, 52]  N = 62.9566773392221
+DDRules.Harvest - Removed (ha) = default DM = 1005 @ = 12.0me DM[Green=643, 267, Dead=68, 26]  N = 31.8008229393907
+DDRules.Harvest - Removed Total= default DM = 502 @ = 12.0me DM[Green=321, 134, Dead=34, 13]  N = 15.9004272943227
+    MS_per_Day = 1.86
+1 November 1989(Day of year=305), Irrigate on fixed date: 
+     Manager sending message :- irrigation apply  amount = 50 (mm)
+1 November 1989(Day of year=305), Fertilise on fixed date1: 
+     Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
+1 November 1989(Day of year=305), Fertiliser: 
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3285.699
+     - Residual    = 2000
+     = Cut DM      = 1285.699
+     = Proportion  = 39.1301516054879%
+DDRules.Harvest - ryegrass_clover DM = 3286 @ = 12.0me DM[Green=2148, 909, Dead=164, 65]  N = 127.659369714884
+DDRules.Harvest - Finish = 2295.21683227821 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1308, 553, Dead=100, 39]  N = 76.5374908593286
+DDRules.Harvest - Removed (ha) = default DM = 1286 @ = 12.0me DM[Green=841, 356, Dead=64, 25]  N = 49.9533049080444
+DDRules.Harvest - Removed Total= default DM = 643 @ = 12.0me DM[Green=420, 178, Dead=32, 13]  N = 24.976633027506
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3011.154
+     - Residual    = 2000
+     = Cut DM      = 1011.154
+     = Proportion  = 33.580281845432%
+DDRules.Harvest - ryegrass_clover DM = 3011 @ = 12.0me DM[Green=1975, 841, Dead=139, 56]  N = 118.611802618544
+DDRules.Harvest - Finish = 2316.82965747597 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1312, 558, Dead=93, 37]  N = 77.6757950643772
+DDRules.Harvest - Removed (ha) = default DM = 1011 @ = 12.0me DM[Green=663, 282, Dead=47, 19]  N = 39.8302170120672
+DDRules.Harvest - Removed Total= default DM = 506 @ = 12.0me DM[Green=332, 141, Dead=23, 9]  N = 19.9150888106273
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+DDRules.Harvest
+     paddock01
+     + Start Cover = 3270.408
+     - Residual    = 2000
+     = Cut DM      = 1270.408
+     = Proportion  = 38.8455507692007%
+DDRules.Harvest - ryegrass_clover DM = 3270 @ = 11.9me DM[Green=2055, 871, Dead=245, 99]  N = 88.9326047528244
+DDRules.Harvest - Finish = 2296.12213136605 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.9me DM[Green=1257, 533, Dead=150, 61]  N = 54.3640379153673
+DDRules.Harvest - Removed (ha) = default DM = 1270 @ = 11.9me DM[Green=798, 338, Dead=95, 39]  N = 34.546360129631
+DDRules.Harvest - Removed Total= default DM = 635 @ = 11.9me DM[Green=399, 169, Dead=48, 19]  N = 17.2731800648155
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3254.247
+     - Residual    = 2000
+     = Cut DM      = 1254.247
+     = Proportion  = 38.5418500808328%
+DDRules.Harvest - ryegrass_clover DM = 3254 @ = 12.1me DM[Green=2145, 917, Dead=136, 56]  N = 125.043490812913
+DDRules.Harvest - Finish = 2353.49257438017 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1319, 563, Dead=83, 35]  N = 75.5745196207049
+DDRules.Harvest - Removed (ha) = default DM = 1254 @ = 12.1me DM[Green=827, 353, Dead=52, 22]  N = 48.1940747649529
+DDRules.Harvest - Removed Total= default DM = 627 @ = 12.1me DM[Green=413, 177, Dead=26, 11]  N = 24.0970181701224
+    MS_per_Day = 1.68
+1 December 1989(Day of year=335), Fertilise on fixed date11: 
+     Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
+1 December 1989(Day of year=335), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3192.372
+     - Residual    = 2000
+     = Cut DM      = 1192.372
+     = Proportion  = 37.3506596349047%
+DDRules.Harvest - ryegrass_clover DM = 3192 @ = 12.1me DM[Green=2099, 898, Dead=138, 58]  N = 122.060245695734
+DDRules.Harvest - Finish = 2370.43629728404 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1315, 563, Dead=86, 36]  N = 75.2104516550339
+DDRules.Harvest - Removed (ha) = default DM = 1192 @ = 12.1me DM[Green=784, 335, Dead=51, 22]  N = 45.5903069193421
+DDRules.Harvest - Removed Total= default DM = 596 @ = 12.1me DM[Green=392, 168, Dead=26, 11]  N = 22.795153459671
+
+DDRules.Harvest
+     paddock01
+     + Start Cover = 3037.211
+     - Residual    = 2000
+     = Cut DM      = 1037.211
+     = Proportion  = 34.1501133770423%
+DDRules.Harvest - ryegrass_clover DM = 3037 @ = 11.9me DM[Green=1884, 804, Dead=246, 103]  N = 80.6195743588546
+DDRules.Harvest - Finish = 2337.64189141862 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.9me DM[Green=1240, 530, Dead=162, 68]  N = 53.1318659615893
+DDRules.Harvest - Removed (ha) = default DM = 1037 @ = 11.9me DM[Green=643, 275, Dead=84, 35]  N = 27.5316760476378
+DDRules.Harvest - Removed Total= default DM = 519 @ = 11.9me DM[Green=322, 137, Dead=42, 18]  N = 13.7658247518443
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3335.832
+     - Residual    = 2000
+     = Cut DM      = 1335.832
+     = Proportion  = 40.0449423112435%
+DDRules.Harvest - ryegrass_clover DM = 3336 @ = 12.0me DM[Green=2185, 936, Dead=150, 64]  N = 128.166736643652
+DDRules.Harvest - Finish = 2382.88802037977 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1310, 561, Dead=90, 38]  N = 75.4326417899926
+DDRules.Harvest - Removed (ha) = default DM = 1336 @ = 12.0me DM[Green=875, 375, Dead=60, 26]  N = 51.3242957511537
+DDRules.Harvest - Removed Total= default DM = 668 @ = 12.0me DM[Green=438, 187, Dead=30, 13]  N = 25.6621862967973
+    MS_per_Day = 1.50
+1 January 1990(Day of year=1), Fertilise on fixed date12: 
+     Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
+1 January 1990(Day of year=1), Fertiliser: 
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3184.855
+     - Residual    = 2000
+     = Cut DM      = 1184.855
+     = Proportion  = 37.2027925918134%
+DDRules.Harvest - ryegrass_clover DM = 3185 @ = 12.0me DM[Green=2057, 881, Dead=173, 74]  N = 115.726059695992
+DDRules.Harvest - Finish = 2384.46200442279 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1292, 553, Dead=109, 46]  N = 71.6095367524522
+DDRules.Harvest - Removed (ha) = default DM = 1185 @ = 12.0me DM[Green=765, 328, Dead=64, 27]  N = 43.053325963378
+DDRules.Harvest - Removed Total= default DM = 592 @ = 12.0me DM[Green=383, 164, Dead=32, 14]  N = 21.5266448135056
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+
+DDRules.Harvest
+     paddock01
+     + Start Cover = 2983.801
+     - Residual    = 2000
+     = Cut DM      = 983.801
+     = Proportion  = 32.9714012429113%
+DDRules.Harvest - ryegrass_clover DM = 2984 @ = 11.8me DM[Green=1789, 766, Dead=301, 128]  N = 83.3094052643664
+DDRules.Harvest - Finish = 2386.98190211652 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.8me DM[Green=1199, 513, Dead=201, 86]  N = 55.7388025337929
+DDRules.Harvest - Removed (ha) = default DM = 984 @ = 11.8me DM[Green=590, 253, Dead=99, 42]  N = 27.4682503622338
+DDRules.Harvest - Removed Total= default DM = 492 @ = 11.8me DM[Green=295, 126, Dead=50, 21]  N = 13.7341531016804
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3161.022
+     - Residual    = 2000
+     = Cut DM      = 1161.022
+     = Proportion  = 36.7293236174883%
+DDRules.Harvest - ryegrass_clover DM = 3161 @ = 12.0me DM[Green=2009, 861, Dead=204, 87]  N = 118.792311752161
+DDRules.Harvest - Finish = 2360.58878784703 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1271, 545, Dead=129, 55]  N = 74.0276831834031
+DDRules.Harvest - Removed (ha) = default DM = 1161 @ = 12.0me DM[Green=738, 316, Dead=75, 32]  N = 43.6316126161467
+DDRules.Harvest - Removed Total= default DM = 581 @ = 12.0me DM[Green=369, 158, Dead=37, 16]  N = 21.8158063080733
+    MS_per_Day = 1.33
+    MS_per_Day = 1.23
+
+DDRules.Harvest
+     paddock02
+     + Start Cover = 3011.646
+     - Residual    = 2000
+     = Cut DM      = 1011.646
+     = Proportion  = 33.591132556748%
+DDRules.Harvest - ryegrass_clover DM = 3012 @ = 11.6me DM[Green=1700, 729, Dead=408, 175]  N = 103.357821494753
+DDRules.Harvest - Finish = 2216.34458579944 (includes stolons)
+DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.6me DM[Green=1129, 484, Dead=271, 116]  N = 68.1962133250101
+DDRules.Harvest - Removed (ha) = default DM = 1012 @ = 11.6me DM[Green=571, 245, Dead=137, 59]  N = 34.7190628260695
+DDRules.Harvest - Removed Total= default DM = 506 @ = 11.6me DM[Green=286, 122, Dead=69, 29]  N = 17.3594970936554
+    MS_per_Day = 1.13
+    MS_per_Day = 1.12
+    MS_per_Day = 0.00
+    MS_per_Day = 0.00
+30 July 1990(Day of year=211), clock: 
+     Simulation is terminating due to end criteria being met.

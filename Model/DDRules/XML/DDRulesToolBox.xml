@@ -1,13 +1,13 @@
-<folder version="25" name="DDRules ToolBox">
+<folder version="27" name="DDRules ToolBox">
   <DDRules />
   <folder name="Manager folder">
     <manager name="Dawn's Rules">
       <ui>
-        <category description="Rotational Grazing" />
+        <category description="Rotational Grazing" type="category" />
         <sr type="text" description="Stocking Rate">2.5</sr>
         <pme type="text" description="Pasture Quality">11.5</pme>
         <tfd type="text" description="Total Feed Demand">80</tfd>
-        <category description="Grazing Rules [June-May]" />
+        <category description="Grazing Rules [June-May]" type="category" />
         <gr type="text" description="Grazing Residuals">1200</gr>
         <mg type="text" description="Rotation Lengths">100</mg>
       </ui>
@@ -19,10 +19,10 @@
     </manager>
     <manager name="Winter Off">
       <ui>
-        <category description="When should cows be wintered off farm" />
+        <category description="When should cows be wintered off farm" type="category" />
         <DCWO type="ddmmmdate" description="Date commence winter off (dd-mmm) : ">03-Nov</DCWO>
         <DSWO type="ddmmmdate" description="Date stop winter off">03-Dec</DSWO>
-        <category description="Wintering off details" />
+        <category description="Wintering off details" type="category" />
         <module type="modulename" description="Module used to manage wintering off">DDRules</module>
         <PropWO type="text" description="Proportion of herd wintered off-farm (range 0-1.0)">0.5</PropWO>
       </ui>
@@ -38,10 +38,10 @@
     </manager>
     <manager name="Stand Off">
       <ui>
-        <category description="When should cows be on a stand-off" />
+        <category description="When should cows be on a stand-off" type="category" />
         <DCSO type="ddmmmdate" description="Date commence stand-off off (dd-mmm) : ">03-Nov</DCSO>
         <DSSO type="ddmmmdate" description="Date stop stand-off (dd-mmm)">03-Dec</DSSO>
-        <category description="Stand-off off details" />
+        <category description="Stand-off off details" type="category" />
         <module type="modulename" description="Module used to manage stand-off">DDRules</module>
         <prop type="text" description="Proportion of herd on stand-off (range 0-1.0)">0.5</prop>
         <hours type="text" description="Hours per day on stand-off (range 0-24.0)">2</hours>
@@ -100,5 +100,3990 @@
         <event>init</event>
       </script>
     </manager>
+    <manager name="Farm Settings">
+      <ui>
+        <category type="category" />
+        <farm_area type="text" description="Effective Farm Area (ha)">160</farm_area>
+        <stocking_rate type="text" description="Stocking Rate at Peak Milk (cows/ha)">4.2</stocking_rate>
+        <milk_prod type="text" description="kgMS/day July-june">0.01, 0.59, 1.38, 1.83, 1.87, 1.67, 1.6, 1.47, 1.35, 1.14, 0.73, 0</milk_prod>
+        <Live_Wt type="text" description="kgLWt [July-June]">531, 430, 437, 444, 451, 465, 475, 475, 476, 484, 500, 515</Live_Wt>
+      </ui>
+      <script>
+        <text>DDRules.PeakStockingRate = [stocking_rate]
+DDRules.FarmArea = [farm_area]
+DDRules.PorportionOfFarmInLaneWays = 0.01
+DDRules.HoursOnLaneWays = 1
+DDRules.HoursInDairyShed = 4
+DDRules.EffluentPaddocksPercentage = 0.18
+DDRules.SupplementME = 12.5
+DDRules.SupplementN = 0.035
+DDRules.SupplementWastage = 0
+DDRules.SupplementDigestability = 0.7
+DDRules.MilkCurve = '[milk_prod]'
+DDRules.LWtCurve = '[Live_Wt]'
+DDRules.AllocationType = 1  
+DDRules.SilageME = 10.0                     </text>
+        <event>init</event>
+      </script>
+    </manager>
+    <manager name="Wintering Off Dry Stock">
+      <ui>
+        <category type="category" />
+        <DoWinter type="yesno" description="Winter dry stock off farm">yes</DoWinter>
+      </ui>
+      <script>
+        <text>if ('[DoWinter]' = 'yes') then
+   DDRules.WinterOffDryStock = 1
+else
+   DDRules.WinterOffDryStock = 0
+endif</text>
+        <event>init</event>
+      </script>
+    </manager>
+    <manager name="Irrigate at SW deficit">
+      <ui>
+        <trigger type="text" description="Enter sw deficit to irrigate at (mm)">0.75</trigger>
+        <mmAmount type="text" description="Application Amount (mm)">5.5</mmAmount>
+      </ui>
+      <script>
+        <text>
+        </text>
+        <event>init</event>
+      </script>
+      <script>
+        <text>if PlantAvalibleWater &lt; [trigger] then        
+        DDRules ApplyIrrigation amount = [mmAmount]
+endif</text>
+        <event>start_of_day</event>
+      </script>
+      <script>
+        <text>
+        </text>
+        <event>end_of_day</event>
+      </script>
+    </manager>
+    <operations name="Operations Fertiliser">
+      <operation condition="start_of_day">
+        <date>01-Aug</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Oct</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Nov</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Dec</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Jan</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Feb</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Mar</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Apr</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-Sep</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>01-may</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Aug</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Sep</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Oct</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Nov</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Dec</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Jan</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Feb</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Mar</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-Apr</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+      <operation condition="start_of_day">
+        <date>15-May</date>
+        <action>DDRules ApplyFertiliser amount = 12.5 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+      </operation>
+    </operations>
+    <manager name="Grazing Settings Mar">
+      <ui>
+        <category type="category" />
+        <date type="ddmmmdate" description="Enter date (dd-mmm) : ">01-mar</date>
+        <category type="category" />
+        <residual type="text" description="Grazing Residual [kgDM/ha]">1480</residual>
+        <length type="text" description="Rotation Length [days]">30</length>
+      </ui>
+      <script>
+        <text>if (today = date('[date]')) then
+   DDRules.GrazingResidual = [residual]
+   DDRules.GrazingInterval = [length]
+endif</text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
   </folder>
+  <folder name="LUDF Soils">
+    <soil name="EyreLike">
+      <SoilType type="text" description="Classification">NZ_sedementary</SoilType>
+      <Country type="text" description="Country">New Zealand</Country>
+      <Site type="text" description="Site">-</Site>
+      <Region type="text" description="Region">Plains</Region>
+      <LocalName type="text" description="LocalName" />
+      <NearestTown type="text" description="NearestTown">-</NearestTown>
+      <NaturalVegetation type="text" description="NaturalVegetation" />
+      <State type="text" description="State">Canterbury</State>
+      <ApsoilNumber type="text" description="ApsoilNumber" />
+      <Latitude type="text" description="Latitude" />
+      <Longitude type="text" description="Longitude" />
+      <LocationAccuracy type="text" description="LocationAccuracy" />
+      <DataSource type="multiedit" description="DataSource">Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+      <Comments type="multiedit" description="Comments">Trevor Webb says Eyre soils are not at the extreme end of the possibilities for this soil name.  Based on Eyre stony (less stones).  Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+      <Analysis>
+        <Layer>
+          <Thickness units="mm">120</Thickness>
+          <Rocks units="%" code="E">10</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH units="1:5 water" code="E">6</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" code="E">13</CEC>
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" code="E">12.7966</ParticleSizeSand>
+          <ParticleSizeSilt units="%" code="E">66.7554</ParticleSizeSilt>
+          <ParticleSizeClay units="%" code="E">20.448</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>50</Thickness>
+          <Rocks code="E">15</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">9</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">12.7966</ParticleSizeSand>
+          <ParticleSizeSilt code="E">66.7554</ParticleSizeSilt>
+          <ParticleSizeClay code="E">20.448</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks code="E">50</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">8</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">15.796</ParticleSizeSand>
+          <ParticleSizeSilt code="E">76.536</ParticleSizeSilt>
+          <ParticleSizeClay code="E">7.668</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks code="E">65</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">5</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">37.7916</ParticleSizeSand>
+          <ParticleSizeSilt code="E">57.0964</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>380</Thickness>
+          <Rocks code="E">75</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">4</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">39.7912</ParticleSizeSand>
+          <ParticleSizeSilt code="E">55.0968</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <Rocks code="E">75</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">4</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">39.7912</ParticleSizeSand>
+          <ParticleSizeSilt code="E">55.0968</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+      </Analysis>
+      <Water>
+        <Layer>
+          <Thickness units="mm">120</Thickness>
+          <KS units="mm/day">7200</KS>
+          <BD units="g/cc" code="E">1.17</BD>
+          <Airdry units="mm/mm" code="E">0.072</Airdry>
+          <LL15 units="mm/mm" code="E">0.144</LL15>
+          <DUL units="mm/mm" code="E">0.342</DUL>
+          <SAT units="mm/mm" code="E">0.423</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>50</Thickness>
+          <KS>7200</KS>
+          <BD code="E">1.105</BD>
+          <Airdry code="E">0.068</Airdry>
+          <LL15 code="E">0.136</LL15>
+          <DUL code="E">0.323</DUL>
+          <SAT code="E">0.3995</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS>12000</KS>
+          <BD code="E">0.7</BD>
+          <Airdry code="E">0.03</Airdry>
+          <LL15 code="E">0.03</LL15>
+          <DUL code="E">0.175</DUL>
+          <SAT code="E">0.215</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS>16800</KS>
+          <BD code="E">0.455</BD>
+          <Airdry code="E">0.014</Airdry>
+          <LL15 code="E">0.014</LL15>
+          <DUL code="E">0.0455</DUL>
+          <SAT code="E">0.14</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>380</Thickness>
+          <KS>24000</KS>
+          <BD code="E">0.25</BD>
+          <Airdry code="E">0.01</Airdry>
+          <LL15 code="E">0.01</LL15>
+          <DUL code="E">0.0275</DUL>
+          <SAT code="E">0.125</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <KS>24000</KS>
+          <BD code="E">0.25</BD>
+          <Airdry code="E">0.01</Airdry>
+          <LL15 code="E">0.01</LL15>
+          <DUL code="E">0.0275</DUL>
+          <SAT code="E">0.125</SAT>
+        </Layer>
+        <SoilCrop name="Barley">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Canola">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Cloverseed">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.233222723007202</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.229005977511406</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.180537208914757</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.172448605298996</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0412621349096298</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00339304120279849</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fieldpea">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.29561722278595</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.301007598638535</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.286816012859344</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.328347861766815</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0819976553320885</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00678614480420947</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fababean">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.312770128250122</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.330013900995255</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.37627457678318</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.69769948720932</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.442327439785004</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.133241966366768</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="kale">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ItallianRyegrass">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Lucerne">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.241855591535568</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.264554500579834</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.34183512032032</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.778839588165283</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.595774471759796</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.348870545625687</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Maize">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.316903978586197</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.336153566837311</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.397308513522148</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.775066673755646</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.594207108020782</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.262663215398788</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Oats">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Potato">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.275970429182053</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.266045689582825</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.19135485291481</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.0966876745223999</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0111880330368876</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.000337846548063681</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Grassseed">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.286156713962555</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.283984154462814</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.2515580534935</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.185873836278915</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00151414982974529</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Triticale">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Wheat">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.304412811994553</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.316451877355576</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.330952593684196</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.525405764579773</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.21173994243145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass_clover">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.286156713962555</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.283984154462814</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.2515580534935</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.185873836278915</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00151414982974529</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.286156713962555</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.283984154462814</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.2515580534935</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.185873836278915</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0303872358053923</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00151414982974529</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="whiteclover">
+          <Layer>
+            <Thickness units="mm">120</Thickness>
+            <LL units="mm/mm" code="E">0.144</LL>
+            <kl units="/day">0.29561722278595</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>50</Thickness>
+            <LL code="E">0.136</LL>
+            <kl>0.301007598638535</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.03</LL>
+            <kl>0.286816012859344</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.328347861766815</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>380</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.0819976553320885</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.01</LL>
+            <kl>0.00678614480420947</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+      </Water>
+      <SoilWat>
+        <SummerCona>4.4</SummerCona>
+        <SummerU>9</SummerU>
+        <SummerDate>1-Oct</SummerDate>
+        <WinterCona>3</WinterCona>
+        <WinterU>6</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <Slope />
+        <DischargeWidth />
+        <CatchmentArea />
+        <MaxPond />
+        <Layer>
+          <Thickness units="mm">120</Thickness>
+          <SWCON units="0-1">0.457632449279133</SWCON>
+          <MWCON units="0-1">
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>50</Thickness>
+          <SWCON>0.52000321289643</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.650583088307059</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.650597666182654</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>380</Thickness>
+          <SWCON>0.650599955554641</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <SWCON>0.650599955554641</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
+      <SoilOrganicMatter>
+        <RootCn>40</RootCn>
+        <RootWt>1000</RootWt>
+        <SoilCn>11</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Layer>
+          <Thickness units="mm">120</Thickness>
+          <OC units="Total %" code="E">2.45608005793154</OC>
+          <FBIOM units="0-1">0.0379070530428412</FBIOM>
+          <FINERT units="0-1">0.350351133722161</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>50</Thickness>
+          <OC code="E">2.45608005793154</OC>
+          <FBIOM>0.0267580619699056</FBIOM>
+          <FINERT>0.496576375639591</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC code="E">1.36155961433917</OC>
+          <FBIOM>0.019197019407469</FBIOM>
+          <FINERT>0.62705460635218</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC code="E">0.558944735209042</OC>
+          <FBIOM>0.0123842377083576</FBIOM>
+          <FINERT>0.810112458288203</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>380</Thickness>
+          <OC code="E">0.410470445399265</OC>
+          <FBIOM>0.0103100193556455</FBIOM>
+          <FINERT>0.931527513256821</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <OC code="E">0.400309919269775</OC>
+          <FBIOM>0.0100221233748059</FBIOM>
+          <FINERT>0.981708581577508</FINERT>
+        </Layer>
+      </SoilOrganicMatter>
+      <InitWater>
+        <percentmethod>
+          <percent>1</percent>
+          <distributed>filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <Sample name="Initial nitrogen">
+        <Date type="date" description="Sample date:" />
+        <Layer>
+          <Thickness>200</Thickness>
+          <no3 units="kg/ha">30</no3>
+          <nh4 units="kg/ha">5</nh4>
+        </Layer>
+        <Layer>
+          <Thickness>1800</Thickness>
+          <no3 units="kg/ha">20</no3>
+          <nh4 units="kg/ha">1</nh4>
+        </Layer>
+      </Sample>
+    </soil>
+    <soil name="PaparuaLike">
+      <SoilType type="text" description="Classification">NZ_sedementary</SoilType>
+      <Country type="text" description="Country">New Zealand</Country>
+      <Site type="text" description="Site">-</Site>
+      <Region type="text" description="Region">Plains</Region>
+      <LocalName type="text" description="LocalName" />
+      <NearestTown type="text" description="NearestTown">-</NearestTown>
+      <NaturalVegetation type="text" description="NaturalVegetation" />
+      <State type="text" description="State">Canterbury</State>
+      <ApsoilNumber type="text" description="ApsoilNumber" />
+      <Latitude type="text" description="Latitude" />
+      <Longitude type="text" description="Longitude" />
+      <LocationAccuracy type="text" description="LocationAccuracy" />
+      <DataSource type="multiedit" description="DataSource">Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+      <Comments type="multiedit" description="Comments">VERY ROUGH based on discussion with Trevor Webb - taken from the "Canterbury Light" generic soil but no stones untiol 0.7 m - assume soil properties from 30 cm apply down to 70 cm.Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+      <Analysis>
+        <Layer>
+          <Thickness units="mm">200</Thickness>
+          <Rocks units="%" code="E">0</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC units="1:5 dS/m" />
+          <PH units="1:5 water" code="E">6</PH>
+          <CL units="mg/kg" />
+          <Boron units="Hot water mg/kg" />
+          <CEC units="cmol+/kg" code="E">13</CEC>
+          <Ca units="cmol+/kg" />
+          <Mg units="cmol+/kg" />
+          <Na units="cmol+/kg" />
+          <K units="cmol+/kg" />
+          <ESP units="%" />
+          <Mn units="mg/kg" />
+          <Al units="cmol+/kg" />
+          <ParticleSizeSand units="%" code="E">14.5</ParticleSizeSand>
+          <ParticleSizeSilt units="%" code="E">65.5</ParticleSizeSilt>
+          <ParticleSizeClay units="%" code="E">20</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">9</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">26.5</ParticleSizeSand>
+          <ParticleSizeSilt code="E">60.5</ParticleSizeSilt>
+          <ParticleSizeClay code="E">13</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks code="">0</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">9</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">17.7956</ParticleSizeSand>
+          <ParticleSizeSilt code="E">69.4244</ParticleSizeSilt>
+          <ParticleSizeClay code="E">12.78</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <Rocks code="">0</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">5</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">37.7916</ParticleSizeSand>
+          <ParticleSizeSilt code="E">57.0964</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <Rocks code="E">80</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">4</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">39.7912</ParticleSizeSand>
+          <ParticleSizeSilt code="E">55.0968</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <Rocks code="E">80</Rocks>
+          <Texture />
+          <MunsellColour />
+          <EC />
+          <PH code="E">6</PH>
+          <CL />
+          <Boron />
+          <CEC code="E">4</CEC>
+          <Ca />
+          <Mg />
+          <Na />
+          <K />
+          <ESP />
+          <Mn />
+          <Al />
+          <ParticleSizeSand code="E">39.7912</ParticleSizeSand>
+          <ParticleSizeSilt code="E">55.0968</ParticleSizeSilt>
+          <ParticleSizeClay code="E">5.112</ParticleSizeClay>
+        </Layer>
+      </Analysis>
+      <Water>
+        <Layer>
+          <Thickness units="mm">200</Thickness>
+          <KS units="mm/day">4832.03882317437</KS>
+          <BD units="g/cc" code="E">1.3105</BD>
+          <Airdry units="mm/mm" code="E">0.07675</Airdry>
+          <LL15 units="mm/mm" code="E">0.1535</LL15>
+          <DUL units="mm/mm" code="E">0.3735</DUL>
+          <SAT units="mm/mm" code="E">0.456165</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS>4715.07811907887</KS>
+          <BD code="E">1.474</BD>
+          <Airdry code="E">0.152</Airdry>
+          <LL15 code="E">0.152</LL15>
+          <DUL code="E">0.32</DUL>
+          <SAT code="E">0.41292</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS>720</KS>
+          <BD code="">1.474</BD>
+          <Airdry code="">0.152</Airdry>
+          <LL15 code="">0.152</LL15>
+          <DUL code="">0.32</DUL>
+          <SAT code="">0.413</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <KS>16800</KS>
+          <BD code="">1.474</BD>
+          <Airdry code="">0.152</Airdry>
+          <LL15 code="">0.152</LL15>
+          <DUL code="">0.32</DUL>
+          <SAT code="">0.413</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <KS>24000</KS>
+          <BD code="E">0.2</BD>
+          <Airdry code="E">0.008</Airdry>
+          <LL15 code="E">0.008</LL15>
+          <DUL code="E">0.022</DUL>
+          <SAT code="E">0.1</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <KS>24000</KS>
+          <BD code="E">0.2</BD>
+          <Airdry code="E">0.008</Airdry>
+          <LL15 code="E">0.008</LL15>
+          <DUL code="E">0.022</DUL>
+          <SAT code="E">0.1</SAT>
+        </Layer>
+        <SoilCrop name="Barley">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Canola">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Cloverseed">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.179406732320786</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.137126356363297</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.137</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.137</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0479325614869595</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.00398921733722091</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fieldpea">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.257552772760391</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.258</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.258</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0941019281744957</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.007969681173563</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fababean">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.251453131437302</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.330258876085281</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.33</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.33</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.466487795114517</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.150738880038261</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="kale">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ItallianRyegrass">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Lucerne">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204260140657425</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.310769647359848</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.311</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.311</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.615175247192383</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.375010460615158</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Maize">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.258677661418915</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.351398378610611</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.351</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.351</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.613656580448151</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.287754952907562</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Oats">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Potato">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.188423573970795</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.135922491550446</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.136</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.136</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0131205432116985</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.000397606258047745</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Grassseed">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204584449529648</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.20048326253891</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.00178129062987864</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Triticale">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Wheat">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.236582592129707</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.285920381546021</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.286</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.234779357910156</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass_clover">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204584449529648</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.20048326253891</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.00178129062987864</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204584449529648</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.20048326253891</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.2</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0354190617799759</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.00178129062987864</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="whiteclover">
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.152</LL>
+            <kl>0.257552772760391</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.05</LL>
+            <kl>0.258</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.014</LL>
+            <kl>0.258</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.0941019281744957</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.008</LL>
+            <kl>0.007969681173563</kl>
+            <xf>0.670320046035639</xf>
+          </Layer>
+        </SoilCrop>
+      </Water>
+      <SoilWat>
+        <SummerCona>4.4</SummerCona>
+        <SummerU>9</SummerU>
+        <SummerDate>1-Oct</SummerDate>
+        <WinterCona>3</WinterCona>
+        <WinterU>6</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <Slope />
+        <DischargeWidth />
+        <CatchmentArea />
+        <MaxPond />
+        <Layer>
+          <Thickness units="mm">200</Thickness>
+          <SWCON units="0-1">0.496441652363301</SWCON>
+          <MWCON units="0-1" />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.561070157049405</SWCON>
+          <MWCON />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.561</SWCON>
+          <MWCON />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <SWCON>0.561</SWCON>
+          <MWCON />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <SWCON>0.650599955554641</SWCON>
+          <MWCON />
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <SWCON>0.650599955554641</SWCON>
+          <MWCON />
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
+      <SoilOrganicMatter>
+        <RootCn>40</RootCn>
+        <RootWt>1000</RootWt>
+        <SoilCn>11</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Layer>
+          <Thickness units="mm">200</Thickness>
+          <OC units="Total %" code="E">2.88976641944061</OC>
+          <FBIOM units="0-1">0.0319524654437611</FBIOM>
+          <FINERT units="0-1">0.493608393020692</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC code="E">0.971538473664052</OC>
+          <FBIOM>0.0176819963448302</FBIOM>
+          <FINERT>0.700441328421059</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC code="E">0.808540397716031</OC>
+          <FBIOM>0.0131232666400461</FBIOM>
+          <FINERT>0.808992957938846</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <OC code="E">0.80025789766441</OC>
+          <FBIOM>0.0110929488978917</FBIOM>
+          <FINERT>0.887008759636886</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>300</Thickness>
+          <OC code="E">0.800001737700794</OC>
+          <FBIOM>0.0102438698626206</FBIOM>
+          <FINERT>0.946626717299745</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <OC code="E">0.800000000582934</OC>
+          <FBIOM>0.0100221233748059</FBIOM>
+          <FINERT>0.983924276179929</FINERT>
+        </Layer>
+      </SoilOrganicMatter>
+      <InitWater>
+        <percentmethod>
+          <percent>1</percent>
+          <distributed>filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <Sample name="Initial nitrogen">
+        <Date type="date" description="Sample date:" />
+        <Layer>
+          <Thickness>200</Thickness>
+          <no3 units="kg/ha">30</no3>
+          <nh4 units="kg/ha">5</nh4>
+        </Layer>
+        <Layer>
+          <Thickness>1800</Thickness>
+          <no3 units="kg/ha">20</no3>
+          <nh4 units="kg/ha">1</nh4>
+        </Layer>
+      </Sample>
+    </soil>
+    <soil name="TempletonLike">
+      <Country>New Zealand</Country>
+      <Site>-</Site>
+      <Region>Plains</Region>
+      <LocalName />
+      <SoilType>NZ_sedementary</SoilType>
+      <NearestTown>-</NearestTown>
+      <NaturalVegetation />
+      <State>Canterbury</State>
+      <ApsoilNumber />
+      <Latitude />
+      <Longitude />
+      <LocationAccuracy />
+      <DataSource type="multiedit">Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+      <Comments type="multiedit">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+      <Analysis>
+        <Layer>
+          <Thickness units="mm">180</Thickness>
+          <Rocks units="%" code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC units="1:5 dS/m">
+          </EC>
+          <PH units="1:5 water" code="E">6</PH>
+          <CL units="mg/kg">
+          </CL>
+          <Boron units="Hot water mg/kg">
+          </Boron>
+          <CEC units="cmol+/kg" code="E">13</CEC>
+          <Ca units="cmol+/kg">
+          </Ca>
+          <Mg units="cmol+/kg">
+          </Mg>
+          <Na units="cmol+/kg">
+          </Na>
+          <K units="cmol+/kg">
+          </K>
+          <ESP units="%">
+          </ESP>
+          <Mn units="mg/kg">
+          </Mn>
+          <Al units="cmol+/kg">
+          </Al>
+          <ParticleSizeSand units="%" code="E">14.5</ParticleSizeSand>
+          <ParticleSizeSilt units="%" code="E">65.5</ParticleSizeSilt>
+          <ParticleSizeClay units="%" code="E">20</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">18</ParticleSizeSand>
+          <ParticleSizeSilt code="E">58</ParticleSizeSilt>
+          <ParticleSizeClay code="E">24</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">14</ParticleSizeSand>
+          <ParticleSizeSilt code="E">63</ParticleSizeSilt>
+          <ParticleSizeClay code="E">23</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>270</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">15</ParticleSizeSand>
+          <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+          <ParticleSizeClay code="E">19</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">15</ParticleSizeSand>
+          <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+          <ParticleSizeClay code="E">19</ParticleSizeClay>
+        </Layer>
+      </Analysis>
+      <Water>
+        <Layer>
+          <Thickness units="mm">180</Thickness>
+          <KS units="mm/day">4832.03882317437</KS>
+          <BD units="g/cc" code="E">1.3105</BD>
+          <Airdry units="mm/mm" code="E">0.07675</Airdry>
+          <LL15 units="mm/mm" code="E">0.1535</LL15>
+          <DUL units="mm/mm" code="E">0.3735</DUL>
+          <SAT units="mm/mm" code="E">0.456165</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <KS>389.229035400118</KS>
+          <BD code="E">1.524</BD>
+          <Airdry code="E">0.201</Airdry>
+          <LL15 code="E">0.201</LL15>
+          <DUL code="E">0.332</DUL>
+          <SAT code="E">0.39432</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <KS>16.3618936612702</KS>
+          <BD code="E">1.65</BD>
+          <Airdry code="E">0.201</Airdry>
+          <LL15 code="E">0.201</LL15>
+          <DUL code="E">0.3375</DUL>
+          <SAT code="E">0.358515</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>270</Thickness>
+          <KS>97.9950031817664</KS>
+          <BD code="E">1.601</BD>
+          <Airdry code="E">0.162</Airdry>
+          <LL15 code="E">0.162</LL15>
+          <DUL code="E">0.325</DUL>
+          <SAT code="E">0.37572</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <KS>97.9950031817664</KS>
+          <BD code="E">1.601</BD>
+          <Airdry code="E">0.162</Airdry>
+          <LL15 code="E">0.162</LL15>
+          <DUL code="E">0.325</DUL>
+          <SAT code="E">0.37572</SAT>
+        </Layer>
+        <SoilCrop name="Barley">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Canola">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Cloverseed">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.17341274023056</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.193986475467682</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0143600748851895</kl>
+            <xf>0.153815722533429</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00706269294023514</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000616139033809304</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fieldpea">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.228819847106934</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.330127707123756</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0241696406155825</kl>
+            <xf>0.0907179532894125</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0132411256432533</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00122551582753658</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fababean">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.255792379379272</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.420881912112236</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.120697714388371</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0591380536556244</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0201339855790138</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="kale">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ItallianRyegrass">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Lucerne">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204260140657425</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.386304697394371</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.158900246024132</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.10663788318634</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0441555351018906</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Maize">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.262296378612518</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.446103501319885</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.159359484910965</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.10596421957016</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0347418755292893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Oats">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.153815722533429</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Potato">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.199694439768791</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.201524528861046</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.00753395445644856</kl>
+            <xf>0.0907179532894125</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00200619343668222</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>6.16568373516202E-05</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Grassseed">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.214377656579018</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.271649757027626</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0139478892087936</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Triticale">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.153815722533429</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Wheat">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.242628872394562</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.36744047999382</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0472521595656872</kl>
+            <xf>0.153815722533429</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0293168395757675</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass_clover">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.214377656579018</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.271649757027626</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0139478892087936</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.214377656579018</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.271649757027626</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0139478892087936</kl>
+            <xf>0.120995732814878</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="whiteclover">
+          <Layer>
+            <Thickness units="mm">180</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.228819847106934</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.330127707123756</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.201</LL>
+            <kl>0.0241696406155825</kl>
+            <xf>0.0907179532894125</xf>
+          </Layer>
+          <Layer>
+            <Thickness>270</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0132411256432533</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>500</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00122551582753658</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+      </Water>
+      <SoilWat>
+        <SummerCona>4.4</SummerCona>
+        <SummerU>9</SummerU>
+        <SummerDate>1-Oct</SummerDate>
+        <WinterCona>3</WinterCona>
+        <WinterU>6</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <Slope />
+        <DischargeWidth />
+        <CatchmentArea />
+        <MaxPond />
+        <Layer>
+          <Thickness units="mm">180</Thickness>
+          <SWCON units="0-1">0.496441652363301</SWCON>
+          <MWCON units="0-1">
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <SWCON>0.365575319464424</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <SWCON>0.0968316236981163</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>270</Thickness>
+          <SWCON>0.306272690019786</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <SWCON>0.306272690019786</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
+      <SoilOrganicMatter>
+        <RootCn>40</RootCn>
+        <RootWt>1000</RootWt>
+        <SoilCn>11</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Layer>
+          <Thickness units="mm">180</Thickness>
+          <OC units="Total %" code="E">2.62509797633343</OC>
+          <FBIOM units="0-1">0.0333099300949596</FBIOM>
+          <FINERT units="0-1">0.437120879838036</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>150</Thickness>
+          <OC code="E">1.24694031672971</OC>
+          <FBIOM>0.0186614266926403</FBIOM>
+          <FINERT>0.656885264024723</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <OC code="E">0.316004293710514</OC>
+          <FBIOM>0.0116634262048469</FBIOM>
+          <FINERT>0.849635116265262</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>270</Thickness>
+          <OC code="E">0.207953620272232</OC>
+          <FBIOM>0.0102228802725968</FBIOM>
+          <FINERT>0.944959741045969</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>500</Thickness>
+          <OC code="E">0.200365542475381</OC>
+          <FBIOM>0.0100221233748059</FBIOM>
+          <FINERT>0.982659151583417</FINERT>
+        </Layer>
+      </SoilOrganicMatter>
+      <InitWater>
+        <percentmethod>
+          <percent>1</percent>
+          <distributed>filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <Sample name="Initial nitrogen">
+        <Date type="date" description="Sample date:" />
+        <Layer>
+          <Thickness>200</Thickness>
+          <no3 units="kg/ha">30</no3>
+          <nh4 units="kg/ha">5</nh4>
+        </Layer>
+        <Layer>
+          <Thickness>1800</Thickness>
+          <no3 units="kg/ha">20</no3>
+          <nh4 units="kg/ha">1</nh4>
+        </Layer>
+      </Sample>
+    </soil>
+    <soil name="TemukaLike">
+      <Country>New Zealand</Country>
+      <Site>-</Site>
+      <Region>Plains</Region>
+      <LocalName />
+      <SoilType>NZ_sedementary</SoilType>
+      <NearestTown>-</NearestTown>
+      <NaturalVegetation />
+      <State>Canterbury</State>
+      <ApsoilNumber />
+      <Latitude />
+      <Longitude />
+      <LocationAccuracy />
+      <DataSource type="multiedit">Generic profile descriptions provided by Trevor Webb and data for functional horizions based on SWAMP project results</DataSource>
+      <Comments type="multiedit">Bulk density values were measured on the fine earth fraction so values entered into apsim soil are adjusted down to account for stone content (assuming stones are inert from all soil process so their mass and volume is removed from model paramaters).  SAT, DUL, LL15 and Air dry have been adjusted down to account for stone content.  OC has not been adjusted so the model will get the correct carbon and N amounts using the adjusted BD.</Comments>
+      <Analysis>
+        <Layer>
+          <Thickness units="mm">250</Thickness>
+          <Rocks units="%" code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC units="1:5 dS/m">
+          </EC>
+          <PH units="1:5 water" code="E">6</PH>
+          <CL units="mg/kg">
+          </CL>
+          <Boron units="Hot water mg/kg">
+          </Boron>
+          <CEC units="cmol+/kg" code="E">13</CEC>
+          <Ca units="cmol+/kg">
+          </Ca>
+          <Mg units="cmol+/kg">
+          </Mg>
+          <Na units="cmol+/kg">
+          </Na>
+          <K units="cmol+/kg">
+          </K>
+          <ESP units="%">
+          </ESP>
+          <Mn units="mg/kg">
+          </Mn>
+          <Al units="cmol+/kg">
+          </Al>
+          <ParticleSizeSand units="%" code="E">14.5</ParticleSizeSand>
+          <ParticleSizeSilt units="%" code="E">65.5</ParticleSizeSilt>
+          <ParticleSizeClay units="%" code="E">20</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">19</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">7.7976</ParticleSizeSand>
+          <ParticleSizeSilt code="E">53.8624</ParticleSizeSilt>
+          <ParticleSizeClay code="E">38.34</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">19</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">1</ParticleSizeSand>
+          <ParticleSizeSilt code="E">55</ParticleSizeSilt>
+          <ParticleSizeClay code="E">44</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>250</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">15</ParticleSizeSand>
+          <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+          <ParticleSizeClay code="E">19</ParticleSizeClay>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <Rocks code="E">0</Rocks>
+          <Texture>
+          </Texture>
+          <MunsellColour />
+          <EC>
+          </EC>
+          <PH code="E">6</PH>
+          <CL>
+          </CL>
+          <Boron>
+          </Boron>
+          <CEC code="E">9</CEC>
+          <Ca>
+          </Ca>
+          <Mg>
+          </Mg>
+          <Na>
+          </Na>
+          <K>
+          </K>
+          <ESP>
+          </ESP>
+          <Mn>
+          </Mn>
+          <Al>
+          </Al>
+          <ParticleSizeSand code="E">15</ParticleSizeSand>
+          <ParticleSizeSilt code="E">66</ParticleSizeSilt>
+          <ParticleSizeClay code="E">19</ParticleSizeClay>
+        </Layer>
+      </Analysis>
+      <Water>
+        <Layer>
+          <Thickness units="mm">250</Thickness>
+          <KS units="mm/day">4832.03882317437</KS>
+          <BD units="g/cc" code="E">1.3105</BD>
+          <Airdry units="mm/mm" code="E">0.07675</Airdry>
+          <LL15 units="mm/mm" code="E">0.1535</LL15>
+          <DUL units="mm/mm" code="E">0.3735</DUL>
+          <SAT units="mm/mm" code="E">0.456165</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <KS>720</KS>
+          <BD code="E">1.42</BD>
+          <Airdry code="E">0.3</Airdry>
+          <LL15 code="E">0.3</LL15>
+          <DUL code="E">0.43</DUL>
+          <SAT code="E">0.45</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <KS>19.0511637721759</KS>
+          <BD code="E">1.424</BD>
+          <Airdry code="E">0.308</Airdry>
+          <LL15 code="E">0.308</LL15>
+          <DUL code="E">0.446</DUL>
+          <SAT code="E">0.4557</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>250</Thickness>
+          <KS>97.9950031817664</KS>
+          <BD code="E">1.601</BD>
+          <Airdry code="E">0.162</Airdry>
+          <LL15 code="E">0.162</LL15>
+          <DUL code="E">0.325</DUL>
+          <SAT code="E">0.37572</SAT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <KS>97.9950031817664</KS>
+          <BD code="E">1.601</BD>
+          <Airdry code="E">0.162</Airdry>
+          <LL15 code="E">0.162</LL15>
+          <DUL code="E">0.325</DUL>
+          <SAT code="E">0.37572</SAT>
+        </Layer>
+        <SoilCrop name="Barley">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Canola">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Cloverseed">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.154574632644653</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.0679578199982643</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0122099418193102</kl>
+            <xf>0.435178059266357</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00439625456929207</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000616139033809304</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fieldpea">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.200507909059525</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.1688282340765</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0215977985411882</kl>
+            <xf>0.201896517994655</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00844899266958237</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00122551582753658</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Fababean">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.24037854373455</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.284482604265213</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.107579982280731</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.046741583943367</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0201339855790138</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="kale">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ItallianRyegrass">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Lucerne">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.204260140657425</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.30307811498642</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.17519263625145</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0795587599277496</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0441555351018906</kl>
+            <xf>1</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Maize">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.249634489417076</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.313182735443115</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.177123546600342</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0759388506412506</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0347418755292893</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Oats">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.435178059266357</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Potato">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.1740802526474</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.0539382599294186</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.00485778013244271</kl>
+            <xf>0.201896517994655</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00100537007674575</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>6.16568373516202E-05</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Grassseed">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.180564358830452</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.0930867955088615</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0106383521109819</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00296643879264593</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Triticale">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.435178059266357</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="Wheat">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.220854833722115</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.23889707326889</kl>
+            <xf>1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0409162245690823</kl>
+            <xf>0.435178059266357</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.0217893213033676</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00528755336999893</kl>
+            <xf>0.731981528228313</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass_clover">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.180564358830452</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.0930867955088615</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0106383521109819</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00296643879264593</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="ryegrass">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.180564358830452</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.0930867955088615</kl>
+            <xf>0.825306868491682</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0106383521109819</kl>
+            <xf>0.316004128691862</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00296643879264593</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.000275798817165196</kl>
+            <xf>0.510686183366188</xf>
+          </Layer>
+        </SoilCrop>
+        <SoilCrop name="whiteclover">
+          <Layer>
+            <Thickness units="mm">250</Thickness>
+            <LL units="mm/mm" code="E">0.1535</LL>
+            <kl units="/day">0.200507909059525</kl>
+            <xf units="0-1">1</xf>
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <LL code="E">0.3</LL>
+            <kl>0.1688282340765</kl>
+            <xf>0.449328964117222</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.308</LL>
+            <kl>0.0215977985411882</kl>
+            <xf>0.201896517994655</xf>
+          </Layer>
+          <Layer>
+            <Thickness>250</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00844899266958237</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+          <Layer>
+            <Thickness>400</Thickness>
+            <LL code="E">0.162</LL>
+            <kl>0.00122551582753658</kl>
+            <xf>0.301194211912202</xf>
+          </Layer>
+        </SoilCrop>
+      </Water>
+      <SoilWat>
+        <SummerCona>4.4</SummerCona>
+        <SummerU>9</SummerU>
+        <SummerDate>1-Oct</SummerDate>
+        <WinterCona>3</WinterCona>
+        <WinterU>6</WinterU>
+        <WinterDate>1-Apr</WinterDate>
+        <DiffusConst>88</DiffusConst>
+        <DiffusSlope>35</DiffusSlope>
+        <Salb>0.13</Salb>
+        <Cn2Bare>73</Cn2Bare>
+        <CnRed>20</CnRed>
+        <CnCov>0.8</CnCov>
+        <Slope />
+        <DischargeWidth />
+        <CatchmentArea />
+        <MaxPond />
+        <Layer>
+          <Thickness units="mm">250</Thickness>
+          <SWCON units="0-1">0.496441652363301</SWCON>
+          <MWCON units="0-1">
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <SWCON>0.147749772150232</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <SWCON>0.0758548332020159</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>250</Thickness>
+          <SWCON>0.306272690019786</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <SWCON>0.306272690019786</SWCON>
+          <MWCON>
+          </MWCON>
+          <KLAT units="mm/d" />
+        </Layer>
+      </SoilWat>
+      <SoilOrganicMatter>
+        <RootCn>40</RootCn>
+        <RootWt>1000</RootWt>
+        <SoilCn>11</SoilCn>
+        <EnrACoeff>7.4</EnrACoeff>
+        <EnrBCoeff>0.2</EnrBCoeff>
+        <Layer>
+          <Thickness units="mm">250</Thickness>
+          <OC units="Total %" code="E">5.29821688077025</OC>
+          <FBIOM units="0-1">0.0288946621096406</FBIOM>
+          <FINERT units="0-1">0.696895766103232</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>200</Thickness>
+          <OC code="E">1.22931223620909</OC>
+          <FBIOM>0.0148982571301193</FBIOM>
+          <FINERT>0.845672533198128</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <OC code="E">0.293377099364637</OC>
+          <FBIOM>0.0108096764578322</FBIOM>
+          <FINERT>0.937255134333734</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>250</Thickness>
+          <OC code="E">0.206935451293087</OC>
+          <FBIOM>0.0101151959663235</FBIOM>
+          <FINERT>0.976333116445337</FINERT>
+        </Layer>
+        <Layer>
+          <Thickness>400</Thickness>
+          <OC code="E">0.200515120784069</OC>
+          <FBIOM>0.0100163893991592</FBIOM>
+          <FINERT>0.991073032490512</FINERT>
+        </Layer>
+      </SoilOrganicMatter>
+      <InitWater>
+        <percentmethod>
+          <percent>1</percent>
+          <distributed>filled from top</distributed>
+        </percentmethod>
+      </InitWater>
+      <Sample name="Initial nitrogen">
+        <Date type="date" description="Sample date:" />
+        <Layer>
+          <Thickness>200</Thickness>
+          <no3 units="kg/ha">30</no3>
+          <nh4 units="kg/ha">5</nh4>
+        </Layer>
+        <Layer>
+          <Thickness>1800</Thickness>
+          <no3 units="kg/ha">20</no3>
+          <nh4 units="kg/ha">1</nh4>
+        </Layer>
+      </Sample>
+    </soil>
+  </folder>
+  <manager2 name="Centre Piviot">
+    <ui />
+    <text>Imports System
+Imports ModelFramework
+
+Public Class Script
+   Inherits Instance
+   
+   Dim myIrrigation_efficiency As Double
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      myIrrigation_efficiency = 1.0
+   End Sub
+   
+   &lt;Output()&gt; Public Property irrigation_efficiency() As Double
+      Get
+         Return myIrrigation_efficiency
+      End Get
+      Set(ByVal value As Double)
+         If (value &lt; 0) Then
+            myIrrigation_efficiency = 0
+         ElseIf (value &gt; 1) Then
+            myIrrigation_efficiency = 1
+         Else
+            myIrrigation_efficiency = value
+         End If
+      End Set  
+   End Property
+
+   &lt;EventHandler()&gt; Public Sub OnApply(amount As IrrigationApplicationType)
+      For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
+         Dim myIrrigation As Irrigation = SubPaddock.ComponentByType("Irrigation")
+         '         myIrrigation.irrigation_efficiency = myIrrigation_efficiency
+         myIrrigation.Apply(amount)
+      Next
+   End Sub
+End Class
+    </text>
+  </manager2>
+  <manager name="Irrigate based on rainfall">
+    <ui>
+      <category type="category" description="When should irrigation be applied" />
+      <pastdays type="text" description="If rainfall over the past number of days">7</pastdays>
+      <EnoughRain type="text" description="Is less than (mm)">100</EnoughRain>
+      <category type="category" description="This will happen" />
+      <irrigate_module type="modulename" description="Module used to apply the irrigation : ">Centre Piviot</irrigate_module>
+      <irrigate_efficiency type="text" description="Irrigation efficiency (0-1) : ">1</irrigate_efficiency>
+    </ui>
+    <script>
+      <text>!if not enough rain has occured then irrigate. 
+            !Irrigate with the amount that is missing.
+            !Only irrigate if a certain number of days have passed.
+
+            if (rain[[pastdays]] &lt; [EnoughRain]) then
+               '[irrigate_module]' set irrigation_efficiency = [irrigate_efficiency]
+               difference = [EnoughRain] - rain[[pastdays]]
+                '[irrigate_module]' apply amount = 5.5 (mm)
+            endif 
+            </text>
+      <event>start_of_day</event>
+    </script>
+    <script>
+      <text>
+      </text>
+      <event>init</event>
+    </script>
+  </manager>
+  <manager name="Grazing Settings Test1">
+    <ui>
+      <category type="category" />
+      <date type="ddmmmdate" description="Enter date (dd-mmm) : ">01-mar</date>
+      <category type="category" />
+      <residual type="text" description="Grazing Residual [kgDM/ha]">1480</residual>
+      <length type="text" description="Rotation Length [days]">30</length>
+    </ui>
+    <script>
+      <text>if (today = date('[date]')) then
+   DDRules.GrazingResidual = [residual]
+   DDRules.GrazingInterval = [length]
+endif</text>
+      <event>start_of_day</event>
+    </script>
+  </manager>
+  <manager2 name="Farm_Fert">
+    <ui />
+    <text>Imports System
+Imports ModelFramework
+
+Public Class Script 
+   Inherits Instance
+   
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   
+   &lt;EventHandler()&gt; Public Sub OnApply(fert As FertiliserApplicationType)
+      For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
+         Dim myFertiliser As Fertiliser = SubPaddock.ComponentByType("Fertiliser")
+         myFertiliser.Apply(fert)
+      Next
+   End Sub
+End Class
+    </text>
+  </manager2>
+  <operations name="Operations Fertiliser">
+    <operation condition="start_of_day">
+      <date>01-Aug</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Oct</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Nov</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Dec</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Jan</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Feb</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Mar</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+    <operation condition="start_of_day">
+      <date>01-Apr</date>
+      <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
+    </operation>
+  </operations>
 </folder>
