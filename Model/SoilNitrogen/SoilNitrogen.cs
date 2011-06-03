@@ -1099,6 +1099,41 @@ public class SoilN : Instance
         set { _nitrification_inhibition = value; }
     }
 
+    [Output]
+    [Description("Carbon balance")]
+    double carbonbalance
+    {
+        get
+        {
+            double deltaC = TotalC() - dailyInitialC; // Delta storage
+            double losses = 0.0;
+            int nLayers = dlayer.Length;
+            for (int layer = 0; layer < nLayers; layer++)
+               losses += _dlt_fom_c_atm[0][layer] +
+                         _dlt_fom_c_atm[1][layer] +
+                         _dlt_fom_c_atm[2][layer] +
+                         dlt_hum_c_atm[layer] +
+                         dlt_biom_c_atm[layer] +
+                         SumDoubleArray(_dlt_res_c_atm[layer]);
+            return - (losses + deltaC);
+        }
+    }
+
+    [Output]
+    [Description("Nitrogen balance")]
+    double nitrogenbalance
+    {
+        get
+        {
+            double deltaN = TotalN() - dailyInitialN; // Delta storage
+            double losses = 0.0;
+            int nLayers = dlayer.Length;
+            for (int layer = 0; layer < nLayers; layer++)
+               losses += dlt_no3_dnit[layer] +
+                         dlt_nh4_dnit[layer];
+            return - (losses + deltaN);
+        }
+    }
 #endregion
 
 #region Drivers we obtain from other components
@@ -1268,6 +1303,11 @@ public class SoilN : Instance
         Array.Resize(ref pot_c_decomp, 0);
         Array.Resize(ref pot_n_decomp, 0);
         Array.Resize(ref pot_p_decomp, 0);
+
+        // Calculations for NEW sysbal component
+        dailyInitialC = TotalC();
+        dailyInitialN = TotalN();
+   
     }
 
     [EventHandler]
@@ -1369,6 +1409,8 @@ public class SoilN : Instance
 #region  Various internal variables
     private double oldN;
     private double oldC;
+    private double dailyInitialC;
+    private double dailyInitialN;
     private float[] ll15_dep; // lower limit (@15 bar) of soil water content (mm)
     private float[] dul_dep;  // drained upper limit soil water content (mm)
     private float[] sat_dep;  // saturated water content (mm)
@@ -1504,8 +1546,9 @@ public class SoilN : Instance
 
     private void SaveState()
     {
-        oldN = TotalN();
-        oldC = TotalC();
+        // Calculations for both NEW and OLD sysbal component
+        dailyInitialN = oldN = TotalN();
+        dailyInitialC = oldC = TotalC();
     }
 
     private void DeltaState()
@@ -1660,6 +1703,11 @@ public class SoilN : Instance
             no3_yesterday[layer] = _no3[layer];
             nh4_yesterday[layer] = _nh4[layer];
         }
+
+        // Calculations for NEW sysbal component
+        dailyInitialC = TotalC();
+        dailyInitialN = TotalN();
+   
         initDone = true;
     }
 
@@ -2227,12 +2275,15 @@ public class SoilN : Instance
     private double TotalC()
     {
         double carbon_tot = 0.0;
-        int numLayers = dlayer.Length;
-        for (int layer = 0; layer < numLayers; layer++)
+        if (dlayer != null)
         {
-            carbon_tot += LayerFomC(layer) + 
-                          hum_c[layer] + 
-                          biom_c[layer];
+            int numLayers = dlayer.Length;
+            for (int layer = 0; layer < numLayers; layer++)
+            {
+                carbon_tot += LayerFomC(layer) +
+                              hum_c[layer] +
+                              biom_c[layer];
+            }
         }
         return carbon_tot;
     }
@@ -2240,15 +2291,18 @@ public class SoilN : Instance
     private double TotalN()
     {
         double nitrogen_tot = 0.0;
-        int numLayers = dlayer.Length;
-        for (int layer = 0; layer < numLayers; layer++)
+        if (dlayer != null)
         {
-            nitrogen_tot += fom_n[layer] +
-                            hum_n[layer] +
-                            biom_n[layer] +
-                            _no3[layer] +
-                            _nh4[layer] +
-                            _urea[layer];
+            int numLayers = dlayer.Length;
+            for (int layer = 0; layer < numLayers; layer++)
+            {
+                nitrogen_tot += fom_n[layer] +
+                                hum_n[layer] +
+                                biom_n[layer] +
+                                _no3[layer] +
+                                _nh4[layer] +
+                                _urea[layer];
+            }
         }
         return nitrogen_tot;
     }
