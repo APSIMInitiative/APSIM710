@@ -318,7 +318,7 @@ Public Class SimpleCow
                 Dim days As Integer = Date.DaysInMonth(year, mth)
                 Dim indexMth = (mth + 12 - 1) Mod 12
                 MS_per_Day = MS(indexMth)
-                Console.WriteLine("    MS_per_Day = " + MS_per_Day.ToString("0.00"))
+                'Console.WriteLine("    MS_per_Day = " + MS_per_Day.ToString("0.00"))
                 Dim indexMth2 = (mth + 12) Mod 12
                 Dim deltaMS As Double = MS(indexMth2) - MS(indexMth)
                 Change_in_MS_per_Day = deltaMS / days

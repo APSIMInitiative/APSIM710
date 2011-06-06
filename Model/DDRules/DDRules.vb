@@ -166,9 +166,9 @@ Public Class DDRules
 
         'Whole farm fertiliser application
         <EventHandler()> Public Sub OnApplyFertiliser(ByVal amount As FertiliserApplicationType)
-                Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
+                'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
                 myFertiliserAmount += myFarm.Fertilise(amount)
-                Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
+                'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
         End Sub
 
         Dim myIrrigationAmount As Double = 0
@@ -176,23 +176,23 @@ Public Class DDRules
 
         'Whole farm irrigation application
         <EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
-                Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
+                'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
                 myIrrigationAmount += myFarm.Irrigate(amount)
-                Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
+                'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
         End Sub
 
         'Testing overloaded irrigation Apply event
         <EventHandler()> Public Sub OnApply(ByVal amount As IrrigationApplicationType)
                 '     Dim t As ApsimType = amount
                 '    If (TypeOf t Is IrrigationApplicationType) Then
-                Console.WriteLine("   Irrigation Event triggered")
-                '                OnApplyIrrigation(amount)
+                'Console.WriteLine("   DDRules TODO: DLL Irrigation Event triggered - DDRules failed to apply water")
+                OnApplyIrrigation(amount)
         End Sub
 
         'Testing overloaded fertiliser Apply event
         <EventHandler()> Public Sub OnApply(ByVal amount As FertiliserApplicationType)
                 '                Console.WriteLine("   Fertiliser Event triggered")
-                '                OnApplyFert(amount)
+                OnApplyFertiliser(amount)
         End Sub
 
         'Amount of water applied in relation to the whole farm

@@ -281,37 +281,37 @@ Public Class LocalPaddockType
         Public Function Harvest(ByVal CuttingResidual As Integer, ByVal loss As Double) As BioMass
                 Dim cutDM As Double = Cover() - CuttingResidual
                 Dim RemovalProportion = cutDM / Cover()
-                'If (DebugLevel > 0) Then
-                Console.WriteLine()
-                Console.WriteLine("DDRules.Harvest")
-                Console.WriteLine("     " & ApSim_SubPaddock.Name)
-                Console.WriteLine("     " & "+ Start Cover = " & Cover())
-                Console.WriteLine("     " & "- Residual    = " & CuttingResidual)
-                Console.WriteLine("     " & "= Cut DM      = " & cutDM)
-                Console.WriteLine("     " & "= Proportion  = " & RemovalProportion * 100 & "%")
-                ' End If
+                If (DebugLevel > 0) Then
+                        Console.WriteLine()
+                        Console.WriteLine("DDRules.Harvest")
+                        Console.WriteLine("     " & ApSim_SubPaddock.Name)
+                        Console.WriteLine("     " & "+ Start Cover = " & Cover())
+                        Console.WriteLine("     " & "- Residual    = " & CuttingResidual)
+                        Console.WriteLine("     " & "= Cut DM      = " & cutDM)
+                        Console.WriteLine("     " & "= Proportion  = " & RemovalProportion * 100 & "%")
+                End If
 
                 Dim RemovedMass As BioMass = New BioMass
                 If cutDM > 0 Then
                         For Each crop As Component In ApSim_SubPaddock.Crops
                                 Dim tempBioMass As BioMass = New BioMass
                                 PastureMasses.TryGetValue(crop.Name, tempBioMass) 'this should really be checked, it should never fail but...
-                                'If (DebugLevel > 1) Then
-                                Console.WriteLine("DDRules.Harvest - " & tempBioMass.ToString())
-                                'End If
+                                If (DebugLevel > 1) Then
+                                        Console.WriteLine("DDRules.Harvest - " & tempBioMass.ToString())
+                                End If
                                 Dim tempRemovedMass = tempBioMass.Multiply(RemovalProportion)
                                 crop.Publish("remove_crop_biomass", tempRemovedMass.toRemoveCropDmType())
                                 ReturnDM(tempRemovedMass, loss)
                                 RemovedMass = RemovedMass.Add(tempRemovedMass)
                                 UpdateCovers()
                                 PastureMasses.TryGetValue(crop.Name, tempBioMass) 'this should really be checked, it should never fail but...
-                                'If (DebugLevel > 1) Then
-                                Dim biomass As Double = crop.Variable("biomass").ToDouble
-                                Console.WriteLine("DDRules.Harvest - " & "Finish = " & biomass & " (includes stolons)")
-                                Console.WriteLine("DDRules.Harvest - " & "Finish = " & tempBioMass.ToString())
-                                Console.WriteLine("DDRules.Harvest - " & "Removed (ha) = " & RemovedMass.ToString())
-                                Console.WriteLine("DDRules.Harvest - " & "Removed Total= " & RemovedMass.Multiply(Area).ToString())
-                                'End If
+                                If (DebugLevel > 1) Then
+                                        Dim biomass As Double = crop.Variable("biomass").ToDouble
+                                        Console.WriteLine("DDRules.Harvest - " & "Finish = " & biomass & " (includes stolons)")
+                                        Console.WriteLine("DDRules.Harvest - " & "Finish = " & tempBioMass.ToString())
+                                        Console.WriteLine("DDRules.Harvest - " & "Removed (ha) = " & RemovedMass.ToString())
+                                        Console.WriteLine("DDRules.Harvest - " & "Removed Total= " & RemovedMass.Multiply(Area).ToString())
+                                End If
                         Next
                 End If
                 Grazable = True       'flag paddock as "Growing"

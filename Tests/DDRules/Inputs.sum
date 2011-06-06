@@ -19,7 +19,6 @@ Title                  = Inputs
    Component       "Irrigate at SW deficit" = %apsim%\Model\Manager.dll
    Component      "Fertilise on fixed date" = %apsim%\Model\Manager.dll
    Component                      "DDRules" = %apsim%\Model\DDRules.dll
-    MS_per_Day = 0.00
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
@@ -96,7 +95,7 @@ Paddock:
      conservationfinish = '1-apr'
      conservationtrigger = 3000
      conservationresidual = 2000
-     silagecutwastage = cutting_waste
+     silagecutwastage = 0
      if 'yes' = 'yes' then
         silagestoreenable = 1
         silageme = 10.5
@@ -107,16 +106,6 @@ Paddock:
      endif
      END of rules
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "cutting_waste".
-     Variables should have a value before they are used in an expression.
-     Component name: Conservation Settings
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : cutting_waste = 0.00000
 
 ------- Irrigate at SW deficit Initialisation ---------------------------------
      Manager rules:
@@ -143,7 +132,6 @@ Paddock:
      
 
 ------- DDRules Initialisation ------------------------------------------------
-    MS_per_Day = 0.00
 
 ---------- DDRules Initialisation ----------
      General Farm Description
@@ -647,23 +635,16 @@ from the number of soil layers.The simulation will run using the minimum of the 
 Warning: Number of layers specified for root length density (rlvp) is different 
 from the number of soil layers.The simulation will run using the minimum of the two.
 ------- Start of simulation  --------------------------------------------------
-    MS_per_Day = 0.78
-    MS_per_Day = 1.69
 30 September 1989(Day of year=273), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 1 October 1989(Day of year=274), Fertilise on fixed date: 
      Manager sending message :- ddrules applyfertiliser  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
-   myFertiliserAmount  = 0
 1 October 1989(Day of year=274), Fertiliser: 
      
    - Reading Fertiliser Type Parameters
        150.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
 1 October 1989(Day of year=274), Fertiliser: 
-   myFertiliserAmount  = 150
-    MS_per_Day = 1.94
      
    - Reading Fertiliser Type Parameters
        150.00 of N as urea (urea_n)
@@ -671,161 +652,35 @@ from the number of soil layers.The simulation will run using the minimum of the 
 1 October 1989(Day of year=274), Fertilise on fixed date: 
      Manager creating a new local real variable : n_topsoil = 0.00000
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3264.477
-     - Residual    = 2000
-     = Cut DM      = 1264.477
-     = Proportion  = 38.7344435264822%
-DDRules.Harvest - ryegrass_clover DM = 3264 @ = 12.0me DM[Green=2128, 849, Dead=211, 76]  N = 122.913821648433
-DDRules.Harvest - Finish = 2178.12233667726 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1304, 520, Dead=129, 47]  N = 74.5756332196749
-DDRules.Harvest - Removed (ha) = default DM = 1264 @ = 12.0me DM[Green=824, 329, Dead=82, 29]  N = 47.6099848326533
-DDRules.Harvest - Removed Total= default DM = 632 @ = 12.0me DM[Green=412, 164, Dead=41, 15]  N = 23.8049735903675
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3264.477
-     - Residual    = 2000
-     = Cut DM      = 1264.477
-     = Proportion  = 38.7344435264822%
-DDRules.Harvest - ryegrass_clover DM = 3264 @ = 12.0me DM[Green=2128, 849, Dead=211, 76]  N = 122.913821648433
-DDRules.Harvest - Finish = 2178.12233667726 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1304, 520, Dead=129, 47]  N = 74.5756332196749
-DDRules.Harvest - Removed (ha) = default DM = 1264 @ = 12.0me DM[Green=824, 329, Dead=82, 29]  N = 47.6099848326533
-DDRules.Harvest - Removed Total= default DM = 632 @ = 12.0me DM[Green=412, 164, Dead=41, 15]  N = 23.8049735903675
      
    - Reading Fertiliser Type Parameters
        100.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3464.804
-     - Residual    = 2000
-     = Cut DM      = 1464.804
-     = Proportion  = 42.2766771222846%
-DDRules.Harvest - ryegrass_clover DM = 3465 @ = 12.1me DM[Green=2287, 952, Dead=164, 62]  N = 136.970296296067
-DDRules.Harvest - Finish = 2250.77670139307 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1320, 549, Dead=95, 36]  N = 77.8787157521535
-DDRules.Harvest - Removed (ha) = default DM = 1465 @ = 12.1me DM[Green=967, 402, Dead=70, 26]  N = 57.9064899185246
-DDRules.Harvest - Removed Total= default DM = 732 @ = 12.1me DM[Green=483, 201, Dead=35, 13]  N = 28.9532449592623
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3464.804
-     - Residual    = 2000
-     = Cut DM      = 1464.804
-     = Proportion  = 42.2766771222846%
-DDRules.Harvest - ryegrass_clover DM = 3465 @ = 12.1me DM[Green=2287, 952, Dead=164, 62]  N = 136.970296296067
-DDRules.Harvest - Finish = 2250.77670139307 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1320, 549, Dead=95, 36]  N = 77.8787157521535
-DDRules.Harvest - Removed (ha) = default DM = 1465 @ = 12.1me DM[Green=967, 402, Dead=70, 26]  N = 57.9064899185246
-DDRules.Harvest - Removed Total= default DM = 732 @ = 12.1me DM[Green=483, 201, Dead=35, 13]  N = 28.9532449592623
 29 October 1989(Day of year=302), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.86
 1 November 1989(Day of year=305), Irrigate on fixed date: 
      Manager sending message :- irrigation apply  amount = 50 (mm)
 1 November 1989(Day of year=305), Fertilise on fixed date1: 
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
 1 November 1989(Day of year=305), Fertiliser: 
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3530.236
-     - Residual    = 2000
-     = Cut DM      = 1530.236
-     = Proportion  = 43.3465637991341%
-DDRules.Harvest - ryegrass_clover DM = 3530 @ = 12.0me DM[Green=2322, 983, Dead=161, 64]  N = 141.406672258183
-DDRules.Harvest - Finish = 2307.52748746305 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1316, 557, Dead=91, 36]  N = 78.6336124202828
-DDRules.Harvest - Removed (ha) = default DM = 1530 @ = 12.0me DM[Green=1007, 426, Dead=70, 28]  N = 61.2949334066257
-DDRules.Harvest - Removed Total= default DM = 765 @ = 12.0me DM[Green=503, 213, Dead=35, 14]  N = 30.6474667033128
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3511.491
-     - Residual    = 2000
-     = Cut DM      = 1511.491
-     = Proportion  = 43.0441370916229%
-DDRules.Harvest - ryegrass_clover DM = 3511 @ = 12.0me DM[Green=2305, 976, Dead=166, 65]  N = 140.431218282865
-DDRules.Harvest - Finish = 2305.64931249063 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1313, 556, Dead=94, 37]  N = 78.5309066460486
-DDRules.Harvest - Removed (ha) = default DM = 1511 @ = 12.0me DM[Green=992, 420, Dead=71, 28]  N = 60.4474061171125
-DDRules.Harvest - Removed Total= default DM = 756 @ = 12.0me DM[Green=496, 210, Dead=36, 14]  N = 30.2236830626032
      
    - Reading Fertiliser Type Parameters
        100.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
 6 November 1989(Day of year=310), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 9 November 1989(Day of year=313), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 11 November 1989(Day of year=315), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3024.578
-     - Residual    = 2000
-     = Cut DM      = 1024.578
-     = Proportion  = 33.8750728200761%
-DDRules.Harvest - ryegrass_clover DM = 3025 @ = 12.1me DM[Green=1991, 848, Dead=132, 53]  N = 121.311554353186
-DDRules.Harvest - Finish = 2324.27781864919 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1317, 561, Dead=87, 35]  N = 79.0125809494814
-DDRules.Harvest - Removed (ha) = default DM = 1025 @ = 12.1me DM[Green=674, 287, Dead=45, 18]  N = 41.0943773763078
-DDRules.Harvest - Removed Total= default DM = 512 @ = 12.1me DM[Green=337, 144, Dead=22, 9]  N = 20.5471886881539
 14 November 1989(Day of year=318), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 16 November 1989(Day of year=320), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3103.776
-     - Residual    = 2000
-     = Cut DM      = 1103.776
-     = Proportion  = 35.5623601703216%
-DDRules.Harvest - ryegrass_clover DM = 3104 @ = 12.0me DM[Green=2011, 857, Dead=167, 69]  N = 110.690724766142
-DDRules.Harvest - Finish = 2329.82601569235 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1296, 552, Dead=107, 44]  N = 70.4905449416734
-DDRules.Harvest - Removed (ha) = default DM = 1104 @ = 12.0me DM[Green=715, 305, Dead=59, 24]  N = 39.3642698797201
-DDRules.Harvest - Removed Total= default DM = 552 @ = 12.0me DM[Green=358, 152, Dead=30, 12]  N = 19.6821171082374
 26 November 1989(Day of year=330), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3722.409
-     - Residual    = 2000
-     = Cut DM      = 1722.409
-     = Proportion  = 46.2713527718206%
-DDRules.Harvest - ryegrass_clover DM = 3722 @ = 12.1me DM[Green=2477, 1059, Dead=132, 55]  N = 151.394425126773
-DDRules.Harvest - Finish = 2381.48804635329 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1331, 569, Dead=71, 29]  N = 79.3800792898711
-DDRules.Harvest - Removed (ha) = default DM = 1722 @ = 12.1me DM[Green=1146, 490, Dead=61, 25]  N = 70.0522485272789
-DDRules.Harvest - Removed Total= default DM = 861 @ = 12.1me DM[Green=573, 245, Dead=30, 13]  N = 35.0261039280953
 1 December 1989(Day of year=335), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.68
 1 December 1989(Day of year=335), Fertilise on fixed date11: 
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
 1 December 1989(Day of year=335), Fertiliser: 
@@ -835,89 +690,16 @@ DDRules.Harvest - Removed Total= default DM = 861 @ = 12.1me DM[Green=573, 245, 
                                          added at depth   50.00 (layer   1)
 4 December 1989(Day of year=338), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 9 December 1989(Day of year=343), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3049.644
-     - Residual    = 2000
-     = Cut DM      = 1049.644
-     = Proportion  = 34.4185747582341%
-DDRules.Harvest - ryegrass_clover DM = 3050 @ = 12.0me DM[Green=1958, 837, Dead=179, 75]  N = 93.8115887524345
-DDRules.Harvest - Finish = 2344.26386724771 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1284, 549, Dead=117, 49]  N = 61.1803672683407
-DDRules.Harvest - Removed (ha) = default DM = 1050 @ = 12.0me DM[Green=674, 288, Dead=62, 26]  N = 32.2886118066438
-DDRules.Harvest - Removed Total= default DM = 525 @ = 12.0me DM[Green=337, 144, Dead=31, 13]  N = 16.1443059033219
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3543.516
-     - Residual    = 2000
-     = Cut DM      = 1543.516
-     = Proportion  = 43.5588833237948%
-DDRules.Harvest - ryegrass_clover DM = 3544 @ = 12.1me DM[Green=2360, 1010, Dead=122, 52]  N = 144.037242736707
-DDRules.Harvest - Finish = 2402.87822105936 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1332, 570, Dead=69, 29]  N = 79.3713037662517
-DDRules.Harvest - Removed (ha) = default DM = 1544 @ = 12.1me DM[Green=1028, 440, Dead=53, 22]  N = 62.7410145064934
-DDRules.Harvest - Removed Total= default DM = 772 @ = 12.1me DM[Green=514, 220, Dead=27, 11]  N = 31.3705072532467
 12 December 1989(Day of year=346), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 15 December 1989(Day of year=349), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3524.188
-     - Residual    = 2000
-     = Cut DM      = 1524.188
-     = Proportion  = 43.249338571041%
-DDRules.Harvest - ryegrass_clover DM = 3524 @ = 12.1me DM[Green=2330, 998, Dead=137, 59]  N = 142.625200649761
-DDRules.Harvest - Finish = 2408.2791683735 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1322, 566, Dead=78, 33]  N = 79.0366085827568
-DDRules.Harvest - Removed (ha) = default DM = 1524 @ = 12.1me DM[Green=1008, 432, Dead=59, 25]  N = 61.6844559166418
-DDRules.Harvest - Removed Total= default DM = 762 @ = 12.1me DM[Green=504, 216, Dead=30, 13]  N = 30.8422279583209
 29 December 1989(Day of year=363), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 31 December 1989(Day of year=365), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock01
-     + Start Cover = 3136.254
-     - Residual    = 2000
-     = Cut DM      = 1136.254
-     = Proportion  = 36.2296548685151%
-DDRules.Harvest - ryegrass_clover DM = 3136 @ = 11.9me DM[Green=1964, 841, Dead=232, 99]  N = 87.0679905584411
-DDRules.Harvest - Finish = 2359.33125114891 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.9me DM[Green=1252, 536, Dead=148, 63]  N = 55.4773710346857
-DDRules.Harvest - Removed (ha) = default DM = 1136 @ = 11.9me DM[Green=712, 305, Dead=84, 36]  N = 31.5444324802745
-DDRules.Harvest - Removed Total= default DM = 568 @ = 11.9me DM[Green=356, 152, Dead=42, 18]  N = 15.7722162401373
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3086.197
-     - Residual    = 2000
-     = Cut DM      = 1086.197
-     = Proportion  = 35.1953229168455%
-DDRules.Harvest - ryegrass_clover DM = 3086 @ = 12.1me DM[Green=2043, 875, Dead=118, 50]  N = 124.527105925998
-DDRules.Harvest - Finish = 2403.45776811905 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.1me DM[Green=1324, 567, Dead=76, 33]  N = 79.180056600576
-DDRules.Harvest - Removed (ha) = default DM = 1086 @ = 12.1me DM[Green=719, 308, Dead=41, 18]  N = 43.8277170496575
-DDRules.Harvest - Removed Total= default DM = 543 @ = 12.1me DM[Green=359, 154, Dead=21, 9]  N = 21.913878699676
-    MS_per_Day = 1.50
 1 January 1990(Day of year=1), Fertilise on fixed date12: 
      Manager sending message :- fertiliser apply  amount = 100 (kg/ha), depth = 50 (mm), type = urea_n
 1 January 1990(Day of year=1), Fertiliser: 
@@ -927,137 +709,55 @@ DDRules.Harvest - Removed Total= default DM = 543 @ = 12.1me DM[Green=359, 154, 
                                          added at depth   50.00 (layer   1)
 4 January 1990(Day of year=4), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 8 January 1990(Day of year=8), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 12 January 1990(Day of year=12), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3530.832
-     - Residual    = 2000
-     = Cut DM      = 1530.832
-     = Proportion  = 43.3561268278978%
-DDRules.Harvest - ryegrass_clover DM = 3531 @ = 12.0me DM[Green=2312, 991, Dead=159, 68]  N = 141.899237060418
-DDRules.Harvest - Finish = 2403.69482590977 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 12.0me DM[Green=1310, 561, Dead=90, 39]  N = 78.5287201407904
-DDRules.Harvest - Removed (ha) = default DM = 1531 @ = 12.0me DM[Green=1002, 430, Dead=69, 30]  N = 61.5220131877341
-DDRules.Harvest - Removed Total= default DM = 765 @ = 12.0me DM[Green=501, 215, Dead=35, 15]  N = 30.7610065938671
 15 January 1990(Day of year=15), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 17 January 1990(Day of year=17), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 20 January 1990(Day of year=20), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 22 January 1990(Day of year=22), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 28 January 1990(Day of year=28), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 31 January 1990(Day of year=31), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.33
 2 February 1990(Day of year=33), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 4 February 1990(Day of year=35), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 6 February 1990(Day of year=37), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 14 February 1990(Day of year=45), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 18 February 1990(Day of year=49), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-
-DDRules.Harvest
-     paddock02
-     + Start Cover = 3202.52
-     - Residual    = 2000
-     = Cut DM      = 1202.52
-     = Proportion  = 37.5491800207337%
-DDRules.Harvest - ryegrass_clover DM = 3203 @ = 11.7me DM[Green=1862, 798, Dead=380, 163]  N = 120.198666865822
-DDRules.Harvest - Finish = 2266.78288213599 (includes stolons)
-DDRules.Harvest - Finish = ryegrass_clover DM = 2000 @ = 11.7me DM[Green=1163, 498, Dead=237, 102]  N = 74.1782051870522
-DDRules.Harvest - Removed (ha) = default DM = 1203 @ = 11.7me DM[Green=699, 300, Dead=143, 61]  N = 45.1336138039696
-DDRules.Harvest - Removed Total= default DM = 601 @ = 11.7me DM[Green=350, 150, Dead=71, 31]  N = 22.5668069019848
 20 February 1990(Day of year=51), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 23 February 1990(Day of year=54), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 26 February 1990(Day of year=57), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.23
 4 March 1990(Day of year=63), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 7 March 1990(Day of year=66), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 20 March 1990(Day of year=79), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 29 March 1990(Day of year=88), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 1 April 1990(Day of year=91), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.13
 5 April 1990(Day of year=95), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 9 April 1990(Day of year=99), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 14 April 1990(Day of year=104), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
 22 April 1990(Day of year=112), Irrigate at SW deficit: 
      Manager sending message :- ddrules applyirrigation  amount = 10.0
-   myIrrigationAmount  = 0
-   myIrrigationAmount  = 10
-    MS_per_Day = 1.12
-    MS_per_Day = 0.00
-    MS_per_Day = 0.00
 30 July 1990(Day of year=211), clock: 
      Simulation is terminating due to end criteria being met.
