@@ -67,6 +67,7 @@ module SurfaceOMModule
       character  pond_active*10            ! parameter to indicate whether the soil is under flooded & ponded conditions
       type(OMFractionType) :: oldSOMState
       real       DailyInitialC
+      real       DailyInitialN
    end type SurfaceOMGlobals
 !     ================================================================
    type SurfaceOMParameters
@@ -171,6 +172,7 @@ subroutine surfom_zero_all_globals ()
    g%SurfOM(:)%nh4 = 0.0
    g%SurfOM(:)%po4 = 0.0
    g%DailyInitialC = 0.0
+   g%DailyInitialN = 0.0
 
    do pool = 1, MaxFr
      g%SurfOM(:)%Lying(pool)%amount = 0.0
@@ -631,6 +633,7 @@ subroutine surfom_read_param ()
    end do
 
    g%DailyInitialC = sum(tot_c)
+   g%DailyInitialN = sum(tot_n)
    
    call surfom_Sum_Report ()
 
@@ -2442,6 +2445,7 @@ subroutine surfom_Send_my_variable (Variable_name)
    real      standing_fraction      ! fraction of surfom standing isolated from soil ()
    character  Err_string*400      ! Event message string
    real      carbonbalance
+   real      nitrogenbalance
 
 
 !- Implementation Section ----------------------------------
@@ -2462,12 +2466,21 @@ subroutine surfom_Send_my_variable (Variable_name)
       do i = 1,g%num_surfom
           total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
       end do
-      
-
       CarbonBalance = 0.0 &                      ! Inputs-Losses
                     - (total_c-g%DailyInitialC)  ! Delta Storage
 
       call respond2get_real_var (variable_name, '(kg/ha)', carbonbalance)
+	  
+   elseif (Variable_name .eq. 'nitrogenbalance') then
+      
+      total_n = 0.0
+      do i = 1,g%num_surfom
+          total_n = total_n + sum(g%SurfOM(i)%Standing(1:MaxFr)%N) + sum(g%SurfOM(i)%Lying(1:MaxFr)%N)
+      end do
+      NitrogenBalance = 0.0 &                      ! Inputs-Losses
+                    - (total_n-g%DailyInitialN)  ! Delta Storage
+
+      call respond2get_real_var (variable_name, '(kg/ha)', Nitrogenbalance)	  
       
    else if (Variable_name .eq. 'surfaceom_c') then
    !                       --------
@@ -3305,6 +3318,7 @@ subroutine surfaceom_ONtick (variant)
 !+  Local Variables
    type(timeType) :: tick
    real total_c
+   real total_n
    integer i
    
 !+  Constant Values
@@ -3321,7 +3335,13 @@ subroutine surfaceom_ONtick (variant)
       do i = 1,g%num_surfom
           total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
       end do   
+	  
+      total_n = 0.0
+      do i = 1,g%num_surfom
+          total_n = total_n + sum(g%SurfOM(i)%Standing(1:MaxFr)%N) + sum(g%SurfOM(i)%Lying(1:MaxFr)%N)
+      end do    
    g%DailyInitialC = total_c
+   g%DailyInitialN = total_n
 
    call pop_routine (myname)
    return

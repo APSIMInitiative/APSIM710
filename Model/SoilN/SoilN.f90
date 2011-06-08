@@ -433,7 +433,7 @@ subroutine soiln2_save_state ()
    
    ! Calculations for NEW sysbal component
    g%DailyInitialC = soiln2_total_c()
-   g%DailyInitialC = soiln2_total_n()
+   g%DailyInitialN = soiln2_total_n()
 
    call pop_routine (myname)
    return
