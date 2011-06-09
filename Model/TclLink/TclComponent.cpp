@@ -105,14 +105,9 @@ Tcl_Interp *NewInterp (ClientData cd, const std::string &interpName)
 void StopTcl(Tcl_Interp *interp)
    {
    if (!Tcl_InterpDeleted(interp))
-       {
-       Tcl_Eval(interp, "exit");
-       if (!Tcl_InterpDeleted(interp))
-           {
-           Tcl_DeleteInterp(interp);
-           }
-       Tcl_Release((ClientData) interp);
-       }
+      Tcl_DeleteInterp(interp);
+   if (interp == MainInterpreter)
+      Tcl_Finalize();
    }
 
 //---------------------------APSIM dll entrypoints
