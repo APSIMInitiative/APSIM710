@@ -23,7 +23,7 @@ for /D %%d in (*) do (
       "%VS100COMNTOOLS%..\IDE\devenv" Test.sln /ReBuild debug
       if ERRORLEVEL 1 echo Compile ERRORS FOUND >> ..\UnitTests.out
       if ERRORLEVEL 0 (
-         "C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" bin\debug\Test.dll /nologo /noshadow >> ..\UnitTests.out
+         cmd /c "C:\Program Files (x86)\NUnit 2.5.7\bin\net-2.0\nunit-console-x86" bin\debug\Test.dll /nologo /noshadow >> ..\UnitTests.out
          if ERRORLEVEL 1 echo ERRORS FOUND >> ..\UnitTests.out
          )
       echo. >> ..\UnitTests.out
