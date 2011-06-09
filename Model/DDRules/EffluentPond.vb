@@ -19,6 +19,8 @@
 End Class
 
 Public Class EffluentIrrigator
+        Public DebugLevel As Integer = 0
+
         Public Sub Irrigate(ByVal effluent As EffluentPond, ByVal paddocks As List(Of LocalPaddockType))
                 Dim TotalArea As Double = 0
                 For Each pdk As LocalPaddockType In paddocks
@@ -27,7 +29,9 @@ Public Class EffluentIrrigator
 
                 Dim total As Excreta = effluent.Empty
                 For Each pdk As LocalPaddockType In paddocks
-                        Console.Out.WriteLine("       Spraying dairy shed effluent to paddock " + pdk.Name)
+                        If (DebugLevel > 0) Then
+                                Console.Out.WriteLine("      DDRules: Spraying dairy shed effluent to paddock " + pdk.Name)
+                        End If
                         Dim proportion As Double = pdk.Area / TotalArea
                         'apply proportion of pond on paddock
                         Dim temp As Excreta

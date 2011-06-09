@@ -5,8 +5,8 @@ Public Class LocalPaddockType
         'Local paddock is the wrapper for the basic apsim paddock. It adds "worker" functions for processes such as
         ' nutrient grazing and returns.
 
-        Public Enum PaddockStatus
-                G = 1  'Growing
+        Private Enum PaddockStatus
+                GR = 1  'Growing
                 BG = 2 'Being grazed
                 JG = 4 'Just grazed
                 CL = 8  'Closed
@@ -20,7 +20,7 @@ Public Class LocalPaddockType
         <Link()> Private ApSim_SubPaddock As Paddock
         <Input(True)> Public Area As Double = -1
 
-        Private Status As PaddockStatus
+        Private myStatus As PaddockStatus
         'Homogeneous pasture cover
         Dim Pasture_Cover As BioMass = New BioMass()
         'Lookup for indervidual pasture species
@@ -67,26 +67,40 @@ Public Class LocalPaddockType
                 C_Feaces = 0
                 N_Urine = 0
                 DM_Grazed = New BioMass()
-                If (Status = PaddockStatus.JG) Then
+                If (myStatus = PaddockStatus.JG) Then
                         Grazable = True
                 End If
         End Sub
 
         Public Sub setJustGrazed()
-                Status = PaddockStatus.JG
+                myStatus = PaddockStatus.JG
         End Sub
 
-        Public Sub setBeingGrazed()
-                Status = PaddockStatus.BG
-        End Sub
-
-        Public Property Closed() As Boolean
+        Public Property BeingGrazed() As Boolean
                 Get
-                        Return Status = PaddockStatus.CL
+                        Return myStatus = PaddockStatus.BG
                 End Get
                 Set(ByVal value As Boolean)
                         If (value) Then
-                                Status = PaddockStatus.CL
+                                myStatus = PaddockStatus.BG
+                        Else
+                                Select Case (BeingGrazed)
+                                        Case PaddockStatus.BG
+                                                myStatus = PaddockStatus.JG
+                                        Case Else
+                                                myStatus = PaddockStatus.GR
+                                End Select
+                        End If
+                End Set
+        End Property
+
+        Public Property Closed() As Boolean
+                Get
+                        Return myStatus = PaddockStatus.CL
+                End Get
+                Set(ByVal value As Boolean)
+                        If (value) Then
+                                myStatus = PaddockStatus.CL
                         Else
                                 Grazable = True
                         End If
@@ -95,13 +109,13 @@ Public Class LocalPaddockType
 
         Public Property Grazable() As Boolean
                 Get
-                        Return Status <> PaddockStatus.NA
+                        Return myStatus <> PaddockStatus.NA
                 End Get
                 Set(ByVal value As Boolean)
                         If (value) Then
-                                Status = PaddockStatus.G
+                                myStatus = PaddockStatus.GR
                         Else
-                                Status = PaddockStatus.NA
+                                myStatus = PaddockStatus.NA
                         End If
                 End Set
         End Property
@@ -152,7 +166,7 @@ Public Class LocalPaddockType
                 Else
                         RemovedME = AvalibleME()          'harvest all avalible DM/ME
                 End If
-                setBeingGrazed()       ' might need to come back
+                BeingGrazed = True      ' might need to come back
 
                 If (DebugLevel > 0) Then
                         Console.WriteLine("DDRules (debug) - " & "  = Grazing Residual = " & GrazingResidual)
@@ -230,7 +244,7 @@ Public Class LocalPaddockType
                 'todayGR = GrazingResidual
                 'End If
 
-                setBeingGrazed()       ' might need to come back
+                BeingGrazed = True      ' might need to come back
 
                 Dim result As BioMass = New BioMass()
                 'todayME = (Cover() - todayGR) * PastureME()
@@ -521,7 +535,7 @@ Public Class LocalPaddockType
                 Return Pasture_Cover.DM_Total
         End Function
         Public Function StatusCode() As String
-                Return Status.ToString
+                Return myStatus.ToString
         End Function
 
         Sub Irrigate(ByVal data As IrrigationApplicationType)
@@ -565,5 +579,4 @@ Public Class LocalPaddockType
                 'Console.WriteLine("   Possible = " + Possible.ToString())
                 Return Stored / Possible
         End Function
-
 End Class

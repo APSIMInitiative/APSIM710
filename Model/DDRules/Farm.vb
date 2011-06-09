@@ -7,7 +7,6 @@ Public Class Farm
         Private myPaddocks2 As Dictionary(Of String, LocalPaddockType)         ' Full list of apsim paddocks
         Private myHerd As SimpleHerd                            ' Dairy herd / on milking platform
         Private MyFarmArea As Double
-        Private myLaneways As LocalPaddockType
 
         Dim PaddockQueue As Queue(Of LocalPaddockType)
         Private GrazedList As List(Of LocalPaddockType)         ' List of grazed paddocks
@@ -30,11 +29,19 @@ Public Class Farm
 
         Public Sub New()
                 myHerd = New SimpleHerd()
+                myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
         End Sub
 
         Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
+                If (DebugLevel > 0) Then
+                        Console.WriteLine("DDRules.Farm.Init()")
+                        Console.WriteLine("   MasterPM = " + MasterPM.ToString())
+                        Console.WriteLine("   Year     = " + Year.ToString())
+                        Console.WriteLine("   Month    = " + Month.ToString())
+                        Console.WriteLine("   FarmArea = " + FarmArea.ToString())
+                End If
+
                 myPaddocks = New List(Of LocalPaddockType)
-                myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
                 PaddockQueue = New Queue(Of LocalPaddockType)
                 GrazedList = New List(Of LocalPaddockType)
                 Dim i As Integer = -1
@@ -50,6 +57,9 @@ Public Class Farm
 
                 MyFarmArea = FarmArea
                 Dim j As Integer = 0
+                If (DebugLevel > 0) Then
+                        Console.WriteLine("DDRules.Farm.Init() - Checking for laneways")
+                End If
                 For Each pdk As Paddock In MasterPM.SubPaddocks
                         If (pdk.Name = "Laneways") Then
                                 If (DebugLevel > 0) Then
@@ -64,6 +74,9 @@ Public Class Farm
                         End If
                         j += 1
                 Next
+                If (DebugLevel > 0) Then
+                        Console.WriteLine("DDRules.Farm.Init() - Checking for laneways - Complete")
+                End If
 
                 'Todo: Get area from paddock level variable
                 'For Each SubPaddock As Paddock In MasterPM.SubPaddocks
@@ -105,21 +118,23 @@ Public Class Farm
                         End If
                         i += 1
                         Dim TempArea As Double = DefaultArea
-                        If (TempList.ContainsKey(SubPaddock.Name)) Then
-                                TempArea = TempList(SubPaddock.Name).ToString
-                                myLaneways = New LocalPaddockType(i, SubPaddock, TempArea)
-                                'myPaddocks.Add(myLaneways)
-                                MyFarmArea -= myLaneways.Area
-                        Else
-                                myPaddocks.Add(New LocalPaddockType(i, SubPaddock, TempArea))
-                        End If
+                        'If (TempList.ContainsKey(SubPaddock.Name)) Then
+                        '    TempArea = TempList(SubPaddock.Name).ToString
+                        '    myLaneways = New LocalPaddockType(i, SubPaddock, TempArea)
+                        '    myPaddocks.Add(myLaneways)
+                        '    MyFarmArea -= myLaneways.Area
+                        'Else
+                        Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea)
+                        myPaddocks.Add(pdk)
+                        'End If
 
                         If (myDebugLevel > 0) Then
-                                Console.WriteLine("Dubug Level = " + myDebugLevel.ToString)
-                                Console.WriteLine("Predefined = " + SubPaddock.Name.ToString)
-                                Console.WriteLine("i = " + i.ToString)
-                                Console.WriteLine("Area = " + TempArea.ToString)
+                                Console.WriteLine("Dubug Level = " & myDebugLevel)
+                                Console.WriteLine("Predefined = " & SubPaddock.Name)
+                                Console.WriteLine("i = " & i)
+                                Console.WriteLine("Area = " & TempArea)
                                 Console.WriteLine("   Paddock " & SubPaddock.ToString)
+                                Console.WriteLine("   Cover " & pdk.Cover.ToString("0"))
                                 Console.WriteLine("Done.")
                         End If
                 Next
@@ -127,7 +142,11 @@ Public Class Farm
                 For Each pdk As LocalPaddockType In myPaddocks
                         myPaddocks2.Add(pdk.Name.ToLower, pdk)
                 Next
-                SilageHeap = New FeedStore
+
+                If (SilageHeap Is Nothing) Then
+                        SilageHeap = New FeedStore
+                End If
+
                 myHerd.setValues(0, 7, 2001, Month)
         End Sub
 
@@ -142,15 +161,18 @@ Public Class Farm
 
                 myHerd.onPrepare(1, Year, Month)
 
-                For Each p As LocalPaddockType In GrazedList
-                        p.setJustGrazed()
-                Next
+                'For Each p As LocalPaddockType In GrazedList
+                '        p.setJustGrazed()
+                'Next
                 SilageHeap.Prepare()
                 SupplementStore.Prepare()
         End Sub
 
-        Public Sub Process(ByVal start_of_week As Integer)
+        Public Sub Update()
                 updateCovers()
+        End Sub
+
+        Public Sub Process(ByVal start_of_week As Integer)
                 CheckWinteringOff()
                 If Not (IsWinteringOff()) Then 'assume all stock wintering off farm i.e. no grazing
                         If (start_of_week > 0) Then
@@ -198,19 +220,29 @@ Public Class Farm
                                 End If
                         Next
                 End If
+
                 ' 3: Allocate paddocks to meet weeks requirements
                 Dim AreaToGraze As Double = FarmArea / GrazingInterval
                 Dim UnallocatedArea = AreaToGraze * 7
 
                 PaddockQueue = New Queue(Of LocalPaddockType)
-                For Each Paddock As LocalPaddockType In myPaddocks
+                'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
+                For Each pdk As LocalPaddockType In myPaddocks
+                        If (pdk.BeingGrazed()) Then
+                                PaddockQueue.Enqueue(pdk)
+                                'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
+                        End If
+                Next
+
+                For Each pdk As LocalPaddockType In myPaddocks
                         If (UnallocatedArea <= 0) Then
                                 Exit For
                         End If
-                        If (Not Paddock.Closed And Paddock.Grazable) Then
-                                UnallocatedArea -= Paddock.Area
-                                Paddock.GrazingCounter = Paddock.Area * myDayPerHa
-                                PaddockQueue.Enqueue(Paddock) 'add all paddock to the queue (including close ones)
+                        'if paddock isn't...closed for silage cutting, is able to be grazed and not already added above then
+                        If (Not pdk.Closed And pdk.Grazable And Not PaddockQueue.Contains(pdk)) Then
+                                UnallocatedArea -= pdk.Area
+                                pdk.GrazingCounter = pdk.Area * myDayPerHa
+                                PaddockQueue.Enqueue(pdk) 'add all paddock to the queue (including close ones)
                         End If
                 Next
                 SortByIndex()
@@ -219,10 +251,18 @@ Public Class Farm
         Sub doSprayEffluient()
                 If (end_week > 0 And myEffluentPond.Volume > 0) Then
                         Dim aList As New List(Of LocalPaddockType)
-                        Dim i As Integer = Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count)
-                        aList = myPaddocks.GetRange(0, i)
-                        Console.Out.WriteLine("Spraying dairy shed effluent to " + i.ToString() + " paddocks")
-                        myEffluentIrrigator.Irrigate(myEffluentPond, aList)
+                        If (effluentPaddocks IsNot Nothing) Then 'effluent paddock set via a list
+                                Console.Out.WriteLine("Spraying dairy shed effluent to paddocks;")
+                                For Each pdk As LocalPaddockType In effluentPaddocks
+                                        Console.Out.WriteLine(" - " + pdk.Name)
+                                Next
+                                myEffluentIrrigator.Irrigate(myEffluentPond, effluentPaddocks)
+                        Else
+                                Dim i As Integer = Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count)
+                                aList = myPaddocks.GetRange(0, i)
+                                Console.Out.WriteLine("Spraying dairy shed effluent to " + i.ToString() + " paddocks")
+                                myEffluentIrrigator.Irrigate(myEffluentPond, aList)
+                        End If
                 End If
         End Sub
 
@@ -239,12 +279,27 @@ Public Class Farm
                         'Console.WriteLine("Grazing " & p.ApSim_ID & " DM = " & p.Cover.ToString)
                         ' deque paddock if (reached allocated time/days in paddock) or (not enough drymatter avaible to bother comming back to)
                         'If (p.GrazingCounter <= 0) Then 'p.AvalibleDryMater <= 1 Or 
-                        If (p.AvalibleDryMater <= 50) Then
-                                PaddockQueue.Dequeue()
+                        If (p.GrazingCounter <= 0) Then
+                                '                        If (p.AvalibleDryMater <= 50) Then
+                                Dim pdk As LocalPaddockType = PaddockQueue.Dequeue()
+                                pdk.setJustGrazed()
                         Else
                                 Return
                         End If
                 End While
+        End Sub
+
+        Public Sub SetupFeedWedge(ByVal post As Integer, ByVal length As Integer)
+                Dim pre As Integer = (4.2 * 17 * length) + post
+                Dim interval As Double = (pre - post) / (myPaddocks.Count - 1)
+                Dim i As Integer = 0
+                For Each pdk As LocalPaddockType In myPaddocks
+                        If Not (lanewayPaddocks.Contains(pdk)) Then
+                                Dim cover = post + (i * interval)
+                                pdk.Harvest(cover, 0.0)
+                                i += 1
+                        End If
+                Next
         End Sub
 
         Private Sub doAnimalsPost()
@@ -254,8 +309,8 @@ Public Class Farm
 
                 myHerd.doNitrogenPartioning()
 
-                If (myLaneways IsNot Nothing And Not myHerd.isDry) Then
-                        myHerd.doNutrientReturnsToPaddock(myLaneways, myTimeOnLaneWays)
+                If (lanewayPaddocks IsNot Nothing And Not myHerd.isDry) Then
+                        myHerd.doNutrientReturnsToPaddock(lanewayPaddocks, myTimeOnLaneWays)
                 End If
 
                 If (myTimeInDairyShed > 0 And Not myHerd.isDry) Then
@@ -330,9 +385,10 @@ Public Class Farm
                 Set(ByVal value As Double)
                         SilageHeap = New FeedStore
                         Dim temp As BioMass = New BioMass()
-                        temp.digestibility = SilageDigestability
-                        temp.N_Conc = SilageN
-                        temp.setME(DefualtSilageME)
+                        temp.set(value, SilageDigestability, SilageN, DefualtSilageME)
+                        'temp.digestibility = SilageDigestability
+                        'temp.N_Conc = SilageN
+                        'temp.setME(DefualtSilageME)
                         SilageHeap.Add(temp)
                 End Set
         End Property
@@ -874,6 +930,7 @@ Public Class Farm
                                         paddock.DebugLevel = value - 1
                                 Next
                         End If
+                        myEffluentIrrigator.DebugLevel = value - 1
                 End Set
         End Property
 
@@ -995,19 +1052,50 @@ Public Class Farm
         End Sub
 
         Dim effluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+        Dim lanewayPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
 
         Sub setEffluentPaddocks(ByVal values As String())
-                effluentPaddocks = New List(Of LocalPaddockType)(values.Length)
-                For Each strPaddockName As String In values
-                        If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                                Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
-                                Console.WriteLine(p)
-                                effluentPaddocks.Add(myPaddocks2(strPaddockName))
-                        End If
-                Next
+                If (values Is Nothing) Then
+                        effluentPaddocks = Nothing
+                        Return
+                End If
+                If (values.Length > 0) Then
+                        effluentPaddocks = New List(Of LocalPaddockType)(values.Length)
+                        For Each strPaddockName As String In values
+                                If (myPaddocks2.ContainsKey(strPaddockName)) Then
+                                        Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
+                                        Console.WriteLine(p)
+                                        effluentPaddocks.Add(myPaddocks2(strPaddockName))
+                                End If
+                        Next
+                Else
+                        effluentPaddocks = Nothing
+                End If
+        End Sub
+
+        Sub setLanewayPaddocks(ByVal values As String())
+                lanewayPaddocks = New List(Of LocalPaddockType)()
+                If (values Is Nothing) Then ' no laneway being set
+                        Return
+                End If
+                If (values.Length > 0) Then
+                        For Each strPaddockName As String In values
+                                If (myPaddocks2.ContainsKey(strPaddockName)) Then
+                                        Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
+                                        p.Grazable = False 'not part of grazing rotation
+                                        lanewayPaddocks.Add(myPaddocks2(strPaddockName))
+                                        myPaddocks.Remove(p)
+                                End If
+                        Next
+                Else
+                        effluentPaddocks = Nothing
+                End If
         End Sub
 
         Function getEffluentPaddocks() As String()
+                If (effluentPaddocks Is Nothing) Then
+                        Return New String() {""}
+                End If
                 Dim result(effluentPaddocks.Count) As String
                 Dim i As Integer = 0
                 For Each pdk As LocalPaddockType In effluentPaddocks
@@ -1016,5 +1104,35 @@ Public Class Farm
                 Next
                 Return result
         End Function
+
+        Public Sub PrintFarmSummary()
+                Console.WriteLine("     General Farm Description")
+                Console.WriteLine("             Effective Area          " & FarmArea.ToString("0.0") & " ha")
+                Console.WriteLine("             Total Paddocks          " & PaddockCount())
+                Console.WriteLine("     Stock Management")
+                Console.WriteLine("             Stocking Rate           " & StockingRate & " cows/ha")
+                Console.WriteLine("             Calving Date            ")
+                Console.WriteLine("             Paddock Count           " & PaddockCount())
+                Console.WriteLine("             Winter Off Dry Stock    " & WinterOffDryStock.ToString)
+                Console.WriteLine("     Grazing Management")
+                Console.WriteLine("             Residules               " & GrazingResidual & " kgDM/ha")
+                Console.WriteLine("             Interval                " & GrazingInterval & " days")
+                Console.WriteLine("     Supplementary Feeding")
+                Console.WriteLine("             ME Content              " & SupplementME & " ME/kgDM")
+                Console.WriteLine("             N Content               " & SupplementN.ToString("0.0%"))
+                Console.WriteLine("             Wastage                 " & SupplementWastage.ToString("0.0%"))
+                Console.WriteLine("     Conservation")
+                Console.WriteLine("             Start Date              " & FCD.ToString("dd-MMM"))
+                Console.WriteLine("             Finish Date             " & LCD.ToString("dd-MMM"))
+                Console.WriteLine("             Trigger Residule        " & CDM & " kgDM/ha")
+                Console.WriteLine("             Cutting Residule        " & CR & " kgDM/ha")
+                Console.WriteLine("             Wastage at cutting      " & SilageCutWastage.ToString("0.0%"))
+                Console.WriteLine("             Silage Stored on Farm   " & EnableSilageStore.ToString)
+                If (EnableSilageStore) Then
+                        Console.WriteLine("             ME Content              " & SilageME.ToString("0.0") & " ME/kgDM")
+                        Console.WriteLine("             N Content               " & SilageN.ToString("0.0%"))
+                        Console.WriteLine("             Wastage (at feeding)    " & SilageWastage.ToString("0.0%"))
+                End If
+        End Sub
 
 End Class

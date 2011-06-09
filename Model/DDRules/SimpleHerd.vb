@@ -341,9 +341,21 @@
                 Return amount
         End Function
 
-        Public Sub doNutrientReturnsToPaddock(ByVal paddock As LocalPaddockType, Optional ByVal proporiton As Double = 1.0)
-                Dim amount As Excreta = getNutrientReturns(proporiton)
-                ReferenceCow.doNutrientReturns(paddock, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / paddock.Area * proporiton)
+        Public Sub doNutrientReturnsToPaddock(ByVal paddock As List(Of LocalPaddockType), Optional ByVal proporiton As Double = 1.0)
+                Dim area As Double = 0
+                For Each pdk As LocalPaddockType In paddock
+                        area += pdk.Area
+                Next
+                If (area <= 0) Then
+                        Return 'i.e. nutrient is removed from the system
+                        'Todo 20110608 - Store and return this value for nitrogen balance calculations
+                End If
+                Dim amountTotal As Excreta = getNutrientReturns(proporiton)
+                Dim amountHa As Excreta = amountTotal.Multiply(1 / area)
+                For Each pdk As LocalPaddockType In paddock
+                        Dim amount = amountHa.Multiply(pdk.Area)
+                        ReferenceCow.doNutrientReturns(pdk, amount.N_to_urine, amount.N_to_feaces, amount.DM_to_feaces, TotalCows / pdk.Area * proporiton)
+                Next
         End Sub
 
         Public Sub doNutrientReturnsToPaddock(ByVal paddock As LocalPaddockType, ByVal amount As Excreta, Optional ByVal proporiton As Double = 1.0)

@@ -46,6 +46,7 @@ Public Class DDRules
         Inherits Instance
         Public myDebugLevel As Integer = 0
         <Link()> Private MySimulation As Paddock
+        <Link()> Private MyClock As Clock
         Private myFarm As Farm
         Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
@@ -61,22 +62,28 @@ Public Class DDRules
         Public default_mg As Single() = dairyNZ_mg
         Public default_gr As Single() = dairyNZ_gr
 
+        Dim strEffluentPaddocks() As String
+        Dim strLanewayPaddocks() As String
+
         Public Sub New()
                 myFarm = New Farm()
+                DebugLevel = myDebugLevel
         End Sub
 
 #Region "EventHandlers"
-        'Initialise farm
-        <EventHandler()> Public Sub OnInit1()
-                DebugLevel = myDebugLevel
-                If (DebugLevel > 0) Then
-                        Console.WriteLine("Enter OnInit1()")
-                End If
-        End Sub
+        '<EventHandler()> Public Sub OnInit1()
+        '        If (DebugLevel > 0) Then
+        '                Console.WriteLine("Enter OnInit1()")
+        '                For Each pdk As Paddock In MySimulation.SubPaddocks
+        '                        Console.WriteLine("   " + pdk.Name)
+        '                Next
+        '        End If
+        'End Sub
+
         <EventHandler()> Public Sub OnInit2()
                 DebugLevel = myDebugLevel
                 If (DebugLevel > 0) Then
-                        Console.WriteLine("Enter OnInit2()")
+                        Console.WriteLine("DDRules Entering OnInit2()")
                 End If
 
                 ' ************* Farm testing **********************
@@ -84,11 +91,31 @@ Public Class DDRules
                         TotalFarmArea = MySimulation.SubPaddocks.Count 'default to one hectare paddocks if no area set
                 End If
 
+                If (DebugLevel > 2) Then
+                        Console.WriteLine("*** DDRules OnInit2() - Farm.Init")
+                        If (myFarm IsNot Nothing) Then
+                                Console.WriteLine("*** DDRules OnInit2() - Farm = " + myFarm.ToString())
+                        Else
+                                Console.WriteLine("*** DDRules OnInit2() - Farm = " + "NULL VALUE")
+                        End If
+                End If
                 myFarm.Init(MySimulation, year, month, TotalFarmArea)
+                myFarm.setEffluentPaddocks(strEffluentPaddocks)
+                myFarm.setLanewayPaddocks(strLanewayPaddocks)
+
+                If (DebugLevel > 2) Then
+                        Console.WriteLine("*** DDRules OnInit2() - Get herd reference")
+                End If
                 myHerd = myFarm.getHerd()
 
+                If (DebugLevel > 2) Then
+                        Console.WriteLine("*** DDRules OnInit2() - Test for FarmSim Components")
+                End If
                 SetupFarmSim(MySimulation)
 
+                If (DebugLevel > 2) Then
+                        Console.WriteLine("*** DDRules OnInit2() - Print Summary")
+                End If
                 PrintFarmSummary()
 
                 GrazingIntervalIsSet = False
@@ -96,6 +123,10 @@ Public Class DDRules
                 'PaddockGrazable(0) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
                 'PaddockGrazable(2) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
                 myIrrigation_efficiency = 1.0
+                If (DebugLevel > 2) Then
+                        Console.WriteLine("DDRules OnInit2() Complete!")
+                End If
+
         End Sub
 
         'Reset tracked output variables
@@ -108,20 +139,11 @@ Public Class DDRules
         <EventHandler()> Sub OnPrepare()
                 If (DebugLevel > 0) Then
                         Console.WriteLine("Enter OnPrepare()")
+                        Console.WriteLine("        " & MyClock.simulation_days)
                 End If
 
-                'Todo: find a way to default to the dairy nz parameter if the user has not entered anything
-                ' If I introduce the line below they overwrite any values set by a manager component
-                ' Initilising "flag" values here to trigger default setting during OnProcess
-                '        GrazingInterval = dairyNZ_mg(month - 1) 'Minium Grazing Interval (actually rotation length)
-                '        GrazingResidual = dairyNZ_gr(month - 1) 'Grazing residual
-                'GrazingIntervalIsSet = False
-                'GrazingResidualIsSet = False
-
-                ' ************* Farm testing **********************
                 myFarm.Prepare(year, month, day_of_month, end_week)
                 myFarm.StockingRate = BaseStockingRate
-                ' ************* Farm testing **********************
 
                 If (DebugLevel > 0) Then
                         Console.WriteLine("   Rotation Length " & GrazingInterval.ToString)
@@ -145,7 +167,13 @@ Public Class DDRules
                 myFarm.GrazingResidual = GrazingResidual
                 myFarm.GrazingInterval = GrazingInterval
                 'myFarm.StockingRate = sr
+
+                myFarm.Update()
+                If (MyClock.simulation_days = 0) Then
+                        myFarm.SetupFeedWedge(1500, 21)
+                End If
                 myFarm.Process(Start_week)
+
 
                 Dim cover = myFarm.AverageCover
                 ' ************* Farm testing **********************
@@ -692,7 +720,7 @@ Public Class DDRules
                         Return SilageStore() / FarmArea()
                 End Get
                 Set(ByVal value As Double)
-                        SilageStore = value / FarmArea()
+                        SilageStore = value * FarmArea()
                 End Set
         End Property
 
@@ -1000,33 +1028,7 @@ Public Class DDRules
         Private Sub PrintFarmSummary()
                 Console.WriteLine()
                 Console.WriteLine("---------- DDRules Initialisation ----------")
-                Console.WriteLine("     General Farm Description")
-                Console.WriteLine("             Effective Area          " & myFarm.FarmArea)
-                Console.WriteLine("             Total Paddocks          " & myFarm.PaddockCount)
-                Console.WriteLine("     Stock Management")
-                Console.WriteLine("             Stocking Rate           " & BaseStockingRate)
-                Console.WriteLine("             Calving Date            ")
-                Console.WriteLine("             Paddock Count           " & myFarm.PaddockCount)
-                Console.WriteLine("             Winter Off Dry Stock    " & myFarm.WinterOffDryStock.ToString)
-                Console.WriteLine("     Grazing Management")
-                Console.WriteLine("             Residules               " & myFarm.GrazingResidual)
-                Console.WriteLine("             Interval                " & myFarm.GrazingInterval)
-                Console.WriteLine("     Supplementary Feeding")
-                Console.WriteLine("             ME Content (ME/kgDM)    " & myFarm.SupplementME)
-                Console.WriteLine("             N Content               " & myFarm.SupplementN * 100 & "%")
-                Console.WriteLine("             Wastage                 " & myFarm.SupplementWastage * 100 & "%")
-                Console.WriteLine("     Conservation")
-                Console.WriteLine("             Start Date              " & myFarm.FCD.ToString("dd-MMM"))
-                Console.WriteLine("             Finish Date             " & myFarm.LCD.ToString("dd-MMM"))
-                Console.WriteLine("             Trigger Residule        " & myFarm.CDM)
-                Console.WriteLine("             Cutting Residule        " & myFarm.CR)
-                Console.WriteLine("             Wastage at cutting      " & myFarm.SilageCutWastage & "%")
-                Console.WriteLine("             Silage Stored on Farm   " & myFarm.EnableSilageStore.ToString)
-                If (myFarm.EnableSilageStore) Then
-                        Console.WriteLine("             ME Content (ME/kgDM)    " & myFarm.SilageME)
-                        Console.WriteLine("             N Content               " & myFarm.SilageN * 100 & "%")
-                        Console.WriteLine("             Wastage (at feeding)    " & myFarm.SilageWastage * 100 & "%")
-                End If
+                myFarm.PrintFarmSummary()
                 Console.WriteLine("     Debug Switches")
                 Console.WriteLine("             Debug Level   " & DebugLevel)
                 Console.WriteLine("             Break Feeding " & BreakFeeding)
@@ -1222,11 +1224,14 @@ Public Class DDRules
                 End Set
         End Property
 
-        'Set paddocks to return effluent to
+        'Set paddocks to return dairyshed effluent to
         <Output()> <Units("")> Public Property EffluentPaddocks As String
                 Get
+                        If (strEffluentPaddocks Is Nothing) Then
+                                Return ""
+                        End If
                         Dim result As String = ""
-                        For Each str As String In myFarm.getEffluentPaddocks()
+                        For Each str As String In strEffluentPaddocks 'myFarm.getEffluentPaddocks()
                                 result += str + ","
                         Next
                         'result = result.Substring(0, result.Length - 2)
@@ -1237,17 +1242,47 @@ Public Class DDRules
                 End Get
                 Set(ByVal value As String)
                         Dim strValues As String() = value.Split(",")
-                        Dim values(strValues.Length - 1) As String
+                        ReDim strEffluentPaddocks(strValues.Length - 1)
                         For i As Integer = 0 To strValues.Length - 1
                                 If (DebugLevel > 0) Then
                                         Console.Write("EffluentPaddocks = " + strValues(i))
                                 End If
-                                values(i) = strValues(i).TrimEnd
+                                strEffluentPaddocks(i) = strValues(i).TrimEnd
                                 If (DebugLevel > 0) Then
-                                        Console.WriteLine(" = " + values(i))
+                                        Console.WriteLine(" = " + strEffluentPaddocks(i))
                                 End If
                         Next
-                        myFarm.setEffluentPaddocks(values)
+                        'myFarm.setEffluentPaddocks(strEffluentPaddocks) have to do this later, set before farm is initilised
+                End Set
+        End Property
+
+        'Set paddocks to return laneway effluent to
+        <Output()> <Units("")> Public Property LanewayPaddocks As String
+                Get
+                        If (strLanewayPaddocks Is Nothing) Then
+                                Return ""
+                        End If
+                        Dim result As String = ""
+                        For Each str As String In strLanewayPaddocks
+                                result += str + ","
+                        Next
+                        If (result.Length > 0) Then
+                                Return result.Substring(0, result.Length - 1)
+                        End If
+                        Return result
+                End Get
+                Set(ByVal value As String)
+                        Dim strValues As String() = value.Split(",")
+                        ReDim strLanewayPaddocks(strValues.Length - 1)
+                        For i As Integer = 0 To strValues.Length - 1
+                                If (DebugLevel > 0) Then
+                                        Console.Write("Laneway Paddocks = " + strValues(i))
+                                End If
+                                strLanewayPaddocks(i) = strValues(i).TrimEnd
+                                If (DebugLevel > 0) Then
+                                        Console.WriteLine(" = " + strLanewayPaddocks(i))
+                                End If
+                        Next
                 End Set
         End Property
 

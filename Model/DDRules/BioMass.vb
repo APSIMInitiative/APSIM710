@@ -192,4 +192,15 @@ Public Class BioMass
                         Return myME * DM_Total()
                 End If
         End Function
+
+        Sub [set](ByVal value As Double, ByVal SilageDigestability As Double, ByVal SilageN As Double, ByVal DefualtSilageME As Single)
+                gLeaf = value
+                gStem = 0
+                dLeaf = 0
+                dStem = 0
+                N_concentration = SilageN
+                myME = DefualtSilageME
+                digestibility = SilageDigestability
+        End Sub
+
 End Class
