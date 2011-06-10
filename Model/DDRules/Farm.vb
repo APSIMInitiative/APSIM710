@@ -191,6 +191,10 @@ Public Class Farm
                 End If
                 doConservation()
                 doSprayEffluient()
+
+                For Each Paddock As LocalPaddockType In myPaddocks
+                        Paddock.OnPost()
+                Next
         End Sub
 
         Sub Allocate_Paddocks()
@@ -205,35 +209,39 @@ Public Class Farm
                 SortByIndex()
         End Sub
 
+        'LUDF Process
+        Private EnableCutting As Boolean = True
         Public Sub NewAllocation()
 
-                'LUDF Process
-                ' 1: Rank all paddocks by mass
-                SortPaddocksByCover()
-                ' 2: If in surplus then cut (some?) paddock for silage
-                If (FeedSituation() > 0) Then
-                        'close/cut some paddocks
-                        For Each pdk As LocalPaddockType In myPaddocks
-                                If (pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
-                                        pdk.Closed = True
-                                        PaddocksClosed += 1
-                                End If
-                        Next
+                'First allocate paddock that need to be returned to
+                PaddockQueue = New Queue(Of LocalPaddockType)
+                'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
+                For Each pdk As LocalPaddockType In myPaddocks
+                        If (pdk.BeingGrazed()) Then
+                                pdk.GrazingCounter = Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa)
+                                PaddockQueue.Enqueue(pdk)
+                                'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
+                        End If
+                Next
+
+                'Remove any surplus
+                If (EnableCutting) Then
+                        SortPaddocksByCover() '1: Rank all paddocks by mass
+                        If (FeedSituation() > 0) Then '2: If in surplus then cut (some?) paddock for silage
+                                For Each pdk As LocalPaddockType In myPaddocks
+                                        If (pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
+                                                pdk.Closed = True
+                                                PaddocksClosed += 1
+                                        End If
+                                Next
+                        End If
                 End If
 
                 ' 3: Allocate paddocks to meet weeks requirements
                 Dim AreaToGraze As Double = FarmArea / GrazingInterval
                 Dim UnallocatedArea = AreaToGraze * 7
 
-                PaddockQueue = New Queue(Of LocalPaddockType)
-                'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
-                For Each pdk As LocalPaddockType In myPaddocks
-                        If (pdk.BeingGrazed()) Then
-                                PaddockQueue.Enqueue(pdk)
-                                'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
-                        End If
-                Next
-
+                SortPaddocksByCover() 'Rank all paddocks again by mass
                 For Each pdk As LocalPaddockType In myPaddocks
                         If (UnallocatedArea <= 0) Then
                                 Exit For
@@ -242,9 +250,17 @@ Public Class Farm
                         If (Not pdk.Closed And pdk.Grazable And Not PaddockQueue.Contains(pdk)) Then
                                 UnallocatedArea -= pdk.Area
                                 pdk.GrazingCounter = pdk.Area * myDayPerHa
-                                PaddockQueue.Enqueue(pdk) 'add all paddock to the queue (including close ones)
+                                PaddockQueue.Enqueue(pdk)
                         End If
                 Next
+
+                If (DebugLevel > 1) Then
+                        Console.WriteLine(" DDRules - Grazing paddock queue")
+                        For Each pdk As LocalPaddockType In PaddockQueue
+                                Console.WriteLine("    " & pdk.ToString())
+                        Next
+                        Console.WriteLine(" DDRules - Grazing paddock queue - done")
+                End If
                 SortByIndex()
         End Sub
 
@@ -282,7 +298,7 @@ Public Class Farm
                         If (p.GrazingCounter <= 0) Then
                                 '                        If (p.AvalibleDryMater <= 50) Then
                                 Dim pdk As LocalPaddockType = PaddockQueue.Dequeue()
-                                pdk.setJustGrazed()
+                                pdk.JustGrazed = True
                         Else
                                 Return
                         End If
@@ -505,7 +521,11 @@ Public Class Farm
                                         myGrazingInterval = 1 'default to set stocking
                                 End If
                                 myDayPerHa = myGrazingInterval / FarmArea
-                                Allocate_Paddocks()
+                                If AllocationType > 0 Then
+                                        NewAllocation()
+                                Else
+                                        Allocate_Paddocks()
+                                End If
                         End If
                 End Set
         End Property

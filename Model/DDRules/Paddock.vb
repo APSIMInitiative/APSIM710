@@ -6,7 +6,7 @@ Public Class LocalPaddockType
         ' nutrient grazing and returns.
 
         Private Enum PaddockStatus
-                GR = 1  'Growing
+                G = 1  'Growing
                 BG = 2 'Being grazed
                 JG = 4 'Just grazed
                 CL = 8  'Closed
@@ -67,14 +67,30 @@ Public Class LocalPaddockType
                 C_Feaces = 0
                 N_Urine = 0
                 DM_Grazed = New BioMass()
-                If (myStatus = PaddockStatus.JG) Then
+        End Sub
+
+        Sub OnPost()
+                If (JustGrazed And Cover() > (GrazingResidual * 1.1)) Then
+                        BeingGrazed = True
+                End If
+
+                If (JustGrazed) Then
                         Grazable = True
                 End If
         End Sub
 
-        Public Sub setJustGrazed()
-                myStatus = PaddockStatus.JG
-        End Sub
+        Public Property JustGrazed() As Boolean
+                Get
+                        Return myStatus = PaddockStatus.JG
+                End Get
+                Set(ByVal value As Boolean)
+                        If (value) Then
+                                myStatus = PaddockStatus.JG
+                        Else
+                                myStatus = PaddockStatus.G
+                        End If
+                End Set
+        End Property
 
         Public Property BeingGrazed() As Boolean
                 Get
@@ -88,7 +104,7 @@ Public Class LocalPaddockType
                                         Case PaddockStatus.BG
                                                 myStatus = PaddockStatus.JG
                                         Case Else
-                                                myStatus = PaddockStatus.GR
+                                                myStatus = PaddockStatus.G
                                 End Select
                         End If
                 End Set
@@ -113,7 +129,7 @@ Public Class LocalPaddockType
                 End Get
                 Set(ByVal value As Boolean)
                         If (value) Then
-                                myStatus = PaddockStatus.GR
+                                myStatus = PaddockStatus.G
                         Else
                                 myStatus = PaddockStatus.NA
                         End If
