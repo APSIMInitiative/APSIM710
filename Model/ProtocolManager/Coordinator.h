@@ -86,4 +86,8 @@ class Coordinator : public protocol::Component
 
 
    };
+
+inline const char *unQualifiedName(const char *szFQN);
+inline char *qualifiedOwnerName(const char *szFQN, char *buf);
+
 #endif

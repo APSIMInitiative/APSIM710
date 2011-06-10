@@ -278,7 +278,8 @@ enum SimulationInformationKind {respondToGetInfo = 2,
                                 respondToGetSetInfo = 4,
                                 eventInfo = 5,
                                 respondToEventInfo = 6,
-                                componentInfo = 8};
+								componentInfo = 7,
+                                systemInfo = 8};
 struct QueryInfoData
    {
    FString name;

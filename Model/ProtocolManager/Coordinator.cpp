@@ -583,6 +583,7 @@ void Coordinator::onReplyValueMessage(unsigned fromID, protocol::ReplyValueData 
 
 //  Changes:
 //    dph 15/5/2001
+//    nih 3/6/2011 - support query comp.* queries for componentInfo or systemInfo
 
 // ------------------------------------------------------------------
 void Coordinator::onQueryInfoMessage(unsigned int fromID,
@@ -625,7 +626,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                              fromID);
       registry.lookup(&reg, matches);
       }
-   else if (queryInfo.kind == protocol::componentInfo)
+   else if ( (queryInfo.kind == protocol::componentInfo) || (queryInfo.kind == protocol::systemInfo) )
       {
       int childID;
       if (Is_numerical(queryName.c_str()))
@@ -639,13 +640,52 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
       else
          componentNameToID(asString(queryInfo.name), childID);
 
-      if (childID == 0 || queryName == "") return; // XX Yuck!!
+	  //if no entity has been found yet, try another approach
+      if (childID == 0 || queryName == "") 
+	     {
+	     std::string searchName;
+	     std::string ownerName;
+		 char buf[256];
 
-      string fqn = getName();
-      fqn += ".";
-      fqn += queryName;
+		 searchName = queryName;
+   		 ownerName = qualifiedOwnerName(asString(queryInfo.name).c_str(), buf);
+   
+         std::string myname = protocol::Component::getFQName();
+		 //check if no owner OR I am the owner OR wildcard as owner
+		 if ( (ownerName.length() == 0) || (ownerName == myname) || (ownerName == "*")) 
+		    {
+				vector<int> children;
+				registry.getChildren(getId(), children);
 
-      sendMessage(protocol::newReturnInfoMessage(
+				//match searchName against Unqualified Names of the children
+				for (vector<int>::iterator it = children.begin(); it != children.end(); it++ ) 
+				   {
+				   int child = *it;
+				   std::string childName = registry.componentByID(child);
+		           if ( ((searchName == "*") || (searchName == unQualifiedName(childName.c_str()) ) )  //if '*' then match any child
+			            && ((queryInfo.kind == protocol::componentInfo) /*|| child->isSystem*/) )  // If kind is KIND_SYSTEM, match only systems
+                      {  
+                       sendMessage(protocol::newReturnInfoMessage(
+                                       componentID,
+                                       fromID,
+                                       messageID,
+                                       protocol::Component::getId(),    //ID of the owning component
+                                       child,                           //id of the child component
+                                       childName.c_str(),
+                                       "",                              //no ddml required
+                                       queryInfo.kind));                //type of query
+                        
+		              }
+                   }
+	        } 
+  	     }
+	  else
+	     {
+         string fqn = getName();
+         fqn += ".";
+         fqn += queryName;
+
+         sendMessage(protocol::newReturnInfoMessage(
                                        componentID,
                                        fromID,
                                        messageID,
@@ -654,7 +694,8 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        fqn.c_str(),
                                        " ",
                                        queryInfo.kind));
-      }
+         }
+   }
 
    for (unsigned i = 0; i != matches.size(); i++)
       {
@@ -1009,4 +1050,52 @@ void Coordinator::onError(const std::string& fromComponentName,
       writeStringToStream(message, cerr, "");
    }
 
+//============================================================================
+// unQualifiedName
+/**
+  * Extracts the last section of a FQN as the component name
+  * @param szFQN Fully qualified name.
+  * @return The unqualified name.
+  * @author N.Herrmann 2001  E.Zurcher July 2002, Nov 2006
+ */
+//============================================================================
+inline const char *unQualifiedName(const char *szFQN)
+{
+  const char* lastDot = strrchr(szFQN, '.');
+  return lastDot ? lastDot + 1 : szFQN;
+}
 
+//============================================================================
+// qualifiedOwnerName
+/**
+  * Returns the owner of a property/event/component
+  * e.g. own.er.name returns own.er
+  *      name        returns ""
+  * @param szFQN  Fully qualified name of the entity.
+  * @param buf    Character buffer to store the result.
+  * @return The owner of a property/event/component
+  * @author N.Herrmann 2001
+ */
+//============================================================================
+inline char *qualifiedOwnerName(const char *szFQN, char *buf)
+{
+   unsigned int i, x;
+
+   x = 0;
+   i = strlen(szFQN);                 //end of the string
+   while ( (i > 0) && (x == 0) ) {     //work backwards
+	  if (szFQN[i] == '.') {          //if the delimiter is found
+		 x = i;                        //store the position
+	  }
+	  i--;
+   }
+
+   if (x > 0) {                        //if the delimiter was found
+	  strncpy(buf, szFQN, x);         //copy the chars to the result
+	  buf[x] = '\0';                   //ensure it is teminated
+   }
+   else
+	  strcpy(buf, "");
+
+   return buf;
+}
