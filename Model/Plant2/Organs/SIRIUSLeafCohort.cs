@@ -42,7 +42,7 @@ class SIRIUSLeafCohort : LeafCohort
  #endregion
     
  #region Arbitrator method calls
-   public override double DMDemand
+    public override double DMDemand
     {
         get
         {
@@ -59,6 +59,21 @@ class SIRIUSLeafCohort : LeafCohort
             }
             else
                 return 0.0;
+        }
+    }
+    public override double DMSinkCapacity
+   {
+       get
+       {
+              double MaximumDM = (LeafStartArea + DeltaWaterConstrainedArea) / SpecificLeafAreaMin;
+              return Math.Max(0.0, MaximumDM - DMDemand - LeafStartNonStructuralWt - LeafStartStructuralWt);
+       }
+   }
+    public override double DMExcessAllocation
+    {
+        set
+        {
+            Live.NonStructuralWt += value;
         }
     }
     public override double NDemand
@@ -105,7 +120,7 @@ class SIRIUSLeafCohort : LeafCohort
     {
         set
         {
-            if (value < 0)
+            if (value < -0.0000000001)
                 throw new Exception("Leaf cohort allocation -ve DM value");
             if (value == 0)
             { } //do nothing
@@ -117,7 +132,7 @@ class SIRIUSLeafCohort : LeafCohort
                                                                                               //Net effect is if the crop is water stressed leaves will get thicker and if it is growth (light of Nitrogen) stressed leaves will get thicker
                 DeltaNonStructuralWt = NonStructuralAllocation;
                 Live.StructuralWt += DeltaStructuralWt;
-                Live.NonStructuralWt += DeltaNonStructuralWt;
+                Live.MetabolicWt += DeltaNonStructuralWt;
             }
             
             //Grow leaves after DM allocated

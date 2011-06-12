@@ -28,7 +28,6 @@ public class ArrayBiomass : Instance
 
         set { throw new Exception("Cannot set NonStructuralN in ArrayBiomass"); }
     }
-
     [Output]
     [Units("g/m^2")]
     public double[] StructuralN
@@ -39,6 +38,17 @@ public class ArrayBiomass : Instance
         }
 
         set { throw new Exception("Cannot set StructuralN in ArrayBiomass"); }
+    }
+    [Output]
+    [Units("g/m^2")]
+    public double[] MetabolicN
+    {
+        get
+        {
+            return AddValuesToList(".MetabolicN");
+        }
+
+        set { throw new Exception("Cannot set MetabolicN in ArrayBiomass"); }
     }
     [Output]
     [Units("g/m^2")]
@@ -61,7 +71,17 @@ public class ArrayBiomass : Instance
 
         set { throw new Exception("Cannot set StructuralWt in ArrayBiomass"); }
     }
+    [Output]
+    [Units("g/m^2")]
+    public double[] MetabolicWt
+    {
+        get
+        {
+            return AddValuesToList(".MetabolicWt");
+        }
 
+        set { throw new Exception("Cannot set MetabolicWt in ArrayBiomass"); }
+    }
     [Output]
     [Units("g/g")]
     public double[] NConc
@@ -71,7 +91,6 @@ public class ArrayBiomass : Instance
             return AddValuesToList(".NConc");
         }
     }
-
     [Output]
     [Units("g/g")]
     public double[] StructuralNConc
@@ -81,7 +100,6 @@ public class ArrayBiomass : Instance
             return AddValuesToList(".StructuralNConc");
         }
     }
-
     [Output]
     [Units("g/g")]
     public double[] NonStructuralNConc
@@ -89,6 +107,15 @@ public class ArrayBiomass : Instance
         get
         {
             return AddValuesToList(".NonStructuralNConc");
+        }
+    }
+    [Output]
+    [Units("g/g")]
+    public double[] MetabolicNConc
+    {
+        get
+        {
+            return AddValuesToList(".MetabolicNConc");
         }
     }
 

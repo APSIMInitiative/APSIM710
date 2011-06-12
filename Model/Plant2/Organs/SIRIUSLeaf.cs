@@ -281,6 +281,18 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return Demand;
         }
     }
+    public override double DMSinkCapacity
+    {
+        get
+        {
+            double Capacity = 0.0;
+            foreach (LeafCohort L in Leaves)
+            {
+                Capacity += L.DMSinkCapacity;
+            }
+            return Capacity;
+        }
+    }
     public override double DMPotentialAllocation
     {
         set
@@ -325,7 +337,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     [Output]
     [Units("g/m^2")]
     public override double DMAllocation
-    {
+   {
         set
         {
             if (DMDemand == 0)
@@ -340,29 +352,47 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 double DMsupply = value;
                 double DMallocated = 0;
                 double TotalDemand = 0;
-
+                
                 foreach (LeafCohort L in Leaves)
-                {
-                    TotalDemand += L.DMDemand;
-                }
+                        TotalDemand += L.DMDemand;
+                
                 // first make sure each cohort gets the DM required for Maximum SLA
-                double fraction = (value) / TotalDemand;//
+                double DemandFraction = (value) / TotalDemand;//
                 foreach (LeafCohort L in Leaves)
                 {
-                    double CohortDemand = 0;
-                    CohortDemand = L.DMDemand;
-                    double allocation = Math.Min(CohortDemand * fraction, DMsupply);
-                    L.DMAllocation = allocation;
-                    DMallocated += allocation;
-                    DMsupply -= allocation;
+                    double CohortDemand = L.DMDemand;
+                    double Allocation = Math.Min(CohortDemand * DemandFraction, DMsupply);
+                    //double allocation = Math.Min(L.DMDemand * fraction, DMsupply);
+                    L.DMAllocation = Allocation;
+                    DMallocated += Allocation;
+                    DMsupply -= Allocation;
                 }
-                if (DMsupply > 0.0000000001)
-                    throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
-                if ((DMallocated - value) > 0.000000001)
-                    throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
 
-                // Not currently allowing leaves to change thickness  
-            }
+                    if (DMsupply > 0.0000000001)
+                        throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
+                    if ((DMallocated - value) > 0.000000001)
+                        throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
+             }
+         }
+    }
+    public override double DMExcessAllocation
+    {
+        set
+        {
+        double TotalSinkCapacity = 0;
+        foreach (LeafCohort L in Leaves)
+            TotalSinkCapacity += L.DMSinkCapacity;
+        if (value > TotalSinkCapacity)
+            throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
+        if (TotalSinkCapacity > 0.0)
+                {
+                    double SinkFraction = value / TotalSinkCapacity;
+                    foreach (LeafCohort L in Leaves)
+                    {
+                        double Allocation = Math.Min(L.DMSinkCapacity * SinkFraction, value);
+                        L.DMExcessAllocation = Allocation;
+                    }    
+                }
         }
     }
     [Output]

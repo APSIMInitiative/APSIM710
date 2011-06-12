@@ -10,6 +10,8 @@ public class Biomass : Instance
     private double _StructuralN = 0;
     private double _NonStructuralN = 0;
     private double _PotentialDMAllocation = 0;
+    private double _MetabolicWt = 0;
+    private double _MetabolicN = 0;
 
     [Output]
     [Units("g/m^2")]
@@ -62,14 +64,33 @@ public class Biomass : Instance
             _PotentialDMAllocation = MathUtility.RoundToZero(value);
         }
     } //FIXME  This was only added because it was the only way I could get potential DM allocation values into a root layer array.  need to pull back to the root module
-
+    [Output]
+    [Units("g/m^2")]
+    virtual public double MetabolicWt
+    {
+        get { return _MetabolicWt; }
+        set
+        {
+            _MetabolicWt = MathUtility.RoundToZero(value);
+        }
+    }
+    [Output]
+    [Units("g/m^2")]
+    virtual public double MetabolicN
+    {
+        get { return _MetabolicN; }
+        set
+        {
+            _MetabolicN = MathUtility.RoundToZero(value);
+        }
+    }
     [Output]
     [Units("g/m^2")]
     public double Wt
     {
         get
         {
-            return StructuralWt + NonStructuralWt;
+            return StructuralWt + NonStructuralWt + MetabolicWt;
         }
     }
     [Output]
@@ -78,7 +99,7 @@ public class Biomass : Instance
     {
         get
         {
-            return StructuralN + NonStructuralN;
+            return StructuralN + NonStructuralN + MetabolicN;
         }
     }
     [Output]
@@ -87,8 +108,8 @@ public class Biomass : Instance
     {
         get
         {
-            double wt = (StructuralWt + NonStructuralWt);
-            double n = (StructuralN + NonStructuralN);
+            double wt = (StructuralWt + NonStructuralWt + MetabolicWt);
+            double n = (StructuralN + NonStructuralN + MetabolicN);
             if (wt > 0)
                 return n / wt;
             else
@@ -119,11 +140,23 @@ public class Biomass : Instance
                 return 0.0;
         }
     }
-
+    [Output]
+    [Units("g/m^2")]
+    public double MetabolicNConc
+    {
+        get
+        {
+            if (NonStructuralWt > 0)
+                return MetabolicN / MetabolicWt;
+            else
+                return 0.0;
+        }
+    }
     virtual public void Clear()
     {
         StructuralWt = 0;
         NonStructuralWt = 0;
+        MetabolicWt = 0;
     }
 
 }

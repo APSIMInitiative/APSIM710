@@ -54,7 +54,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     private double KNH4 = 0;
  #endregion
 
-#region bits to be superseeded by the biomass class
+ #region bits to be superseeded by the biomass class
     public override Biomass Live
     {
         get
@@ -128,7 +128,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             return Live.NConc;
         }
     }
- #endregion
+ #endregion 
 
  #region Root functions and events
     public override void DoPotentialGrowth()

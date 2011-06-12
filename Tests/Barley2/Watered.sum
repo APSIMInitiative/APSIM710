@@ -22,7 +22,6 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component           "Barley Sowing Rule" = %apsim%\Model\Manager.dll
-   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component              "Templeton Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -61,6 +60,7 @@ Paddock:
         LeafCohortlivenonStructuralWt
         LeafCohortSLA
         LeafCohortStructuralFrac
+        LeafCohortLiveMetabolicWt
 
      Output file = Watered.out
      Format = normal
@@ -205,6 +205,7 @@ Paddock:
         LeafTotalNonStructuralN
         LeafTotalStructuralWt
         LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
 
      Output file = Watered Plant2.out
      Format = normal
@@ -264,110 +265,6 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : plant_population = 0.00000
-
-------- Diagnostic variables Initialisation -----------------------------------
-     Manager rules:
-     
-     SECTION:- init
-     simday = 1
-     accumplantn = 0
-     accummineralisation = 0
-     accumdenit = 0
-     accumfert = 0
-     accumleach = 0
-     accumdetach = 0
-     deltasoilomn = 0
-     deltasurfaceomn = 0
-     deltasoilmineraln = 0
-     accumeo = 0
-     accumep = 0
-     accumes = 0
-     accumdrainage = 0
-     accumrunoff = 0
-     accumoutflowlat = 0
-     accumirrigation = 0
-     accumrainfall = 0
-     soilwaterdeficit = 0
-     leaflivenconc3 = 0
-     leafdeadnconc3 = 0
-     stemlivenconc3 = 0
-     tuberlivenconc3 = 0
-     accumttemerg = 0
-     leavesperstem = 0
-     
-     SECTION:- start_of_day
-     if simday = 1 then
-     initialsoilomn = biom_n() + fom_n() + hum_n()
-     initialsurfaceomn = surfaceom_n
-     initialmineraln = no3() + nh4() + urea()
-     endif
-     accumplantn =  (0 - barley2.leafliven2 - barley2.leafdeadn2 - barley2.stemliven - barley2.stemdeadn - barley2.tuberliven - barley2.tuberdeadn ) * 10
-     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
-     accumdenit = accumdenit - dnit()
-     accumfert = accumfert + fertiliser
-     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
-     accumdetach = 0
-     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
-     deltasurfaceomn = surfaceom_n - initialsurfaceomn
-     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
-     accumeo = accumeo - eo
-     accumep = accumep - barley2.leaftranspiration
-     accumes = accumes - es
-     accumdrainage = accumdrainage - drain
-     accumrunoff = accumrunoff - runoff
-     accumoutflowlat = accumoutflowlat - outflow_lat()
-     accumirrigation = accumirrigation + irrigation
-     accumrainfall = accumrainfall + rain
-     soilwaterdeficit =  sw_dep() - dul_dep()
-     if barley2.leaflivewt > 0 then
-     leaflivenconc3 = (barley2.leafliven/barley2.leaflivewt)
-     endif
-     if barley2.leafdeadwt > 0 then
-     leafdeadnconc3 = (barley2.leafdeadn/barley2.leafdeadwt)
-     endif
-     if barley2.tuberlivewt > 0 then
-     tuberlivenconc3 = (barley2.tuberliven/barley2.tuberlivewt)
-     endif
-     if barley2.stemlivewt > 0 then
-     stemlivenconc3 = (barley2.stemliven/barley2.stemlivewt)
-     endif
-     if barley2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
-     endif
-     leavesperstem = barley2.leaftotalno / 3
-     
-     SECTION:- end_of_day
-     if simday = 1 then
-     simday = 2
-     else simday = 2
-     endif
-     END of rules
-     
-     Manager creating a new local real variable : simday = 1.00000
-     Manager creating a new local real variable : accumplantn = 0.00000
-     Manager creating a new local real variable : accummineralisation = 0.00000
-     Manager creating a new local real variable : accumdenit = 0.00000
-     Manager creating a new local real variable : accumfert = 0.00000
-     Manager creating a new local real variable : accumleach = 0.00000
-     Manager creating a new local real variable : accumdetach = 0.00000
-     Manager creating a new local real variable : deltasoilomn = 0.00000
-     Manager creating a new local real variable : deltasurfaceomn = 0.00000
-     Manager creating a new local real variable : deltasoilmineraln = 0.00000
-     Manager creating a new local real variable : accumeo = 0.00000
-     Manager creating a new local real variable : accumep = 0.00000
-     Manager creating a new local real variable : accumes = 0.00000
-     Manager creating a new local real variable : accumdrainage = 0.00000
-     Manager creating a new local real variable : accumrunoff = 0.00000
-     Manager creating a new local real variable : accumoutflowlat = 0.00000
-     Manager creating a new local real variable : accumirrigation = 0.00000
-     Manager creating a new local real variable : accumrainfall = 0.00000
-     Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc3 = 0.00000
-     Manager creating a new local real variable : leafdeadnconc3 = 0.00000
-     Manager creating a new local real variable : stemlivenconc3 = 0.00000
-     Manager creating a new local real variable : tuberlivenconc3 = 0.00000
-     Manager creating a new local real variable : accumttemerg = 0.00000
-     Manager creating a new local real variable : leavesperstem = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -519,9 +416,6 @@ fertiliser:
        100.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
      Manager sending message :- barley2 sow  population = 300, depth = 30, cultivar = dash, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
-     Manager creating a new local real variable : initialsoilomn = 18901.70700
-     Manager creating a new local real variable : initialsurfaceomn = 10.00000
-     Manager creating a new local real variable : initialmineraln = 301.38400
 21/10/2003 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -541,7 +435,7 @@ fertiliser:
       Sending apply message to irrigation
 12/12/2003 - FloralInitiation
                             LAI = 6.89 (m^2/m^2)
-           Above Ground Biomass = 601.77 (g/m^2)
+           Above Ground Biomass = 705.35 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -550,30 +444,30 @@ fertiliser:
       Sending apply message to fertiliser
 25/12/2003 - FlagLeaf
                             LAI = 9.08 (m^2/m^2)
-           Above Ground Biomass = 960.50 (g/m^2)
+           Above Ground Biomass = 1107.42 (g/m^2)
 30 December 2003(Day of year=364), operations: 
       Sending apply message to irrigation
 8 January 2004(Day of year=8), operations: 
       Sending apply message to irrigation
 12/01/2004 - Flowering
                             LAI = 9.61 (m^2/m^2)
-           Above Ground Biomass = 1374.67 (g/m^2)
+           Above Ground Biomass = 1526.24 (g/m^2)
 19/01/2004 - StartGrainFill
                             LAI = 8.18 (m^2/m^2)
-           Above Ground Biomass = 1556.67 (g/m^2)
+           Above Ground Biomass = 1694.41 (g/m^2)
 21 January 2004(Day of year=21), operations: 
       Sending apply message to irrigation
 31 January 2004(Day of year=31), operations: 
       Sending apply message to irrigation
 21/02/2004 - EndGrainFill
                             LAI = 2.84 (m^2/m^2)
-           Above Ground Biomass = 2235.94 (g/m^2)
+           Above Ground Biomass = 2399.90 (g/m^2)
 24/02/2004 - Maturity
                             LAI = 2.52 (m^2/m^2)
-           Above Ground Biomass = 2290.39 (g/m^2)
+           Above Ground Biomass = 2454.58 (g/m^2)
 24/02/2004 - HarvestRipe
                             LAI = 2.52 (m^2/m^2)
-           Above Ground Biomass = 2290.39 (g/m^2)
+           Above Ground Biomass = 2454.58 (g/m^2)
 24 February 2004(Day of year=55): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error

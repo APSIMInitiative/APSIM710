@@ -651,6 +651,7 @@
           <variable name="LeafCohortlivenonStructuralWt" />
           <variable name="LeafCohortSLA" />
           <variable name="LeafCohortStructuralFrac" />
+          <variable name="LeafCohortLiveMetabolicWt" />
         </variables>
         <events name="Reporting Frequency">
           <event name="Daily" />
@@ -1022,9 +1023,10 @@
             <variable name="LeafTotalNonStructuralN" />
             <variable name="LeafTotalStructuralWt" />
             <variable name="LeafTotalNonStructuralWt" />
+            <variable name="LeafLiveMetabolicWt" />
           </variables>
         </outputfile>
-        <manager name="Diagnostic variables">
+        <manager name="Diagnostic variables" enabled="no">
           <ui>
             <CropType type="crop" description="Select crop type to report variables for">barley2</CropType>
           </ui>
@@ -1072,7 +1074,7 @@ endif
 
 !!!!!! Nitrogen balance components !!!!!!
 !!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
-AccumPlantN =  (0 - [CropType].LeafLiveN2 - [CropType].LeafDeadN2 - [CropType].StemLiveN - [CropType].stemdeadn - [CropType].TuberLiveN - [CropType].tuberdeadN ) * 10 !+ [CropType].RootLiveN + [CropType].RootDeadN
+!AccumPlantN =  (0 - [CropType].LeafLiveN2 - [CropType].LeafDeadN2 - [CropType].StemLiveN - [CropType].stemdeadn - [CropType].TuberLiveN - [CropType].tuberdeadN ) * 10 !+ [CropType].RootLiveN + [CropType].RootDeadN
 AccumMineralisation = AccumMineralisation + dlt_n_min() + dlt_n_min_res()
 AccumDenit = AccumDenit - dnit() 
 AccumFert = AccumFert + fertiliser
@@ -1085,7 +1087,7 @@ DeltaSoilMineralN = (no3() + nh4() + urea()) - InitialMineralN
 !!!!!! Water balance components !!!!!!
 !!!!!!^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!!!
 AccumEO = AccumEO - eo
-AccumEP = AccumEP - [CropType].LeafTranspiration
+!AccumEP = AccumEP - [CropType].LeafTranspiration
 AccumES = AccumES - es
 AccumDrainage = AccumDrainage - drain
 AccumRunoff = AccumRunoff - runoff
@@ -1097,12 +1099,12 @@ SoilWaterDeficit =  sw_dep() - dul_dep()
 !!!!!! Organ N % !!!!!!
 !!!!!!^^^^^^^^^^^^^^^^^^^^^!!!!!!
 !FIXME These variables are created because those reported by biomass object only have 2dp
-if [CropType].LeafLiveWt &gt; 0 then
-LeafLiveNConc3 = ([CropType].LeafLiveN/[CropType].LeafLiveWt)
-endif
-if [CropType].LeafDeadWt &gt; 0 then
-LeafDeadNConc3 = ([CropType].LeafDeadN/[CropType].LeafDeadWt)
-endif
+!if [CropType].LeafLiveWt &gt; 0 then
+!LeafLiveNConc3 = ([CropType].LeafLiveN/[CropType].LeafLiveWt)
+!endif
+!if [CropType].LeafDeadWt &gt; 0 then
+!LeafDeadNConc3 = ([CropType].LeafDeadN/[CropType].LeafDeadWt)
+!endif
 if [CropType].tuberlivewt &gt; 0 then
 TuberLiveNConc3 = ([CropType].tuberliveN/[CropType].tuberlivewt)
 endif
@@ -1117,7 +1119,7 @@ If [CropType].StageCodeValue &gt;= 3 Then
 AccumTtemerg = AccumTtemerg + [CropType].PhenologyThermalTimeValue
 Endif
 
-leavesPerStem = [croptype].leaftotalno / 3
+!leavesPerStem = [croptype].leaftotalno / 3
 
 </text>
             <event>start_of_day</event>

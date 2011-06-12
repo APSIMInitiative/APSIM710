@@ -430,6 +430,14 @@
         <CompositeBiomass name="Dead">
           <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
+        <ArrayBiomass name="CohortLive">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
+        </ArrayBiomass>
+        <ArrayBiomass name="CohortDead">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
@@ -638,14 +646,6 @@
             <XY>7 1000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <ArrayBiomass name="CohortLive">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Live</Property>
-        </ArrayBiomass>
-        <ArrayBiomass name="CohortDead">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Dead</Property>
-        </ArrayBiomass>
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
@@ -658,11 +658,11 @@
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>Optional paramaters
-
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
 3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
-4.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.</Memo>
+4.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+         </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="NReallocationFactor">

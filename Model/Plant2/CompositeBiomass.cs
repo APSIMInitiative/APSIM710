@@ -65,6 +65,34 @@ public class CompositeBiomass : Biomass
          }
       set { throw new Exception("Cannot set StructuralWt in CompositeBiomass"); }
       }
+   [Output]
+   [Units("g/m^2")]
+   override public double MetabolicN
+   {
+       get
+       {
+           double Value = 0;
+           foreach (string PropertyName in Property)
+               Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".MetabolicN)"));
+           return Value;
+       }
+
+       set { throw new Exception("Cannot set MetabolicN in CompositeBiomass"); }
+   }
+   [Output]
+   [Units("g/m^2")]
+   override public double MetabolicWt
+   {
+       get
+       {
+           double Value = 0;
+           foreach (string PropertyName in Property)
+               Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".MetabolicWt)"));
+           return Value;
+       }
+
+       set { throw new Exception("Cannot set MetabolicWt in CompositeBiomass"); }
+   }
 
    override public void Clear()
       {

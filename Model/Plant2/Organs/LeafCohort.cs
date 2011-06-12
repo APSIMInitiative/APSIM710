@@ -40,6 +40,12 @@ public class LeafCohort
                 return 0.0;
         }
     }
+    virtual public double DMSinkCapacity
+    {
+        get { return 0.0; }
+    }
+    virtual public double DMExcessAllocation
+    { set { } }
     virtual public double NDemand
     {
         get

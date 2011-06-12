@@ -9,9 +9,11 @@ public class BaseOrgan : Organ
 
    public override double DMDemand { get { return 0; } }
    public override double DMSupply { get { return 0; } }
+   public override double DMSinkCapacity { get { return 0; } }
    public override double DMRetranslocationSupply { get { return 0; } }
    public override double DMPotentialAllocation { set { } }
    public override double DMAllocation { set { } }
+   public override double DMExcessAllocation { set { }}
    public override double DMRetranslocation
       {
       set

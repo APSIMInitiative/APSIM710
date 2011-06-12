@@ -31,6 +31,7 @@ public class SIRIUSArbitrator : Arbitrator
     double[] DMSupplyOrgan = null;
     double[] DMDemand = null;
     double[] DMAllocation = null;
+    double[] DMExcessAllocation = null;
     double[] DMRetranslocation = null;
     
     double[] NDemandOrgan = null;
@@ -76,8 +77,9 @@ public class SIRIUSArbitrator : Arbitrator
         DMSupplyOrgan = new double[Organs.Count];
         DMDemand = new double[Organs.Count];
         DMAllocation = new double[Organs.Count];
+        DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
-        
+                
         // GET INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
         double StartingMass = 0;
         for (int i = 0; i < Organs.Count; i++)
@@ -113,7 +115,19 @@ public class SIRIUSArbitrator : Arbitrator
             }
         }
         
-        // Anything not required by organs demand is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
+        // Anything not required by organs demand is allocated to leaves until they reach their minimum SLA then any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
+        double DMNotAllocated = TotalDMSupply - TotalWtAllocated;
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            //double proportion = 0.0;
+            if (Organs[i].DMSinkCapacity > 0.0)
+            {
+                //proportion = Organs[i].DMSinkCapacity / TotalDMDemand;
+                double DMExcess = Math.Min(DMNotAllocated, Organs[i].DMSinkCapacity);
+                DMExcessAllocation[i] += DMExcess;
+                TotalWtAllocated += DMExcess;
+            }
+        }
         TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalDMSupply - TotalWtAllocated);
         
         // Send potential DM allocation to organs to set this variable for calculating N demand
@@ -328,7 +342,7 @@ public class SIRIUSArbitrator : Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);
-            NLimitatedWtAllocation += DMAllocation[i];
+            NLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]);
         }
         double TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation;
  #endregion
@@ -340,6 +354,7 @@ public class SIRIUSArbitrator : Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             Organs[i].DMAllocation = DMAllocation[i];
+            Organs[i].DMExcessAllocation = DMExcessAllocation[i];
             Organs[i].DMRespired = FixationWtLoss[i];
             Organs[i].DMRetranslocation = DMRetranslocation[i];
         }

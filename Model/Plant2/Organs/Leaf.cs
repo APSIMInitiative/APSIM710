@@ -545,6 +545,13 @@ public class Leaf : BaseOrgan, AboveGround
             return Photosynthesis.Growth(Radn * CoverGreen);
         }
     }
+    public override double DMSinkCapacity
+    {
+        get
+        {
+            return 0;
+        } 
+    }
     public override double DMPotentialAllocation
     {
         set
@@ -587,6 +594,8 @@ public class Leaf : BaseOrgan, AboveGround
 
         }
     }
+    public override double DMExcessAllocation
+    { set { } }
     [Output]
     [Units("mm")]
     public override double WaterDemand { get { return PEP; } }
