@@ -7,6 +7,7 @@ using Controllers;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
+using CSGeneral;
 
 public class ApsimRunToolStrip
    {
@@ -107,13 +108,14 @@ public class ApsimRunToolStrip
 
        try
        {
-           foreach (string SimulationPath in SimsToRun)
+           if (Controller.FactorialMode)
            {
-               if (Controller.FactorialMode)
-               {
-                   RunFactorialSimulations(Controller, SimulationPath);
-               }
-               else
+               List<SimFactorItem> SimFiles = CreateFactorialSimulations(SimsToRun);
+               RunFactorialSimulations(SimFiles);
+           }
+           else
+           {
+               foreach (string SimulationPath in SimsToRun)
                {
                    Component Simulation = _F.Find(SimulationPath);
                    string SimFileName;
@@ -141,77 +143,136 @@ public class ApsimRunToolStrip
        }
        Timer.Enabled = true;
    }
-   public void RunFactorialSimulations(BaseController Controller, string SimulationPath)
-   {
-       if(Controller.ApsimData.FactorComponent == null)
-            throw new Exception("Error initialising Factorials");
 
-       if(Controller.ApsimData.FactorComponent.ChildNodes.Count > 0)
+   public ApsimFile.ApsimFile CreateCopy(ApsimFile.ApsimFile apsimfile)
+   {
+       string txt = apsimfile.RootComponent.FullXML();
+        XmlDocument doc = new XmlDocument();
+        doc.LoadXml(txt);
+        XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
+               
+        ApsimFile.ApsimFile tmpFile = new ApsimFile.ApsimFile();
+        tmpFile.New(doc.OuterXml);
+        return tmpFile;
+   }
+   public List<SimFactorItem> CreateFactorialSimulations(List<string> SimsToRun)
+   {
+       List<SimFactorItem> SimFiles = new List<SimFactorItem>();
+       //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
+       ApsimFile.ApsimFile tmpFile = CreateCopy(_F);
+       foreach (string SimulationPath in SimsToRun)
        {
-           Component Simulation = _F.Find(SimulationPath);
-           string savedName = Simulation.Name;
+           ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
+       }
+       return SimFiles;
+   }
+   public void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile.ApsimFile copiedFile, Component FactorComponent, string SimulationPath)
+   {
+       if (FactorComponent == null)
+           throw new Exception("Error initialising Factorials");
+
+       if (FactorComponent.ChildNodes.Count > 0)
+       {
+           Component Simulation = copiedFile.Find(SimulationPath);
            try
            {
                FactorBuilder builder = new FactorBuilder();
-               List<FactorItem> items = builder.BuildFactorItems(Controller.ApsimData.FactorComponent, SimulationPath);
+               List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
                foreach (FactorItem item in items)
                {
                    int counter = 0;
                    string factorsList = "";
-                   item.Process(_JobRunner, Simulation, SimulationPath, factorsList, ref counter, 1);
+
+                   item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, 1);
                }
            }
            catch (Exception ex)
            {
+               throw new Exception("Error encountered creating Factorials\n" + ex.Message);
            }
-           Simulation.Name = savedName;
        }
    }
-   public void CreateSIM(ToolStrip Strip, ApsimFile.ApsimFile F, StringCollection SelectedPaths)
-      {
-      // ----------------------------------------------------------
-      // Run APSIM for the specified file and simulation paths.
-      // This method will also locate and look after the various
-      // run button states.
-      // ----------------------------------------------------------
-      _F = F;
-      _SelectedPaths = SelectedPaths;
-
-      // Get a list of simulations to run.
-      List<string> SimsToRun = new List<string>();
-      foreach (string SimulationPath in SelectedPaths)
-         ApsimFile.ApsimFile.ExpandSimsToRun(F.Find(SimulationPath), ref SimsToRun);
-      string UserMsg;
-
-      if (SimsToRun.Count <= 0)
-      {
-          UserMsg = "No simulations selected!";
-      }
-      else if (SimsToRun.Count == 1)
-      {
-          UserMsg = "Created simulation file:";
-      }
-      else
-      {
-          UserMsg = "Created simulation files:";
-      }
-
-      foreach (string SimulationPath in SimsToRun)
-         {
-         try
+   public void RunFactorialSimulations(List<SimFactorItem> SimFiles)
+   {
+       try
+       {
+           foreach (var item in SimFiles)
             {
-            Component Simulation = F.Find(SimulationPath);
-            string SimFileName = ApsimToSim.WriteSimFile(Simulation);
-            UserMsg += "\n" + SimFileName;
+                RunApsimJob NewJob = new RunApsimJob(item.SimName, _JobRunner);
+                NewJob.SimFileName = item.SimFileName;
+                _JobRunner.Add(NewJob);
             }
-         catch (Exception err)
-            {
-            MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-         }
-       MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
-      }      
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error encountered running Factorials\n" + ex.Message);
+        }
+   }
+   public void CreateSIM(ToolStrip Strip, BaseController Controller)//ApsimFile.ApsimFile F, StringCollection SelectedPaths)
+   {
+       // ----------------------------------------------------------
+       // Run APSIM for the specified file and simulation paths.
+       // This method will also locate and look after the various
+       // run button states.
+       // ----------------------------------------------------------
+       _F = Controller.ApsimData;
+       _SelectedPaths = Controller.SelectedPaths;
 
+       // Get a list of simulations to run.
+       List<string> SimsToRun = new List<string>();
+       foreach (string SimulationPath in _SelectedPaths)
+           ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
+       string UserMsg;
+
+       if (SimsToRun.Count <= 0)
+       {
+           UserMsg = "No simulations selected!";
+       }
+       else if (SimsToRun.Count == 1)
+       {
+           UserMsg = "Created simulation file:";
+       }
+       else
+       {
+           UserMsg = "Created simulation files:";
+       }
+        try
+        {
+           if (Controller.FactorialMode)
+           {
+               List<SimFactorItem> SimFiles = CreateFactorialSimulations(SimsToRun);
+               if (SimFiles.Count > 0)
+               {
+                   UserMsg += "\n" + SimFiles.Count.ToString() + " Sim Files created";
+               }
+               else
+               {
+                   UserMsg += "\n No Sim Files were created";
+               }
+           }
+           else
+           {
+               foreach (string SimulationPath in SimsToRun)
+               {
+                   try
+                   {
+                       Component Simulation = _F.Find(SimulationPath);
+                       string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+                       UserMsg += "\n" + SimFileName;
+                   }
+                   catch (Exception err)
+                   {
+                       MessageBox.Show("Simulation: " + SimulationPath + ". " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                   }
+               }
+           }
+        }
+        catch (Exception err)
+        {
+            MessageBox.Show("Unexpected Error while generating .sim files:\n " + err.Message, "Error generating .sim file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        MessageBox.Show(UserMsg, "Create .SIM", MessageBoxButtons.OK, MessageBoxIcon.Information);
+   }
    private void OnTick(object sender, EventArgs e)
       {
       // ----------------------------------------------------------

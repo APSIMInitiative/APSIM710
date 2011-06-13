@@ -371,7 +371,8 @@ Public Class FactorTree
         Dim FullXML As String = ""                                                  'used to store the xml of ALL the components that have been selected in the drag  'reset it to nothing, ready for recreation.
         Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(Controller.SelectedFactorialPath)   'get the component for this particular selected node (using it's path)
         FullXML = FullXML + Comp.FullXML                                            'get the xml for the component and add it to the xml of previous selected nodes
-        'PathsBeingDragged = Controller.SelectedPaths                                'store the paths of ALL the nodes that are being dragged in a global variable, so it can be used by other drag events.
+        PathsBeingDragged = New StringCollection
+        PathsBeingDragged.Add(Controller.SelectedFactorialPath)                     'store the paths of ALL the nodes that are being dragged in a global variable, so it can be used by other drag events.
 
         'Raise the other DragDropEvents
         DoDragDrop(FullXML, DragDropEffects.Copy)
@@ -382,7 +383,7 @@ Public Class FactorTree
     Private Sub TreeView_DragOver(ByVal sender As Object, ByVal e As System.Windows.Forms.DragEventArgs) Handles Me.DragOver
         ' --------------------------------------------------
         ' User has dragged a node over us - allow drop?
-        ' ------------------------<sor<sorghum />ghum />--------------------------
+        ' --------------------------------------------------
 
         'Make sure you are actually dragging something
         If e.Data.GetDataPresent(GetType(System.String)) Then   'check the "data" Drag Event Argument
@@ -395,15 +396,16 @@ Public Class FactorTree
                 'Work out the type of left drag this is (copy, move, create link/shortcut), and store it in the "Effect" Drag Event Argument
                 Dim FullXML As String = e.Data.GetData(DataFormats.Text)
                 Dim DropComp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(DestinationNode))   'get the corresponding component for the destination node.
-                'If DropComp.AllowAdd(FullXML) Then                      'if allowed to drop this node onto this destination node
+                If DropComp.AllowAdd(FullXML) Then                      'if allowed to drop this node onto this destination node
 
-                PathsBeingDragged = Controller.SelectedPaths
-                If Not IsNothing(PathsBeingDragged) AndAlso PathsBeingDragged.Count > 0 Then
+                    'If Not IsNothing(PathsBeingDragged) AndAlso PathsBeingDragged.Count > 0 Then
                     e.Effect = DragDropEffects.Copy
+                    'End If
+                    'Else                                                    'if NOT allowed to drop this node onto this destination node
+                    'e.Effect = DragDropEffects.None                         'display circle with line through it symbol
+                Else
+                    e.Effect = DragDropEffects.None                         'display circle with line through it symbol
                 End If
-                'Else                                                    'if NOT allowed to drop this node onto this destination node
-                'e.Effect = DragDropEffects.None                         'display circle with line through it symbol
-                'End If
             End If
         End If
     End Sub
@@ -428,6 +430,7 @@ Public Class FactorTree
         Select Case e.Effect                                                             'use the "Effect" Drag Event Argument to get the type of left mouse drag
             Case DragDropEffects.Copy                                                           'these DragDropEffects are just the changes to the mouse icon when you hover over a node whilst dragging
                 DragCopy(FullXML)
+                DestinationNode.Expand()
             Case Else                                                                           'should not needed this, but just put it in to prevent errors.
                 DragCancel()
         End Select
@@ -436,7 +439,21 @@ Public Class FactorTree
 
     'copy
     Private Sub DragCopy(ByVal FullXML As String)
-        Controller.FactorialSelection.Add(FullXML)                       'add the dragged nodes to the destination node (destination node is stored as the current selection in the controller) 
+        'if this is a factor, then add dropped item intothe targets
+        'this shoud be handled through events
+        Dim handled As Boolean = False
+        Dim paths As StringCollection = PathsBeingDragged
+
+        If IsNothing(paths) Then
+            Dim tmp As String = Parent.Name
+            paths = Controller.Explorer.DataTree.PathsBeingDragged
+
+            handled = Controller.Explorer.CurrentView.OnDropData(paths, FullXML)
+        End If
+
+        If (Not handled) Then
+            Controller.FactorialSelection.Add(FullXML)                       'add the dragged nodes to the destination node (destination node is stored as the current selection in the controller) 
+        End If
     End Sub
     'cancel
     Private Sub DragCancel()

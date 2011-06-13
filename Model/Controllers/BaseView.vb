@@ -1,6 +1,6 @@
 Imports System
 Imports System.IO
-
+Imports System.Collections.Specialized
 
 
 Public Class BaseView
@@ -124,6 +124,18 @@ Public Class BaseView
         ' instance.
         ' ---------------------------------------------
     End Sub
+    Public Overridable Function OnDropData(ByVal SourcePaths As StringCollection, ByVal FullXML As String) As Boolean
+        ' ---------------------------------------------
+        ' An overridable method that is called whenever
+        ' a Component tree node in the Factorial Tree
+        ' has data dropped on it. 
+        ' default behaviour is to return false and let
+        ' the FactorTree look after the logic
+        ' The Factor View needs the event to add Targets 
+        ' automatically when the first component is dropped
+        ' ---------------------------------------------
+        Return False
+    End Function
 
     Protected Sub PublishViewChanged()
         ' ---------------------------------------------

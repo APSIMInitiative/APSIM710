@@ -56,6 +56,10 @@ public class Types
         string MetaDataValue = XmlHelper.Value(TypesDoc.DocumentElement, TypeName + "/MetaData/" + MetaDataName);
         return Configuration.RemoveMacros(MetaDataValue);
     }
+    public XmlNode MetaDataNode(string TypeName, string MetaDataName)
+    {
+       return XmlHelper.Find(TypesDoc.DocumentElement, TypeName + "/MetaData/" + MetaDataName);
+    }
     public void Documentation(string TypeName, out List<string> Names, out List<string> Urls)
     {
         // Return all documentation nodes for the specified type.

@@ -58,6 +58,32 @@ namespace CSUserInterface
                 }
             }
         }
+        
+        public override bool OnDropData(StringCollection SourcePaths, string FullXML)
+        {
+           //if there are no children, then add the droppednodes as targets
+           //don't add to targets if there is existing children
+           //don't add to targets if the source is from the Factorial Tree
+           ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
+           if (thisComp.ChildNodes.Count == 0)
+           {
+              FactorTargets.AddTargets(SourcePaths);
+           }
+           thisComp.Add(FullXML);
+           OnRefresh();
+           return true;
+        }
+         public void LoadVariableTypes(XmlNode metNode, List<string> variableTypes)
+         {
+            if(metNode != null && variableTypes != null)
+            {
+               foreach (XmlNode varNode in XmlHelper.ChildNodes(metNode, "facvar"))
+               {
+                  variableTypes.Add(varNode.InnerText);
+               }
+            }
+         }
+
         public void LoadManagerVariables()
         {
             //if there is a single manager component as a child, then allow parameters to be defined
@@ -66,11 +92,15 @@ namespace CSUserInterface
             ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
             if (thisComp.ChildNodes.Count == 1)
             {
-                ApsimFile.Component childComp = thisComp.ChildNodes[0];
-                if (childComp.Type == "manager" || childComp.Type == "rule" || childComp.Type == "cropui")
-                {
-                    Table = CreateTable(childComp);
-                }
+               ApsimFile.Component childComp = thisComp.ChildNodes[0];
+
+               List<string> variableTypes = new List<string>();
+               LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
+               if(variableTypes.Contains(childComp.Type))
+               //if (childComp.Type == "manager" || childComp.Type == "rule" || childComp.Type == "cropui" || childComp.Type == "sorghumConstants" || childComp.Type == "sorghumGenotype")
+               {
+                  Table = CreateTable(childComp);
+               }
             }
             //gridManager.DataSourceTable = Table;
             gridManager.DataSource = Table;
@@ -98,6 +128,10 @@ namespace CSUserInterface
             Table.Columns.Add("Parameters", typeof(string));
 
             XmlNodeList uiNodes = childComp.ContentsAsXML.SelectNodes("//ui/* | //CustomUI/*");
+            if (childComp.Type == "sorghumConstants" || childComp.Type == "sorghumGenotype")
+            {
+               uiNodes = childComp.ContentsAsXML.ChildNodes;
+            }
             foreach (XmlNode ui in uiNodes)
             {
                 DataRow newRow = Table.NewRow();

@@ -30,18 +30,30 @@ namespace CSUserInterface
                 }
             }
         }
+        public void AddTargets(StringCollection targetPaths)
+        {
+           XmlNode targetsNode = Data.SelectSingleNode("//targets");
+           if (targetsNode == null)
+              targetsNode = Data.AppendChild(Data.OwnerDocument.CreateElement("targets"));
 
+           foreach (string item in targetPaths)
+           {
+              XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
+              varNode.InnerText = item;
+           }
+        }
         public override void OnSave()
         {
-            XmlNode targetsNode = Data.SelectSingleNode("//targets");
-            if (targetsNode == null)
-                targetsNode = Data.AppendChild(Data.OwnerDocument.CreateElement("targets"));
-            targetsNode.RemoveAll();
-            foreach (string item in TargetList.Items)
-            {
-                XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
-                varNode.InnerText = item;
-            }
+           XmlNode targetsNode = Data.SelectSingleNode("//targets");
+           if (targetsNode == null)
+              targetsNode = Data.AppendChild(Data.OwnerDocument.CreateElement("targets"));
+           targetsNode.RemoveAll();
+
+           foreach (string item in TargetList.Items)
+           {
+              XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
+              varNode.InnerText = item;
+           }
         }
         private void TargetList_DragDrop(object sender, DragEventArgs e)
         {

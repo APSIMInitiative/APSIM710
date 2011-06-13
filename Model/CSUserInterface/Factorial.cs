@@ -52,13 +52,17 @@ namespace CSUserInterface
             }
 
             XmlNode varNode = Data.SelectSingleNode("//settings");
-            string s = XmlHelper.Attribute(varNode, "fn");
+            string s = "";
+            if(varNode != null)
+                s = XmlHelper.Attribute(varNode, "fn");
             if (s == "1")
                 radDesc.Checked = true;
             else
                 radCount.Checked = true;
 
-            s = XmlHelper.Attribute(varNode, "tl");
+            s = "";
+            if (varNode != null)
+                s = XmlHelper.Attribute(varNode, "tl");
             if (s == "1")
                 radMultiple.Checked = true;
             else

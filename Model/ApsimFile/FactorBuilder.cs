@@ -36,7 +36,7 @@ namespace ApsimFile
             return FactorComponent.ChildNodes.Count; 
         }
 
-        public virtual void Process(JobRunner jobRunner, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
+        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -58,12 +58,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(jobRunner, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(jobRunner, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
                 }
             }
         }
@@ -77,12 +77,12 @@ namespace ApsimFile
            foreach (Component comp in Source.ChildNodes)
            {
                  //add a component
-              Component targetchild = targetComp.Add(comp.FullXML());
+              Component targetchild = targetComp.Add(comp.Contents);
               ReplaceComponent(targetchild, comp);
            }
         }
 
-      public void CreateJobFromSimulation(JobRunner jobRunner, Component Simulation, string factorsList, ref int counter, int totalCount)
+      public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount)
       {
          string sInitialName = Simulation.Name;
          if (Builder.SaveExtraInfoInFilename)
@@ -91,7 +91,7 @@ namespace ApsimFile
          }
          else
          {
-            //write a spacer to list sims in order
+            //write a spacer to list sims in order eg: 01 or 001 or 0001 depending on count
             string sPad = "";
             double tot = Math.Floor(Math.Log10(totalCount) + 1);
             double file = Math.Floor(Math.Log10(counter) + 1);
@@ -149,12 +149,10 @@ namespace ApsimFile
          }
          string SimFileName;
          SimFileName = ApsimToSim.WriteSimFile(Simulation);
-
-
-         RunApsimJob NewJob = new RunApsimJob(Simulation.Name, jobRunner);
-         NewJob.SimFileName = SimFileName;
-         jobRunner.Add(NewJob);
-         Simulation.Name = sInitialName;
+         SimFactorItem itm = new SimFactorItem(Simulation.Name, SimFileName);
+         SimFiles.Add(itm);    
+          //return simulation name to it's original
+          Simulation.Name = sInitialName;
       }
       public void AddOutputFilesToList(Component parent, List<Component> outputfiles)
       {
@@ -194,7 +192,7 @@ namespace ApsimFile
             return Parameters.Count;
         }
 
-        public override void Process(JobRunner jobRunner, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
+        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -210,23 +208,43 @@ namespace ApsimFile
                         XmlNode varNode = targetComp.ContentsAsXML.SelectSingleNode("//ui/" + Variable.Name + " | " + "//CustomUI/" + Variable.Name);
                         if (varNode != null)
                         {
-                            varNode.InnerText = target;
+                           varNode.InnerText = target;
+                        }
+                        else
+                        {
+                           varNode = targetComp.ContentsAsXML.SelectSingleNode("//"+Variable.Name);
+                           if (varNode != null)
+                           {
+                              varNode.InnerText = target;
+                           }
                         }
                     }
                 }
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(jobRunner, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(jobRunner, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
                 }
             }
         }
 
+    }
+    public class SimFactorItem
+    {
+        public SimFactorItem() { }
+        public SimFactorItem(string name, string filename)
+        {
+            SimName = name;
+            SimFileName = filename;
+        }
+        public string SimName { get; set; }
+        public string SimFileName { get; set; }
+        
     }
 
     public class FactorBuilder
@@ -236,7 +254,7 @@ namespace ApsimFile
 
         public List<FactorItem> BuildFactorItems(Component factorial, string SimulationPath)
         {
-            //read file saving options - 2 boolsat this stage - single line title, add factor/level to filename
+            //read file saving options - 2 bools at this stage - single line title, add factor/level to filename
             XmlNode varNode = factorial.ContentsAsXML.SelectSingleNode("//settings");
             TitleIsSingleLine = true;
             SaveExtraInfoInFilename = false;

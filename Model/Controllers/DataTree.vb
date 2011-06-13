@@ -412,7 +412,7 @@ Public Class DataTree
 #Region "Drag / Drop methods"       'These events handle a drag with both the left mouse button and the right mouse button
 
     'Global variables for Drag/Drop methods
-    Protected PathsBeingDragged As StringCollection     'used to store the paths for all the components that have been selected in the drag
+    Public PathsBeingDragged As StringCollection     'used to store the paths for all the components that have been selected in the drag
     Private isRightBtnDrag As Boolean = False           'is the drag event a drag using the right mouse button
 
 
