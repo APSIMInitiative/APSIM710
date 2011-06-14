@@ -10,20 +10,22 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = RS_Peas_0405_Full6_Nil6_T7
+Title                  = RS_Wheat_9394_Earlydrought_N200
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component                "New variables" = %apsim%\Model\Manager.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                     "fieldpea" = %apsim%\Model\Plant.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -35,8 +37,8 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/09/2004
-     Simulation end date   =  1/03/2005
+     Simulation start date =  1/05/1993
+     Simulation end date   =  1/02/1994
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -47,36 +49,42 @@ Paddock:
      Output frequency:
         post
      Output variables:
-        dd/mm/yyyy as Date
-        rain
-        day
-        year
-        es
-        drain
-        runoff
-        irrigation
-        sw
-        sw_dep()
+        dd/mm/yyyy as date
         biomass
-        cover_green
-        cover_tot
-        ep
-        grain_wt
-        green_biomass
-        height
-        lai
-        leafgreenwt
-        podgreenwt
-        stemgreenwt
-        node_no
-        esw
-        yieldwet
         yield
-        grainwt
+        rain
+        es
+        sw
+        sw_uptake
+        sw_demand
+        sw_supply
+        leafgreenwt
+        leafsenescedwt
+        stemgreenwt
+        headgreenwt
+        lai
+        ep
+        height
+        sw_dep()
+        runoff
+        drain
+        biomass_wt
+        irrigation
+        grain_no
+        plants
+        green_biomass
+        podgreenwt
+        esw
         grain_wt
         senescedwt
+        sw_stress_photo
+        n_stress_photo
+        surfaceom_cover
+        no3(1)
+        hum_n(1)
+        biom_n(1)
 
-     Output file = RS_Peas_0405_Full6_Nil6_T7.out
+     Output file = RS_Wheat_9394_Earlydrought_N200.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -85,12 +93,22 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-     29/11/2004  Prepare      irrigation apply amount= 30 (mm)
-     06/12/2004  Prepare      irrigation apply amount= 25 (mm)
-     13/12/2004  Prepare      irrigation apply amount= 30 (mm)
-     20/12/2004  Prepare      irrigation apply amount= 30 (mm)
-     28/12/2004  Prepare      irrigation apply amount= 33.7 (mm)
-     03/01/2005  Prepare      irrigation apply amount= 34 (mm)
+     17/05/1993  Prepare      irrigation apply amount= 64 (mm)
+     29/05/1993  Prepare      irrigation apply amount= 20 (mm)
+     29/07/1993  Prepare      fertiliser apply amount= 50 (kg/ha), type= urea_n (), depth= 8.8 (mm)
+     12/08/1993  Prepare      irrigation apply amount= 11 (mm)
+     06/09/1993  Prepare      irrigation apply amount= 6.5 (mm)
+     06/09/1993  Prepare      fertiliser apply amount= 50 (kg/ha), type= urea_n (), depth= 13 (mm)
+     04/10/1993  Prepare      fertiliser apply amount= 50 (kg/ha), type= urea_n (), depth= 11.8 (mm)
+     11/11/1993  Prepare      irrigation apply amount= 75 (mm)
+     15/11/1993  Prepare      irrigation apply amount= 75 (mm)
+     16/11/1993  Prepare      fertiliser apply amount= 50 (kg/ha), type= urea_n (), depth= 13 (mm)
+     16/11/1993  Prepare      irrigation apply amount= 27 (mm)
+     25/11/1993  Prepare      irrigation apply amount= 20 (mm)
+     10/12/1993  Prepare      irrigation apply amount =  35 (mm)
+     17/12/1993  Prepare      irrigation apply amount= 20 (mm)
+     23/12/1993  Prepare      irrigation apply amount= 37 (mm)
+     31/12/1993  Prepare      irrigation apply amount= 39 (mm)
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -104,33 +122,42 @@ Paddock:
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Sow on a fixed date Initialisation ------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-     if today = date('28-oct') then
-        fieldpea sow plants =44, sowing_depth = 20, cultivar = excel, row_spacing = 150, crop_class = plant
-     endif
-     END of rules
-     
-
 ------- ClimateControl Initialisation -----------------------------------------
      Manager rules:
      
      SECTION:- prenewmet
-     if (date_within('1/09/2004, 01/03/2005') = 1) then
+     if (date_within('1-jan, 31-dec') = 1) then
         maxt = maxt + 0
         mint = mint + 0
-        rain = rain + rain * -100 / 100
+        rain = 0
         radn = radn + radn * 0 / 100
         co2 = 350
       endif
-     
-     SECTION:- init
-     co2 = 350
      END of rules
      
-     Manager creating a new local real variable : co2 = 350.00000
+
+------- New variables Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     grain_no_per_head=0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : grain_no_per_head = 0.00000
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('11/05/1993') then
+        wheat sow plants =290, sowing_depth = 30, cultivar = batten, row_spacing = 150, crop_class = plant
+     endif
+     END of rules
+     
 
 ------- Templeton deep 1  Water Initialisation --------------------------------
      
@@ -299,45 +326,37 @@ Paddock:
            Totals  134021.3 12183.8  1259.7   157.5   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-28 October 2004(Day of year=302), Sow on a fixed date: 
-     Manager sending message :- fieldpea sow  plants = 44, sowing_depth = 20, cultivar = excel, row_spacing = 150, crop_class = plant
-28 October 2004(Day of year=302), fieldpea: 
+     Manager creating a new local real variable : co2 = 350.00000
+11 May 1993(Day of year=131), Sow on a fixed date: 
+     Manager sending message :- wheat sow  plants = 290, sowing_depth = 30, cultivar = batten, row_spacing = 150, crop_class = plant
+11 May 1993(Day of year=131), wheat: 
      Crop Sow
         ------------------------------------------------
-        cultivar                   = excel
+        cultivar                   = batten
         Phases:
            out
            sowing
            germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       4 (dd/mm)
            emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     250     250 (dd)
            end_of_juvenile
-              x_pp_end_of_juvenile       =    10.7      17 (h)
-              y_tt_end_of_juvenile       =     480       1 (dd)
            floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =      33      33 (dd)
            flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     200     200 (dd)
+              tt_flowering               =     120 (dd)
            start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =     500     500 (dd)
+              tt_start_grain_fill        =     545 (dd)
            end_grain_fill
-              tt_end_grain_fill          =      60 (dd)
+              tt_end_grain_fill          =      35 (dd)
            maturity
               tt_maturity                =       1 (dd)
            harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
+              tt_harvest_ripe            =    1000 (dd)
            end_crop
+              tt_end_crop                =    1000 (dd)
      
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0250     0.0250
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.50       0.50
+        grains_per_gram_stem           =       22.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0470 (g)
         ------------------------------------------------
      
      
@@ -347,17 +366,17 @@ Paddock:
           Depth     Factor         Limit      Factor
           (mm)         ()        (mm/mm)       (0-1)
          -----------------------------------------------
-         200.0     0.239          0.158       0.945
-         200.0     0.223          0.201       0.324
-         200.0     0.024          0.201       0.091
-         200.0     0.020          0.187       0.164
-         200.0     0.013          0.162       0.301
-         200.0     0.001          0.140       0.301
-         200.0     0.001          0.162       0.301
-         200.0     0.001          0.149       0.151
+         200.0     0.255          0.158       1.000
+         200.0     0.255          0.201       0.704
+         200.0     0.047          0.201       0.154
+         200.0     0.041          0.187       0.356
+         200.0     0.029          0.162       0.732
+         200.0     0.005          0.140       0.732
+         200.0     0.005          0.162       0.732
+         200.0     0.003          0.149       0.366
          -----------------------------------------------
          Extractable SW:   108mm in  1600mm total depth (  7%).
-         Crop factor for bounding water use is set to 100.0 times eo.
+         Crop factor for bounding water use is set to   1.5 times eo.
       stage 1.0 sowing
      
                       Crop Sowing Data
@@ -365,56 +384,95 @@ Paddock:
          Sowing  Depth Plants Spacing Skip  Skip  Cultivar
          Day no   mm     m^2     mm   row   plant name
          ------------------------------------------------
-            302   20.0   44.0  150.0   0.0   0.0 excel
+            131   30.0  290.0  150.0   0.0   0.0 batten
          ------------------------------------------------
      
-29 October 2004(Day of year=303), fieldpea: 
+12 May 1993(Day of year=132), wheat: 
       stage 2.0 germination
-6 November 2004(Day of year=311), fieldpea: 
+17 May 1993(Day of year=137), operations: 
+      Sending apply message to irrigation
+21 May 1993(Day of year=141), wheat: 
       stage 3.0 emergence
-                     biomass =           8.80 (g/m^2)   lai          =   0.044 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   12.71 (mm)
-29 November 2004(Day of year=334), operations: 
-      Sending apply message to irrigation
-30 November 2004(Day of year=335), fieldpea: 
+                     biomass =           1.33 (g/m^2)   lai          =   0.058 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   34.40 (mm)
+22 May 1993(Day of year=142), wheat: 
       stage 4.0 end_of_juvenile
-                     biomass =         107.32 (g/m^2)   lai          =   1.169 (m^2/m^2)
-                     stover N conc =     3.43 (%)    extractable sw =   27.13 (mm)
-4 December 2004(Day of year=339), fieldpea: 
+                     biomass =           1.57 (g/m^2)   lai          =   0.062 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   33.94 (mm)
+29 May 1993(Day of year=149), operations: 
+      Sending apply message to irrigation
+29 July 1993(Day of year=210), operations: 
+      Sending apply message to fertiliser
+29 July 1993(Day of year=210), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth    8.80 (layer   1)
+12 August 1993(Day of year=224), operations: 
+      Sending apply message to irrigation
+6 September 1993(Day of year=249), operations: 
+      Sending apply message to irrigation
+      Sending apply message to fertiliser
+6 September 1993(Day of year=249), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   13.00 (layer   1)
+4 October 1993(Day of year=277), operations: 
+      Sending apply message to fertiliser
+4 October 1993(Day of year=277), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   11.80 (layer   1)
+4 October 1993(Day of year=277), wheat: 
       stage 5.0 floral_initiation
-                     biomass =         153.56 (g/m^2)   lai          =   1.443 (m^2/m^2)
-                     stover N conc =     2.79 (%)    extractable sw =    9.40 (mm)
-6 December 2004(Day of year=341), operations: 
+                     biomass =         327.74 (g/m^2)   lai          =   4.280 (m^2/m^2)
+                     stover N conc =     2.25 (%)    extractable sw =    4.10 (mm)
+11 November 1993(Day of year=315), operations: 
       Sending apply message to irrigation
-8 December 2004(Day of year=343), fieldpea: 
+15 November 1993(Day of year=319), operations: 
+      Sending apply message to irrigation
+16 November 1993(Day of year=320), operations: 
+      Sending apply message to fertiliser
+16 November 1993(Day of year=320), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        50.00 of N as urea (urea_n)
+                                         added at depth   13.00 (layer   1)
+      Sending apply message to irrigation
+18 November 1993(Day of year=322), wheat: 
       stage 6.0 flowering
-                     biomass =         200.42 (g/m^2)   lai          =   1.776 (m^2/m^2)
-                     stover N conc =     2.55 (%)    extractable sw =   23.47 (mm)
-13 December 2004(Day of year=348), operations: 
+                     biomass =         377.81 (g/m^2)   lai          =   0.141 (m^2/m^2)
+                     stover N conc =     3.00 (%)    extractable sw =  125.27 (mm)
+25 November 1993(Day of year=329), operations: 
       Sending apply message to irrigation
-20 December 2004(Day of year=355), operations: 
-      Sending apply message to irrigation
-28 December 2004(Day of year=363), operations: 
-      Sending apply message to irrigation
-30 December 2004(Day of year=365), fieldpea: 
+29 November 1993(Day of year=333), wheat: 
       stage 7.0 start_grain_fill
-                     biomass =         509.62 (g/m^2)   lai          =   3.881 (m^2/m^2)
-                     stover N conc =     1.87 (%)    extractable sw =   54.49 (mm)
-3 January 2005(Day of year=3), operations: 
+                     biomass =         394.90 (g/m^2)   lai          =   0.141 (m^2/m^2)
+                     stover N conc =     3.03 (%)    extractable sw =   93.79 (mm)
+10 December 1993(Day of year=344), operations: 
       Sending apply message to irrigation
-4 February 2005(Day of year=35), fieldpea: 
+17 December 1993(Day of year=351), operations: 
+      Sending apply message to irrigation
+23 December 1993(Day of year=357), operations: 
+      Sending apply message to irrigation
+31 December 1993(Day of year=365), operations: 
+      Sending apply message to irrigation
+6 January 1994(Day of year=6), wheat: 
       stage 8.0 end_grain_fill
-                     biomass =         884.61 (g/m^2)   lai          =   0.583 (m^2/m^2)
-                     stover N conc =     1.86 (%)    extractable sw =    0.00 (mm)
-8 February 2005(Day of year=39), fieldpea: 
+                     biomass =         461.68 (g/m^2)   lai          =   0.141 (m^2/m^2)
+                     stover N conc =     4.20 (%)    extractable sw =  103.24 (mm)
+8 January 1994(Day of year=8), wheat: 
       stage 9.0 maturity
-                     biomass =         884.61 (g/m^2)   lai          =   0.382 (m^2/m^2)
-                     stover N conc =     1.87 (%)    extractable sw =    0.00 (mm)
-9 February 2005(Day of year=40), fieldpea: 
+                     biomass =         462.23 (g/m^2)   lai          =   0.141 (m^2/m^2)
+                     stover N conc =     4.18 (%)    extractable sw =   94.54 (mm)
+9 January 1994(Day of year=9), wheat: 
       stage 10.0 harvest_ripe
-                     biomass =         884.60 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     1.88 (%)    extractable sw =    0.00 (mm)
-10 February 2005(Day of year=41), fieldpea: 
-      stage 11.0 end_crop
-1 March 2005(Day of year=60), clock: 
+                     biomass =         462.23 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     4.35 (%)    extractable sw =   90.51 (mm)
+10 January 1994(Day of year=10), wheat: 
+     Crop failure because of total leaf senescence.
+     Plant death. standing above-ground dm = 4622.29 (kg/ha)
+1 February 1994(Day of year=32), clock: 
      Simulation is terminating due to end criteria being met.

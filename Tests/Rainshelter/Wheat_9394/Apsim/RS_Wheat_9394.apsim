@@ -1,4 +1,4 @@
-<folder version="26" name="Simulations">
+<folder version="27" name="Simulations">
   <simulation name="RS_Wheat_9394_Fullirrigation_N200">
     <metfile name="met">
       <filename name="filename">lincoln.met</filename>
@@ -251,6 +251,7 @@ endif</text>
           <variable name="no3(1)" />
           <variable name="hum_n(1)" />
           <variable name="biom_n(1)" />
+          <variable name="root_depth" />
         </variables>
       </outputfile>
       <soil name="Templeton deep 1 ">
@@ -435,17 +436,17 @@ endif</text>
             <Thickness units="mm">200</Thickness>
             <KS units="mm/day">4832.03882317437</KS>
             <BD units="g/cc" code="E">1.3105</BD>
-            <Airdry units="mm/mm" code="">0.0125</Airdry>
-            <LL15 units="mm/mm" code="">0.0125</LL15>
-            <DUL units="mm/mm" code="">0.25</DUL>
-            <SAT units="mm/mm" code="">0.3875</SAT>
+            <Airdry units="mm/mm" code="">0.025</Airdry>
+            <LL15 units="mm/mm" code="">0.05</LL15>
+            <DUL units="mm/mm" code="">0.3</DUL>
+            <SAT units="mm/mm" code="">0.4</SAT>
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <KS>389.229035400118</KS>
             <BD code="E">1.524</BD>
-            <Airdry code="">0.025</Airdry>
-            <LL15 code="">0.025</LL15>
+            <Airdry code="">0.08</Airdry>
+            <LL15 code="">0.08</LL15>
             <DUL code="">0.28</DUL>
             <SAT code="">0.39625</SAT>
           </Layer>
@@ -921,34 +922,52 @@ endif</text>
           </SoilCrop>
           <SoilCrop name="Wheat">
             <Layer>
-              <Thickness units="mm">180</Thickness>
-              <LL units="mm/mm" code="E">0.1535</LL>
-              <kl units="/day">0.242628872394562</kl>
+              <Thickness units="mm">200</Thickness>
+              <LL units="mm/mm" code="">0.05</LL>
+              <kl units="/day">0.1</kl>
               <xf units="0-1">1</xf>
             </Layer>
             <Layer>
-              <Thickness>150</Thickness>
-              <LL code="E">0.201</LL>
-              <kl>0.36744047999382</kl>
+              <Thickness>200</Thickness>
+              <LL code="">0.08</LL>
+              <kl>0.06</kl>
               <xf>1</xf>
             </Layer>
             <Layer>
-              <Thickness>400</Thickness>
-              <LL code="E">0.201</LL>
-              <kl>0.047</kl>
-              <xf>0.153815722533429</xf>
+              <Thickness>200</Thickness>
+              <LL code="">0.137</LL>
+              <kl>0.06</kl>
+              <xf>1</xf>
             </Layer>
             <Layer>
-              <Thickness>270</Thickness>
-              <LL code="E">0.162</LL>
-              <kl>0.0293168395757675</kl>
-              <xf>0.731981528228313</xf>
+              <Thickness>200</Thickness>
+              <LL code="">0.129</LL>
+              <kl>0.04</kl>
+              <xf>1</xf>
             </Layer>
             <Layer>
-              <Thickness>500</Thickness>
-              <LL code="E">0.162</LL>
-              <kl>0.00528755336999893</kl>
-              <xf>0.731981528228313</xf>
+              <Thickness>200</Thickness>
+              <LL code="">0.1</LL>
+              <kl>0.04</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <LL>0.09</LL>
+              <kl>0.03</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <LL>0.115</LL>
+              <kl>0.02</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <LL>0.12</LL>
+              <kl>0.01</kl>
+              <xf>1</xf>
             </Layer>
           </SoilCrop>
           <SoilCrop name="ryegrass_clover">
@@ -1049,61 +1068,51 @@ endif</text>
           </SoilCrop>
         </Water>
         <SoilWat>
-          <SummerCona>4.4</SummerCona>
-          <SummerU>9</SummerU>
-          <SummerDate>1-Oct</SummerDate>
-          <WinterCona>3</WinterCona>
-          <WinterU>6</WinterU>
-          <WinterDate>1-Apr</WinterDate>
-          <DiffusConst>88</DiffusConst>
-          <DiffusSlope>35</DiffusSlope>
-          <Salb>0.13</Salb>
-          <Cn2Bare>73</Cn2Bare>
-          <CnRed>20</CnRed>
-          <CnCov>0.8</CnCov>
-          <Slope />
-          <DischargeWidth />
-          <CatchmentArea />
-          <MaxPond />
+          <SummerCona type="text" description="SummerCona">4.4</SummerCona>
+          <SummerU type="text" description="SummerU">9</SummerU>
+          <SummerDate type="text" description="SummerDate">1-Oct</SummerDate>
+          <WinterCona type="text" description="WinterCona">2</WinterCona>
+          <WinterU type="text" description="WinterU">4</WinterU>
+          <WinterDate type="text" description="WinterDate">1-Apr</WinterDate>
+          <DiffusConst type="text" description="DiffusConst">88</DiffusConst>
+          <DiffusSlope type="text" description="DiffusSlope">35</DiffusSlope>
+          <Salb type="text" description="Salb">0.13</Salb>
+          <Cn2Bare type="text" description="Cn2Bare">73</Cn2Bare>
+          <CnRed type="text" description="CnRed">20</CnRed>
+          <CnCov type="text" description="CnCov">0.8</CnCov>
+          <Slope type="text" description="Slope" />
+          <DischargeWidth type="text" description="DischargeWidth" />
+          <CatchmentArea type="text" description="CatchmentArea" />
+          <MaxPond type="text" description="MaxPond" />
           <Layer>
             <Thickness units="mm">180</Thickness>
             <SWCON units="0-1">0.496</SWCON>
-            <MWCON units="0-1">
-            </MWCON>
-            <KLAT units="mm/d">
-            </KLAT>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
             <Thickness>150</Thickness>
-            <SWCON>0.1</SWCON>
-            <MWCON>
-            </MWCON>
-            <KLAT units="mm/d">
-            </KLAT>
+            <SWCON>0.366</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
             <Thickness>400</Thickness>
-            <SWCON>0.097</SWCON>
-            <MWCON>
-            </MWCON>
-            <KLAT units="mm/d">
-            </KLAT>
+            <SWCON>0.2</SWCON>
+            <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
             <Thickness>270</Thickness>
             <SWCON>0.306</SWCON>
-            <MWCON>
-            </MWCON>
-            <KLAT units="mm/d">
-            </KLAT>
+            <MWCON />
+            <KLAT units="mm/d" />
           </Layer>
           <Layer>
             <Thickness>500</Thickness>
-            <SWCON>0.9</SWCON>
-            <MWCON>
-            </MWCON>
-            <KLAT>
-            </KLAT>
+            <SWCON>0.306</SWCON>
+            <MWCON />
+            <KLAT />
           </Layer>
         </SoilWat>
         <SoilOrganicMatter>
@@ -1684,6 +1693,17 @@ endif</text>
         <Y>no3(1)</Y>
         <Y>biom_n(1)</Y>
         <YRight>hum_n(1)</YRight>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="root depth">
+      <Plot>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>root_depth</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
