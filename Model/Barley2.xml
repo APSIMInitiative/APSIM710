@@ -353,13 +353,13 @@
         </PhaseBasedSwitch>
       </SIRIUSGrain>
       <SIRIUSRoot name="Root">
-        <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
-        <kl>   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
-        <xf>   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialDM>0.2</InitialDM>
-        <SpecificRootLength>40000</SpecificRootLength>
-        <KNO3>0.02</KNO3>
-        <KNH4>0.0</KNH4>
+        <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
+        <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
+        <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
+        <InitialDM type="text" description="InitialDM">0.2</InitialDM>
+        <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
+        <KNO3 type="text" description="KNO3">0.03</KNO3>
+        <KNH4 type="text" description="KNH4">0.0</KNH4>
         <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -378,7 +378,7 @@
           </XYPairs>
         </TemperatureFunction>
         <Constant name="MaxDailyNUptake">
-          <Value type="text" description="Value">9</Value>
+          <Value type="text" description="Value">20</Value>
         </Constant>
         <Constant name="SenescenceRate">
           <Value>0.0</Value>
@@ -445,6 +445,14 @@
         <CompositeBiomass name="Total">
           <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
+        <ArrayBiomass name="CohortLive">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
+        </ArrayBiomass>
+        <ArrayBiomass name="CohortDead">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
@@ -584,8 +592,12 @@
           <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
           <Values type="text" description="Values">   0.025      0.025     0.025            0.025    0.025       0.025       0.025         0.025     0.025    </Values>
         </StageBasedInterpolation>
+        <StageBasedInterpolation name="CriticalNConc">
+          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values type="text" description="Values">    0.05     0.05      0.05             0.05       0.05         0.05           0.05          0.05       0.05  </Values>
+        </StageBasedInterpolation>
         <Constant name="InitialNConc">
-          <Value>0.1</Value>
+          <Value type="text" description="Value">0.05</Value>
         </Constant>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
@@ -608,21 +620,9 @@
             <XY>10 20000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <ArrayBiomass name="CohortLive">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Live</Property>
-        </ArrayBiomass>
-        <ArrayBiomass name="CohortDead">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Dead</Property>
-        </ArrayBiomass>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <StageBasedInterpolation name="xPartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.60      0.40             0.0        0.0         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Floret">
         <Biomass name="Live" />
