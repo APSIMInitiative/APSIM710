@@ -142,9 +142,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
             i = 0;
             foreach (SIRIUSLeafCohort L in Leaves)
             {
-                if ((L.Live.StructuralWt + L.Live.NonStructuralWt) > 0.0)
+                if ((L.Live.StructuralWt + L.Live.MetabolicWt + L.Live.NonStructuralWt) > 0.0)
                 {
-                    values[i] = L.Live.StructuralWt / (L.Live.StructuralWt + L.Live.NonStructuralWt);
+                    values[i] = L.Live.StructuralWt / (L.Live.StructuralWt + L.Live.MetabolicWt + L.Live.NonStructuralWt);
                     i++;
                 }
                 else
@@ -216,7 +216,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["NRetranslocationRate"] as Function,
                                    Children["ExpansionStress"] as Function,
                                    Children["SpecificLeafAreaMin"] as Function,
-                                   this));
+                                   this,
+                                   Children["CriticalNConc"] as Function));
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -248,7 +249,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["NRetranslocationRate"] as Function,
                                    Children["ExpansionStress"] as Function,
                                    Children["SpecificLeafAreaMin"] as Function,
-                                   this));
+                                   this,
+                                   Children["CriticalNConc"] as Function));
         }
         // Add fraction of top leaf expanded to node number.
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
@@ -334,6 +336,37 @@ public class SIRIUSLeaf : Leaf, AboveGround
             }
         }
     }
+    public override double DMRetranslocationSupply
+    {
+        get
+        {
+            double Supply = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+                Supply += L.LeafStartDMRetranslocationSupply;
+            return Supply;
+        }
+    }
+    public override double DMRetranslocation
+    {
+        set
+        {
+            double DMSupply = DMRetranslocationSupply;
+            if (value > DMSupply)
+                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
+            if (value > 0)
+            {
+                double remainder = value;
+                foreach (SIRIUSLeafCohort L in Leaves)
+                {
+                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
+                    L.DMRetranslocation = Supply;
+                    remainder = remainder - Supply;
+                }
+                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
+            }
+        }
+    }
     [Output]
     [Units("g/m^2")]
     public override double DMAllocation
@@ -397,110 +430,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
     }
     [Output]
     [Units("g/m^2")]
-    public override double NAllocation
-    {
-        set
-        {
-            if (NDemand == 0)
-                if (value == 0) { }//All OK
-                else
-                    throw new Exception("Invalid allocation of N");
-
-            if (value == 0.0)
-            { }// do nothing
-            else
-            {
-                //setup allocation variables
-                double NSupply = value;
-                double[] MinNAllocated = new double[Leaves.Count];
-                double[] LabileNAllocated = new double[Leaves.Count];
-                double[] MinNdemand = new double[Leaves.Count];
-                double[] LabileNdemand = new double[Leaves.Count];
-                double NAllocated = 0;
-                double MinDemand = 0;
-                double LabileDemand = 0;
-
-                for (int i = 0; i < Leaves.Count; i++)
-                {
-                    LabileNAllocated[i] = 0;
-                    MinNAllocated[i] = 0;
-                    MinNdemand[i] = Leaves[i].DeltaWt * MinNconc;
-                    LabileNdemand[i] = Leaves[i].NDemand - MinNdemand[i];
-                    MinDemand += Leaves[i].NDemand - MinNdemand[i];
-                    LabileDemand += Leaves[i].NDemand - MinNdemand[i];
-                }
-                // first make sure each cohort gets the minimun N requirement for growth (includes MinNconc for structural growth and MinNconc for nonstructural growth)
-                for (int i = 0; i < Leaves.Count; i++)
-                {
-                    double allocation = 0;
-                    allocation = Math.Min(MinNdemand[i], NSupply);
-                    MinNAllocated[i] = allocation;
-                    NSupply -= allocation;
-                    NAllocated += allocation;
-                }
-                //  if (NAllocated < MinDemand)
-                //      throw new Exception("Not all leaf cohorts have recieved their minimum N requirement following Minimum N allocation processing");
-
-                // then allocate additional N relative to leaves labile demands
-                if (NSupply > 0)
-                {
-                    double fraction = (value - NAllocated) / LabileDemand;// (Demand - MinNallocated);
-                    for (int i = 0; i < Leaves.Count; i++)
-                    {
-                        if (Leaves[i].IsNotSenescing)
-                        {
-                            double allocation = 0;
-                            allocation = Math.Min(Math.Max(0.0, LabileNdemand[i] * fraction), NSupply);
-                            LabileNAllocated[i] += allocation;
-                            NSupply -= allocation;//Math.Max(NnotAllocated - FurtherAllocation, 0.0);
-                            NAllocated += allocation;
-                        }
-                    }
-                }
-                if (NSupply > 0.0000000001)
-                    throw new Exception("N allocated to Leaf left over after allocation to leaf cohorts");
-                if ((NAllocated - value) > 0.000000001)
-                    throw new Exception("the sum of N allocation to leaf cohorts is more that that allocated to leaf organ");
-
-                //send N allocations to each cohort
-                for (int i = 0; i < Leaves.Count; i++)
-                {
-                    Leaves[i].NAllocation = (LabileNAllocated[i] + MinNAllocated[i]);
-                }
-            }
-        }
-    }
-    public override double DMRetranslocationSupply
-    {
-        get
-        {
-            double Supply = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-                Supply += L.LeafStartDMRetranslocationSupply;
-            return Supply;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            double DMSupply = DMRetranslocationSupply;
-            if (value > DMSupply)
-                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
-            if (value > 0)
-            {
-                double remainder = value;
-                foreach (SIRIUSLeafCohort L in Leaves)
-                {
-                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
-                    L.DMRetranslocation = Supply;
-                    remainder = remainder - Supply;
-                }
-                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
-                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
-            }
-        }
-    }
     public override double NRetranslocationSupply
     {
         get
@@ -542,6 +471,101 @@ public class SIRIUSLeaf : Leaf, AboveGround
             foreach (SIRIUSLeafCohort L in Leaves)
                 Supply += L.LeafStartNReallocationSupply;
             return Supply;
+        }
+    }
+    public override double NAllocation
+    {
+        set
+        {
+            if (NDemand == 0)
+                if (value == 0) { }//All OK
+                else
+                    throw new Exception("Invalid allocation of N");
+
+            if (value == 0.0)
+            { }// do nothing
+            else
+            {
+                //setup allocation variables
+                double[] CohortNAllocation = new double[Leaves.Count+2];
+                double TotalStructuralNDemand = 0;
+                double TotalMetabolicNDemand = 0;
+                double TotalNonStructuralNDemand = 0;
+
+                int i = 0;
+                foreach (LeafCohort L in Leaves)
+                {
+                    {
+                        i += 1;
+                        CohortNAllocation[i] = 0;
+                        TotalStructuralNDemand += L.StructuralNDemand;
+                        TotalMetabolicNDemand += L.MetabolicNDemand;
+                        TotalNonStructuralNDemand += L.NonStructuralNDemand;
+                    }
+                }
+                double NSupply = value;
+                double LeafNAllocated = 0;
+                
+                // first make sure each cohort gets the structural N requirement for growth (includes MinNconc for structural growth and MinNconc for nonstructural growth)
+                if ((NSupply > 0) & (TotalStructuralNDemand >0))
+                {
+                    i = 0;
+                    foreach (LeafCohort L in Leaves)
+                    {
+                        i += 1;
+                        double allocation = 0;
+                        allocation = Math.Min(L.StructuralNDemand, NSupply * (L.StructuralNDemand/TotalStructuralNDemand));
+                        CohortNAllocation[i] += allocation;
+                        LeafNAllocated += allocation;
+                    }
+                    NSupply = value - LeafNAllocated;
+                }
+                                
+                // then allocate additional N relative to leaves metabolic demands
+                if ((NSupply > 0) & (TotalMetabolicNDemand > 0))
+                {
+                    i = 0;
+                    foreach (LeafCohort L in Leaves)
+                    {
+                        i += 1;
+                        double allocation = 0;
+                        allocation = Math.Min(L.MetabolicNDemand, NSupply * (L.MetabolicNDemand/TotalMetabolicNDemand));
+                        CohortNAllocation[i] += allocation;
+                        LeafNAllocated += allocation;
+                    }
+                    NSupply = value - LeafNAllocated;
+                }
+                
+                // then allocate excess N relative to leaves N sink capacity
+                if ((NSupply > 0) & (TotalNonStructuralNDemand > 0))
+                {
+                    i = 0;
+                    foreach (LeafCohort L in Leaves)
+                    {
+                        i += 1;
+                        double allocation = 0;
+                        allocation = Math.Min(L.NonStructuralNDemand, NSupply * (L.NonStructuralNDemand/TotalNonStructuralNDemand));
+                        CohortNAllocation[i] += allocation;
+                        LeafNAllocated += allocation;
+                    }
+                    NSupply = value - LeafNAllocated;
+                }
+
+                if (NSupply > 0.0000000001)
+                    throw new Exception("N allocated to Leaf left over after allocation to leaf cohorts");
+                if ((LeafNAllocated - value) > 0.000000001)
+                    throw new Exception("the sum of N allocation to leaf cohorts is more that that allocated to leaf organ");
+
+                //send N allocations to each cohort
+                //for (int i = 0; i < Leaves.Count; i++)
+                i = 0;
+                foreach (LeafCohort L in Leaves)
+                {
+                    //Leaves[i].NAllocation = (MetabolicNAllocated[i] + StructuralNAllocated[i]);
+                    i += 1;
+                    L.NAllocation = CohortNAllocation[i];
+                }
+            }
         }
     }
     public override double NReallocation

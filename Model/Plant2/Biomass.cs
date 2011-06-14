@@ -141,12 +141,12 @@ public class Biomass : Instance
         }
     }
     [Output]
-    [Units("g/m^2")]
+    [Units("g/g")]
     public double MetabolicNConc
     {
         get
         {
-            if (NonStructuralWt > 0)
+            if (MetabolicWt > 0)
                 return MetabolicN / MetabolicWt;
             else
                 return 0.0;

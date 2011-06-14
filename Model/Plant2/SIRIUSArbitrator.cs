@@ -191,7 +191,7 @@ public class SIRIUSArbitrator : Arbitrator
 
         //Set relative N demands of each organ
         for (int i = 0; i< Organs.Count; i++)
-            RelativeNDemand[i] = Organs[i].NDemand / TotalNDemand;  //Fixme rename fractional N demand  ????
+            RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand;  //Fixme rename fractional N demand  ????
 #endregion
 
  #region Reallocate Senesced Nitrogen
@@ -388,7 +388,9 @@ public class SIRIUSArbitrator : Arbitrator
         double NBalanceError = (EndN - (StartingN + TotalNUptakeSupply + TotalNFixationSupply));
         if (NBalanceError > 0.000000001)
             throw new Exception("Daily Plant N increment is greater than N supply");
-
+        NBalanceError = (EndN - (StartingN + NDemand));
+        if (NBalanceError > 0.000000001)
+            throw new Exception("Daily Plant N increment is greater than N demand");
         double EndWt = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;

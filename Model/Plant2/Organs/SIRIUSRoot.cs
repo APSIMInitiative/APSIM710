@@ -23,7 +23,17 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     public Biomass[] LayerDead;
     private SowPlant2Type SowingInfo = null;
     private double _SenescenceRate = 0;
-
+    private double _Nuptake = 0;
+    
+    [Output]
+    [Units("kg/ha")]
+    public double Nuptake
+    {
+        get
+        {
+            return _Nuptake * 10;
+        }
+    }
     [Input]
     public double[] sw_dep = null;
     [Input]
@@ -452,7 +462,9 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             }
             return TotalDeficit * _NitrogenDemandSwitch;
         }
-    } 
+    }
+    [Output]
+    [Units("g/m2")]
     public override double NUptakeSupply
     {
         get
@@ -471,6 +483,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         set
         {
+            _Nuptake = value;
             double Uptake = value / kgha2gsm;
             NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
             NitrogenUptake.DeltaNO3 = new double[dlayer.Length];

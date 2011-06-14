@@ -27,6 +27,10 @@ public class LeafCohort
     public double DeadArea = 0;
     public double MaxArea = 0;
     public double DeltaWt = 0;
+
+    public double StructuralNDemand = 0;
+    public double MetabolicNDemand = 0;
+    public double NonStructuralNDemand = 0;
 #endregion
     
  #region arbitration methods
