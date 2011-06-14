@@ -3,6 +3,7 @@
 #include "ApsimComponent.h"
 
 using namespace System::Collections::Specialized;
+using namespace System::IO;
 
 
 [DllImport("ApsimShared.dll", EntryPoint = "getChildren", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
@@ -132,6 +133,13 @@ Object^ LinkField::FindApsimComponent(String^ NameToFind, String^ TypeToFind)
    if (TypeToFind == "Component" && NameToFind == nullptr)
       return CreateDotNetProxy(TypeToFind, OurName);
 
+   // The TypeToFind passed in is a DotNetProxy type name. We need to convert this to a DLL name
+   // e.g. TypeToFind = Outputfile, DLLName = Report
+   String^ DLLFileName = TypeToFind;
+   List<String^>^ DLLs = Types::Instance->Dlls(TypeToFind);
+   if (DLLs->Count > 0)
+      DLLFileName = Path::GetFileNameWithoutExtension(DLLs[0]);
+
    while (PaddockName != "")
       {
       // Get a list of all paddock children.
@@ -145,7 +153,7 @@ Object^ LinkField::FindApsimComponent(String^ NameToFind, String^ TypeToFind)
          getComponentType(SiblingNameNoQuotes, Data);
          String^ SiblingType = Data->ToString();
 
-         if (SiblingType->ToLower() == TypeToFind->ToLower())
+         if (SiblingType->ToLower() == DLLFileName->ToLower())
             {
             String^ SiblingShortName = SiblingNameNoQuotes->Substring(SiblingNameNoQuotes->LastIndexOf('.')+1);
             if (NameToFind == nullptr || NameToFind == SiblingShortName)
