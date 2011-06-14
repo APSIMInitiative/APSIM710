@@ -88,7 +88,7 @@
             // 
             // MyHelpLabel
             // 
-            this.MyHelpLabel.Text = "Factorial";
+//            this.MyHelpLabel.Text = "Factorial";
             // 
             // btnGenerate
             // 
@@ -276,7 +276,7 @@
             this.Name = "Factorial";
             this.Size = new System.Drawing.Size(655, 476);
             this.Controls.SetChildIndex(this.btnGenerate, 0);
-            this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+//            this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.Controls.SetChildIndex(this.treeSims, 0);
             this.Controls.SetChildIndex(this.label1, 0);
             this.Controls.SetChildIndex(this.txtTotalSims, 0);

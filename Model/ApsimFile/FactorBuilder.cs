@@ -259,11 +259,15 @@ namespace ApsimFile
             TitleIsSingleLine = true;
             SaveExtraInfoInFilename = false;
 
-            string s = XmlHelper.Attribute(varNode, "fn");
+            string s = "";
+            if(varNode != null)
+               s = XmlHelper.Attribute(varNode, "fn");
             if (s == "1")
                 SaveExtraInfoInFilename = true;
 
-            s = XmlHelper.Attribute(varNode, "tl");
+            s = "";
+            if(varNode != null) 
+               s = XmlHelper.Attribute(varNode, "tl");
             if (s == "1")
                 TitleIsSingleLine = false;
 
