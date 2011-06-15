@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.Collections.Specialized;
+using System.IO;
 
 using CSGeneral;
 
@@ -173,6 +174,13 @@ public class LinkField
         if (TypeToFind == "Component" && NameToFind == null)
             return CreateDotNetProxy(TypeToFind, OurName);
 
+        // The TypeToFind passed in is a DotNetProxy type name. We need to convert this to a DLL name
+        // e.g. TypeToFind = Outputfile, DLLName = Report
+        String DLLFileName = TypeToFind;
+        List<String> DLLs = Types.Instance.Dlls(TypeToFind);
+        if (DLLs.Count > 0)
+           DLLFileName = Path.GetFileNameWithoutExtension(DLLs[0]);
+
         while (PaddockName != "")
         {
             // Get a list of all paddock children.
@@ -181,7 +189,7 @@ public class LinkField
                 //////////////// need to find out how to do this           getComponentType(pair.Value, Data);
                 String SiblingType = Data.ToString();
 
-                if (SiblingType.ToLower() == TypeToFind.ToLower())
+                if (SiblingType.ToLower() == DLLFileName.ToLower())
                 {
                     String SiblingShortName = pair.Value.Substring(pair.Value.LastIndexOf('.') + 1);
                     if (NameToFind == null || NameToFind == SiblingShortName)
@@ -189,7 +197,7 @@ public class LinkField
                 }
             }
             // Go to parent paddock.
-            //////not sure I can do this yet   PaddockName = PaddockName.Substring(0, PaddockName.LastIndexOf('.'));
+            PaddockName = PaddockName.Substring(0, PaddockName.LastIndexOf('.'));
         }
 
         // If we get this far then we didn't find the APSIM component.

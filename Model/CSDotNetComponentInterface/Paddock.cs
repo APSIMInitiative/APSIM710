@@ -29,7 +29,7 @@ public class Paddock : Component
         if (Types.Instance.TypeNames.Length == 0)
             PlugIns.LoadAll();
     }
-    public String Name
+    public new String Name
     {
         get
         {
@@ -60,7 +60,7 @@ public class Paddock : Component
     /// Returns a component that is a child of the paddock
     /// </summary>
     //=========================================================================
-    public Component Component(String TypeToFind)
+    public Component ComponentByType(String TypeToFind)
     {
         TypedList<Component> Children = new TypedList<Component>();
         foreach (KeyValuePair<uint, String> pair in HostComponent.SiblingComponents)

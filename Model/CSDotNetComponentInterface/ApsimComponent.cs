@@ -182,6 +182,8 @@ public class ApsimComponent : Instance
                 else
                 {
                     // Insert any other parameters found under the <InitData> section into the model description.
+                    if (InitData.ChildNodes.Count == 0)
+                        throw new Exception("No nodes found under <InitData> for dll: " + DllFileName);
                     foreach (XmlNode Parameter in InitData.ChildNodes)
                     {
                         if (XmlHelper.ChildNodes(Parameter, "").Count == 0)

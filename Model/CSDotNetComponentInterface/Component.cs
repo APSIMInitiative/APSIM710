@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
+using CMPServices;
 
 /// <summary>
 /// --------------------------------------------------------------------
@@ -11,7 +12,7 @@ using System.Runtime.InteropServices;
 /// </summary>
 public class Component : TypedItem
 {
-    protected String TypeName;
+    public String TypeName;
     protected ApsimComponent HostComponent;
     
     protected String ParentCompName;            //Name of the parent component in the simulation
@@ -120,6 +121,10 @@ public class Component : TypedItem
     {
         RuntimeEventHandler Event = new RuntimeEventHandler(EventName, F);
         HostComponent.Subscribe(Event);
+    }
+    public String Name()
+    {
+        return TRegistrar.unQualifiedName(CompName);
     }
 }
 
