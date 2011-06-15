@@ -1,9 +1,8 @@
-rem @echo off
+@echo off
 rem ----------------------------------------------
 rem Create a release installation.
 rem ----------------------------------------------
 echo Making release msi
-cd \APSIM\Release
 
 rem Compile our tool first.
 "%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup\InsertFilesIntoSetup.sln /build release
@@ -36,7 +35,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:
 rem http://www.itscodingtime.com/post/Combine-Setup-MSI-and-EXE-into-a-single-package-with-IExpress.aspx
-c:\iexpress32\iexpress /N /Q ApsimSetup.sed
+..\..\BuildLibraries\IExpress32\iexpress /N /Q ApsimSetup.sed
 
 rem ------------------------------------------------------------------------------------------------------------
 rem ------- Now do the whole lot again this time with some files (Reference Panel unapproved) excluded
@@ -64,7 +63,7 @@ rem Now use the tool to insert filenames into the .vdproj file
 rem Now combine apsimsetup.msi and setup.exe into a self extracting installation.
 rem This uses IExpress described here:
 rem http://www.itscodingtime.com/post/Combine-Setup-MSI-and-EXE-into-a-single-package-with-IExpress.aspx
-c:\iexpress32\iexpress /N /Q ApsimSetupForRelease.sed
+..\..\BuildLibraries\IExpress32\iexpress /N /Q ApsimSetupForRelease.sed
 
 REM "c:\Program Files\7-Zip\7z.exe" a -sfx -r -mx=9 Apsim-%1.exe Model/*.xml Model/*.dll Model/*.exe Model/TclLink/CIDataTypes.tcl Model/TclLink/bin Model/TclLink/lib UserInterface/*.xml UserInterface/ToolBoxes/*.xml 
 
