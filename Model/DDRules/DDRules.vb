@@ -300,8 +300,8 @@ Public Class DDRules
                         myFarm.SupplementDigestability = 0.8
                 End If
 
-                myFarm.EnableSilageStore = False 'all supplement purchase / no silage kept
-                WinterOffDryStock = True 'all stock wintered off farm
+                SilageStoreEnable = False 'all supplement purchase / no silage kept
+                WinterOffDryStock = 1 'all stock wintered off farm
                 default_gr = Val_gr
         End Sub
 
@@ -672,7 +672,7 @@ Public Class DDRules
         'First Conservation Date
         <Output()> <Units("")> Public Property ConservationStart() As String
                 Get
-                        Return myFarm.FCD
+                        Return myFarm.FCD.ToString("dd-MMM")
                 End Get
                 Set(ByVal value As String)
                         myFarm.FCD = Date.Parse(value)
@@ -682,7 +682,7 @@ Public Class DDRules
         'Last Conservation Date
         <Output()> <Units("")> Public Property ConservationFinish() As String
                 Get
-                        Return myFarm.LCD
+                        Return myFarm.LCD.ToString("dd-MMM")
                 End Get
                 Set(ByVal value As String)
                         myFarm.LCD = Date.Parse(value)
@@ -1036,7 +1036,7 @@ Public Class DDRules
         End Sub
 
         'Detail level of debug output (0=none, 1=some, 2=detailed, 3=very detailed)
-        <Param()> Property DebugLevel() As Integer
+        <Param()> <Output()> Property DebugLevel() As Integer
                 Get
                         Return myDebugLevel
                 End Get

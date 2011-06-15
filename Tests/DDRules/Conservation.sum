@@ -16,6 +16,7 @@ Title                  = Conservation
    Component                          "met" = %apsim%\Model\Input.dll
    Component                "Farm Settings" = %apsim%\Model\Manager.dll
    Component        "Conservation Settings" = %apsim%\Model\Manager.dll
+   Component "Stop storing silage on a fixed date" = %apsim%\Model\Manager.dll
    Component                      "DDRules" = %apsim%\Model\DDRules.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
@@ -116,6 +117,16 @@ Paddock:
      
      
      Manager creating a new local real variable : cutting_waste = 0.00000
+
+------- Stop storing silage on a fixed date Initialisation --------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('1-jan') then
+       ddrules.silagestoreenable = 0
+              endif
+     END of rules
+     
 
 ------- DDRules Initialisation ------------------------------------------------
 

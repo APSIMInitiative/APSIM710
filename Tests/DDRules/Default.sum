@@ -13,7 +13,9 @@ Version                = 7.4
 Title                  = Default
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component          "Outputfile Nitrogen" = %apsim%\Model\Report.dll
    Component                          "met" = %apsim%\Model\Input.dll
+   Component               "Nitrogen Calcs" = %apsim%\Model\Manager.dll
    Component                      "DDRules" = %apsim%\Model\DDRules.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
@@ -58,13 +60,51 @@ Paddock:
         MilkSolids_Cow
         Cow_LWt
         Cow_BC
+        PeakStockingRate
+        StockingRate
 
      Output file = Default.out
+     Format = normal
+
+------- Outputfile Nitrogen Initialisation ------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        N_Eaten
+        N_Eaten_Pasture
+        N_Eaten_Supplement
+        N_Out
+        N_to_BC
+        N_to_feaces
+        N_to_milk
+        N_to_urine
+        NIntakeBalance
+        NOutBalance
+        NTotalBalance
+
+     Output file = Default Outputfile Nitrogen.out
      Format = normal
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\WinchmoreMet.met
+
+------- Nitrogen Calcs Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     totalnin = n_eaten_pasture + n_eaten_supplement
+     nintakebalance = totalnin - n_eaten
+     totalnout = n_to_bc + n_to_feaces + n_to_milk + n_to_urine
+     noutbalance = totalnout - n_out
+     ntotalbalance = nintakebalance - noutbalance
+     
+     SECTION:- end_of_day
+     END of rules
+     
 
 ------- DDRules Initialisation ------------------------------------------------
 
@@ -527,6 +567,11 @@ from the number of soil layers.The simulation will run using the minimum of the 
 Warning: Number of layers specified for root length density (rlvp) is different 
 from the number of soil layers.The simulation will run using the minimum of the two.
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : totalnin = 0.00000
+     Manager creating a new local real variable : nintakebalance = 0.00000
+     Manager creating a new local real variable : totalnout = 0.00000
+     Manager creating a new local real variable : noutbalance = 0.00000
+     Manager creating a new local real variable : ntotalbalance = 0.00000
 1 August 1989(Day of year=213), Fertiliser: 
      
    - Reading Fertiliser Type Parameters

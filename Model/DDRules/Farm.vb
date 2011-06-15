@@ -24,7 +24,7 @@ Public Class Farm
         Private myTimeInDairyShed As Double = 0
         Public myEffluentPond As New EffluentPond
         Public myEffluentIrrigator As New EffluentIrrigator
-        Public myEffluentPaddocksPercentage As Double = 1.0 '[default] spread to all paddock
+        Public myEffluentPaddocksPercentage As Double = 1.0 '[default = 1.0 = spread to all paddocks]
         Public AllocationType As Integer = 0
 
         Public Sub New()
@@ -211,35 +211,48 @@ Public Class Farm
 
         'LUDF Process
         Private EnableCutting As Boolean = True
+
         Public Sub NewAllocation()
 
+                ' 3: Allocate paddocks to meet weeks requirements
+                Dim AreaToGraze As Double = FarmArea / GrazingInterval
+                Dim UnallocatedArea = AreaToGraze * 7
+
                 'First allocate paddock that need to be returned to
-                PaddockQueue = New Queue(Of LocalPaddockType)
+                Dim TempList As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+
                 'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
                 For Each pdk As LocalPaddockType In myPaddocks
                         If (pdk.BeingGrazed()) Then
                                 pdk.GrazingCounter = Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa)
-                                PaddockQueue.Enqueue(pdk)
-                                'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
+                                TempList.Add(pdk)
+                                UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
                         End If
                 Next
+
+                TempList.Sort(LocalPaddockType.getSortListByCover(True))
+
+                PaddockQueue = New Queue(Of LocalPaddockType)
+                For Each pdk As LocalPaddockType In TempList
+                        If (DebugLevel > 2) Then
+                                Console.WriteLine("  DDRules - re-adding paddock to graze down properly " & pdk.ToString())
+                        End If
+                        PaddockQueue.Enqueue(pdk)
+                Next
+
 
                 'Remove any surplus
                 If (EnableCutting) Then
                         SortPaddocksByCover() '1: Rank all paddocks by mass
                         If (FeedSituation() > 0) Then '2: If in surplus then cut (some?) paddock for silage
                                 For Each pdk As LocalPaddockType In myPaddocks
-                                        If (pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
+                                        If (Not pdk.BeingGrazed And pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
                                                 pdk.Closed = True
                                                 PaddocksClosed += 1
                                         End If
                                 Next
                         End If
                 End If
-
-                ' 3: Allocate paddocks to meet weeks requirements
-                Dim AreaToGraze As Double = FarmArea / GrazingInterval
-                Dim UnallocatedArea = AreaToGraze * 7
 
                 SortPaddocksByCover() 'Rank all paddocks again by mass
                 For Each pdk As LocalPaddockType In myPaddocks
@@ -594,7 +607,17 @@ Public Class Farm
         'should these be moved out to a management script?
         Public FCD As Date 'New - First Conservation Date
         Public LCD As Date 'New - Last Conservation Date
-        Public EnableSilageStore As Boolean = True 'switch ot turn off local storage of farm made silage
+        Public myEnableSilageStore As Boolean = True 'switch ot turn off local storage of farm made silage
+
+        Public Property EnableSilageStore() As Boolean
+                Get
+                        Return myEnableSilageStore
+                End Get
+                Set(ByVal value As Boolean)
+                        myEnableSilageStore = value
+                        SilageHeap.doStore = myEnableSilageStore
+                End Set
+        End Property
 
         Public ReadOnly Property SilageCut() As Double
                 Get
@@ -615,13 +638,15 @@ Public Class Farm
         End Property
 
         Private Sub doConservation()
+                Dim IsCuttingDay As Boolean = end_week > 0 'only cut once a week [as per Dawn's rules]
                 If (AllocationType = 0) Then
                         If isBetween(myDate, FCD, LCD) Then
                                 ClosePaddocks()
                         End If
+                Else
+                        IsCuttingDay = True
                 End If
 
-                Dim IsCuttingDay As Boolean = end_week > 0 'only cut once a week [as per Dawn's rules]
                 If (IsCuttingDay And PaddocksClosed) Then
                         Dim HarvestedDM As BioMass = doHarvest(SilageCutWastage)
                         HarvestedDM.setME(DefualtSilageME)

@@ -10,7 +10,8 @@ Public Class LocalPaddockType
                 BG = 2 'Being grazed
                 JG = 4 'Just grazed
                 CL = 8  'Closed
-                NA = 19  'Not avalible for grazing
+                NA = 16  'Not avalible for grazing
+                R = 32  'Returning to "eat out"
         End Enum
 
         Public DebugLevel As Integer = 0 '0==none, 1==brief, 2==verbose
@@ -71,7 +72,8 @@ Public Class LocalPaddockType
 
         Sub OnPost()
                 If (JustGrazed And Cover() > (GrazingResidual * 1.1)) Then
-                        BeingGrazed = True
+                        BeingGrazed = True 'continue grazing paddock
+                        'myStatus = PaddockStatus.R
                 End If
 
                 If (JustGrazed) Then
@@ -477,6 +479,21 @@ Public Class LocalPaddockType
 
                 End Function
         End Class
+
+        Private Class sortByCoverComparerReverse : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
+                Function Compare(ByVal x As LocalPaddockType, ByVal y As LocalPaddockType) As Integer Implements System.Collections.Generic.IComparer(Of LocalPaddockType).Compare
+                        If (x.Cover < y.Cover) Then
+                                Return -1
+                        End If
+
+                        If (x.Cover > y.Cover) Then
+                                Return 1
+                        End If
+
+                        Return 0
+
+                End Function
+        End Class
         Private Class sortByIndexComparer : Implements System.Collections.Generic.IComparer(Of LocalPaddockType)
                 Function Compare(ByVal x As LocalPaddockType, ByVal y As LocalPaddockType) As Integer Implements System.Collections.Generic.IComparer(Of LocalPaddockType).Compare
                         If (x.index < y.index) Then
@@ -491,7 +508,10 @@ Public Class LocalPaddockType
 
                 End Function
         End Class
-        Public Shared Function getSortListByCover() As System.Collections.Generic.IComparer(Of LocalPaddockType)
+        Public Shared Function getSortListByCover(Optional ByVal isReverse As Boolean = False) As System.Collections.Generic.IComparer(Of LocalPaddockType)
+                If (isReverse) Then
+                        Return New sortByCoverComparerReverse
+                End If
                 Return New sortByCoverComparer
         End Function
         Public Shared Function getSortListByIndex() As System.Collections.Generic.IComparer(Of LocalPaddockType)

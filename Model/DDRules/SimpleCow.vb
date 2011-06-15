@@ -126,6 +126,10 @@ Public Class SimpleCow
                 Total_DM_Eaten = New BioMass()
                 Total_Pasutre_Eaten = New BioMass()
                 Total_Supplement_Eaten = New BioMass()
+                N_to_BC = 0.0
+                N_to_Milk = 0.0
+                N_to_feaces = 0.0
+                N_to_urine = 0.0
         End Sub
 
         Public Function ME_WeightChange()

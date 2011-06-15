@@ -2,6 +2,7 @@
         Private Total As New BioMass
         Private AddedToday As New BioMass
         Private RemovedToday As New BioMass
+        Public doStore As Boolean = True
 
         Public Sub New()
                 Total = New BioMass()
@@ -22,7 +23,9 @@
         Public Sub Add(ByVal feed As BioMass)
                 If (feed.DM_Total > 0) Then
                         AddedToday = AddedToday.Add(feed)
-                        Total = Total.Add(feed)
+                        If (doStore) Then
+                                Total = Total.Add(feed)
+                        End If
                 End If
         End Sub
 
