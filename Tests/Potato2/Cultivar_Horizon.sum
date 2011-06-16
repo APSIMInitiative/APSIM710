@@ -47,145 +47,7 @@ Paddock:
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
 ------- Plant2 diagnostic variables Initialisation ----------------------------
-     Output frequency:
-        post
      Output variables:
-        dd/mmm/yyyy
-        AccumTtemerg
-        StageCodeValue
-        no3()
-        nh4()
-        urea()
-        surfaceom_n
-        biom_n()
-        fom_n()
-        hum_n()
-        dnit()
-        leach_no3
-        AccumPlantN
-        AccumMineralisation
-        AccumDenit
-        AccumFert
-        AccumLeach
-        AccumDetach
-        DeltaSoilOMN
-        DeltaSurfaceOMN
-        DeltaSoilMineralN
-        RootNUptakeSupply
-        eo
-        es
-        sw_dep()
-        dul_dep()
-        drain
-        runoff
-        outflow_lat()
-        pond
-        AccumEO
-        AccumEP
-        AccumES
-        AccumDrainage
-        AccumRunoff
-        AccumRainfall
-        AccumIrrigation
-        AccumOutflowLat
-        SoilWaterDeficit
-        AboveGroundWt
-        BelowGroundWt
-        TotalWt
-        LeafDeadWt
-        LeafLiveWt
-        StemDeadWt
-        StemLiveWt
-        TuberDeadWt
-        TuberLiveWt
-        RootDeadWt
-        RootLiveWt
-        GrainLiveWt
-        GrainDeadWt
-        FloretLiveWt
-        FloretDeadWt
-        AboveGroundN
-        BelowGroundN
-        TotalN
-        TotalLiveN
-        TotalDeadN
-        LeafDeadN
-        LeafLiveN
-        StemDeadN
-        StemLiveN
-        TuberDeadN
-        TuberLiveN
-        RootLiveN
-        RootDeadN
-        GrainLiveN
-        GrainDeadN
-        FloretLiveN
-        FloretDeadN
-        LeafLiveNConc3
-        LeafDeadNConc3
-        StemLiveNConc3
-        TuberLiveNConc3
-        RootLiveNConc
-        GrainLiveNConc
-        FloretLiveNConc
-        RootWaterSupply
-        RootWaterUptake
-        LeafTranspiration
-        LeafWaterDemand
-        RootDepth
-        Cover_green
-        Cover_tot
-        Cover_dead
-        LeafLAI
-        LeafLAIDead
-        Height
-        LeafFn
-        LeafFw
-        LeafPhotosynthesisFtValue
-        LeafPhotosynthesisFvpdValue
-        LeafTotalNo
-        LeafGreenNo
-        LeafExpandingNodeNo
-        LeafCohortNo
-        LeafBranchNo
-        LeafDeadNodeNo
-        LeafNodeNo
-        LeafSenescingNodeNo
-        LeafLeafNo
-        sw
-        no3
-        LeafPartitionFractionValue
-        StemPartitionFractionValue
-        TuberPartitionFractionValue
-        GrainPartitionFractionValue
-        FloretPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumNConcValue
-        FloretMinimumNConcValue
-        LeafMinimumNConcValue
-        StemMinimumNConcValue
-        TuberMinimumNConcValue
-        RootMinimumNConcValue
-        GrainMaximumNConcValue
-        FloretMaximumNConcValue
-        LeafMaximumNConcValue
-        StemMaximumNConcValue
-        TuberMaximumNConcValue
-        RootMaximumNConcValue
-        leavesPerStem
-        PhenologyEarlyTuberTargetValue
-        StemLiveNonStructuralN
-        StemLiveStructuralN
-        StemLiveStructuralWt
-        StemLiveNonStructuralWt
-        LeafLiveNonStructuralN
-        LeafLiveNonStructuralWt
-        LeafLiveStructuralN
-        LeafLiveStructuralWt
-        LeafTotalStructuralN
-        LeafTotalNonStructuralN
-        LeafTotalStructuralWt
-        LeafTotalNonStructuralWt
 
      Output file = Cultivar_Horizon Plant2 diagnostic variables.out
      Format = normal
@@ -249,107 +111,14 @@ Paddock:
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
-     SECTION:- init
-     simday = 1
-     accumplantn = 0
-     accummineralisation = 0
-     accumdenit = 0
-     accumfert = 0
-     accumleach = 0
-     accumdetach = 0
-     deltasoilomn = 0
-     deltasurfaceomn = 0
-     deltasoilmineraln = 0
-     accumeo = 0
-     accumep = 0
-     accumes = 0
-     accumdrainage = 0
-     accumrunoff = 0
-     accumoutflowlat = 0
-     accumirrigation = 0
-     accumrainfall = 0
-     soilwaterdeficit = 0
-     leaflivenconc3 = 0
-     leafdeadnconc3 = 0
-     stemlivenconc3 = 0
-     tuberlivenconc3 = 0
-     accumttemerg = 0
-     leavesperstem = 0
      
-     SECTION:- start_of_day
-     if simday = 1 then
-     initialsoilomn = biom_n() + fom_n() + hum_n()
-     initialsurfaceomn = surfaceom_n
-     initialmineraln = no3() + nh4() + urea()
-     endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
-     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
-     accumdenit = accumdenit - dnit()
-     accumfert = accumfert + fertiliser
-     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
-     accumdetach = 0
-     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
-     deltasurfaceomn = surfaceom_n - initialsurfaceomn
-     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
-     accumeo = accumeo - eo
-     accumep = accumep - potato2.leaftranspiration
-     accumes = accumes - es
-     accumdrainage = accumdrainage - drain
-     accumrunoff = accumrunoff - runoff
-     accumoutflowlat = accumoutflowlat - outflow_lat()
-     accumirrigation = accumirrigation + irrigation
-     accumrainfall = accumrainfall + rain
-     soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
-     endif
-     if potato2.leafdeadwt > 0 then
-     leafdeadnconc3 = (potato2.leafdeadn/potato2.leafdeadwt)
-     endif
-     if potato2.tuberlivewt > 0 then
-     tuberlivenconc3 = (potato2.tuberliven/potato2.tuberlivewt)
-     endif
-     if potato2.stemlivewt > 0 then
-     stemlivenconc3 = (potato2.stemliven/potato2.stemlivewt)
-     endif
-     if potato2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-     endif
-     leavesperstem = potato2.leaftotalno / 3
-     
-     SECTION:- end_of_day
-     if simday = 1 then
-     simday = 2
-     else simday = 2
-     endif
-     END of rules
-     
-     Manager creating a new local real variable : simday = 1.00000
-     Manager creating a new local real variable : accumplantn = 0.00000
-     Manager creating a new local real variable : accummineralisation = 0.00000
-     Manager creating a new local real variable : accumdenit = 0.00000
-     Manager creating a new local real variable : accumfert = 0.00000
-     Manager creating a new local real variable : accumleach = 0.00000
-     Manager creating a new local real variable : accumdetach = 0.00000
-     Manager creating a new local real variable : deltasoilomn = 0.00000
-     Manager creating a new local real variable : deltasurfaceomn = 0.00000
-     Manager creating a new local real variable : deltasoilmineraln = 0.00000
-     Manager creating a new local real variable : accumeo = 0.00000
-     Manager creating a new local real variable : accumep = 0.00000
-     Manager creating a new local real variable : accumes = 0.00000
-     Manager creating a new local real variable : accumdrainage = 0.00000
-     Manager creating a new local real variable : accumrunoff = 0.00000
-     Manager creating a new local real variable : accumoutflowlat = 0.00000
-     Manager creating a new local real variable : accumirrigation = 0.00000
-     Manager creating a new local real variable : accumrainfall = 0.00000
-     Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc3 = 0.00000
-     Manager creating a new local real variable : leafdeadnconc3 = 0.00000
-     Manager creating a new local real variable : stemlivenconc3 = 0.00000
-     Manager creating a new local real variable : tuberlivenconc3 = 0.00000
-     Manager creating a new local real variable : accumttemerg = 0.00000
-     Manager creating a new local real variable : leavesperstem = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -501,9 +270,6 @@ fertiliser:
        100.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
      Manager sending message :- potato2 sow  population = 4.63822, depth = 170, cultivar = horizon, maxcover = 1.0, budnumber = 3.2, row_spacing = 770, crop_class = plant
-     Manager creating a new local real variable : initialsoilomn = 18901.70700
-     Manager creating a new local real variable : initialsurfaceomn = 10.00000
-     Manager creating a new local real variable : initialmineraln = 201.38321
 20/10/2003 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
