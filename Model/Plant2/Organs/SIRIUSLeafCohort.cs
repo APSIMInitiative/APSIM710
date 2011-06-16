@@ -79,24 +79,24 @@ class SIRIUSLeafCohort : LeafCohort
        get
        {
               double MaximumDM = (LeafStartArea + DeltaWaterConstrainedArea) / SpecificLeafAreaMin;
-              //return Math.Max(0.0, MaximumDM - DMDemand - LeafStartMetabolicWt - LeafStartStructuralWt);
-              return 0.0;//testing set back to above
+              return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
        }
    }
     public override double NDemand
     {
         get
         {
-            StructuralNDemand = StructuralNConc * StructuralDMDemand; // fixed proporiton of structural N conc given by minimum n conc
-            double MinMetabolicN = StructuralNConc * (LeafStartMetabolicWt + MetabolicDMDemand);  //ensures metabolic pool at least has MinN conc
-            double PossMetablicN = FunctionalNConc * (LeafStartStructuralWt + LeafStartMetabolicWt + StructuralDMDemand + MetabolicDMDemand);
-            MetabolicNDemand = Math.Max(0.0, MinMetabolicN + PossMetablicN - LeafStartMetabolicN); // varies between minimum N conc and critical N conc
-            NonStructuralNDemand = 0;//Math.Max(0.0, MaxN - CritN - LeafStartNonStructuralN); //takes the difference between the two above as the maximum nonstructural N conc and subtracts the current nonstructural N conc to give a value
+            StructuralNDemand = StructuralNConc * PotentialStructuralDMAllocation; 
+            MetabolicNDemand = FunctionalNConc * PotentialMetabolicDMAllocation;
+            NonStructuralNDemand = Math.Max(0.0, LuxaryNConc * (LeafStartStructuralWt + LeafStartMetabolicWt + PotentialStructuralDMAllocation + PotentialMetabolicDMAllocation) - Live.NonStructuralN);//Math.Max(0.0, MaxN - CritN - LeafStartNonStructuralN); //takes the difference between the two above as the maximum nonstructural N conc and subtracts the current nonstructural N conc to give a value
             double CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank); // Calculate cover above leaf cohort
             if (IsNotSenescing)  // && CoverAbove < 0.9) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
-                return StructuralNDemand + MetabolicNDemand;// + NonStructuralNDemand;
+                return StructuralNDemand + MetabolicNDemand + NonStructuralNDemand;
             else
                 return 0.0;
+            //double MinMetabolicN = StructuralNConc * (LeafStartMetabolicWt + PotentialMetabolicDMAllocation);  //ensures metabolic pool at least has MinN conc
+            //double PossMetablicN = FunctionalNConc * (LeafStartStructuralWt + LeafStartMetabolicWt + PotentialStructuralDMAllocation + PotentialMetabolicDMAllocation);
+            //MetabolicNDemand = Math.Max(0.0, MinMetabolicN + PossMetablicN - LeafStartMetabolicN); // varies between minimum N conc and critical N conc
         }
     }
     public double DMRetranslocationSupply
@@ -120,17 +120,12 @@ class SIRIUSLeafCohort : LeafCohort
     {
         set
         {
-            if (DMDemand == 0)
+            if (DMDemand > 0)
             {
-                PotentialStructuralDMAllocation = 0;
-                PotentialMetabolicDMAllocation = 0;
+                DeltaWt = value;
+                PotentialStructuralDMAllocation = Math.Min(value, StructuralDMDemand);  //Biomass partitioned to Structural first in proportion to leafarea growth
+                PotentialMetabolicDMAllocation = Math.Max(0.0, value - StructuralDMDemand);  //Any surpless is partitioned to metabolic not in proportion to leaf area growth.  
             }
-            else
-            {
-                PotentialStructuralDMAllocation = StructuralDMDemand / DMDemand * value;
-                PotentialMetabolicDMAllocation = MetabolicDMDemand / DMDemand * value;
-            }
-            
             PotentialNonStructuralDMAllocation = value - PotentialStructuralDMAllocation - PotentialMetabolicDMAllocation;
         }
     }
@@ -145,8 +140,8 @@ class SIRIUSLeafCohort : LeafCohort
             else
             {
                 DeltaWt = value;
-                DeltaStructuralWt = value * 0.5;//Math.Min(value, StructuralDMDemand);  //Biomass partitioned to Structural first in proportion to leafarea growth
-                DeltaMetaboliclWt = value * 0.5;//Math.Max(0.0,value - StructuralDMDemand);  //Any surpless is partitioned to metabolic not in proportion to leaf area growth.  
+                DeltaStructuralWt = Math.Min(value, StructuralDMDemand);  //Biomass partitioned to Structural first in proportion to leafarea growth
+                DeltaMetaboliclWt = Math.Max(0.0,value - StructuralDMDemand);  //Any surpless is partitioned to metabolic not in proportion to leaf area growth.  
                                                                                               //Net effect is if the crop is water stressed leaves will get thicker and if it is growth (light of Nitrogen) stressed leaves will get thiner
                 Live.StructuralWt += DeltaStructuralWt;
                 Live.MetabolicWt += DeltaMetaboliclWt;
@@ -174,8 +169,8 @@ class SIRIUSLeafCohort : LeafCohort
             { } //do nothing
             else
             {
-                if (IsGrowing)
-                { //partition N between structural all pools
+                //if (IsGrowing)
+                //{ //partition N between structural all pools
                     //double StructN = DeltaStructuralWt * StructuralNConc;
                     double StructAlloc = Math.Min(value, StructuralNDemand);
                     Live.StructuralN += StructAlloc;
@@ -183,13 +178,17 @@ class SIRIUSLeafCohort : LeafCohort
                     Live.MetabolicN += MetabAlloc;
                     double NonStructAlloc = Math.Max(0.0, value - StructuralNDemand - MetabolicNDemand);
                     if (NonStructAlloc > 0.000000000001)
-                    Live.NonStructuralN += NonStructAlloc;
-                }
-                else  //put all N into metabolic and Nonstuctural pools
-                {
-                    Live.MetabolicN += Math.Min(value, MetabolicNDemand);
-                    Live.NonStructuralN += Math.Max(0.0, value - MetabolicNDemand);
-                }
+                        Live.NonStructuralN += NonStructAlloc;
+                //}
+                //else  //put all N into metabolic and Nonstuctural pools
+                //{
+                //    Live.MetabolicN += Math.Min(value, MetabolicNDemand);
+                //    if (value - MetabolicNDemand > 0.0)
+                //    {
+                //        Live.NonStructuralN += Math.Max(0.0, value - MetabolicNDemand);
+                //    }
+                //}
+
             }
         }
     }
@@ -244,7 +243,7 @@ class SIRIUSLeafCohort : LeafCohort
         SpecificLeafAreaMax = sla.Value;
         SpecificLeafAreaMin = SLAmin.Value;
         StructuralNConc = MinNC.Value;
-        FunctionalNConc = (CritNC.Value - MinNC.Value);
+        FunctionalNConc = (CritNC.Value - (MinNC.Value * SF.Value)) * (1 / (1 - SF.Value));//(CritNC.Value - MinNC.Value);
         LuxaryNConc = (MaxNC.Value - CritNC.Value);
         InitialNConc = INC.Value; //This is redundant now, will remove HEB
         StructuralFraction = SF.Value;
@@ -253,7 +252,7 @@ class SIRIUSLeafCohort : LeafCohort
         Live.MetabolicWt = (Live.StructuralWt/SF.Value) * (1-SF.Value);
         Live.NonStructuralWt = 0;  
         Live.StructuralN = Live.StructuralWt * StructuralNConc;
-        Live.MetabolicN = Live.MetabolicWt * StructuralNConc + (Live.MetabolicWt + Live.StructuralWt) * FunctionalNConc;
+        Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;//StructuralNConc + (Live.MetabolicWt + Live.StructuralWt) * FunctionalNConc;
         Live.NonStructuralN = 0;
         NReallocationFactor = NRF.Value;
         NRetranslocationRate = NRR.Value;
@@ -292,6 +291,9 @@ class SIRIUSLeafCohort : LeafCohort
         StructuralNDemand = 0;
         MetabolicNDemand = 0;
         NonStructuralNDemand = 0;
+
+        PotentialStructuralDMAllocation = 0;
+        PotentialMetabolicDMAllocation = 0;
                 
         
         // All these bits have been moved into dostartset which is invoked before arbitration

@@ -10,7 +10,7 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Watered
+Title                  = HighWaterLowNitrogen
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -69,8 +69,9 @@ Paddock:
         LeafCohortLiveMetabolicN
         LeafCohortLiveNonStructuralN
         LeafCohortSize
+        LeafCohortArea
 
-     Output file = Watered.out
+     Output file = HighWaterLowNitrogen.out
      Format = normal
 
 ------- Plant2 Initialisation -------------------------------------------------
@@ -217,7 +218,7 @@ Paddock:
         RootNUptakeSupply
         ArbitratorNDemand
 
-     Output file = Watered Plant2.out
+     Output file = HighWaterLowNitrogen Plant2.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -226,8 +227,8 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-     20/10/2003  Prepare      fertiliser apply amount= 500 (kg/ha), type= urea_N (), depth= 10 (mm)
-     25/11/2003  Prepare      fertiliser apply amount= 69 (kg/ha), type= urea_N (), depth= 10 (mm)
+     20/10/2003  Prepare      fertiliser apply amount= 20 (kg/ha), type= urea_N (), depth= 10 (mm)
+     25/11/2003  Prepare      fertiliser apply amount= 20 (kg/ha), type= urea_N (), depth= 10 (mm)
      26/11/2003  Prepare      irrigation apply amount= 15 (mm)
       4/12/2003  Prepare      irrigation apply amount= 50 (mm)
      16/12/2003  Prepare      irrigation apply amount= 15 (mm)
@@ -479,14 +480,14 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  3.50  140.00    0.10    0.00
-             2     6.20  2.50   30.00    0.10    0.00
-             3     5.70  1.20   14.00    0.10    0.00
-             4     5.50  1.03   14.00    0.10    0.00
+             1     6.60  3.50   10.00    0.10    0.00
+             2     6.20  2.50    6.00    0.10    0.00
+             3     5.70  1.20    4.00    0.10    0.00
+             4     5.50  1.03    4.00    0.10    0.00
              5     5.50  0.47    1.39    0.10    0.00
              6     5.50  0.47    1.39    0.10    0.00
           ------------------------------------------------
-           Totals              200.78    0.60    0.00
+           Totals               26.78    0.60    0.00
           ------------------------------------------------
      
      
@@ -513,12 +514,12 @@ Paddock:
 fertiliser: 
      
    - Reading Fertiliser Type Parameters
-       500.00 of N as urea (urea_n)
+        20.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
      Manager sending message :- barley2 sow  population = 300, depth = 30, cultivar = dash, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
      Manager creating a new local real variable : initialsoilomn = 18901.70700
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
-     Manager creating a new local real variable : initialmineraln = 701.38403
+     Manager creating a new local real variable : initialmineraln = 47.38160
 21/10/2003 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -530,15 +531,15 @@ fertiliser:
 25 November 2003(Day of year=329), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        69.00 of N as urea (urea_n)
+        20.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
 26 November 2003(Day of year=330), operations: 
       Sending apply message to irrigation
 4 December 2003(Day of year=338), operations: 
       Sending apply message to irrigation
 12/12/2003 - FloralInitiation
-                            LAI = 6.89 (m^2/m^2)
-           Above Ground Biomass = 602.59 (g/m^2)
+                            LAI = 2.15 (m^2/m^2)
+           Above Ground Biomass = 333.97 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -546,31 +547,31 @@ fertiliser:
 25 December 2003(Day of year=359), operations: 
       Sending apply message to fertiliser
 25/12/2003 - FlagLeaf
-                            LAI = 9.08 (m^2/m^2)
-           Above Ground Biomass = 970.93 (g/m^2)
+                            LAI = 1.97 (m^2/m^2)
+           Above Ground Biomass = 493.47 (g/m^2)
 30 December 2003(Day of year=364), operations: 
       Sending apply message to irrigation
 8 January 2004(Day of year=8), operations: 
       Sending apply message to irrigation
 12/01/2004 - Flowering
-                            LAI = 9.61 (m^2/m^2)
-           Above Ground Biomass = 1500.09 (g/m^2)
+                            LAI = 1.76 (m^2/m^2)
+           Above Ground Biomass = 657.27 (g/m^2)
 19/01/2004 - StartGrainFill
-                            LAI = 8.18 (m^2/m^2)
-           Above Ground Biomass = 1697.71 (g/m^2)
+                            LAI = 1.58 (m^2/m^2)
+           Above Ground Biomass = 704.43 (g/m^2)
 21 January 2004(Day of year=21), operations: 
       Sending apply message to irrigation
 31 January 2004(Day of year=31), operations: 
       Sending apply message to irrigation
 21/02/2004 - EndGrainFill
-                            LAI = 2.84 (m^2/m^2)
-           Above Ground Biomass = 2387.01 (g/m^2)
+                            LAI = 0.51 (m^2/m^2)
+           Above Ground Biomass = 860.25 (g/m^2)
 24/02/2004 - Maturity
-                            LAI = 2.52 (m^2/m^2)
-           Above Ground Biomass = 2441.92 (g/m^2)
+                            LAI = 0.46 (m^2/m^2)
+           Above Ground Biomass = 875.08 (g/m^2)
 24/02/2004 - HarvestRipe
-                            LAI = 2.52 (m^2/m^2)
-           Above Ground Biomass = 2441.92 (g/m^2)
+                            LAI = 0.46 (m^2/m^2)
+           Above Ground Biomass = 875.08 (g/m^2)
 24 February 2004(Day of year=55): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error

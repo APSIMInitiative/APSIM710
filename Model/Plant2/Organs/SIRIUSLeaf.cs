@@ -28,6 +28,26 @@ public class SIRIUSLeaf : Leaf, AboveGround
         }
     }
     [Output]
+    double[] CohortArea
+    {
+        get
+        {
+            int i = 0;
+
+            double[] values = new double[(int)MaxNodeNo];
+            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
+                values[i] = 0;
+            i = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                values[i] = L.LiveArea;
+                i++;
+            }
+
+            return values;
+        }
+    }
+    [Output]
     double[] CohortAge
     {
         get
