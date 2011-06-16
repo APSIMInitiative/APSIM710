@@ -14,8 +14,8 @@ Title                  = Barley2_test
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                       "Plant2" = %apsim%\Model\Report.dll
+   Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -46,22 +46,6 @@ Paddock:
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
-
-------- Outputfile Initialisation ---------------------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mm/yyyy as Date
-        LeafCohortLiveStructuralNConc
-        LeafCohortLiveNonStructuralNConc
-        LeafCohortLiveNconc
-        LeafMaximumNConcValue
-        LeafMinimumNConcValue
-        LeafCohortliveStructuralWt
-        LeafCohortlivenonStructuralWt
-
-     Output file = Barley2_test.out
-     Format = normal
 
 ------- Plant2 Initialisation -------------------------------------------------
      Output frequency:
@@ -113,8 +97,6 @@ Paddock:
         LeafLiveWt
         StemDeadWt
         StemLiveWt
-        TuberDeadWt
-        TuberLiveWt
         RootDeadWt
         RootLiveWt
         GrainLiveWt
@@ -130,18 +112,16 @@ Paddock:
         LeafLiveN
         StemDeadN
         StemLiveN
-        TuberDeadN
-        TuberLiveN
         RootLiveN
         RootDeadN
         GrainLiveN
         GrainDeadN
         FloretLiveN
         FloretDeadN
-        LeafLiveNConc3
-        LeafDeadNConc3
-        StemLiveNConc3
-        TuberLiveNConc3
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
         RootLiveNConc
         GrainLiveNConc
         FloretLiveNConc
@@ -203,8 +183,38 @@ Paddock:
         LeafTotalNonStructuralN
         LeafTotalStructuralWt
         LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
+        RootNUptakeSupply
+        ArbitratorNDemand
 
      Output file = Barley2_test Plant2.out
+     Format = normal
+
+------- Leaf Cohort Analysis Initialisation -----------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafCohortLiveStructuralWt
+        LeafCohortLiveNonStructuralWt
+        LeafCohortLiveMetabolicWt
+        LeafCohortLiveStructuralN
+        LeafCohortLiveMetabolicN
+        LeafCohortLiveNonStructuralN
+        LeafCohortStructuralFrac
+        LeafStructuralFractionValue
+        LeafCohortLiveStructuralNConc
+        LeafCohortLiveMetabolicNconc
+        LeafCohortLiveNconc
+        LeafMaximumNConcValue
+        LeafMinimumNConcValue
+        LeafCohortSLA
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafCohortSize
+        LeafCohortArea
+
+     Output file = Barley2_test Leaf Cohort Analysis.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -299,7 +309,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - barley2.leafliven2 - barley2.leafdeadn2 - barley2.stemliven - barley2.stemdeadn - barley2.tuberliven - barley2.tuberdeadn ) * 10
+     accumplantn =  accumplantn - barley2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -317,22 +327,9 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if barley2.leaflivewt > 0 then
-     leaflivenconc3 = (barley2.leafliven/barley2.leaflivewt)
-     endif
-     if barley2.leafdeadwt > 0 then
-     leafdeadnconc3 = (barley2.leafdeadn/barley2.leafdeadwt)
-     endif
-     if barley2.tuberlivewt > 0 then
-     tuberlivenconc3 = (barley2.tuberliven/barley2.tuberlivewt)
-     endif
-     if barley2.stemlivewt > 0 then
-     stemlivenconc3 = (barley2.stemliven/barley2.stemlivewt)
-     endif
      if barley2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
      endif
-     leavesperstem = barley2.leaftotalno / 3
      
      SECTION:- end_of_day
      if simday = 1 then

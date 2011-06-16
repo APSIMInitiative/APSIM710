@@ -14,9 +14,8 @@ Title                  = HighWaterHighNitrogen
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                       "Plant2" = %apsim%\Model\Report.dll
-   Component                  "Outputfile1" = %apsim%\Model\Report.dll
+   Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -47,33 +46,6 @@ Paddock:
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
-
-------- Outputfile Initialisation ---------------------------------------------
-     Output frequency:
-        post
-     Output variables:
-        dd/mm/yyyy as Date
-        LeafCohortLiveStructuralNConc
-        LeafCohortLiveNonStructuralNConc
-        LeafCohortLiveNconc
-        LeafMaximumNConcValue
-        LeafMinimumNConcValue
-        LeafCohortliveStructuralWt
-        LeafCohortlivenonStructuralWt
-        LeafCohortSLA
-        LeafCohortStructuralFrac
-        LeafCohortLiveMetabolicWt
-        LeafCohortLiveMetabolicNconc
-        LeafSpecificLeafAreaMaxValue
-        LeafSpecificLeafAreaMinValue
-        LeafCohortLiveStructuralN
-        LeafCohortLiveMetabolicN
-        LeafCohortLiveNonStructuralN
-        LeafCohortSize
-        LeafCohortArea
-
-     Output file = HighWaterHighNitrogen.out
-     Format = normal
 
 ------- Plant2 Initialisation -------------------------------------------------
      Output frequency:
@@ -125,8 +97,6 @@ Paddock:
         LeafLiveWt
         StemDeadWt
         StemLiveWt
-        TuberDeadWt
-        TuberLiveWt
         RootDeadWt
         RootLiveWt
         GrainLiveWt
@@ -142,18 +112,16 @@ Paddock:
         LeafLiveN
         StemDeadN
         StemLiveN
-        TuberDeadN
-        TuberLiveN
         RootLiveN
         RootDeadN
         GrainLiveN
         GrainDeadN
         FloretLiveN
         FloretDeadN
-        LeafLiveNConc3
-        LeafDeadNConc3
-        StemLiveNConc3
-        TuberLiveNConc3
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
         RootLiveNConc
         GrainLiveNConc
         FloretLiveNConc
@@ -222,17 +190,31 @@ Paddock:
      Output file = HighWaterHighNitrogen Plant2.out
      Format = normal
 
-------- Outputfile1 Initialisation --------------------------------------------
+------- Leaf Cohort Analysis Initialisation -----------------------------------
      Output frequency:
         post
      Output variables:
         dd/mm/yyyy as Date
-        LeafCohortliveStructuralWt
-        LeafCohortlivenonStructuralWt
+        LeafCohortLiveStructuralWt
+        LeafCohortLiveNonStructuralWt
         LeafCohortLiveMetabolicWt
-        LeafCohortLiveWt
+        LeafCohortLiveStructuralN
+        LeafCohortLiveMetabolicN
+        LeafCohortLiveNonStructuralN
+        LeafCohortStructuralFrac
+        LeafStructuralFractionValue
+        LeafCohortLiveStructuralNConc
+        LeafCohortLiveMetabolicNconc
+        LeafCohortLiveNconc
+        LeafMaximumNConcValue
+        LeafMinimumNConcValue
+        LeafCohortSLA
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafCohortSize
+        LeafCohortArea
 
-     Output file = HighWaterHighNitrogen Outputfile1.out
+     Output file = HighWaterHighNitrogen Leaf Cohort Analysis.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -337,6 +319,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
+     accumep = accumep - barley2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
