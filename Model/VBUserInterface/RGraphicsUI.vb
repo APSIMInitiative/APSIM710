@@ -293,7 +293,7 @@ Public Class RGraphicsUI
             End Try
 
             ' try and run R with this script
-         Dim regKey As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\R-core\R", True)
+            Dim regKey As RegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\R-core\R", False)
          If (Not IsNothing(regKey)) Then
             Dim rpath As String = regKey.GetValue("InstallPath", "")
 
