@@ -1,5 +1,5 @@
 <folder version="27" name="Simulations">
-  <simulation name="Watered">
+  <simulation name="HighWaterHighNitrogen">
     <metfile name="met">
       <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
@@ -659,6 +659,7 @@
           <variable name="LeafCohortLiveMetabolicN" />
           <variable name="LeafCohortLiveNonStructuralN" />
           <variable name="LeafCohortSize" />
+          <variable name="LeafCohortArea" />
         </variables>
         <events name="Reporting Frequency">
           <event name="Daily" />
@@ -1031,6 +1032,33 @@
             <Y>LeafCohortSize(15)</Y>
             <Y>LeafCohortSize(16)</Y>
             <Y>LeafCohortSize(17)</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="LeafArea">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>LeafCohortArea(1)</Y>
+            <Y>LeafCohortArea(2)</Y>
+            <Y>LeafCohortArea(3)</Y>
+            <Y>LeafCohortArea(4)</Y>
+            <Y>LeafCohortArea(5)</Y>
+            <Y>LeafCohortArea(6)</Y>
+            <Y>LeafCohortArea(7)</Y>
+            <Y>LeafCohortArea(8)</Y>
+            <Y>LeafCohortArea(9)</Y>
+            <Y>LeafCohortArea(10)</Y>
+            <Y>LeafCohortArea(11)</Y>
+            <Y>LeafCohortArea(12)</Y>
+            <Y>LeafCohortArea(13)</Y>
+            <Y>LeafCohortArea(14)</Y>
+            <Y>LeafCohortArea(15)</Y>
+            <Y>LeafCohortArea(16)</Y>
+            <Y>LeafCohortArea(17)</Y>
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
@@ -1550,6 +1578,305 @@ endif
             <Y>ArbitratorNDemand</Y>
             <Y>RootNUptakeSupply</Y>
             <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </folder>
+      <outputfile name="Outputfile1">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="LeafCohortliveStructuralWt" />
+          <variable name="LeafCohortlivenonStructuralWt" />
+          <variable name="LeafCohortLiveMetabolicWt" />
+          <variable name="LeafCohortLiveWt" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="Daily" />
+        </events>
+        <Graph name="StructuralWt">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="HighWaterLowNitrogen" shortcut="/Simulations/HighWaterHighNitrogen">
+    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met" />
+    <clock shortcut="/Simulations/HighWaterHighNitrogen/clock" />
+    <summaryfile shortcut="/Simulations/HighWaterHighNitrogen/summaryfile" />
+    <area name="paddock" shortcut="/Simulations/HighWaterHighNitrogen/paddock">
+      <fertiliser shortcut="/Simulations/HighWaterHighNitrogen/paddock/fertiliser" />
+      <surfaceom name="surface organic matter" shortcut="/Simulations/HighWaterHighNitrogen/paddock/surface organic matter" />
+      <folder name="Manager folder" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Manager folder">
+        <manager name="Harvesting rule" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Manager folder/Harvesting rule" />
+        <operations>
+          <operation condition="start_of_day">
+            <date>20/10/2003</date>
+            <action>fertiliser apply amount= 20 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>25/11/2003</date>
+            <action>fertiliser apply amount= 20 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>26/11/2003</date>
+            <action>irrigation apply amount= 15 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>4/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>16/12/2003</date>
+            <action>irrigation apply amount= 15 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>22/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>30/12/2003</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>8/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>21/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>31/1/2004</date>
+            <action>irrigation apply amount= 50 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>27/2/2004</date>
+            <action>irrigation apply amount= 25 (mm)</action>
+          </operation>
+          <operation condition="start_of_day">
+            <date>25/12/2003</date>
+            <action>fertiliser apply amount= 0 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+          </operation>
+        </operations>
+        <irrigation name="Irrigation" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Manager folder/Irrigation" />
+        <manager name="Barley Sowing Rule" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Manager folder/Barley Sowing Rule" />
+      </folder>
+      <soil name="Templeton" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton">
+        <Analysis shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Analysis" />
+        <InitWater name="Initial water" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Initial water" />
+        <Water shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Water">
+          <SoilCrop name="wheat" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Water/wheat" />
+          <SoilCrop name="potato2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Water/potato2" />
+          <SoilCrop name="potato21" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Water/potato21" />
+          <SoilCrop name="barley2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/Water/barley2" />
+        </Water>
+        <SoilWat shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/SoilWat" />
+        <SoilOrganicMatter shortcut="/Simulations/HighWaterHighNitrogen/paddock/Templeton/SoilOrganicMatter" />
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <NO3 units="kg/ha">10</NO3>
+            <NH4 units="kg/ha">0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <NO3>6</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>4</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>4</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>1.38888888888889</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <NO3>1.38888888888889</NO3>
+            <NH4>0.1</NH4>
+            <SW units="mm/mm" />
+          </Layer>
+        </Sample>
+      </soil>
+      <micromet name="Micromet" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Micromet">
+        <ini shortcut="/Simulations/HighWaterHighNitrogen/paddock/Micromet/ini" />
+      </micromet>
+      <outputfile name="Outputfile" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/Reporting Frequency" />
+        <Graph name="StructuralWt" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralWt">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MetabolicWt" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicWt">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NonStructuralWt" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralWt">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralWt/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralWt/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="Structural%" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/Structural%">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/Structural%/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/Structural%/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="StruncturalN%" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StruncturalN%">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StruncturalN%/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StruncturalN%/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MetabolicN%" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN%">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN%/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN%/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NonStructuralN%" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN%">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN%/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN%/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="N%" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/N%">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/N%/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/N%/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="SLA" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/SLA">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/SLA/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/SLA/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="StructuralN" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralN">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/StructuralN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="MetabolicN" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/MetabolicN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="NonStructuralN" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/NonStructuralN/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+        <Graph name="LeafSize" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/LeafSize">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/LeafSize/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Outputfile/LeafSize/Plot/ApsimFileReader" />
+          </Plot>
+        </Graph>
+      </outputfile>
+      <barley2 shortcut="/Simulations/HighWaterHighNitrogen/paddock/barley2" />
+      <folder name="Plant2 diagnostics" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics">
+        <outputfile name="Plant2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant2">
+          <events name="Reporting Frequency" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant2/Reporting Frequency" />
+          <variables name="Variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant2/Variables" />
+        </outputfile>
+        <manager name="Diagnostic variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Diagnostic variables" />
+        <Graph name="N balance components" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/N balance components">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/N balance components/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/N balance components/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Water balance components" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water balance components">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water balance components/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water balance components/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Plant biomass components" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant biomass components">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant biomass components/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant biomass components/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Plant nitrogen components" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant nitrogen components">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant nitrogen components/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Plant nitrogen components/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Stress factors" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Stress factors">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Stress factors/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Stress factors/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Water supply and demand" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water supply and demand">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water supply and demand/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Water supply and demand/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="Canopy structure" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Canopy structure">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Canopy structure/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Canopy structure/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="leaf cohorts" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/leaf cohorts">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/leaf cohorts/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/leaf cohorts/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <GraphReport name="Nitrogen %" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %">
+          <Graph name="Leaf" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Leaf">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Leaf/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Leaf/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+          <Graph name="Stem" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Stem">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Stem/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Stem/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+          <Graph name="Tuber" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Tuber">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Tuber/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Tuber/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+          <Graph name="Floret" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Floret">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Floret/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Floret/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+          <Graph name="Grain" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Grain">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Grain/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Grain/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+          <Graph name="Root" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Root">
+            <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Root/Predicted">
+              <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Nitrogen %/Root/Predicted/Predicted" />
+            </Plot>
+          </Graph>
+        </GraphReport>
+        <Graph name="Partitioning" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Partitioning">
+          <Plot name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Partitioning/Predicted">
+            <GDApsimFileReader name="Predicted" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/Partitioning/Predicted/Predicted" />
+          </Plot>
+        </Graph>
+        <Graph name="NSupply and Demand" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/NSupply and Demand">
+          <Plot shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/NSupply and Demand/Plot">
+            <GDApsimFileReader name="ApsimFileReader" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Plant2 diagnostics/NSupply and Demand/Plot/ApsimFileReader" />
           </Plot>
         </Graph>
       </folder>

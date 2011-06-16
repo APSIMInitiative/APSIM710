@@ -864,10 +864,17 @@
       <photop_sens>3.5</photop_sens>
       <y_height units="mm" description="plant canopy height">50  1500</y_height>
       <!-- 4 micromet rfz -->
+      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">120.0</node_sen_rate>
+      <!-- I have reduced to reduce the rate of senescence following flag leaf to get the canopy duration that is observed in NZ HEB Jun 2011 -->
       <root_depth_rate units="mm/d">0      5.0  20    20    20    20    0      0.0   0.0   0.0    0 </root_depth_rate>
       <!-- roots were going down to fast so reduced rate HEB I don't really believe they grow slower that australian varieties, probably an error in temperature response of root extension this is a short term solution -->
       <!-- Some NZ cultivars are using base cultivar instead of NewZealand_base_cultivar to avoid causing problems with the validation set.  These will need to be reconciled in the future-->
-    </NewZealand_base_cultivar>
+      <x_node_no_leaf>0    2.5   6</x_node_no_leaf>
+      <y_leaves_per_node>1    1   4.0</y_leaves_per_node>
+      <!-- I have reduced the branching rate for NZ varieties to account for the higher tyical sowing rates (150 300 plants / m2) HEB June 2011-->
+      <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
+      <!-- I have reduced the rate of senescence during water stress to improve predictions of LAI under water stress-->
+	</NewZealand_base_cultivar>
     <Advantage>
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
@@ -909,6 +916,16 @@
       <vern_sens>1.0</vern_sens>
       <photop_sens>4.0</photop_sens>
     </Batten>
+    <Batten_winter>
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>3.0</vern_sens>
+      <photop_sens>5.0</photop_sens>
+    </Batten_winter>
+    <Batten_spring>
+      <derived_from>NewZealand_base_cultivar</derived_from>
+      <vern_sens>1</vern_sens>
+      <photop_sens>5</photop_sens>
+    </Batten_spring>
     <Bounty>
       <derived_from>base_cultivar</derived_from>
       <grains_per_gram_stem description="Not sure why this is different ? NIH">22.0 </grains_per_gram_stem>
