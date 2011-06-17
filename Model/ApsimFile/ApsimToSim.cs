@@ -13,7 +13,16 @@ public class ApsimToSim
    /// Writes a sim file for the specified component. Will throw on error.
    /// </summary>
    /// 
-   public static string WriteSimFile(Component Child)
+    public static string WriteSimFile(Component Child)
+    {
+        return WriteSimFile(Child, Directory.GetCurrentDirectory());
+    }
+
+   /// <summary>
+   /// Writes a sim file for the specified component. Will throw on error.
+   /// </summary>
+   /// 
+   public static string WriteSimFile(Component Child, string FolderName)
       {
       // See if there is an overriding plugins component within scope of the Child passed in.
       // If so then tell PlugIns to load the plugins.
@@ -22,7 +31,7 @@ public class ApsimToSim
          PlugIns.LoadAllFromComponent(PluginsOverride);
 
       TestUniqueNamesUnderPaddock(Child);           //test to see if the .apsim file was valid before writing sim file.
-      string SimFileName = Child.Name + ".sim";
+      string SimFileName = FolderName + "\\" + Child.Name + ".sim";
       XmlDocument SimXML = new XmlDocument();
       SimXML.LoadXml(WriteSimScript(Child));
       SortSimContents(SimXML.DocumentElement);

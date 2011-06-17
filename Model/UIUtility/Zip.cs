@@ -11,7 +11,7 @@ namespace UIUtility
       /// <summary>
       /// Zip all the specified files into the specified ZipFileName.
       /// </summary>
-      public static string ZipFiles(List<string> FilesToZip, string ZipFileName, string Password)
+      public static string ZipFiles(IEnumerable<string> FilesToZip, string ZipFileName, string Password)
          {
          if (!File.Exists(ZipFileName))
             File.Delete(ZipFileName);

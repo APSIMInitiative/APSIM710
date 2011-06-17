@@ -61,7 +61,8 @@ Public Class MainUI
    Friend WithEvents ProgressBar As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents ToolStripButton1 As System.Windows.Forms.ToolStripButton
     Friend WithEvents ToolboxClose As System.Windows.Forms.Button
-    Private CurrentErrors As New StringCollection
+   Private CurrentErrors As New StringCollection
+   Friend WithEvents ProgressLabel As System.Windows.Forms.ToolStripStatusLabel
 
 
 
@@ -173,313 +174,319 @@ Public Class MainUI
     'Do not modify it using the code editor.
 
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainUI))
-        Me.ToolBoxPanel = New System.Windows.Forms.Panel()
-        Me.ToolBoxToolBarPanel = New System.Windows.Forms.Panel()
-        Me.ToolboxClose = New System.Windows.Forms.Button()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.ToolboxButtonClose = New System.Windows.Forms.Button()
-        Me.ToolBoxPanelToolBar = New System.Windows.Forms.ToolBar()
-        Me.SimulationContainer = New System.Windows.Forms.ToolStripContainer()
-        Me.ToolBoxesToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.ProgressBar = New System.Windows.Forms.ToolStripProgressBar()
-        Me.SimulationExplorer = New Controllers.ExplorerUI()
-        Me.ToolboxSplitter = New System.Windows.Forms.Splitter()
-        Me.SimulationToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.RunToolStrip = New System.Windows.Forms.ToolStrip()
-        Me.RunButton = New System.Windows.Forms.ToolStripButton()
-        Me.StopButton = New System.Windows.Forms.ToolStripButton()
-        Me.RunProgress = New System.Windows.Forms.ToolStripProgressBar()
-        Me.PercentLabel = New System.Windows.Forms.ToolStripLabel()
-        Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
-        Me.ErrorsButton = New System.Windows.Forms.ToolStripButton()
-        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolBoxPanel.SuspendLayout()
-        Me.ToolBoxToolBarPanel.SuspendLayout()
-        Me.SimulationContainer.BottomToolStripPanel.SuspendLayout()
-        Me.SimulationContainer.ContentPanel.SuspendLayout()
-        Me.SimulationContainer.TopToolStripPanel.SuspendLayout()
-        Me.SimulationContainer.SuspendLayout()
-        Me.StatusStrip1.SuspendLayout()
-        Me.RunToolStrip.SuspendLayout()
-        Me.ContextMenuStrip1.SuspendLayout()
-        Me.SuspendLayout()
-        '
-        'ToolBoxPanel
-        '
-        Me.ToolBoxPanel.Controls.Add(Me.ToolBoxToolBarPanel)
-        Me.ToolBoxPanel.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 387)
-        Me.ToolBoxPanel.Name = "ToolBoxPanel"
-        Me.ToolBoxPanel.Size = New System.Drawing.Size(735, 120)
-        Me.ToolBoxPanel.TabIndex = 12
-        Me.ToolBoxPanel.Visible = False
-        '
-        'ToolBoxToolBarPanel
-        '
-        Me.ToolBoxToolBarPanel.BackColor = System.Drawing.SystemColors.Highlight
-        Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxClose)
-        Me.ToolBoxToolBarPanel.Controls.Add(Me.Label6)
-        Me.ToolBoxToolBarPanel.Controls.Add(Me.Label5)
-        Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxButtonClose)
-        Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolBoxPanelToolBar)
-        Me.ToolBoxToolBarPanel.Dock = System.Windows.Forms.DockStyle.Top
-        Me.ToolBoxToolBarPanel.Location = New System.Drawing.Point(0, 0)
-        Me.ToolBoxToolBarPanel.Name = "ToolBoxToolBarPanel"
-        Me.ToolBoxToolBarPanel.Size = New System.Drawing.Size(735, 28)
-        Me.ToolBoxToolBarPanel.TabIndex = 19
-        '
-        'ToolboxClose
-        '
-        Me.ToolboxClose.Dock = System.Windows.Forms.DockStyle.Right
-        Me.ToolboxClose.Location = New System.Drawing.Point(707, 0)
-        Me.ToolboxClose.Name = "ToolboxClose"
-        Me.ToolboxClose.Size = New System.Drawing.Size(28, 28)
-        Me.ToolboxClose.TabIndex = 23
-        Me.ToolboxClose.Text = "X"
-        Me.ToolboxClose.UseVisualStyleBackColor = True
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.ForeColor = System.Drawing.SystemColors.HighlightText
-        Me.Label6.Location = New System.Drawing.Point(4, 3)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(67, 20)
-        Me.Label6.TabIndex = 22
-        Me.Label6.Text = "Toolbox"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.ForeColor = System.Drawing.SystemColors.HotTrack
-        Me.Label5.Location = New System.Drawing.Point(4, 8)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(67, 20)
-        Me.Label5.TabIndex = 22
-        Me.Label5.Text = "Toolbox"
-        '
-        'ToolboxButtonClose
-        '
-        Me.ToolboxButtonClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.ToolboxButtonClose.BackColor = System.Drawing.Color.Transparent
-        Me.ToolboxButtonClose.BackgroundImage = CType(resources.GetObject("ToolboxButtonClose.BackgroundImage"), System.Drawing.Image)
-        Me.ToolboxButtonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.ToolboxButtonClose.Location = New System.Drawing.Point(1153, -1)
-        Me.ToolboxButtonClose.Name = "ToolboxButtonClose"
-        Me.ToolboxButtonClose.Size = New System.Drawing.Size(29, 28)
-        Me.ToolboxButtonClose.TabIndex = 20
-        Me.ToolboxButtonClose.TabStop = False
-        Me.ToolboxButtonClose.UseVisualStyleBackColor = False
-        '
-        'ToolBoxPanelToolBar
-        '
-        Me.ToolBoxPanelToolBar.Appearance = System.Windows.Forms.ToolBarAppearance.Flat
-        Me.ToolBoxPanelToolBar.Divider = False
-        Me.ToolBoxPanelToolBar.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.ToolBoxPanelToolBar.DropDownArrows = True
-        Me.ToolBoxPanelToolBar.Location = New System.Drawing.Point(0, 0)
-        Me.ToolBoxPanelToolBar.Name = "ToolBoxPanelToolBar"
-        Me.ToolBoxPanelToolBar.ShowToolTips = True
-        Me.ToolBoxPanelToolBar.Size = New System.Drawing.Size(735, 26)
-        Me.ToolBoxPanelToolBar.TabIndex = 17
-        Me.ToolBoxPanelToolBar.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right
-        '
-        'SimulationContainer
-        '
-        '
-        'SimulationContainer.BottomToolStripPanel
-        '
-        Me.SimulationContainer.BottomToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
-        Me.SimulationContainer.BottomToolStripPanel.Controls.Add(Me.ToolBoxesToolStrip)
-        Me.SimulationContainer.BottomToolStripPanel.Controls.Add(Me.StatusStrip1)
-        '
-        'SimulationContainer.ContentPanel
-        '
-        Me.SimulationContainer.ContentPanel.AutoScroll = True
-        Me.SimulationContainer.ContentPanel.BackColor = System.Drawing.SystemColors.Window
-        Me.SimulationContainer.ContentPanel.Controls.Add(Me.SimulationExplorer)
-        Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolboxSplitter)
-        Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolBoxPanel)
-        Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 507)
-        Me.SimulationContainer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SimulationContainer.Location = New System.Drawing.Point(0, 0)
-        Me.SimulationContainer.Name = "SimulationContainer"
-        Me.SimulationContainer.Size = New System.Drawing.Size(735, 583)
-        Me.SimulationContainer.TabIndex = 4
-        Me.SimulationContainer.Text = "ToolStripContainer1"
-        '
-        'SimulationContainer.TopToolStripPanel
-        '
-        Me.SimulationContainer.TopToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
-        Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.SimulationToolStrip)
-        Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.RunToolStrip)
-        '
-        'ToolBoxesToolStrip
-        '
-        Me.ToolBoxesToolStrip.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolBoxesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.ToolBoxesToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
-        Me.ToolBoxesToolStrip.Location = New System.Drawing.Point(4, 0)
-        Me.ToolBoxesToolStrip.Name = "ToolBoxesToolStrip"
-        Me.ToolBoxesToolStrip.ShowItemToolTips = False
-        Me.ToolBoxesToolStrip.Size = New System.Drawing.Size(102, 25)
-        Me.ToolBoxesToolStrip.TabIndex = 2
-        '
-        'StatusStrip1
-        '
-        Me.StatusStrip1.Dock = System.Windows.Forms.DockStyle.None
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProgressBar})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 25)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(139, 22)
-        Me.StatusStrip1.TabIndex = 3
-        Me.StatusStrip1.Visible = False
-        '
-        'ProgressBar
-        '
-        Me.ProgressBar.Name = "ProgressBar"
-        Me.ProgressBar.Size = New System.Drawing.Size(120, 16)
-        '
-        'SimulationExplorer
-        '
-        Me.SimulationExplorer.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.SimulationExplorer.Location = New System.Drawing.Point(0, 0)
-        Me.SimulationExplorer.Name = "SimulationExplorer"
-        Me.SimulationExplorer.Size = New System.Drawing.Size(735, 384)
-        Me.SimulationExplorer.TabIndex = 36
-        '
-        'ToolboxSplitter
-        '
-        Me.ToolboxSplitter.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 384)
-        Me.ToolboxSplitter.Name = "ToolboxSplitter"
-        Me.ToolboxSplitter.Size = New System.Drawing.Size(735, 3)
-        Me.ToolboxSplitter.TabIndex = 25
-        Me.ToolboxSplitter.TabStop = False
-        Me.ToolboxSplitter.Visible = False
-        '
-        'SimulationToolStrip
-        '
-        Me.SimulationToolStrip.Dock = System.Windows.Forms.DockStyle.None
-        Me.SimulationToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-        Me.SimulationToolStrip.Location = New System.Drawing.Point(3, 0)
-        Me.SimulationToolStrip.Name = "SimulationToolStrip"
-        Me.SimulationToolStrip.Size = New System.Drawing.Size(102, 25)
-        Me.SimulationToolStrip.TabIndex = 1
-        '
-        'RunToolStrip
-        '
-        Me.RunToolStrip.Dock = System.Windows.Forms.DockStyle.None
-        Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ToolStripButton1, Me.ErrorsButton})
-        Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
-        Me.RunToolStrip.Name = "RunToolStrip"
-        Me.RunToolStrip.Size = New System.Drawing.Size(302, 51)
-        Me.RunToolStrip.TabIndex = 2
-        '
-        'RunButton
-        '
-        Me.RunButton.Image = CType(resources.GetObject("RunButton.Image"), System.Drawing.Image)
-        Me.RunButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.RunButton.Name = "RunButton"
-        Me.RunButton.Size = New System.Drawing.Size(38, 48)
-        Me.RunButton.Text = "Run"
-        Me.RunButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-        Me.RunButton.ToolTipText = "Run APSIM"
-        '
-        'StopButton
-        '
-        Me.StopButton.Enabled = False
-        Me.StopButton.Image = CType(resources.GetObject("StopButton.Image"), System.Drawing.Image)
-        Me.StopButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.StopButton.Name = "StopButton"
-        Me.StopButton.Size = New System.Drawing.Size(44, 48)
-        Me.StopButton.Text = "Stop"
-        Me.StopButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-        Me.StopButton.ToolTipText = "Stop APSIM"
-        '
-        'RunProgress
-        '
-        Me.RunProgress.AutoSize = False
-        Me.RunProgress.Name = "RunProgress"
-        Me.RunProgress.Size = New System.Drawing.Size(120, 28)
-        Me.RunProgress.Step = 1
-        Me.RunProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
-        '
-        'PercentLabel
-        '
-        Me.PercentLabel.Name = "PercentLabel"
-        Me.PercentLabel.Size = New System.Drawing.Size(0, 48)
-        '
-        'ToolStripButton1
-        '
-        Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
-        Me.ToolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(86, 48)
-        Me.ToolStripButton1.Text = "Create .sim"
-        Me.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-        '
-        'ErrorsButton
-        '
-        Me.ErrorsButton.Image = CType(resources.GetObject("ErrorsButton.Image"), System.Drawing.Image)
-        Me.ErrorsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.ErrorsButton.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ErrorsButton.Name = "ErrorsButton"
-        Me.ErrorsButton.Size = New System.Drawing.Size(94, 48)
-        Me.ErrorsButton.Text = "Errors found"
-        Me.ErrorsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
-        Me.ErrorsButton.Visible = False
-        '
-        'ContextMenuStrip1
-        '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1})
-        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(215, 28)
-        '
-        'ToolStripMenuItem1
-        '
-        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(214, 24)
-        Me.ToolStripMenuItem1.Text = "ToolStripMenuItem1"
-        '
-        'MainUI
-        '
-        Me.AutoScaleBaseSize = New System.Drawing.Size(6, 15)
-        Me.ClientSize = New System.Drawing.Size(735, 583)
-        Me.Controls.Add(Me.SimulationContainer)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.KeyPreview = True
-        Me.Name = "MainUI"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
-        Me.Text = "APSIM"
-        Me.ToolBoxPanel.ResumeLayout(False)
-        Me.ToolBoxToolBarPanel.ResumeLayout(False)
-        Me.ToolBoxToolBarPanel.PerformLayout()
-        Me.SimulationContainer.BottomToolStripPanel.ResumeLayout(False)
-        Me.SimulationContainer.BottomToolStripPanel.PerformLayout()
-        Me.SimulationContainer.ContentPanel.ResumeLayout(False)
-        Me.SimulationContainer.TopToolStripPanel.ResumeLayout(False)
-        Me.SimulationContainer.TopToolStripPanel.PerformLayout()
-        Me.SimulationContainer.ResumeLayout(False)
-        Me.SimulationContainer.PerformLayout()
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
-        Me.RunToolStrip.ResumeLayout(False)
-        Me.RunToolStrip.PerformLayout()
-        Me.ContextMenuStrip1.ResumeLayout(False)
-        Me.ResumeLayout(False)
+      Me.components = New System.ComponentModel.Container()
+      Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MainUI))
+      Me.ToolBoxPanel = New System.Windows.Forms.Panel()
+      Me.ToolBoxToolBarPanel = New System.Windows.Forms.Panel()
+      Me.ToolboxClose = New System.Windows.Forms.Button()
+      Me.Label6 = New System.Windows.Forms.Label()
+      Me.Label5 = New System.Windows.Forms.Label()
+      Me.ToolboxButtonClose = New System.Windows.Forms.Button()
+      Me.ToolBoxPanelToolBar = New System.Windows.Forms.ToolBar()
+      Me.SimulationContainer = New System.Windows.Forms.ToolStripContainer()
+      Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
+      Me.ProgressBar = New System.Windows.Forms.ToolStripProgressBar()
+      Me.ProgressLabel = New System.Windows.Forms.ToolStripStatusLabel()
+      Me.ToolBoxesToolStrip = New System.Windows.Forms.ToolStrip()
+      Me.SimulationExplorer = New Controllers.ExplorerUI()
+      Me.ToolboxSplitter = New System.Windows.Forms.Splitter()
+      Me.SimulationToolStrip = New System.Windows.Forms.ToolStrip()
+      Me.RunToolStrip = New System.Windows.Forms.ToolStrip()
+      Me.RunButton = New System.Windows.Forms.ToolStripButton()
+      Me.StopButton = New System.Windows.Forms.ToolStripButton()
+      Me.RunProgress = New System.Windows.Forms.ToolStripProgressBar()
+      Me.PercentLabel = New System.Windows.Forms.ToolStripLabel()
+      Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
+      Me.ErrorsButton = New System.Windows.Forms.ToolStripButton()
+      Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+      Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+      Me.ToolBoxPanel.SuspendLayout()
+      Me.ToolBoxToolBarPanel.SuspendLayout()
+      Me.SimulationContainer.BottomToolStripPanel.SuspendLayout()
+      Me.SimulationContainer.ContentPanel.SuspendLayout()
+      Me.SimulationContainer.TopToolStripPanel.SuspendLayout()
+      Me.SimulationContainer.SuspendLayout()
+      Me.StatusStrip1.SuspendLayout()
+      Me.RunToolStrip.SuspendLayout()
+      Me.ContextMenuStrip1.SuspendLayout()
+      Me.SuspendLayout()
+      '
+      'ToolBoxPanel
+      '
+      Me.ToolBoxPanel.Controls.Add(Me.ToolBoxToolBarPanel)
+      Me.ToolBoxPanel.Dock = System.Windows.Forms.DockStyle.Bottom
+      Me.ToolBoxPanel.Location = New System.Drawing.Point(0, 408)
+      Me.ToolBoxPanel.Name = "ToolBoxPanel"
+      Me.ToolBoxPanel.Size = New System.Drawing.Size(735, 104)
+      Me.ToolBoxPanel.TabIndex = 12
+      Me.ToolBoxPanel.Visible = False
+      '
+      'ToolBoxToolBarPanel
+      '
+      Me.ToolBoxToolBarPanel.BackColor = System.Drawing.SystemColors.Highlight
+      Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxClose)
+      Me.ToolBoxToolBarPanel.Controls.Add(Me.Label6)
+      Me.ToolBoxToolBarPanel.Controls.Add(Me.Label5)
+      Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolboxButtonClose)
+      Me.ToolBoxToolBarPanel.Controls.Add(Me.ToolBoxPanelToolBar)
+      Me.ToolBoxToolBarPanel.Dock = System.Windows.Forms.DockStyle.Top
+      Me.ToolBoxToolBarPanel.Location = New System.Drawing.Point(0, 0)
+      Me.ToolBoxToolBarPanel.Name = "ToolBoxToolBarPanel"
+      Me.ToolBoxToolBarPanel.Size = New System.Drawing.Size(735, 24)
+      Me.ToolBoxToolBarPanel.TabIndex = 19
+      '
+      'ToolboxClose
+      '
+      Me.ToolboxClose.Dock = System.Windows.Forms.DockStyle.Right
+      Me.ToolboxClose.Location = New System.Drawing.Point(712, 0)
+      Me.ToolboxClose.Name = "ToolboxClose"
+      Me.ToolboxClose.Size = New System.Drawing.Size(23, 24)
+      Me.ToolboxClose.TabIndex = 23
+      Me.ToolboxClose.Text = "X"
+      Me.ToolboxClose.UseVisualStyleBackColor = True
+      '
+      'Label6
+      '
+      Me.Label6.AutoSize = True
+      Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+      Me.Label6.ForeColor = System.Drawing.SystemColors.HighlightText
+      Me.Label6.Location = New System.Drawing.Point(3, 3)
+      Me.Label6.Name = "Label6"
+      Me.Label6.Size = New System.Drawing.Size(58, 16)
+      Me.Label6.TabIndex = 22
+      Me.Label6.Text = "Toolbox"
+      '
+      'Label5
+      '
+      Me.Label5.AutoSize = True
+      Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+      Me.Label5.ForeColor = System.Drawing.SystemColors.HotTrack
+      Me.Label5.Location = New System.Drawing.Point(3, 7)
+      Me.Label5.Name = "Label5"
+      Me.Label5.Size = New System.Drawing.Size(58, 16)
+      Me.Label5.TabIndex = 22
+      Me.Label5.Text = "Toolbox"
+      '
+      'ToolboxButtonClose
+      '
+      Me.ToolboxButtonClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+      Me.ToolboxButtonClose.BackColor = System.Drawing.Color.Transparent
+      Me.ToolboxButtonClose.BackgroundImage = CType(resources.GetObject("ToolboxButtonClose.BackgroundImage"), System.Drawing.Image)
+      Me.ToolboxButtonClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+      Me.ToolboxButtonClose.Location = New System.Drawing.Point(1084, -1)
+      Me.ToolboxButtonClose.Name = "ToolboxButtonClose"
+      Me.ToolboxButtonClose.Size = New System.Drawing.Size(24, 24)
+      Me.ToolboxButtonClose.TabIndex = 20
+      Me.ToolboxButtonClose.TabStop = False
+      Me.ToolboxButtonClose.UseVisualStyleBackColor = False
+      '
+      'ToolBoxPanelToolBar
+      '
+      Me.ToolBoxPanelToolBar.Appearance = System.Windows.Forms.ToolBarAppearance.Flat
+      Me.ToolBoxPanelToolBar.Divider = False
+      Me.ToolBoxPanelToolBar.Dock = System.Windows.Forms.DockStyle.Fill
+      Me.ToolBoxPanelToolBar.DropDownArrows = True
+      Me.ToolBoxPanelToolBar.Location = New System.Drawing.Point(0, 0)
+      Me.ToolBoxPanelToolBar.Name = "ToolBoxPanelToolBar"
+      Me.ToolBoxPanelToolBar.ShowToolTips = True
+      Me.ToolBoxPanelToolBar.Size = New System.Drawing.Size(735, 26)
+      Me.ToolBoxPanelToolBar.TabIndex = 17
+      Me.ToolBoxPanelToolBar.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right
+      '
+      'SimulationContainer
+      '
+      '
+      'SimulationContainer.BottomToolStripPanel
+      '
+      Me.SimulationContainer.BottomToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
+      Me.SimulationContainer.BottomToolStripPanel.Controls.Add(Me.ToolBoxesToolStrip)
+      Me.SimulationContainer.BottomToolStripPanel.Controls.Add(Me.StatusStrip1)
+      '
+      'SimulationContainer.ContentPanel
+      '
+      Me.SimulationContainer.ContentPanel.AutoScroll = True
+      Me.SimulationContainer.ContentPanel.BackColor = System.Drawing.SystemColors.Window
+      Me.SimulationContainer.ContentPanel.Controls.Add(Me.SimulationExplorer)
+      Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolboxSplitter)
+      Me.SimulationContainer.ContentPanel.Controls.Add(Me.ToolBoxPanel)
+      Me.SimulationContainer.ContentPanel.Size = New System.Drawing.Size(735, 512)
+      Me.SimulationContainer.Dock = System.Windows.Forms.DockStyle.Fill
+      Me.SimulationContainer.Location = New System.Drawing.Point(0, 0)
+      Me.SimulationContainer.Name = "SimulationContainer"
+      Me.SimulationContainer.Size = New System.Drawing.Size(735, 583)
+      Me.SimulationContainer.TabIndex = 4
+      Me.SimulationContainer.Text = "ToolStripContainer1"
+      '
+      'SimulationContainer.TopToolStripPanel
+      '
+      Me.SimulationContainer.TopToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
+      Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.RunToolStrip)
+      Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.SimulationToolStrip)
+      '
+      'StatusStrip1
+      '
+      Me.StatusStrip1.Dock = System.Windows.Forms.DockStyle.None
+      Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ProgressBar, Me.ProgressLabel})
+      Me.StatusStrip1.Location = New System.Drawing.Point(0, 25)
+      Me.StatusStrip1.Name = "StatusStrip1"
+      Me.StatusStrip1.Size = New System.Drawing.Size(119, 22)
+      Me.StatusStrip1.TabIndex = 3
+      Me.StatusStrip1.Visible = False
+      '
+      'ProgressBar
+      '
+      Me.ProgressBar.Name = "ProgressBar"
+      Me.ProgressBar.Size = New System.Drawing.Size(100, 16)
+      '
+      'ProgressLabel
+      '
+      Me.ProgressLabel.Name = "ProgressLabel"
+      Me.ProgressLabel.Size = New System.Drawing.Size(0, 17)
+      '
+      'ToolBoxesToolStrip
+      '
+      Me.ToolBoxesToolStrip.Dock = System.Windows.Forms.DockStyle.None
+      Me.ToolBoxesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+      Me.ToolBoxesToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
+      Me.ToolBoxesToolStrip.Location = New System.Drawing.Point(3, 0)
+      Me.ToolBoxesToolStrip.Name = "ToolBoxesToolStrip"
+      Me.ToolBoxesToolStrip.ShowItemToolTips = False
+      Me.ToolBoxesToolStrip.Size = New System.Drawing.Size(102, 25)
+      Me.ToolBoxesToolStrip.TabIndex = 2
+      '
+      'SimulationExplorer
+      '
+      Me.SimulationExplorer.Dock = System.Windows.Forms.DockStyle.Fill
+      Me.SimulationExplorer.Location = New System.Drawing.Point(0, 0)
+      Me.SimulationExplorer.Name = "SimulationExplorer"
+      Me.SimulationExplorer.Size = New System.Drawing.Size(735, 405)
+      Me.SimulationExplorer.TabIndex = 36
+      '
+      'ToolboxSplitter
+      '
+      Me.ToolboxSplitter.Dock = System.Windows.Forms.DockStyle.Bottom
+      Me.ToolboxSplitter.Location = New System.Drawing.Point(0, 405)
+      Me.ToolboxSplitter.Name = "ToolboxSplitter"
+      Me.ToolboxSplitter.Size = New System.Drawing.Size(735, 3)
+      Me.ToolboxSplitter.TabIndex = 25
+      Me.ToolboxSplitter.TabStop = False
+      Me.ToolboxSplitter.Visible = False
+      '
+      'SimulationToolStrip
+      '
+      Me.SimulationToolStrip.Dock = System.Windows.Forms.DockStyle.None
+      Me.SimulationToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+      Me.SimulationToolStrip.Location = New System.Drawing.Point(3, 0)
+      Me.SimulationToolStrip.Name = "SimulationToolStrip"
+      Me.SimulationToolStrip.Size = New System.Drawing.Size(102, 25)
+      Me.SimulationToolStrip.TabIndex = 1
+      '
+      'RunToolStrip
+      '
+      Me.RunToolStrip.Dock = System.Windows.Forms.DockStyle.None
+      Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ToolStripButton1, Me.ErrorsButton})
+      Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
+      Me.RunToolStrip.Name = "RunToolStrip"
+      Me.RunToolStrip.Size = New System.Drawing.Size(358, 46)
+      Me.RunToolStrip.TabIndex = 2
+      '
+      'RunButton
+      '
+      Me.RunButton.Image = CType(resources.GetObject("RunButton.Image"), System.Drawing.Image)
+      Me.RunButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+      Me.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta
+      Me.RunButton.Name = "RunButton"
+      Me.RunButton.Size = New System.Drawing.Size(32, 43)
+      Me.RunButton.Text = "Run"
+      Me.RunButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+      Me.RunButton.ToolTipText = "Run APSIM"
+      '
+      'StopButton
+      '
+      Me.StopButton.Enabled = False
+      Me.StopButton.Image = CType(resources.GetObject("StopButton.Image"), System.Drawing.Image)
+      Me.StopButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+      Me.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta
+      Me.StopButton.Name = "StopButton"
+      Me.StopButton.Size = New System.Drawing.Size(35, 43)
+      Me.StopButton.Text = "Stop"
+      Me.StopButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+      Me.StopButton.ToolTipText = "Stop APSIM"
+      '
+      'RunProgress
+      '
+      Me.RunProgress.AutoSize = False
+      Me.RunProgress.Name = "RunProgress"
+      Me.RunProgress.Size = New System.Drawing.Size(100, 24)
+      Me.RunProgress.Step = 1
+      Me.RunProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+      '
+      'PercentLabel
+      '
+      Me.PercentLabel.Name = "PercentLabel"
+      Me.PercentLabel.Size = New System.Drawing.Size(0, 43)
+      '
+      'ToolStripButton1
+      '
+      Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
+      Me.ToolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+      Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+      Me.ToolStripButton1.Name = "ToolStripButton1"
+      Me.ToolStripButton1.Size = New System.Drawing.Size(70, 43)
+      Me.ToolStripButton1.Text = "Create .sim"
+      Me.ToolStripButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+      '
+      'ErrorsButton
+      '
+      Me.ErrorsButton.Image = CType(resources.GetObject("ErrorsButton.Image"), System.Drawing.Image)
+      Me.ErrorsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+      Me.ErrorsButton.ImageTransparentColor = System.Drawing.Color.Magenta
+      Me.ErrorsButton.Name = "ErrorsButton"
+      Me.ErrorsButton.Size = New System.Drawing.Size(76, 43)
+      Me.ErrorsButton.Text = "Errors found"
+      Me.ErrorsButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText
+      Me.ErrorsButton.Visible = False
+      '
+      'ContextMenuStrip1
+      '
+      Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1})
+      Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+      Me.ContextMenuStrip1.Size = New System.Drawing.Size(215, 28)
+      '
+      'ToolStripMenuItem1
+      '
+      Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+      Me.ToolStripMenuItem1.Size = New System.Drawing.Size(214, 24)
+      Me.ToolStripMenuItem1.Text = "ToolStripMenuItem1"
+      '
+      'MainUI
+      '
+      Me.AutoScaleBaseSize = New System.Drawing.Size(5, 13)
+      Me.ClientSize = New System.Drawing.Size(735, 583)
+      Me.Controls.Add(Me.SimulationContainer)
+      Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+      Me.KeyPreview = True
+      Me.Name = "MainUI"
+      Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
+      Me.Text = "APSIM"
+      Me.ToolBoxPanel.ResumeLayout(False)
+      Me.ToolBoxToolBarPanel.ResumeLayout(False)
+      Me.ToolBoxToolBarPanel.PerformLayout()
+      Me.SimulationContainer.BottomToolStripPanel.ResumeLayout(False)
+      Me.SimulationContainer.BottomToolStripPanel.PerformLayout()
+      Me.SimulationContainer.ContentPanel.ResumeLayout(False)
+      Me.SimulationContainer.TopToolStripPanel.ResumeLayout(False)
+      Me.SimulationContainer.TopToolStripPanel.PerformLayout()
+      Me.SimulationContainer.ResumeLayout(False)
+      Me.SimulationContainer.PerformLayout()
+      Me.StatusStrip1.ResumeLayout(False)
+      Me.StatusStrip1.PerformLayout()
+      Me.RunToolStrip.ResumeLayout(False)
+      Me.RunToolStrip.PerformLayout()
+      Me.ContextMenuStrip1.ResumeLayout(False)
+      Me.ResumeLayout(False)
 
-    End Sub
+   End Sub
 
 #End Region
 
