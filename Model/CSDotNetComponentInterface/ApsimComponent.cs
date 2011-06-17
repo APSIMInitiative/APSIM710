@@ -176,7 +176,7 @@ public class ApsimComponent : Instance
                     registerEvent(null, "Sow", sow.DDML(), SOWINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                     ENDCROPINDEX = SOWINDEX + 1;
                     registerEvent(null, "EndCrop", "<type/>", ENDCROPINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
-                    POSTINDEX = ENDCROPINDEX + 1;
+                    POSTINDEX = SOWINDEX + 2;
                     registerEvent(null, "Post", "<type/>", POSTINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                 }
                 else
@@ -312,14 +312,19 @@ public class ApsimComponent : Instance
     }
     // ----------------------------------------------
     /// <summary>
-    /// Look for all event handlers and register them.
+    /// Look for all event handlers and register them. 
+    /// Avoid registering EndCrop because they are routed from here
+    /// when the ENDCROPINDEX event is handled by onEndCrop(). This avoids
+    /// having ambiguous EndCrop event handlers in the registry when the Manager sends
+    /// EndCrop published event.
     /// </summary>
     /// <param name="F"></param>
     // ----------------------------------------------
     public void RegisterAllEventHandlers(Factory F)
     {
         for (int i = 0; i != F.EventHandlers.Count; i++)
-            Subscribe(F.EventHandlers[i]);
+            if (String.Compare(F.EventHandlers[i].EventName, "EndCrop", true) != 0)
+                Subscribe(F.EventHandlers[i]);
     }
     // ----------------------------------------------
     /// <summary>
@@ -664,6 +669,7 @@ public class ApsimComponent : Instance
     public void OnEndCrop(byte[] messageData)
     {
         EndCropToday = true;
+        CallEventHandlers("EndCrop", null);  //call multiple EndCrop events
     }
     // ----------------------------------------------
     /// <summary>
@@ -777,10 +783,8 @@ public class ApsimComponent : Instance
                     _params.TreatWarningsAsErrors = false;
                     _params.WarningLevel = 2;
                     _params.ReferencedAssemblies.Add("System.dll");
-                    _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\DotNetComponentInterface.dll");
-                    List<String> ManagerHelpers = LoadManagerHelpers.GetManagerHelpers();
-                    foreach (String ManagerHelper in ManagerHelpers)
-                        _params.ReferencedAssemblies.Add(ManagerHelper);
+                    _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\CSDotNetComponentInterface.dll");
+                    _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
                     String[] source = new String[1];
                     source[0] = Node.InnerText;
                     CompilerResults results = provider.CompileAssemblyFromSource(_params, source);
