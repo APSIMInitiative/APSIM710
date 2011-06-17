@@ -366,24 +366,25 @@ Public Class LocalPaddockType
         ' volume = l/paddock
         ' StockingDensity = head/ha/24hours
         Public Sub UrineApplication(ByVal kgN As Double, ByVal volume As Double, ByVal StockingDensity As Double)
-                Dim kg As Double = kgN / Area
-                Dim v As Double = volume / Area
+                Dim kgN_ha As Double = kgN / Area
+                Dim vol_ha As Double = volume / Area
                 If (DebugLevel > 1) Then
                         If (kgN.ToString.Contains("NaN")) Then
                                 Console.WriteLine("DDRules (debug) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
                         End If
                         Console.WriteLine("DDRules (debug) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
+                        Console.WriteLine("                  " & "         = " & kgN_ha.ToString & "kgN/ha V = " & vol_ha.ToString & "l/ha")
                 End If
                 If Not (UrinePatchComponent Is Nothing) Then ' use Val's new urine patch model is avalible
                         Dim urine As ApplyUrineType = New ApplyUrineType()
-                        urine.AmountUrine = kg
+                        urine.AmountUrine = kgN_ha
                         urine.StockDensity = StockingDensity
                         urine.StockType = "DairyCow"
                         UrinePatchComponent.Publish("ApplyUrine", urine)
                 Else    ' use simple fertiliser and irrigation events
                         Dim FertiliserA As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
                         Dim FertData As New FertiliserApplicationType()
-                        FertData.Amount = kgN / Area
+                        FertData.Amount = kgN_ha
                         FertData.Type = "urea_N"
                         FertData.Depth = Default_Application_Depth
                         FertiliserA.Apply(FertData)
@@ -391,7 +392,7 @@ Public Class LocalPaddockType
                         'Console.WriteLine("1 : Getting Irrigation Component")
                         Dim IrrigationA As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
                         Dim IrrData As New IrrigationApplicationType
-                        IrrData.Amount = v / 10000 ' 20107003 - converting litres/ha to mm/ha
+                        IrrData.Amount = vol_ha / 10000 ' 20107003 - converting litres/ha to mm/ha
                         IrrData.source = New String() {} 'NB. can't be nothing
                         IrrData.Crop_Area = 0 ' used to calculation volume if source is given
                         IrrData.NO3 = 0

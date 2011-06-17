@@ -760,6 +760,7 @@ Public Class DDRules
                 ME_Eaten_Supplement = myFarm.ME_Eaten_Supplement
                 N_Eaten = myFarm.N_Eaten
                 N_Eaten_Pasture = myFarm.N_Eaten_Pasture
+                N_Eaten_Silage = myFarm.N_Eaten_Silage
                 N_Eaten_Supplement = myFarm.N_Eaten_Supplement
                 N_to_milk = myFarm.N_to_milk
                 N_to_BC = myFarm.N_to_BC
@@ -826,6 +827,8 @@ Public Class DDRules
         <Output()> <Units("kgN/ha")> Public N_Eaten As Single
         'Nitrogen consumed form pasture
         <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture As Single
+        'Nitrogen consumed form silage
+        <Output()> <Units("kgN/ha")> Public N_Eaten_Silage As Single
         'Nitrogen consumed form supplement
         <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement As Single
         'Nitrogen partitioned to milk

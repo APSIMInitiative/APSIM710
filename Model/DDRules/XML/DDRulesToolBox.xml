@@ -4086,4 +4086,83 @@ End Class
       <action>Farm_Fert apply amount = 50 (kg/ha), depth = 0 (mm), type = urea_N()</action>
     </operation>
   </operations>
+  <outputfile name="Outputfile Nitrogen">
+    <variables name="Variables">
+      <variable name="dd/mm/yyyy as Date" />
+      <variable name="N_Eaten" />
+      <variable name="N_Eaten_Pasture" />
+      <variable name="N_Eaten_Supplement" />
+      <variable name="N_Out" />
+      <variable name="N_to_BC" />
+      <variable name="N_to_feaces" />
+      <variable name="N_to_milk" />
+      <variable name="N_to_urine" />
+      <variable name="NIntakeBalance" />
+      <variable name="NOutBalance" />
+      <variable name="NTotalBalance" />
+    </variables>
+    <events name="Reporting Frequency">
+      <event name="Daily" description="End of daily simulation time step" />
+    </events>
+  </outputfile>
+  <manager name="Nitrogen Calcs">
+    <script>
+      <text>
+      </text>
+      <event>init</event>
+    </script>
+    <script>
+      <text>TotalNIn = N_Eaten_Pasture + N_Eaten_Supplement
+NIntakeBalance = TotalNIn - N_Eaten
+
+TotalNOut = N_to_BC + N_to_feaces + N_to_milk + N_to_urine
+NOutBalance = TotalNOut - N_Out
+
+NTotalBalance = NIntakeBalance - NOutBalance</text>
+      <event>start_of_day</event>
+    </script>
+    <script>
+      <text>
+      </text>
+      <event>end_of_day</event>
+    </script>
+  </manager>
+  <Graph name="Nitrogen Balance In Out">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>N_Eaten</X>
+      <Y>N_Out</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Nitrogen Balance Diffs">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>NIntakeBalance</Y>
+      <Y>NOutBalance</Y>
+      <Y>NTotalBalance</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <manager name="Stop storing silage on a fixed date">
+    <ui>
+      <category type="category" description="Sowing criteria" />
+      <date type="text" description="Enter date (dd-mmm) : ">1-jan</date>
+    </ui>
+    <script>
+      <text>
+        if (today = date('[date]') then
+              DDRules.SilageStoreEnable = 0
+         endif
+               </text>
+      <event>start_of_day</event>
+    </script>
+  </manager>
 </folder>

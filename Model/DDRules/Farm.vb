@@ -5,7 +5,8 @@ Public Class Farm
         Private myDebugLevel As Integer = 0
         Private myPaddocks As List(Of LocalPaddockType)         ' Full list of apsim paddocks
         Private myPaddocks2 As Dictionary(Of String, LocalPaddockType)         ' Full list of apsim paddocks
-        Private myHerd As SimpleHerd                            ' Dairy herd / on milking platform
+        Private myMilkingHerd As SimpleHerd                            ' Dairy herd / on milking platform
+        Private myDryCowHerd As SimpleHerd                            ' Dry Cow herd / on or off milking platform
         Private MyFarmArea As Double
 
         Dim PaddockQueue As Queue(Of LocalPaddockType)
@@ -28,7 +29,7 @@ Public Class Farm
         Public AllocationType As Integer = 0
 
         Public Sub New()
-                myHerd = New SimpleHerd()
+                myMilkingHerd = New SimpleHerd()
                 myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
         End Sub
 
@@ -147,7 +148,7 @@ Public Class Farm
                         SilageHeap = New FeedStore
                 End If
 
-                myHerd.setValues(0, 7, 2001, Month)
+                myMilkingHerd.setValues(0, 7, 2001, Month)
         End Sub
 
         Public Sub Prepare(ByVal Year As Integer, ByVal Month As Integer, ByVal Day As Integer, ByVal end_week As Integer)
@@ -159,7 +160,7 @@ Public Class Farm
                         Paddock.OnPrepare()
                 Next
 
-                myHerd.onPrepare(1, Year, Month)
+                myMilkingHerd.onPrepare(1, Year, Month)
 
                 'For Each p As LocalPaddockType In GrazedList
                 '        p.setJustGrazed()
@@ -300,9 +301,9 @@ Public Class Farm
         Sub Graze()
                 GrazedList.Clear()
                 Dim PastureHarvested As Double = 0
-                While (myHerd.RemainingFeedDemand > 1 And PaddockQueue.Count > 0)
+                While (myMilkingHerd.RemainingFeedDemand > 1 And PaddockQueue.Count > 0)
                         Dim p As LocalPaddockType = PaddockQueue.Peek()
-                        Dim removed As BioMass = myHerd.Graze(p, GrazingResidual)
+                        Dim removed As BioMass = myMilkingHerd.Graze(p, GrazingResidual)
                         PastureHarvested += removed.DM_Total
                         GrazedList.Add(p)
                         'Console.WriteLine("Grazing " & p.ApSim_ID & " DM = " & p.Cover.ToString)
@@ -332,24 +333,24 @@ Public Class Farm
         End Sub
 
         Private Sub doAnimalsPost()
-                If (myHerd.isUnderFed) Then
+                If (myMilkingHerd.isUnderFed) Then
                         FeedSupplements()
                 End If
 
-                myHerd.doNitrogenPartioning()
+                myMilkingHerd.doNitrogenPartioning()
 
-                If (lanewayPaddocks IsNot Nothing And Not myHerd.isDry) Then
-                        myHerd.doNutrientReturnsToPaddock(lanewayPaddocks, myTimeOnLaneWays)
+                If (lanewayPaddocks IsNot Nothing And Not myMilkingHerd.isDry) Then
+                        myMilkingHerd.doNutrientReturnsToPaddock(lanewayPaddocks, myTimeOnLaneWays)
                 End If
 
-                If (myTimeInDairyShed > 0 And Not myHerd.isDry) Then
-                        myEffluentPond.Add(myHerd.getNutrientReturns(myTimeInDairyShed))
+                If (myTimeInDairyShed > 0 And Not myMilkingHerd.isDry) Then
+                        myEffluentPond.Add(myMilkingHerd.getNutrientReturns(myTimeInDairyShed))
                 End If
 
                 If (GrazedList.Count > 0) Then
-                        myHerd.doNutrientReturns(GrazedList)
+                        myMilkingHerd.doNutrientReturns(GrazedList)
                 ElseIf (myPaddocks.Count > 0) Then 'no paddocks grazed today, return nutrients to those paddock allocated as part of the rotation
-                        myHerd.doNutrientReturns(myPaddocks)
+                        myMilkingHerd.doNutrientReturns(myPaddocks)
                 End If
         End Sub
 
@@ -387,19 +388,19 @@ Public Class Farm
         'Silgae and Supplements will be used to completely fill the remaining demand
         'TODO - check implementation of wastage
         Sub FeedSupplements()
-                If (myHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
-                        Dim temp As Single = FeedSilage(myHerd.RemainingFeedDemand, SilageWastage)
+                If (myMilkingHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
+                        Dim temp As Single = FeedSilage(myMilkingHerd.RemainingFeedDemand, SilageWastage)
                         If (DebugLevel > 0) Then
                                 Console.WriteLine("*** DDRules - Silage Fed *** = " + temp.ToString())
                         End If
                 End If
 
-                If (myHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
+                If (myMilkingHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
                         'Dim temp As Single = FeedSupplement(myHerd.RemainingFeedDemand) '20010523 removed, SupplementME) , SupplementN, SupplementWastage, SupplementDigestability)
                         If (DebugLevel > 0) Then
-                                Console.WriteLine("*** DDRules - Supplements Fed demend *** = " + myHerd.RemainingFeedDemand.ToString())
+                                Console.WriteLine("*** DDRules - Supplements Fed demend *** = " + myMilkingHerd.RemainingFeedDemand.ToString())
                         End If
-                        Dim temp As Single = FeedSupplement(myHerd.RemainingFeedDemand, SupplementME, SupplementN, SupplementWastage, SupplementDigestability)
+                        Dim temp As Single = FeedSupplement(myMilkingHerd.RemainingFeedDemand, SupplementME, SupplementN, SupplementWastage, SupplementDigestability)
                         If (DebugLevel > 0) Then
                                 Console.WriteLine("*** DDRules - Supplements Fed *** = " + temp.ToString())
                                 Console.WriteLine("Supplment Fed Today = " + SupplementStore.ToString())
@@ -429,8 +430,9 @@ Public Class Farm
                 End If
                 tempDM = tempDM.Multiply(1 - WastageFactor)
                 tempDM.digestibility = SilageDigestability
+                tempDM.N_Conc = SilageN
                 Dim tempEnergyDiff As Double = (tempDM.getME_Total - MEDemand) / MEDemand
-                myHerd.Feed(tempDM, SimpleHerd.FeedType.Silage)
+                myMilkingHerd.Feed(tempDM, SimpleHerd.FeedType.Silage)
                 Return tempDM.getME_Total
         End Function
 
@@ -441,7 +443,7 @@ Public Class Farm
                 dm.setME(SupplementME)
                 dm.digestibility = SupplementDigestability
                 dm.N_Conc = SupplementN
-                myHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
+                myMilkingHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
                 SupplementStore.Remove(dm)
                 Return dm.DM_Total
         End Function
@@ -453,14 +455,14 @@ Public Class Farm
                 dm.setME(SupplementME)
                 dm.digestibility = Digestability
                 dm.N_Conc = NperKg
-                myHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
+                myMilkingHerd.Feed(dm, SimpleHerd.FeedType.Supplement)
                 SupplementStore.Remove(dm)
                 Return dm.DM_Total
         End Function
 #End Region
 
         Private Function IsWinteringOff() As Boolean
-                Return WinterOffDryStock And myHerd.isDry
+                Return WinterOffDryStock And myMilkingHerd.isDry
         End Function
 
         Public DCWO As Date 'Commence Wintering Off
@@ -482,14 +484,14 @@ Public Class Farm
                         If (IsWinteringOff()) Then
                                 Return 0
                         Else
-                                Return myHerd.Number_Of_Cows / FarmArea()
+                                Return myMilkingHerd.Number_Of_Cows / FarmArea()
                         End If
                 End Get
                 Set(ByVal value As Double)
                         If (value < 0) Then
                                 value = 0
                         End If
-                        myHerd.setCowNumbers(value * FarmArea) 'assume 1ha paddocks
+                        myMilkingHerd.setCowNumbers(value * FarmArea) 'assume 1ha paddocks
                 End Set
         End Property
 
@@ -595,7 +597,7 @@ Public Class Farm
         End Property
 
         Public Function getHerd() As SimpleHerd
-                Return myHerd
+                Return myMilkingHerd
         End Function
 
 #Region "3: Pasture Conservation"
@@ -691,40 +693,41 @@ Public Class Farm
 #Region "Additional Output Variables"
         Public Sub PrepareOutputs()
                 myPaddocks.Sort(LocalPaddockType.getSortListByIndex)
-                DM_Eaten = myHerd.DM_Eaten / FarmArea()
-                DM_Eaten_Pasture = myHerd.DM_Eaten_Pasture / FarmArea()
-                DM_Eaten_Silage = myHerd.DM_Eaten_Silage / FarmArea()
-                DM_Eaten_Supplement = myHerd.DM_Eaten_Supplement / FarmArea()
-                ME_Demand = myHerd.ME_Demand / FarmArea()
-                ME_Eaten = myHerd.ME_Eaten / FarmArea()
-                ME_Eaten_Pasture = myHerd.ME_Eaten_Pasture / FarmArea()
-                ME_Eaten_Silage = myHerd.ME_Eaten_Silage / FarmArea()
-                ME_Eaten_Supplement = myHerd.ME_Eaten_Supplement / FarmArea()
-                N_Eaten = myHerd.N_Eaten / FarmArea()
-                N_Eaten_Pasture = myHerd.N_Eaten_Pasture / FarmArea()
-                N_Eaten_Supplement = myHerd.N_Eaten_Supplement / FarmArea()
-                N_to_milk = myHerd.N_to_Milk / FarmArea()
-                N_to_BC = myHerd.N_to_BC / FarmArea()
-                N_to_feaces = myHerd.N_to_feaces / FarmArea()
-                DM_to_feaces = myHerd.DM_to_feaces / FarmArea()
-                N_to_urine = myHerd.N_to_urine / FarmArea()
-                N_Balance = myHerd.N_Balance / FarmArea()
-                N_Out = myHerd.N_Out / FarmArea()
+                DM_Eaten = myMilkingHerd.DM_Eaten / FarmArea()
+                DM_Eaten_Pasture = myMilkingHerd.DM_Eaten_Pasture / FarmArea()
+                DM_Eaten_Silage = myMilkingHerd.DM_Eaten_Silage / FarmArea()
+                DM_Eaten_Supplement = myMilkingHerd.DM_Eaten_Supplement / FarmArea()
+                ME_Demand = myMilkingHerd.ME_Demand / FarmArea()
+                ME_Eaten = myMilkingHerd.ME_Eaten / FarmArea()
+                ME_Eaten_Pasture = myMilkingHerd.ME_Eaten_Pasture / FarmArea()
+                ME_Eaten_Silage = myMilkingHerd.ME_Eaten_Silage / FarmArea()
+                ME_Eaten_Supplement = myMilkingHerd.ME_Eaten_Supplement / FarmArea()
+                N_Eaten = myMilkingHerd.N_Eaten / FarmArea()
+                N_Eaten_Pasture = myMilkingHerd.N_Eaten_Pasture / FarmArea()
+                N_Eaten_Silage = myMilkingHerd.N_Eaten_Silage / FarmArea()
+                N_Eaten_Supplement = myMilkingHerd.N_Eaten_Supplement / FarmArea()
+                N_to_milk = myMilkingHerd.N_to_Milk / FarmArea()
+                N_to_BC = myMilkingHerd.N_to_BC / FarmArea()
+                N_to_feaces = myMilkingHerd.N_to_feaces / FarmArea()
+                DM_to_feaces = myMilkingHerd.DM_to_feaces / FarmArea()
+                N_to_urine = myMilkingHerd.N_to_urine / FarmArea()
+                N_Balance = myMilkingHerd.N_Balance / FarmArea()
+                N_Out = myMilkingHerd.N_Out / FarmArea()
 
-                ME_Demand_Cow = myHerd.ME_Demand_Cow()
-                ME_Eaten_Cow = myHerd.ME_Eaten_Cow()
-                ME_Eaten_Pasture_Cow = myHerd.ME_Eaten_Pasture_Cow()
-                ME_Eaten_Supplement_Cow = myHerd.ME_Eaten_Supplement_Cow()
-                DM_Eaten_Cow = myHerd.DM_Eaten_Cow()
-                DM_Eaten_Pasture_Cow = myHerd.DM_Eaten_Pasture_Cow()
-                DM_Eaten_Supplement_Cow = myHerd.DM_Eaten_Supplement_Cow()
-                N_Eaten_Cow = myHerd.N_Eaten_Cow()
-                N_Eaten_Pasture_Cow = myHerd.N_Eaten_Pasture_Cow()
-                N_Eaten_Supplement_Cow = myHerd.N_Eaten_Supplement_Cow()
-                N_to_milk_Cow = myHerd.N_to_milk_Cow()
-                N_to_BC_Cow = myHerd.N_to_BC_Cow()
-                N_to_feaces_Cow = myHerd.N_to_feaces_Cow()
-                N_to_urine_Cow = myHerd.N_to_urine_Cow()
+                ME_Demand_Cow = myMilkingHerd.ME_Demand_Cow()
+                ME_Eaten_Cow = myMilkingHerd.ME_Eaten_Cow()
+                ME_Eaten_Pasture_Cow = myMilkingHerd.ME_Eaten_Pasture_Cow()
+                ME_Eaten_Supplement_Cow = myMilkingHerd.ME_Eaten_Supplement_Cow()
+                DM_Eaten_Cow = myMilkingHerd.DM_Eaten_Cow()
+                DM_Eaten_Pasture_Cow = myMilkingHerd.DM_Eaten_Pasture_Cow()
+                DM_Eaten_Supplement_Cow = myMilkingHerd.DM_Eaten_Supplement_Cow()
+                N_Eaten_Cow = myMilkingHerd.N_Eaten_Cow()
+                N_Eaten_Pasture_Cow = myMilkingHerd.N_Eaten_Pasture_Cow()
+                N_Eaten_Supplement_Cow = myMilkingHerd.N_Eaten_Supplement_Cow()
+                N_to_milk_Cow = myMilkingHerd.N_to_milk_Cow()
+                N_to_BC_Cow = myMilkingHerd.N_to_BC_Cow()
+                N_to_feaces_Cow = myMilkingHerd.N_to_feaces_Cow()
+                N_to_urine_Cow = myMilkingHerd.N_to_urine_Cow()
         End Sub
 
         '<Output()> <Units("MJME/ha")> Public ME_Demand As Single
@@ -755,6 +758,7 @@ Public Class Farm
         <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement As Single
         <Output()> <Units("kgN/ha")> Public N_Eaten As Single
         <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture As Single
+        <Output()> <Units("kgN/ha")> Public N_Eaten_Silage As Single
         <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement As Single
         <Output()> <Units("kgN/ha")> Public N_to_milk As Single
         <Output()> <Units("kgN/ha")> Public N_to_BC As Single
@@ -897,7 +901,7 @@ Public Class Farm
         <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Single
         <Output()> <Units("kgN/cow")> Public ReadOnly Property LWt_Change_Cow() As Single
                 Get
-                        Return myHerd.LWt_Change
+                        Return myMilkingHerd.LWt_Change
                 End Get
         End Property
 
@@ -988,7 +992,7 @@ Public Class Farm
         End Sub
 
         Public Function FeedSituation() As Double
-                If (myHerd.Number_Of_Cows > 0) Then
+                If (myMilkingHerd.Number_Of_Cows > 0) Then
                         Dim post = GrazingResidual
                         Dim target As Double = IdealGrazingCover()
                         Dim pre As Double = post + (target - post)
@@ -1001,7 +1005,7 @@ Public Class Farm
         ' Source: DairyNZ - Feed Wedge Reconer
         Public Function IdealGrazingCover() As Double
                 Dim Cows_ha As Double = StockingRate
-                Dim KgDM_Cow As Double = myHerd.ME_Demand_Cow / 12.0 '17 'from doc
+                Dim KgDM_Cow As Double = myMilkingHerd.ME_Demand_Cow / 12.0 '17 'from doc
                 Dim RotationLength As Double = GrazingInterval
                 Dim TargetResidual As Double = GrazingResidual
                 Dim KgDM_ha As Double = Cows_ha * KgDM_Cow * RotationLength + TargetResidual
@@ -1088,12 +1092,12 @@ Public Class Farm
 
         Public Sub setMilkSolids(ByVal values As Double())
                 'Todo 20110524 - add checking here
-                myHerd.setMilkSolids(values)
+                myMilkingHerd.setMilkSolids(values)
         End Sub
 
         Public Sub setLiveWeight(ByVal values As Double())
                 'Todo 20110524 - add checking here
-                myHerd.setLiveWeight(values)
+                myMilkingHerd.setLiveWeight(values)
         End Sub
 
         Dim effluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
