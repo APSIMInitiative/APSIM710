@@ -192,9 +192,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-
             InitialiseCohorts();
-             
         }
 
         if (NodeInitiationRate.Value > 0)
@@ -230,7 +228,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    0.0,
                                    Children["MaximumNConc"] as Function,
                                    Children["MinimumNConc"] as Function,
-                                   Children["InitialNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
                                    Children["NRetranslocationRate"] as Function,
@@ -263,7 +260,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    InitialAreas[i],
                                    Children["MaximumNConc"] as Function,
                                    Children["MinimumNConc"] as Function,
-                                   Children["InitialNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
                                    Children["NRetranslocationRate"] as Function,
@@ -323,7 +319,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of potential DM in" + Name);
-
             if (value == 0.0)
             { }// do nothing
             else
@@ -351,8 +346,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     throw new Exception("Potential DM allocated to Leaf left over after allocation to leaf cohorts");
                 if ((DMPotentialallocated - value) > 0.000000001)
                     throw new Exception("the sum of poteitial DM allocation to leaf cohorts is more that that allocated to leaf organ");
-
-                // Not currently allowing leaves to change thickness  
             }
         }
     }
@@ -370,8 +363,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         set
         {
-            double DMSupply = DMRetranslocationSupply;
-            if (value > DMSupply)
+            if (value > DMRetranslocationSupply)
                 throw new Exception(Name + " cannot supply that amount for DM retranslocation");
             if (value > 0)
             {
@@ -380,7 +372,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 {
                     double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
                     L.DMRetranslocation = Supply;
-                    remainder = remainder - Supply;
+                    remainder -= Supply;
                 }
                 if (!MathUtility.FloatsAreEqual(remainder, 0.0))
                     throw new Exception(Name + " DM Retranslocation demand left over after processing.");
@@ -397,7 +389,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 if (value < 0.000000000001) { }//All OK
                 else
                     throw new Exception("Invalid allocation of DM in Leaf");
-
             if (value == 0.0)
             { }// do nothing
             else
@@ -405,22 +396,16 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 double DMsupply = value;
                 double DMallocated = 0;
                 double TotalDemand = 0;
-                
                 foreach (LeafCohort L in Leaves)
                         TotalDemand += L.DMDemand;
-                
-                // first make sure each cohort gets the DM required for Maximum SLA
                 double DemandFraction = (value) / TotalDemand;//
                 foreach (LeafCohort L in Leaves)
                 {
-                    double CohortDemand = L.DMDemand;
-                    double Allocation = Math.Min(CohortDemand * DemandFraction, DMsupply);
-                    //double allocation = Math.Min(L.DMDemand * fraction, DMsupply);
+                    double Allocation = Math.Min(L.DMDemand * DemandFraction, DMsupply);
                     L.DMAllocation = Allocation;
                     DMallocated += Allocation;
                     DMsupply -= Allocation;
                 }
-
                     if (DMsupply > 0.0000000001)
                         throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
                     if ((DMallocated - value) > 0.000000001)
@@ -464,8 +449,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         set
         {
-            double NSupply = NRetranslocationSupply;
-            if (value - NSupply > 0.000000001)
+            if (value - NRetranslocationSupply > 0.000000001)
                 throw new Exception(Name + " cannot supply that amount for N retranslocation");
             if (value < -0.000000001)
                 throw new Exception(Name + " recieved -ve N retranslocation");
@@ -474,9 +458,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 double remainder = value;
                 foreach (SIRIUSLeafCohort L in Leaves)
                 {
-                    double Supply = Math.Min(remainder, L.LeafStartNRetranslocationSupply);
-                    L.NRetranslocation = Supply;
-                    remainder = Math.Max(0.0, remainder - Supply);
+                    double Retrans = Math.Min(remainder, L.LeafStartNRetranslocationSupply);
+                    L.NRetranslocation = Retrans;
+                    remainder = Math.Max(0.0, remainder - Retrans);
                 }
                 if (!MathUtility.FloatsAreEqual(remainder, 0.0))
                     throw new Exception(Name + " N Retranslocation demand left over after processing.");
@@ -507,7 +491,10 @@ public class SIRIUSLeaf : Leaf, AboveGround
             else
             {
                 //setup allocation variables
-                double[] CohortNAllocation = new double[Leaves.Count+2];
+                double[] CohortNAllocation = new double[Leaves.Count + 2];
+                double[] StructuralNDemand = new double[Leaves.Count + 2];
+                double[] MetabolicNDemand = new double[Leaves.Count + 2];
+                double[] NonStructuralNDemand = new double[Leaves.Count + 2];
                 double TotalStructuralNDemand = 0;
                 double TotalMetabolicNDemand = 0;
                 double TotalNonStructuralNDemand = 0;
@@ -516,10 +503,13 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 foreach (LeafCohort L in Leaves)
                 {
                     {
-                        i += 1;
+                        i++;
                         CohortNAllocation[i] = 0;
+                        StructuralNDemand[i] = L.StructuralNDemand;
                         TotalStructuralNDemand += L.StructuralNDemand;
+                        MetabolicNDemand[i] = L.MetabolicNDemand;
                         TotalMetabolicNDemand += L.MetabolicNDemand;
+                        NonStructuralNDemand[i] = L.NonStructuralNDemand;
                         TotalNonStructuralNDemand += L.NonStructuralNDemand;
                     }
                 }
@@ -532,9 +522,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     i = 0;
                     foreach (LeafCohort L in Leaves)
                     {
-                        i += 1;
+                        i++;
                         double allocation = 0;
-                        allocation = Math.Min(L.StructuralNDemand, NSupply * (L.StructuralNDemand/TotalStructuralNDemand));
+                        allocation = Math.Min(StructuralNDemand[i], NSupply * (StructuralNDemand[i]/TotalStructuralNDemand));
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
@@ -547,9 +537,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     i = 0;
                     foreach (LeafCohort L in Leaves)
                     {
-                        i += 1;
+                        i++;
                         double allocation = 0;
-                        allocation = Math.Min(L.MetabolicNDemand, NSupply * (L.MetabolicNDemand/TotalMetabolicNDemand));
+                        allocation = Math.Min(MetabolicNDemand[i], NSupply * (MetabolicNDemand[i]/TotalMetabolicNDemand));
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
@@ -562,9 +552,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     i = 0;
                     foreach (LeafCohort L in Leaves)
                     {
-                        i += 1;
+                        i++;
                         double allocation = 0;
-                        allocation = Math.Min(L.NonStructuralNDemand, NSupply * (L.NonStructuralNDemand/TotalNonStructuralNDemand));
+                        allocation = Math.Min(NonStructuralNDemand[i], NSupply * (NonStructuralNDemand[i]/TotalNonStructuralNDemand));
                         CohortNAllocation[i] += allocation;
                         LeafNAllocated += allocation;
                     }
@@ -577,12 +567,10 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     throw new Exception("the sum of N allocation to leaf cohorts is more that that allocated to leaf organ");
 
                 //send N allocations to each cohort
-                //for (int i = 0; i < Leaves.Count; i++)
                 i = 0;
                 foreach (LeafCohort L in Leaves)
                 {
-                    //Leaves[i].NAllocation = (MetabolicNAllocated[i] + StructuralNAllocated[i]);
-                    i += 1;
+                    i++;
                     L.NAllocation = CohortNAllocation[i];
                 }
             }
@@ -592,8 +580,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         set
         {
-            double NSupply = NReallocationSupply;
-            if (value - NSupply > 0.000000001)
+            if (value - NReallocationSupply > 0.000000001)
                 throw new Exception(Name + " cannot supply that amount for N Reallocation");
             if (value < -0.000000001)
                 throw new Exception(Name + " recieved -ve N reallocation");
@@ -602,9 +589,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 double remainder = value;
                 foreach (SIRIUSLeafCohort L in Leaves)
                 {
-                    double Supply = Math.Min(remainder, L.LeafStartNReallocationSupply);
-                    L.NReallocation = Supply;
-                    remainder = Math.Max(0.0, remainder - Supply);
+                    double ReAlloc = Math.Min(remainder, L.LeafStartNReallocationSupply);
+                    L.NReallocation = ReAlloc;
+                    remainder = Math.Max(0.0, remainder - ReAlloc);
                 }
                 if (!MathUtility.FloatsAreEqual(remainder, 0.0))
                     throw new Exception(Name + " N Reallocation demand left over after processing.");
