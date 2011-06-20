@@ -126,7 +126,7 @@ namespace ApsimFile
                                                    "LL"};
 
       private static string[] ChemVariableNames = {"OC", "EC", "PH", "CL", "Boron", "CEC", "Ca", "Mg", 
-                                                   "Na", "K", "ESP", "Mn", "Al", 
+                                                   "Na", "K", "ESP", "Mn", "Al", "Texture",
                                                    "ParticleSizeSand", "ParticleSizeSilt", "ParticleSizeClay",
                                                    "FBIOM", "FINERT"};
       private static string[] CropList = {

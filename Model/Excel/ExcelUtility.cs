@@ -2,7 +2,7 @@ using System;
 using System.Data;
 using System.Collections.Specialized;
 using Microsoft.Office.Core;
-using Excel;
+using Microsoft.Office.Interop.Excel;
 using CSGeneral;
 using System.IO;
 
@@ -13,14 +13,14 @@ namespace ExcelUtility
 
 		static public System.Data.DataTable GetDataFromSheet(string FileName, string SheetName)
 			{
-			Excel.Application ExcelApp = null;
-			Excel.Workbook Workbook = null;
-			Excel.Worksheet Sheet = null;
+			Application ExcelApp = null;
+			Workbook Workbook = null;
+			Worksheet Sheet = null;
 			System.Data.DataTable Table = null;
 
 			try
 				{
-				ExcelApp = new Excel.Application();
+				ExcelApp = new Application();
 				if (ExcelApp == null)
 					throw new Exception("Cannot find Excel.");
 
@@ -34,14 +34,14 @@ namespace ExcelUtility
 				// Go find the right sheet.
 				for (int PageIndex = 1; PageIndex <= Workbook.Worksheets.Count; PageIndex++)
 					{
-					Sheet = (Excel.Worksheet) Workbook.Worksheets.get_Item(PageIndex);
+					Sheet = (Worksheet) Workbook.Worksheets.get_Item(PageIndex);
 					if (Sheet.Name.ToLower() == SheetName.ToLower())
 						break;
 					}
 				if (Sheet.Name.ToLower() != SheetName.ToLower())
 					throw new Exception("Cannot find sheet: " + SheetName + " in spreadsheet file: " + FileName);
 
-                Excel.Range r = Sheet.UsedRange;
+                Range r = Sheet.UsedRange;
                 object[,] values = (object[,])r.Value2;
                 int NumColumns = GetNumColumns(values);
                 int NumRows = GetNumRows(values);
@@ -105,18 +105,18 @@ namespace ExcelUtility
 			{
 			if (File.Exists(FileName))
 				throw new Exception("File '" + FileName + "' already exists.");
-			Excel.Application ExcelApp = null;
-			Excel.Workbook Workbook = null;
-			Excel.Worksheet WorkSheet = null;
+			Application ExcelApp = null;
+			Workbook Workbook = null;
+			Worksheet WorkSheet = null;
 
 			try
 				{
-				ExcelApp = new Excel.Application();
+				ExcelApp = new Application();
 				if (ExcelApp == null)
 					throw new Exception("Cannot find Excel.");
 
-				Workbook = ExcelApp.Workbooks.Add(Excel.XlWBATemplate.xlWBATWorksheet);
-				WorkSheet = (Excel.Worksheet) Workbook.Worksheets.Add(
+				Workbook = ExcelApp.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
+				WorkSheet = (Worksheet) Workbook.Worksheets.Add(
                                              Type.Missing, 
                                              Type.Missing, 
                                              Type.Missing, 
@@ -140,7 +140,7 @@ namespace ExcelUtility
 
                 object TopLeft = WorkSheet.Cells[1, 1];
                 object BottomRight = WorkSheet.Cells[Table.Rows.Count+1, Table.Columns.Count+1];
-                Excel.Range r = (Excel.Range)WorkSheet.get_Range(TopLeft, BottomRight);
+                Range r = (Range)WorkSheet.get_Range(TopLeft, BottomRight);
 
                 Object[] args2 = new Object[1];
                 args2[0] = values; 
@@ -151,12 +151,12 @@ namespace ExcelUtility
 				ExcelApp.DisplayAlerts = false;
 				ExcelApp.ActiveWorkbook.SaveAs(
 								FileName, 
-								Excel.XlFileFormat.xlXMLSpreadsheet, 
+								XlFileFormat.xlXMLSpreadsheet, 
 								Type.Missing, 
 								Type.Missing, 
 								Type.Missing, 
 								Type.Missing, 
-								Excel.XlSaveAsAccessMode.xlNoChange,
+								XlSaveAsAccessMode.xlNoChange,
 								Type.Missing, 
 								Type.Missing, 
 								Type.Missing, 

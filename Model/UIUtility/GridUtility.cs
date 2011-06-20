@@ -146,7 +146,7 @@ namespace UIUtility
          }
       public static string[] GetColumnAsStrings(DataGridView Grid, int ColumnIndex)
          {
-         int NumValues = Grid.RowCount - 1;
+         int NumValues = Grid.RowCount;
          if (!Grid.ReadOnly)
             NumValues--;
          string[] Values = new string[NumValues];

@@ -169,7 +169,10 @@ namespace CSUserInterface
          {
          EditableColumnNames.Clear();
 
-         Soil.Variable Thickness = Soil.Get(_SoilNode, "Thickness");
+         string[] DepthStrings = GridUtility.GetColumnAsStrings(Grid, 1);
+         double[] ThicknessMM = SoilUtility.ToThickness(DepthStrings);
+         ThicknessMM = MathUtility.Multiply_Value(ThicknessMM, 10);
+         //Soil.Variable Thickness = Soil.Get(_SoilNode, "Thickness");
          for (int Col = 0; Col < Grid.Columns.Count; Col++)
             {
             string RawVariableName = Grid.Columns[Col].HeaderText;
@@ -177,7 +180,7 @@ namespace CSUserInterface
             if (RawVariableName != "Thickness" && RawVariableName != "Depth" && RawVariableName != "DepthMidPoints")
                {
                Soil.Variable Var = Soil.GetOptionalFromProfileNode(_SoilNode, ProfileNode, RawVariableName);
-               Var.ThicknessMM = Thickness.ThicknessMM;
+               Var.ThicknessMM = ThicknessMM;
                if (Var != null && Var.Codes != null)
                   {
                   if (Var.Codes.Length > 0 && Var.Codes[0].Contains("Calculated"))
