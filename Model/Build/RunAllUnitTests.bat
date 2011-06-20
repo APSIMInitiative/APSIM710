@@ -23,6 +23,8 @@ for /D %%d in (*) do (
       if ERRORLEVEL 0 %APSIM%\Model\Test.exe > UnitTest.out
       del /Q %APSIM%\Model\Test.* 2>nul
       )
+      
+   cd %APSIM%\Tests\UnitTests\%%d      
    if EXIST UnitTest.out "%APSIM%\..\BuildLibraries\tcl\ASTcl\bin\tclsh84.exe" %APSIM%\Model\Build\RemoveUnitTestTimeStamp.tcl
    )
 
