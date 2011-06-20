@@ -1,0 +1,262 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Wagga Effluent Irrigated E. grandis
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                     "micromet" = %apsim%\Model\MicroMet.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "tracker" = %apsim%\Model\Tracker.dll
+   Component                     "egrandis" = %apsim%\Model\Growth.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1991
+     Simulation end date   = 30/06/1996
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: wwepp.met
+
+------- report Initialisation -------------------------------------------------
+     Output variables:
+        dd/mm/yyyy as date
+        day
+        year
+        egrandis.age
+        egrandis.lai
+        tracker.avg@fn
+        tracker.avg@fw
+        tracker.avg@fvpd
+        tracker.avg@ft
+        egrandis.adm_green(1) as stemgreenwt
+        egrandis.adm_green(2) as branch_wt
+        egrandis.adm_green(3) as bark_wt
+        egrandis.foliage_mass as leafgreenwt
+        egrandis.root_mass
+        egrandis.height
+        tracker.sum@ep
+        tracker.litterfall
+        manager.cum_litterfall
+
+     Output file = Wagga Effluent Irrigated E. grandis report.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.95
+           depth for calculating available soil water =    1000.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cum_litterfall = 0
+     
+     SECTION:- start_of_day
+     if year = 1991 and day = 182 then
+        egrandis establish plants = 1333, init_section = seedling
+     endif
+     
+     SECTION:- end_of_day
+     cum_litterfall = cum_litterfall + egrandis.dlt_foliage_mass_detached
+     if end_week = 1 then
+        report do_output
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : cum_litterfall = 0.00000
+
+------- micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.010  0.100  0.240  0.290  0.212  1.500  0.856  0.900
+          200.-  500.  0.010  0.100  0.240  0.290  0.212  1.600  0.144  0.900
+          500.- 1000.  0.010  0.100  0.240  0.290  0.212  1.680  0.000  0.900
+         1000.- 2000.  0.020  0.100  0.240  0.290  0.212  1.750  0.000  0.600
+         2000.- 3000.  0.050  0.100  0.240  0.290  0.212  1.700  0.000  0.600
+         3000.- 4000.  0.050  0.100  0.240  0.290  0.212  1.700  0.000  0.600
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      20.00      22.40      28.00      10.00
+          200.-  500.      30.00      33.60      42.00      15.00
+          500.- 1000.      50.00      56.00      70.00      25.00
+         1000.- 2000.     100.00     112.00     140.00      50.00
+         2000.- 3000.     100.00     112.00     140.00      50.00
+         3000.- 4000.     100.00     112.00     140.00      50.00
+          ---------------------------------------------------------
+               Totals     400.00     448.00     560.00     200.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              70.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sugar     sugar           10.0     4.0     0.1     0.0   0.007     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.70  1.00    3.00    0.30    0.00
+             2     5.50  0.45    2.40    0.48    0.00
+             3     5.30  0.27    0.84    0.84    0.00
+             4     5.30  0.27    1.75    1.75    0.00
+             5     5.30  0.27    1.70    1.70    0.00
+             6     5.30  0.27    1.70    1.70    0.00
+          ------------------------------------------------
+           Totals               11.39    6.77    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29650.5  2117.9   349.5    43.7  2870.6    47.8
+             2      21472.9  1533.8   127.1    15.9  2292.2    38.2
+             3      22629.7  1616.4    50.3     6.3  1575.4    26.3
+             4      47226.6  3373.3    23.4     2.9   744.2    12.4
+             5      45877.3  3276.9    22.7     2.8   351.5     5.9
+             6      45877.3  3276.9    22.7     2.8   166.0     2.8
+          ---------------------------------------------------------
+           Totals  212734.3 15195.3   595.7    74.5  8000.0   133.3
+          ---------------------------------------------------------
+
+------- tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        average of egrandis.fn on process from report.reported to now as avg@fn
+        average of egrandis.fw on process from report.reported to now as avg@fw
+        average of egrandis.fvpd on process from report.reported to now as avg@fvpd
+        average of egrandis.ft on process from report.reported to now as avg@ft
+        sum of egrandis.ep on process from report.reported to now as sum@ep
+        sum of egrandis.dlt_foliage_mass_detached on process from report.reported to now as litterfall
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- egrandis establish  plants = 1333, init_section = seedling
+1 July 1991(Day of year=182), egrandis: 
+     Establishing
+30 June 1996(Day of year=182), clock: 
+     Simulation is terminating due to end criteria being met.

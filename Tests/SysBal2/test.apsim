@@ -5,7 +5,7 @@
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1970</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">30/06/1970</end_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/1970</end_date>
     </clock>
     <summaryfile>
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
@@ -1094,6 +1094,7 @@
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
       </irrigation>
+      <SysBal2 />
       <folder name="Manager folder">
         <manager2 name="Apply irrigation at start of week">
           <ui>
@@ -1154,92 +1155,6 @@ public class Script : Instance
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager2 name="SysBal2">
-          <ui />
-          <text>using System;
-using ModelFramework;
-
-public class SysBal2 : Instance
-{
-   [Link]   SurfaceOM SurfaceOM;
-   [Link]   SoilN SoilN;
-   [Link]   Paddock MyPaddock;
-   [Input]   double[] sw_dep;
-   [Input]   double rain = 0;
-   [Input]   double drain = 0;
-   [Input]   double runoff = 0;
-   [Input]   double es = 0;
-   [Input]   double leach_no3 = 0;
-   [Input]   double irrigation = 0;
-   [Input]   double fertiliser = 0;
-   [Output]   double WaterBalance = 0;
-   [Output]   double CarbonBalance = 0;
-   [Output]   double NitrogenBalance = 0;
-
-   private double cropTotal = 0;
-   private double swStart = 0;
-   private double stor = 0;
-   private double inFlow = 0;
-   private double outFlow = 0;
-   
-   [EventHandler]
-   public void OnPrepare()
-   {
-      swStart = 0;
-      stor = 0;
-      foreach (Double d in sw_dep)
-         swStart += d;
-   }
-
-   [EventHandler]
-   public void OnPost()
-   {
-      //Carbon and Nitrogen balance; reset variables
-      CarbonBalance = SoilN.Variable("CarbonBalance").ToDouble() + SurfaceOM.Variable("CarbonBalance").ToDouble();
-      NitrogenBalance = SoilN.Variable("NitrogenBalance").ToDouble() - leach_no3 + fertiliser + SurfaceOM.Variable("NitrogenBalance").ToDouble();
-      
-      foreach (Component Crop in MyPaddock.Crops)
-      {
-         CarbonBalance += Crop.Variable("CarbonBalance").ToDouble(); // variable has not been added to crops yet
-         cropTotal += Crop.Variable("ep").ToDouble();  //does not work with Plant2 modules
-      }
-      if (Math.Abs(CarbonBalance) &gt; 0.1) // catch FP precision issues
-      {
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("             !               APSIM Warning            !");
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("          Error in Carbon Balance. Mass balance error(kg/ha): " + CarbonBalance.ToString());
-      }
-      else
-         CarbonBalance = 0;
-      if (Math.Abs(NitrogenBalance) &gt; 0.1) // catch FP precision issues
-      {
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("             !               APSIM Warning            !");
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("          Error in Nitrogen Balance. Mass balance error(kg/ha): " + NitrogenBalance.ToString());
-      }
-      else NitrogenBalance = 0;
-
-      //Water balance
-      cropTotal = 0;
-      foreach (Double d in sw_dep)
-         stor += d;
-      stor -= swStart;
-      inFlow = rain + irrigation; 
-      outFlow = drain + cropTotal + es + runoff;
-      WaterBalance = inFlow - outFlow - stor;
-      if (Math.Abs(WaterBalance) &gt; 0.1) // catch FP precision issues
-      {
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("             !               APSIM Warning            !");
-         Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-         Console.WriteLine("          Error in Water Balance. Balance error: " + WaterBalance.ToString());
-      }
-      else WaterBalance = 0;
-   }
-}</text>
-        </manager2>
       </folder>
       <outputfile>
         <variables name="Variables">
@@ -1287,7 +1202,7 @@ public class SysBal2 : Instance
       </outputfile>
     </area>
   </simulation>
-  <Graph name="XY">
+  <Graph name="Error">
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>Circle</PointType>
@@ -1300,4 +1215,18 @@ public class SysBal2 : Instance
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
+  <Graph name="Cumulative Error">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>Cumulative CarbonBalance</Y>
+      <Y>Cumulative NitrogenBalance</Y>
+      <Y>Cumulative WaterBalance</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <memo name="non-zero balance values">Due to limitations in the data types used, balance values for carbon and nitrogen will not be zero. This is due to the internal data type exceeding 7 significant digits.</memo>
 </folder>

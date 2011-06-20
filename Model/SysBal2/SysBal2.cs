@@ -4,13 +4,13 @@ using ModelFramework;
 public class SysBal2 : Instance
 {
     [Link]
-    SurfaceOM SurfaceOM = null;
+    SurfaceOM SurfaceOM;
     [Link]
-    SoilN SoilN = null;
+    SoilN SoilN;
     [Link]
-    Paddock MyPaddock = null;
+    Paddock MyPaddock;
     [Input]
-    double[] sw_dep = null;
+    double[] sw_dep;
     [Input]
     double rain = 0;
     [Input]
@@ -52,30 +52,28 @@ public class SysBal2 : Instance
     {
         //Carbon and Nitrogen balance; reset variables
         CarbonBalance = SoilN.Variable("CarbonBalance").ToDouble() + SurfaceOM.Variable("CarbonBalance").ToDouble();
-        NitrogenBalance = SoilN.Variable("NitrogenBalance").ToDouble() - leach_no3 + fertiliser;
+        NitrogenBalance = SoilN.Variable("NitrogenBalance").ToDouble() - leach_no3 + fertiliser + SurfaceOM.Variable("NitrogenBalance").ToDouble();
 
         foreach (Component Crop in MyPaddock.Crops)
         {
             CarbonBalance += Crop.Variable("CarbonBalance").ToDouble(); // variable has not been added to crops yet
             cropTotal += Crop.Variable("ep").ToDouble();  //does not work with Plant2 modules
         }
-        if (Math.Abs(CarbonBalance) > 0.1) // catch FP precision issues
+        if (Math.Abs(CarbonBalance) > 0.05) // catch FP precision issues
         {
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("             !               APSIM Warning            !");
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("          Error in Carbon Balance. Mass balance error(kg/ha): " + CarbonBalance.ToString());
         }
-        else
-            CarbonBalance = 0;
-        if (Math.Abs(NitrogenBalance) > 0.1) // catch FP precision issues
+
+        if (Math.Abs(NitrogenBalance) > 0.05) // catch FP precision issues
         {
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("             !               APSIM Warning            !");
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("          Error in Nitrogen Balance. Mass balance error(kg/ha): " + NitrogenBalance.ToString());
         }
-        else NitrogenBalance = 0;
 
         //Water balance
         cropTotal = 0;
@@ -85,13 +83,12 @@ public class SysBal2 : Instance
         inFlow = rain + irrigation;
         outFlow = drain + cropTotal + es + runoff;
         WaterBalance = inFlow - outFlow - stor;
-        if (Math.Abs(WaterBalance) > 0.1) // catch FP precision issues
+        if (Math.Abs(WaterBalance) > 0.05) // catch FP precision issues
         {
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("             !               APSIM Warning            !");
             Console.WriteLine("             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.WriteLine("          Error in Water Balance. Balance error: " + WaterBalance.ToString());
         }
-        else WaterBalance = 0;
     }
 }
