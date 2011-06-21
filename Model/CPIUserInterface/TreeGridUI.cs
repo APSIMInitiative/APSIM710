@@ -82,7 +82,13 @@ namespace CPIUserInterface
             propertyList = new List<TCompProperty>();
             miDelInstance = null;
             FDllFileName = "";
+            base.HelpText = "Initialisation values"; //triggers TreeGridUI_Load()
         }
+        //=====================================================================
+        /// <summary>
+        /// Saves the current property values to Data.
+        /// </summary>
+        //=====================================================================
         public override void OnSave()
         {
             StoreControls();
@@ -155,12 +161,12 @@ namespace CPIUserInterface
             FDllFileName = DllFileNames[0];
             FDllFileName = Configuration.RemoveMacros(FDllFileName).Replace("%dllext%", "dll");
 
-            if (File.Exists(FDllFileName))
+            if ((propertyList.Count == 0) && File.Exists(FDllFileName)) //if no properties yet
             {
                 String descr = "";
                 TOSInterface.CompilationMode mode = TOSInterface.isManaged(FDllFileName);
                 //now I can probe this dll for it's description. CPI mixed mode wrapper/comp has a native interface
-                if ( (mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed) )
+                if ((mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed))
                 {
                     descr = getNativeDescription(FDllFileName);
                 }
@@ -174,6 +180,7 @@ namespace CPIUserInterface
                     TComponentDescrParser comp = new TComponentDescrParser(descr);
                     //need to read all the properties information
                     String propertySDML = comp.firstProperty();
+                    propertyList.Clear();
                     while (propertySDML.Length > 0)
                     {
                         //create a property attribute of this class
@@ -181,61 +188,65 @@ namespace CPIUserInterface
                         propertySDML = comp.nextProperty();
                     }
                 }
+                ReadInitSection();  //reads all the init values and sets the property values
+
+                this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
+                this.afTreeViewColumns1.saveChangesEvent += new AFTreeViewColumns.onDataChange(afTreeViewColumns1_saveChangesEvent);
+
+                ListView.ColumnHeaderCollection lvColumns = afTreeViewColumns1.Columns;
+
+                lvColumns.Clear();
+
+                ColumnHeader ch1 = new ColumnHeader();
+                ch1.Name = "Variable";
+                ch1.Text = "Variable";
+                ch1.Width = 150;
+                lvColumns.Add(ch1);
+
+                ColumnHeader ch2 = new ColumnHeader();
+                ch2.Name = "Value";
+                ch2.Text = "Value";
+                ch2.Width = 150;
+                lvColumns.Add(ch2);
+
+                ColumnHeader ch3 = new ColumnHeader();
+                ch3.Name = "Type";
+                ch3.Text = "Type";
+                ch3.Width = 50;
+                lvColumns.Add(ch3);
+
+                ColumnHeader ch4 = new ColumnHeader();
+                ch4.Name = "Unit";
+                ch4.Text = "Unit";
+                ch4.Width = 50;
+                lvColumns.Add(ch4);
+
+                ColumnHeader ch5 = new ColumnHeader();
+                ch5.Name = "default";
+                ch5.Text = "default";
+                ch5.Width = 50;
+                lvColumns.Add(ch5);
+
+                ColumnHeader ch6 = new ColumnHeader();
+                ch6.Name = "min";
+                ch6.Text = "min";
+                ch6.Width = 50;
+                lvColumns.Add(ch6);
+
+                ColumnHeader ch7 = new ColumnHeader();
+                ch7.Name = "max";
+                ch7.Text = "max";
+                ch7.Width = 50;
+                lvColumns.Add(ch7);
             }
-
-            base.HelpText = "Initialisation values";
-
-            this.afTreeViewColumns1.reloadTreeEvent += new AFTreeViewColumns.reloadTree(afTreeViewColumns1_reloadTreeEvent);
-            this.afTreeViewColumns1.saveChangesEvent += new AFTreeViewColumns.onDataChange(afTreeViewColumns1_saveChangesEvent);
-
-            ListView.ColumnHeaderCollection lvColumns = afTreeViewColumns1.Columns;
-
-            lvColumns.Clear();
-
-            ColumnHeader ch1 = new ColumnHeader();
-            ch1.Name = "Variable";
-            ch1.Text = "Variable";
-            ch1.Width = 150;
-            lvColumns.Add(ch1);
-
-            ColumnHeader ch2 = new ColumnHeader();
-            ch2.Name = "Value";
-            ch2.Text = "Value";
-            ch2.Width = 150;
-            lvColumns.Add(ch2);
-
-            ColumnHeader ch3 = new ColumnHeader();
-            ch3.Name = "Type";
-            ch3.Text = "Type";
-            ch3.Width = 50;
-            lvColumns.Add(ch3);
-
-            ColumnHeader ch4 = new ColumnHeader();
-            ch4.Name = "Unit";
-            ch4.Text = "Unit";
-            ch4.Width = 50;
-            lvColumns.Add(ch4);
-
-            ColumnHeader ch5 = new ColumnHeader();
-            ch5.Name = "default";
-            ch5.Text = "default";
-            ch5.Width = 50;
-            lvColumns.Add(ch5);
-
-            ColumnHeader ch6 = new ColumnHeader();
-            ch6.Name = "min";
-            ch6.Text = "min";
-            ch6.Width = 50;
-            lvColumns.Add(ch6);
-
-            ColumnHeader ch7 = new ColumnHeader();
-            ch7.Name = "max";
-            ch7.Text = "max";
-            ch7.Width = 50;
-            lvColumns.Add(ch7);
         }
         //=======================================================================
-        private void TreeGridUI_Load(object sender, EventArgs e)
+        /// <summary>
+        /// Read the init section from the script and set the property values.
+        /// The tree also gets populated.
+        /// </summary>
+        //=======================================================================
+        private void ReadInitSection()
         {
             //Fill the property fields
             XmlNode initSection = XmlHelper.Find(Data, "initsection");
@@ -552,11 +563,11 @@ namespace CPIUserInterface
                 IntPtr procAddr = LibGetAddr(FDllHandle, "getDescriptionLength");
                 if (!procAddr.Equals(IntPtr.Zero))
                 {
-                    Int32 lLength = 0;
+                    Int32 lLength = 0; 
                     fpGetDescrLength = (PGetDescriptionLength)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescriptionLength));
                     fpGetDescrLength("", ref lLength);
                     //now get the description. Native components construct an instance during getDescription()
-                    procAddr = LibGetAddr(FDllHandle, "getDescription");
+                    procAddr = LibGetAddr(FDllHandle, "getDescription"); 
                     if (!procAddr.Equals(IntPtr.Zero))
                     {
                         StringBuilder sb = new StringBuilder(lLength);

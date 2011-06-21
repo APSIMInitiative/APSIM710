@@ -79,7 +79,6 @@
             this.Controls.Add(this.richTextBox1);
             this.Name = "TreeGridUI";
             this.Size = new System.Drawing.Size(655, 282);
-            this.Load += new System.EventHandler(this.TreeGridUI_Load);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.Controls.SetChildIndex(this.richTextBox1, 0);
             this.Controls.SetChildIndex(this.button1, 0);
