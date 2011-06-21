@@ -631,14 +631,15 @@
     <Graph name="Weight">
       <Plot name="Weight Pred">
         <SeriesType>Solid line</SeriesType>
-        <PointType>Circle</PointType>
-        <colour>-65536</colour>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
         <X>age</X>
         <Y>total_wt</Y>
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
       <Plot name="Weight Obs">
-        <SeriesType>Solid line</SeriesType>
+        <SeriesType>No line</SeriesType>
         <PointType>Circle</PointType>
         <colour>
         </colour>
@@ -648,7 +649,6 @@
           <FileName>%apsim%\Tests\Validation\EGrandis\CoffsObs.out</FileName>
         </GDApsimFileReader>
       </Plot>
-      <memo>Only 2 data points are included as the data in the .XLS is for different sites. Each site has only 2 observations.</memo>
     </Graph>
   </simulation>
   <simulation name="GympieControl">
@@ -6769,33 +6769,33 @@
         <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
         <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
         <allocation type="text" description="Allocation in mm">0</allocation>
-        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
-        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">4.5</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">2.5</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
       </irrigation>
       <manager>
         <script>
-          <event>init</event>
           <text>
             cum_litterfall = 0
             </text>
+          <event>init</event>
         </script>
         <script>
-          <event>start_of_day</event>
           <text>
             if year = 1991 and day = 182 then
                egrandis establish plants = 1333, init_section = seedling
             endif
             </text>
+          <event>start_of_day</event>
         </script>
         <script>
-          <event>end_of_day</event>
           <text>
             cum_litterfall = cum_litterfall + egrandis.dlt_foliage_mass_detached
             if end_week = 1 then
                report do_output
             endif
             </text>
+          <event>end_of_day</event>
         </script>
       </manager>
       <micromet>
@@ -7207,28 +7207,51 @@
         <variable name="sum of egrandis.dlt_foliage_mass_detached on process from report.reported to now as litterfall" />
       </tracker>
       <egrandis />
-      <Graph name="LAI">
-        <Plot name="LAI Pred">
-          <SeriesType>Solid line</SeriesType>
-          <PointType>None</PointType>
-          <colour>-65536</colour>
-          <X>date</X>
-          <Y>lai</Y>
-          <GDApsimFileReader name="ApsimFileReader" />
-        </Plot>
-        <Plot name="LAI Obs">
-          <SeriesType>Solid line</SeriesType>
-          <PointType>None</PointType>
-          <colour>
-          </colour>
-          <X>date</X>
-          <Y>lai</Y>
-          <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.out</FileName>
-          </GDApsimFileReader>
-        </Plot>
-      </Graph>
     </area>
+    <Graph name="Foilage">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>leafgreenwt</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>foliage</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LAI">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>lai</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>lai</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
   </simulation>
   <simulation name="Grandis">
     <clock>
@@ -7810,9 +7833,6 @@
       </tracker>
       <egrandis />
     </area>
-    <accum>
-      <variable name="variable">variable</variable>
-    </accum>
   </simulation>
   <Graph name="Branch Weight">
     <Plot>
@@ -7850,7 +7870,20 @@
   <folder name="Gympie Graphs">
     <GraphReport name="4 Treat LAI">
       <Graph name="LAI Control">
-        <Plot>
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>lai</Y>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>
+            </FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
           <colour>
@@ -7859,12 +7892,22 @@
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
       <Graph name="LAI Irrigated">
-        <Plot>
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>lai</Y>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
           <colour>
@@ -7873,12 +7916,22 @@
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigated report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
       <Graph name="LAI Irrigated and Fertilised">
-        <Plot>
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>lai</Y>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
           <colour>
@@ -7886,13 +7939,23 @@
           <Y>lai</Y>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigatedFertilized report.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
       <Graph name="LAI Fertilised">
-        <Plot>
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>lai</Y>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
           <colour>
@@ -7901,14 +7964,27 @@
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertilized report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
     </GraphReport>
     <GraphReport name="4 Treat Weights">
       <Graph name="Control">
-        <Plot>
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
           <SeriesType>Solid line</SeriesType>
           <PointType>None</PointType>
           <colour>
@@ -7920,7 +7996,116 @@
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+      </Graph>
+      <Graph name="Irrigated">
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigated report.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+      </Graph>
+      <Graph name="Irrigated and Fertilised">
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
+            <FileName>
+            </FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigatedFertilized report.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+      </Graph>
+      <Graph name="Fertilised">
+        <Plot name="Observed">
+          <SeriesType>No line</SeriesType>
+          <PointType>Circle</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+        <Plot name="Predicted">
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <Y>branch_wt</Y>
+          <Y>bark_wt</Y>
+          <Y>leafgreenwt</Y>
+          <YRight>stemgreenwt</YRight>
+          <X>age</X>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertilized report.out</FileName>
+          </GDApsimFileReader>
+        </Plot>
+      </Graph>
+    </GraphReport>
+    <GraphReport name="4 Treat Stresses">
+      <Graph name="Control">
+        <Plot>
+          <SeriesType>Solid line</SeriesType>
+          <PointType>None</PointType>
+          <colour>
+          </colour>
+          <X>age</X>
+          <Y>avg@egrandis_fn</Y>
+          <Y>avg@egrandis_fw</Y>
+          <Y>avg@egrandis_fvpd</Y>
+          <Y>avg@egrandis_ft</Y>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
@@ -7930,14 +8115,13 @@
           <PointType>None</PointType>
           <colour>
           </colour>
-          <Y>branch_wt</Y>
-          <Y>bark_wt</Y>
-          <Y>leafgreenwt</Y>
-          <YRight>stemgreenwt</YRight>
           <X>age</X>
+          <Y>avg@egrandis_fn</Y>
+          <Y>avg@egrandis_fw</Y>
+          <Y>avg@egrandis_fvpd</Y>
+          <Y>avg@egrandis_ft</Y>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigated report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
@@ -7947,13 +8131,12 @@
           <PointType>None</PointType>
           <colour>
           </colour>
-          <Y>branch_wt</Y>
-          <Y>bark_wt</Y>
-          <Y>leafgreenwt</Y>
-          <YRight>stemgreenwt</YRight>
           <X>age</X>
+          <Y>avg@egrandis_fn</Y>
+          <Y>avg@egrandis_fw</Y>
+          <Y>avg@egrandis_fvpd</Y>
+          <Y>avg@egrandis_ft</Y>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrigatedFertilized report.out</FileName>
           </GDApsimFileReader>
         </Plot>
@@ -7964,14 +8147,13 @@
           <PointType>None</PointType>
           <colour>
           </colour>
-          <Y>branch_wt</Y>
-          <Y>bark_wt</Y>
-          <Y>leafgreenwt</Y>
-          <YRight>stemgreenwt</YRight>
           <X>age</X>
+          <Y>avg@egrandis_fn</Y>
+          <Y>avg@egrandis_fw</Y>
+          <Y>avg@egrandis_fvpd</Y>
+          <Y>avg@egrandis_ft</Y>
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertilized report.out</FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
           </GDApsimFileReader>
         </Plot>
       </Graph>
