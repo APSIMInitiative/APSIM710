@@ -256,7 +256,12 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
    if (queryData.ID == daylengthID)
       sendVariable(queryData, calcDayLength());
    else if (queryData.ID == vpID)
-      sendVariable(queryData, calcVP(getVariableValue("mint")));
+      {
+      float vp = getVariableValue("vp");
+      if (vp == 0.0)
+         vp = calcVP(getVariableValue("mint"));
+      sendVariable(queryData, vp);
+      }
    else if (queryData.ID == startDateID)
       {
       getStartEndDate();

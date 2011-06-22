@@ -198,28 +198,35 @@ void ApsimDataFile::readApsimHeader() throw(runtime_error)
 // Where possible adjust units to CMP compatible format.
 //----------------------------------------------------------------
 void ApsimDataFile::standardiseUnits(vector<string>& words)
-   {
-   //need to change any MJ/m2 -> MJ/m^2
-   string unit;
-   vector<string>::iterator it;
-   it = words.begin();
-   while (it != words.end()) 
-   {     
-        unit = *it;
-        if (Str_i_Cmp(unit.c_str(), "(Mj/M2)") == 0)
-        {
-               unit = "(MJ/m^2)";
-        }
-        else {
-            if (Str_i_Cmp(unit.c_str(), "Mj/M2") == 0)
-            {
-                   unit = "MJ/m^2";
-            }
-        }
-        *it = unit;
-        it++;
-    }
-  }
+{
+	//need to change any MJ/m2 -> MJ/m^2
+	// and mbar to hPa
+	string unit;
+	vector<string>::iterator it;
+	it = words.begin();
+	while (it != words.end()) 
+	{     
+		unit = *it;
+		if (Str_i_Cmp(unit.c_str(), "(Mj/M2)") == 0)
+		{
+			unit = "(MJ/m^2)";
+		}
+		else if (Str_i_Cmp(unit.c_str(), "Mj/M2") == 0)
+		{
+			unit = "MJ/m^2";
+		}
+		else if (Str_i_Cmp(unit.c_str(), "(mbar)") == 0)
+		{
+			unit = "(hPa)";
+		}
+		else if (Str_i_Cmp(unit.c_str(), "mbar") == 0)
+		{
+			unit = "hPa";
+		}
+		*it = unit;
+		it++;
+	}
+}
 // ------------------------------------------------------------------
 // Clear all values from the specified temporal object.
 // ------------------------------------------------------------------
