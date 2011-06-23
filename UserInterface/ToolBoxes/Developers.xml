@@ -317,16 +317,27 @@
     </AgPasture>
   </folder>
   <manager2 name="Script(VB)">
-    <ui />
+    <ui>
+      <A type="text" description="Some little thing">Hello</A>
+    </ui>
+    <text>Imports System
 Imports ModelFramework
 
-Public Class Script
+Public Class Script 
    Inherits Instance
+   
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Param()&gt; Private A As String
+   &lt;Output()&gt; Private B As Single
+   &lt;Input(True)&gt; Private C As Single
 
-
-
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      ' do something
+      
    End Sub
+   
 End Class
+</text>
   </manager2>
   <manager2 name="Script(C#)">
     <ui />
@@ -336,9 +347,9 @@ using ModelFramework;
 
 public class Script : Instance
    {
-   [Input] private double A = 0;
+   [Input] Private Double A = 0;
    [Param] private double B = 0;
-   [Output][Units("oC")] public double C = 0;
+   [Output][Units("oC")] Public Double C = 0;
 
    [EventHandler] public void OnPost()
       {
