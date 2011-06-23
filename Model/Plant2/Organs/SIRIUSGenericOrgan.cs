@@ -81,7 +81,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         set
         {
-            if (value > StartNonStructuralWt)
+            if (value - StartNonStructuralWt > 0.0000000001)
                 throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
             Live.NonStructuralWt -= value;
         }

@@ -360,13 +360,6 @@
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
-        <LinearInterpolationFunction name="FrostFraction">
-          <XProperty>Leaf.MinT</XProperty>
-          <XYPairs>
-            <XY>-1 0.0</XY>
-            <XY>0 0.0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -376,6 +369,21 @@
         <CompositeBiomass name="Total">
           <Property>Leaf.Live Leaf.Dead</Property>
         </CompositeBiomass>
+        <ArrayBiomass name="CohortLive">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
+        </ArrayBiomass>
+        <ArrayBiomass name="CohortDead">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
+        <LinearInterpolationFunction name="FrostFraction">
+          <XProperty>Leaf.MinT</XProperty>
+          <XYPairs>
+            <XY>-1 0.0</XY>
+            <XY>0 0.0</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -436,6 +444,14 @@
             <XY>25 30000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>0 40000</XY>
+            <XY>7 60000</XY>
+            <XY>25 60000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
@@ -475,9 +491,6 @@
             <XY>8 400</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <Constant name="InitialNConc">
-          <Value type="text" description="Value">.028</Value>
-        </Constant>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
             <Value type="text" description="Value">1.44</Value>
@@ -543,72 +556,32 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
-        <PhaseLookup name="xxPartitionFraction">
-          <PhaseLookupValue name="Inductive">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">FloralInitiation</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">.35</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Induced">
-            <Start type="text" description="Start">FloralInitiation</Start>
-            <End type="text" description="End">TuberInitiation</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">.35</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="EarlyTuber">
-            <Start type="text" description="Start">TuberInitiation</Start>
-            <End type="text" description="End">FinalLeaf</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">.2</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="LateTuber">
-            <Start type="text" description="Start">FinalLeaf</Start>
-            <End type="text" description="End">FullSenescence</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
+        <Constant name="SenescenceInducingCover">
+          <Value type="text" description="Value">.9</Value>
+        </Constant>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <StageBasedInterpolation name="MinimumNConc">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Values type="text" description="Values">0.028     0.028     0.028          0.028              0.028              0.028      0.028                 0.028 </Values>
-        </StageBasedInterpolation>
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">1</Value>
         </Constant>
-        <Constant name="NRetranslocationRate">
+        <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">.5</Value>
         </Constant>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
           <Values type="text" description="Values">0.065     0.065     0.065          0.065              0.065              0.065      0.065                 0.065 </Values>
         </StageBasedInterpolation>
-        <ArrayBiomass name="CohortLive">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Live</Property>
-        </ArrayBiomass>
-        <ArrayBiomass name="CohortDead">
-          <ArraySize>Leaf.MaxNodeNo</ArraySize>
-          <Property>Leaf.Leaves[].Dead</Property>
-        </ArrayBiomass>
-        <LinearInterpolationFunction name="SpecificLeafAreaMax">
-          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY>0 40000</XY>
-            <XY>7 60000</XY>
-            <XY>25 60000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <StageBasedInterpolation name="CriticalNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
           <Values type="text" description="Values">    0.05     0.05      0.05             0.05       0.05         0.05           0.05          0.05       0.05  </Values>
+        </StageBasedInterpolation>
+        <StageBasedInterpolation name="MinimumNConc">
+          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
+          <Values type="text" description="Values">0.028     0.028     0.028          0.028              0.028              0.028      0.028                 0.028 </Values>
         </StageBasedInterpolation>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">

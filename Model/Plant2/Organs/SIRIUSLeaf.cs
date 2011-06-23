@@ -180,6 +180,26 @@ public class SIRIUSLeaf : Leaf, AboveGround
  #endregion
 
  #region Leaf functions
+    [Output]
+    public new double Fn
+    {
+        get
+        {
+            double F = 1;
+            Function CriticalNConc = (Function)Children["CriticalNConc"];
+            Function MinimumNConc = (Function)Children["MinimumNConc"];
+            Function StructuralFraction = (Function)Children["StructuralFraction"];
+            double FunctionalNConc = (CriticalNConc.Value - (MinimumNConc.Value * StructuralFraction.Value)) * (1 / (1 - StructuralFraction.Value));
+            if (FunctionalNConc == 0)
+                F = 1;
+            else
+            {
+                F = Live.MetabolicNConc/FunctionalNConc;
+                F = Math.Max(0.0, Math.Min(F, 1.0));
+            }
+            return F;
+        }
+    }
     public override void DoPotentialGrowth()
     {
         EP = 0;
@@ -219,7 +239,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             BranchNo += BranchingRate.Value * Population.Value * PrimaryBudNo;
             Leaves.Add(new SIRIUSLeafCohort(BranchNo,
                                    CohortAge,
-                                   Math.Truncate(NodeNo + 1),
+                                   Math.Truncate(NodeNo),
                                    Children["MaxArea"] as Function,
                                    Children["GrowthDuration"] as Function,
                                    Children["LagDuration"] as Function,
@@ -230,11 +250,13 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["MinimumNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationRate"] as Function,
+                                   Children["NRetranslocationFactor"] as Function,
                                    Children["ExpansionStress"] as Function,
                                    Children["SpecificLeafAreaMin"] as Function,
                                    this,
-                                   Children["CriticalNConc"] as Function));
+                                   Children["CriticalNConc"] as Function,
+                                   Children["SenescenceInducingCover"] as Function,
+                                   Children["DMRetranslocationFactor"] as Function));
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -262,22 +284,23 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    Children["MinimumNConc"] as Function,
                                    Children["StructuralFraction"] as Function,
                                    Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationRate"] as Function,
+                                   Children["NRetranslocationFactor"] as Function,
                                    Children["ExpansionStress"] as Function,
                                    Children["SpecificLeafAreaMin"] as Function,
                                    this,
-                                   Children["CriticalNConc"] as Function));
+                                   Children["CriticalNConc"] as Function,
+                                   Children["SenescenceInducingCover"] as Function,
+                                   Children["DMRetranslocationFactor"] as Function));
         }
         // Add fraction of top leaf expanded to node number.
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
-
     }
     public double CoverAboveCohort(double cohortno)
     {
         double LAIabove = 0;
         for (int i = Leaves.Count - 1; i > cohortno-1; i--)
         {
-            LAIabove += Leaves[i].LiveArea*Leaves[i].Population*1000000;
+            LAIabove += Leaves[i].LiveArea/1000000;
         }
             Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
@@ -285,6 +308,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
  #endregion
 
  #region Arbitrator methods
+    //Get Methods to provide Leaf Status
     [Output]
     [Units("g/m^2")]
     public override double DMDemand
@@ -311,6 +335,55 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return Capacity;
         }
     }
+    public override double DMRetranslocationSupply
+    {
+        get
+        {
+            double Supply = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+                Supply += L.LeafStartDMRetranslocationSupply;
+            return Supply;
+        }
+    }
+    public override double NRetranslocationSupply
+    {
+        get
+        {
+            double Supply = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+                Supply += Math.Max(0, L.LeafStartNRetranslocationSupply);
+            return Supply;
+        }
+    }
+    public override double NReallocationSupply
+    {
+        get
+        {
+            double Supply = 0;
+            foreach (SIRIUSLeafCohort L in Leaves)
+                Supply += L.LeafStartNReallocationSupply;
+            return Supply;
+        }
+    }
+    public override double MaxNconc
+    {
+        get
+        {
+            Function MaximumNConc = Children["MaximumNConc"] as Function;
+            return MaximumNConc.Value;
+        }
+    }
+    public override double MinNconc
+    {
+        get
+        {
+            //Function MinimumNConc = Children["MinimumNConc"] as Function;
+            //return MinimumNConc.Value;
+            Function CriticalNConc = Children["CriticalNConc"] as Function;
+            return CriticalNConc.Value;
+        }
+    }
+    //Set Methods to change Cohort Status
     public override double DMPotentialAllocation
     {
         set
@@ -349,40 +422,10 @@ public class SIRIUSLeaf : Leaf, AboveGround
             }
         }
     }
-    public override double DMRetranslocationSupply
-    {
-        get
-        {
-            double Supply = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-                Supply += L.LeafStartDMRetranslocationSupply;
-            return Supply;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value > DMRetranslocationSupply)
-                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
-            if (value > 0)
-            {
-                double remainder = value;
-                foreach (SIRIUSLeafCohort L in Leaves)
-                {
-                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
-                    L.DMRetranslocation = Supply;
-                    remainder -= Supply;
-                }
-                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
-                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
-            }
-        }
-    }
     [Output]
     [Units("g/m^2")]
     public override double DMAllocation
-   {
+    {
         set
         {
             if (DMDemand == 0)
@@ -397,7 +440,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                 double DMallocated = 0;
                 double TotalDemand = 0;
                 foreach (LeafCohort L in Leaves)
-                        TotalDemand += L.DMDemand;
+                    TotalDemand += L.DMDemand;
                 double DemandFraction = (value) / TotalDemand;//
                 foreach (LeafCohort L in Leaves)
                 {
@@ -406,77 +449,55 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     DMallocated += Allocation;
                     DMsupply -= Allocation;
                 }
-                    if (DMsupply > 0.0000000001)
-                        throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
-                    if ((DMallocated - value) > 0.000000001)
-                        throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
-             }
-         }
+                if (DMsupply > 0.0000000001)
+                    throw new Exception("DM allocated to Leaf left over after allocation to leaf cohorts");
+                if ((DMallocated - value) > 0.000000001)
+                    throw new Exception("the sum of DM allocation to leaf cohorts is more that that allocated to leaf organ");
+            }
+        }
     }
     public override double DMExcessAllocation
     {
         set
         {
-        double TotalSinkCapacity = 0;
-        foreach (LeafCohort L in Leaves)
-            TotalSinkCapacity += L.DMSinkCapacity;
-        if (value > TotalSinkCapacity)
-            throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
-        if (TotalSinkCapacity > 0.0)
+            double TotalSinkCapacity = 0;
+            foreach (LeafCohort L in Leaves)
+                TotalSinkCapacity += L.DMSinkCapacity;
+            if (value > TotalSinkCapacity)
+                throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
+            if (TotalSinkCapacity > 0.0)
+            {
+                double SinkFraction = value / TotalSinkCapacity;
+                foreach (LeafCohort L in Leaves)
                 {
-                    double SinkFraction = value / TotalSinkCapacity;
-                    foreach (LeafCohort L in Leaves)
-                    {
-                        double Allocation = Math.Min(L.DMSinkCapacity * SinkFraction, value);
-                        L.DMExcessAllocation = Allocation;
-                    }    
+                    double Allocation = Math.Min(L.DMSinkCapacity * SinkFraction, value);
+                    L.DMExcessAllocation = Allocation;
                 }
+            }
         }
     }
-    [Output]
-    [Units("g/m^2")]
-    public override double NRetranslocationSupply
-    {
-        get
-        {
-            double Supply = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-                Supply += Math.Max(0, L.LeafStartNRetranslocationSupply);
-            return Supply;
-        }
-    }
-    public override double NRetranslocation
+    public override double DMRetranslocation
     {
         set
         {
-            if (value - NRetranslocationSupply > 0.000000001)
-                throw new Exception(Name + " cannot supply that amount for N retranslocation");
-            if (value < -0.000000001)
-                throw new Exception(Name + " recieved -ve N retranslocation");
+            if (value - DMRetranslocationSupply > 0.0000000001)
+                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
             if (value > 0)
             {
                 double remainder = value;
                 foreach (SIRIUSLeafCohort L in Leaves)
                 {
-                    double Retrans = Math.Min(remainder, L.LeafStartNRetranslocationSupply);
-                    L.NRetranslocation = Retrans;
-                    remainder = Math.Max(0.0, remainder - Retrans);
+                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
+                    L.DMRetranslocation = Supply;
+                    remainder -= Supply;
                 }
-                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
-                    throw new Exception(Name + " N Retranslocation demand left over after processing.");
+                if (remainder > 0.0000000001)
+                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
             }
         }
     }
-    public override double NReallocationSupply
-    {
-        get
-        {
-            double Supply = 0;
-            foreach (SIRIUSLeafCohort L in Leaves)
-                Supply += L.LeafStartNReallocationSupply;
-            return Supply;
-        }
-    }
+    [Output]
+    [Units("g/m^2")]
     public override double NAllocation
     {
         set
@@ -573,7 +594,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     i++;
                     L.NAllocation = CohortNAllocation[i];
                 }
-            }
+            } 
         }
     }
     public override double NReallocation
@@ -598,20 +619,26 @@ public class SIRIUSLeaf : Leaf, AboveGround
             }
         }
     }
-    public override double MaxNconc
+    public override double NRetranslocation
     {
-        get
+        set
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
-            return MaximumNConc.Value;
-        }
-    }
-    public override double MinNconc
-    {
-        get
-        {
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
-            return MinimumNConc.Value;
+            if (value - NRetranslocationSupply > 0.000000001)
+                throw new Exception(Name + " cannot supply that amount for N retranslocation");
+            if (value < -0.000000001)
+                throw new Exception(Name + " recieved -ve N retranslocation");
+            if (value > 0)
+            {
+                double remainder = value;
+                foreach (SIRIUSLeafCohort L in Leaves)
+                {
+                    double Retrans = Math.Min(remainder, L.LeafStartNRetranslocationSupply);
+                    L.NRetranslocation = Retrans;
+                    remainder = Math.Max(0.0, remainder - Retrans);
+                }
+                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                    throw new Exception(Name + " N Retranslocation demand left over after processing.");
+            }
         }
     }
  #endregion 

@@ -72,41 +72,6 @@
                2) it allocates potential DM then allocates N then limits DM below potential if there is insufficient N to meet Min N content
                3) it reallocates N from senessing leaves before taking N up from the soil, then takes N up from the soil then retranslocates to meet further demand			   
         </Memo>
-        <Constant name="DMRetransFact">
-          <Value type="text" description="Value">0</Value>
-        </Constant>
-        <PhaseLookup name="DMSink">
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartGrainFill</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">Stem</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive">
-            <Start type="text" description="Start">StartGrainFill</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">Grain</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <PhaseLookup name="NSink">
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartGrainFill</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">Stem</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive">
-            <Start type="text" description="Start">StartGrainFill</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">Grain</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
       </SIRIUSArbitrator>
       <Phenology>
         <VernalisationCW name="Vernalisation">
@@ -484,7 +449,7 @@
           <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
+              <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
@@ -504,8 +469,11 @@
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">1</Value>
         </Constant>
-        <Constant name="NRetranslocationRate">
+        <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">.5</Value>
         </Constant>
         <PhaseLookupValue name="NodeInitiationRate">
           <Start>Emergence</Start>
@@ -584,44 +552,33 @@
             <XY>8 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <StageBasedInterpolation name="MaximumNConc">
-          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values type="text" description="Values">    0.063     0.063      0.063             0.063       0.063         0.063           0.063          0.063       0.063  </Values>
-        </StageBasedInterpolation>
-        <StageBasedInterpolation name="MinimumNConc">
-          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values type="text" description="Values">   0.025      0.025     0.025            0.025    0.025       0.025       0.025         0.025     0.025    </Values>
-        </StageBasedInterpolation>
-        <StageBasedInterpolation name="CriticalNConc">
-          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values type="text" description="Values">    0.05     0.05      0.05             0.05       0.05         0.05           0.05          0.05       0.05  </Values>
-        </StageBasedInterpolation>
-        <Constant name="InitialNConc">
-          <Value type="text" description="Value">0.05</Value>
-        </Constant>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
-            <XY>-1 0.0</XY>
-            <XY>0 0.0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SpecificLeafAreaMax">
-          <XProperty>Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY>1 54000</XY>
-            <XY>10 54000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SpecificLeafAreaMin">
-          <XProperty>Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY>1 20000</XY>
-            <XY>10 20000</XY>
+            <XY>-1 0</XY>
+            <XY>0 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
+        </Constant>
+        <Constant name="SenescenceInducingCover">
+          <Value type="text" description="Value">.9</Value>
+        </Constant>
+        <Constant name="MaximumNConc">
+          <Value type="text" description="Value">.063</Value>
+        </Constant>
+        <Constant name="CriticalNConc">
+          <Value type="text" description="Value">.05</Value>
+        </Constant>
+        <Constant name="MinimuMNConc">
+          <Value type="text" description="Value">.01</Value>
+        </Constant>
+        <Constant name="SpecificLeafAreaMax">
+          <Value type="text" description="Value">54000</Value>
+        </Constant>
+        <Constant name="SpecificLeafAreaMin">
+          <Value type="text" description="Value">20000</Value>
         </Constant>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Floret">

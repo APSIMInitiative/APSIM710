@@ -28,7 +28,8 @@ public class SIRIUSArbitrator : Arbitrator
     }
 
     //  Class arrays
-    double[] DMSupplyOrgan = null;
+    double[] DMFreshSupplyOrgan = null;
+    double[] DMStoreSupplyOrgan = null;
     double[] DMDemand = null;
     double[] DMAllocation = null;
     double[] DMExcessAllocation = null;
@@ -49,13 +50,14 @@ public class SIRIUSArbitrator : Arbitrator
     double[] NAllocated = null;
     
     // Public Arbitrator variables
-    private double TotalDMSupply = 0;
+    private double TotalFreshDMSupply = 0;
+    private double TotalStoreDMSupply = 0;
     [Output]
     public override double DMSupply
     {
         get
         {
-            return TotalDMSupply;
+            return TotalFreshDMSupply;
         }
     }
     private double TotalNDemand = 0;
@@ -74,7 +76,8 @@ public class SIRIUSArbitrator : Arbitrator
 //Fixme  The only biomass retranslocation is associated with N retranslocation.  Need something to move sugars to reproductive organs
  #region Setup Biomass calculations
         //create organ specific variables
-        DMSupplyOrgan = new double[Organs.Count];
+        DMFreshSupplyOrgan = new double[Organs.Count];
+        DMStoreSupplyOrgan = new double[Organs.Count];
         DMDemand = new double[Organs.Count];
         DMAllocation = new double[Organs.Count];
         DMExcessAllocation = new double[Organs.Count];
@@ -87,8 +90,12 @@ public class SIRIUSArbitrator : Arbitrator
 
         // GET SUPPLIES AND CALCULATE TOTAL
         for (int i = 0; i < Organs.Count; i++)
-            DMSupplyOrgan[i] = Organs[i].DMSupply;
-        TotalDMSupply = MathUtility.Sum(DMSupplyOrgan);
+        {
+            DMFreshSupplyOrgan[i] = Organs[i].DMSupply;
+            DMStoreSupplyOrgan[i] = Organs[i].DMRetranslocationSupply;
+        }
+        TotalFreshDMSupply = MathUtility.Sum(DMFreshSupplyOrgan);
+        TotalStoreDMSupply = MathUtility.Sum(DMStoreSupplyOrgan);
 
         // SET OTHER ORGAN VARIABLES AND CALCULATE TOTALS
         for (int i = 0; i < Organs.Count; i++)
@@ -110,13 +117,13 @@ public class SIRIUSArbitrator : Arbitrator
             if (DMDemand[i] > 0.0)
             {
                 proportion = DMDemand[i] / TotalDMDemand;
-                DMAllocation[i] = Math.Min(TotalDMSupply * proportion, DMDemand[i]);
+                DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
                 TotalWtAllocated += DMAllocation[i];
             }
         }
         
         // Anything not required by organs demand is allocated to leaves until they reach their minimum SLA then any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
-        double DMNotAllocated = TotalDMSupply - TotalWtAllocated;
+        double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
         for (int i = 0; i < Organs.Count; i++)
         {
             //double proportion = 0.0;
@@ -128,23 +135,47 @@ public class SIRIUSArbitrator : Arbitrator
                 TotalWtAllocated += DMExcess;
             }
         }
-        TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalDMSupply - TotalWtAllocated);
+        TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalFreshDMSupply - TotalWtAllocated);
+
+        // Then check it all adds up
+        double DMBalanceError = Math.Abs((TotalWtAllocated + TotalWtNotAllocatedSinkLimitation) - TotalFreshDMSupply);
+        if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
+            throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
+
+        //Then if demand is not met by supply retranslocate non-structural DM to meet demands not covered by daily assimilation
+        double TotalStoreDMRetranslocated = 0;
+        if ((TotalDMDemand - TotalWtAllocated) > 0)
+        {
+            for (int i = 0; i < Organs.Count; i++)
+            {
+                double proportion = 0.0;
+                double Retrans = 0.0;
+                if ((DMDemand[i] - DMAllocation[i]) > 0.0)
+                {
+                    proportion = DMDemand[i] / TotalDMDemand;
+                    Retrans = Math.Min(TotalStoreDMSupply * proportion, Math.Max(0.0, DMDemand[i] - DMAllocation[i]));
+                    DMAllocation[i] += Retrans;
+                    TotalStoreDMRetranslocated += Retrans; 
+                }
+            }
+        }
         
+        //Partition retranslocation of DM between supplying organs
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            if (DMStoreSupplyOrgan[i] > 0)
+            {
+                double RelativeSupply = DMStoreSupplyOrgan[i] / TotalStoreDMSupply;
+                DMRetranslocation[i] += TotalStoreDMRetranslocated * RelativeSupply;
+                // FIXME Currently no reallocating DM with N
+            }
+        }
+
         // Send potential DM allocation to organs to set this variable for calculating N demand
         for (int i = 0; i < Organs.Count; i++)
         {
             Organs[i].DMPotentialAllocation = DMAllocation[i];
         }
-        // Then check it all adds up
-        double DMBalanceError = Math.Abs((TotalWtAllocated + TotalWtNotAllocatedSinkLimitation) - TotalDMSupply);
-        if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
-        throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
-        
-        // ==============================================================================
-        // Retranslocate DM from senessing tops .
-        // ==============================================================================
-
-        //Currently retranslocate DM in proportion to N retranslocation but don't do DM explicitly
  #endregion
 
  #region Set up Nitorgen calculations
@@ -155,6 +186,7 @@ public class SIRIUSArbitrator : Arbitrator
         NUptakeSupply = new double[Organs.Count];
         NFixationSupply = new double[Organs.Count];
         NRetranslocationSupply = new double[Organs.Count];
+        NReallocation = new double[Organs.Count];
         NReallocation = new double[Organs.Count];
         NUptake = new double[Organs.Count]; 
         NFixation = new double[Organs.Count];
@@ -215,7 +247,7 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NReallocationSupply[i] / TotalNReallocationSupply;
                     NReallocation[i] += NReallocationAllocated * RelativeSupply;
-                    DMRetranslocation[i] += NReallocationAllocated * RelativeSupply * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    // FIXME Currently no reallocating DM with N
                 }
             }
         }
@@ -250,7 +282,7 @@ public class SIRIUSArbitrator : Arbitrator
  #region Determine Nitrogen Fixation
         double NFixationAllocated = 0;
         double TotalFixationWtloss = 0;
-        if (TotalNFixationSupply > 0.00000000001 && TotalDMSupply > 0.00000000001)
+        if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands
             double NDemandFactor = 0.7;
@@ -298,7 +330,7 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NRetranslocationSupply[i] / TotalNRetranslocationSupply;
                     NRetranslocation[i] += NRetranslocationAllocated * RelativeSupply;
-                    DMRetranslocation[i] += NRetranslocationAllocated * RelativeSupply * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
+                    //Not moving Wt with retranslocated N because the two are decouples in the nonsturcutral pool so we may have N but no Wt there to move.
                 }
             }
         }
@@ -344,7 +376,7 @@ public class SIRIUSArbitrator : Arbitrator
             DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);
             NLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]);
         }
-        double TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation;
+        double TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation + TotalStoreDMRetranslocated;
  #endregion
         
  #region Send arbitration results
@@ -394,7 +426,7 @@ public class SIRIUSArbitrator : Arbitrator
         double EndWt = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;
-        DMBalanceError = Math.Abs(EndWt - (StartingMass + TotalDMSupply - TotalWtNotAllocatedSinkLimitation - TotalWtLossNShortage - NetWtLossFixation));
+        DMBalanceError = Math.Abs(EndWt - (StartingMass + TotalFreshDMSupply - TotalWtNotAllocatedSinkLimitation - TotalWtLossNShortage - NetWtLossFixation));
         if (DMBalanceError > 0.01)
             throw new Exception("Mass Balance Error in Overall DM Allocation");
  #endregion
