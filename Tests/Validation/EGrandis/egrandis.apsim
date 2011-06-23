@@ -646,7 +646,7 @@
         <X>Age</X>
         <Y>Total</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>%apsim%\Tests\Validation\EGrandis\CoffsObs.out</FileName>
+          <FileName>%apsim%\Tests\Validation\EGrandis\CoffsObs.obs</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -1319,7 +1319,7 @@
         <variable name="sum of fertiliser.fertiliser on process from report.reported to now as sum@fertiliz_fertiliser" />
       </tracker>
       <egrandis />
-      <RegressionGraph name="Predicted Observed">
+      <RegressionGraph name="PO Volume">
         <memo>
 	
 	
@@ -1339,7 +1339,7 @@
           <GDPredObs name="PredictedObserved">
             <FieldsToMatch>age</FieldsToMatch>
             <GDApsimFileReader name="Observed">
-              <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+              <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.obs</FileName>
             </GDApsimFileReader>
             <GDApsimFileReader name="Predicted">
               <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
@@ -2075,7 +2075,7 @@
           <GDPredObs name="PredictedObserved">
             <FieldsToMatch>age</FieldsToMatch>
             <GDApsimFileReader name="Observed">
-              <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
+              <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.obs</FileName>
             </GDApsimFileReader>
             <GDApsimFileReader name="Predicted">
               <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
@@ -4379,7 +4379,7 @@
         <GDPredObs name="Predicted Observed">
           <FieldsToMatch>age</FieldsToMatch>
           <GDApsimFileReader name="Observed">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.obs</FileName>
           </GDApsimFileReader>
           <GDApsimFileReader name="Predicted">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
@@ -6719,7 +6719,7 @@
         <GDPredObs name="PredictedObserved">
           <FieldsToMatch>age</FieldsToMatch>
           <GDApsimFileReader name="Observed">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.obs</FileName>
           </GDApsimFileReader>
           <GDApsimFileReader name="Predicted">
             <FileName>%apsim%\Tests\Validation\EGrandis\GympieControl report.out</FileName>
@@ -6758,6 +6758,7 @@
           <variable name="tracker.sum@ep" />
           <variable name="tracker.litterfall" />
           <variable name="manager.cum_litterfall" />
+          <variable name="wood" />
         </variables>
         <events />
       </outputfile>
@@ -7207,6 +7208,21 @@
         <variable name="sum of egrandis.dlt_foliage_mass_detached on process from report.reported to now as litterfall" />
       </tracker>
       <egrandis />
+      <manager name="Empty manager">
+        <script>
+          <text>wood = 0</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+          </text>
+          <event>start_of_day</event>
+        </script>
+        <script>
+          <text>wood = egrandis.adm_green(1) + egrandis.adm_green(3)</text>
+          <event>end_of_day</event>
+        </script>
+      </manager>
     </area>
     <Graph name="Foilage">
       <Plot name="Predicted">
@@ -7226,7 +7242,7 @@
         <X>date</X>
         <Y>foliage</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.out</FileName>
+          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.obs</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -7248,7 +7264,29 @@
         <X>date</X>
         <Y>lai</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.out</FileName>
+          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.obs</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Wood">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>wood</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>date</X>
+        <Y>wood</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\EGrandis\WaggaObs.obs</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -7880,7 +7918,7 @@
           <GDApsimFileReader name="ApsimFileReader">
             <FileName>
             </FileName>
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -7904,7 +7942,7 @@
           <Y>lai</Y>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -7928,7 +7966,7 @@
           <Y>lai</Y>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -7952,7 +7990,7 @@
           <Y>lai</Y>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -7981,7 +8019,7 @@
           <YRight>stemgreenwt</YRight>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieControlObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -8011,7 +8049,7 @@
           <YRight>stemgreenwt</YRight>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">
@@ -8041,7 +8079,7 @@
           <YRight>stemgreenwt</YRight>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieIrrFerObs.obs</FileName>
             <FileName>
             </FileName>
           </GDApsimFileReader>
@@ -8073,7 +8111,7 @@
           <YRight>stemgreenwt</YRight>
           <X>age</X>
           <GDApsimFileReader name="ApsimFileReader">
-            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.out</FileName>
+            <FileName>%apsim%\Tests\Validation\EGrandis\GympieFertObs.obs</FileName>
           </GDApsimFileReader>
         </Plot>
         <Plot name="Predicted">

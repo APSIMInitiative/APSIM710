@@ -19,6 +19,7 @@ Paddock:
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "irrigation" = %apsim%\Model\Irrigation.dll
    Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                "Empty manager" = %apsim%\Model\Manager.dll
    Component                     "micromet" = %apsim%\Model\MicroMet.dll
    Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
@@ -64,6 +65,7 @@ Paddock:
         tracker.sum@ep
         tracker.litterfall
         manager.cum_litterfall
+        wood
 
      Output file = Wagga Effluent Irrigated E. grandis report.out
      Format = normal
@@ -102,6 +104,20 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : cum_litterfall = 0.00000
+
+------- Empty manager Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     wood = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     wood = egrandis.adm_green(1) + egrandis.adm_green(3)
+     END of rules
+     
+     Manager creating a new local real variable : wood = 0.00000
 
 ------- micromet Initialisation -----------------------------------------------
      Initialising
