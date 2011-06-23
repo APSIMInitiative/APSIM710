@@ -1,0 +1,2118 @@
+<Type name="maizeZ">
+  <MetaData>
+    <UItype>VBUserInterface.EmptyUI</UItype>
+    <IsCrop>Yes</IsCrop>
+    <ShowInMainTree>Yes</ShowInMainTree>
+    <Image>%apsim%\UserInterface\Images\maize.jpg</Image>
+    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
+    <Documentation name="Maize science documentation">../apsim/maize/docs/maize_science.htm</Documentation>
+    <Documentation name="Dalby sensibility tests">http://www.apsim.info/apsim/publish/apsim/maize/sensibility/dalby.gif</Documentation>
+    <Documentation name="Roma sensibility tests">http://www.apsim.info/apsim/publish/apsim/maize/sensibility/roma.gif</Documentation>
+    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+    <dll>%apsim%/Model/MaizeZ.%dllext%</dll>
+    <drops>
+      <drop>toolbox</drop>
+      <drop>area</drop>
+      <drop>simulation</drop>
+      <drop>folder</drop>
+      <drop>factor</drop>
+    </drops>
+    <ApsimToSim>
+      <component name="[MaizeZ.name]" executable="[dll]">
+        <executable>[dll]</executable>
+        <initdata>
+               [Model]
+               <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
+				</initdata>
+      </component>
+    </ApsimToSim>
+  </MetaData>
+   <Model>
+    <!--
+      ***********************************************************************************************************
+      CONSTANTS  - SPECIES-SPECIFIC PARAMETERS
+      ***********************************************************************************************************
+      -->
+    <crop_type>maizeZ</crop_type>
+    <default_crop_class>plant</default_crop_class>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 1 - CROP PHENOLOGY: DEVELOPMENT PARAMETERS
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+    <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
+    <phase_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</phase_names>
+    <phase_type>generic generic    generic   generic         generic           generic   generic   generic          generic        generic  generic      generic</phase_type>
+    <!--                  sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+      -->
+    <stage_code>1   2   3    4      5     6     7    8    9    10   11   12</stage_code>
+    <!-- __________________________________________________________________________________________________________-
+      SEED GERMINATION
+      Water stress factor for germination
+      -->
+    <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.0</pesw_germ>
+    <!-- __________________________________________________________________________________________________________-
+      EMERGENCE
+      -->
+    <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
+    <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">0.60</shoot_rate>
+    <!-- Water stress factor for emergence
+      -->
+    <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
+    <rel_emerg_rate description="Stress factor for thermal time calculation between germination and emergence">1.0  1.0    </rel_emerg_rate>
+    <!-- __________________________________________________________________________________________________________-
+      PHOTOPERIOD AND TWILIGHT
+      -->
+    <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
+    <!--  centre of the sun is 2.2 degrees below the horizon. Sunrise or sunset is defined as when
+      the true centre of the sun is 50' below the horizon.
+      __________________________________________________________________________________________________________-
+      Vernalisation: no parameters for maize
+      __________________________________________________________________________________________________________-
+      THERMAL TIME CALCULATION
+      Thermal time calculation
+      -->
+    <x_temp units="oC" description="cardinal temps.">0  18.0 26.0 34.0 44.0</x_temp>
+    <y_tt units="oC" description="thermal time">0  10.0 18.0 26.0  0.0</y_tt>
+    
+    <x_temp_fm>5.7 23.5</x_temp_fm>
+    <y_tt_fm>0   17.8</y_tt_fm>
+
+    <!-- __________________________________________________________________________________________________________-
+      LEAF NUMBER DEVELOPMENT
+      currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
+      -->
+    <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">0.5     </leaf_no_at_emerg>
+    <leaf_no_seed description="number of leaf primordia present in seed">6.0     </leaf_no_seed>
+    <leaf_no_min description="minimum leaf number">5.0</leaf_no_min>
+    <leaf_no_max description="maximum leaf number">40.0</leaf_no_max>
+    <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
+    <leaf_app_rate1 type="text" description="leaf_app_rate1">69.2</leaf_app_rate1>
+    <leaf_app_rate2 type="text" description="leaf_app_rate2">28.5</leaf_app_rate2>
+    <leaf_app_rate3 type="text" description="leaf_app_rate3">28.5</leaf_app_rate3>
+    <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">10.7</leaf_no_rate_change1>
+    <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+    <!--  RELATIVE to FLAG
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 2 - PHOTOSYNTHESIS, BIOMASS GROWTH AND PARTITION
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      PHOTOSYNTHESIS AND RADIATION USE EFFICIENCY (RUE)
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      STAGE DEPENDENT RUE  - The following rue values were used in i_wheat (Meinke et al, 1998)
+      sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+      stage_code       = 1   2   3    4     5     6    7    8     9     10    11   12
+      -->
+    <rue>0   0  1.85 1.85  1.85  1.85 1.85 1.85  1.85   1.85   0    0</rue>
+    <!-- __________________________________________________________________________________________________________-
+      EXTINCTION COEFFICIENT BEFORE ANTHESIS
+      ROW SPACING DETERMINED
+      -->
+    <row_spacing_default>1.0</row_spacing_default>
+    <skiprow_default>0</skiprow_default>
+    <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+    <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.50</y_extinct_coef>
+    <y_extinct_coef_dead description="extinction coefficient for dead material">0.3    0.3    0.3</y_extinct_coef_dead>
+    <!-- __________________________________________________________________________________________________________-
+      TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
+      -->
+    <x_ave_temp units="oC" description="mean daily temperature">8 15 35 50</x_ave_temp>
+    <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      BIOMASS INITIATION, PARTITION AND TRANSLOCATION
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      INITIATION
+      -->
+    <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.01</dm_leaf_init>
+    <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.01</dm_root_init>
+    <dm_stem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_stem_init>
+    <!-- __________________________________________________________________________________________________________-
+      TRANSLOCATION PARTS
+      -->
+    <stem_trans_frac description="fraction of stem used in translocation to grain - not used for i_wheat option">0.20</stem_trans_frac>
+    <leaf_trans_frac description="fraction of leaf used in translocation to grain">0.15</leaf_trans_frac>
+    <retransRate>0.15</retransRate>
+    <!-- __________________________________________________________________________________________________________-
+      BIOMASS PARTITIONING
+      stage_name       = sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+      stage_code       = 1   2   3    4      5     6     7    8    9    10   11   12
+      -->
+    <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
+    <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.0182</partition_rate_leaf>
+    <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.17</frac_stem2flower>
+    <!-- __________________________________________________________________________________________________________-
+      GRAIN NUMBER DETERMINATION
+      -->
+    <grno_grate description="average growth rate per plant (g/day) during grain-number sensitive phase">0.5   3    6             </grno_grate>
+    <grno_fract description="multiplier on potential grain number per plant">0  0.6   1               </grno_fract>
+    <swdf_grain_min description="minimum of water stress factor">0.45</swdf_grain_min>
+    <x_temp_grain units="oC">6.0 10. 16. 22. 30. 56.3</x_temp_grain>
+    <y_grain_rate>0.0 0.40 0.75 1.0 1.0 0.0</y_grain_rate>
+    <!-- __________________________________________________________________________________________________________-
+      GRAIN WATER CONTENT
+      -->
+    <grn_water_cont units="g/g" description="water content of grain g/g">0.155</grn_water_cont>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 3 - LEAF/STEM/POD AREA GROWTH
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      LEAF SIZE AS A FUNCTION OF LEAF NUMBER
+      -->
+    <aX0 type="text" description="Largest leaf multiplier">0.63</aX0>
+    <aMaxA type="text" description="Largest Leaf Area">930</aMaxA>
+    <leaf_no_correction description="corrects for other growing leaves">2.0</leaf_no_correction>
+    <!-- ______________________________________________________________________________
+      SPECIFIC LEAF AREA - SLA
+      -->
+    <x_lai>0.1    4</x_lai>
+    <y_lai_sla_max description="maximum specific leaf area for delta LAI">50000 25000          </y_lai_sla_max>
+    <lai_sla_min description="minimum specific leaf area for delta LAI">8000  8000           </lai_sla_min>
+    <!-- ______________________________________________________________________________
+      TPLA  - USED TO INTIALISE THE INITIAL LAI
+      -->
+    <initial_tpla units="mm^2/plant">380</initial_tpla>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      __________________________________________________________________________________________________________-
+      ROOTING DEPTH
+      stage_name       sow  ger  eme  juv    fi   flag    fl  st_gf end_gf   mat  hv_rpe  end_crop
+      stage_code      = 1    2    3    4      5     6     7    8      9      10   11   12
+      -->
+    <root_depth_rate>0  10    15    33     33    33    33   0      0       0    0    0</root_depth_rate>
+    <!-- x_sw_ratio = [sw_dep(lay)-ll_dep(lay)]/[dul_dep(lay)-ll_dep(lay)] in the deepest root layer
+      -->
+    <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
+    <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+    <!-- __________________________________________________________________________________________________________-
+      ROOT LENGTH CALCULATION
+      -->
+    <initial_root_depth units="mm" description="initial depth of roots (mm)">50</initial_root_depth>
+    <specific_root_length units="mm/g">100000</specific_root_length>
+    <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
+      -->
+    <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+    <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 5 - WATER RELATIONS AND WATER STRESS FACTORS
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      STAGE DEPENDENT ??? TRANSPIRATION COEFFICIENTS
+      Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
+      The following transp_eff_cf values are from i_wheat model  - ew
+      in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
+      sow    ger     eme    juv      fi      flag   fl  st_gf end_gf mat hv_rpe end_crop
+      stage_code       = 1    2       3       4       5       6      7      8      9      10     11     12
+      -->
+    <transp_eff_cf units="kpa">0.009 0.009 0.009 0.009    0.009  0.009  0.009   0.009  0.009  0.009  0.009  0.009</transp_eff_cf>
+    <!-- __________________________________________________________________________________________________________-
+      VPD FRACTION
+      Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
+      -->
+    <svp_fract description="(0-1)">0.75  </svp_fract>
+    <!--  water demand to some fraction/multiple
+      of atmospheric potential.
+      __________________________________________________________________________________________________________-
+      WATER STRESS FACTORS FOR PHOTOSYNTHESIS, EXPANSION AND DEVELOPMENT
+      swdef_photo for photosynthesis is calculated in the code as = sw_supply_sum/sw_demand - function crop_swdef_photo
+      For expansion growth, more sensitive than other growth processes
+      x_sw_demand_ratio = sw_supply_sum/sw_demand
+      -->
+    <x_sw_demand_ratio description="water availability">0.5 1.1</x_sw_demand_ratio>
+    <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+    <!-- For phenology stress factor based on available soil water portion
+      sw_avail_pot_sum = sum_real_array (sw_avail_pot, deepest_layer),
+      sw_avail_sum     = sum_real_array (sw_avail, deepest_layer)
+      sw_avail_ratio   = divide (sw_avail_sum, sw_avail_pot_sum, 1.0) !???
+      -->
+    <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+    <y_swdef_pheno description="stress index for phenology">0 1</y_swdef_pheno>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 6 -NITROGEN RELATIONS, UPTAKE AND STRESS FACTORS
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      UPTAKE PREFERENCE AND CONSTANTS
+      preference for n supply - it is assumed that mass flow is always predominant, but further crop preference can
+      be specified as follows:
+      'active'   = diffusive flow before fixation
+      'fixation' = fixed N before active uptake.
+      -->
+    <n_supply_preference>active</n_supply_preference>
+    <!-- Time constant for N uptake by diffusion. H van Keulen &  NG Seligman. Purdoe 1987.
+      This is the  time it would take to remove, by diffusion, current amount of N if it wasn't depleted between time steps
+      -->
+    <no3_diffn_const units="days">2.0</no3_diffn_const>
+    <!-- ______________________________________________________________________________
+      LEGUME N FIXATION RATE
+      sow ger      eme  juv     fi   flag    fl   st_gf  end_gf   mat  hv_rpe  end_crop
+      stage_code  = 1    2       3      4     5      6      7      8      9      10     11     12
+      -->
+    <n_fix_rate>0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0</n_fix_rate>
+    <!-- ______________________________________________________________________________
+      NITROGEN STRESS FACTORS FOR PHOTOSYNTHESIS,LEAF GROWTH AND DEVELOPMENT
+      scc Some of these probably need to be smaller - not seeing an effect or else too much N being made available?
+      n_conc_ratio      = divide ((N_conc_stover - N_conc_stover_min),(N_conc_stover_crit-N_conc_stover_min),0.0)
+      n_conc_ratio_leaf = divide ((N_conc_leaf - N_conc_leaf_min), (N_conc_leaf_crit - N_conc_leaf_min), 0.0)
+      g_nfact_photo     = N_fact_photo * N_conc_ratio   <______ why here not using the leaf nitrogen
+      g_n_fact_pheno    = N_fact_pheno * N_conc_ratio
+      g_nfact_expansion = N_fact_expansion * n_conc_ratio_leaf
+      -->
+    <maxUptakeRate>0.029</maxUptakeRate>
+    <!-- ______________________________________________________________________________
+      INITIAL NITROGEN CONCENTRATION OF ORGANS
+      -->
+    <initialRootNConc>0.020</initialRootNConc>
+    <targetRootNConc>0.002</targetRootNConc>
+    <initialLeafSLN>1.7</initialLeafSLN>
+    <targetLeafSLN>1.7</targetLeafSLN>
+    <newLeafSLN>1.1</newLeafSLN>
+    <leafDilnNSlope>0.0037</leafDilnNSlope>
+    <leafDilnNInt>-0.0015</leafDilnNInt>
+    <initialStemNConc>0.01</initialStemNConc>
+    <x_stem_n>3         5       7         10</x_stem_n>
+    <targetStemNConc>0.04   0.04   0.01      0.005</targetStemNConc>
+    <structStemNConc>0.0045  0.0045   0.0021   0.0021</structStemNConc>
+    <stemDilnNSlope>0.005</stemDilnNSlope>
+    <stemDilnNInt>-0.00052</stemDilnNInt>
+    <initialRachisNConc>0.000</initialRachisNConc>
+    <targetRachisNConc>0.01</targetRachisNConc>
+    <structRachisNConc>0.0021</structRachisNConc>
+    <rachisDilnNSlope>0.005</rachisDilnNSlope>
+    <rachisDilnNInt>-0.00052</rachisDilnNInt>
+	<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	The following cob parameters have been calculated by Saeid during his visit to UQ in 2010 using Angelo data. 
+	However, they are not being used in the new maize model as there is not a separate cob component and thus no 
+	subroutine for partitioning of carbo and N to this organ. It is included in stem. Rooms for future work. 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	<initialCobNConc>0.000</initialCobNConc>
+    <targetCobNConc>0.023</targetCobNConc>
+    <structCobNConc>0.003</structCobNConc>
+    <cobDilnNSlope>0.01</cobDilnNSlope>
+    <cobDilnNInt>-0.0035</cobDilnNInt>
+	-->
+    <grainFillRate units="mg/grain/dd">0.01</grainFillRate>
+    <targetGrainNConc>0.0143</targetGrainNConc>
+    <nUptakeCease>523</nUptakeCease>
+    <nSupplyFrac>5</nSupplyFrac>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 7 -SENESCENCE AND DETACHMENT
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      DM SENESCENCE
+      -->
+    <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
+    <!-- ______________________________________________________________________________
+      LEAF NUMBER AND AREA SENESCENCE
+      -->
+    <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
+    <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
+    <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
+    <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
+    <x_temp_senescence description="minimum temperature for frost senescence table (oC)">-2.0 2.0           </x_temp_senescence>
+    <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1   0              </y_senescence_fac>
+    <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
+    <!-- ______________________________________________________________________________
+      DETACHMENT
+      root leaf stem flower grain
+      -->
+    <sen_light_time_const units="days" description="delay factor for light senescence">10.0</sen_light_time_const>
+    <sen_radn_crit units="Mj/m^2" description="radiation level for onset of light senescence">2</sen_radn_crit>
+    <!--  frost
+      -->
+    <frost_kill units="oC" description="temperature threshold for leaf death">-3.0</frost_kill>
+    <!--  water
+      -->
+    <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
+    <sen_threshold description="supply:demand ratio for onset of water senescence">0.25</sen_threshold>
+    <!-- age
+      -->
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 9 - CROP FAILURE AND DEATH
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      crop failure
+      -->
+    <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      PHOSPHORUS CONCENTRATION LIMITS: MAXIMUM, MINIMUM AND SENESCED P CONCENTRATIONS
+      -->
+    <stress_determinants>leaf stem grain</stress_determinants>
+    <yield_parts description="energy">grain </yield_parts>
+    <retrans_parts description="MEP added leaf and flower">leaf stem  flower </retrans_parts>
+    <!-- !  FIXME use 1.5 for testing changes to Pdemand code
+      pfact_photo_slope = 1.5  !2.5 !2.0 !1.0
+      -->
+    <pfact_photo_slope description="2.0 !1.0">2.5 </pfact_photo_slope>
+    <pfact_expansion_slope>2.5</pfact_expansion_slope>
+    <pfact_pheno_slope description="10 !20">6 </pfact_pheno_slope>
+    <pfact_grain_slope>20</pfact_grain_slope>
+    <p_uptake_factor description="factor to calc total P uptake from demand for today's growth">1.5   </p_uptake_factor>
+    <!--  MEP same conc for stages 6 & 7
+      -->
+    <x_p_stage_code>3       4      5      6      7      8      10</x_p_stage_code>
+    <y_p_conc_max_leaf>0.0045  0.0045 0.004  0.0025 0.0025 0.0024 0.0024</y_p_conc_max_leaf>
+    <y_p_conc_min_leaf>0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
+    <y_p_conc_sen_leaf>0.0005  0.0005 0.0005 0.0005 0.0005 0.0005 0.0005</y_p_conc_sen_leaf>
+    <y_p_conc_max_stem>0.0045   0.0045 0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_stem>
+    <y_p_conc_min_stem>0.003    0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_stem>
+    <y_p_conc_sen_stem>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_stem>
+    <y_p_conc_max_root description="assume P conc in roots non-varying">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_max_root>
+    <y_p_conc_min_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_min_root>
+    <y_p_conc_sen_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_sen_root>
+    <y_p_conc_max_flower description="assumed same as stem">0.0045  0.0045  0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_flower>
+    <y_p_conc_min_flower>0.003   0.003   0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_flower>
+    <y_p_conc_sen_flower>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_flower>
+    <y_p_conc_max_grain description="based on Mallarino (1996)">0.001   0.001  0.001  0.001  0.001  0.0030  0.0030</y_p_conc_max_grain>
+    <y_p_conc_min_grain description="based on Kenya data">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
+    <y_p_conc_sen_grain>0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
+    <y_p_conc_max_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_max_energy>
+    <y_p_conc_min_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_min_energy>
+    <y_p_conc_sen_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_sen_energy>
+    <p_conc_init_leaf>0.0045</p_conc_init_leaf>
+    <p_conc_init_stem>0.0045</p_conc_init_stem>
+    <p_conc_init_root description="0.0014">0.0010 </p_conc_init_root>
+    <p_conc_init_flower>0.0045</p_conc_init_flower>
+    <p_conc_init_grain>0.0030</p_conc_init_grain>
+    <p_conc_init_energy>0.0</p_conc_init_energy>
+    <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION x - VALUE LIMITS - MAX AND MINS
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      ______________________________________________________________________________
+      ______________________________________________________________________________
+      ROOT PARAMETERS
+      -->
+    <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
+    <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
+    <!-- ______________________________________________________________________________
+      SOIL WATER
+      -->
+    <minsw description="lowest acceptable value for ll">0.00001</minsw>
+    <!-- ______________________________________________________________________________
+      OTHER VARIABLES
+      limits set to check inputs
+      -->
+    <year_ub description="year upper limit">2000</year_ub>
+    <year_lb description="year lower limit">1800</year_lb>
+    <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
+    <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
+    <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
+    <maxt_lb units="oC" description="max. temperature lower limit">-50</maxt_lb>
+    <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
+    <mint_lb units="oC" description="min. temperature lower limit">-50</mint_lb>
+    <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
+    <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
+    <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
+    <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
+    <sat_dep_ub units="mm" description="saturated water content upper limit">1000</sat_dep_ub>
+    <sat_dep_lb units="mm" description="saturated water content upper limit">0</sat_dep_lb>
+    <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
+    <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
+    <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
+    <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
+    <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
+    <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
+    <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
+    <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
+    <nh4_ub units="kg/ha" description="soil nitrate upper limit">10000</nh4_ub>
+    <nh4_lb units="kg/ha" description="soil nitrate lower limit">0</nh4_lb>
+    <nh4_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</nh4_min_ub>
+    <nh4_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</nh4_min_lb>
+    <!--  cultivar parameter upper bounds
+      -->
+    <head_grain_no_max_ub>1000.0</head_grain_no_max_ub>
+    <grain_gth_rate_ub>20.0</grain_gth_rate_ub>
+    <tt_emerg_to_endjuv_ub>500.0</tt_emerg_to_endjuv_ub>
+    <!--  remove  pp_endjuv_to_init_ub        = 200.0  ()
+      -->
+    <tt_flower_to_maturity_ub>1000.0</tt_flower_to_maturity_ub>
+    <tt_maturity_to_ripe_ub>1000.0</tt_maturity_to_ripe_ub>
+    <tt_flower_to_start_grain_ub>1000.0</tt_flower_to_start_grain_ub>
+    <tt_flag_to_flower_ub>1000.0</tt_flag_to_flower_ub>
+
+    <!-- ________________________________________________________________________________________________________
+         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
+         ________________________________________________________________________________________________________
+         -->
+    <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+    <y_height units="mm" description="plant canopy height">0  2000</y_height>
+
+    <canopy_height_max>3000.0</canopy_height_max>
+    <senescedLeafSLN>0.3</senescedLeafSLN>
+    <UseLeafAngle>0</UseLeafAngle>
+    <x_co2_te_modifier>350.0</x_co2_te_modifier>
+    <y_co2_te_modifier>1.0</y_co2_te_modifier>
+
+    
+    <!-- ***********************************************************************************************************
+      PARAMETERS  - CULTIVAR-SPECIFIC VALUES
+      ***********************************************************************************************************
+      varieties available:
+      - Katumani composite (Kenya)
+      - Makueni composite (Kenya)
+      - Dekalb XL82 (tropical hybrid with photoperiod sensitivity)
+      - USA 18 leaf (generic 18 leaf hybrid with no photoperiod sensitivity)
+      - Hycorn 424, Pioneeer 3237, Pioneer 3527, Pioneer 3153
+      - Hybred 511 (Kenyan hybrid - medium maturing)
+      - Hybred 614 (Kenyan hybrid - late maturing)
+      - Zimbabwe early maturing hybrids NSCM_41,sc401,r201
+      -          early-med maturing sc501,sr52,r215,MH18,CG4141
+      -          med-late maturing sc601,sc625,sc623,
+      -          late maturing sc709
+      - Malawi genotypes malawi_local,MH12,MH16,MH17,MH19
+      -->
+
+    <dekalb_xl82 cultivar="yes">
+    <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description="211 Carberry jack-knifed value ! Carberry maize.par 171 ! from Muchow and Carberry 1989 130 (oC)">211 </tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope description="Carberry jack-knifed value ! Carberry maize.par 88.4 ! from Muchow and Carberry 1989  41.0 (oC/hour)">41.0</photoperiod_slope>
+      <tt_flower_to_maturity description="900 (oC)">983</tt_flower_to_maturity>
+      <tt_flag_to_flower description="50 ! 101 in Carberry maize.par ! 70 in Wilson 1989 (oC)! 61 in Carberry and Muchow">101 </tt_flag_to_flower>
+      <tt_flower_to_start_grain description="120 ! 70  (oC)! 170 in CERES-Maize, 70 in Wilson et al.">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+      
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0003</leaf_no_dead_slope>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>600</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>	 
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </dekalb_xl82>
+
+    <katumani cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description="135 ! 125 in CM-KEN (oC)">285</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description="660 in CM-KEN (oC)">660 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description="70 !  170 (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>450</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </katumani>
+    
+    <makueni cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">150</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">900 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>480</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+          <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+</makueni>
+    
+    <usa_18leaf cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">220</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>610</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
+    </usa_18leaf>
+
+    <Pioneer_3237 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">360</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>850</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
+
+    </Pioneer_3237>
+
+    <Pioneer_3394 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">220</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">45.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">900 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>712</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+	  
+    </Pioneer_3394>
+	
+	<Pioneer_3394_1 cultivar="yes">
+      <derived_from>Pioneer_3394</derived_from>
+      <nUptakeCease>1</nUptakeCease>
+    </Pioneer_3394_1>
+    <Pioneer_3394_2 cultivar="yes">
+      <derived_from>Pioneer_3394</derived_from>
+      <nUptakeCease>180</nUptakeCease>
+    </Pioneer_3394_2>
+	<Pioneer_3394_3 cultivar="yes">
+      <derived_from>Pioneer_3394</derived_from>
+      <nUptakeCease>400</nUptakeCease>
+    </Pioneer_3394_3>
+	<Pioneer_3394_4 cultivar="yes">
+      <derived_from>Pioneer_3394</derived_from>
+      <nUptakeCease>630</nUptakeCease>
+    </Pioneer_3394_4>
+	
+    <Pioneer_3527 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">360</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>750</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
+    </Pioneer_3527>
+
+    <Pioneer_3153 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">300</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>750</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </Pioneer_3153>
+
+    <Hycorn_424 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">360</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">1055 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>770</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </Hycorn_424>
+
+    <hybred511 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">285</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>550</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </hybred511>
+
+    <hybred614 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">365</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">70 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>650</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </hybred614>
+
+    <Pioneer_6875 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">271</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">41.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>610</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
+    </Pioneer_6875>
+
+    <hycorn_9 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">261</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">41.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>540</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </hycorn_9>
+    
+
+    <Barker cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">248</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">56.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>610</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.0002</leaf_no_dead_slope>
+    </Barker>
+
+    <sargeant cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">241</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">41.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>610</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sargeant>
+
+    <qk_694 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">251</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">41.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">1100 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>550</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </qk_694>
+
+    <hycorn_40 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">900 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+      <leaf_no_dead_const>-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope>0.00042</leaf_no_dead_slope>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.89</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>     
+    </hycorn_40>
+		
+    <hycorn_50 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">850 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>469</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </hycorn_50>
+
+    <gh_5009 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">295</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </gh_5009>
+	
+    <gh_5019wx cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">310</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">20.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">5.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">990 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>470</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </gh_5019wx>
+
+    <!-- *******************************************
+      *** Zimbabwe and Malawi maize varieties ***
+      *******************************************
+      *** early maturing ***
+      NSCM_41
+      sc401
+      r201
+      *** early-med maturing ***
+      sc501
+      sr52
+      r215
+      MH18
+      CG4141
+      *** med-late maturing ***
+      sc601
+      sc625
+      sc623
+      malawi_local
+      MH12
+      MH16
+      MH17
+      MH19
+      *** late maturing
+      sc709
+      ****************************************************
+      *********** early maturing varieties ***************
+      ****************************************************
+      -->
+    <NSCM_41 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">230</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </NSCM_41>
+
+    <sc401 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">230</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc401>
+
+    <r201 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">230</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </r201>
+    <!--  ***********************************************************
+      *********** early-medium maturing varieties ***************
+      ***********************************************************
+      -->
+    <sc501 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>520</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc501>
+
+    <sr52 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>520</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sr52>
+
+    <r215 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>520</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </r215>
+
+    <mh18 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">260</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>540</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mh18>
+
+    <CG4141 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">233</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>520</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </CG4141>
+    <!--  **********************************************************
+      *********** medium-late maturing varieties ***************
+      **********************************************************
+      -->
+    <mh12 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">290</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">750 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mh12>
+    
+    <mh16 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">290</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">750 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mh16>
+
+    <mh17 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">290</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">750 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mh17>
+
+    <mh19 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">290</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">750 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mh19>
+
+    <sc601 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">740 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>550</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc601>
+
+    <sc625 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">740 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc625>
+
+    <sc623 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc623>
+
+    <mwi_local cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">280</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">780 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>400</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </mwi_local>
+
+    <M602 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">290</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">750 </tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>560</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </M602>
+    <!--  ***************************************************
+      *********** late maturing varieties ***************
+      ***************************************************
+      -->
+    <sc709 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">300</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">760</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>600</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </sc709>
+
+    <c19leaf cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">50</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120 </tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>650</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </c19leaf>
+
+    <C33a63 cultivar="yes">
+      <!-- parameters estimated By DGaydon for Pioneer variety 33a63 - Riverina variety _______________________
+          -->
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">400</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">1000</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">20</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">213</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>610</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </C33a63>
+    <!--  Chinese variety
+      -->
+    <Zhongdan2 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">550</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">20</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">120</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>850</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </Zhongdan2>
+    <!--  RSA varieties
+      -->
+    <pan6479 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">200</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">710</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>550</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </pan6479>
+    <pan6671 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">200</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">10.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">710</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>450</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </pan6671>
+    <cresemillas cultivar="yes">
+      <!-- CIAT variety for Pescador, Colombia based on SC401
+         -->
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">220</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">23.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">730</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.09</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>500</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <rue>0   0  1.60 1.60  1.60  1.60 1.60 1.40  1.30  1.30   0    0</rue>
+    </cresemillas>
+    <DEA cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description="">100</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">140.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description="">700</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" ">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.01</dm_per_seed>
+      <maxGFRate>0.009</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>600</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+      <LeafAppRateParams type="text" description="LeafAppRateParams">----------------</LeafAppRateParams>
+      <leaf_app_rate1 type="text" description="leaf_app_rate1">75</leaf_app_rate1>
+      <leaf_app_rate2 type="text" description="leaf_app_rate2">33</leaf_app_rate2>
+      <leaf_app_rate3 type="text" description="leaf_app_rate3">33</leaf_app_rate3>
+      <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">9</leaf_no_rate_change1>
+      <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+
+      <LeafAreaParams type="text" description="LeafAreaParams">----------------</LeafAreaParams>
+      <aX0 type="text" description="aX0">0.613</aX0>
+      <aMaxA type="text" description="aMaxA">1077</aMaxA>
+    </DEA>
+    <Hicorn53 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">100</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">140.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">700</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.009</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>600</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+
+      <LeafAppRateParams type="text" description="LeafAppRateParams">----------------</LeafAppRateParams>
+      <leaf_app_rate1 type="text" description="leaf_app_rate1">75</leaf_app_rate1>
+      <leaf_app_rate2 type="text" description="leaf_app_rate2">33</leaf_app_rate2>
+      <leaf_app_rate3 type="text" description="leaf_app_rate3">33</leaf_app_rate3>
+      <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">9</leaf_no_rate_change1>
+      <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+      <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
+      <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.00034</leaf_no_dead_slope>
+      <LeafAreaParams type="text" description="LeafAreaParams">----------------</LeafAreaParams>
+      <aX0 type="text" description="aX0">0.613</aX0>
+      <aMaxA type="text" description="aMaxA">1077</aMaxA>
+
+    </Hicorn53>
+
+    <c79 cultivar="yes">
+      <!-- ________________________________________________________________________________________________________
+         PHENOLOGY
+         ________________________________________________________________________________________________________
+         -->
+      <tt_emerg_to_endjuv description=" (oC)">250</tt_emerg_to_endjuv>
+      <tt_endjuv_to_init units="oC">0.0</tt_endjuv_to_init>
+      <photoperiod_crit1 units="hours">12.5</photoperiod_crit1>
+      <photoperiod_crit2 units="hours">24.0</photoperiod_crit2>
+      <photoperiod_slope units="oC/hour">0.0</photoperiod_slope>
+      <tt_flower_to_maturity description=" (oC)">980</tt_flower_to_maturity>
+      <tt_flag_to_flower units="oC">10</tt_flag_to_flower>
+      <tt_flower_to_start_grain description=" (oC)">170</tt_flower_to_start_grain>
+      <tt_maturity_to_ripe units="oC">1</tt_maturity_to_ripe>
+	  
+      <GrainParams type="text" description="GrainParams">-----------------</GrainParams>
+      <dm_per_seed type="text" description="dm_per_seed">0.003</dm_per_seed>
+      <maxGFRate>0.009</maxGFRate>
+      <UseGN>1</UseGN>
+      <PGRt0>130</PGRt0>
+      <PGRt1>260</PGRt1>
+      <GNmax>650</GNmax>
+      <PGRbase>1.2</PGRbase>
+      <GNk>0.83</GNk>
+      <potKernelWt>260</potKernelWt>
+    </c79>
+  </Model>
+  <Info>
+    <variables>
+      <variable name="active" description="" read="T" write="F" kind="integer4" array="F" units="" />
+      <variable name="author" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="biomass" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="biomass_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="biomass_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="biomass_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="cep" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="cover_green" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="cover_tot" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="crop_type" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="days_tot" description="" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="daysaftersowing" description="" read="T" write="F" kind="integer4" array="" units="days" />
+      <variable name="deadleaf_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="deltastage" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="detachingp" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dleaf_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="dlt_dm" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="dlt_dm_dead_detached" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_dm_detached" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_dm_green" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="dlt_dm_green_retrans" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_dm_light" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="dlt_dm_senesced" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_dm_water" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="dlt_lai" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_lai_pot" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_lai_stressed" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_leaf_no" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="dlt_n_dead_detached" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_n_detached" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_n_green" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_n_retrans" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_p_dead" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_p_retrans" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_p_sen" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="dlt_slai" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_slai_age" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_slai_light" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_slai_nitrogen" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_slai_water" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="dlt_tt_fm" description="" read="T" write="F" kind="single" array="" units="oC" />
+      <variable name="dm_dead" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="droot_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="droot_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="ep" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="esw_layer" description="" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="esw_profile" description="" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="extinct_coeff" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="flower_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="flower_nd" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="flower_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="flower_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="flowering_das" description="" read="T" write="F" kind="integer4" array="" units="days" />
+      <variable name="flowering_date" description="" read="T" write="F" kind="integer4" array="" units="doy" />
+      <variable name="gleaf_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="grain_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="grain_nd" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="grain_no" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="grain_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="grain_p_demand" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="grain_part" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="grain_protein" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="grain_size" description="" read="T" write="F" kind="single" array="" units="g" />
+      <variable name="grain_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="graingreenpconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="green_biomass" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="green_biomass_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="green_biomass_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="green_biomass_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="greenp" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="greenwt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="groot_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="growthp" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="head_p" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="height" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="hi" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="hi_n" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="kl" description="" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="lai" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="lai_max" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="lai_sum" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="leaf_area" description="" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="leaf_nd" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="leaf_no" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="leaf_no_dead" description="" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="leaf_no_final" description="" read="T" write="F" kind="single" array="" units="lvs" />
+      <variable name="leaf_part" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="leaf_primodia" description="" read="T" write="F" kind="single" array="" units="lvs" />
+      <variable name="leafgreennconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="leafgreenp" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="leafgreenpconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="leafgreenwt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="ll" description="" read="T" write="F" kind="single" array="T" units="%" />
+      <variable name="ll_dep" description="" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="maturity_das" description="" read="T" write="F" kind="integer4" array="" units="days" />
+      <variable name="maturity_date" description="" read="T" write="F" kind="integer4" array="" units="doy" />
+      <variable name="n_conc_flower_crit" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_flower_max" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_flower_min" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_grain" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_leaf_crit" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_leaf_max" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_leaf_min" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_root_crit" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_root_max" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_root_min" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stem_crit" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stem_max" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stem_min" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stover" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stover_crit" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stover_max" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_conc_stover_min" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_cum_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_dead" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_demand" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_grain_pcnt" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="n_green" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_massflow_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_senesced" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_stress_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="n_stress_grain" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="n_stress_pheno" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="n_stress_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="n_stress_tiller" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="n_supply_soil" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="n_total_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="name" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="nfact_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nfact_grain" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nfact_grain_tot" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nfact_pheno" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nfact_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nfact_tiller" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="nh4_diffusion_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="nh4_massflow_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="nh4_tot" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="nh4_total_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="nh4_uptake" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="no3_demand" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="no3_diffusion_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="no3_massflow_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="no3_tot" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="no3_total_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="no3_uptake" description="" read="T" write="F" kind="single" array="T" units="kg/ha" />
+      <variable name="p_conc_stover" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="p_dead" description="" read="T" write="F" kind="single" array="T" units="g/m^2" />
+      <variable name="p_demand" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="p_grain_pcnt" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="p_sen" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="p_stress_fact_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="p_stress_fact_grain" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="p_stress_fact_pheno" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="p_stress_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="p_uptake" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="p_uptake_stover" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="pfact_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="pfact_expansion" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="pfact_grain" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="pfact_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="phase_tt" description="" read="T" write="F" kind="single" array="T" units="oC" />
+      <variable name="plant_status" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="plants" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="radn_int" description="" read="T" write="F" kind="single" array="" units="MJ/m^2/d" />
+      <variable name="rlv" description="" read="T" write="F" kind="single" array="T" units="mm/mm^3" />
+      <variable name="root_depth" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="root_length" description="" read="T" write="F" kind="single" array="T" units="mm/mm^2" />
+      <variable name="root_nd" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="root_part" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="rootgreennconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="rootgreenp" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="rootgreenwt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="rue_day" description="" read="T" write="F" kind="single" array="" units="g/MJ" />
+      <variable name="senescedp" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="senescedwt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="sla" description="" read="T" write="F" kind="single" array="" units="mm^2/g" />
+      <variable name="slai" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sln" description="" read="T" write="F" kind="single" array="" units="gN/m^2leaf" />
+      <variable name="stage" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="stage_code" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="stagename" description="" read="T" write="F" kind="string" array="" units="" />
+      <variable name="state" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="stem_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stem_nd" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stem_part" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="stemandflower_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stemgreennconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="stemgreenp" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stemgreenpconc" description="" read="T" write="F" kind="single" array="" units="%" />
+      <variable name="stemgreenwt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stover" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="stover_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="stover_wt" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_deficit" description="" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="sw_demand" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="sw_demand_te" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="sw_stress_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_stress_pheno" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_stress_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_stress_tiller" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_supply" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="sw_supply_demand_ratio" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="sw_supply_sum" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="sw_uptake" description="" read="T" write="F" kind="single" array="T" units="mm" />
+      <variable name="swdef_expan" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="swdef_pheno" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="swdef_photo" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="swdef_tiller" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="tiller_no" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="tiller_no_fertile" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="tiller_tt_tot" description="" read="T" write="F" kind="single" array="" units="Cd" />
+      <variable name="tlai" description="" read="T" write="F" kind="single" array="" units="" />
+      <variable name="tlai_dead" description="" read="T" write="F" kind="single" array="" units="m^2/m^2" />
+      <variable name="tleaf_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="transp_eff" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="transpiration" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="transpiration_tot" description="" read="T" write="F" kind="single" array="" units="mm" />
+      <variable name="troot_n" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="troot_wt" description="" read="T" write="F" kind="single" array="" units="g/m^2" />
+      <variable name="tt" description="" read="T" write="F" kind="single" array="" units="oCd" />
+      <variable name="tt_sum" description="" read="T" write="F" kind="single" array="" units="ddays" />
+      <variable name="tt_tot" description="" read="T" write="F" kind="single" array="T" units="oC" />
+      <variable name="tt_tot_fm" description="" read="T" write="F" kind="single" array="T" units="oC" />
+      <variable name="type" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="version" description="" read="T" write="F" kind="string" array="F" units="" />
+      <variable name="xf" description="" read="T" write="F" kind="single" array="T" units="" />
+      <variable name="yield" description="" read="T" write="F" kind="single" array="" units="kg/ha" />
+      <variable name="zadok_stage" description="" read="T" write="F" kind="single" array="" units="" />
+    </variables>
+    <events>
+      <event name="add_residue_p" description="" />
+      <event name="crop_chopped" description="" />
+      <event name="externalmassflow" description="" />
+      <event name="harvesting" description="" />
+      <event name="incorpfom" description="" />
+      <event name="sowing" description="" />
+    </events>
+  </Info>
+</Type>

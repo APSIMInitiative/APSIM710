@@ -135,7 +135,7 @@ namespace ApsimFile
                {
                   //add a node for each factor
                   constantsNode.RemoveAll();
-                  string[] factors = factorsList.Split(';');
+                  string[] factors = factorsList.Split(',');
                   foreach (string factor in factors)
                   {
                      XmlNode xNode = constantsNode.OwnerDocument.CreateElement("line");
@@ -143,7 +143,6 @@ namespace ApsimFile
                      xNode.InnerText = factor;
                   }
                }
-
                varComp.Contents = variablesNode.OuterXml;
             }
          }
@@ -201,23 +200,26 @@ namespace ApsimFile
                 //replace each target that is within the provided simulation with the child's xml
                 foreach (string target in Targets)
                 {
-                    Component targetComp = Simulation.Find(target);
+                   string sRelativeTarget = target.Substring(SimulationPath.Length+1);
+                   Component targetComp = Simulation.Find(sRelativeTarget);
                     if (targetComp != null)
                     {
                         //find name of var in ui or CustomUI nodes
-                        XmlNode varNode = targetComp.ContentsAsXML.SelectSingleNode("//ui/" + Variable.Name + " | " + "//CustomUI/" + Variable.Name);
+                       XmlNode variablesNode = targetComp.ContentsAsXML;
+                       XmlNode varNode = variablesNode.SelectSingleNode("//ui/" + Variable.Name + " | " + "//CustomUI/" + Variable.Name);
                         if (varNode != null)
                         {
-                           varNode.InnerText = target;
+                           varNode.InnerText = par;
                         }
                         else
                         {
-                           varNode = targetComp.ContentsAsXML.SelectSingleNode("//"+Variable.Name);
+                           varNode = variablesNode.SelectSingleNode("//" + Variable.Name);
                            if (varNode != null)
                            {
-                              varNode.InnerText = target;
+                              varNode.InnerText = par;
                            }
                         }
+                        targetComp.Contents = variablesNode.OuterXml;
                     }
                 }
                 if (NextItem != null)
@@ -276,6 +278,16 @@ namespace ApsimFile
             ProcessFactorNodes(factorial, ref lastItem, ref items, SimulationPath);
             return items;
         }
+        public void LoadVariableTypes(XmlNode metNode, List<string> variableTypes)
+        {
+           if (metNode != null && variableTypes != null)
+           {
+              foreach (XmlNode varNode in XmlHelper.ChildNodes(metNode, "facvar"))
+              {
+                 variableTypes.Add(varNode.InnerText);
+              }
+           }
+        }
         public void ProcessFactorNodes(Component parentComponent, ref FactorItem lastItem, ref List<FactorItem> items, string SimulationPath)
         {
             foreach (Component comp in parentComponent.ChildNodes)
@@ -294,7 +306,9 @@ namespace ApsimFile
                     }
                     if (targets.Count > 0)
                     {
-                        if (comp.ChildNodes.Count == 1 && (comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
+ 		 				            List<string> variableTypes = new List<string>();
+	 		 			            LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
+                        if (comp.ChildNodes.Count == 1 && variableTypes.Contains(comp.ChildNodes[0].Type))//(comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
                         {
                             //process variables within manager code
                             XmlNodeList varNodes = comp.ContentsAsXML.SelectNodes("//vars/*");

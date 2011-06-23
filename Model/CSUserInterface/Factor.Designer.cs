@@ -44,7 +44,7 @@
            // 
            // MyHelpLabel
            // 
-//           this.MyHelpLabel.Size = new System.Drawing.Size(599, 16);
+           this.MyHelpLabel.Size = new System.Drawing.Size(599, 16);
            // 
            // pnlVariable
            // 
@@ -140,7 +140,7 @@
            this.Controls.Add(this.pnlVariable);
            this.Name = "Factor";
            this.Size = new System.Drawing.Size(599, 541);
-//           this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+           this.Controls.SetChildIndex(this.MyHelpLabel, 0);
            this.Controls.SetChildIndex(this.pnlVariable, 0);
            this.Controls.SetChildIndex(this.FactorTargets, 0);
            this.pnlVariable.ResumeLayout(false);

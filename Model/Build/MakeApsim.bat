@@ -52,6 +52,7 @@ call MakeProject Input
 call MakeProject Irrigation
 call MakeProject Log
 call MakeProject Maize
+call MakeProject MaizeZ
 call MakeProject Manager
 call MakeProject Map
 call MakeProject MicroMet
