@@ -31,6 +31,7 @@ public class SIRIUSArbitrator : Arbitrator
     double[] DMFreshSupplyOrgan = null;
     double[] DMStoreSupplyOrgan = null;
     double[] DMDemand = null;
+    double[] DMSinkCapacity = null;
     double[] DMAllocation = null;
     double[] DMExcessAllocation = null;
     double[] DMRetranslocation = null;
@@ -79,6 +80,7 @@ public class SIRIUSArbitrator : Arbitrator
         DMFreshSupplyOrgan = new double[Organs.Count];
         DMStoreSupplyOrgan = new double[Organs.Count];
         DMDemand = new double[Organs.Count];
+        DMSinkCapacity = new double[Organs.Count];
         DMAllocation = new double[Organs.Count];
         DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
@@ -101,10 +103,12 @@ public class SIRIUSArbitrator : Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             DMDemand[i] = Organs[i].DMDemand;
+            DMSinkCapacity[i] = Organs[i].DMSinkCapacity;
             DMAllocation[i] = 0;
             DMRetranslocation[i] = 0;
         }
         double TotalDMDemand = MathUtility.Sum(DMDemand);
+        double TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
  #endregion
 
  #region Allocate Assimilated biomass
@@ -126,11 +130,11 @@ public class SIRIUSArbitrator : Arbitrator
         double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
         for (int i = 0; i < Organs.Count; i++)
         {
-            //double proportion = 0.0;
-            if (Organs[i].DMSinkCapacity > 0.0)
+            double proportion = 0.0;
+            if (DMSinkCapacity[i] > 0.0)
             {
-                //proportion = Organs[i].DMSinkCapacity / TotalDMDemand;
-                double DMExcess = Math.Min(DMNotAllocated, Organs[i].DMSinkCapacity);
+                proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
                 DMExcessAllocation[i] += DMExcess;
                 TotalWtAllocated += DMExcess;
             }

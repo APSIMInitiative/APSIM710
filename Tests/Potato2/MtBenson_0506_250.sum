@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNConc3
-        LeafLiveNConc3
-        StemLiveNConc3
+        TuberLiveNConc
+        LeafLiveNConc
+        StemLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -248,7 +248,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc3 = 0
+     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -276,7 +276,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
+     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -308,7 +308,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc3 = 0.00000
+     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -464,18 +464,23 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 4/12/2005 - FloralInitiation
-                            LAI = 0.70 (m^2/m^2)
-           Above Ground Biomass = 41.03 (g/m^2)
+                            LAI = 0.69 (m^2/m^2)
+           Above Ground Biomass = 41.96 (g/m^2)
 6/12/2005 - TuberInitiation
-                            LAI = 0.95 (m^2/m^2)
-           Above Ground Biomass = 66.11 (g/m^2)
-24 January 2006(Day of year=24): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Leaf cohort given negative N Reallocation
-     Component name: potato2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+                            LAI = 0.94 (m^2/m^2)
+           Above Ground Biomass = 68.48 (g/m^2)
+2/02/2006 - FinalLeaf
+                            LAI = 1.58 (m^2/m^2)
+           Above Ground Biomass = 585.22 (g/m^2)
+Removing Leaves from plant
+8/04/2006 - FullSenescence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 738.45 (g/m^2)
+24/04/2006 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 738.45 (g/m^2)
+24 April 2006(Day of year=114), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 endcrop
+1 June 2006(Day of year=152), clock: 
+     Simulation is terminating due to end criteria being met.

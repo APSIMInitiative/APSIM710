@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNConc3
-        LeafLiveNConc3
-        StemLiveNConc3
+        TuberLiveNConc
+        LeafLiveNConc
+        StemLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -240,7 +240,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc3 = 0
+     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -268,7 +268,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
+     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -300,7 +300,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc3 = 0.00000
+     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -472,11 +472,11 @@ Paddock:
         46.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
 25/06/2000 - FloralInitiation
-                            LAI = 0.66 (m^2/m^2)
-           Above Ground Biomass = 19.65 (g/m^2)
+                            LAI = 0.63 (m^2/m^2)
+           Above Ground Biomass = 18.80 (g/m^2)
 27/06/2000 - TuberInitiation
-                            LAI = 0.91 (m^2/m^2)
-           Above Ground Biomass = 25.78 (g/m^2)
+                            LAI = 0.88 (m^2/m^2)
+           Above Ground Biomass = 24.88 (g/m^2)
 10 July 2000(Day of year=192), operations: 
       Sending apply message to fertiliser
 10 July 2000(Day of year=192), fertiliser: 
@@ -485,15 +485,17 @@ Paddock:
         46.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
 27/07/2000 - FinalLeaf
-                            LAI = 3.65 (m^2/m^2)
-           Above Ground Biomass = 274.46 (g/m^2)
-5 September 2000(Day of year=249): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Leaf cohort given negative N Reallocation
-     Component name: potato2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+                            LAI = 3.66 (m^2/m^2)
+           Above Ground Biomass = 271.54 (g/m^2)
+26/10/2000 - FullSenescence
+                            LAI = 0.02 (m^2/m^2)
+           Above Ground Biomass = 1440.27 (g/m^2)
+Removing Leaves from plant
+11/11/2000 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1257.53 (g/m^2)
+11 November 2000(Day of year=316), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 endcrop
+1 December 2000(Day of year=336), clock: 
+     Simulation is terminating due to end criteria being met.

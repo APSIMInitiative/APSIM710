@@ -121,9 +121,9 @@ Paddock:
         FloretDeadN
         GrainLiveNconc
         FloretLiveNconc
-        TuberLiveNConc3
-        LeafLiveNConc3
-        StemLiveNConc3
+        TuberLiveNConc
+        LeafLiveNConc
+        StemLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -251,7 +251,7 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc3 = 0
+     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -279,7 +279,7 @@ Paddock:
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
      if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
+     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
      endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
@@ -311,7 +311,7 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc3 = 0.00000
+     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -476,11 +476,11 @@ Paddock:
 18 December 1999(Day of year=352), operations: 
       Sending apply message to irrigation
 19/12/1999 - FloralInitiation
-                            LAI = 0.79 (m^2/m^2)
-           Above Ground Biomass = 55.36 (g/m^2)
+                            LAI = 0.78 (m^2/m^2)
+           Above Ground Biomass = 54.43 (g/m^2)
 21/12/1999 - TuberInitiation
-                            LAI = 1.12 (m^2/m^2)
-           Above Ground Biomass = 71.85 (g/m^2)
+                            LAI = 1.11 (m^2/m^2)
+           Above Ground Biomass = 71.64 (g/m^2)
 24 December 1999(Day of year=358), operations: 
       Sending apply message to irrigation
 28 December 1999(Day of year=362), operations: 
@@ -497,13 +497,26 @@ Paddock:
       Sending apply message to irrigation
 4 February 2000(Day of year=35), operations: 
       Sending apply message to irrigation
-7 February 2000(Day of year=38): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Leaf cohort given negative N Reallocation
-     Component name: potato2
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+10 February 2000(Day of year=41), operations: 
+      Sending apply message to irrigation
+13/02/2000 - FinalLeaf
+                            LAI = 3.60 (m^2/m^2)
+           Above Ground Biomass = 1525.41 (g/m^2)
+16 February 2000(Day of year=47), operations: 
+      Sending apply message to irrigation
+23 February 2000(Day of year=54), operations: 
+      Sending apply message to irrigation
+3 March 2000(Day of year=63), operations: 
+      Sending apply message to irrigation
+18/04/2000 - FullSenescence
+                            LAI = 0.05 (m^2/m^2)
+           Above Ground Biomass = 2503.87 (g/m^2)
+Removing Leaves from plant
+7/05/2000 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 2102.08 (g/m^2)
+7 May 2000(Day of year=128), Harvesting rule: 
+     Manager sending message :- potato2 harvest
+     Manager sending message :- potato2 endcrop
+3 June 2000(Day of year=155), clock: 
+     Simulation is terminating due to end criteria being met.

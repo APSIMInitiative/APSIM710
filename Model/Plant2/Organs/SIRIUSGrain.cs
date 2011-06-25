@@ -5,7 +5,6 @@ using System.Text;
 class SIRIUSGrain : ReproductiveOrgan
 {
     private double PotentialDMAllocation = 0;
-
     public override double DMPotentialAllocation
     {
         set

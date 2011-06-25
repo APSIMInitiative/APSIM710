@@ -498,6 +498,28 @@ public class SIRIUSLeaf : Leaf, AboveGround
     }
     [Output]
     [Units("g/m^2")]
+    public override double NReallocation
+    {
+        set
+        {
+            if (value - NReallocationSupply > 0.000000001)
+                throw new Exception(Name + " cannot supply that amount for N Reallocation");
+            if (value < -0.000000001)
+                throw new Exception(Name + " recieved -ve N reallocation");
+            if (value > 0)
+            {
+                double remainder = value;
+                foreach (SIRIUSLeafCohort L in Leaves)
+                {
+                    double ReAlloc = Math.Min(remainder, L.LeafStartNReallocationSupply);
+                    L.NReallocation = ReAlloc;
+                    remainder = Math.Max(0.0, remainder - ReAlloc);
+                }
+                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
+                    throw new Exception(Name + " N Reallocation demand left over after processing.");
+            }
+        }
+    }
     public override double NAllocation
     {
         set
@@ -595,28 +617,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
                     L.NAllocation = CohortNAllocation[i];
                 }
             } 
-        }
-    }
-    public override double NReallocation
-    {
-        set
-        {
-            if (value - NReallocationSupply > 0.000000001)
-                throw new Exception(Name + " cannot supply that amount for N Reallocation");
-            if (value < -0.000000001)
-                throw new Exception(Name + " recieved -ve N reallocation");
-            if (value > 0)
-            {
-                double remainder = value;
-                foreach (SIRIUSLeafCohort L in Leaves)
-                {
-                    double ReAlloc = Math.Min(remainder, L.LeafStartNReallocationSupply);
-                    L.NReallocation = ReAlloc;
-                    remainder = Math.Max(0.0, remainder - ReAlloc);
-                }
-                if (!MathUtility.FloatsAreEqual(remainder, 0.0))
-                    throw new Exception(Name + " N Reallocation demand left over after processing.");
-            }
         }
     }
     public override double NRetranslocation

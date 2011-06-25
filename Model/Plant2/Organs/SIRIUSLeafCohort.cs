@@ -179,6 +179,23 @@ class SIRIUSLeafCohort : LeafCohort
                Live.NonStructuralWt -= value;
         }
     }
+    public double NReallocation
+    {
+        set
+        {
+            if (value - (LeafStartMetabolicNReallocationSupply + LeafStartNonStructuralNReallocationSupply) > 0.00000000001)
+                throw new Exception("A leaf cohort cannot supply that amount for N Reallocation");
+            if (value < -0.0000000001)
+                throw new Exception("Leaf cohort given negative N Reallocation");
+            if (value > 0.0)
+            {
+                NonStructuralNReallocated = Math.Min(LeafStartNonStructuralNReallocationSupply, value); //Reallocate nonstructural first
+                MetabolicNReallocated = Math.Max(0.0, value - LeafStartNonStructuralNReallocationSupply); //Then reallocate metabolic N
+                Live.NonStructuralN -= NonStructuralNReallocated;
+                Live.MetabolicN -= MetabolicNReallocated;
+            }
+        }
+    }
     public override double NAllocation
     {
         set
@@ -197,23 +214,6 @@ class SIRIUSLeafCohort : LeafCohort
                Live.StructuralN += StructuralNAllocation;
                Live.MetabolicN += MetabolicNAllocation;//Then partition N to Metabolic
                Live.NonStructuralN += Math.Max(0.0, value - StructuralNAllocation - MetabolicNAllocation); //Then partition N to NonStructural
-            }
-        }
-    }
-    public double NReallocation
-    {
-        set
-        {
-            if (value - (LeafStartMetabolicNReallocationSupply + LeafStartNonStructuralNReallocationSupply) > 0.00000000001)
-                throw new Exception("A leaf cohort cannot supply that amount for N Reallocation");
-            if (value < -0.0000000001)
-                throw new Exception("Leaf cohort given negative N Reallocation");
-            if (value > 0.0)
-            {
-                NonStructuralNReallocated = Math.Min(LeafStartNonStructuralNReallocationSupply, value); //Reallocate nonstructural first
-                MetabolicNReallocated = Math.Max(0.0, value - LeafStartNonStructuralNReallocationSupply); //Then reallocate metabolic N
-                Live.NonStructuralN -= NonStructuralNReallocated;
-                Live.MetabolicN -= MetabolicNReallocated;
             }
         }
     }
@@ -325,7 +325,7 @@ class SIRIUSLeafCohort : LeafCohort
         
         double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
         if (LeafAreaLoss > 0)
-        SenescedFrac = LeafAreaLoss/LeafStartArea; //Adjust SenescedFract to account for N reallocation based senescence
+        SenescedFrac = Math.Min(1.0, LeafAreaLoss/LeafStartArea); 
 
         double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
         double StructuralNSenescing = SenescedFrac * Live.StructuralN;

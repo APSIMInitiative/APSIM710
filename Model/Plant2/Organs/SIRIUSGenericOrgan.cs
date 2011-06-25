@@ -15,15 +15,23 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function NRetranslocationFactor = null;
     [Link(IsOptional.Yes)]
     protected Function NitrogenDemandSwitch = null;
+    [Link(IsOptional.Yes)]
+    protected Function DMRetranslocationFactor = null;
+    [Link(IsOptional.Yes)]
+    protected Function StructuralFraction = null;
  #endregion
 
  #region Class data members
     private double _SenescenceRate = 0;
+    private double _StructuralFraction = 1;
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     private double StartNonStructuralN = 0;
     private double StartNonStructuralWt = 0;
     private double PotentialDMAllocation = 0;
+    private double StartStructuralN = 0;
+    private double StartStructuralWt = 0;
+    private double StructuralDMDemand = 0;
  #endregion
 
  #region Organ functions
@@ -32,21 +40,16 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         _SenescenceRate = 0;
         if (SenescenceRate != null) //Default of zero means no senescence
             _SenescenceRate = SenescenceRate.Value;
+        _StructuralFraction = 1;
+        if (StructuralFraction != null) //Default of zero means no senescence
+            _StructuralFraction = StructuralFraction.Value;
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
+        StartStructuralWt = Live.StructuralWt;
+        StartStructuralN = Live.StructuralN;
         StartNReallocationSupply = NReallocationSupply;
         StartNRetranslocationSupply = NRetranslocationSupply;
     }
-    //public override void DoStartSet()
-    //{
-      /*  _SenescenceRate = 0;
-        if (SenescenceRate != null) //Default of zero means no senescence
-            _SenescenceRate = SenescenceRate.Value; 
-        StartNonStructuralN = Live.NonStructuralN;
-        StartNonStructuralWt = Live.NonStructuralWt;
-        StartNReallocationSupply = NReallocationSupply;
-        StartNRetranslocationSupply = NRetranslocationSupply;*/
-    //}
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();
@@ -59,6 +62,27 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
  #endregion
 
  #region Arbitrator methods
+    //Get Methods to provide Leaf Status
+    public override double DMDemand
+    {
+        get
+        {
+            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
+            Function PartitionFraction = Children["PartitionFraction"] as Function;
+            //Function StructuralFraction = Children["StructuralFraction"] as Function;
+            StructuralDMDemand = A.DMSupply * PartitionFraction.Value * _StructuralFraction;
+            return StructuralDMDemand;
+        }
+    }
+    public override double DMSinkCapacity
+    {
+        get
+        {
+           //Function StructuralFraction = Children["StructuralFraction"] as Function;
+           double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1/_StructuralFraction;
+           return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartStructuralWt - StartNonStructuralWt);
+        }
+    }
     public override double DMPotentialAllocation
     {
         set
@@ -74,16 +98,11 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            return StartNonStructuralWt;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value - StartNonStructuralWt > 0.0000000001)
-                throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
-            Live.NonStructuralWt -= value;
+            double _DMRetranslocationFactor = 0;
+            if (DMRetranslocationFactor != null) //Default of 1 means retranslocation is always truned off!!!!
+                _DMRetranslocationFactor = DMRetranslocationFactor.Value; 
+            //Function DMRetranslocationFactor = Children["DMRetranslocationFactor"] as Function;
+            return StartNonStructuralWt * _DMRetranslocationFactor;
         }
     }
     public override double NDemand
@@ -96,6 +115,73 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             Function MaximumNConc = Children["MaximumNConc"] as Function;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             return NDeficit * _NitrogenDemandSwitch;
+        }
+    }
+    public override double NReallocationSupply
+    {
+        get
+        {
+            double _NReallocationFactor = 0;
+            if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
+                _NReallocationFactor = NReallocationFactor.Value;
+            return _SenescenceRate * StartNonStructuralN * _NReallocationFactor; 
+        }
+    }
+    public override double NRetranslocationSupply
+    {
+        get
+        {
+            double _NRetranslocationFactor = 0;
+            if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
+                _NRetranslocationFactor = NRetranslocationFactor.Value;
+            Function MinimumNConc = Children["MinimumNConc"] as Function;
+            double LabileN = Math.Max(0, StartNonStructuralN - StartNonStructuralWt * MinimumNConc.Value);
+            double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
+            return Nretrans;
+        }
+    }
+    //Set Methods to change Cohort Status
+    public override double DMAllocation
+    {
+        set
+        {
+            double _StructuralFraction = 1.0; //Default is all DM is structural
+            if (StructuralFraction != null)
+                _StructuralFraction = StructuralFraction.Value;
+            Live.StructuralWt += value * _StructuralFraction;
+            Live.NonStructuralWt += value * (1 - _StructuralFraction);
+        }
+    }
+    public override double DMExcessAllocation
+    {
+        set
+        {
+            if (value < -0.0000000001)
+                throw new Exception("-ve ExcessDM Allocation to " + Name);
+            if ((value - DMSinkCapacity) > 0.0000000001)
+                throw new Exception("ExcessDM Allocation to " + Name + " is in excess of its Capacity");
+            if (DMSinkCapacity > 0)
+                Live.NonStructuralWt += value;
+        }
+    }
+    public override double DMRetranslocation
+    {
+        set
+        {
+            if (value - StartNonStructuralWt > 0.0000000001)
+                throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
+            Live.NonStructuralWt -= value;
+        }
+    }
+    public override double NReallocation
+    {
+        set
+        {
+            if (MathUtility.IsGreaterThan(value, StartNonStructuralN))
+                throw new Exception("N Reallocation exceeds nonstructural nitrogen in organ: " + Name);
+            if (value < -0.000000001)
+                throw new Exception("-ve N Reallocation requested from " + Name);
+            Live.NonStructuralN -= value;
         }
     }
     public override double NAllocation
@@ -112,40 +198,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             }
         }
     }
-    public override double NReallocationSupply
-    {
-        get
-        {
-            double _NReallocationFactor = 0;
-            if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
-                _NReallocationFactor = NReallocationFactor.Value;
-            return _SenescenceRate * StartNonStructuralN * _NReallocationFactor; 
-        }
-    }
-    public override double NReallocation
-    {
-        set
-        {
-            if (MathUtility.IsGreaterThan(value, StartNonStructuralN))
-                throw new Exception("N Reallocation exceeds nonstructural nitrogen in organ: " + Name);
-            if (value < -0.000000001)
-                throw new Exception("-ve N Reallocation requested from " + Name);
-            Live.NonStructuralN -= value;
-        }
-    }
-    public override double NRetranslocationSupply
-    {
-        get
-        {
-            double _NRetranslocationFactor = 0;
-            if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
-                _NRetranslocationFactor = NRetranslocationFactor.Value;
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
-            double LabileN = Math.Max(0, StartNonStructuralN - StartNonStructuralWt * MinimumNConc.Value);
-            double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
-            return Nretrans;
-        }
-    }
     public override double NRetranslocation
     {
         set
@@ -157,6 +209,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             Live.NonStructuralN -= value;
         }
     }
+    //
     public override double MaxNconc
     {
         get

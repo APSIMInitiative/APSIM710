@@ -265,6 +265,9 @@
             <XY>10 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
       </SIRIUSTuber>
       <SIRIUSRoot name="Root">
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -571,10 +574,6 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <StageBasedInterpolation name="MaximumNConc">
-          <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
-          <Values type="text" description="Values">0.065     0.065     0.065          0.065              0.065              0.065      0.065                 0.065 </Values>
-        </StageBasedInterpolation>
         <StageBasedInterpolation name="CriticalNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
           <Values type="text" description="Values">    0.05     0.05      0.05             0.05       0.05         0.05           0.05          0.05       0.05  </Values>
@@ -583,6 +582,23 @@
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
           <Values type="text" description="Values">0.028     0.028     0.028          0.028              0.028              0.028      0.028                 0.028 </Values>
         </StageBasedInterpolation>
+        <Constant name="yMaximumNConc">
+          <Value type="text" description="Value">.065</Value>
+        </Constant>
+        <Constant name="yMinimumNConc">
+          <Value type="text" description="Value">.01</Value>
+        </Constant>
+        <Constant name="yCriticalNConc">
+          <Value type="text" description="Value">.05</Value>
+        </Constant>
+        <LinearInterpolationFunction name="MaximumNConc">
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>3 0.065</XY>
+            <XY>5 0.065</XY>
+            <XY>7 0.022</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -618,7 +634,7 @@
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.45</Value>
+          <Value type="text" description="Value">1</Value>
         </Constant>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
@@ -641,6 +657,9 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
       </SIRIUSGenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity </Stages>

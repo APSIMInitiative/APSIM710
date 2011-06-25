@@ -610,6 +610,9 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
       </SIRIUSGenericOrgan>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -643,9 +646,10 @@
             <Start>Flowering</Start>
             <End>Maturity</End>
             <Constant name="Function">
-              <Value>0.0</Value>
+              <Value type="text" description="Value">.7</Value>
             </Constant>
           </PhaseLookupValue>
+          <Memo>Structural fraction is the minimum proportion of biomass that can be structural.  If all biomass is structural this will be 1.  If the organ can reach 50% non-structural biomass than structural biomass should be set to 0.5.  The actual structural % may be higher than 50% as the arbitrator will reduce the amount of nonstructural biomass if there is insufficient to meet the organs demand or if nonstructural biomass is retranslocated to meet the demands of other organs.</Memo>
         </PhaseLookup>
         <StageBasedInterpolation name="MinimumNConc">
           <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
@@ -662,6 +666,9 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
       </SIRIUSGenericOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
