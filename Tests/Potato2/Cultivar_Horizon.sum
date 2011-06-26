@@ -14,7 +14,7 @@ Title                  = Cultivar_Horizon
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -46,10 +46,115 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
      Output variables:
+        dd/mmm/yyyy
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundWt
+        BelowGroundWt
+        TotalWt
+        LeafDeadWt
+        LeafLiveWt
+        StemDeadWt
+        StemLiveWt
+        TuberDeadWt
+        TuberLiveWt
+        RootDeadWt
+        RootLiveWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        TotalLiveN
+        TotalDeadN
+        LeafDeadN
+        LeafLiveN
+        StemDeadN
+        StemLiveN
+        TuberDeadN
+        TuberLiveN
+        RootLiveN
+        RootDeadN
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
+        sw
+        no3
+        LeafMinimumNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
+        RootMinimumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
 
-     Output file = Cultivar_Horizon Plant2 diagnostic variables.out
+     Output file = Cultivar_Horizon Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -111,14 +216,84 @@ Paddock:
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     No manager lines were found in any parameter file.
-     Component name: Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
      
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - potato2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -270,6 +445,9 @@ fertiliser:
        100.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
      Manager sending message :- potato2 sow  population = 4.63822, depth = 170, cultivar = horizon, maxcover = 1.0, budnumber = 3.2, row_spacing = 770, crop_class = plant
+     Manager creating a new local real variable : initialsoilomn = 18901.70700
+     Manager creating a new local real variable : initialsurfaceomn = 10.00000
+     Manager creating a new local real variable : initialmineraln = 201.38321
 20/10/2003 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -288,11 +466,11 @@ fertiliser:
 4 December 2003(Day of year=338), operations: 
       Sending apply message to irrigation
 14/12/2003 - FloralInitiation
-                            LAI = 1.12 (m^2/m^2)
-           Above Ground Biomass = 84.02 (g/m^2)
+                            LAI = 1.10 (m^2/m^2)
+           Above Ground Biomass = 69.85 (g/m^2)
 15/12/2003 - TuberInitiation
-                            LAI = 1.28 (m^2/m^2)
-           Above Ground Biomass = 99.01 (g/m^2)
+                            LAI = 1.27 (m^2/m^2)
+           Above Ground Biomass = 77.68 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -308,13 +486,12 @@ fertiliser:
 31 January 2004(Day of year=31), operations: 
       Sending apply message to irrigation
 13/02/2004 - FinalLeaf
-                            LAI = 2.94 (m^2/m^2)
-           Above Ground Biomass = 1537.89 (g/m^2)
+                            LAI = 0.97 (m^2/m^2)
+           Above Ground Biomass = 1539.10 (g/m^2)
 27 February 2004(Day of year=58), operations: 
       Sending apply message to irrigation
 4/05/2004 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 2212.53 (g/m^2)
-Removing Leaves from plant
+                            LAI = 0.02 (m^2/m^2)
+           Above Ground Biomass = 1764.81 (g/m^2)
 23 May 2004(Day of year=144), clock: 
      Simulation is terminating due to end criteria being met.

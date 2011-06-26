@@ -5,8 +5,8 @@ using CSGeneral;
 
 public class Nodule : SIRIUSGenericOrgan, BelowGround
 {
-    [Link]
-    Plant Plant = null;
+    //[Link]
+    //Plant Plant = null;
 
   #region Class Data Members
     public double RespiredWt = 0;

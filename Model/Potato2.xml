@@ -268,6 +268,19 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
         </Constant>
+        <LinearInterpolationFunction name="RelativeGrowthRate">
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>3 0</XY>
+            <XY>4 0</XY>
+            <XY>4.99 0</XY>
+            <XY>5 0.005</XY>
+            <XY>7 0</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <Constant name="TubersPerStem">
+          <Value type="text" description="Value">6</Value>
+        </Constant>
       </SIRIUSTuber>
       <SIRIUSRoot name="Root">
         <ll>   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -600,7 +613,13 @@
           </XYPairs>
         </LinearInterpolationFunction>
       </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      <SIRIUSStem name="Stem">
+        <Memo>The generic organ has 4 optional paramaters
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
+3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
+4. NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+         </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <PhaseLookup name="PartitionFraction">
@@ -634,7 +653,7 @@
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">1</Value>
+          <Value type="text" description="Value">.45</Value>
         </Constant>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity</Stages>
@@ -660,7 +679,15 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">1</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
+        <LinearInterpolationFunction name="InterNodeWt">
+          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>0 0.2</XY>
+            <XY>26 0.4</XY>
+            <XY>50 0.2</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+      </SIRIUSStem>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Planting Peeping Emergence FloralInitiation TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
         <Values type="text" description="Values">1           2             3                 4                     5                    6              7                         8          </Values>

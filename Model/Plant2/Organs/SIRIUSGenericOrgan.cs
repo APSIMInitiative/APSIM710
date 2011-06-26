@@ -18,7 +18,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     [Link(IsOptional.Yes)]
     protected Function DMRetranslocationFactor = null;
     [Link(IsOptional.Yes)]
-    protected Function StructuralFraction = null;
+    new protected Function StructuralFraction = null;
  #endregion
 
  #region Class data members
@@ -32,6 +32,8 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     private double StartStructuralN = 0;
     private double StartStructuralWt = 0;
     private double StructuralDMDemand = 0;
+    protected double InitialWt = 0;
+            
  #endregion
 
  #region Organ functions
@@ -41,7 +43,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         if (SenescenceRate != null) //Default of zero means no senescence
             _SenescenceRate = SenescenceRate.Value;
         _StructuralFraction = 1;
-        if (StructuralFraction != null) //Default of zero means no senescence
+        if (StructuralFraction != null) //Default of 1 means all biomass is structural
             _StructuralFraction = StructuralFraction.Value;
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;

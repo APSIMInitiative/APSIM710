@@ -70,6 +70,8 @@ public class Leaf : BaseOrgan, AboveGround
     [Param]
     [Description("Final Node Number")]
     protected double FinalNodeNoEstimate = 0;
+    public double DeltaNodeNumber = 0;
+    public double StemPopulation = 0;
  #endregion
 
  #region Outputs
@@ -729,6 +731,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
+        StemPopulation = Sow.Population * Sow.BudNumber;
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)

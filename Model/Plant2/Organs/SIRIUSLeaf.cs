@@ -5,7 +5,7 @@ using CSGeneral;
 
 public class SIRIUSLeaf : Leaf, AboveGround
 {
-
+    
  #region Outputs Variables
     [Output]
     double[] CohortSize
@@ -220,7 +220,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
         _FinalNodeNo = Math.Min(_FinalNodeNo, MaxNodeNo);
 
         if (NodeAppearanceRate.Value > 0)
-            NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
+            DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+            NodeNo += DeltaNodeNumber;
         NodeNo = Math.Min(NodeNo, _FinalNodeNo);
 
         Function FrostFraction = Children["FrostFraction"] as Function;
@@ -233,11 +234,11 @@ public class SIRIUSLeaf : Leaf, AboveGround
 
             Function BranchingRate = (Function)Children["BranchingRate"];
             Population Population = Plant.Children["Population"] as Population;
-            double BranchNo = Population.Value * PrimaryBudNo;
+            double BranchNumber = Population.Value * PrimaryBudNo;
             if (Leaves.Count > 0)
-                BranchNo = Leaves[Leaves.Count - 1].Population;
-            BranchNo += BranchingRate.Value * Population.Value * PrimaryBudNo;
-            Leaves.Add(new SIRIUSLeafCohort(BranchNo,
+                BranchNumber = Leaves[Leaves.Count - 1].Population;
+            BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
+            Leaves.Add(new SIRIUSLeafCohort(BranchNumber,
                                    CohortAge,
                                    Math.Truncate(NodeNo),
                                    Children["MaxArea"] as Function,
