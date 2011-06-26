@@ -101,9 +101,8 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         get
         {
             double _DMRetranslocationFactor = 0;
-            if (DMRetranslocationFactor != null) //Default of 1 means retranslocation is always truned off!!!!
+            if (DMRetranslocationFactor != null) //Default of 0 means retranslocation is always truned off!!!!
                 _DMRetranslocationFactor = DMRetranslocationFactor.Value; 
-            //Function DMRetranslocationFactor = Children["DMRetranslocationFactor"] as Function;
             return StartNonStructuralWt * _DMRetranslocationFactor;
         }
     }
@@ -147,7 +146,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         set
         {
-            double _StructuralFraction = 1.0; //Default is all DM is structural
+            double _StructuralFraction = 1.0; //Default of 1 means all DM is structural
             if (StructuralFraction != null)
                 _StructuralFraction = StructuralFraction.Value;
             Live.StructuralWt += value * _StructuralFraction;

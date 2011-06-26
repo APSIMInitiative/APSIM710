@@ -53,6 +53,7 @@ class SIRIUSLeafCohort : LeafCohort
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
     private double CoverAbove = 0;
+    private double FracSenShade = 0;
  #endregion
     
  #region Arbitrator method calls
@@ -238,7 +239,7 @@ class SIRIUSLeafCohort : LeafCohort
 
  #region Leaf Cohort Functions
     // Functions used to produce leaf cohort behaviour
-    public SIRIUSLeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function MaxNC, Function MinNC, Function SF, Function NRF, Function NRR, Function Stressfact, Function SLAmin, SIRIUSLeaf Parent, Function CritNC, Function CritCover, Function DMRF)
+    public SIRIUSLeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function MaxNC, Function MinNC, Function SF, Function NRF, Function NRR, Function Stressfact, Function SLAmin, SIRIUSLeaf Parent, Function CritNC, Function CritCover, Function DMRF, Function ShadeSenRate)
         : base(popn, age, rank, ma, gd, ld, sd, sla, InitialArea, MaxNC, MinNC, null, null)
 {
         _Population = popn;
@@ -267,7 +268,7 @@ class SIRIUSLeafCohort : LeafCohort
         ParentLeafOrgan = Parent;
         CriticalCover = CritCover.Value;
         DMRetranslocationFactor = DMRF.Value;
-
+        FracSenShade = ShadeSenRate.Value;
 }
     public override void DoPotentialGrowth(double TT)
     {
@@ -384,10 +385,10 @@ class SIRIUSLeafCohort : LeafCohort
         {
             FracSenAge = 0;
         }
-        double FracSenShade = 0;
+        double _FracSenShade = 0;
         if (CoverAbove >= CriticalCover)
-            FracSenShade = 0.2; //assuming 20% of area senesses each day when the leaf is shaded
-        return Math.Max(FracSenAge, FracSenShade);
+            _FracSenShade = FracSenShade;
+        return Math.Max(FracSenAge, _FracSenShade);
     }
  #endregion
 }

@@ -5,9 +5,6 @@ using CSGeneral;
 
 public class Nodule : SIRIUSGenericOrgan, BelowGround
 {
-    //[Link]
-    //Plant Plant = null;
-
   #region Class Data Members
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;

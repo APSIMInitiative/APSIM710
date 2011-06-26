@@ -257,7 +257,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    this,
                                    Children["CriticalNConc"] as Function,
                                    Children["SenescenceInducingCover"] as Function,
-                                   Children["DMRetranslocationFactor"] as Function));
+                                   Children["DMRetranslocationFactor"] as Function,
+                                   Children["ShadeInducedSenRate"] as Function));
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -291,7 +292,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
                                    this,
                                    Children["CriticalNConc"] as Function,
                                    Children["SenescenceInducingCover"] as Function,
-                                   Children["DMRetranslocationFactor"] as Function));
+                                   Children["DMRetranslocationFactor"] as Function,
+                                   Children["ShadeInducedSenRate"] as Function));
         }
         // Add fraction of top leaf expanded to node number.
         NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;

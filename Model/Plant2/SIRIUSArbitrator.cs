@@ -8,9 +8,6 @@ public class SIRIUSArbitrator : Arbitrator
 {
  #region Setup Class Members
     // IDE set paramaters
-    [Link(IsOptional.Yes)]
-    Function RetransWtNRatio = null;
-    double _RetransWtNRatio = 0.0;
     [Param]
     [Description("Select method used for Arbitration")]
     protected string ArbitrationOption = "";
@@ -18,9 +15,6 @@ public class SIRIUSArbitrator : Arbitrator
     public override void Initialised()
     {
         base.Initialised();
-        _RetransWtNRatio = 0;
-        if (RetransWtNRatio != null) //Default of zero means no biomass will be moved with reallocated N
-            _RetransWtNRatio = RetransWtNRatio.Value; 
     }
     private void Or(bool p)
     {
@@ -74,7 +68,6 @@ public class SIRIUSArbitrator : Arbitrator
 
     public override void DoDM(List<Organ> Organs)
     {
-//Fixme  The only biomass retranslocation is associated with N retranslocation.  Need something to move sugars to reproductive organs
  #region Setup Biomass calculations
         //create organ specific variables
         DMFreshSupplyOrgan = new double[Organs.Count];
@@ -111,7 +104,7 @@ public class SIRIUSArbitrator : Arbitrator
         double TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
  #endregion
 
- #region Allocate Assimilated biomass
+ #region Allocate Biomass
         //  Allocate to meet Organs demands
         double TotalWtAllocated = 0;
         double TotalWtNotAllocatedSinkLimitation = 0;
@@ -126,7 +119,7 @@ public class SIRIUSArbitrator : Arbitrator
             }
         }
         
-        // Anything not required by organs demand is allocated to leaves until they reach their minimum SLA then any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
+        // Anything not required by organs structural and metabolic demand is allocated to organs Non-structural capacity.  Once this is full any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
         double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -146,7 +139,7 @@ public class SIRIUSArbitrator : Arbitrator
         if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
             throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
 
-        //Then if demand is not met by supply retranslocate non-structural DM to meet demands not covered by daily assimilation
+        //Then if demand is not met by fresh DM supply retranslocate non-structural DM to meet demands
         double TotalStoreDMRetranslocated = 0;
         if ((TotalDMDemand - TotalWtAllocated) > 0)
         {
@@ -171,7 +164,6 @@ public class SIRIUSArbitrator : Arbitrator
             {
                 double RelativeSupply = DMStoreSupplyOrgan[i] / TotalStoreDMSupply;
                 DMRetranslocation[i] += TotalStoreDMRetranslocated * RelativeSupply;
-                // FIXME Currently no reallocating DM with N
             }
         }
 
@@ -227,7 +219,7 @@ public class SIRIUSArbitrator : Arbitrator
 
         //Set relative N demands of each organ
         for (int i = 0; i< Organs.Count; i++)
-            RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand;  //Fixme rename fractional N demand  ????
+            RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand; 
 #endregion
 
  #region Reallocate Senesced Nitrogen
@@ -251,7 +243,6 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NReallocationSupply[i] / TotalNReallocationSupply;
                     NReallocation[i] += NReallocationAllocated * RelativeSupply;
-                    // FIXME Currently no reallocating DM with N
                 }
             }
         }
@@ -334,7 +325,6 @@ public class SIRIUSArbitrator : Arbitrator
                 {
                     double RelativeSupply = NRetranslocationSupply[i] / TotalNRetranslocationSupply;
                     NRetranslocation[i] += NRetranslocationAllocated * RelativeSupply;
-                    //Not moving Wt with retranslocated N because the two are decouples in the nonsturcutral pool so we may have N but no Wt there to move.
                 }
             }
         }
@@ -384,9 +374,7 @@ public class SIRIUSArbitrator : Arbitrator
  #endregion
         
  #region Send arbitration results
-        // =======================================
         // Send DM allocations to all Plant Organs
-        // =======================================
         for (int i = 0; i < Organs.Count; i++)
         {
             Organs[i].DMAllocation = DMAllocation[i];
@@ -394,11 +382,8 @@ public class SIRIUSArbitrator : Arbitrator
             Organs[i].DMRespired = FixationWtLoss[i];
             Organs[i].DMRetranslocation = DMRetranslocation[i];
         }
-
-        // ======================================
+        
         // Send N allocations to all Plant Organs
-        // ======================================
-
         for (int i = 0; i < Organs.Count; i++)
         {
             if (NAllocated[i] < -0.00001)
@@ -415,24 +400,24 @@ public class SIRIUSArbitrator : Arbitrator
  #endregion
  
  #region Mass balance checking
-        // ==============================================================================
-        // CHECK OVERALL MASS BALANCE
-        // ==============================================================================
         double EndN = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndN += Organs[i].Live.N + Organs[i].Dead.N;
         double NBalanceError = (EndN - (StartingN + TotalNUptakeSupply + TotalNFixationSupply));
         if (NBalanceError > 0.000000001)
-            throw new Exception("Daily Plant N increment is greater than N supply");
+            throw new Exception("N Mass balance violated!!!!.  Daily Plant N increment is greater than N supply");
         NBalanceError = (EndN - (StartingN + NDemand));
         if (NBalanceError > 0.000000001)
-            throw new Exception("Daily Plant N increment is greater than N demand");
+            throw new Exception("N Mass balance violated!!!!  Daily Plant N increment is greater than N demand");
         double EndWt = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;
-        DMBalanceError = Math.Abs(EndWt - (StartingMass + TotalFreshDMSupply - TotalWtNotAllocatedSinkLimitation - TotalWtLossNShortage - NetWtLossFixation));
-        if (DMBalanceError > 0.01)
-            throw new Exception("Mass Balance Error in Overall DM Allocation");
+        DMBalanceError = (EndWt - (StartingMass + TotalFreshDMSupply));
+        if (DMBalanceError > 0.0001)
+            throw new Exception("DM Mass Balance violated!!!!  Daily Plant N increment is greater than Photosynthetic DM supply");
+        DMBalanceError = (EndWt - (StartingMass + TotalDMDemand + TotalDMSinkCapacity));
+        if (DMBalanceError > 0.0001)
+            throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
  #endregion
 
     }
@@ -441,60 +426,44 @@ public class SIRIUSArbitrator : Arbitrator
     {
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
                 Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
                 NAllocated[i] += Allocation;
                 TotalAllocated += Allocation;
-                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
-                {
-                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                }
             }
         }
     }
 
-    //Note the two allocation methods below have not been tested yet.
     private void PriorityAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
     {
         double NotAllocated = TotalSupply;
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
-                Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
-                //Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                Allocation = Math.Min(Requirement, NotAllocated);
                 NAllocated[i] += Allocation;
                 NotAllocated -= Allocation;
                 TotalAllocated += Allocation;
-                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
-                {
-                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                }
             }
         }
-       
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]); //Luxury N uptake needed to get to maximum N concentration 
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
-                //Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
-                Allocation = Math.Min(NDemandOrgan[i] - NAllocated[i], NotAllocated); // Allow the organs to get the rest of their demand     
+                Allocation = Math.Min(Requirement, NotAllocated);
                 NAllocated[i] += Allocation;
                 NotAllocated -= Allocation;
                 TotalAllocated += Allocation;
-                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
-                {
-                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                }
             }
         }
     }
@@ -505,36 +474,28 @@ public class SIRIUSArbitrator : Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {
-                Allocation = Math.Min(Math.Max(DMAllocation[i] * Organs[i].MinNconc - NAllocated[i], 0.0), NotAllocated);
-                //Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                Allocation = Math.Min(Requirement, NotAllocated);
                 NAllocated[i] += Allocation;
                 NotAllocated -= Allocation;
                 TotalAllocated += Allocation;
-                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
-                {
-                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                }
             }
         }
-
         // Second time round if there is still N to allocate let organs take N up to their Maximum
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]);
+            double Requirement = Math.Max(0.0, NDemandOrgan[i] * NDemandFactor - NAllocated[i]); //N needed to take organ up to maximum N concentration, Structural, Metabolic and Luxury N demands
             double Allocation = 0.0;
+            double RemainingSupply = TotalSupply - TotalAllocated;
             if (Requirement > 0.0)
             {
-                Allocation = Math.Min(TotalSupply * RelativeNDemand[i], Requirement);
+                Allocation = Math.Min(RemainingSupply * RelativeNDemand[i], Requirement);
                 NAllocated[i] += Allocation;
+                NotAllocated -= Allocation;
                 TotalAllocated += Allocation;
-                if (_RetransWtNRatio > 0 && DMretranslocationFactor == 1.0) //Reallocate DM associated with N retranslocation
-                {
-                    DMAllocation[i] += Allocation * _RetransWtNRatio; // convert N to crude protein or NO3 (depending on the value of DMRetransFact) 
-                }
             }
         }
     }
