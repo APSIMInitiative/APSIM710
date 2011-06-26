@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using System.Xml;
-using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace CMPServices
@@ -249,7 +249,7 @@ namespace CMPServices
         /// <summary>
         /// List of TTypedValues that are fld or elem children
         /// </summary>
-        protected ArrayList FMembers;
+        protected List<TTypedValue> FMembers;
         /// <summary>
         /// Each typed value uses a parser at creation
         /// </summary>
@@ -316,7 +316,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             setBaseType(sBaseType);
 
@@ -345,7 +345,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             setBaseType(sBaseType);
 
@@ -371,7 +371,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             FBaseType = aBaseType;
             //Called in the derived classes because it calls virtual functions
@@ -394,7 +394,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             FBaseType = aBaseType;
 
@@ -427,7 +427,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             FBaseType = baseValue.FBaseType;
 
@@ -450,7 +450,7 @@ namespace CMPServices
         {
             ascii = new System.Text.ASCIIEncoding();
 
-            FMembers = new ArrayList();
+            FMembers = new List<TTypedValue>();
             //set the kind of this typed value
             FBaseType = typedValue.FBaseType;
 
@@ -541,7 +541,7 @@ namespace CMPServices
             {
                 FBaseType = findArrayType(this); //retrieve base type from a child
             }
-            if ((FBaseType == TBaseType.ITYPE_DEF) && !FIsArray)
+            else if ((FBaseType == TBaseType.ITYPE_DEF) && !FIsArray)
             {
                 FIsRecord = true;
             }
@@ -1258,12 +1258,12 @@ namespace CMPServices
             if (FIsScalar && (index == 1))                       // Item(1) for a scalar is the scalar itself
                 result = this;
             else if ((index <= FMembers.Count) && (index > 0))                 // records and arrays
-                result = (TTypedValue)FMembers[(int)index - 1];       // N.B. 1-offset indexing
+                result = FMembers[(int)index - 1];       // N.B. 1-offset indexing
             else if (FIsArray && (index == 0))
                 if (childTemplate != null)
                     result = childTemplate;
                 else if (FMembers.Count > 0)
-                    result = (TTypedValue)FMembers[0];
+                    result = FMembers[0];
 
             return result;
         }
@@ -1284,7 +1284,7 @@ namespace CMPServices
                 {
                     //delete some elements (newsize>=0)
                     if (FMembers.Count == 1)
-                        childTemplate = (TTypedValue)(FMembers[index - 1]); //store the last element locally for cloning later
+                        childTemplate = FMembers[index - 1]; //store the last element locally for cloning later
                     FMembers.RemoveAt(index - 1);   //delete it from the list
                 }
             }
@@ -1327,10 +1327,7 @@ namespace CMPServices
                     while ((dim < FMembers.Count) && (FMembers.Count > 0))
                     {
                         //delete some elements (newsize>=0)
-                        if (FMembers.Count == 1)
-                            childTemplate = (TTypedValue)FMembers[FMembers.Count - 1];  //store the last element
-
-                        FMembers.RemoveAt(FMembers.Count - 1);
+                        deleteElement(FMembers.Count);  //1 based
                     }
                 }
             }
@@ -1959,7 +1956,7 @@ namespace CMPServices
             {
                 for (i = 0; i < FMembers.Count; i++)
                 {
-                    iSize = iSize + ((TTypedValue)FMembers[i]).sizeBytes();
+                    iSize = iSize + FMembers[i].sizeBytes();
                 }
                 if (FIsArray)
                     iSize = iSize + INTSIZE;
@@ -2252,7 +2249,7 @@ namespace CMPServices
                     //go through each child and set the data block
                     for (i = 0; i < FMembers.Count; i++)
                     {             //for each field
-                        value = (TTypedValue)FMembers[i];
+                        value = FMembers[i];
                         value.setData(newData, bytesRemain, startIndex);             //store the datablock
                         childSize = value.sizeBytes();
                         bytesRemain = bytesRemain - (int)childSize;
@@ -2393,7 +2390,7 @@ namespace CMPServices
                     //now copy the children. All children exist now
                     //go through each child and set the data block
                     for (i = 0; i < FMembers.Count; i++) {      //for each field
-                        value = (TTypedValue)FMembers[i];
+                        value = FMembers[i];
                         value.setData(newData, startIndex);                      //store the datablock
                         childSize = value.sizeBytes();
                         startIndex += childSize;                    //inc ptr along this dataBlock

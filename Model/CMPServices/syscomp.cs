@@ -834,7 +834,8 @@ namespace CMPServices
                 case Msgs.MSG_NOTIFYTERMINATION:
                     {
                         //here we delete the component that responded
-                        TMsgHeader msg = querySentMsgList(origMsgID);
+                        TMsgHeader msg;
+                        querySentMsgList(origMsgID, out msg);
                         uint destCompID = msg.to;
                         finaliseSentMsg(origMsgID);             //take sent msg of list
 
@@ -876,7 +877,8 @@ namespace CMPServices
                     {                         //do the deregistration of the component or system
                         int regoKind = TypeSpec.KIND_COMPONENT;                //get the kind of deregistration
                         int regoID = 0;
-                        TMsgHeader msg = querySentMsgList(origMsgID);
+                        TMsgHeader msg;
+                        querySentMsgList(origMsgID, out msg);
                         compID = msg.to;
                         finaliseSentMsg(origMsgID);                   //take the sent notifyAboutToDelete msg off list
 
@@ -957,8 +959,8 @@ namespace CMPServices
             else
             {    //else we are back at the originator and do other handling of the Complete()
                 //if this system component has a logic dll, and the queryInfo came from this component ID, then
-                TMsgHeader msg = querySentMsgList(origMsgID);
-                if (!ackList.IsNull(msg))
+                TMsgHeader msg;
+                if (querySentMsgList(origMsgID, out msg) == true)
                 {
                     base.doComplete(msg.from, msg.msgID);
 

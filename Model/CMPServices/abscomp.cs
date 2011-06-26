@@ -280,7 +280,7 @@ namespace CMPServices
     /// Used to store the local event information
     /// </summary>
     //==============================================================================
-    internal class TEventInfo : TSourcedInfo
+    public class TEventInfo : TSourcedInfo
     {
         public uint destID;    //optional source component
         public int iKind;      //published or subscribed

@@ -128,7 +128,8 @@ namespace CMPServices
                 case Msgs.MSG_NOTIFYTERMINATION:
                     {
                         //here we delete the component that responded
-                        TMsgHeader msg = querySentMsgList(origMsgID);
+                        TMsgHeader msg;
+                        querySentMsgList(origMsgID, out msg);
                         uint compID = msg.to;
                         finaliseSentMsg(origMsgID);
 

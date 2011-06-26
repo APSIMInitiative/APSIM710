@@ -96,6 +96,8 @@ namespace CMPServices
                     FIsScalar = true;
                 }
             }
+            if (firstElementChild(topElement, "field") != null) //if a child element is a field
+                FIsRecord = true;
          }
       }
 

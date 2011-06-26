@@ -72,7 +72,7 @@ namespace CMPServices
         /// </summary>
         protected const String systemElement = "system";
         /// <summary>
-        /// 
+        /// Name of simulation element in xml code
         /// </summary>
         protected const String simulationElement = "simulation";
         //=======================================================================

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace CMPServices
 {
@@ -232,6 +233,105 @@ namespace CMPServices
         static private UInt16 UInt16FromBytes(byte[] p, uint offset)
         {
             return (UInt16)(p[offset + 1] << 8 | p[offset]);
+        }
+
+        // We will need to use a different set of libraries under Linux
+        [DllImport("libdl")]
+        internal static extern IntPtr dlopen(String dllname, int flag);
+
+        [DllImport("libdl")]
+        internal static extern IntPtr dlsym(IntPtr hModule, String procname);
+
+        [DllImport("libdl")]
+        internal static extern int dlclose(IntPtr hModule);
+
+        [DllImport("kernel32.dll")]
+        internal static extern IntPtr LoadLibrary(String dllname);
+
+        [DllImport("kernel32.dll")]
+        internal static extern IntPtr GetProcAddress(IntPtr hModule, String procname);
+
+        [DllImport("kernel32.dll")]
+        internal static extern int FreeLibrary(IntPtr hModule);
+
+        //============================================================================
+        // Wrappers for the routines to access native libraries, to localise
+        // for platform dependencies
+        //============================================================================
+        /// <summary>
+        /// Load a library.
+        /// </summary>
+        /// <param name="dllName">Path to the dll</param>
+        /// <returns>The return value of either dlopen() or LoadLibrary()</returns>
+        //=========================================================================
+        static public IntPtr LibLoad(String dllName)
+        {
+            if (Path.VolumeSeparatorChar == '/')
+            {
+                return dlopen(dllName, 1); // 1 is usually the value for RTLD_LAZY...
+            }
+            else
+                return LoadLibrary(dllName);
+        }
+        //=========================================================================
+        /// <summary>
+        /// Get the address of a function by name.
+        /// </summary>
+        /// <param name="handle">dll handle</param>
+        /// <param name="entry">Name of the function</param>
+        /// <returns>The return value from either dlsym() or GetProcAddress()</returns>
+        //=========================================================================
+        static public IntPtr LibGetAddr(IntPtr handle, String entry)
+        {
+            if (Path.VolumeSeparatorChar == '/')
+            {
+                return dlsym(handle, entry);
+            }
+            else
+                return GetProcAddress(handle, entry);
+        }
+        //=========================================================================
+        /// <summary>
+        /// Unload the dll
+        /// </summary>
+        /// <param name="handle"></param>
+        /// <returns>The return value from either dlclose() or FreeLibrary()</returns>
+        //=========================================================================
+        static public int LibUnload(IntPtr handle)
+        {
+            if (Path.VolumeSeparatorChar == '/')
+                return dlclose(handle);
+            else
+                return FreeLibrary(handle);
+        }
+        //=========================================================================
+        /// <summary>
+        /// Load the dll and return the handle to the module
+        /// </summary>
+        /// <param name="Executable">Path to the dll to load.</param>
+        /// <returns>The dll Handle</returns>
+        //=========================================================================
+        static public IntPtr loadDll(String Executable)
+        {
+            IntPtr dllHandle = IntPtr.Zero;
+            if (dllHandle.Equals(IntPtr.Zero))
+            {
+                //change the current directory so that apsim components can find their support dll's
+                string sCurrent = Directory.GetCurrentDirectory();
+                string sModuleDir = Path.GetDirectoryName(Executable);
+                if (sModuleDir != String.Empty)
+                    Directory.SetCurrentDirectory(sModuleDir);
+                try
+                {
+                    dllHandle = LibLoad(Executable);
+                }
+                finally
+                {
+                    //change back to original current directory
+                    Directory.SetCurrentDirectory(sCurrent);
+                }
+            }
+            return dllHandle;
         }
 
     }

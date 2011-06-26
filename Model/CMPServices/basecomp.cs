@@ -27,7 +27,7 @@ namespace CMPServices
         /// <summary>
         /// List of messages that have been sent and await acknowledgement
         /// </summary>
-        protected TMessageHdrList ackList;              
+        protected Dictionary<UInt32, TMsgHeader> ackList;     
         /// <summary>
         /// track queryInfo msg's
         /// </summary>
@@ -92,7 +92,7 @@ namespace CMPServices
             msgDestFunction = msgCallBack;  //store a ref to the delegate class function here
             
             driverIDList = new List<TIDSpec>();
-            ackList = new TMessageHdrList();                //tracks the complete msg's
+            ackList = new Dictionary<UInt32, TMsgHeader>();
             queryInfoTracker = new TQueryInfoTracker();     //tracks queryInfo msg's
             interpreter = new TMessageInterpreter(FMyID);
             interpreter.initMsgIDCounter(FMyID * 1000000);     //ensure msgID's are interesting
@@ -1365,7 +1365,7 @@ namespace CMPServices
         //============================================================================
         protected void finaliseSentMsg(uint msgID)
         {
-            ackList.removeMsg(msgID);
+            ackList.Remove(msgID);
         }
         //============================================================================
         /// <summary>
@@ -1875,7 +1875,10 @@ namespace CMPServices
         {
             if (msg.toAck > 0)
             {
-                ackList.addMsgToList(msg);
+                TMsgHeader _msg = new TMsgHeader();
+                _msg = msg;
+                _msg.dataPtr = null;
+                ackList.Add(msg.msgID, _msg);
             }
         }
         //==============================================================================
@@ -2061,14 +2064,15 @@ namespace CMPServices
         //============================================================================
         /// <summary>
         /// Returns the TMsgHeader of the original msgID from the ackList
-        /// If it is not in the list then TMessageHdrList.Null is returned
+        /// If it is not in the list then false is returned
         /// </summary>
         /// <param name="msgID">Message ID.</param>
-        /// <returns>The message or TMessageHdrList.Null.</returns>
+        /// <param name="msg">The message found.</param>
+        /// <returns>True if the message is found.</returns>
         //============================================================================
-        protected TMsgHeader querySentMsgList(uint msgID)
+        protected Boolean querySentMsgList(uint msgID, out TMsgHeader msg)
         {
-            return ackList.queryMsg(msgID);
+            return ackList.TryGetValue(msgID, out msg);
         }
         //============================================================================
         /// <summary>
@@ -2080,7 +2084,11 @@ namespace CMPServices
         //============================================================================
         protected int getSentMsgType(uint msgID)
         {
-            return ackList.getMsgType(msgID);
+            TMsgHeader _msg;
+            if (ackList.TryGetValue(msgID, out _msg) == true)
+                return _msg.msgType;
+            else
+                return -1;
         }
         //============================================================================
         /// <summary>

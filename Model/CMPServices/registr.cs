@@ -453,7 +453,8 @@ namespace CMPServices
                     foundIdx = i;
                     result = entity;
                 }
-                i++;
+                else
+                    i++;
             }
             return result;
         }

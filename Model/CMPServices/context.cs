@@ -63,13 +63,14 @@ namespace CMPServices
             String result = "";
             if (dllName.Length > 0)
             {
-                if (dllName.Contains("%dllext%"))
+                result = dllName;
+                if (result.Contains("%dllext%"))
                 {
                     result = dllName.Replace("%dllext%", "dll");
-                    result = result.Replace("%apsim%", "");
-                    result = result.Replace("/", Path.DirectorySeparatorChar.ToString());
-                    result = Path.GetFileName(result);
                 }
+                result = result.Replace("%apsim%", "");
+                result = result.Replace("/", Path.DirectorySeparatorChar.ToString());
+                result = Path.GetFileName(result);
             }
             return result;
         }

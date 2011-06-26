@@ -282,7 +282,7 @@ namespace CMPServices
             int b, i;
             uint remainingBranches;
             bool found;
-            TTrunkMsg bMsg = new TTrunkMsg();
+            TTrunkMsg bMsg;
             TCompItem msgItem;
 
             remainingBranches = 0;
