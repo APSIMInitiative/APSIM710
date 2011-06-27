@@ -5,6 +5,10 @@ using ApsimFile;
 using System.IO;
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+
+using CMPServices;
 
 public class Types
 {
@@ -124,6 +128,40 @@ public class Types
                     Info.Description = Description;
                     Info.IsArray = Property.DeclaringType.IsArray;
                     Names.Add(Info);
+                }
+            }
+            else
+            {
+                //attempt to get these details from getDescription() (works for CPI components)
+                if (TOSInterface.isManaged(DLLFileName) == TOSInterface.CompilationMode.Native)
+                {
+                    String descr = "";
+                    //now I can probe this dll for it's description.
+                    descr = getNativeDescription(DLLFileName);
+                    if (descr.Length > 0)
+                    {
+                        TComponentDescrParser comp = new TComponentDescrParser(descr);
+                        //need to read all the properties information
+                        String propertySDML = comp.firstProperty();
+                        while (propertySDML.Length > 0)
+                        {
+                            //create a property attribute of this class
+                            TCompProperty newProperty;
+                            newProperty = new TCompProperty(propertySDML);
+                            if ((newProperty.Name.ToLower() != STRSUBEVENT_ARRAY) &&
+                                 (newProperty.Name.ToLower() != STRPUBEVENT_ARRAY) &&
+                                 (newProperty.Name.ToLower() != STRDRIVER_ARRAY))
+                            {
+                                MetaDataInfo Info = new MetaDataInfo();
+                                Info.Name = newProperty.Name;
+                                Info.Description = newProperty.sDescr;
+                                Info.IsArray = newProperty.InitValue.isArray();
+                                Names.Add(Info);
+                            }
+                            propertySDML = comp.nextProperty();
+                        }
+                    }
+
                 }
             }
         }
@@ -352,4 +390,56 @@ public class Types
         return ProbeInfoAssembly;
     }
 
+    //native code components
+    private IntPtr FDllHandle = IntPtr.Zero;
+    private String FCompDescription = "";
+
+    //names of the special SDML arrays (inits) found in the <initsection> of a CPI component
+    private const String STRPUBEVENT_ARRAY = "published_events";
+    private const String STRSUBEVENT_ARRAY = "subscribed_events";
+    private const String STRDRIVER_ARRAY = "driver_connections";
+
+    //access the native component 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    internal delegate void PGetDescriptionLength([MarshalAs(UnmanagedType.LPStr)]String szContext, ref Int32 lLength);
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    internal delegate void PGetDescription([MarshalAs(UnmanagedType.LPStr)]String szContext, StringBuilder szDescription);
+
+    internal PGetDescriptionLength fpGetDescrLength;
+    internal PGetDescription fpGetDescr;
+    //=======================================================================
+    /// <summary>
+    /// Accesses the component dll to get the component description SDML text.
+    /// </summary>
+    /// <param name="filename">The full path name of the component dll.</param>
+    /// <returns>The component description xml.</returns>
+    //=======================================================================
+    public String getNativeDescription(String filename)
+    {
+        FCompDescription = "";
+        FDllHandle = TOSInterface.loadDll(filename);
+        if (!FDllHandle.Equals(IntPtr.Zero)) //sets FDllHandle
+        {
+            IntPtr procAddr = TOSInterface.LibGetAddr(FDllHandle, "getDescriptionLength");
+            if (!procAddr.Equals(IntPtr.Zero))
+            {
+                Int32 lLength = 0;
+                fpGetDescrLength = (PGetDescriptionLength)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescriptionLength));
+                fpGetDescrLength("", ref lLength);
+                //now get the description. Native components construct an instance during getDescription()
+                procAddr = TOSInterface.LibGetAddr(FDllHandle, "getDescription");
+                if (!procAddr.Equals(IntPtr.Zero))
+                {
+                    StringBuilder sb = new StringBuilder(lLength);
+                    fpGetDescr = (PGetDescription)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PGetDescription));
+                    fpGetDescr("", sb);
+                    FCompDescription = sb.ToString();
+                }
+            }
+            //unload the dll so any new one is loaded properly
+            TOSInterface.LibUnload(FDllHandle);
+            FDllHandle = IntPtr.Zero;
+        }
+        return FCompDescription;
+    }
 }
