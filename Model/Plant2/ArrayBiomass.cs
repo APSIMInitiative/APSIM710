@@ -11,7 +11,7 @@ public class ArrayBiomass : Instance
     Plant Plant = null;
 
     [Param]
-    private string[] Property = null;
+    private string[] Propertys = null;
 
     [Param]
     private string ArraySize = null;
@@ -129,7 +129,7 @@ public class ArrayBiomass : Instance
 
         double[] Values = new double[ArraySizeNumber];
         int i = 0;
-        foreach (string PropertyName in Property)
+        foreach (string PropertyName in Propertys)
         {
             object Obj = ExpressionFunction.Evaluate(Plant, PropertyName + SubPropertyName);
             if (Obj is double[])

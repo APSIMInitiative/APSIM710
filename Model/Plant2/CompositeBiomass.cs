@@ -9,7 +9,7 @@ public class CompositeBiomass : Biomass
    {
    [Link] Plant Plant = null;
 
-   [Param] private string[] Property = null;
+   [Param] private string[] Propertys = null;
 
    [Output]
    [Units("g/m^2")]
@@ -18,7 +18,7 @@ public class CompositeBiomass : Biomass
       get 
          {
          double Value = 0;
-         foreach (string PropertyName in Property)
+         foreach (string PropertyName in Propertys)
              Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".NonStructuralN)"));
          return Value;
          }
@@ -33,7 +33,7 @@ public class CompositeBiomass : Biomass
       get
          {
          double Value = 0;
-         foreach (string PropertyName in Property)
+         foreach (string PropertyName in Propertys)
              Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".StructuralN)"));
          return Value;
          }
@@ -46,7 +46,7 @@ public class CompositeBiomass : Biomass
       get
          {
          double Value = 0;
-         foreach (string PropertyName in Property)
+         foreach (string PropertyName in Propertys)
              Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".NonStructuralWt)"));
          return Value;
          }
@@ -59,7 +59,7 @@ public class CompositeBiomass : Biomass
       get
          {
          double Value = 0;
-         foreach (string PropertyName in Property)
+         foreach (string PropertyName in Propertys)
              Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".StructuralWt)"));
          return Value;
          }
@@ -72,7 +72,7 @@ public class CompositeBiomass : Biomass
        get
        {
            double Value = 0;
-           foreach (string PropertyName in Property)
+           foreach (string PropertyName in Propertys)
                Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".MetabolicN)"));
            return Value;
        }
@@ -86,7 +86,7 @@ public class CompositeBiomass : Biomass
        get
        {
            double Value = 0;
-           foreach (string PropertyName in Property)
+           foreach (string PropertyName in Propertys)
                Value += Convert.ToDouble(ExpressionFunction.Evaluate(Plant, "sum(" + PropertyName + ".MetabolicWt)"));
            return Value;
        }

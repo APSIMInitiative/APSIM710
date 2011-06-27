@@ -6,6 +6,8 @@
 #include "..\DataTypes\DOTNETDataTypes.h"
 using namespace CSGeneral;
 using namespace System::Reflection;
+using namespace System::Collections;
+using namespace System::Collections::Generic;
 using namespace System::Xml;
 
 public ref class ReflectedType abstract : NamedItem
@@ -22,34 +24,60 @@ public ref class ReflectedType abstract : NamedItem
       property Object^ Get { virtual Object^ get() abstract;}
       property array<Object^>^ MetaData { virtual array<Object^>^ get() abstract;}
       virtual void SetObject(Object^ Value) abstract;
-      void Set(String^ Value)
+      void Set(XmlNode^ Node)
          {
-         if (Typ->Name == "Double")
-            SetObject(Convert::ToDouble(Value));
-         else if (Typ->Name == "Int32")
-            SetObject(Convert::ToInt32(Value));
-         else if (Typ->Name == "Single")
-            SetObject(Convert::ToSingle(Value));
-		 else if (Typ->Name == "Boolean")
-			 SetObject(Convert::ToBoolean(Value));
-         else if (Typ->Name == "String")
-            SetObject(Value);
-         else if (Typ->Name == "Double[]")
+         String^ Value = Node->InnerText;
+         try
             {
-            String^ Delimiters = " ";
-            array<String^>^ StringValues = Value->Split(Delimiters->ToCharArray(), StringSplitOptions::RemoveEmptyEntries);
-            array<double>^ Values = MathUtility::StringsToDoubles(StringValues);
-            SetObject(Values);
+            if (Typ->Name == "Double")
+               SetObject(Convert::ToDouble(Value));
+            else if (Typ->Name == "Int32")
+               SetObject(Convert::ToInt32(Value));
+            else if (Typ->Name == "Single")
+               SetObject(Convert::ToSingle(Value));
+		      else if (Typ->Name == "Boolean")
+			      SetObject(Convert::ToBoolean(Value));
+            else if (Typ->Name == "String")
+               SetObject(Value);
+            else if (Typ->Name == "Double[]")
+               {
+               List<String^>^ StringValues = XmlHelper::Values(Node->ParentNode, Node->Name);
+               array<double>^ DoubleValues = nullptr;
+               if (StringValues->Count > 1)
+                  DoubleValues = MathUtility::StringsToDoubles(StringValues);
+               else if (StringValues->Count == 1)
+                  {
+                  String^ Delimiters = " ";
+                  array<String^>^ Values = StringValues[0]->Split(Delimiters->ToCharArray(), StringSplitOptions::RemoveEmptyEntries);
+                  DoubleValues = MathUtility::StringsToDoubles(Values);
+                  }
+               SetObject(DoubleValues);
+               }
+            else if (Typ->Name == "String[]")
+               {
+               List<String^>^ StringValues = XmlHelper::Values(Node->ParentNode, Node->Name);
+               array<String^>^ Values = nullptr;
+               if (StringValues->Count > 1)
+                  {
+                  Values = gcnew array<String^>(StringValues->Count);
+                  StringValues->CopyTo(Values);
+                  }
+               else if (StringValues->Count == 1)
+                  {
+                  String^ Delimiters = " ";
+                  Values = StringValues[0]->Split(Delimiters->ToCharArray(), StringSplitOptions::RemoveEmptyEntries);
+                  }
+               SetObject(Values);
+               }
+            else
+               throw gcnew Exception("Cannot set value of property: " + Name +
+                                     ". Cannot convert: " + Value->ToString() + " to: " + Typ->Name);
             }
-         else if (Typ->Name == "String[]")
+         catch (Exception^ err)
             {
-            String^ Delimiters = " ";
-            array<String^>^ StringValues = Value->Split(Delimiters->ToCharArray(), StringSplitOptions::RemoveEmptyEntries);
-            SetObject(StringValues);
-            }            
-         else
-            throw gcnew Exception("Cannot set value of property: " + Name +
-                                  ". Cannot convert: " + Value->ToString() + " to: " + Typ->Name);
+            String^ Msg = err->Message + "\nParameter: " + Name + "\nValue: " + Value;
+            throw gcnew Exception(Msg);
+            }
          }
    };
 public ref class ReflectedField : ReflectedType
@@ -132,57 +160,71 @@ public ref class FactoryProperty : Instance, ApsimType
          HaveSet = true;
          Property->SetObject(Value);
          }
-      void Set(String^ Value)
+      void Set(XmlNode^ Value)
          {
          HaveSet = true;
          Property->Set(Value);
          }
-      void SetFromXML(XmlNode^ Node)
+      //void Set(String^ Value)
+      //   {
+      //   HaveSet = true;
+      //   Property->Set(Value);
+      //   }
+      //void SetFromXML(XmlNode^ Node)
+      //   {
+      //   // make sure we have a value.
+      //   if (Property->Get == nullptr)
+      //      Property->SetObject(Activator::CreateInstance(Property->Typ));
+
+      //   // See if this field has a ReadFromXML method. If so then call it.
+      //   MethodInfo^ ReadFromXML = Property->Typ->GetMethod("ReadFromXML");
+      //   if (ReadFromXML != nullptr)
+      //      {
+      //      array<Object^>^ Params = gcnew array<Object^>(1);
+      //      Params[0] =  Node;
+      //      ReadFromXML->Invoke(Property->Get, Params);
+      //      }
+      //   else
+      //      {
+      //      if (ChildFields == nullptr)
+      //         {
+      //         ChildFields = gcnew List<ReflectedField^>();
+
+      //         for each (XmlNode^ Child in Node->ChildNodes)
+      //            {
+      //            FieldInfo^ Field = Property->Typ->GetField(Child->Name, BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
+      //            if (Field == nullptr)
+      //               throw gcnew Exception("Cannot find field: " + Child->Name + " in type: " + Property->Typ->Name);
+      //            ChildFields->Add(gcnew ReflectedField(Field, Property->Get));
+      //            }
+      //         }
+      //      for each (XmlNode^ Child in Node->ChildNodes)
+      //         {
+      //         bool Found = false;
+      //         for each (ReflectedField^ Field in ChildFields)
+      //            {
+      //            if (Field->Name == Child->Name)
+      //               {
+      //               Field->Set(Child->InnerText);
+      //               Found = true;
+      //               }
+      //            }
+      //         if (!Found)
+      //            throw gcnew Exception("Cannot find field: " + Child->Name + " in type:" + Property->Typ->Name);
+      //         }
+      //      }
+      //   HaveSet = true;
+      //   }
+      void AddToList(Instance^ ChildInstance)
          {
          // make sure we have a value.
          if (Property->Get == nullptr)
             Property->SetObject(Activator::CreateInstance(Property->Typ));
 
-         // See if this field has a ReadFromXML method. If so then call it.
-         MethodInfo^ ReadFromXML = Property->Typ->GetMethod("ReadFromXML");
-         if (ReadFromXML != nullptr)
-            {
-            array<Object^>^ Params = gcnew array<Object^>(1);
-            Params[0] =  Node;
-            ReadFromXML->Invoke(Property->Get, Params);
-            }
-         else
-            {
-            if (ChildFields == nullptr)
-               {
-               ChildFields = gcnew List<ReflectedField^>();
-
-               for each (XmlNode^ Child in Node->ChildNodes)
-                  {
-                  FieldInfo^ Field = Property->Typ->GetField(Child->Name, BindingFlags::Instance | BindingFlags::Public | BindingFlags::NonPublic);
-                  if (Field == nullptr)
-                     throw gcnew Exception("Cannot find field: " + Child->Name + " in type: " + Property->Typ->Name);
-                  ChildFields->Add(gcnew ReflectedField(Field, Property->Get));
-                  }
-               }
-            for each (XmlNode^ Child in Node->ChildNodes)
-               {
-               bool Found = false;
-               for each (ReflectedField^ Field in ChildFields)
-                  {
-                  if (Field->Name == Child->Name)
-                     {
-                     Field->Set(Child->InnerText);
-                     Found = true;
-                     }
-                  }
-               if (!Found)
-                  throw gcnew Exception("Cannot find field: " + Child->Name + " in type:" + Property->Typ->Name);
-               }
-            }
+         System::Collections::IList^ L = (System::Collections::IList^) Property->Get;
+         L->Add((Object^)ChildInstance);
          HaveSet = true;
          }
-
    
    
       virtual void pack(char* messageData)

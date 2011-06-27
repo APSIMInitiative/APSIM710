@@ -8,7 +8,7 @@ class MinimumFunction : Function
    {
    [Link] Plant Plant = null;
 
-   [Param] string[] Property = null;
+   [Param] string[] Propertys = null;
 
    [Output]
    public override double Value
@@ -16,7 +16,7 @@ class MinimumFunction : Function
       get
          {
          double ReturnValue = 999999999;
-         foreach (string PropertyName in Property)
+         foreach (string PropertyName in Propertys)
             {
                 double Val = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, PropertyName));
             ReturnValue = Math.Min(ReturnValue, Val);

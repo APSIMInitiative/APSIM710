@@ -7,7 +7,7 @@ using namespace ModelFramework;
 /// </summary>
 ModelFramework::Variable^ ModelFramework::Component::Variable(String^ VariableName)
    {
-   return gcnew ModelFramework::Variable(Comp, FullName, VariableName);
+   return gcnew ModelFramework::Variable(Comp, FullName + "." + VariableName);
    }
 
 /// <summary>

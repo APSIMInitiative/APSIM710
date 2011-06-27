@@ -124,6 +124,11 @@ public ref class Paddock : public Component
       /// </summary>
       Component^ CreateComponent(String^ ComponentName);
 
-    
+
+      /// <summary>
+      /// Returns a reference to a variable.
+      /// </summary>
+      virtual ModelFramework::Variable^ Variable(String^ VariableName) override;
+
    }; // class
 } // namespace

@@ -3,74 +3,80 @@ using System.Collections.Generic;
 using System.Text;
 
 public class TemperatureFunction : Function
-   {
-   #region Class Data Members
-   [Param] private LinearInterpolation XYPairs = null;   // Temperature effect on Growth Interpolation Set
-   [Input] double MaxT = 0;
-   [Input] double MinT = 0;
-   #endregion
+{
+    #region Class Data Members
+    [Link]
+    private XYPairs XYPairs = null;   // Temperature effect on Growth Interpolation Set
 
-   [Output][Units("deg.day")]
-   public override double Value
-      {
-      get
-         {
-         return Linint3hrlyTemp(MaxT, MinT, XYPairs);
-         }
-      }
-   static public double Linint3hrlyTemp(double tmax, double tmin, LinearInterpolation ttFn)
-      {
-      // --------------------------------------------------------------------------
-      // Eight interpolations of the air temperature are
-      // calculated using a three-hour correction factor.
-      // For each air three-hour air temperature, a value
-      // is calculated.  The eight three-hour estimates
-      // are then averaged to obtain the daily value.
-      // --------------------------------------------------------------------------
+    [Input]
+    double MaxT = 0;
 
-      //Constants
-      int num3hr = 24 / 3;           // number of 3 hourly temperatures
+    [Input]
+    double MinT = 0;
+    #endregion
 
-      // Local Variables
-      double tot = 0.0;            // sum_of of 3 hr interpolations
+    [Output]
+    [Units("deg.day")]
+    public override double Value
+    {
+        get
+        {
+            return Linint3hrlyTemp(MaxT, MinT, XYPairs);
+        }
+    }
+    static public double Linint3hrlyTemp(double tmax, double tmin, XYPairs ttFn)
+    {
+        // --------------------------------------------------------------------------
+        // Eight interpolations of the air temperature are
+        // calculated using a three-hour correction factor.
+        // For each air three-hour air temperature, a value
+        // is calculated.  The eight three-hour estimates
+        // are then averaged to obtain the daily value.
+        // --------------------------------------------------------------------------
 
-      for (int period = 1; period <= num3hr; period++)
-         {
-         // get mean temperature for 3 hr period (oC)
-         double tmean_3hour = temp_3hr(tmax, tmin, period);
-         tot = tot + ttFn.Value(tmean_3hour);
-         }
-      return tot / (double)num3hr;
-      }
+        //Constants
+        int num3hr = 24 / 3;           // number of 3 hourly temperatures
 
-   static private double temp_3hr(double tmax, double tmin, int period)
-      {
-      // --------------------------------------------------------------------------
-      //   returns the temperature for a 3 hour period.
-      //   a 3 hourly estimate of air temperature
-      // --------------------------------------------------------------------------
+        // Local Variables
+        double tot = 0.0;            // sum_of of 3 hr interpolations
 
-      if (period < 1)
-         throw new Exception("3 hr. period number is below 1");
-      else if (period > 8)
-         throw new Exception("3 hr. period number is above 8");
+        for (int period = 1; period <= num3hr; period++)
+        {
+            // get mean temperature for 3 hr period (oC)
+            double tmean_3hour = temp_3hr(tmax, tmin, period);
+            tot = tot + ttFn.ValueIndexed(tmean_3hour);
+        }
+        return tot / (double)num3hr;
+    }
 
-      double period_no = period;
+    static private double temp_3hr(double tmax, double tmin, int period)
+    {
+        // --------------------------------------------------------------------------
+        //   returns the temperature for a 3 hour period.
+        //   a 3 hourly estimate of air temperature
+        // --------------------------------------------------------------------------
 
-      // fraction_of of day's range_of for this 3 hr period
-      double t_range_fract = 0.92105
-                           + 0.1140 * period_no
-                           - 0.0703 * Math.Pow(period_no, 2)
-                           + 0.0053 * Math.Pow(period_no, 3);
+        if (period < 1)
+            throw new Exception("3 hr. period number is below 1");
+        else if (period > 8)
+            throw new Exception("3 hr. period number is above 8");
 
-      // diurnal temperature range for the day (oC)
-      double diurnal_range = tmax - tmin;
+        double period_no = period;
 
-      // deviation from day's minimum for this 3 hr period
-      double t_deviation = t_range_fract * diurnal_range;
+        // fraction_of of day's range_of for this 3 hr period
+        double t_range_fract = 0.92105
+                             + 0.1140 * period_no
+                             - 0.0703 * Math.Pow(period_no, 2)
+                             + 0.0053 * Math.Pow(period_no, 3);
 
-      return tmin + t_deviation;
-      }
+        // diurnal temperature range for the day (oC)
+        double diurnal_range = tmax - tmin;
 
-      }
+        // deviation from day's minimum for this 3 hr period
+        double t_deviation = t_range_fract * diurnal_range;
+
+        return tmin + t_deviation;
+    }
+
+}
    

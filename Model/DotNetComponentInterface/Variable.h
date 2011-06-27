@@ -16,13 +16,11 @@ public ref class Variable
    /// --------------------------------------------------------------------------
    private:
       ModelFramework::ApsimComponent^ Component;
-      String^ ComponentName;
       String^ Name;
    public:
-      Variable(ModelFramework::ApsimComponent^ component, String^ Componentname, String^ VariableName)
+      Variable(ModelFramework::ApsimComponent^ component, String^ VariableName)
          {
          Component = component;
-         ComponentName = Componentname;
          Name = VariableName;
          }
 

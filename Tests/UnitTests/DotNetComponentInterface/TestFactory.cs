@@ -7,7 +7,8 @@ using System.Reflection;
 public class Comp1 : Instance
    {
    [Param][Units("g/m2")][@Description("A description")] public double Param1;
-   [Param] public NewMetType NewMet = null;
+   [Param]
+   public NewMetType NewMet = null;
    public double NotAParam = 0;
    [Param("Alias")] public double Param2;
    [Input] private double Param3 = 0;
@@ -51,28 +52,6 @@ public class TestFactory
       Assert.AreEqual(Model.Params[0], "A,");
       Assert.AreEqual(Model.Params[1], "B,");
       Assert.AreEqual(Model.Params[2], "C");
-      }
-
-   [Test]
-   public void PopulateStringArray()
-      {
-      // --------------------------------------------------------------------
-      // Make sure we can populate a string array
-      // --------------------------------------------------------------------
-      string Xml = "<Comp1>" +
-                   "   <Param1>12</Param1>" +
-                   "   <NewMet>" +
-                   "      <maxt>30</maxt>" +
-                   "      <mint>12</mint>" +
-                   "   </NewMet>" +
-                   "</Comp1>";
-
-      Factory Factory = new Factory();
-      Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
-      Comp1 Model = (Comp1)Factory.Root;
-      Assert.AreEqual(Model.Param1, 12);
-      Assert.AreEqual(Model.NewMet.maxt, 30);
-      Assert.AreEqual(Model.NewMet.mint, 12);
       }
 
    [Test] [ExpectedException("System.Exception")]

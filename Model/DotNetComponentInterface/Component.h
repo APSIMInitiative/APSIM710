@@ -77,7 +77,7 @@ public ref class Component
       /// <summary>
       /// Returns a reference to a variable.
       /// </summary>
-      Variable^ Variable(String^ VariableName);
+      virtual Variable^ Variable(String^ VariableName);
          
       /// <summary>
       /// Publish a notification event (i.e. one that doesn't have any data 

@@ -4,6 +4,14 @@
 using namespace ModelFramework;
 
 /// <summary>
+/// Returns a reference to a variable.
+/// </summary>
+ModelFramework::Variable^ Paddock::Variable(String^ VariableName)
+   {
+   return gcnew ModelFramework::Variable(Comp, VariableName);
+   }
+
+/// <summary>
 /// Publish a notification event i.e. one that doesn't have any data 
 /// associated with it. This event is broadcast to all components within scope.
 /// </summary>

@@ -359,13 +359,13 @@ namespace CSGeneral
       // --------------------------------------------------
       // Convert an array of strings to an array of doubles
       // --------------------------------------------------
-      static public double[] StringsToDoubles(string[] Values)
+      static public double[] StringsToDoubles(IList Values)
          {
-         double[] ReturnValues = new double[Values.Length];
+         double[] ReturnValues = new double[Values.Count];
 
-         for (int Index = 0; Index != Values.Length; Index++)
+         for (int Index = 0; Index != Values.Count; Index++)
             {
-            if (Values[Index] == "")
+            if (Values[Index].ToString() == "")
                ReturnValues[Index] = MathUtility.MissingValue;
             else
                ReturnValues[Index] = Convert.ToDouble(Values[Index]);
@@ -683,10 +683,10 @@ namespace CSGeneral
          return NewValues.ToArray();
          }
 
-      public static string[] DoublesToStrings(double[] DoubleValues)
+      public static string[] DoublesToStrings(IList DoubleValues)
          {
-         string[] Values = new string[DoubleValues.Length];
-         for (int i = 0; i < DoubleValues.Length; i++)
+         string[] Values = new string[DoubleValues.Count];
+         for (int i = 0; i < DoubleValues.Count; i++)
             Values[i] = DoubleValues[i].ToString();
          return Values;
          }

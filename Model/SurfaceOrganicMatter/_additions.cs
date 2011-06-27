@@ -9,12 +9,15 @@ public partial class SurfaceOrganicMatter : Instance
 
     #region Residue/Tillage Types
 
-    public class ResiduesType
+    public class ResiduesType : Instance
     {
         Dictionary<string, ResidueType> residues;
+        [Param]
+        XmlNode xe = null;
 
-        public void ReadFromXML(XmlElement xe)
+        public override void Initialised()
         {
+            base.Initialised();
             residues = new Dictionary<string, ResidueType>();
 
             foreach (XmlNode xn in xe.ChildNodes)

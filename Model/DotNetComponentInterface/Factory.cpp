@@ -204,11 +204,29 @@ void Factory::GetAllEvents(Instance^ Obj)
          if (dynamic_cast<XmlComment^>(Child) == nullptr)
             {
             Type^ t = CallingAssembly->GetType(Child->Name);
-			if (t != nullptr && t->IsSubclassOf(Instance::typeid))
+
+            if (t != nullptr && t->IsSubclassOf(Instance::typeid))
                {
                // Create a child instance - indirect recursion.
                Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                Obj->Add(ChildInstance);   
+
+               // See if there is an array of the right type with the plural version of our child name
+               // e.g. if Child is LeafCohort, look for a LeafCohorts member.
+               String^ PluralName = CalcParentName(Child) + "s";
+               for each (FactoryProperty^ Property in RegisteredProperties)
+                  {
+                  if (Property->FQN == PluralName)
+                     {
+                     // Found a list - see if it is the right type.
+                     if (Property->TypeName->Contains("List"))
+                        {
+                        // It is the right type so add our newly created child to the list.
+                        Property->AddToList(ChildInstance);
+                        }
+                     break;
+                     }
+                  }
                }
             else if (Child->Name == "Memo")
                {
@@ -222,14 +240,20 @@ void Factory::GetAllEvents(Instance^ Obj)
                if (Parameter == nullptr)
                   throw gcnew Exception("Cannot set value of property: " + Child->Name + " in object: " + Obj->InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                Parameter->Name = XmlHelper::Name(Child);
-               bool IsXmlText = (dynamic_cast<XmlText^>(Child->ChildNodes[0]) != nullptr);
-               if (IsXmlText)
-                  Parameter->Set(Child->InnerText);  // set the value of the simple property.
-               else
-                  Parameter->SetFromXML(Child);      // assume structure and set all fields.
+               Parameter->Set(Child);
                }
             }
          }
+
+      // Look for an XmlNode param. If found then given it our current 'Node'.
+      for each (FactoryProperty^ Property in RegisteredProperties)
+         {
+         if (Property->TypeName == "XmlNode")
+            {
+            Property->Set(Node);
+            }
+         }
+
       }
    FactoryProperty^ Factory::FindProperty(XmlNode^ Child)
       {
@@ -240,11 +264,18 @@ void Factory::GetAllEvents(Instance^ Obj)
       String^ FQN = CalcParentName(Child);
       for each (FactoryProperty^ Property in RegisteredProperties)
          {
-			 if (FQN == "MaxCover")
-				 int i = 0;
-         if (Property->FQN == FQN)
+         if (Property->FQN->ToLower() == FQN->ToLower())
             return Property;
          }
+
+      // Go look for the plural version - property might be an array.
+      FQN = FQN + "s";
+      for each (FactoryProperty^ Property in RegisteredProperties)
+         {
+         if (Property->FQN->ToLower() == FQN->ToLower())
+            return Property;
+         }
+
       return nullptr;
       }
     

@@ -148,9 +148,9 @@ public class NetCDF
       }
 
    [DllImport("netcdf.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true, CallingConvention=CallingConvention.Cdecl )]
-   public static extern string nc_inq_libvers();
+   public static extern IntPtr nc_inq_libvers();
    [DllImport("netcdf.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
-   public static extern string nc_strerror(Int32 ncerr1);
+   public static extern IntPtr nc_strerror(Int32 ncerr1);
    [DllImport("netcdf.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true, CallingConvention = CallingConvention.Cdecl)]
    public static extern Int32 nc_create(string path, Int32 cmode, ref Int32 ncidp);
    [DllImport("netcdf.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true, CallingConvention=CallingConvention.Cdecl )]

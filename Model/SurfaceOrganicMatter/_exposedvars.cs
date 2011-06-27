@@ -6,7 +6,7 @@ public partial class SurfaceOrganicMatter : Instance
 {
     #region BensParams
 
-    [Param]
+    [Link]
     public ResiduesType residue_types;
 
     [Param]

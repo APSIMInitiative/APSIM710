@@ -61,7 +61,7 @@ void DerivedInstance::ApplyOverrides()
 					   {
 				          found = true;
                           ReflectedField^ FieldToSet = gcnew ReflectedField(field, target);
-	                      FieldToSet->Set(Child->InnerText);
+	                      FieldToSet->Set(Child);
 						  break;
 					   }
 					 }
@@ -79,7 +79,7 @@ void DerivedInstance::ApplyOverrides()
 					       {
 						      found = true;
                               ReflectedProperty^ PropertyToSet = gcnew ReflectedProperty(property, target);
-  					          PropertyToSet->Set(Child->InnerText);
+  					          PropertyToSet->Set(Child);
 						 	  break;
 						   }
 						}

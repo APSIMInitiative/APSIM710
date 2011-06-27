@@ -135,8 +135,8 @@ public class AgPasture : Instance
     [Param]    private double[] CO2NCurvature;
     [Input(true)] private double co2 = 380; //expected to be updated from ClimateControl 
 
-    [Param]    private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
-    [Param]    private LinearInterpolation HeightMassFN = null;
+    [Link]    private LinearInterpolation FVPDFunction = null;    //Senescence rate is affected by min(gf-N, gf_water)
+    [Link]    private LinearInterpolation HeightMassFN = null;
    
     //Soil & roots 
     [Param]    public double[] rlvp = null;    //Root Length Density proportion (relative)                
@@ -2507,31 +2507,34 @@ public class AgPasture : Instance
 
 //------------------------------------------------------------------------------
 
-public class LinearInterpolation
+public class LinearInterpolation : Instance
 {
+    [Param]
+    public string[] XYs;
+
     public double[] X;
     public double[] Y;
-    public void ReadFromXML(XmlNode Node)
+
+    public override void Initialised()
     {
-        int NumCoordinates = XmlHelper.ChildNames(Node, "XY").Length;
-        X = new double[NumCoordinates];
-        Y = new double[NumCoordinates];
-        int i = 0;
-        foreach (XmlNode Child in XmlHelper.ChildNodes(Node, "XY"))
+        base.Initialised();
+
+        X = new double[XYs.Length];
+        Y = new double[XYs.Length];
+        for (int i = 0; i < XYs.Length; i++)
         {
-            string[] XY = Child.InnerText.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);            
-            if (XY.Length != 2)
-                throw new Exception("Invalid XY coordinate for function. Value: " + Child.InnerText);
-            X[i] = Convert.ToDouble(XY[0]);
-            Y[i] = Convert.ToDouble(XY[1]);
-            i++;
+            string[] XYBits = XYs[i].Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            if (XYBits.Length != 2)
+                throw new Exception("Invalid XY coordinate for function. Value: " + XYs[i]);
+            X[i] = Convert.ToDouble(XYBits[0]);
+            Y[i] = Convert.ToDouble(XYBits[1]);
         }
     }
     public double Value(double dX)
     {
         bool DidInterpolate = false;
         return MathUtility.LinearInterpReal(dX, X, Y, out DidInterpolate);
-    }
+    } 
 }
 
 //================================================================================
