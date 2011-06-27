@@ -20,11 +20,14 @@
     </drops>
     <ApsimToSim>
       <component name="[MaizeZ.name]" executable="[dll]">
-        <executable>[dll]</executable>
+        <executable name="[dll]" version="1.0" />
         <initdata>
-               [Model]
-               <ll>[soil.ll]</ll><kl>[soil.kl]</kl><xf>[soil.xf]</xf>
-				</initdata>
+               [if [HasChildren]]
+                  [Children]
+               [else]
+                  [Model]
+               [endif]
+               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
       </component>
     </ApsimToSim>
   </MetaData>
