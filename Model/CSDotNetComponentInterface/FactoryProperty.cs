@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Runtime.InteropServices;
@@ -21,34 +22,61 @@ public abstract class ReflectedType : NamedItem
     public abstract Object Get { get; }
     public abstract Object[] MetaData { get; }
     public abstract void SetObject(Object Value);
-    public void Set(String Value)
+    public void Set(XmlNode Node)
     {
-        if (Typ.Name == "Double")
-            SetObject(Convert.ToDouble(Value));
-        else if (Typ.Name == "Int32")
-            SetObject(Convert.ToInt32(Value));
-        else if (Typ.Name == "Single")
-            SetObject(Convert.ToSingle(Value));
-        else if (Typ.Name == "Boolean")
-            SetObject(Convert.ToBoolean(Value));
-        else if (Typ.Name == "String")
-            SetObject(Value);
-        else if (Typ.Name == "Double[]")
+        String Value = Node.InnerText;
+        try
         {
-            String Delimiters = " ";
-            String[] StringValues = Value.Split(Delimiters.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            double[] Values = MathUtility.StringsToDoubles(StringValues);
-            SetObject(Values);
+            if (Typ.Name == "Double")
+                SetObject(Convert.ToDouble(Value));
+            else if (Typ.Name == "Int32")
+                SetObject(Convert.ToInt32(Value));
+            else if (Typ.Name == "Single")
+                SetObject(Convert.ToSingle(Value));
+            else if (Typ.Name == "Boolean")
+                SetObject(Convert.ToBoolean(Value));
+            else if (Typ.Name == "String")
+                SetObject(Value);
+            else if (Typ.Name == "Double[]")
+            {
+                List<String> StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
+                double[] DoubleValues = null;
+                if (StringValues.Count > 1)
+                    DoubleValues = MathUtility.StringsToDoubles(StringValues);
+                else if (StringValues.Count == 1)
+                {
+                    String Delimiters = " ";
+                    String[] Values = StringValues[0].Split(Delimiters.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    DoubleValues = MathUtility.StringsToDoubles(Values);
+                }
+                SetObject(DoubleValues);
+            }
+            else if (Typ.Name == "String[]")
+            {
+                List<String> StringValues = XmlHelper.Values(Node.ParentNode, Node.Name);
+                String[] Values = null;
+                if (StringValues.Count > 1)
+                {
+                    Values = new String[StringValues.Count];
+                    StringValues.CopyTo(Values);
+                }
+                else if (StringValues.Count == 1)
+                {
+                    String Delimiters = " ";
+                    Values = StringValues[0].Split(Delimiters.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                }
+                SetObject(Values);
+            }
+            else
+                throw new Exception("Cannot set value of property: " + Name +
+                                      ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
+
         }
-        else if (Typ.Name == "String[]")
+        catch (Exception err)
         {
-            String Delimiters = " ";
-            String[] StringValues = Value.Split(Delimiters.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-            SetObject(StringValues);
+            String Msg = err.Message + "\nParameter: " + Name + "\nValue: " + Value;
+            throw new Exception(Msg);
         }
-        else
-            throw new Exception("Cannot set value of property: " + Name +
-                                  ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
     }
 }
 // --------------------------------------------------------------------
@@ -174,7 +202,7 @@ public class ReflectedProperty : ReflectedType
 // --------------------------------------------------------------------
 public class FactoryProperty : Instance, ApsimType
 {
-    private List<ReflectedField> ChildFields;
+    //private List<ReflectedField> ChildFields;
     private ReflectedType Property;
     private ApsimType Data;
     protected TDDMLValue DDMLValue;
@@ -215,7 +243,12 @@ public class FactoryProperty : Instance, ApsimType
         HaveSet = true;
         Property.SetObject(Value);
     }
-    public void Set(String Value)
+    public void Set(XmlNode Value)
+    {
+        HaveSet = true;
+        Property.Set(Value);
+    }
+   /* public void Set(String Value)
     {
         HaveSet = true;
         Property.Set(Value);
@@ -263,6 +296,16 @@ public class FactoryProperty : Instance, ApsimType
                     throw new Exception("Cannot find field: " + Child.Name + " in type:" + Property.Typ.Name);
             }
         }
+        HaveSet = true;
+    } */
+    public void AddToList(Instance ChildInstance)
+    {
+        // make sure we have a value.
+        if (Property.Get == null)
+            Property.SetObject(Activator.CreateInstance(Property.Typ));
+
+        IList L = (IList)Property.Get;
+        L.Add((Object)ChildInstance);
         HaveSet = true;
     }
     /// <summary>

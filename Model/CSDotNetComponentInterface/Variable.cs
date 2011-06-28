@@ -13,18 +13,21 @@ public class Variable : NamedItem
     /// This class encapsulates an APSIM variable.
     /// --------------------------------------------------------------------------
     private ApsimComponent Component;
-    private String ComponentName;
-    public Variable(ApsimComponent component, String Componentname, String VariableName)
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="component"></param>
+    /// <param name="VariableName">FQN of the variable</param>
+    public Variable(ApsimComponent component, String VariableName)
     {
         Component = component;
-        ComponentName = Componentname;
-        Name = VariableName;
+        Name = VariableName;    
     }
 
     public bool Exists()
     {
         WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
-        return Component.Get(ComponentName + "." + Name, Data, false);
+        return Component.Get(Name, Data, false);
     }
 
     /// <summary>
@@ -34,55 +37,55 @@ public class Variable : NamedItem
     public bool ToBoolean()
     {
         WrapBuiltInVariable<bool> Data = new WrapBuiltInVariable<bool>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public int ToInt32()
     {
         WrapBuiltInVariable<int> Data = new WrapBuiltInVariable<int>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public float ToSingle()
     {
         WrapBuiltInVariable<float> Data = new WrapBuiltInVariable<float>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public double ToDouble()
     {
         WrapBuiltInVariable<double> Data = new WrapBuiltInVariable<double>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public override String ToString()
     {
         WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public int[] ToInt32Array()
     {
         WrapBuiltInVariable<int[]> Data = new WrapBuiltInVariable<int[]>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public float[] ToSingleArray()
     {
         WrapBuiltInVariable<float[]> Data = new WrapBuiltInVariable<float[]>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public double[] ToDoubleArray()
     {
         WrapBuiltInVariable<double[]> Data = new WrapBuiltInVariable<double[]>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
     public String[] ToStringArray()
     {
         WrapBuiltInVariable<String[]> Data = new WrapBuiltInVariable<String[]>();
-        Component.Get(ComponentName + "." + Name, Data, false);
+        Component.Get(Name, Data, false);
         return Data.Value;
     }
 
@@ -90,50 +93,50 @@ public class Variable : NamedItem
     {
         WrapBuiltInVariable<int> Data = new WrapBuiltInVariable<int>();
         Data.Value = Value;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(float Value)
     {
         WrapBuiltInVariable<float> Data = new WrapBuiltInVariable<float>();
         Data.Value = Value;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(double Value)
     {
         WrapBuiltInVariable<double> Data = new WrapBuiltInVariable<double>();
         Data.Value = Value;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(String Value)
     {
         WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
         Data.Value = Value;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
 
     public void Set(int[] Values)
     {
         WrapBuiltInVariable<int[]> Data = new WrapBuiltInVariable<int[]>();
         Data.Value = Values;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(float[] Values)
     {
         WrapBuiltInVariable<float[]> Data = new WrapBuiltInVariable<float[]>();
         Data.Value = Values;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(double[] Values)
     {
         WrapBuiltInVariable<double[]> Data = new WrapBuiltInVariable<double[]>();
         Data.Value = Values;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
     public void Set(String[] Values)
     {
         WrapBuiltInVariable<String[]> Data = new WrapBuiltInVariable<String[]>();
         Data.Value = Values;
-        Component.Set(ComponentName + "." + Name, Data);
+        Component.Set(Name, Data);
     }
 }
 

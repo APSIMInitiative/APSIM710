@@ -16,7 +16,7 @@ public class Component : TypedItem
     protected ApsimComponent HostComponent;
     
     protected String ParentCompName;            //Name of the parent component in the simulation
-    protected String CompName;                  //Name of the actual component
+    protected String FQN;                       //Name of the actual component
     // --------------------------------------------------------------------
     /// <summary>
     /// 
@@ -28,11 +28,14 @@ public class Component : TypedItem
     {
         return TypeName.ToLower() == TypeNameToMatch.ToLower();
     }
+    /// <summary>
+    /// Turn the fully qualified name (e.g. .MasterPM.Paddock1.wheat) into a
+    /// crop name (e.g. wheat)
+    /// </summary>
+    /// <returns>True if this is a crop type component.</returns>
     public bool IsCrop()
     {
-        // Turn the fully qualified name (e.g. .MasterPM.Paddock1.wheat) into a
-        // crop name (e.g. wheat)
-        String CropName = CompName;
+        String CropName = FQN;
         int PosLastPeriod = CropName.LastIndexOf('.');
         if (PosLastPeriod != -1)
             CropName = CropName.Substring(PosLastPeriod + 1);
@@ -50,10 +53,10 @@ public class Component : TypedItem
     public Component(Instance In)
     {
         //get the name of the owner component of the Instance (e.g. Plant2)
-        CompName = In.ParentComponent().GetName();
+        FQN = In.ParentComponent().GetName();
         ParentCompName = "";
-        if (CompName.LastIndexOf('.') > -1)
-            ParentCompName = CompName.Substring(0, CompName.LastIndexOf('.')); //e.g. Paddock
+        if (FQN.LastIndexOf('.') > -1)
+            ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
         //get the name of the host component for the calling object
         HostComponent = In.ParentComponent();   //e.g. Plant2
         TypeName = HostComponent.CompClass;     //type of Plant2
@@ -62,15 +65,15 @@ public class Component : TypedItem
     /// <summary>
     /// Constructor
     /// </summary>
-    /// <param name="Nam">Name of the actual component</param>
+    /// <param name="_FullName">Name of the actual component</param>
     /// <param name="component">The apsim component that hosts this object</param>
     // --------------------------------------------------------------------
-    public Component(String Nam, ApsimComponent component)
+    public Component(String _FullName, ApsimComponent component)
     {
-        CompName = Nam;
+        FQN = _FullName;
         ParentCompName = "";
-        if (CompName.LastIndexOf('.') > -1)
-            ParentCompName = CompName.Substring(0, CompName.LastIndexOf('.'));
+        if (FQN.LastIndexOf('.') > -1)
+            ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.'));
         HostComponent = component;
         TypeName = HostComponent.CompClass;
     }
@@ -94,37 +97,81 @@ public class Component : TypedItem
     }
     // --------------------------------------------------------------------
     /// <summary>
-    /// 
+    /// Returns a reference to a variable.
     /// </summary>
     /// <param name="VariableName"></param>
     /// <returns></returns>
     // --------------------------------------------------------------------
-    public Variable Variable(String VariableName)
+    public virtual Variable Variable(String VariableName)
     {
-        return new Variable(HostComponent, CompName, VariableName);
+        return new Variable(HostComponent, FQN + '.' + VariableName);
     }
+    // --------------------------------------------------------------------
     /// <summary>
-    /// 
+    /// Publish a notification event (i.e. one that doesn't have any data 
+    /// associated with it) to this component only.
+    /// <param name="EventName"></param>
+    /// </summary>
+    // --------------------------------------------------------------------
+    public virtual void Publish(String EventName)
+    {
+        HostComponent.Publish(FQN + "." + EventName, null);
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// Publish an event that has associated data to this component only.
     /// </summary>
     /// <param name="EventName"></param>
     /// <param name="Data"></param>
+    // --------------------------------------------------------------------
     public virtual void Publish(String EventName, ApsimType Data)
     {
-        HostComponent.Publish(CompName + "." + EventName, Data);
+        HostComponent.Publish(FQN + "." + EventName, Data);
     }
+    // --------------------------------------------------------------------
     /// <summary>
-    /// 
+    /// Subscribe to a notification event ie. one without any data associated with it.
     /// </summary>
     /// <param name="EventName"></param>
     /// <param name="F"></param>
+    // --------------------------------------------------------------------
     public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
     {
         RuntimeEventHandler Event = new RuntimeEventHandler(EventName, F);
         HostComponent.Subscribe(Event);
     }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// </summary>
+    /// <returns>Unqualified name of the component.</returns>
+    // --------------------------------------------------------------------
     public String Name()
     {
-        return TRegistrar.unQualifiedName(CompName);
+        return TRegistrar.unQualifiedName(FQN);
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// Static helper function for getting a component name (eg. wheat) from a fully
+    /// qualified component name (eg. .MasterPM.paddock1.wheat)
+    /// </summary>
+    /// <param name="fqn"></param>
+    /// <returns>Unqualified name</returns>
+    // --------------------------------------------------------------------
+    public static String ComponentName(String fqn)
+    {
+        return TRegistrar.unQualifiedName(fqn);
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// Fully qualified name of component eg. .MasterPM.paddock1.wheat
+    /// </summary>
+    // --------------------------------------------------------------------
+    public String FullName
+    {
+        get
+        {
+            return FQN;
+        }
     }
 }
 

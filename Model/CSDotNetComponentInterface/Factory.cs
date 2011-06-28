@@ -265,11 +265,28 @@ public class Factory
             if (Child.GetType() != typeof(XmlComment) ) //(XmlComment)(Child) == null)
             {
                 Type t = CallingAssembly.GetType(Child.Name);
-                if ( (t != null) &&  t.IsSubclassOf(typeof(Instance)) )
+                if ((t != null) && t.IsSubclassOf(typeof(Instance)))
                 {
                     // Create a child instance - indirect recursion.
                     Instance ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                     Obj.Add(ChildInstance);
+
+                    // See if there is an array of the right type with the plural version of our child name
+                    // e.g. if Child is LeafCohort, look for a LeafCohorts member.
+                    String PluralName = CalcParentName(Child) + "s";
+                    foreach (FactoryProperty Property in RegisteredProperties)
+                    {
+                        if (Property.FQN == PluralName)
+                        {
+                            // Found a list - see if it is the right type.
+                            if (Property.TypeName.Contains("List"))
+                            {
+                                // It is the right type so add our newly created child to the list.
+                                Property.AddToList(ChildInstance);
+                            }
+                            break;
+                        }
+                    }
                 }
                 else if (Child.Name == "Memo")
                 {
@@ -283,12 +300,16 @@ public class Factory
                     if (Parameter == null)
                         throw new Exception("Cannot set value of property: " + Child.Name + " in object: " + Obj.InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                     Parameter.Name = XmlHelper.Name(Child);
-                    bool IsXmlText = ( (Child.ChildNodes[0]).GetType() == typeof(XmlText) );// ((XmlText)(Child.ChildNodes[0]) != null);
-                    if (IsXmlText)
-                        Parameter.Set(Child.InnerText);  // set the value of the simple property.
-                    else
-                        Parameter.SetFromXML(Child);      // assume structure and set all fields.
+                    Parameter.Set(Child);  // set the value of the simple property.
                 }
+            }
+        }
+        // Look for an XmlNode param. If found then given it our current 'Node'.
+        foreach (FactoryProperty Property in RegisteredProperties)
+        {
+            if (Property.TypeName == "XmlNode")
+            {
+                Property.Set(Node);
             }
         }
     }
@@ -305,7 +326,15 @@ public class Factory
         String FQN = CalcParentName(Child);
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if (Property.FQN == FQN)
+            if (Property.FQN.ToLower() == FQN.ToLower())
+                return Property;
+        }
+
+        // Go look for the plural version - property might be an array.
+        FQN = FQN + "s";
+        foreach (FactoryProperty Property in RegisteredProperties)
+        {
+            if (Property.FQN.ToLower() == FQN.ToLower())
                 return Property;
         }
         return null;

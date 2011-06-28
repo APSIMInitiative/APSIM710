@@ -264,7 +264,7 @@ public class DerivedInstance : Instance
 					   {
 				          found = true;
                           ReflectedField FieldToSet = new ReflectedField(field, target);
-	                      FieldToSet.Set(Child.InnerText);
+	                      FieldToSet.Set(Child);
 						  break;
 					   }
 					 }
@@ -282,7 +282,7 @@ public class DerivedInstance : Instance
 					       {
 						      found = true;
                               ReflectedProperty PropertyToSet = new ReflectedProperty(property, target);
-  					          PropertyToSet.Set(Child.InnerText);
+  					          PropertyToSet.Set(Child);
 						 	  break;
 						   }
 						}

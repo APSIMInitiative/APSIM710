@@ -90,9 +90,27 @@ public class Paddock : Component
         }
         return C;
     }
+    /// <summary>
+    /// Returns a reference to a variable.
+    /// <param name="VariableName"></param>
+    /// </summary>
+    public override Variable Variable(String VariableName)
+    {
+        return new Variable(HostComponent, VariableName);
+    }
     //=========================================================================
     /// <summary>
-    /// 
+    /// Publish a notification event i.e. one that doesn't have any data 
+    /// associated with it. This event is broadcast to all components within scope.
+    /// </summary>
+    //=========================================================================
+    public override void Publish(String EventName)
+    {
+        HostComponent.Publish(EventName, null);
+    }
+    //=========================================================================
+    /// <summary>
+    /// Publish an event that has associated data. This event is broadcast to all components within scope.
     /// </summary>
     /// <param name="EventName"></param>
     /// <param name="Data"></param>
@@ -100,6 +118,17 @@ public class Paddock : Component
     public override void Publish(String EventName, ApsimType Data)
     {
         HostComponent.Publish(EventName, Data);
+    }
+    //=========================================================================
+    /// <summary>
+    /// Create a component of the specified name
+    /// </summary>
+    /// <param name="ComponentName"></param>
+    /// <returns></returns>
+    //=========================================================================
+    public Component CreateComponent(String ComponentName)
+    {
+        return new Component(ComponentName, HostComponent);
     }
     // --------------------------------------------------------------------
     /// <summary>
