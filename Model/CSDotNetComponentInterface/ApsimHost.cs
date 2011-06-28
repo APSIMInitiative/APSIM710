@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using ModelFramework;
 using CSGeneral;
 using CMPServices;
 

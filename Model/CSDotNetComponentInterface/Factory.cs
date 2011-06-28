@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
 using CSGeneral;
+using ModelFramework;
 
 // --------------------------------------------------------------------
 /// <summary>

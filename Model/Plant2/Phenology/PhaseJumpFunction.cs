@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if !fulldotnet  
-    using ModelFramework;
-#endif
+using ModelFramework;
 
 class PhaseJumpFunction : Instance
 {

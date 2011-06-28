@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
+using ModelFramework;
 
 public class Paddock : Component
 {
