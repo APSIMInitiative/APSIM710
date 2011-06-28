@@ -527,6 +527,15 @@ Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
             params->ReferencedAssemblies->Add("System.dll");
             params->ReferencedAssemblies->Add(Path::GetDirectoryName(DllFileName) + "\\DotNetComponentInterface.dll");
             params->ReferencedAssemblies->Add(Types::GetProbeInfoDLLFileName());
+
+			for each(String^ val in XmlHelper::ValuesRecursive(Node->ParentNode, "reference"))
+			{
+				if(File::Exists(val))
+					params->ReferencedAssemblies->Add(val);
+				else
+					params->ReferencedAssemblies->Add(Path::GetDirectoryName(DllFileName) + "\\" + val);
+			}
+
             array<String^>^ source = gcnew array<String^>(1);
             source[0] = Node->InnerText;
             CompilerResults^ results = provider->CompileAssemblyFromSource(params, source);

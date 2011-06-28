@@ -787,6 +787,13 @@ namespace ModelFramework
                         _params.ReferencedAssemblies.Add("System.dll");
                         _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\CSDotNetComponentInterface.dll");
                         _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
+
+                        foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
+                            if (File.Exists(val))
+                                _params.ReferencedAssemblies.Add(val);
+                            else
+                                _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\" + val);
+
                         String[] source = new String[1];
                         source[0] = Node.InnerText;
                         CompilerResults results = provider.CompileAssemblyFromSource(_params, source);
