@@ -41,7 +41,7 @@ ApsimSettings::ApsimSettings(void)
 #ifdef __WIN32__
   char szPath[MAX_PATH];
   if (SHGetFolderPath( NULL, CSIDL_APPDATA, NULL, 0, szPath ) != S_OK)
-      throw runtime_error("CSIDL_APPDATA failed");
+      return;
 
   localPath  = string(szPath) + "/Apsim/" + versionNumber + "/Apsim.xml";
 #else 
