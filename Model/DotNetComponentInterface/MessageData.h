@@ -7,6 +7,7 @@
 using namespace System::Runtime::InteropServices;
 using namespace System::Reflection;
 using namespace System::Collections::Specialized;
+using namespace CSGeneral;
 
 // --------------------------------------------------------------------------
 // Raw message data support.
@@ -117,6 +118,37 @@ inline void unpackWithConverter(char* messageData, String^% st)
 	System::Text::StringBuilder^ Contents = gcnew System::Text::StringBuilder(5000);
 	::unpackWithConverter(messageData, Contents);
 	st = Contents->ToString();
+	}
+
+// --------------------------------------------------------------------------
+// DateTime support
+// --------------------------------------------------------------------------
+inline void pack(char* messageData, DateTime Date)
+   {
+   ::pack(messageData, Utility::ToJulianDate(Date));
+   }
+
+inline bool unpack(char* messageData, DateTime% Date, String^ VariableName)
+   {
+   Int32 JulianDate;
+   ::unpack(messageData, JulianDate, VariableName);
+   Date = Utility::FromJulianDate(JulianDate);
+   }
+
+inline void unpackWithConverter(char* messageData, DateTime% Date)
+   {
+   Int32 JulianDate;
+   ::unpackWithConverter(messageData, JulianDate);
+   Date = Utility::FromJulianDate(JulianDate);
+   }
+inline unsigned memorySize(DateTime Date)
+   {
+   Int32 JulianDate = 0;
+   return ::memorySize(JulianDate);
+   }
+inline String^ DDML(DateTime Date)
+	{
+	return "<type kind=\"integer4\"/>";
 	}
 
 // --------------------------------------------------------------------------

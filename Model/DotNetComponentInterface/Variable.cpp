@@ -13,7 +13,7 @@ using namespace ModelFramework;
 bool Variable::Exists()
    {
    WrapBuiltInVariable<String^>^ Data = gcnew WrapBuiltInVariable<String^>();
-   return Component->Get(Name, Data, false);
+   return Component->Get(Name, Data, true);
    }
 bool Variable::ToBoolean()
    {

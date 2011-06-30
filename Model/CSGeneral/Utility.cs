@@ -283,5 +283,39 @@ namespace CSGeneral
             return (UInt16)(p[offset + 1] << 8 | p[offset]);
         }
 
+        public static DateTime FromJulianDate(int julianDate)
+        {
+
+            // This implementation is only valid for dates in the Gregorian
+            // calender (after 15 October 1582).
+            // THIS IS BASED ON THE ALGORITHM BY FLIEGEL AND VAN FLANDERN IN
+            // C.ACM VOL.11 (OCT,1968) P.657
+
+            double work = julianDate + 68569.0;
+            double work0 = (int)(4.0 * work / 146097.0);
+            work = work - (int)((146097.0 * work0 + 3.0) / 4.0);
+            double yy = (int)(4000.0 * (work + 1.0) / 1461001.0);
+
+            work = work - (int)(1461.0 * yy / 4.0) + 31.0;
+            double mm = (int)(80.0 * work / 2447.0);
+            double day = work - (int)(2447.0 * mm / 80.0);
+
+            work = (int)(mm / 11.0);
+            double month = mm + 2.0 - 12.0 * work;
+            double year = 100.0 * (work0 - 49.0) + yy + work;
+
+            return new DateTime((int)year, (int)month, (int)day);
+        }
+        public static int ToJulianDate(DateTime d)
+        {
+            double Quotnt = (int)((d.Month - 14.0) / 12.0);
+
+            return (int)(d.Day - 32075.0 + (int)(1461.0 * (d.Year + 4800.0 + Quotnt) /4.0)
+                                    + (int)( 367.0 * (d.Month - 2.0    - Quotnt * 12.0) / 12.0)
+                                    - (int)(   3.0 * (int)((d.Year + 4900.0 + Quotnt) / 100.0) /4.0));
+
+        }
+
+
     }
 }

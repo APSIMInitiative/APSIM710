@@ -228,7 +228,7 @@ void LogComponent::writeMessage(const string& toName,
                                 ostream& out)
    {
    static const char* messageNames[45] =
-     {"ActivateComponent", "AddComponent", "Checkpoint", "Commence",
+     {"ActivateComponent", "AddComponent", "Error", "Commence",
       "Complete", "DeactivateComponent", "DeleteComponent", "Deregister",
       "Event", "GetValue", "Init1", "Init2",
       "NotifyAboutToDelete", "NotifyRegistrationChange", "NotifySetValueSuccess",

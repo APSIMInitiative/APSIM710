@@ -11,7 +11,7 @@ enum MessageType
    {
    ActivateComponent = 1,
    AddComponent = 2,
-   Checkpoint = 3,
+   Error = 3,
    Commence = 4,
    Complete = 5,
    DeactivateComponent = 6,

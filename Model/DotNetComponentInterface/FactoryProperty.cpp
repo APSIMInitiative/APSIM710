@@ -165,6 +165,8 @@ ApsimType^ FactoryProperty::GetFieldWrapper()
       return gcnew WrapBuiltIn<array<Int32>^>(this);
    else if (TypeName == "String[]")
       return gcnew WrapBuiltIn<array<String^>^>(this);
+   else if (TypeName == "DateTime")
+      return gcnew WrapBuiltIn<DateTime>(this);
 	else
 	   return gcnew WrapApsimType(this);
    }	

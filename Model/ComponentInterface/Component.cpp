@@ -183,6 +183,11 @@ try {
 								 break;}
 	  case Commence:            {doCommence();
 								 break;}
+	  case Error:               {
+                                ErrorData errorData;
+                                messageData >> errorData;
+                                onError(errorData);
+								 break;}
 	  case Event:               {EventData eventData;
                                  messageData >> eventData;
                                  if (eventData.ID == tickID)
@@ -544,21 +549,12 @@ void Component::error(const char *msg, bool isFatal)
    {
    string message = string(msg) + "\nComponent name: " + name;
 
-   // create and send a message.
-   unsigned id = addRegistration(::event,
-                                 parentID,
-                                 string("error"),
-                                 DDML(ErrorType()));
-
-   Message* errorMessage = newPublishEventMessage(componentID,
-                                                  parentID,
-                                                  id,
-                                                  DDML(ErrorType()),
-                                                  ErrorData(isFatal, message.c_str()));
+   Message* errorMessage = newErrorMessage(componentID,
+                                           parentID,
+                                           isFatal, 
+                                           message);
    errorMessage->toAcknowledge = true;
    sendMessage(errorMessage);
-   if (isFatal)
-      terminateSimulation();
    }
 
 // ------------------------------------------------------------------

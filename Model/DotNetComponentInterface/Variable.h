@@ -16,16 +16,17 @@ public ref class Variable
    /// --------------------------------------------------------------------------
    private:
       ModelFramework::ApsimComponent^ Component;
-      String^ Name;
+      String^ _Name;
    public:
       Variable(ModelFramework::ApsimComponent^ component, String^ VariableName)
          {
          Component = component;
-         Name = VariableName;
+         _Name = VariableName;
          }
 
       bool Exists();
-         
+      property String^ Name {String^ get() {return _Name;}}
+
       // getters.
       bool ToBoolean();
       int ToInt32();

@@ -8,13 +8,11 @@
 #include <boost/function.hpp>
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/BuiltIns.h>
 #include <ComponentInterface2/Messages.h>
 #include <ComponentInterface2/Bounded.h>
 #include <ComponentInterface2/FortranString.h>
 #include <ComponentInterface2/FortranArray.h>
 #include <ComponentInterface2/Variant.h>
-
 void EXPORT getKindAndArray(const std::string& ddml, std::string& kind, bool& isArray);
 
 
@@ -35,6 +33,7 @@ class PackableWrapper : public Packable
                                                   {::unpack(messageData, variable);}
       virtual std::string ddml()                  {return DDML(variable);}
    };
+#include <ComponentInterface2/BuiltIns.h>
 
 template <typename T>
 class PackableWrapper2 : public Packable

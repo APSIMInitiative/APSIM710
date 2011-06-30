@@ -435,17 +435,6 @@ void Coordinator::onPublishEventMessage(unsigned int fromID, protocol::PublishEv
           msg += publishEventData.ID;
          throw std::runtime_error(msg);
       }
-      if (Str_i_Eq(regItem->getName(), "error"))
-         {
-         protocol::ErrorData errorData;
-         publishEventData.variant.unpack(NULL, NULL, errorData);
-         string fromComponentName;
-         if (components.find(fromID) != components.end())
-            fromComponentName = components[fromID]->getName();
-         onError(fromComponentName,
-                 asString(errorData.errorMessage),
-                 errorData.isFatal);
-         }
       propogateEvent(fromID, publishEventData);
       }
    }
@@ -1029,25 +1018,25 @@ void Coordinator::onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryDa
    {
    }
 
-void Coordinator::onError(const std::string& fromComponentName,
-                          const string& msg,
-                          bool isFatal)
+void Coordinator::onError(protocol::ErrorData& errorData)
    {
    // ------------------------------------------------------------------
    // A child has published an error - write it to stderr.
    // ------------------------------------------------------------------
+   
    string message = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-   if (isFatal)
+   if (errorData.isFatal)
       message += "                 APSIM  Fatal  Error\n";
    else
       message += "                 APSIM Warning Error\n";
    message += "                 -------------------\n";
 
-   message += msg;
+   message += asString(errorData.errorMessage);
    message += "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
+
    writeStringToStream(message, cout, "");
-   if (isFatal)
-      writeStringToStream(message, cerr, "");
+   if (errorData.isFatal)
+      terminateSimulation();
    }
 
 //============================================================================

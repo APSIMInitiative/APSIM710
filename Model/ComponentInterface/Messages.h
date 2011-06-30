@@ -45,7 +45,17 @@ inline unsigned int memorySize(const ErrorData& data)
    {
    return memorySize(data.isFatal) + memorySize(data.errorMessage);
    }
-
+inline Message* newErrorMessage(unsigned int from,
+                                unsigned int to,
+                                bool isFatal,
+                                const std::string& message)
+   {
+   Message* msg = constructMessage(Error, from, to, false,
+                                   memorySize(isFatal) + memorySize(message));
+   MessageData messageData(msg);
+   messageData << isFatal << message;
+   return msg;
+   }
 
 // --------------- Commence ------------
 inline Message* newCommenceMessage(unsigned int from,

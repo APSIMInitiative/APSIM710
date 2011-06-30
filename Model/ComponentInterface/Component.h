@@ -417,6 +417,7 @@ class EXPORT Component
       virtual void onApsimChangeOrderData(unsigned int fromID, protocol::MessageData& messageData) { }
       virtual void onQuerySetValueMessage(unsigned fromID, QuerySetValueData& querySetData, unsigned msgID);
       virtual void onReplyValueMessage(unsigned fromID, ReplyValueData replyValueData) { }
+      virtual void onError(ErrorData& errorData) { };
 
       // Send a message
       void sendMessage(Message* message)

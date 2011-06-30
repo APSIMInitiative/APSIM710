@@ -644,10 +644,10 @@ void CMPComponentInterface::error(const string& errorMessage, bool isFatal)
    ErrorType errorData;
 	errorData.msg = msg;
 	errorData.isFatal = isFatal;
-	publish("error", new PackableWrapper< ErrorType >(errorData));
+   sendMessage(newMessage(Message::Error, componentID, parentID, false,
+                          errorData));
 	if (isFatal)
 		{
-		terminate();
 		errorHasOccurred = true;
 		}
 	}

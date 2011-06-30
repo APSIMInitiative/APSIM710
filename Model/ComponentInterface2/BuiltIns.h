@@ -9,7 +9,7 @@
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/FortranString.h>
 
-
+#include "CMPData.h"
 // ------ boolean ------
 inline unsigned int memorySize(const bool& value)
    {return 1;}
@@ -220,13 +220,26 @@ inline std::string DDML(std::vector<T>& value)
    addAttributeToXML(ddml, "array=\"T\"");
    return ddml;
    }
-template <class FROM, class TO>
+template <class FROM>
+inline void Convert(const std::vector<FROM>& from, std::string& to)
+   {
+   for (unsigned i = 0; i < from.size(); i++)
+      {
+	  string st;
+      ::Convert(from[i], st);
+	  if (to != "")
+	     to += " ";
+	  to += st;
+	  }
+   }
+ template <class FROM, class TO>
 inline void Convert(const std::vector<FROM>& from, TO& to)
    {
    if (from.size() != 1)
       throw std::runtime_error("Too many values to convert from vector to scalar");
    ::Convert(from[0], to);
    }
+   
 template <>
 inline void Convert(const std::vector<std::string>& from, std::string& to)
    {

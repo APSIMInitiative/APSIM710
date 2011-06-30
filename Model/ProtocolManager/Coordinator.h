@@ -79,7 +79,7 @@ class Coordinator : public protocol::Component
       void readAllRegistrations(void);
 
       virtual void onApsimGetQuery(unsigned int fromID, protocol::ApsimGetQueryData& apsimGetQueryData);
-      void onError(const std::string& fromComponentName, const std::string& msg, bool isFatal);
+      virtual void onError(protocol::ErrorData& errorData);
       void propogateEvent(unsigned int fromID, protocol::PublishEventData& publishEventData);
 
       void pollComponentsForGetVariable(int fromID, int destID, const string& variableName);
