@@ -215,6 +215,7 @@
 
 *+  Local Variables
        character Event_string*40       ! String to output
+       integer   numvals               ! number of values returned
 
 *- Implementation Section ----------------------------------
 
@@ -230,6 +231,9 @@
       call Micromet_read_constants ()
 
       call Micromet_read_param ()
+
+      call get_real_var (unknown_module, 'latitude', '(deg)', 
+     : g%latitude, numvals, -60.0,  60.0)
 
       call pop_routine (myname)
       return

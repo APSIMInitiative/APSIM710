@@ -68,6 +68,7 @@ module Registrations
          dummy = add_registration_with_units(respondToGetReg, 'net_rl', floatTypeDDML, '')
          dummy = add_registration_with_units(respondToGetReg, 'soil_heat', floatTypeDDML, '')
          dummy = add_registration_with_units(respondToGetReg, 'dryleaffraction', floatTypeDDML, '')
-      end subroutine
+         dummy = add_registration_with_units(getVariableReg, 'latitude', floatTypeDDML, 'deg')
+     end subroutine
 end module Registrations
 
