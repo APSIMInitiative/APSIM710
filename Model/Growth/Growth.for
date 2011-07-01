@@ -115,7 +115,7 @@
       integer year
 
       character plant_status*5
-
+      character N_uptake_switch*3
 
       real root_length (max_layer), dlt_root_length(max_layer)
       real dlt_root_length_sen(max_layer)
@@ -653,6 +653,7 @@
       g%foliage_n_Demand = 0.0
 
       g%plant_status = status_out
+      g%N_uptake_switch = 'on'
 
       call fill_real_array(c%x_adm,            0.0, max_table)
       call fill_real_array(c%y_fixation,       0.0, max_table)
@@ -834,7 +835,13 @@
      :              ,'()'              ! variable units
      :              ,g%plant_status)      ! variable
 
+      elseif (variable_name .eq. 'n_uptake_switch') then
 
+         call respond2get_char_var (
+     :               variable_name     ! variable name
+     :              ,'()'              ! variable units
+     :              ,g%n_uptake_switch)      ! variable
+     
       elseif (variable_name .eq. 'dlt_an_green') then
           call respond2get_real_array (
      :               variable_name     ! variable name
@@ -2774,7 +2781,14 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :            ,g%retranslocation_fract ! variable
      :            ,numvals, -1.0, 1.0)     ! number of elements returned
 
+      elseif (variable_name .eq. 'n_uptake_switch') then
 
+         call collect_char_var (
+     :               variable_name         ! variable name
+     :            ,'()'                    ! units
+     :            ,g%n_uptake_switch ! variable
+     :            ,numvals)     ! number of elements returned
+     
       else
          ! Don't know this variable name
          call Message_Unused ()
@@ -2973,14 +2987,16 @@ c   Needs to wait until we put reads into create phase
 
              call Growth_set_other_sw_variables()
 
-          elseif (p%uptake_source.eq.'apsim') then
+          elseif ((p%uptake_source.eq.'apsim') .or. 
+     :            p%uptake_source .eq. 'swim3') then
 
              call Growth_get_sw_uptake_variables()
 
           else
           endif
 
-          if (p%n_uptake_source .eq. 'calc') then
+          if ((p%n_uptake_source .eq. 'calc') .or. 
+     :            p%n_uptake_source .eq. 'swim3') then
              ! Calculate NO3 Uptake
              ! ========================
              do 150 layer=1,num_layers
@@ -3005,8 +3021,7 @@ c   Needs to wait until we put reads into create phase
                 ! Using site index - do not take up N
              endif
 
-          elseif (p%n_uptake_source.eq.'apsim' .or. 
-     :            p%n_uptake_source .eq. 'swim3') then
+          elseif (p%n_uptake_source.eq.'apsim') then
               call Growth_get_n_uptake_variables()
 
           else
@@ -5486,6 +5501,9 @@ cvs adding the rest to foliage.
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
+
+      if((g%lai.gt.0.001).and.(g%N_uptake_switch.eq.'on')) then
+      
       if (p%site_index.gt.0.0) then
          foliage_n_demand =  linear_interp_Real (p%site_index
      :                        ,c%Fn
@@ -5538,6 +5556,12 @@ cvs version of 22 Feb 2000 had an_demand added twice & no bn_demand
      :              + sum_real_array(bn_demand,max_part)
 
          no3_demand = bound(no3_demand, 0.0, c%max_n_uptake)
+        
+        
+      else
+         ! Foliage Mass is zero - plant is not active (eg deciduous plant)
+         no3_demand = 0.0
+      endif
 
       call pop_routine (my_name)
       return
