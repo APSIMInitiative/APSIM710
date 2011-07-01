@@ -105,7 +105,7 @@ namespace CMPServices
         /// <param name="val">Value to truncate.</param>
         /// <returns>The integer value as a double.</returns>
         //============================================================================
-        protected double INT(double val)
+        static protected double INT(double val)
         {
             if (val > 0)
                 return Math.Floor(val);
@@ -119,10 +119,10 @@ namespace CMPServices
         /// </summary>
         /// <param name="y">Year</param>
         /// <param name="m">Month</param>
-        /// <param name="d">Day</param>
+        /// <param name="d">Day. Can be a part day</param>
         /// <returns>Julian date</returns>
         //============================================================================
-        protected double dateToJD(int y, uint m, double d)
+        static public double dateToJD(int y, uint m, double d)
         {
             double yr;
             double a, b = 0;
@@ -158,10 +158,40 @@ namespace CMPServices
         /// <param name="sec">Whole seconds</param>
         /// <returns> Julian date</returns>
         //============================================================================
-        protected double dateTimeToJD(int y, uint m, uint d, uint hr, uint min, double sec)
+        static public double dateTimeToJD(int y, uint m, uint d, uint hr, uint min, double sec)
         {
             double partDay = d + (hr / 24.0) + (min / 1440.0) + (sec / 86400.0);
             return dateToJD(y, m, partDay);
+        }
+        //============================================================================
+        /// <summary>
+        /// Converts a date time to Julian Date
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns>Julian date</returns>
+        //============================================================================
+        static public double dateTimeToJD(DateTime dt)
+        {
+            return dateTimeToJD(dt.Year, (uint)dt.Month, (uint)dt.Day, (uint)dt.Hour, (uint)dt.Minute, dt.Second);
+        }
+        //=======================================================================
+        /// <summary>
+        /// Converts a Julian Date to DateTime (.net) values. 
+        /// </summary>
+        /// <param name="JD"> Julian date.</param>
+        /// <returns>Date time value.</returns>
+        //=======================================================================
+        static public DateTime JDToDateTime(double JD)
+        {
+            int yr = 0;
+            uint mon = 0, day = 0, hr = 0, min = 0;
+            double sec = 0;
+            int second, msec;
+
+            JDToDateTime(ref yr, ref mon, ref day, ref hr, ref min, ref sec, JD);
+            second = (int)Math.Truncate(sec);
+            msec = (int)Math.Truncate((sec - second) * 1000);
+            return new DateTime(yr, (int)mon, (int)day, (int)hr, (int)min, second, msec);
         }
         //============================================================================
         /// <summary>
@@ -175,7 +205,7 @@ namespace CMPServices
         /// <param name="sec">Decimal seconds</param>
         /// <param name="JD">Julian Date to convert</param>
         //============================================================================
-        public void JDToDateTime(ref int yr, ref uint mon, ref uint day, ref uint hr, ref uint min, ref double sec, double JD)
+        static public void JDToDateTime(ref int yr, ref uint mon, ref uint day, ref uint hr, ref uint min, ref double sec, double JD)
         {
             double a, b, c, d, e, f, z, alpha, decDay;
             Double decHr, decMin;

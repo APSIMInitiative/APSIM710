@@ -29,7 +29,7 @@ namespace ModelFramework
         public bool Exists()
         {
             WrapBuiltInVariable<String> Data = new WrapBuiltInVariable<String>();
-            return Component.Get(Name, Data, false);
+            return Component.Get(Name, Data, true);
         }
 
         /// <summary>
@@ -177,23 +177,23 @@ namespace ModelFramework
             }
             else if (tType == typeof(int))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
             }
             else if (tType == typeof(Single))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asSingle(), typeof(T)));
             }
             else if (tType == typeof(double))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asDouble(), typeof(T)));
             }
             else if (tType == typeof(String))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asStr(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asStr(), typeof(T)));
             }
             else if (tType == typeof(Boolean[]))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
             }
             else if (tType == typeof(int[]))
             {
@@ -201,15 +201,21 @@ namespace ModelFramework
             }
             else if (tType == typeof(Single[]))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asSingleArray(), typeof(T)));
             }
             else if (tType == typeof(double[]))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(T)));
             }
             else if (tType == typeof(String[]))
             {
-                Value = Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), typeof(T)));
+                Value = (T)(Convert.ChangeType(DDMLValue.asStringArray(), typeof(T)));
+            }
+            else if (tType == typeof(DateTime))
+            {
+                double JulianDate = DDMLValue.asDouble();               //stored as a double
+                DateTime jDate = TTimeValue.JDToDateTime(JulianDate);
+                Value = (T)(Convert.ChangeType(jDate, typeof(T)));
             }
         }
         public uint memorySize()
@@ -264,6 +270,10 @@ namespace ModelFramework
             {
                 result = "<type kind=\"string\" array=\"T\"/>";
             }
+            else if (tType == typeof(DateTime))
+            {
+                result = "<type kind=\"double\"/>";
+            }
             return result;
         }
         protected void setValue(T value)
@@ -307,6 +317,11 @@ namespace ModelFramework
             else if (tType == typeof(String[]))
             {
                 DDMLValue.setValue((String[])Convert.ChangeType(value, typeof(String[])));
+            }
+            else if (tType == typeof(DateTime))
+            {
+                double JulianDate = TTimeValue.dateTimeToJD((DateTime)Convert.ChangeType(value, typeof(DateTime)));
+                DDMLValue.setValue(JulianDate);
             }
         }
     }

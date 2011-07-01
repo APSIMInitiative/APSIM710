@@ -497,6 +497,8 @@ public class FactoryProperty : Instance, ApsimType
             return new WrapBuiltIn<Int32[]>(this);
         else if (typeName == "String[]")
             return new WrapBuiltIn<String[]>(this);
+        else if (typeName == "DateTime")
+            return new WrapBuiltIn<DateTime>(this);
         else
             return new WrapApsimType(this);
     }

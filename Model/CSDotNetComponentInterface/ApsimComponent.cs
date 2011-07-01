@@ -46,9 +46,9 @@ namespace ModelFramework
 
         //Event id's for events that are handled in this class
         public const int INIT2INDEX = 9999999;
-        protected int SOWINDEX;
-        protected int ENDCROPINDEX;
-        protected int POSTINDEX;
+        protected int SOWINDEX = Int32.MaxValue;        //ensure these are unique/unused values
+        protected int ENDCROPINDEX = Int32.MaxValue;
+        protected int POSTINDEX = Int32.MaxValue;
 
         public String GetName() { return Name; }
         public uint GetId() { return ComponentID; }
@@ -240,21 +240,21 @@ namespace ModelFramework
             {
                 if (RegistrationIndex == INIT2INDEX)
                 {
-                    for (int i = 0; i != Fact.EventHandlers.Count; i++)
-                    {
-                        EvntHandler Event = Fact.EventHandlers[i];
-                        if (String.Compare(Event.EventName, "Init2") == 0)
-                            Event.Invoke(messageData);
-                    }
                     Init2Received = true;
                     if (Model != null)
                     {
                         Console.WriteLine();
                         Console.Write("------- " + Model.Name + " Initialisation ");
                         int col = Model.Name.Length + 24;
-                        while (++col < 80)
-                            Console.Write("-");
+                        String line = new String('-', 80 - col - 1);
+                        Console.Write(line);
                         Console.WriteLine();
+                    }
+                    for (int i = 0; i != Fact.EventHandlers.Count; i++)
+                    {
+                        EvntHandler Event = Fact.EventHandlers[i];
+                        if (String.Compare(Event.EventName, "Init2") == 0)
+                            Event.Invoke(messageData);
                     }
                 }
                 else if (RegistrationIndex == SOWINDEX)
