@@ -200,7 +200,14 @@ namespace ModelFramework
             }
             catch (System.Exception err)
             {
-                SendFatalError(err.Message);
+                String msg = "";
+                if (err is System.Reflection.ReflectionTypeLoadException)
+                {
+                    var typeLoadException = err as ReflectionTypeLoadException;
+                    var loaderExceptions = typeLoadException.LoaderExceptions;
+                    msg = loaderExceptions[0].ToString();
+                }
+                SendFatalError(err.Message + "\n" + msg);
             }
         }
         // --------------------------------------------------------------------------
@@ -781,12 +788,14 @@ namespace ModelFramework
                     if (provider != null)
                     {
                         CompilerParameters _params = new CompilerParameters();
-                        _params.GenerateInMemory = true;      //Assembly is created in memory
+                        _params.GenerateInMemory = false;      //ensure that GetTypes() works later
                         _params.TreatWarningsAsErrors = false;
                         _params.WarningLevel = 2;
                         _params.ReferencedAssemblies.Add("System.dll");
-                        _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\CSDotNetComponentInterface.dll");
                         _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
+                        System.Reflection.Assembly currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+                        _params.ReferencedAssemblies.Add(currentAssembly.Location);   // Reference the current assembly from within dynamic one
+                        //_params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\CSDotNetComponentInterface.dll");
 
                         foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
                             if (File.Exists(val))

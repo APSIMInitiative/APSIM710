@@ -293,18 +293,22 @@ public class TAPSIMHost : TBaseComp
         StringBuilder str = new StringBuilder("");
         try
         {
-            XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(context);
-
-            // Load the assembly.
-            String ExecutableFileName = XmlHelper.Attribute(Doc.DocumentElement, "executable");
-            Assembly Assemb = Assembly.LoadFile(ExecutableFileName);
-
-            XmlNode InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
-            if (InitData != null)
+            if (context.Length < 1)
             {
-                ApsimComponent Comp = new ApsimComponent(Assemb, 0, this);
-                str.Append(Comp.GetDescription(InitData));
+                str.Append(base.description(""));
+            }
+            else
+            {
+                XmlDocument Doc = new XmlDocument();
+                Doc.LoadXml(context);
+                if (Doc != null)
+                {
+                    String ExecutableFileName = XmlHelper.Attribute(Doc.DocumentElement, "executable");
+                    Assembly Assemb = Assembly.LoadFile(ExecutableFileName);        // Load the assembly.
+                    ApsimComponent Comp = new ApsimComponent(Assemb, 0, this);
+                    XmlNode InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
+                    str.Append(Comp.GetDescription(InitData));
+                }
             }
         }
         catch (Exception err)
