@@ -34,13 +34,13 @@
       parameter   (stef_boltz = 5.67e-8)
 
       real        pi                   !value of pi
-      parameter   (pi = 3.1459)
+      parameter   (pi = 3.14159265359)
 
       real        c_cloud              !constant for cloud effect on longwave radiation
       parameter   (c_cloud = 0.1)
 
       real        Deg2Rad              !convert degrees to radians
-      parameter   (Deg2Rad = 3.1458 / 180.)
+      parameter   (Deg2Rad = pi / 180.)
 
       real RhoW
       parameter (RhoW = 998.0) !kg/m3
