@@ -1824,6 +1824,8 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
      :                              ,1.0)
          if (numvals .gt. 0) then
            p%uptake_source = 'swim3'
+         else
+           p%uptake_source = 'calc'
          endif  
       endif
 
@@ -1838,6 +1840,8 @@ cnh         cover = 1.0 - exp (-g%extinction_coef*g%lai)
          ! nothing in our parameters - see if swim3 is plugged in
          if (p%uptake_source .eq. 'swim3') then
            p%n_uptake_source = 'swim3'
+         else
+           p%n_uptake_source = 'calc'
          endif  
       endif
 
@@ -2977,9 +2981,9 @@ c   Needs to wait until we put reads into create phase
           num_layers = find_layer_no(g%root_depth
      :                              ,g%dlayer
      :                              ,max_layer)
-
+          
           if (p%uptake_source .eq. 'calc') then
-
+          
              ! Calculate SW Uptake
              ! ===================
              call Growth_sw_supply (g%sw_supply)
@@ -5502,8 +5506,8 @@ cvs adding the rest to foliage.
       call push_routine (my_name)
 
 
-      if((g%lai.gt.0.001).and.(g%N_uptake_switch.eq.'on')) then
-      
+      !if((g%lai.gt.0.0).and.(g%N_uptake_switch.eq.'on')) then
+      if((g%N_uptake_switch.eq.'on')) then
       if (p%site_index.gt.0.0) then
          foliage_n_demand =  linear_interp_Real (p%site_index
      :                        ,c%Fn
@@ -5561,7 +5565,9 @@ cvs version of 22 Feb 2000 had an_demand added twice & no bn_demand
       else
          ! Foliage Mass is zero - plant is not active (eg deciduous plant)
          no3_demand = 0.0
+
       endif
+
 
       call pop_routine (my_name)
       return
