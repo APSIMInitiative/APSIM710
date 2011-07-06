@@ -612,8 +612,11 @@ Public Class LocalPaddockType
                         Stored += (sw_dep(z) - ll15_dep(z)) * Math.Min(1.0, Math.Max(0.0, (1.0 - (CumDepth - atDepth) / dLayer(z))))
                         Possible += (dul_dep(z) - ll15_dep(z)) * Math.Min(1.0, Math.Max(0.0, (1.0 - (CumDepth - atDepth) / dLayer(z))))
                 Next
-                'Console.WriteLine("   Stored = " + Stored.ToString())
-                'Console.WriteLine("   Possible = " + Possible.ToString())
+                If (DebugLevel > 1) Then
+                        Console.WriteLine("   Stored = " + Stored.ToString())
+                        Console.WriteLine("   Possible = " + Possible.ToString())
+                End If
+
                 Return Stored / Possible
         End Function
 End Class

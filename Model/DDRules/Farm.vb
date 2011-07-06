@@ -23,13 +23,18 @@ Public Class Farm
         Private myPorportionOfFarmInLaneWays As Double = 0
         Private myTimeOnLaneWays As Double = 0
         Private myTimeInDairyShed As Double = 0
+        Public myEffluentPaddocksPercentage As Double = 1.0 '[default = 1.0 = spread to all paddocks]
+
         Public myEffluentPond As New EffluentPond
         Public myEffluentIrrigator As New EffluentIrrigator
-        Public myEffluentPaddocksPercentage As Double = 1.0 '[default = 1.0 = spread to all paddocks]
         Public AllocationType As Integer = 0
+        'LUDF Process
+        Private EnableCutting As Boolean = True
+
 
         Public Sub New()
                 myMilkingHerd = New SimpleHerd()
+                myDryCowHerd = New SimpleHerd()
                 myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
         End Sub
 
@@ -148,7 +153,7 @@ Public Class Farm
                         SilageHeap = New FeedStore
                 End If
 
-                myMilkingHerd.setValues(0, 7, 2001, Month)
+                myMilkingHerd.setValues(7, Year, Month)
         End Sub
 
         Public Sub Prepare(ByVal Year As Integer, ByVal Month As Integer, ByVal Day As Integer, ByVal end_week As Integer)
@@ -160,7 +165,7 @@ Public Class Farm
                         Paddock.OnPrepare()
                 Next
 
-                myMilkingHerd.onPrepare(1, Year, Month)
+                myMilkingHerd.onPrepare(Year, Month)
 
                 'For Each p As LocalPaddockType In GrazedList
                 '        p.setJustGrazed()
@@ -210,9 +215,6 @@ Public Class Farm
                 SortByIndex()
         End Sub
 
-        'LUDF Process
-        Private EnableCutting As Boolean = True
-
         Public Sub NewAllocation()
 
                 ' 3: Allocate paddocks to meet weeks requirements
@@ -240,7 +242,6 @@ Public Class Farm
                         End If
                         PaddockQueue.Enqueue(pdk)
                 Next
-
 
                 'Remove any surplus
                 If (EnableCutting) Then
@@ -278,24 +279,6 @@ Public Class Farm
                 SortByIndex()
         End Sub
 
-        Sub doSprayEffluient()
-                If (end_week > 0 And myEffluentPond.Volume > 0) Then
-                        Dim aList As New List(Of LocalPaddockType)
-                        If (effluentPaddocks IsNot Nothing) Then 'effluent paddock set via a list
-                                Console.Out.WriteLine("Spraying dairy shed effluent to paddocks;")
-                                For Each pdk As LocalPaddockType In effluentPaddocks
-                                        Console.Out.WriteLine(" - " + pdk.Name)
-                                Next
-                                myEffluentIrrigator.Irrigate(myEffluentPond, effluentPaddocks)
-                        Else
-                                Dim i As Integer = Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count)
-                                aList = myPaddocks.GetRange(0, i)
-                                Console.Out.WriteLine("Spraying dairy shed effluent to " + i.ToString() + " paddocks")
-                                myEffluentIrrigator.Irrigate(myEffluentPond, aList)
-                        End If
-                End If
-        End Sub
-
         'Should MoveStock events be generate as part of this process?
         'If so a couple of changes need to be made to track when cows move into a new paddock. What about grazing multiple paddocks?
         Sub Graze()
@@ -324,7 +307,7 @@ Public Class Farm
                 Dim interval As Double = (pre - post) / (myPaddocks.Count - 1)
                 Dim i As Integer = 0
                 For Each pdk As LocalPaddockType In myPaddocks
-                        If Not (lanewayPaddocks.Contains(pdk)) Then
+                        If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
                                 Dim cover = post + (i * interval)
                                 pdk.Harvest(cover, 0.0)
                                 i += 1
@@ -339,8 +322,8 @@ Public Class Farm
 
                 myMilkingHerd.doNitrogenPartioning()
 
-                If (lanewayPaddocks IsNot Nothing And Not myMilkingHerd.isDry) Then
-                        myMilkingHerd.doNutrientReturnsToPaddock(lanewayPaddocks, myTimeOnLaneWays)
+                If (myLanewayPaddocks.Count > 0 And Not myMilkingHerd.isDry) Then
+                        myMilkingHerd.doNutrientReturnsToPaddock(myLanewayPaddocks, myTimeOnLaneWays)
                 End If
 
                 If (myTimeInDairyShed > 0 And Not myMilkingHerd.isDry) Then
@@ -484,7 +467,7 @@ Public Class Farm
                         If (IsWinteringOff()) Then
                                 Return 0
                         Else
-                                Return myMilkingHerd.Number_Of_Cows / FarmArea()
+                                Return myMilkingHerd.Size() / FarmArea()
                         End If
                 End Get
                 Set(ByVal value As Double)
@@ -592,7 +575,7 @@ Public Class Farm
                         Return MyFarmArea ' myPaddocks.Count ' assume 1ha paddocks for simplicity
                 End Get
                 Set(ByVal value As Double)
-
+                        MyFarmArea = value
                 End Set
         End Property
 
@@ -817,16 +800,29 @@ Public Class Farm
                 End Get
         End Property
 
-        <Output()> <Units("MJME/ha")> Public ReadOnly Property AverageGrowthRate() As Single()
+        <Output()> <Units("MJME/ha")> Public ReadOnly Property AverageGrowthRate() As Single
                 Get
-                        Dim result(myPaddocks.Count - 1) As Single
+                        Dim growth As Single = 0
+                        Dim area As Single = 0
                         'sort by index here
-                        For i As Integer = 0 To (myPaddocks.Count - 1)
-                                result(i) = myPaddocks(i).AverageGrowthRate()
+                        For Each pdk As LocalPaddockType In myPaddocks
+                                growth += pdk.AverageGrowthRate() * pdk.Area
+                                area += pdk.Area
                         Next
-                        Return result
+                        Return growth / area
                 End Get
         End Property
+
+        '<Output()> <Units("MJME/ha")> Public ReadOnly Property AverageGrowthRate() As Single()
+        '        Get
+        '                Dim result(myPaddocks.Count - 1) As Single
+        '                'sort by index here
+        '                For i As Integer = 0 To (myPaddocks.Count - 1)
+        '                        result(i) = myPaddocks(i).AverageGrowthRate()
+        '                Next
+        '                Return result
+        '        End Get
+        'End Property
 
         <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pasture_Pdks() As Single()
                 Get
@@ -992,7 +988,7 @@ Public Class Farm
         End Sub
 
         Public Function FeedSituation() As Double
-                If (myMilkingHerd.Number_Of_Cows > 0) Then
+                If (myMilkingHerd.Size() > 0) Then
                         Dim post = GrazingResidual
                         Dim target As Double = IdealGrazingCover()
                         Dim pre As Double = post + (target - post)
@@ -1024,20 +1020,40 @@ Public Class Farm
                 'onPrepare -> myPregraze = 0
         End Function
 
-        Public Function Fertilise(ByVal data As FertiliserApplicationType) As Double
+        Public Function GetEffluentArea() As Double
+                Dim result As Double = 0
+                For Each pdk As LocalPaddockType In myEffluentPaddocks
+                        result += pdk.Area
+                Next
+                Return result
+        End Function
+
+        'Fertiliser is not applied to eff paddocks
+        'return the amount of fertiliser applied in kg/ha for the whole farm
+        Public Function Fertilise(ByVal data As FertiliserApplicationType, ByVal ApplyToEffPdks As Boolean) As Double
                 If (data.Amount > 0) Then
-                        Dim total As Double = 0
+                        Dim totalAmount As Double = 0
                         Dim totalArea As Double = 0
+                        If (Not ApplyToEffPdks) Then 'adjust amount applied to match LUDF reporting
+                                Dim effArea As Double = GetEffluentArea()
+                                data.Amount *= MyFarmArea / (MyFarmArea - effArea)
+                        End If
                         For Each pdk As LocalPaddockType In myPaddocks
-                                pdk.Apply(data)
-                                totalArea += pdk.Area
-                                total += (data.Amount * pdk.Area)
+                                If (myEffluentPaddocks Is Nothing Or Not (ApplyToEffPdks)) Then 'apply to all paddocks
+                                        pdk.Apply(data)
+                                        totalArea += pdk.Area
+                                        totalAmount += (data.Amount * pdk.Area)
+                                ElseIf Not (myEffluentPaddocks.Contains(pdk)) Then
+                                        pdk.Apply(data)
+                                        totalArea += pdk.Area
+                                        totalAmount += (data.Amount * pdk.Area)
+                                End If
                         Next
                         'Console.WriteLine("Fertilise {0:d} / {1:d} = {2:d}", total, FarmArea, total / FarmArea)
                         If (DebugLevel > 0) Then
-                                Console.WriteLine("Fertilise " + total.ToString() + " / " + FarmArea.ToString() + " = " + (total / FarmArea).ToString())
+                                Console.WriteLine("Fertilise " + totalAmount.ToString() + " / " + FarmArea.ToString() + " = " + (totalAmount / FarmArea).ToString())
                         End If
-                        Return total / totalArea
+                        Return totalAmount / FarmArea
                 Else
                         Return 0.0
                 End If
@@ -1049,9 +1065,9 @@ Public Class Farm
                         Dim total As Double = 0
                         Dim area As Double = 0
                         For Each paddock As LocalPaddockType In myPaddocks
-                                paddock.Irrigate(data)
                                 area += data.Crop_Area
                                 total += (data.Amount * data.Crop_Area)
+                                paddock.Irrigate(data)
                         Next
                         If (DebugLevel > 0) Then
                                 Console.WriteLine(total / FarmArea)
@@ -1100,59 +1116,78 @@ Public Class Farm
                 myMilkingHerd.setLiveWeight(values)
         End Sub
 
-        Dim effluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
-        Dim lanewayPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+#Region "Effluent Retun from Dairy Shed"
+        Dim myEffluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
 
+        'Simulation passing a list of paddock names
         Sub setEffluentPaddocks(ByVal values As String())
                 If (values Is Nothing) Then
-                        effluentPaddocks = Nothing
+                        myEffluentPaddocks = Nothing
                         Return
                 End If
                 If (values.Length > 0) Then
-                        effluentPaddocks = New List(Of LocalPaddockType)(values.Length)
+                        myEffluentPaddocks = New List(Of LocalPaddockType)(values.Length)
                         For Each strPaddockName As String In values
                                 If (myPaddocks2.ContainsKey(strPaddockName)) Then
                                         Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
                                         Console.WriteLine(p)
-                                        effluentPaddocks.Add(myPaddocks2(strPaddockName))
+                                        myEffluentPaddocks.Add(myPaddocks2(strPaddockName))
                                 End If
                         Next
                 Else
-                        effluentPaddocks = Nothing
-                End If
-        End Sub
-
-        Sub setLanewayPaddocks(ByVal values As String())
-                lanewayPaddocks = New List(Of LocalPaddockType)()
-                If (values Is Nothing) Then ' no laneway being set
-                        Return
-                End If
-                If (values.Length > 0) Then
-                        For Each strPaddockName As String In values
-                                If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                                        Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
-                                        p.Grazable = False 'not part of grazing rotation
-                                        lanewayPaddocks.Add(myPaddocks2(strPaddockName))
-                                        myPaddocks.Remove(p)
-                                End If
-                        Next
-                Else
-                        effluentPaddocks = Nothing
+                        myEffluentPaddocks = Nothing
                 End If
         End Sub
 
         Function getEffluentPaddocks() As String()
-                If (effluentPaddocks Is Nothing) Then
+                If (myEffluentPaddocks Is Nothing) Then
                         Return New String() {""}
                 End If
-                Dim result(effluentPaddocks.Count) As String
+                Dim result(myEffluentPaddocks.Count) As String
                 Dim i As Integer = 0
-                For Each pdk As LocalPaddockType In effluentPaddocks
+                For Each pdk As LocalPaddockType In myEffluentPaddocks
                         result(i) = pdk.Name
                         i += 1
                 Next
                 Return result
         End Function
+
+        Sub doSprayEffluient()
+                If (end_week > 0 And myEffluentPond.Volume > 0) Then
+                        Dim aList As New List(Of LocalPaddockType)
+                        If (myEffluentPaddocks IsNot Nothing) Then 'effluent paddock set via a list
+                                Console.Out.WriteLine("Spraying dairy shed effluent to paddocks;")
+                                For Each pdk As LocalPaddockType In myEffluentPaddocks
+                                        Console.Out.WriteLine(" - " + pdk.Name)
+                                Next
+                                myEffluentIrrigator.Irrigate(myEffluentPond, myEffluentPaddocks)
+                        Else
+                                Dim i As Integer = Math.Round(myEffluentPaddocksPercentage * myPaddocks.Count)
+                                aList = myPaddocks.GetRange(0, i)
+                                Console.Out.WriteLine("Spraying dairy shed effluent to " + i.ToString() + " paddocks")
+                                myEffluentIrrigator.Irrigate(myEffluentPond, aList)
+                        End If
+                End If
+        End Sub
+#End Region
+
+#Region "Laneways"
+        Dim myLanewayPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+        'Simulation passing a list of paddock names
+        Sub setLanewayPaddocks(ByVal values As String())
+                myLanewayPaddocks = New List(Of LocalPaddockType)()
+                If (values IsNot Nothing) AndAlso (values.Length > 0) Then
+                        For Each strPaddockName As String In values
+                                If (myPaddocks2.ContainsKey(strPaddockName)) Then
+                                        Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
+                                        p.Grazable = False 'not part of grazing rotation
+                                        myLanewayPaddocks.Add(myPaddocks2(strPaddockName))
+                                        myPaddocks.Remove(p)
+                                End If
+                        Next
+                End If
+        End Sub
+#End Region
 
         Public Sub PrintFarmSummary()
                 Console.WriteLine("     General Farm Description")
@@ -1184,4 +1219,32 @@ Public Class Farm
                 End If
         End Sub
 
+        Public Function TotalCows() As Double
+                Return DryCows() + MilkingCows()
+        End Function
+
+        Public Function DryCows() As Double
+                Return myDryCowHerd.Size()
+        End Function
+
+        Public Function MilkingCows() As Double
+                Return myMilkingHerd.Size()
+        End Function
+
+        Property DryOffProportion As Double
+                Get
+                        Return DryCows() / TotalCows()
+                        '  Return myDryOffProportion
+                End Get
+                Set(ByVal value As Double)
+                        If (value < 0) Then
+                                value = 0
+                        ElseIf (value > 1) Then
+                                value = 1
+                        End If
+                        Dim total As Double = TotalCows()
+                        myDryCowHerd.setCowNumbers(total * value)
+                        myMilkingHerd.setCowNumbers(total * (1 - value))
+                End Set
+        End Property
 End Class

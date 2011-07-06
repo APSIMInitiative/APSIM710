@@ -6,7 +6,7 @@
         End Enum
 
         Private ReferenceCow As SimpleCow
-        Private TotalCows As Double
+        Private TotalCows As Double = 0
 
         Dim Total_DM_Eaten As BioMass = New BioMass()
         Dim Total_Pasutre_Eaten As BioMass = New BioMass()
@@ -19,18 +19,19 @@
 
         Public Sub New()
                 ReferenceCow = New SimpleCow(2001, 6)
-                setValues(2001, 6, 0, 6)
+                setValues(6, 0, 6)
         End Sub
 
         Public Sub New(ByVal Head As Double, ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
                 ReferenceCow = New SimpleCow(Year, Month)
-                setValues(Head, CalvingDate, Year, Month)
+                setValues(CalvingDate, Year, Month)
+                TotalCows = Head
         End Sub
 
-        Public Sub setValues(ByVal Head As Double, ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
+        Public Sub setValues(ByVal CalvingDate As Integer, ByVal Year As Integer, ByVal Month As Integer)
                 ReferenceCow.setDate(Year, Month)
                 ReferenceCow.CalvingDate = CalvingDate
-                TotalCows = Head
+                'TotalCows = Head
         End Sub
 
 #Region "Output Variables - Intake"
@@ -153,13 +154,13 @@
                 Return ReferenceCow.isDry
         End Function
 
-        Public Sub onPrepare(ByVal numCows As Double, ByVal Year As Integer, ByVal Month As Integer)
+        Public Sub onPrepare(ByVal Year As Integer, ByVal Month As Integer)
                 ReferenceCow.OnPrepare(Year, Month)
                 Total_DM_Eaten = New BioMass()
                 Total_Pasutre_Eaten = New BioMass()
                 Total_Silage_Eaten = New BioMass()
                 Total_Supplement_Eaten = New BioMass()
-                setCowNumbers(numCows)
+                'setCowNumbers(numCows)
         End Sub
 
         Public ReadOnly Property ME_Maintance()
@@ -296,10 +297,6 @@
                 Return ReferenceCow.MS_per_Day
         End Function
 
-        Public Function Number_Of_Cows() As Double
-                Return TotalCows
-        End Function
-
         Public Sub doNitrogenPartioning()
                 ReferenceCow.doNitrogenPartioning()
                 myExcreta = ReferenceCow.myExcreta.Multiply(TotalCows)
@@ -417,4 +414,8 @@
                 'Todo 20110524 - add checking here
                 ReferenceCow.setLiveWeight(values)
         End Sub
+
+        Public Function Size() As Double
+                Return TotalCows
+        End Function
 End Class
