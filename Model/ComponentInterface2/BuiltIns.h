@@ -223,6 +223,7 @@ inline std::string DDML(std::vector<T>& value)
 template <class FROM>
 inline void Convert(const std::vector<FROM>& from, std::string& to)
    {
+   to = "";
    for (unsigned i = 0; i < from.size(); i++)
       {
 	  string st;
