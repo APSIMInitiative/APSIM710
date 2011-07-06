@@ -244,17 +244,17 @@ Public Class Farm
                 Next
 
                 'Remove any surplus
-                If (EnableCutting) Then
-                        SortPaddocksByCover() '1: Rank all paddocks by mass
-                        If (FeedSituation() > 0) Then '2: If in surplus then cut (some?) paddock for silage
-                                For Each pdk As LocalPaddockType In myPaddocks
-                                        If (Not pdk.BeingGrazed And pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
-                                                pdk.Closed = True
-                                                PaddocksClosed += 1
-                                        End If
-                                Next
-                        End If
-                End If
+                'If (EnableCutting) Then
+                '        SortPaddocksByCover() '1: Rank all paddocks by mass
+                '        If (FeedSituation() > 0) Then '2: If in surplus then cut (some?) paddock for silage
+                '                For Each pdk As LocalPaddockType In myPaddocks
+                '                        If (Not pdk.BeingGrazed And pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
+                '                                pdk.Closed = True
+                '                                PaddocksClosed += 1
+                '                        End If
+                '                Next
+                '        End If
+                'End If
 
                 SortPaddocksByCover() 'Rank all paddocks again by mass
                 For Each pdk As LocalPaddockType In myPaddocks
@@ -302,18 +302,34 @@ Public Class Farm
                 End While
         End Sub
 
-        Public Sub SetupFeedWedge(ByVal post As Integer, ByVal length As Integer)
-                Dim pre As Integer = (4.2 * 17 * length) + post
-                Dim interval As Double = (pre - post) / (myPaddocks.Count - 1)
+        'Calculating the pre-grazing cover target - Method 1
+        'Source: DairyNZ farmfact, 1-14 Pasture feed wedges [http://www.dairynz.co.nz/file/fileid/36306]
+        'Parameters
+        '       Stocking_Rate   [cows/ha]
+        '       Intake          [kgDM/cow/day]
+        '       Rotation        [days]
+        '       Residual        [kgDM/ha]
+        'Result [kgDM/ha]
+        Private Function CalcPregrazingCoverTarget(ByVal Stocking_Rate As Double, ByVal Intake As Double, ByVal Rotation As Double, ByVal Residual As Double) As Double
+                Return (Stocking_Rate * Intake * Rotation) + Residual
+        End Function
+
+        Public Function CutToFeedWedge(ByVal Optimum_residual As Integer, ByVal Rotation As Integer, Optional ByVal Stocking_rate As Double = 3.0, Optional ByVal Intake As Double = 18.0) As BioMass '
+                Dim pre As Integer = CalcPregrazingCoverTarget(Stocking_rate, Intake, Rotation, Optimum_residual)
+                Dim interval As Double = (pre - Optimum_residual) / (myPaddocks.Count - 1)
                 Dim i As Integer = 0
+                Dim result As BioMass = New BioMass()
+
                 For Each pdk As LocalPaddockType In myPaddocks
                         If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
-                                Dim cover = post + (i * interval)
-                                pdk.Harvest(cover, 0.0)
+                                Dim cover = Optimum_residual + (i * interval)
+                                Dim temp As BioMass = pdk.Harvest(cover, 0.0)
+                                result = result.Add(temp)
                                 i += 1
                         End If
                 Next
-        End Sub
+                Return result
+        End Function
 
         Private Sub doAnimalsPost()
                 If (myMilkingHerd.isUnderFed) Then
@@ -632,8 +648,17 @@ Public Class Farm
                         IsCuttingDay = True
                 End If
 
-                If (IsCuttingDay And PaddocksClosed) Then
-                        Dim HarvestedDM As BioMass = doHarvest(SilageCutWastage)
+                If (IsCuttingDay) Then ' And PaddocksClosed) Then
+                        Dim HarvestedDM As BioMass = New BioMass()
+                        Select Case (AllocationType)
+                                Case 1
+                                        If (FeedSituation() > 0) Then
+                                                HarvestedDM = CutToFeedWedge(myGrazingResidual, myGrazingInterval, MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / 11.5)
+                                        End If
+                                Case Else
+                                        HarvestedDM = doHarvest(SilageCutWastage)
+                        End Select
+
                         HarvestedDM.setME(DefualtSilageME)
                         SilageHeap.Add(HarvestedDM)
                 End If
@@ -1001,7 +1026,7 @@ Public Class Farm
         ' Source: DairyNZ - Feed Wedge Reconer
         Public Function IdealGrazingCover() As Double
                 Dim Cows_ha As Double = StockingRate
-                Dim KgDM_Cow As Double = myMilkingHerd.ME_Demand_Cow / 12.0 '17 'from doc
+                Dim KgDM_Cow As Double = myMilkingHerd.ME_Demand_Cow / 11.5 '17 'from doc
                 Dim RotationLength As Double = GrazingInterval
                 Dim TargetResidual As Double = GrazingResidual
                 Dim KgDM_ha As Double = Cows_ha * KgDM_Cow * RotationLength + TargetResidual

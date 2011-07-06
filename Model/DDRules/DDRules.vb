@@ -175,7 +175,7 @@ Public Class DDRules
 
                 myFarm.Update()
                 If (MyClock.simulation_days = 0) And AllocationType > 0 Then
-                        myFarm.SetupFeedWedge(1500, 21)
+                        myFarm.CutToFeedWedge(1500, 21)
                 End If
                 myFarm.Process(Start_week)
 
