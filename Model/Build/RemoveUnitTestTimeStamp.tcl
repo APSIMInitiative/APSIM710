@@ -3,7 +3,7 @@
 catch {set msg [exec svn log -q -r HEAD ./]} msg
 set msg [lindex [split $msg "\n"] 1]
 
-set fp [open UnitTest.out r]; set text [read -nonewline $fp]; close $fp
+set fp [open UnitTest.tmp r]; set text [read -nonewline $fp]; close $fp
 
 regsub -all -line ", Time: .* seconds$" $text "" text
 
