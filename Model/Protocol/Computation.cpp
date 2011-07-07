@@ -505,13 +505,10 @@ void Computation::CreateManagedInstance(const std::string& filename,
 		l_pArray = SafeArrayCreateVectorEx(VT_VARIANT, 0, 3, NULL);
 		long l_Index;
 		VARIANTARG vals[3];
-		VariantInit(&vals[0]);
 		vals[0].vt = VT_UINT;
 		vals[0].ulVal = componentId;
-		VariantInit(&vals[1]);
 		vals[1].vt = VT_UINT;
 		vals[1].ulVal = parentId;
-		VariantInit(&vals[2]);
 		vals[2].vt = VT_UINT;
 		vals[2].byref = callback;
 
@@ -521,9 +518,6 @@ void Computation::CreateManagedInstance(const std::string& filename,
 		SafeArrayPutElement (l_pArray, &l_Index, &vals[1]);
 		l_Index = 2;
 		SafeArrayPutElement (l_pArray, &l_Index, &vals[2]);
-		VariantClear(&vals[0]);
-		VariantClear(&vals[1]);
-		VariantClear(&vals[2]);
 
 		std::wstring wide_filename(filename.length(), L' ');
 		std::copy(filename.begin(), filename.end(), wide_filename.begin());
@@ -573,12 +567,10 @@ void Computation::messageToManagedLogic(Message* message) const
 
 		VARIANTARG val;
 		long l_Index;
-		VariantInit(&val);
 		val.vt = VT_UINT;
 		val.byref = (void*)message;
 		l_Index = 0;
 		SafeArrayPutElement (psa, &l_Index, &val);
-		VariantClear(&val);
 
 		/*pType*/ ((_Type*)typePtr)->InvokeMember_3("handleMessage",                // Invoke "handleMessage" method on pType
 			BindingFlags_InvokeMethod,

@@ -69,12 +69,12 @@ public class RUEModel : Instance
        }
    }
    [EventHandler]
-   public new void OnInit2()
+   public void OnInit2()
    {
        PublishNewPotentialGrowth();
    }
    [EventHandler]
-   public new void OnPrepare()
+   public void OnPrepare()
    {
        PublishNewPotentialGrowth();
    }

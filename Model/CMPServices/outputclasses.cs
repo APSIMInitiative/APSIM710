@@ -26,7 +26,7 @@ using CMPServices;
 //   objects also handle the aggregation of values within reporting intervals. 
 //============================================================================
 
-namespace output
+namespace outputComp
 {
     //============================================================================
     /// <summary>
