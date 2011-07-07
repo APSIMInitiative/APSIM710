@@ -365,7 +365,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                                        * RootProportion(layer, Depth);
                         RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
                     }
-                    else
+                    else if (layer > 0)
                     {
                         RAw[layer] = RAw[layer - 1];
                         RAn[layer] = RAn[layer - 1];
@@ -418,7 +418,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
                         RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
 
                     }
-                    else
+                    else if (layer > 0)
                     {
                         RAw[layer] = RAw[layer - 1];
                         RAn[layer] = RAn[layer - 1];

@@ -729,6 +729,8 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
+        if (Sow.MaxCover <= 0.0)
+           throw new Exception("MaxCover must exceed zero in a Sow event.");
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
         StemPopulation = Sow.Population * Sow.BudNumber;
