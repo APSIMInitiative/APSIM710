@@ -125,21 +125,21 @@ inline void unpackWithConverter(char* messageData, String^% st)
 // --------------------------------------------------------------------------
 inline void pack(char* messageData, DateTime Date)
    {
-   ::pack(messageData, Utility::ToJulianDate(Date));
+   ::pack(messageData, DateUtility::dateTimeToJulianDate(Date));
    }
 
 inline bool unpack(char* messageData, DateTime% Date, String^ VariableName)
    {
    Int32 JulianDate;
    ::unpack(messageData, JulianDate, VariableName);
-   Date = Utility::FromJulianDate(JulianDate);
+   Date = DateUtility::JulianDateToDateTime(JulianDate);
    }
 
 inline void unpackWithConverter(char* messageData, DateTime% Date)
    {
    Int32 JulianDate;
    ::unpackWithConverter(messageData, JulianDate);
-   Date = Utility::FromJulianDate(JulianDate);
+   Date = DateUtility::JulianDateToDateTime(JulianDate);
    }
 inline unsigned memorySize(DateTime Date)
    {

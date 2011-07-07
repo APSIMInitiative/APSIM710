@@ -2,9 +2,7 @@
 using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
-#if !fulldotnet
-    using ModelFramework;
-#endif
+using ModelFramework;
 using CSGeneral;
 
 /// <summary>
@@ -1296,7 +1294,7 @@ public class SoilN : Instance
     [EventHandler]
     public void OnTick(TimeType time) 
     {
-        JDayToDayOfYear(time.startday, ref day_of_year, ref year);
+        DateUtility.JulianDateToDayOfYear(time.startday, out day_of_year, out year);
         
         // Reset Potential Decomposition Register
         num_residues = 0;
@@ -1404,6 +1402,7 @@ public class SoilN : Instance
                         " less than lower limit of " + nh4_min[layer]);
         }
     }
+
 #endregion
 
 #region  Various internal variables
@@ -2327,124 +2326,6 @@ public class SoilN : Instance
         return MathUtility.Divide(100.0, ratio, 0.0);
     }
 
-    private double DateToJDay(int dayz, int monthz, int yearz)
-    {
-   //      Return a date as a Julian day number
-
-   //+ Assumptions
-   //     Assumes the date is after 1583. If not the function returns 0.0.
-
-   //+ Notes
-   //     This implementation is only valid for dates in the Gregorian
-   //     calender (after 15 October 1582).
-   //     THIS IS BASED ON THE ALGORITHM BY FLIEGEL AND VAN FLANDERN IN
-   //      C.ACM VOL.11 (OCT,1968) P.657
-
-   //+ Mission Statement
-   //
-   //+ Changes
-   //      Original coding by JNGH for AUSSIM - Modified DPH 30/6/92
-   //       100393  jngh changed date_to_jday arguments to integer.
-   //       270295  jngh changed real to dble intrinsic function.
-      double day;
-      double month;
-      double quotnt;
-      double year;
-      double result;
-      if (yearz > 1582 /* && CheckDate (dayz, monthz, yearz) */)
-      {
-         day = dayz;
-         month = monthz;
-         year = yearz;
-
-         quotnt = Math.Truncate ((month - 14.0) / 12.0);
-
-         result = day - 32075.0 
-                  + Math.Truncate(1461.0 * (year + 4800.0 + quotnt) /4.0)
-                  + Math.Truncate(367.0 * (month - 2.0 - quotnt * 12.0) /12.0)
-                  - Math.Truncate(3.0 * Math.Truncate((year + 4900.0 + quotnt) /100.0) / 4.0);
-      }
-      else
-      {
-         result = 0.0;
-      }
-      return result;
-    }
-
-    private void JDayToDate(out int dayz, out int monthz, out int yearz, double julday)
-    {
-        double day;
-        double mm;
-        double month;
-        double work;
-        double work0;
-        double year;
-        double yy;
-
-        if (julday > 0.0)
-        {
-            // fliegel and van flanden algorithm:
-
-            work = julday + 68569.0;
-            work0 = Math.Truncate(4.0 * work / 146097.0);
-            work = work - Math.Truncate((146097.0 * work0 + 3.0) / 4.0);
-            yy = Math.Truncate(4000.0 * (work + 1.0) / 1461001.0);
-
-            work = work - Math.Truncate(1461.0 * yy / 4.0) + 31.0;
-            mm = Math.Truncate(80.0 * work / 2447.0);
-            day = work - Math.Truncate(2447.0 * mm / 80.0);
-
-            work = Math.Truncate(mm / 11.0);
-            month = mm + 2.0 - 12.0 * work;
-            year = 100.0 * (work0 - 49.0) + yy + work;
-
-            dayz = (int)MathUtility.Round(day, 0);
-            monthz = (int)(MathUtility.Round(month, 0));
-            yearz = (int)(MathUtility.Round(year, 0));
-        }
-
-        else
-        {
-            dayz = 0;
-            monthz = 0;
-            yearz = 0;
-        }
-    }
-
-    private void JDayToDayOfYear(double julday, ref int dyoyr, ref int year)
-    {
-        int day;
-        int month;
-        JDayToDate(out day, out month, out year, julday);
-        dyoyr = (int)(julday - DateToJDay(1, 1, year) + 1);
-    }
-
-    private int OffsetDayOfYear(int iyr, int doy, int ndays)
-    {
-   //+ Purpose
-   //       adds or subtracts specified days to/from day of year number
-
-   //+  Definition
-   //     Returns the day of year for the day "ndays" after the day
-   //     specified by the day of year, "doy", in the year, "iyr".
-   //     "ndays" may well be negative.
-
-   //+  Mission Statement
-   //      %1 offset by %3 days
-
-   //+ Changes
-   //       4-mar-91 programmed jngh
-   //       051191  jngh changed algorithm to use julian days - cr166, cr168
-   //                    added variable descriptions - cr167
-   //       100393  jngh changed date_to_jday arguments to integer. Impacted
-   //                    jday_to_date arguments.
-   //       010494  jngh put year in argument
-        double days = DateToJDay(1, 1, iyr) - 1.0 + doy + ndays;
-        int day, month, year;
-        JDayToDate(out day, out month, out year, days);
-        return (int)MathUtility.Round(days - DateToJDay(1, 1, year) + 1.0, 0);
-    }
-
     private void SoilTemp()
     {
         // Calculates average soil temperature at the centre of each layer
@@ -2478,9 +2359,9 @@ public class SoilN : Instance
                         // day of year as a radian fraction of one year for soil
                         // temperature calculations
             if (latitude >= 0)
-                alx = ang * OffsetDayOfYear(year, day_of_year, (int)-nth_hot);
+                alx = ang * DateUtility.OffsetDayOfYear(year, day_of_year, (int)-nth_hot);
             else
-                alx = ang * OffsetDayOfYear(year, day_of_year, (int)-sth_hot);
+                alx = ang * DateUtility.OffsetDayOfYear(year, day_of_year, (int)-sth_hot);
             if (alx < 0.0 || alx > 6.31)
                 throw new Exception("Value for alx is out of range");
 
@@ -2544,7 +2425,7 @@ public class SoilN : Instance
       // weather conditions.
       // The actual soil surface temperature is affected by current
       // weather conditions.
-        int yesterday = OffsetDayOfYear(year, day_of_year, -1);
+        int yesterday = DateUtility.OffsetDayOfYear(year, day_of_year, -1);
         double ave_temp = (maxt + mint) * 0.5;
 
         surf_temp[day_of_year - 1] = (1.0 - salb) * (ave_temp + (maxt - ave_temp) *
@@ -2556,7 +2437,7 @@ public class SoilN : Instance
 
         for (int day = 0; day < ndays; day++)
         {
-            int doy = OffsetDayOfYear(year, day_of_year, -day);
+            int doy = DateUtility.OffsetDayOfYear(year, day_of_year, -day);
             temp0[day] = surf_temp[doy - 1];
         }
 
