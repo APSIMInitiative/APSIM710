@@ -1,7 +1,7 @@
 include $(APSIM)/Model/Build/Platform.make
 
 ifeq ($(PLATFORM),Linux)
-PROJECT = CSSoilNitrogen
+PROJECT = SoilNitrogen
 else
 PROJECT = SoilNitrogen
 endif
