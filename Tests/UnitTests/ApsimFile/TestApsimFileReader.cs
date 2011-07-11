@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using NUnit.Framework;
 using System.Data;
+using Graph;
 
 [TestFixture]
 public class TestApsimFileReader
