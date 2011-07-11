@@ -53,4 +53,5 @@ public ref class Factory
       void RemoveShortCuts(XmlNode^ Node);
       void ResolveLinks();
       void CallInitialisedOnAll(Instance^ Obj);
+      Type^ GetTypeOfChild(XmlNode^ Child, Instance^ Obj);
    };

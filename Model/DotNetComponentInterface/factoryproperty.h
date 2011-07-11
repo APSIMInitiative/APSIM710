@@ -155,7 +155,7 @@ public ref class FactoryProperty : Instance, ApsimType
       property bool HasAsValue {bool get() {return HaveSet;}}
       
       property Object^ Get { Object^ get() {return Property->Get;}}
-      void Set(Object^ Value)
+      void SetObject(Object^ Value)
          {
          HaveSet = true;
          Property->SetObject(Value);

@@ -31,7 +31,7 @@ ref class WrapBuiltIn : ApsimType
 			{
 			T Data = (T) Property->Get;
 			::unpackWithConverter(messageData, Data);
-			Property->Set(Data);
+			Property->SetObject(Data);
 			}
 		virtual unsigned memorySize()
 			{
@@ -68,7 +68,7 @@ ref class WrapApsimType : ApsimType
 			{
 			ApsimType^ Data = (ApsimType^) Property->Get;
 			Data->unpack(messageData);
-			Property->Set(Data);
+			Property->SetObject(Data);
 			}
 		virtual unsigned memorySize()
 			{

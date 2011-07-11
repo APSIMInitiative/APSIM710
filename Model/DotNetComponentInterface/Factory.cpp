@@ -58,7 +58,7 @@ Instance^ Factory::CreateInstance(XmlNode^ Node,
    // Node type passed in information. Then populate the instance based
    // on the child XML nodes.
    // --------------------------------------------------------------------
-   Type^ ClassType = CallingAssembly->GetType(Node->Name);
+   Type^ ClassType = GetTypeOfChild(Node, ParentInstance);
    if (ClassType == nullptr)
       throw gcnew Exception("Cannot find a class called: " + Node->Name);
    Instance^ CreatedInstance = dynamic_cast<Instance^> (Activator::CreateInstance(ClassType));
@@ -203,13 +203,15 @@ void Factory::GetAllEvents(Instance^ Obj)
          {
          if (dynamic_cast<XmlComment^>(Child) == nullptr)
             {
-            Type^ t = CallingAssembly->GetType(Child->Name);
-
+            FactoryProperty^ Parameter = FindProperty(Child);
+            Type^ t = GetTypeOfChild(Child, Obj);
             if (t != nullptr && t->IsSubclassOf(Instance::typeid))
                {
                // Create a child instance - indirect recursion.
                Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                Obj->Add(ChildInstance);   
+               if (Parameter != nullptr && Parameter->IsParam && !Parameter->TypeName->Contains("System::"))
+                  Parameter->SetObject(ChildInstance);
 
                // See if there is an array of the right type with the plural version of our child name
                // e.g. if Child is LeafCohort, look for a LeafCohorts member.
@@ -236,11 +238,12 @@ void Factory::GetAllEvents(Instance^ Obj)
                throw gcnew Exception("Cannot have a blank value for property: " + Child->Name);
             else if (Child->HasChildNodes)
                {
-               FactoryProperty^ Parameter = FindProperty(Child);
-               if (Parameter == nullptr)
-                  throw gcnew Exception("Cannot set value of property: " + Child->Name + " in object: " + Obj->InstanceName + ". The property must have either a [Param] or [Input] attribute.");
-               Parameter->Name = XmlHelper::Name(Child);
-               Parameter->Set(Child);
+               
+               if (Parameter != nullptr)
+                  {
+                  Parameter->Name = XmlHelper::Name(Child);
+                  Parameter->Set(Child);
+                  }
                }
             }
          }
@@ -248,13 +251,25 @@ void Factory::GetAllEvents(Instance^ Obj)
       // Look for an XmlNode param. If found then given it our current 'Node'.
       for each (FactoryProperty^ Property in RegisteredProperties)
          {
-         if (Property->TypeName == "XmlNode")
+         if (Property->TypeName == "XmlNode" && Property->OutputName->IndexOf(Node->Name) == 0)
             {
-            Property->Set(Node);
+            Property->SetObject(Node);
             }
          }
 
       }
+
+   Type^ Factory::GetTypeOfChild(XmlNode^ Child, Instance^ Obj)
+      {
+      FactoryProperty^ Parameter = FindProperty(Child);
+      Type^ t = CallingAssembly->GetType(Child->Name);
+      if (t == nullptr && Parameter != nullptr)
+         t = CallingAssembly->GetType(Parameter->TypeName);
+      if (t == nullptr && Parameter != nullptr)
+         t = CallingAssembly->GetType(Obj->Name + "+" + Parameter->TypeName);
+      return t;
+      }
+
    FactoryProperty^ Factory::FindProperty(XmlNode^ Child)
       {
       // --------------------------------------------------------------------
