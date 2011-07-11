@@ -1,128 +1,131 @@
+
 <Type name="AgPasture">
   <!-- *************************** originally AgpastureType.xml************************* -->
-  <MetaData> 
-    <UItype>VBUserInterface.GenericUI</UItype>
-    <IsCrop>Yes</IsCrop>
-    <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
-    <Documentation> Agpasture documentation </Documentation>
-    <LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
-    <SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
-    <dll>%apsim%\Model\AgPasture.dll</dll> 
-    <drops>
-      <drop>toolbox</drop>
-      <drop>area</drop>
-      <drop>simulation</drop>
-      <drop>folder</drop>
-    </drops>
-    <variables> </variables>
-    <ApsimToSim>
-       <component name= "[AgPasture.name]" executable= "[dll]">
-         <executable name="[dll]" version="1.0"/>
- 	 <componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
-         <initdata>
-	      [Model]
- 	      [AgPasture.innerxml]	 	      
-               [if "[soil.SoilType]"]
-               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf>
-               [endif]
-          </initdata>
-       </component>
-    </ApsimToSim>
-  </MetaData>
+	<MetaData>
+		<UItype>VBUserInterface.GenericUI</UItype>
+		<IsCrop>Yes</IsCrop>
+		<ShowInMainTree>Yes</ShowInMainTree>
+		<Image>%apsim%\UserInterface\Images\banner2.jpg</Image>
+		<Documentation> Agpasture documentation </Documentation>
+		<LargeIcon>%apsim%\UserInterface\Images\leaf32.bmp</LargeIcon>
+		<SmallIcon>%apsim%\UserInterface\Images\leaf16.bmp</SmallIcon>
+		<dll>%apsim%\Model\AgPasture.dll</dll>
+		<drops>
+			<drop>toolbox</drop>
+			<drop>area</drop>
+			<drop>simulation</drop>
+			<drop>folder</drop>
+		</drops>
+		<variables></variables>
+		<ApsimToSim>
+			<component name="[AgPasture.name]" executable="[dll]">
+				<executable name="[dll]" version="1.0"/>
+				<componentinterface>%apsim%\Model\dotnetcomponentinterface.dll</componentinterface>
+				<initdata>
+					[Model]
+					[AgPasture.innerxml]	 	      
+					[if "[soil.SoilType]"]
+						<ll>[soil.[InstanceName] ll(mm/mm)]</ll>
+						<kl>[soil.[InstanceName] kl(/day)]</kl>
+						<xf>[soil.[InstanceName] xf(0-1)]</xf>
+					[endif]
+				</initdata>
+			</component>
+		</ApsimToSim>
+	</MetaData>
   <!-- **************************** in init file (Agpasture.xml)************* -->
-  <Model>
-      <AgPasture>
-      <Nspecies>3</Nspecies>
-	<thisCropName>ryegrass_clover_paspalum</thisCropName>	 
-	<speciesName>ryegrass whiteclover paspalum</speciesName>
-	<micrometType>grass grass grass</micrometType>
-  <isAnnual>0 0 0</isAnnual>
-  <isLegume>0 1 0</isLegume>
-  <photoPath>3 3 4</photoPath>
-  <dayEmerg>0 1 1</dayEmerg>
-  <monEmerg>0 3 3</monEmerg>
-  <dayAnth>0 1 1</dayAnth>
-  <monAnth>0 11 1</monAnth>
-	<daysToMature>0 0 0</daysToMature>
-  <cropFactor>0.3 0.3 0.3</cropFactor>
-  <maxResidCover>0 0 0</maxResidCover>
-  <dRootDepth>50 50 50</dRootDepth>
-  <maxRootDepth>900 300 900</maxRootDepth>
-	<rootDepth>900 300 900</rootDepth>
-  <rootFnType>0 0 0</rootFnType>
-  <growthTmin>2 4 10</growthTmin>
-  <growthTmax>32 32 40</growthTmax>
-  <growthTopt>20 20 20</growthTopt>
-  <growthTq>2 2 1.2</growthTq>
-	<massFluxTmin>2 2 5</massFluxTmin>
-	<massFluxTopt>20 20 20</massFluxTopt>
-	<massFluxW0>2 2 2</massFluxW0>
-	<massFluxWopt>0.5 0.5 0.5</massFluxWopt>   
+	<Model>
+		<AgPasture>
+			<Nspecies>3</Nspecies>
+			<thisCropName>ryegrass_clover_paspalum</thisCropName>
+			<speciesName>ryegrass whiteclover paspalum</speciesName>
+			<micrometType>grass grass grass</micrometType>
+			<isAnnual>0 0 0</isAnnual>
+			<isLegume>0 1 0</isLegume>
+			<photoPath>3 3 4</photoPath>
+			<dayEmerg>0 1 1</dayEmerg>
+			<monEmerg>0 3 3</monEmerg>
+			<dayAnth>0 1 1</dayAnth>
+			<monAnth>0 11 1</monAnth>
+			<daysToMature>0 0 0</daysToMature>
+			<cropFactor>0.3 0.3 0.3</cropFactor>
+			<maxResidCover>0 0 0</maxResidCover>
+			<dRootDepth>50 50 50</dRootDepth>
+			<maxRootDepth>900 300 900</maxRootDepth>
+			<rootDepth>900 300 900</rootDepth>
+			<rootFnType>0 0 0</rootFnType>
+			<growthTmin>2 4 10</growthTmin>
+			<growthTmax>32 32 40</growthTmax>
+			<growthTopt>20 20 20</growthTopt>
+			<growthTq>2 2 1.2</growthTq>
+			<massFluxTmin>2 2 5</massFluxTmin>
+			<massFluxTopt>20 20 20</massFluxTopt>
+			<massFluxW0>2 2 2</massFluxW0>
+			<massFluxWopt>0.5 0.5 0.5</massFluxWopt>   
 	<!--OldValues heatOnsetT>28 28 35</heatOnsetT><heatFullT>35 35 40</heatFullT-->
-	<heatOnsetT>60 60 60</heatOnsetT>
- 	<heatFullT>70 70 70</heatFullT>
-	<heatSumT>50 50 50</heatSumT>
+			<heatOnsetT>60 60 60</heatOnsetT>
+			<heatFullT>70 70 70</heatFullT>
+			<heatSumT>50 50 50</heatSumT>
 	<!--OldValues coldOnsetT>0 0 8</coldOnsetT><coldFullT>-3 -3 3</coldFullT-->
-	<coldOnsetT>-20 -20 -20</coldOnsetT>
- 	<coldFullT>-30 -30 -30</coldFullT>
-	<coldSumT>20 20 50</coldSumT>
-	<Pm>1 1 1.2</Pm>
-	<maintRespiration>3 3 3</maintRespiration>
-	<growthEfficiency>0.75 0.75 0.75</growthEfficiency>
-	<satRadn>200 200 200</satRadn>
-  <SLA>20 20 20</SLA>
-  <lightExtCoeff>0.5 0.8 0.6</lightExtCoeff>
-	<rue>1.65 1.65 1.65</rue>
-	<maxAssimiRate>330 330 330</maxAssimiRate>
-  <rateLive2Dead>0.05 0.05 0.05</rateLive2Dead>
-  <rateDead2Litter>0.11 0.11 0.11</rateDead2Litter>
-  <rateRootSen>0.02 0.02 0.02</rateRootSen>
-  <stockParameter>0.05 0.05 0.05</stockParameter>         
-  <maxRootFraction>0.2 0.2 0.2</maxRootFraction>
-	<leafRate>3 3 3.5</leafRate>  
-  <fLeaf>0.7 0.7 0.7</fLeaf>
-  <fStolon>0.0 0.2 0.0</fStolon>
-  <digestLive>0.6 0.6 0.6</digestLive>
-  <digestDead>0.2 0.2 0.2</digestDead>
-  <dmtotal>1500 350 100</dmtotal>      
-  <dmroot>450 120 30</dmroot>	
-	<dmlitter>200 50 10</dmlitter>	
-	<dmgreenmin>500 50 20</dmgreenmin>
-  <CO2ambient>380</CO2ambient>
-  <CO2PmaxScale>700 700 150</CO2PmaxScale>
-  <CO2NScale>600 600 600</CO2NScale>
-  <CO2NMin>0.7 0.7 0.7</CO2NMin>
-  <CO2NCurvature>2 2 2</CO2NCurvature>	
-  <NcleafOpt>4 4.5 3</NcleafOpt>          
-  <NcleafMax>5 5.5 3.5</NcleafMax>             
-  <NcleafMin>1.2 1.2 0.8</NcleafMin>	                                      
-  <NcstemFr>0.5 0.5 0.5</NcstemFr>               
-  <NcstolFr>0.5 0.5 0</NcstolFr>            
-  <NcrootFr>0.5 0.5 0.5</NcrootFr> 
- 	<NMinFix>0 0.2 0</NMinFix>
- 	<NMaxFix>0 0.6 0</NMaxFix>
-	<Frgr>1 1 1</Frgr>
-	<rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00</rlvp>
-  <ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23</ll>      	  
-  <kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06</kl>          
-  <xf>1.00 1.00 1.00 1.00 1.00 1.00 0.80</xf> 
-	<waterStressFactor>1 1 1</waterStressFactor>
-  <soilSatFactor>0.1 0.1 0.1</soilSatFactor>
-	<WaterUptakeSource>calc</WaterUptakeSource>
-  <NUptakeSource>calc</NUptakeSource>
-	<LinearInterpolation name="HeightMassFN">
-	     	<XY>0,0</XY>
-	     	<XY>1000,25</XY>
-	     	<XY>2000,75</XY>
-	     	<XY>3000,150</XY>
-	     	<XY>4000,250</XY>
-  </LinearInterpolation>  
-	<LinearInterpolation name="FVPDFunction">
-   	<XY> 0,1.0</XY>
-		<XY>10,1.0</XY>
-		<XY>50,1.0</XY>
-	</LinearInterpolation> 
-     </AgPasture>
-  </Model>
+			<coldOnsetT>-20 -20 -20</coldOnsetT>
+			<coldFullT>-30 -30 -30</coldFullT>
+			<coldSumT>20 20 50</coldSumT>
+			<Pm>1 1 1.2</Pm>
+			<maintRespiration>3 3 3</maintRespiration>
+			<growthEfficiency>0.75 0.75 0.75</growthEfficiency>
+			<satRadn>200 200 200</satRadn>
+			<SLA>20 20 20</SLA>
+			<lightExtCoeff>0.5 0.8 0.6</lightExtCoeff>
+			<rue>1.65 1.65 1.65</rue>
+			<maxAssimiRate>330 330 330</maxAssimiRate>
+			<rateLive2Dead>0.05 0.05 0.05</rateLive2Dead>
+			<rateDead2Litter>0.11 0.11 0.11</rateDead2Litter>
+			<rateRootSen>0.02 0.02 0.02</rateRootSen>
+			<stockParameter>0.05 0.05 0.05</stockParameter>
+			<maxRootFraction>0.2 0.2 0.2</maxRootFraction>
+			<leafRate>3 3 3.5</leafRate>
+			<fLeaf>0.7 0.7 0.7</fLeaf>
+			<fStolon>0.0 0.2 0.0</fStolon>
+			<digestLive>0.6 0.6 0.6</digestLive>
+			<digestDead>0.2 0.2 0.2</digestDead>
+			<dmtotal>1500 350 100</dmtotal>
+			<dmroot>450 120 30</dmroot>
+			<dmlitter>200 50 10</dmlitter>
+			<dmgreenmin>500 50 20</dmgreenmin>
+			<CO2ambient>380</CO2ambient>
+			<CO2PmaxScale>700 700 150</CO2PmaxScale>
+			<CO2NScale>600 600 600</CO2NScale>
+			<CO2NMin>0.7 0.7 0.7</CO2NMin>
+			<CO2NCurvature>2 2 2</CO2NCurvature>
+			<NcleafOpt>4 4.5 3</NcleafOpt>
+			<NcleafMax>5 5.5 3.5</NcleafMax>
+			<NcleafMin>1.2 1.2 0.8</NcleafMin>
+			<NcstemFr>0.5 0.5 0.5</NcstemFr>
+			<NcstolFr>0.5 0.5 0</NcstolFr>
+			<NcrootFr>0.5 0.5 0.5</NcrootFr>
+			<NMinFix>0 0.2 0</NMinFix>
+			<NMaxFix>0 0.6 0</NMaxFix>
+			<Frgr>1 1 1</Frgr>
+			<rlvp>0.05 0.05 0.03 0.02 0.01 0.00 0.00</rlvp>
+			<ll>0.20 0.23 0.23 0.23 0.23 0.23 0.23</ll>
+			<kl>0.10 0.06 0.06 0.06 0.06 0.06 0.06</kl>
+			<xf>1.00 1.00 1.00 1.00 1.00 1.00 0.80</xf>
+			<waterStressFactor>1 1 1</waterStressFactor>
+			<soilSatFactor>0.1 0.1 0.1</soilSatFactor>
+			<WaterUptakeSource>calc</WaterUptakeSource>
+			<NUptakeSource>calc</NUptakeSource>
+			<LinearInterpolation name="HeightMassFN">
+				<XY>0,0</XY>
+				<XY>1000,25</XY>
+				<XY>2000,75</XY>
+				<XY>3000,150</XY>
+				<XY>4000,250</XY>
+			</LinearInterpolation>
+			<LinearInterpolation name="FVPDFunction">
+				<XY> 0,1.0</XY>
+				<XY>10,1.0</XY>
+				<XY>50,1.0</XY>
+			</LinearInterpolation>
+		</AgPasture>
+	</Model>
 </Type>
