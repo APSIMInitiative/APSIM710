@@ -55,6 +55,7 @@ call MakeProject Maize
 call MakeProject MaizeZ
 call MakeProject Manager
 call MakeProject Map
+call MakeProject MicroClimate
 call MakeProject MicroMet
 call MakeProject Millet
 call MakeProject Operations
