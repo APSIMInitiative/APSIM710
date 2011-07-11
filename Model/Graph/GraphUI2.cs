@@ -57,10 +57,28 @@ namespace Graph
 
             List<string> DefaultFileNames = new List<string>();
             UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
-            foreach (DataTable Source in OurComponent.DataSources(DefaultFileNames))
+            foreach (DataTable Source in FindDataSources(OurComponent, DefaultFileNames))
                AddDataSource(Source);
             }
          }
+
+      public List<DataTable> FindDataSources(ApsimFile.Component C, List<string> DefaultFileNames)
+      {
+          List<DataTable> DataSources = new List<DataTable>();
+
+          DataProcessor Processor = new DataProcessor();
+          Processor.DefaultOutputFileNames = DefaultFileNames;
+
+          foreach (ApsimFile.Component Child in C.ChildNodes)
+          {
+              XmlDocument Doc = new XmlDocument();
+              Doc.LoadXml(Child.FullXMLNoShortCuts());
+              DataTable Table = Processor.Go(Doc.DocumentElement, "");
+              if (Table != null)
+                  DataSources.Add(Table);
+          }
+          return DataSources;
+      }
 
       /// <summary>
       /// Save the TeeChart format to the XML node.

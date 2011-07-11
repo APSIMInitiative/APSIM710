@@ -681,23 +681,7 @@ namespace ApsimFile
          return null;
          }
 
-      public List<DataTable> DataSources(List<string> DefaultFileNames)
-         {
-         List<DataTable> DataSources = new List<DataTable>();
 
-         DataProcessor Processor = new DataProcessor();
-         Processor.DefaultOutputFileNames = DefaultFileNames;
-
-         foreach (Component Child in ChildNodes)
-            {
-            XmlDocument Doc = new XmlDocument();
-            Doc.LoadXml(Child.FullXMLNoShortCuts());
-            DataTable Table = Processor.Go(Doc.DocumentElement, "");
-            if (Table != null)
-               DataSources.Add(Table);
-            }
-         return DataSources;
-         }
 
       public void ConvertToShortcutsUsingBase(Component Base)
          {
