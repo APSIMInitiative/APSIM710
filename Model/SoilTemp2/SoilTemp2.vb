@@ -1043,7 +1043,7 @@ Public Class SoilTempdotNET
         ' in modifying soil temperature). Here we estimate this using the Soilwat algorithm for calculating EOS from EO and the cover effects,
         ' assuming the cover effects on EO are similar to Bristow's diffuse penetration constant - 0.26 for horizontal mulch treatment and 0.44 
         ' for vertical mulch treatment.
-        Dim PenetrationConstant As Double = gEos / gEo
+        Dim PenetrationConstant As Double = Math.Max(0.1, gEos) / Math.Max(0.1, gEo)
 
         ' Campbell, p136, indicates the radiative conductance is added to the boundary layer conductance to form a combined conductance for
         ' heat transfer in the atmospheric boundary layer. Eqn 12.9 modified for residue and plant canopy cover
@@ -1269,7 +1269,7 @@ Public Class SoilTempdotNET
     ''' <remarks></remarks>
     Private Function SurfaceTemperatureInit() As Double
         Dim ave_temp As Double = (gMaxT + gMinT) * 0.5
-        Dim surfaceT As Double = (1.0 - salb) * (ave_temp + (gMaxT - ave_temp) * Math.Sqrt(radn * 23.8846 / 800.0)) + salb * ave_temp
+        Dim surfaceT As Double = (1.0 - salb) * (ave_temp + (gMaxT - ave_temp) * Math.Sqrt(Math.Max(radn, 0.1) * 23.8846 / 800.0)) + salb * ave_temp
         Call BoundCheck(surfaceT, -100.0, 100.0, "Initial surfaceT")
         Return surfaceT
     End Function
@@ -1400,12 +1400,12 @@ Public Class SoilTempdotNET
 
         Const W2MJ As Double = HR2MIN * MIN2SEC * J2MJ      ' convert W to MJ
         Dim psr As Double = m1Tot * SOLARconst * W2MJ   ' potential solar radiation for the day (MJ/m^2)
-        Dim fr As Double = radn / psr               ' ratio of potential to measured daily solar radiation (0-1)
+        Dim fr As Double = Math.Max(radn, 0.1) / psr               ' ratio of potential to measured daily solar radiation (0-1)
         cloudFr = 2.33 - 3.33 * fr    ' fractional cloud cover (0-1)
         cloudFr = bound(cloudFr, 0.0, 1.0)
 
         For timestepNumber As Integer = 1 To ITERATIONSperDAY
-            solarRadn(timestepNumber) = radn * m1(timestepNumber) / m1Tot
+            solarRadn(timestepNumber) = Math.Max(radn, 0.1) * m1(timestepNumber) / m1Tot
         Next timestepNumber
 
         ' cva is vapour concentration of the air (g/m^3)
@@ -1427,7 +1427,7 @@ Public Class SoilTempdotNET
         Dim emissivityAtmos As Double = (1 - 0.84 * cloudFr) * 0.58 * Math.Pow(cva, (1.0 / 7.0)) + 0.84 * cloudFr
         ' To calculate the longwave radiation out, we need to account for canopy and residue cover
         ' Calculate a penetration constant. Here we estimate this using the Soilwat algorithm for calculating EOS from EO and the cover effects.
-        Dim PenetrationConstant As Double = gEos / gEo
+        Dim PenetrationConstant As Double = Math.Max(0.1, gEos) / Math.Max(0.1, gEo)
 
         ' Eqn 12.1 modified by cover.
         Dim lwRinSoil As Double = longWaveRadn(emissivityAtmos, gAirT) * PenetrationConstant * w2MJ
