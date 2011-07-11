@@ -63,9 +63,10 @@ public class TestFactory
       // --------------------------------------------------------------------
       string Xml = "<Comp1>" +
                    "   <NotAParam>12</NotAParam>" +
-                   "</Comp1>";
+                   "</Comp1>"; 
       Factory Factory = new Factory();
       Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
+      Factory.CheckParameters();
       }
 
    [Test] 

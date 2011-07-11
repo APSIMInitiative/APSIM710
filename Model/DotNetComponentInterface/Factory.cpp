@@ -195,68 +195,71 @@ void Factory::GetAllEvents(Instance^ Obj)
 
    void Factory::PopulateParams(Instance^ Obj, XmlNode^ Node,ModelFramework::ApsimComponent^ ParentComponent)
       {
-      // --------------------------------------------------------------------
-      // Go through all child XML nodes for the node passed in and set
-      // the corresponding property values in the Obj instance passed in.
-      // --------------------------------------------------------------------      
-      for each (XmlNode^ Child in Node->ChildNodes)
-         {
-         if (dynamic_cast<XmlComment^>(Child) == nullptr)
-            {
-            FactoryProperty^ Parameter = FindProperty(Child);
-            Type^ t = GetTypeOfChild(Child, Obj);
-            if (t != nullptr && t->IsSubclassOf(Instance::typeid))
-               {
-               // Create a child instance - indirect recursion.
-               Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
-               Obj->Add(ChildInstance);   
-               if (Parameter != nullptr && Parameter->IsParam && !Parameter->TypeName->Contains("System::"))
-                  Parameter->SetObject(ChildInstance);
-
-               // See if there is an array of the right type with the plural version of our child name
-               // e.g. if Child is LeafCohort, look for a LeafCohorts member.
-               String^ PluralName = CalcParentName(Child) + "s";
-               for each (FactoryProperty^ Property in RegisteredProperties)
-                  {
-                  if (Property->FQN == PluralName)
-                     {
-                     // Found a list - see if it is the right type.
-                     if (Property->TypeName->Contains("List"))
-                        {
-                        // It is the right type so add our newly created child to the list.
-                        Property->AddToList(ChildInstance);
-                        }
-                     break;
-                     }
-                  }
-               }
-            else if (Child->Name == "Memo")
-               {
-               // Ignore memo fields.
-               }
-            else if (!Child->HasChildNodes && Child->InnerText == "")
-               throw gcnew Exception("Cannot have a blank value for property: " + Child->Name);
-            else if (Child->HasChildNodes)
-               {
-               
-               if (Parameter != nullptr)
-                  {
-                  Parameter->Name = XmlHelper::Name(Child);
-                  Parameter->Set(Child);
-                  }
-               }
-            }
-         }
-
       // Look for an XmlNode param. If found then given it our current 'Node'.
+      bool HavePassedXMLToObj = false;
       for each (FactoryProperty^ Property in RegisteredProperties)
          {
          if (Property->TypeName == "XmlNode" && Property->OutputName->IndexOf(Node->Name) == 0)
             {
             Property->SetObject(Node);
+            HavePassedXMLToObj = true;
             }
          }
 
+      // Go through all child XML nodes for the node passed in and set
+      // the corresponding property values in the Obj instance passed in.
+      if (!HavePassedXMLToObj)
+         {
+         for each (XmlNode^ Child in Node->ChildNodes)
+            {
+            if (dynamic_cast<XmlComment^>(Child) == nullptr)
+               {
+               FactoryProperty^ Parameter = FindProperty(Child);
+               Type^ t = GetTypeOfChild(Child, Obj);
+               if (t != nullptr && t->IsSubclassOf(Instance::typeid))
+                  {
+                  // Create a child instance - indirect recursion.
+                  Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
+                  Obj->Add(ChildInstance);   
+                  if (Parameter != nullptr && Parameter->IsParam && !Parameter->TypeName->Contains("System::"))
+                     Parameter->SetObject(ChildInstance);
+
+                  // See if there is an array of the right type with the plural version of our child name
+                  // e.g. if Child is LeafCohort, look for a LeafCohorts member.
+                  String^ PluralName = CalcParentName(Child) + "s";
+                  for each (FactoryProperty^ Property in RegisteredProperties)
+                     {
+                     if (Property->FQN == PluralName)
+                        {
+                        // Found a list - see if it is the right type.
+                        if (Property->TypeName->Contains("List"))
+                           {
+                           // It is the right type so add our newly created child to the list.
+                           Property->AddToList(ChildInstance);
+                           }
+                        break;
+                        }
+                     }
+                  }
+               else if (Child->Name == "Memo")
+                  {
+                  // Ignore memo fields.
+                  }
+               else if (!Child->HasChildNodes && Child->InnerText == "")
+                  throw gcnew Exception("Cannot have a blank value for property: " + Child->Name);
+               else if (Child->HasChildNodes)
+                  {
+                  if (Parameter == nullptr)
+                     throw gcnew Exception("Cannot set value of property: " + Child->Name + " in object: " + Obj->InstanceName + ". The property must have either a [Param] or [Input] attribute.");
+                  else
+                     {
+                     Parameter->Name = XmlHelper::Name(Child);
+                     Parameter->Set(Child);
+                     }
+                  }
+               }
+            }
+         }
       }
 
    Type^ Factory::GetTypeOfChild(XmlNode^ Child, Instance^ Obj)
