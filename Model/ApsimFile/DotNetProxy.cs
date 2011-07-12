@@ -129,15 +129,9 @@ class DLLProber
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(DescriptionXML);
 
-#if !fulldotnet  
             ClassCode = "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
                          "   {\r\n" +
                          "   public $CLASSNAME$(string _FullName, ModelFramework.ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
-#else
-            ClassCode = "public class $CLASSNAME$ : Component\r\n" +
-                         "   {\r\n" +
-                         "   public $CLASSNAME$(string _FullName, ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
-#endif
 
             // Write all properties
             foreach (XmlNode Node in XmlHelper.ChildNodes(Doc.DocumentElement, "property"))
@@ -376,6 +370,7 @@ class DLLProber
                            "using System.Collections.Generic;\r\n" +
                            "using System.Text;\r\n" +
                            "using System.Runtime.InteropServices;\r\n" +
+                           "#pragma warning disable 67 // Suppress warning messages about unused events\r\n" +
                            "namespace ModelFramework {\r\n" +
                            "}\r\n";
 
