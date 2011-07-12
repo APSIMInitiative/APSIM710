@@ -13,14 +13,6 @@ Version                = 7.4
 Title                  = RS_Peas_0405_Nil6_Full6_T4
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot open file: C:\Program Files\Apsim73-r1349\Examples\MetFiles\lincoln.met. File doesn't exist
-     Component name: met
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
@@ -29,8 +21,338 @@ Paddock:
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\Micromet.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "FieldPea2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/09/2004
+     Simulation end date   =  1/03/2005
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        rain
+        day
+        year
+        es
+        drain
+        runoff
+        irrigation
+        sw
+        sw_dep()
+        biomass
+        cover_green
+        cover_tot
+        ep
+        grain_wt
+        green_biomass
+        height
+        lai
+        leafgreenwt
+        podgreenwt
+        stemgreenwt
+        node_no
+        esw
+        yieldwet
+        yield
+        grainwt
+        grain_wt
+        senescedwt
+
+     Output file = RS_Peas_0405_Nil6_Full6_T4.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     10/01/2005  Prepare      irrigation apply amount= 26 (mm)
+     17/01/2005  Prepare      irrigation apply amount= 58 (mm)
+     24/01/2005  Prepare      irrigation apply amount= 51 (mm)
+     31/01/2005  Prepare      irrigation apply amount= 37.1 (mm)
+     07/02/2005  Prepare      irrigation apply amount= 38 (mm)
+     14/02/2005  Prepare      irrigation apply amount= 28 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('28-oct') then
+        fieldpea2 sow population =120, depth = 40, cultivar = excel, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+              endif
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if ('fieldpea2' = 'cotton') then
+       if (fieldpea2.ozcot_status > 0) then
+           fieldpea2 harvest
+       endif
+                elseif (fieldpea2.stagename = 'harvest_ripe' or fieldpea2.plant_status = 'dead') then
+       fieldpea2  harvest
+       fieldpea2  end_crop
+                endif
+     END of rules
+     
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1/09/2004, 01/03/2005') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * -100 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     END of rules
+     
+     Manager creating a new local real variable : co2 = 350.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton deep 1  Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Templeton deep 1  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  200.  0.053  0.053  0.330  0.426  0.330  1.311  0.856  0.483*******
+          200.-  400.  0.038  0.038  0.300  0.405  0.300  1.524  0.135  0.272389.229
+          400.-  600.  0.125  0.125  0.250  0.318  0.250  1.650  0.009  0.097 16.362
+          600.-  800.  0.100  0.100  0.200  0.314  0.200  1.601  0.000  0.170 97.995
+          800.- 1000.  0.085  0.085  0.170  0.312  0.170  1.601  0.000  0.306 97.995
+         1000.- 1200.  0.070  0.070  0.140  0.310  0.140  1.601  0.000  0.306 97.995
+         1200.- 1400.  0.115  0.115  0.230  0.316  0.230  1.601  0.000  0.306 97.995
+         1400.- 1600.  0.149  0.149  0.280  0.342  0.280  1.601  0.000  0.153 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      10.60      55.40      55.40      19.20
+          200.-  400.       7.60      52.40      52.40      21.00
+          400.-  600.      25.00      25.00      25.00      13.60
+          600.-  800.      20.00      20.00      20.00      22.80
+          800.- 1000.      17.00      17.00      17.00      28.40
+         1000.- 1200.      14.00      14.00      14.00      34.00
+         1200.- 1400.      23.00      23.00      23.00      17.20
+         1400.- 1600.      29.80      26.20      26.20      12.40
+          ---------------------------------------------------------
+               Totals     147.00     233.00     233.00     168.60
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     3.000000
+             less than lower limit of    3.500000
+     Component name: Templeton deep 1  Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.49   30.01    5.00    0.00
+             2     6.00  0.92    2.73    0.14    0.00
+             3     6.00  0.32    2.95    0.15    0.00
+             4     6.00  0.28    2.87    0.14    0.00
+             5     6.00  0.21    2.87    0.14    0.00
+             6     6.00  0.20    2.87    0.14    0.00
+             7     6.00  0.20    2.87    0.14    0.00
+             8     3.00  0.10    2.87    0.14    0.00
+          ------------------------------------------------
+           Totals               50.02    6.01    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      64115.2  5828.7  1093.9   136.7   131.6     3.3
+             2      27950.1  2540.9   122.0    15.3    90.5     2.3
+             3      10409.5   946.3    18.5     2.3    62.2     1.6
+             4       8890.2   808.2    11.3     1.4    42.7     1.1
+             5       6656.5   605.1     3.6     0.5    29.4     0.7
+             6       6402.9   582.1     1.1     0.1    20.2     0.5
+             7       6402.9   582.1     1.1     0.1    13.9     0.3
+             8       3193.9   290.4     8.1     1.0     9.5     0.2
+          ---------------------------------------------------------
+           Totals  134021.3 12183.8  1259.7   157.5   400.0    10.0
+          ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+28 October 2004(Day of year=302), Sow on a fixed date: 
+     Manager sending message :- fieldpea2 sow  population = 120, depth = 40, cultivar = excel, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+29/10/2004 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+20/11/2004 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+17/12/2004 - EndJuvenile
+                            LAI = 0.54 (m^2/m^2)
+           Above Ground Biomass = 34.42 (g/m^2)
+23/12/2004 - FloralInitiation
+                            LAI = 0.79 (m^2/m^2)
+           Above Ground Biomass = 51.39 (g/m^2)
+27/12/2004 - Flowering
+                            LAI = 1.04 (m^2/m^2)
+           Above Ground Biomass = 61.44 (g/m^2)
+10 January 2005(Day of year=10), operations: 
+      Sending apply message to irrigation
+17 January 2005(Day of year=17), operations: 
+      Sending apply message to irrigation
+24 January 2005(Day of year=24), operations: 
+      Sending apply message to irrigation
+26 January 2005(Day of year=26): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     -ve DM Allocation to Leaf Cohort
+     Component name: FieldPea2
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
