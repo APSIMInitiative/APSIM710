@@ -61,7 +61,7 @@
         <module type="modulename" description="Module used to manage wintering off">DDRules</module>
         <enable type="yesno" description="Dry stock wintered off farm">no</enable>
       </ui>
-      <script name="init">
+      <script>
         <text>if ('[enable]' = 'yes') then
                   '[module]' set WinterOffDryStock = 1
               else
@@ -82,7 +82,7 @@
         <energy_content type="text" description="Energy content of conversed feed (ME/kgDM)">10.5</energy_content>
         <silage_on_hand type="text" description="Feed stored on farm at start of simulation (kgDM/ha)">250</silage_on_hand>
       </ui>
-      <script name="init">
+      <script>
         <text>	
         	ConservationStart = '[start_date]'
         	ConservationFinish = '[finish_date]'
@@ -257,6 +257,51 @@ endif</text>
    DDRules.GrazingResidual = [residual]
    DDRules.GrazingInterval = [length]
 endif</text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Farm Settings1">
+      <ui>
+        <category type="category" />
+        <farm_area type="text" description="Effective Farm Area (ha)">10</farm_area>
+        <stocking_rate type="text" description="Stocking Rate at Peak Milk (cows/ha)">2.7</stocking_rate>
+        <alloc type="text" description="Allocation Type [0,1]">1</alloc>
+      </ui>
+      <script>
+        <text>DDRules.FarmArea = [farm_area]
+DDRules.StockingRate = [stocking_rate]
+DDRules.AllocationType = [alloc]
+</text>
+        <event>init</event>
+      </script>
+    </manager>
+    <manager name="Grazing Settings">
+      <ui>
+        <category type="category" />
+        <date type="ddmmmdate" description="Enter date (dd-mmm) : ">01-aug</date>
+        <category type="category" />
+        <residual type="text" description="Grazing Residual [kgDM/ha]">1480</residual>
+        <length type="text" description="Rotation Length [days]">30</length>
+      </ui>
+      <script>
+        <text>if (today = date('[date]')) then
+   DDRules.GrazingResidual = [residual]
+   DDRules.GrazingInterval = [length]
+endif</text>
+        <event>start_of_day</event>
+      </script>
+    </manager>
+    <manager name="Stop storing silage on a fixed date">
+      <ui>
+        <category type="category" description="Sowing criteria" />
+        <date type="text" description="Enter date (dd-mmm) : ">1-jan</date>
+      </ui>
+      <script>
+        <text>
+        if (today = date('[date]') then
+              DDRules.SilageStoreEnable = 0
+         endif
+               </text>
         <event>start_of_day</event>
       </script>
     </manager>

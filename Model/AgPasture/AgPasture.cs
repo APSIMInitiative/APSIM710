@@ -494,12 +494,12 @@ public class AgPasture : Instance
         p_waterUptake = 0;
         p_gfwater = 0;
 
-        if (rlvp.Length != dlayer.Length)
-        {
-            String msg = "Warning: Number of layers specified for root length density (rlvp) is different ";
-            msg += "\nfrom the number of soil layers.The simulation will run using the minimum of the two.";
-            Console.WriteLine(msg);
-        }
+        //if (rlvp.Length != dlayer.Length)
+        //{
+        //    String msg = "Warning: Number of layers specified for root length density (rlvp) is different ";
+        //    msg += "\nfrom the number of soil layers.The simulation will run using the minimum of the two.";
+        //    Console.WriteLine(msg);
+        //}
     }
     //----------------------------------------------------------
     /// <summary>
