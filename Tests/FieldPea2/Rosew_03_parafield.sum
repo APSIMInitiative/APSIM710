@@ -20,11 +20,10 @@ Paddock:
    Component                      "manager" = %apsim%\Model\Manager.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
-   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                     "Micromet" = %apsim%\Model\Micromet.dll
    Component                   "soil Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                    "FieldPea2" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -183,6 +182,7 @@ Paddock:
         LeafLiveMetabolicWt
         RootNUptakeSupply
         ArbitratorNDemand
+        PodLiveWt
 
      Output file = Rosew_03_parafield Outputs.out
      Format = normal
@@ -464,30 +464,13 @@ Paddock:
      
      
      Manager creating a new local real variable : irrigation = 0.00000
-9 June 2003(Day of year=160), Sow on a fixed date: 
-     Manager sending message :- fieldpea2 sow  population = 70, depth = 30, cultivar = parafield, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
-10/06/2003 - Germination
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
-6/07/2003 - Emergence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
-7/08/2003 - EndJuvenile
-                            LAI = 0.31 (m^2/m^2)
-           Above Ground Biomass = 13.68 (g/m^2)
-24/09/2003 - FloralInitiation
-                            LAI = 3.12 (m^2/m^2)
-           Above Ground Biomass = 237.46 (g/m^2)
-30/09/2003 - Flowering
-                            LAI = 3.54 (m^2/m^2)
-           Above Ground Biomass = 290.31 (g/m^2)
-5 October 2003(Day of year=278): 
+9 June 2003(Day of year=160): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM  Fatal  Error
                       -------------------
-     -ve DM Allocation to Leaf Cohort
-     Component name: FieldPea2
-     
+     The module "fieldpea2" does not exist.
+     Command: fieldpea2 sow population =70, depth = 30, cultivar = parafield, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+     Component name: Sow on a fixed date
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
