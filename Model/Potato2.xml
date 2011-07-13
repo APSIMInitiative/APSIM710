@@ -319,7 +319,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
             <XY>35 1</XY>
           </XYPairs>
         </TemperatureFunction>
-        <Constant name="MaxDailyNUptake">
+        <Constant name="xMaxDailyNUptake">
           <Value type="text" description="Value">10</Value>
           <Memo>I the maximum amount of N that the root system can take up each day (kg/ha)</Memo>
         </Constant>
@@ -380,6 +380,13 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           <Memo>Stops the roots from demanding Nitrogen after final leaf stage
         </Memo>
         </PhaseBasedSwitch>
+        <LinearInterpolationFunction name="MaxDailyNUptake">
+          <XProperty type="text" description="XProperty">Root.Length</XProperty>
+          <XYPairs>
+            <XY>0 1</XY>
+            <XY>0.02 6</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSRoot>
       <SIRIUSLeaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
@@ -389,7 +396,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
         <InitialAges type="text" description="InitialAges">30 20 10</InitialAges>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
-		<InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 

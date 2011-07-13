@@ -119,6 +119,7 @@ public class ArrayBiomass : Instance
         }
     }
 
+
     /// <summary>
     /// Helper method to go find the value(s) of a property and put into a List<double>
     /// </summary>

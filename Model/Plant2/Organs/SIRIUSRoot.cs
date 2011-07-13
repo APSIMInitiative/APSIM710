@@ -18,12 +18,14 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     private double[] Uptake = null;
     private double[] DeltaNH4;
     private double[] DeltaNO3;
-
+    
     public Biomass[] LayerLive;
     public Biomass[] LayerDead;
+    public Biomass[] LayerLengthDensity;
     private SowPlant2Type SowingInfo = null;
     private double _SenescenceRate = 0;
     private double _Nuptake = 0;
+    public double Length = 0;
     
     [Output]
     [Units("kg/ha")]
@@ -154,6 +156,10 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             LayerLive[0].StructuralN = InitialDM * MaxNconc * Population.Value;
             Depth = SowingInfo.Depth;
         }
+
+        Length = 0;
+        for (int layer = 0; layer < dlayer.Length; layer++)
+            Length += LengthDensity[layer];
 
         if (ll.Length != dlayer.Length)
             throw new Exception("Number of LL items does not match the number of soil layers.");
@@ -616,7 +622,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             double[] value = new double[dlayer.Length];
             for (int i = 0; i < dlayer.Length; i++)
                 value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
-            return value;
+           return value;
         }
     }
     [Output("rlv")]
@@ -631,6 +637,20 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     [Output]
     [Units("mm")]
     public double Depth = 0;
+    //[Output]
+    //[Units("mm")]
+   /* public double Length
+    {
+        get
+        {
+            double lengthSum = 0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                lengthSum += LengthDensity[layer];
+            return lengthSum;
+        }
+    } */
+
+
  #endregion
 
 }
