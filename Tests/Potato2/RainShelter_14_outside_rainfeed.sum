@@ -14,7 +14,7 @@ Title                  = RainShelter_14_outside_rainfeed
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -47,7 +47,7 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- Outputs Initialisation ------------------------------------------------
      Output frequency:
         post
      Output variables:
@@ -101,30 +101,24 @@ Paddock:
         TuberLiveWt
         RootDeadWt
         RootLiveWt
-        GrainLIveWt
-        GrainDeadWt
-        FloretLIveWt
-        FloretDeadWt
         AboveGroundN
         BelowGroundN
         TotalN
-        RootLiveN
-        RootDeadN
+        TotalLiveN
+        TotalDeadN
         LeafDeadN
         LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
         TuberLiveN
-        GrainLiveN
-        GrainDeadN
-        FloretLiveN
-        FloretDeadN
-        GrainLiveNconc
-        FloretLiveNconc
-        TuberLiveNConc
+        RootLiveN
+        RootDeadN
         LeafLiveNConc
+        LeafDeadNConc
         StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -144,30 +138,26 @@ Paddock:
         LeafGreenNo
         LeafExpandingNodeNo
         LeafCohortNo
-        LeafBranchNo
         LeafDeadNodeNo
         LeafNodeNo
         LeafSenescingNodeNo
+        LeafLeafNo
         sw
         no3
-        LeafPartitionFractionValue
-        StemPartitionFractionValue
-        TuberPartitionFractionValue
-        GrainPartitionFractionValue
-        FloretPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumNConcValue
-        FloretMinimumNConcValue
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
-        GrainMaximumNConcValue
-        FloretMaximumNConcValue
+        RootMinimumNConcValue
         LeafMaximumNConcValue
         StemMaximumNConcValue
         TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
 
-     Output file = RainShelter_14_outside_rainfeed Plant2 diagnostic variables.out
+     Output file = RainShelter_14_outside_rainfeed Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -259,7 +249,6 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -268,7 +257,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -286,9 +275,6 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
-     endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
@@ -319,7 +305,6 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -1765,8 +1750,8 @@ Paddock:
      
      
 6/12/1987 - FloralInitiation
-                            LAI = 0.59 (m^2/m^2)
-           Above Ground Biomass = 30.64 (g/m^2)
+                            LAI = 1.48 (m^2/m^2)
+           Above Ground Biomass = 86.45 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -1814,8 +1799,8 @@ Paddock:
      
      
 8/12/1987 - TuberInitiation
-                            LAI = 0.80 (m^2/m^2)
-           Above Ground Biomass = 42.41 (g/m^2)
+                            LAI = 1.71 (m^2/m^2)
+           Above Ground Biomass = 95.51 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -3303,8 +3288,8 @@ Paddock:
      
      
 10/02/1988 - FinalLeaf
-                            LAI = 1.30 (m^2/m^2)
-           Above Ground Biomass = 954.70 (g/m^2)
+                            LAI = 1.19 (m^2/m^2)
+           Above Ground Biomass = 1070.93 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -4397,6 +4382,7 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
+Removing Leaves from plant
 29 March 1988(Day of year=89): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
@@ -5077,8 +5063,8 @@ Paddock:
      
      
 27/04/1988 - FullSenescence
-                            LAI = 0.14 (m^2/m^2)
-           Above Ground Biomass = 1222.62 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1114.60 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -5724,8 +5710,8 @@ Paddock:
      
      
 25/05/1988 - Maturity
-                            LAI = 0.07 (m^2/m^2)
-           Above Ground Biomass = 1238.03 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1114.60 (g/m^2)
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------

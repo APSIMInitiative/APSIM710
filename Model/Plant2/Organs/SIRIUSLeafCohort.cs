@@ -19,7 +19,8 @@ class SIRIUSLeafCohort : LeafCohort
     public double PotentialSize = 0;
     private double FunctionalNConc = 0;
     private double LuxaryNConc = 0;
-    private double Fw = 0;
+    //private double Fw = 0;
+    private double _ExpansionStress = 0;
     public double SLA = 0.0;
     private double CriticalCover = 0;
     //Leaf Initial status paramaters
@@ -264,7 +265,7 @@ class SIRIUSLeafCohort : LeafCohort
         Live.NonStructuralN = 0;
         NReallocationFactor = NRF.Value;
         NRetranslocationFactor = NRR.Value;
-        Fw = Stressfact.Value;
+        //Fw = Stressfact.Value;
         ParentLeafOrgan = Parent;
         CriticalCover = CritCover.Value;
         DMRetranslocationFactor = DMRF.Value;
@@ -273,8 +274,9 @@ class SIRIUSLeafCohort : LeafCohort
     public override void DoPotentialGrowth(double TT)
     {
         //Leaf area growth parameters
+        _ExpansionStress = ParentLeafOrgan.ExpansionStress;  //Get daily expansion stress value
         DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
-        DeltaWaterConstrainedArea = DeltaPotentialArea * Fw; //Reduce potential growth for water stress
+        DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
         CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank); // Calculate cover above leaf cohort
         SenescedFrac = FractionSenescing(TT);
         SLA = 0;
@@ -290,10 +292,10 @@ class SIRIUSLeafCohort : LeafCohort
         LeafStartDMRetranslocationSupply = LeafStartNonStructuralWt * DMRetranslocationFactor;
         //Nretranslocation is that which occurs before uptake (senessed metabolic N and all non-structuralN)
         LeafStartMetabolicNReallocationSupply = SenescedFrac * LeafStartMetabolicN * NReallocationFactor;
-        LeafStartNonStructuralNReallocationSupply = LeafStartNonStructuralN * NReallocationFactor;  //Non-structuralN is always available for reallocation
-        //Retranslocated N is only that which occurs after N uptake and only metabolic N (all availble non-structural N should have already been moved by reallocation)
+        LeafStartNonStructuralNReallocationSupply = SenescedFrac * LeafStartNonStructuralN * NReallocationFactor;  
+        //Retranslocated N is only that which occurs after N uptake. Both Non-structural and metabolic N are able to be retranslocated but metabolic N will only be moved if remobilisation of non-structural N does not meet demands
         LeafStartMetabolicNRetranslocationSupply = Math.Max(0.0, (LeafStartMetabolicN * NRetranslocationFactor) - LeafStartMetabolicNReallocationSupply);
-        LeafStartNonStructuralNRetranslocationSupply = 0; //All nonstructural N that can be moved will be moved by reallocation
+        LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LeafStartNonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply); 
         LeafStartNReallocationSupply = NReallocationSupply;
         LeafStartNRetranslocationSupply = NRetranslocationSupply;
         //zero locals variables

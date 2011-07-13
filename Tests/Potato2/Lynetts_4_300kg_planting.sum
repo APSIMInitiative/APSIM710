@@ -14,7 +14,7 @@ Title                  = Lynetts_4_300kg_planting
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -46,7 +46,7 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- Outputs Initialisation ------------------------------------------------
      Output frequency:
         post
      Output variables:
@@ -100,30 +100,24 @@ Paddock:
         TuberLiveWt
         RootDeadWt
         RootLiveWt
-        GrainLIveWt
-        GrainDeadWt
-        FloretLIveWt
-        FloretDeadWt
         AboveGroundN
         BelowGroundN
         TotalN
-        RootLiveN
-        RootDeadN
+        TotalLiveN
+        TotalDeadN
         LeafDeadN
         LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
         TuberLiveN
-        GrainLiveN
-        GrainDeadN
-        FloretLiveN
-        FloretDeadN
-        GrainLiveNconc
-        FloretLiveNconc
-        TuberLiveNConc
+        RootLiveN
+        RootDeadN
         LeafLiveNConc
+        LeafDeadNConc
         StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -140,34 +134,35 @@ Paddock:
         LeafPhotosynthesisFtValue
         LeafPhotosynthesisFvpdValue
         LeafTotalNo
+        LeafBranchNo
         LeafGreenNo
         LeafExpandingNodeNo
         LeafCohortNo
-        LeafBranchNo
         LeafDeadNodeNo
         LeafNodeNo
         LeafSenescingNodeNo
+        LeafLeafNo
         sw
         no3
-        LeafPartitionFractionValue
-        StemPartitionFractionValue
-        TuberPartitionFractionValue
-        GrainPartitionFractionValue
-        FloretPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumNConcValue
-        FloretMinimumNConcValue
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
-        GrainMaximumNConcValue
-        FloretMaximumNConcValue
+        RootMinimumNConcValue
         LeafMaximumNConcValue
         StemMaximumNConcValue
         TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        TotalLiveWt
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafSpecificArea
+        LeafDMSupply
+        ArbitratorDeltaWt
         No3_30cm
 
-     Output file = Lynetts_4_300kg_planting Plant2 diagnostic variables.out
+     Output file = Lynetts_4_300kg_planting Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -211,14 +206,17 @@ Paddock:
      SECTION:- start_of_day
      plant_population = 1/((800/1000)*(330/1000))
      if today = date('04/11/1992') then
-        potato2 sow population = plant_population, depth = 120, cultivar = russetburbank, maxcover = 1.0, budnumber = 6, row_spacing = 800, crop_class = plant
+        potato2 sow population = plant_population, depth = 120, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 800, crop_class = plant
      endif
+     no3_30cm = no3(1) + no3(2)
      
      SECTION:- init
      plant_population = 0
+     no3_30cm = 0
      END of rules
      
      Manager creating a new local real variable : plant_population = 0.00000
+     Manager creating a new local real variable : no3_30cm = 0.00000
 
 ------- Diagnostic variables Initialisation -----------------------------------
      Manager rules:
@@ -243,8 +241,6 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     no3_30cm = 0
-     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -253,7 +249,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -271,13 +267,9 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
-     endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
-     no3_30cm = no3(1) + no3(2)
      
      SECTION:- end_of_day
      if simday = 1 then
@@ -305,8 +297,6 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : no3_30cm = 0.00000
-     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -422,14 +412,14 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.60  5.00    8.50    0.10    0.00
-             2     6.20  2.50    6.40    0.10    0.00
+             1     6.60  2.00   85.00    0.10    0.00
+             2     6.20  1.50   34.00    0.10    0.00
              3     5.78  1.20    1.39    0.10    0.00
              4     5.53  1.03    1.39    0.10    0.00
              5     5.50  0.47    1.39    0.10    0.00
              6     5.50  0.47    1.39    0.10    0.00
           ------------------------------------------------
-           Totals               20.46    0.60    0.00
+           Totals              124.56    0.60    0.00
           ------------------------------------------------
      
      
@@ -442,19 +432,19 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      88463.4  7692.5  1536.6   192.1   468.7    23.4
-             2      44341.5  3855.8   658.5    82.3   347.2    17.4
-             3      43040.4  3742.6   159.6    20.0   190.6     9.5
-             4      37043.3  3221.2    36.7     4.6   104.6     5.2
-             5      16913.3  1470.7     6.7     0.8    57.4     2.9
-             6      16913.3  1470.7     6.7     0.8    31.5     1.6
+             1      35429.3  3080.8   570.7    71.3   156.2     7.8
+             2      26604.9  2313.5   395.1    49.4   115.7     5.8
+             3      43040.4  3742.6   159.6    20.0    63.5     3.2
+             4      37043.3  3221.2    36.7     4.6    34.9     1.7
+             5      16913.3  1470.7     6.7     0.8    19.1     1.0
+             6      16913.3  1470.7     6.7     0.8    10.5     0.5
           ---------------------------------------------------------
-           Totals  246715.1 21453.5  2404.8   300.6  1200.0    60.0
+           Totals  175944.4 15299.5  1175.6   146.9   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 21814.09770
+     Manager creating a new local real variable : initialsoilomn = 15466.46090
      Manager creating a new local real variable : initialsurfaceomn = 0.00000
-     Manager creating a new local real variable : initialmineraln = 21.06360
+     Manager creating a new local real variable : initialmineraln = 125.16300
 4 November 1992(Day of year=309), operations: 
       Sending apply message to fertiliser
 4 November 1992(Day of year=309), fertiliser: 
@@ -471,11 +461,11 @@ Paddock:
 18 December 1992(Day of year=353), operations: 
       Sending apply message to irrigation
 21/12/1992 - FloralInitiation
-                            LAI = 1.60 (m^2/m^2)
-           Above Ground Biomass = 95.55 (g/m^2)
+                            LAI = 1.41 (m^2/m^2)
+           Above Ground Biomass = 101.01 (g/m^2)
 23/12/1992 - TuberInitiation
-                            LAI = 2.08 (m^2/m^2)
-           Above Ground Biomass = 118.52 (g/m^2)
+                            LAI = 1.67 (m^2/m^2)
+           Above Ground Biomass = 120.40 (g/m^2)
 7 January 1993(Day of year=7), operations: 
       Sending apply message to irrigation
 2 February 1993(Day of year=33), operations: 
@@ -483,10 +473,11 @@ Paddock:
 16 February 1993(Day of year=47), operations: 
       Sending apply message to irrigation
 20/02/1993 - FinalLeaf
-                            LAI = 1.25 (m^2/m^2)
-           Above Ground Biomass = 1692.28 (g/m^2)
+                            LAI = 3.93 (m^2/m^2)
+           Above Ground Biomass = 1775.48 (g/m^2)
+Removing Leaves from plant
 16/05/1993 - FullSenescence
-                            LAI = 0.02 (m^2/m^2)
-           Above Ground Biomass = 1914.36 (g/m^2)
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 1961.57 (g/m^2)
 2 June 1993(Day of year=153), clock: 
      Simulation is terminating due to end criteria being met.

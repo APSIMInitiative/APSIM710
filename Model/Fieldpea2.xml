@@ -32,6 +32,24 @@
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Cultivar name="Rex">
+	      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+	<Cultivar name="Excel">
+	  <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Kaspa">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Mutka">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Parafield">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Parv">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Crusader">
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Plant>
@@ -40,7 +58,7 @@
         <Value>4</Value>
       </Population>
       <SIRIUSArbitrator name="Arbitrator">
-        <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+        <ArbitrationOption type="text" description="ArbitrationOption">PrioritythenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
 	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
@@ -386,7 +404,7 @@
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
             <Constant name="Function">
-              <Value type="text" description="Value">0.01</Value>
+              <Value type="text" description="Value">0</Value>
             </Constant>
           </PhaseLookupValue>
           <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
@@ -463,11 +481,11 @@
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <MaxNodeNo type="text" description="MaxNodeNo">40</MaxNodeNo>
         <InitialAreas type="text" description="InitialAreas">100</InitialAreas>
         <InitialAges type="text" description="InitialAges">1</InitialAges>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
+        <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
+		<InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
         <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.</Memo>
         <CompositeBiomass name="Live">
@@ -828,23 +846,5 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Grain.Dead</Property>
       </CompositeBiomass>
     </Plant>
-    <Cultivar name="Excel">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Kaspa">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Mutka">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Parafield">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Parv">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-	<Cultivar name="Crusader">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-  </Model>
+</Model>
 </Type>

@@ -23,15 +23,15 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 
  #region Class data members
     private double _SenescenceRate = 0;
-    private double _StructuralFraction = 1;
+    protected double _StructuralFraction = 1;
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     private double StartNonStructuralN = 0;
     private double StartNonStructuralWt = 0;
-    private double PotentialDMAllocation = 0;
+    protected double PotentialDMAllocation = 0;
     private double StartStructuralN = 0;
     private double StartStructuralWt = 0;
-    private double StructuralDMDemand = 0;
+    protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
             
  #endregion
@@ -146,11 +146,11 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         set
         {
-            double _StructuralFraction = 1.0; //Default of 1 means all DM is structural
-            if (StructuralFraction != null)
-                _StructuralFraction = StructuralFraction.Value;
-            Live.StructuralWt += value * _StructuralFraction;
-            Live.NonStructuralWt += value * (1 - _StructuralFraction);
+            //double _StructuralFraction = 1.0; //Default of 1 means all DM is structural
+            //if (StructuralFraction != null)
+            //    _StructuralFraction = StructuralFraction.Value;
+            Live.StructuralWt += Math.Min(value, StructuralDMDemand) ;
+            Live.NonStructuralWt += Math.Max(0, value  - StructuralDMDemand);
         }
     }
     public override double DMExcessAllocation

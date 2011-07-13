@@ -200,6 +200,14 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return F;
         }
     }
+    public double ExpansionStress
+    {
+        get
+        {
+            Function _ExpansionStress = (Function)Children["ExpansionStress"];
+            return _ExpansionStress.Value;
+        }
+    }
     public override void DoPotentialGrowth()
     {
         EP = 0;
@@ -219,6 +227,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             _FinalNodeNo = _FinalNodeNo + ThermalTime.Value / NodeInitiationRate.Value;
         _FinalNodeNo = Math.Min(_FinalNodeNo, MaxNodeNo);
 
+        DeltaNodeNumber = 0;
         if (NodeAppearanceRate.Value > 0)
             DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
             NodeNo += DeltaNodeNumber;

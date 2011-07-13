@@ -47,6 +47,8 @@ public class SIRIUSArbitrator : Arbitrator
     // Public Arbitrator variables
     private double TotalFreshDMSupply = 0;
     private double TotalStoreDMSupply = 0;
+    private double StartWt = 0;
+    private double EndWt = 0;
     [Output]
     public override double DMSupply
     {
@@ -64,6 +66,14 @@ public class SIRIUSArbitrator : Arbitrator
             return TotalNDemand;
         }
     }
+    [Output]
+    public double DeltaWt
+    {
+        get
+        {
+            return EndWt - StartWt;
+        }
+    }
  #endregion
 
     public override void DoDM(List<Organ> Organs)
@@ -79,9 +89,9 @@ public class SIRIUSArbitrator : Arbitrator
         DMRetranslocation = new double[Organs.Count];
                 
         // GET INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
-        double StartingMass = 0;
+        StartWt = 0;
         for (int i = 0; i < Organs.Count; i++)
-            StartingMass += Organs[i].Live.Wt + Organs[i].Dead.Wt;
+            StartWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;
 
         // GET SUPPLIES AND CALCULATE TOTAL
         for (int i = 0; i < Organs.Count; i++)
@@ -121,15 +131,18 @@ public class SIRIUSArbitrator : Arbitrator
         
         // Anything not required by organs structural and metabolic demand is allocated to organs Non-structural capacity.  Once this is full any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
         double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
-        for (int i = 0; i < Organs.Count; i++)
+        if (DMNotAllocated > 0)
         {
-            double proportion = 0.0;
-            if (DMSinkCapacity[i] > 0.0)
+            for (int i = 0; i < Organs.Count; i++)
             {
-                proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
-                double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
-                DMExcessAllocation[i] += DMExcess;
-                TotalWtAllocated += DMExcess;
+                double proportion = 0.0;
+                if (DMSinkCapacity[i] > 0.0)
+                {
+                    proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                    double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
+                    DMExcessAllocation[i] += DMExcess;
+                    TotalWtAllocated += DMExcess;
+                }
             }
         }
         TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalFreshDMSupply - TotalWtAllocated);
@@ -274,36 +287,6 @@ public class SIRIUSArbitrator : Arbitrator
          }
  #endregion
 
- #region Determine Nitrogen Fixation
-        double NFixationAllocated = 0;
-        double TotalFixationWtloss = 0;
-        if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
-        {
-            // Calculate how much fixation N each demanding organ is allocated based on relative demands
-            double NDemandFactor = 0.7;
-            double DMretranslocationFactor = 1.0;
-            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
-                RelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
-            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
-                PriorityAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
-            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
-                PrioritythenRelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
-
-            // Then calculate how much N is fixed from each supplying organ based on relative fixation supply
-            for (int i = 0; i < Organs.Count; i++)
-            {
-                if (NFixationSupply[i] > 0.00000000001)
-                {
-                    double RelativeSupply = NFixationSupply[i] / TotalNFixationSupply;
-                    NFixation[i] = NFixationAllocated * RelativeSupply;
-                    double Respiration = NFixationAllocated * RelativeSupply * Organs[i].NFixationCost;  //Calculalte how much respirtion is associated with fixation
-                    FixationWtLoss[i] = Respiration; // allocate it to the organ
-                    TotalFixationWtloss += Respiration; // total fixation respiration up
-                }
-            }
-        }
- #endregion
-        
  #region Retranslocate Nitrogen
         double NRetranslocationAllocated = 0;
         if (TotalNRetranslocationSupply > 0.00000000001)
@@ -329,6 +312,36 @@ public class SIRIUSArbitrator : Arbitrator
             }
         }
  #endregion
+ 
+ #region Determine Nitrogen Fixation
+        double NFixationAllocated = 0;
+        double TotalFixationWtloss = 0;
+        if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
+        {
+            // Calculate how much fixation N each demanding organ is allocated based on relative demands
+            double NDemandFactor = 0.6;
+            double DMretranslocationFactor = 1.0;
+            if (string.Compare(ArbitrationOption, "RelativeAllocation", true) == 0)
+                RelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PriorityAllocation", true) == 0)
+                PriorityAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+            if (string.Compare(ArbitrationOption, "PrioritythenRelativeAllocation", true) == 0)
+                PrioritythenRelativeAllocation(Organs, TotalNFixationSupply, ref NFixationAllocated, NDemandFactor, DMretranslocationFactor);
+
+            // Then calculate how much N is fixed from each supplying organ based on relative fixation supply
+            for (int i = 0; i < Organs.Count; i++)
+            {
+                if (NFixationSupply[i] > 0.00000000001)
+                {
+                    double RelativeSupply = NFixationSupply[i] / TotalNFixationSupply;
+                    NFixation[i] = NFixationAllocated * RelativeSupply;
+                    double Respiration = NFixationAllocated * RelativeSupply * Organs[i].NFixationCost;  //Calculalte how much respirtion is associated with fixation
+                    FixationWtLoss[i] = Respiration; // allocate it to the organ
+                    TotalFixationWtloss += Respiration; // total fixation respiration up
+                }
+            }
+        }
+ #endregion
 
  #region Actual DM allocation
         // Work out the amount of biomass (if any) lost due to the cost of N fixation
@@ -346,7 +359,7 @@ public class SIRIUSArbitrator : Arbitrator
                 double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
                 double CurrentDM = Organs[i].Live.Wt + DMAllocation[i];
                 double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
-                DMAllocation[i] -= Math.Min(Possibleloss, WtLossNotAttributed);
+                DMAllocation[i] -= Math.Min(DMAllocation[i], Math.Min(Possibleloss, WtLossNotAttributed));
                 WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed); 
                 }
             if (WtLossNotAttributed > 0.00000000001)
@@ -409,13 +422,13 @@ public class SIRIUSArbitrator : Arbitrator
         NBalanceError = (EndN - (StartingN + NDemand));
         if (NBalanceError > 0.000000001)
             throw new Exception("N Mass balance violated!!!!  Daily Plant N increment is greater than N demand");
-        double EndWt = 0;
+        EndWt = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndWt += Organs[i].Live.Wt + Organs[i].Dead.Wt;
-        DMBalanceError = (EndWt - (StartingMass + TotalFreshDMSupply));
+        DMBalanceError = (EndWt - (StartWt + TotalFreshDMSupply));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant N increment is greater than Photosynthetic DM supply");
-        DMBalanceError = (EndWt - (StartingMass + TotalDMDemand + TotalDMSinkCapacity));
+        DMBalanceError = (EndWt - (StartWt + TotalDMDemand + TotalDMSinkCapacity));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
  #endregion
