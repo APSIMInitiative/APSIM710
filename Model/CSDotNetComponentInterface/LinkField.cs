@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Collections.Specialized;
 using System.IO;
 
+using CMPServices;
 using ModelFramework;
 using CSGeneral;
 
@@ -152,7 +153,6 @@ public class LinkField
             ProxyType = Assembly.GetExecutingAssembly().GetType(TypeToFind);
         else
             ProxyType = Types.GetProbeInfoAssembly().GetType("ModelFramework." + TypeToFind);
-
         if (ProxyType == null)
             throw new Exception("Cannot find proxy reference: " + TypeToFind);
         Object[] Parameters = new Object[2];
@@ -160,47 +160,50 @@ public class LinkField
         Parameters[1] = Comp;
         return Activator.CreateInstance(ProxyType, Parameters);
     }
+    //----------------------------------------------------------------------
     /// <summary>
     /// Go find an Apsim component IN SCOPE that matches the specified name and type.
-    /// IN SCOPE means a component that is a sibling or in the paddock
-    /// above.
+    /// IN SCOPE means a component that is a sibling or in the system above.
     /// </summary>
+    //----------------------------------------------------------------------
     protected Object FindApsimComponent(String NameToFind, String TypeToFind)
     {
         String OurName = Comp.GetName();
-        String PaddockName = OurName.Substring(0, OurName.LastIndexOf('.'));
+        String SystemName = OurName.Substring(0, Math.Max(OurName.LastIndexOf('.'), 0));
 
-        if (TypeToFind == "Paddock")
-            return CreateDotNetProxy(TypeToFind, PaddockName);
+        if ((TypeToFind == "Paddock") && (NameToFind == null) && (SystemName.Length > 0)) //if the parent is a paddock/system
+            return CreateDotNetProxy(TypeToFind, SystemName);
         if (TypeToFind == "Component" && NameToFind == null)
             return CreateDotNetProxy(TypeToFind, OurName);
 
-        // The TypeToFind passed in is a DotNetProxy type name. We need to convert this to a DLL name
-        // e.g. TypeToFind = Outputfile, DLLName = Report
-        String DLLFileName = TypeToFind;
-        List<String> DLLs = Types.Instance.Dlls(TypeToFind);
-        if (DLLs.Count > 0)
-           DLLFileName = Path.GetFileNameWithoutExtension(DLLs[0]);
-
-        while (PaddockName != "")
+        String SiblingShortName = "";
+        //for each sibling of this component
+        foreach (KeyValuePair<uint, TComp> pair in Comp.SiblingComponents)
         {
-            // Get a list of all paddock children.
-            foreach (KeyValuePair<uint, String> pair in Comp.SiblingComponents)
+            String SiblingType = pair.Value.CompClass;
+            if (SiblingType.ToLower() == TypeToFind.ToLower())
             {
-                //////////////// need to find out how to do this           getComponentType(pair.Value, Data);
-                String SiblingType = Data.ToString();
-
-                if (SiblingType.ToLower() == DLLFileName.ToLower())
+                SiblingShortName = pair.Value.name.Substring(pair.Value.name.LastIndexOf('.') + 1).ToLower();
+                if (NameToFind == null || NameToFind.ToLower() == SiblingShortName)
+                    return CreateDotNetProxy(TypeToFind, pair.Value.name);
+            }
+        }
+        
+        //look through parent components
+        if (OurName.Contains("."))
+        {
+            String PaddockName = OurName.Substring(0, OurName.LastIndexOf('.'));
+            foreach (KeyValuePair<uint, TComp> pair in Comp.SeniorComponents)
+            {
+                String SeniorType = pair.Value.CompClass;
+                if (SeniorType.ToLower() == TypeToFind.ToLower())
                 {
-                    String SiblingShortName = pair.Value.Substring(pair.Value.LastIndexOf('.') + 1);
-                    if (NameToFind == null || NameToFind == SiblingShortName)
-                        return CreateDotNetProxy(TypeToFind, pair.Value);
+                    String SeniorShortName = pair.Value.name.Substring(pair.Value.name.LastIndexOf('.') + 1).ToLower();
+                    if (NameToFind == null || NameToFind.ToLower() == SeniorShortName)
+                        return CreateDotNetProxy(TypeToFind, pair.Value.name);
                 }
             }
-            // Go to parent paddock.
-            PaddockName = PaddockName.Substring(0, PaddockName.LastIndexOf('.'));
         }
-
         // If we get this far then we didn't find the APSIM component.
         return null;
     }

@@ -5,7 +5,7 @@ using CSGeneral;
 using System.Xml;
 using System.Reflection;
 using ModelFramework;
-     
+
 //---------------------------------------------------------------
 /// <summary>
 /// This class allows the developer to index into the phase collection
@@ -15,7 +15,7 @@ using ModelFramework;
 public class LayeredList<T> : List<T>
 {
 
-}   
+}
 //---------------------------------------------------------------
 /// <summary>
 /// 
@@ -230,71 +230,71 @@ public class DerivedInstance : Instance
     /// 
     /// </summary>
     //---------------------------------------------------------------
-   public void ApplyOverrides()
-   {
-      foreach (XmlNode Instruction in xml.ChildNodes)
-      {
-         if (Instruction.Name == "Override")
-         {
-			 Instance target;
-			 String ReferencedNodeName = XmlHelper.Attribute(Instruction, "name");
-			 if (ReferencedNodeName == "")
-				 target = Root;
-			 else
-                target = Root.Find(ReferencedNodeName.Replace(".", "/"));
-             foreach (XmlNode Child in Instruction.ChildNodes)
-             {
-               if (Child.Name == "Memo")
-               {
-               // Ignore memo fields.
-               }
-               else if (!Child.HasChildNodes && Child.InnerText == "")
-                  throw new Exception("Cannot have a blank value for property: " + Child.Name);
-               else if (Child.HasChildNodes)
-               {
-			      bool found = false;
-				  // First look for a suitable field
-				  FieldInfo field = target.GetType().GetField(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-				  if (field != null)
-				  {
-                     Object[] Attributes = field.GetCustomAttributes(false);
-                     foreach (Object Attr in Attributes)
-                     {
-                       if ((Param)(Attr) != null)
-					   {
-				          found = true;
-                          ReflectedField FieldToSet = new ReflectedField(field, target);
-	                      FieldToSet.Set(Child);
-						  break;
-					   }
-					 }
-				  } 
-				  if (!found)
-				  // Couldn't find a field; maybe it's a property
-				  {
-                     PropertyInfo property = target.GetType().GetProperty(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-					 if (property != null)
-					 {
-                        Object[] Attributes = property.GetCustomAttributes(false);
-                        foreach (Object Attr in Attributes)
+    public void ApplyOverrides()
+    {
+        foreach (XmlNode Instruction in xml.ChildNodes)
+        {
+            if (Instruction.Name == "Override")
+            {
+                Instance target;
+                String ReferencedNodeName = XmlHelper.Attribute(Instruction, "name");
+                if (ReferencedNodeName == "")
+                    target = Root;
+                else
+                    target = Root.Find(ReferencedNodeName.Replace(".", "/"));
+                foreach (XmlNode Child in Instruction.ChildNodes)
+                {
+                    if (Child.Name == "Memo")
+                    {
+                        // Ignore memo fields.
+                    }
+                    else if (!Child.HasChildNodes && Child.InnerText == "")
+                        throw new Exception("Cannot have a blank value for property: " + Child.Name);
+                    else if (Child.HasChildNodes)
+                    {
+                        bool found = false;
+                        // First look for a suitable field
+                        FieldInfo field = target.GetType().GetField(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (field != null)
                         {
-                           if ((Param)(Attr) != null)
-					       {
-						      found = true;
-                              ReflectedProperty PropertyToSet = new ReflectedProperty(property, target);
-  					          PropertyToSet.Set(Child);
-						 	  break;
-						   }
-						}
-					 }
-				  }
-				  if (!found)
-                     throw new Exception("Could not find an overrideable parameter: " + Child.Name);
-               }
+                            Object[] Attributes = field.GetCustomAttributes(false);
+                            foreach (Object Attr in Attributes)
+                            {
+                                if ((Param)(Attr) != null)
+                                {
+                                    found = true;
+                                    ReflectedField FieldToSet = new ReflectedField(field, target);
+                                    FieldToSet.Set(Child);
+                                    break;
+                                }
+                            }
+                        }
+                        if (!found)
+                        // Couldn't find a field; maybe it's a property
+                        {
+                            PropertyInfo property = target.GetType().GetProperty(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                            if (property != null)
+                            {
+                                Object[] Attributes = property.GetCustomAttributes(false);
+                                foreach (Object Attr in Attributes)
+                                {
+                                    if ((Param)(Attr) != null)
+                                    {
+                                        found = true;
+                                        ReflectedProperty PropertyToSet = new ReflectedProperty(property, target);
+                                        PropertyToSet.Set(Child);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!found)
+                            throw new Exception("Could not find an overrideable parameter: " + Child.Name);
+                    }
+                }
             }
-         }
-      }
-   }
+        }
+    }
 }
 
 

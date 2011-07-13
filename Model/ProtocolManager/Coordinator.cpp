@@ -641,10 +641,13 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
    
          std::string myname = protocol::Component::getFQName();
 		 //check if no owner OR I am the owner OR wildcard as owner
-		 if ( (ownerName.length() == 0) || (ownerName == myname) || (ownerName == "*")) 
+		 if ( (ownerName.length() == 0) || (ownerName == myname) || (ownerName == "*") || ownerName == ".MasterPM") 
 		    {
 				vector<int> children;
-				registry.getChildren(getId(), children);
+                int parentID = getId();
+                if (ownerName == ".MasterPM")
+                    parentID = 1;
+				registry.getChildren(parentID, children);
 
 				//match searchName against Unqualified Names of the children
 				for (vector<int>::iterator it = children.begin(); it != children.end(); it++ ) 
@@ -658,7 +661,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        componentID,
                                        fromID,
                                        messageID,
-                                       protocol::Component::getId(),    //ID of the owning component
+                                       parentID,                        //ID of the owning component
                                        child,                           //id of the child component
                                        childName.c_str(),
                                        "",                              //no ddml required

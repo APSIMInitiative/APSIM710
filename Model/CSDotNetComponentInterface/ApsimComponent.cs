@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using CSGeneral;
 using CMPServices;
+using ApsimFile;
 
 namespace ModelFramework
 {
@@ -18,6 +19,8 @@ namespace ModelFramework
     // --------------------------------------------------------------------
     public class ApsimComponent : Instance
     {
+        private bool IsScript;
+        private bool IsPlant;
         private Instance Model;
         private StringBuilder Contents;
         private Assembly modelAssembly;
@@ -35,7 +38,8 @@ namespace ModelFramework
         private Dictionary<String, int> RegistrationsDriverExtraLookup; //allows the lookup by name for the Get() function
         private Dictionary<int, ApsimType> RegistrationsEvent;
         private Dictionary<int, ApsimType> RegistrationsSet;
-        public Dictionary<uint, String> SiblingComponents;  //includes itself
+        public Dictionary<uint, TComp> SiblingComponents;  //includes itself
+        public Dictionary<uint, TComp> SeniorComponents;   //parent and parent's siblings
         public String CompClass;
         private XmlNode InitData;
         private bool EndCropToday;
@@ -75,9 +79,17 @@ namespace ModelFramework
             RegistrationsDriverExtraLookup = new Dictionary<String, int>();
             RegistrationsEvent = new Dictionary<int, ApsimType>();
             RegistrationsSet = new Dictionary<int, ApsimType>();
-            SiblingComponents = new Dictionary<uint, String>();  //id, fqn
+            SiblingComponents = new Dictionary<uint, TComp>();  //id, comp
+            SeniorComponents = new Dictionary<uint, TComp>();  //id, comp
             Fact = new Factory();
             Host = host;
+            IsScript = false;
+            IsPlant = false;
+
+            //The AssemblyResolve event is called when the common language runtime tries to bind to the assembly and fails.
+            //This is used particularly when the in-memory compiled Script is trying to resolve it's references.
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += new ResolveEventHandler(currentDomain_AssemblyResolve);
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -139,8 +151,8 @@ namespace ModelFramework
                     XmlDocument Doc = new XmlDocument();
                     Doc.LoadXml(Contents.ToString());
                     InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
-                    bool IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null);
-                    bool IsScript = (XmlHelper.FindByType(InitData, "text") != null);
+                    IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null);
+                    IsScript = (XmlHelper.FindByType(InitData, "text") != null);
 
                     if (IsScript)
                     {
@@ -247,6 +259,8 @@ namespace ModelFramework
             {
                 if (RegistrationIndex == INIT2INDEX)
                 {
+                    if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
+                        Fact.Initialise();
                     Init2Received = true;
                     if (Model != null)
                     {
@@ -531,7 +545,8 @@ namespace ModelFramework
         {
             Fact.Clear();   //clear this so it can be reinitialised
             Fact.Create(XML.OuterXml, modelAssembly, this);
-            Fact.Initialise();
+            if (Init2Received)
+                Fact.Initialise();  //resolve links can only happen after init2 
             Model = (Instance)(Fact.Root);
             String InstanceName = Name;
             if (InstanceName.Contains("."))
@@ -765,7 +780,7 @@ namespace ModelFramework
         }
         // -----------------------------------------------------------------------
         /// <summary>
-        /// 
+        /// Compile the script. Can be VB or C#
         /// </summary>
         /// <param name="Node"></param>
         /// <returns></returns>
@@ -788,14 +803,15 @@ namespace ModelFramework
                     if (provider != null)
                     {
                         CompilerParameters _params = new CompilerParameters();
-                        _params.GenerateInMemory = false;      //ensure that GetTypes() works later
+                        _params.GenerateInMemory = true;            //in memory only
                         _params.TreatWarningsAsErrors = false;
                         _params.WarningLevel = 2;
                         _params.ReferencedAssemblies.Add("System.dll");
+                        if (VB)
+                            _params.ReferencedAssemblies.Add("Microsoft.VisualBasic.dll");
                         _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
                         System.Reflection.Assembly currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
                         _params.ReferencedAssemblies.Add(currentAssembly.Location);   // Reference the current assembly from within dynamic one
-                        //_params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\CSDotNetComponentInterface.dll");
 
                         foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
                             if (File.Exists(val))
@@ -816,6 +832,7 @@ namespace ModelFramework
                         }
                         if (Errors != "")
                             throw new Exception(Errors);
+
                         return results.CompiledAssembly;
                     }
                 }
@@ -894,6 +911,51 @@ namespace ModelFramework
             }
             Desc.Append("</describecomp>\r\n");
             return Desc.ToString();
+        }
+        // -----------------------------------------------
+        /// <summary>
+        /// When the domain fails to load a referenced assembly this event
+        /// is called. Attempt to find the assembly from known paths.
+        /// This is used particularly when the in-memory compiled Script is trying to resolve it's references.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <returns>The assembly that was found.</returns>
+        // -----------------------------------------------
+        public Assembly currentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            //This handler is called only when the common language runtime tries to bind to the assembly and fails.
+            //Retrieve the list of referenced assemblies in an array of AssemblyName.
+            Assembly MyAssembly, ExecutingAssembly;
+            String sAssemblyPath = "";
+
+            ExecutingAssembly = Assembly.GetExecutingAssembly();
+            String argDllName = args.Name.Substring(0, args.Name.IndexOf(",")) + ".dll";
+            //see if it matches this assembly
+            if (ExecutingAssembly.FullName.Substring(0, ExecutingAssembly.FullName.IndexOf(",")) == args.Name.Substring(0, args.Name.IndexOf(",")))
+            {
+                sAssemblyPath = Path.Combine(Path.GetDirectoryName(ExecutingAssembly.Location), argDllName);
+            }
+            //if it is not this assembly then look in the same path as this assembly
+            if (sAssemblyPath.Length == 0)
+            {
+                String sSearchName = Path.Combine(Path.GetDirectoryName(ExecutingAssembly.Location), argDllName);
+                if (File.Exists(sSearchName))
+                {
+                    sAssemblyPath = sSearchName;
+                }
+                else
+                {
+                    sSearchName = Path.Combine(Configuration.ApsimBinDirectory(), argDllName);
+                    if (File.Exists(sSearchName))
+                    {
+                        sAssemblyPath = sSearchName;
+                    }
+                }
+            }
+            MyAssembly = Assembly.LoadFrom(sAssemblyPath);  //Load the assembly from the specified path.
+
+            return MyAssembly;                              //Return the loaded assembly.
         }
     }
 }

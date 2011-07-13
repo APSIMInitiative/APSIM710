@@ -70,7 +70,7 @@ public abstract class ReflectedType : NamedItem
             }
             else
                 throw new Exception("Cannot set value of property: " + Name +
-                                      ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
+                                        ". Cannot convert: " + Value.ToString() + " to: " + Typ.Name);
 
         }
         catch (Exception err)
@@ -223,7 +223,7 @@ public class FactoryProperty : Instance, ApsimType
     public String FQN;
     public String OutputName;
     public String sDDML;
-	public int regIndex;
+    public int regIndex;
 
     public bool HasAsValue
     {
@@ -239,7 +239,7 @@ public class FactoryProperty : Instance, ApsimType
             return Property.Get;
         }
     }
-    public void Set(Object Value)
+    public void SetObject(Object Value)
     {
         HaveSet = true;
         Property.SetObject(Value);
@@ -249,56 +249,56 @@ public class FactoryProperty : Instance, ApsimType
         HaveSet = true;
         Property.Set(Value);
     }
-   /* public void Set(String Value)
-    {
-        HaveSet = true;
-        Property.Set(Value);
-    }
-    public void SetFromXML(XmlNode Node)
-    {
-        // make sure we have a value.
-        if (Property.Get == null)
-            Property.SetObject(Activator.CreateInstance(Property.Typ));
-
-        // See if this field has a ReadFromXML method. If so then call it.
-        MethodInfo ReadFromXML = Property.Typ.GetMethod("ReadFromXML");
-        if (ReadFromXML != null)
+    /* public void Set(String Value)
         {
-            Object[] Params = new Object[1];
-            Params[0] = Node;
-            ReadFromXML.Invoke(Property.Get, Params);
+            HaveSet = true;
+            Property.Set(Value);
         }
-        else
+        public void SetFromXML(XmlNode Node)
         {
-            if (ChildFields == null)
-            {
-                ChildFields = new List<ReflectedField>();
+            // make sure we have a value.
+            if (Property.Get == null)
+                Property.SetObject(Activator.CreateInstance(Property.Typ));
 
-                foreach (XmlNode Child in Node.ChildNodes)
-                {
-                    FieldInfo Field = Property.Typ.GetField(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                    if (Field == null)
-                        throw new Exception("Cannot find field: " + Child.Name + " in type: " + Property.Typ.Name);
-                    ChildFields.Add(new ReflectedField(Field, Property.Get));
-                }
-            }
-            foreach (XmlNode Child in Node.ChildNodes)
+            // See if this field has a ReadFromXML method. If so then call it.
+            MethodInfo ReadFromXML = Property.Typ.GetMethod("ReadFromXML");
+            if (ReadFromXML != null)
             {
-                bool Found = false;
-                foreach (ReflectedField Field in ChildFields)
+                Object[] Params = new Object[1];
+                Params[0] = Node;
+                ReadFromXML.Invoke(Property.Get, Params);
+            }
+            else
+            {
+                if (ChildFields == null)
                 {
-                    if (Field.Name == Child.Name)
+                    ChildFields = new List<ReflectedField>();
+
+                    foreach (XmlNode Child in Node.ChildNodes)
                     {
-                        Field.Set(Child.InnerText);
-                        Found = true;
+                        FieldInfo Field = Property.Typ.GetField(Child.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                        if (Field == null)
+                            throw new Exception("Cannot find field: " + Child.Name + " in type: " + Property.Typ.Name);
+                        ChildFields.Add(new ReflectedField(Field, Property.Get));
                     }
                 }
-                if (!Found)
-                    throw new Exception("Cannot find field: " + Child.Name + " in type:" + Property.Typ.Name);
+                foreach (XmlNode Child in Node.ChildNodes)
+                {
+                    bool Found = false;
+                    foreach (ReflectedField Field in ChildFields)
+                    {
+                        if (Field.Name == Child.Name)
+                        {
+                            Field.Set(Child.InnerText);
+                            Found = true;
+                        }
+                    }
+                    if (!Found)
+                        throw new Exception("Cannot find field: " + Child.Name + " in type:" + Property.Typ.Name);
+                }
             }
-        }
-        HaveSet = true;
-    } */
+            HaveSet = true;
+        } */
     public void AddToList(Instance ChildInstance)
     {
         // make sure we have a value.
@@ -333,7 +333,7 @@ public class FactoryProperty : Instance, ApsimType
         //copy the src value into a destination compatible type
         dest.setValue(DDMLValue);
     }
-    
+
     /// <summary>
     /// useable when types are identical
     /// </summary>
@@ -591,13 +591,13 @@ public class FactoryProperty : Instance, ApsimType
             T Data = (T)Property.Get;
             thisProperty.unpack(messageData);
             Data = thisProperty.Value;
-            Property.Set(Data);
+            Property.SetObject(Data);
         }
         public override uint memorySize()
         {
             T Data = (T)Property.Get;
             thisProperty.Value = Data;  //update the stored value
-            return thisProperty.memorySize(); 
+            return thisProperty.memorySize();
         }
         public override String DDML()
         {
@@ -669,7 +669,7 @@ public class FactoryProperty : Instance, ApsimType
         {
             ApsimType Data = (ApsimType)Property.Get;
             Data.unpack(messageData);
-            Property.Set(Data);
+            Property.SetObject(Data);
         }
         public uint memorySize()
         {

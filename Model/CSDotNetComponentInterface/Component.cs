@@ -89,9 +89,9 @@ namespace ModelFramework
             get
             {
                 TypedList<Component> Children = new TypedList<Component>();
-                foreach (KeyValuePair<uint, String> pair in HostComponent.SiblingComponents)
+                foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
                 {
-                    Component C = new Component(pair.Value, HostComponent);
+                    Component C = new Component(pair.Value.name, HostComponent);
                     Children.Add(C);
                 }
                 return Children;

@@ -55,7 +55,7 @@ ArraySpecifier* ArraySpecifier::create(const std::string& arraySpec)
       // 5. var name(number:number)  e.g. varname(2:5)
 
       posOpenBracket = bracketedValue.find('(');
-      posCloseBracket = bracketedValue.rfind(')');
+      posCloseBracket = (unsigned)bracketedValue.rfind(')');
 
       // strip variable name from case 5.
       if (posOpenBracket != string::npos && posCloseBracket != string::npos)

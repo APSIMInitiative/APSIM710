@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 using ModelFramework;
 using CSGeneral;
 using CMPServices;
@@ -19,6 +20,7 @@ public class TAPSIMHost : TBaseComp
 {
     private int tickID;
     const int smEXECUTE = 1;
+    private int drvCOMPCLASS = 1;
 
     protected ApsimComponent Comp;
 
@@ -61,11 +63,22 @@ public class TAPSIMHost : TBaseComp
             tickID = eventList.Count;
             addEvent("tick", tickID, TypeSpec.KIND_SUBSCRIBEDEVENT, TTimeStep.typeTIMESTEP, "", "", 0);  //subscribe "tick" event
             DefineSimpleTranistions(tickID);
-            //now search for all the sibling components
-            String sSearchName = FName;
-            if (FName.Contains("."))
-                sSearchName = FName.Substring(0, FName.LastIndexOf('.')) + ".*";
+
+            //now search for all the sibling components and siblings of the parent
+            //of the parent component. Two lists are populated.
+            String sSearchName = "*";                                               //default to find all
+            if (FName.Contains("."))                                                //if this component has a parent then
+                sSearchName = FName.Substring(0, FName.LastIndexOf('.')) + ".*";    //search parent.*
             sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
+            if (FName.Contains("."))                                                //if this component has a parent then
+            {
+                //query from the parent's parent to find senior components
+                String parentComp = FName.Substring(0, FName.LastIndexOf('.'));
+                sSearchName = "*";   
+                if (parentComp.Contains("."))
+                    sSearchName = parentComp.Substring(0, parentComp.LastIndexOf('.')) + ".*";  //search grandparent.*
+                sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
+            }
             Comp.handleEvent(ApsimComponent.INIT2INDEX, null);
         }   
     }
@@ -83,10 +96,53 @@ public class TAPSIMHost : TBaseComp
     public override void processEntityInfo(string sReqName, string sReturnName, uint ownerID, uint entityID, int iKind, string sDDML)
     {
         base.processEntityInfo(sReqName, sReturnName, ownerID, entityID, iKind, sDDML);
+        
         //queryInfo's have been sent for sibling component names
         if (iKind == TypeSpec.KIND_COMPONENT)
         {
-            Comp.SiblingComponents.Add(entityID, sReturnName);  //add all names including itself
+            //find the number of '.'
+            string buf = sReturnName; 
+            int numOfOccurence = sReturnName.Length - buf.Replace(".", "").Length;
+            buf = sReqName; 
+            int numOfOccurReq = sReqName.Length - buf.Replace(".", "").Length;
+
+            if (numOfOccurence == numOfOccurReq)       //ensure sibling of the request string
+            {
+                TComp foundComp = new TComp();
+                foundComp.compID = entityID;
+                foundComp.name = sReturnName;
+                foundComp.isSystem = false;
+                foundComp.CompClass = "";
+                buf = FName;
+                //determine if the returned item is a sibling or senior component of this component
+                Dictionary<uint, TComp> compList = null;
+                if (numOfOccurence == (FName.Length - buf.Replace(".", "").Length))
+                     compList = Comp.SiblingComponents;
+                else
+                    if (numOfOccurence == (FName.Length - buf.Replace(".", "").Length - 1))
+                        compList = Comp.SeniorComponents;
+
+                if (compList != null)
+                {
+                    compList.Add(entityID, foundComp);        //add all names including itself
+                    if (entityID == Comp.ComponentID)                       //if it is this component then take a shortcut
+                    {
+                        if (compList.ContainsKey(entityID))
+                        {
+                            TComp comp = compList[entityID];
+                            comp.CompClass = FType;                         //use the local value  
+                            compList[entityID] = comp;
+                        }
+                    }
+                    else                                                    //else do a GetValue to find it's type 
+                    {
+                        //now do a getvalue to find the class type of the component
+                        drvCOMPCLASS = driverCount();
+                        registerDriver(sReturnName + ".type", drvCOMPCLASS, 1, 1, "-", false, "<type kind=\"string\"></type>", "", "", 0);
+                        sendDriverRequest(drvCOMPCLASS, 0);
+                    }
+                }
+            }
         }
     }
     //=========================================================================
@@ -128,16 +184,40 @@ public class TAPSIMHost : TBaseComp
     }
     //=========================================================================
     /// <summary>
-    /// 
+    /// Assign a driver value.
     /// </summary>
     /// <param name="driverID"></param>
-    /// <param name="providerID"></param>
-    /// <param name="aValue"></param>
+    /// <param name="providerID">Component that provided the value.</param>
+    /// <param name="aValue">Returned value.</param>
     //=========================================================================
     public override void assignDriver(int driverID, uint providerID, TTypedValue aValue)
     {
-        if (!Comp.assignDriver(driverID, providerID, aValue))
-            base.assignDriver(driverID, providerID, aValue);
+        if (driverID == drvCOMPCLASS)   //if this driver was a comp.type 
+        {
+            //store info about siblings or senior components
+            Dictionary<uint, TComp> compList = null;
+            if (Comp.SiblingComponents.ContainsKey(providerID))
+            {
+                compList = Comp.SiblingComponents;
+            }
+            else if (Comp.SeniorComponents.ContainsKey(providerID))
+            {
+                compList = Comp.SeniorComponents;
+            }
+            if (compList != null)
+            {
+                TComp comp = compList[providerID];
+                comp.CompClass = aValue.asString();                 //store the class type
+                if (comp.CompClass.ToLower() == "paddock")
+                    comp.isSystem = true;
+                compList[providerID] = comp;
+            }
+        }
+        else
+        {
+            if (!Comp.assignDriver(driverID, providerID, aValue))
+                base.assignDriver(driverID, providerID, aValue);
+        }
     }
     //=========================================================================
     /// <summary>

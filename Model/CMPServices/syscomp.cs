@@ -23,7 +23,11 @@ namespace CMPServices
         /// <summary>
         /// True if system
         /// </summary>
-        public bool isSystem;  
+        public bool isSystem;
+        /// <summary>
+        /// Component type/class
+        /// </summary>
+        public String CompClass;
     }
     //============================================================================
     /// <summary>
@@ -2209,6 +2213,7 @@ namespace CMPServices
                     comp.compID = newID;
                     comp.name = sFQN;
                     comp.isSystem = sdmlChild.IsSystem;
+                    comp.CompClass = sdmlChild.CompClass;
                     compList.Add(comp);
 
                     if (TRegistrar.unQualifiedName(sFQN).ToLower() == "sequencer" ||

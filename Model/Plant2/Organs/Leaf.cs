@@ -722,11 +722,6 @@ public class Leaf : BaseOrgan, AboveGround
         ZeroLeaves();
     }
     [EventHandler]
-    public void OnInit2()
-    {
-        PublishNewCanopyEvent();
-    }
-    [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
         if (Sow.MaxCover <= 0.0)
