@@ -174,7 +174,8 @@ void HerbageConverter::respondToGet(unsigned int& fromID,
    else if (queryData.ID == tramplingID)  sendTrampling(queryData);
 
    else
-   {   // don't respond to any other gets.
+   { 
+       conversion->respondToGet(fromID, queryData);
    }
 }
 

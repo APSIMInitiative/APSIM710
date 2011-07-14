@@ -364,7 +364,7 @@ void Component::doInit1(const Init1Data& init1Data)
       name = fqn.substr(posPeriod+1);
 	  pathName = fqn.substr(0, posPeriod);
       }
-   type = name; // "?";
+   type = getType();   //components implement getType()
    version = "1";
    author = "APSRU";
    active = 1;

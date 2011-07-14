@@ -298,7 +298,12 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
       }
 
    else
-      variables[queryData.ID].sendVariable(queryData, (todaysDate == fileDate));
+      {
+	  if (variables.find(queryData.ID) != variables.end())
+         variables[queryData.ID].sendVariable(queryData, (todaysDate == fileDate));
+	  else
+         protocol::Component::respondToGet(fromID, queryData);
+      }
    }
 // ------------------------------------------------------------------
 // set the value of one of our variables.
@@ -583,4 +588,3 @@ void InputComponent::getStartEndDate(void)
       startDate = data.getDate();
       }
    }
-

@@ -154,7 +154,9 @@ void PlantHerbage::respondToGet(unsigned int& fromID, protocol::QueryValueData& 
 {
    if (queryData.ID == dmPartsRemovedID) sendPartsRemoved(queryData);
    else
-   { }  // don't respond to any other gets.
+   {
+      protocol::Component::respondToGet(fromID, queryData);
+   }  
 }
 
 

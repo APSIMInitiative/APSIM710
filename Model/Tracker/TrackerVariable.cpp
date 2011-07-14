@@ -277,7 +277,7 @@ void TrackerVariable::respondToEvent(int fromID, unsigned evntID)
 // ------------------------------------------------------------------
 // Incoming requests for values of variables come through here.
 // ------------------------------------------------------------------
-void TrackerVariable::respondToGet(unsigned int& fromID,
+bool TrackerVariable::respondToGet(unsigned int& fromID,
                                    protocol::QueryValueData& queryData)
    {
    if (queryData.ID == nameID)
@@ -290,7 +290,9 @@ void TrackerVariable::respondToGet(unsigned int& fromID,
          }
       else
          parent->sendVariable(queryData, sampleDate);
-      }
+	  return true;
+      } 
+      return false;
    }
 // ------------------------------------------------------------------
 // Perform a sample.

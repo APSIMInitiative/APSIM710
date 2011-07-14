@@ -19,7 +19,7 @@ class TrackerVariable
 
       void doRegistrations(void);
       void respondToEvent(int fromID, unsigned eventID);
-      void respondToGet(unsigned int& fromID,
+      bool respondToGet(unsigned int& fromID,
                         protocol::QueryValueData& queryData);
 
    private:

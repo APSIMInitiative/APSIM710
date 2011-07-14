@@ -388,7 +388,8 @@ void PastureConverter::respondToGet(unsigned int& fromID, protocol::QueryValueDa
    else if (queryData.ID == vpdID) sendVPD(queryData);
    else if (queryData.ID == co2ppmID) sendCO2(queryData);
    else
-   {   // don't respond to any other gets.
+   {   // call handler in base class
+       protocol::Component::respondToGet(fromID, queryData);
    }
 }
 

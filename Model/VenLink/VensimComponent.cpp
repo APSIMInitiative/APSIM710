@@ -229,10 +229,15 @@ void VensimComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID
 // ------------------------------------------------------------------
 void VensimComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData)
    {
-   string name = variables[queryData.ID];
-   float value = 0.0;
-   if (vensim_get_val(name, &value) == 1)
-      sendVariable(queryData, value);
+   if (variables.find(queryData.ID) != variables.end())
+   {
+     string name = variables[queryData.ID];
+     float value = 0.0;
+     if (vensim_get_val(name, &value) == 1)
+        sendVariable(queryData, value);
+   }
+   else
+      protocol::Component::respondToGet(fromID, queryData);
    }
 // ------------------------------------------------------------------
 // Set the value of a variable for the specified

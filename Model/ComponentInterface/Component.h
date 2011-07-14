@@ -186,6 +186,7 @@ class EXPORT Component
       Component(void);
       virtual ~Component(void);
 
+      virtual std::string getType(void) {return name;};
       std::string getName(void) {return name;};
       std::string getFQName(void) {return (pathName + "." + name);};
       std::string getFQContainerName(void) {return (pathName);};

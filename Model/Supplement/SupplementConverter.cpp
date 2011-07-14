@@ -242,7 +242,8 @@ void SupplementConverter::respondToGet(unsigned int& fromID, protocol::QueryValu
 //   if (queryData.ID == sandID) sendSand(queryData);
 //
 //   else
-//   {   // don't respond to any other gets.
+//   {   // call handler in base class
+        protocol::Component::respondToGet(fromID, queryData);
 //   }
 }
 

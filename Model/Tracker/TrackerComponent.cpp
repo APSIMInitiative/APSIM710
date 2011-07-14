@@ -98,7 +98,10 @@ void TrackerComponent::respondToEvent(unsigned int& fromID, unsigned int& eventI
 void TrackerComponent::respondToGet(unsigned int& fromID,
                                      protocol::QueryValueData& queryData)
    {
+   bool matchFound = false;
    for (unsigned i = 0; i != variables.size(); i++)
-      variables[i].respondToGet(fromID, queryData);
+      matchFound |= variables[i].respondToGet(fromID, queryData);
+   if (!matchFound) // Couldn't find a matching ID, so try to handle in the base class
+      protocol::Component::respondToGet(fromID, queryData);
    }
 

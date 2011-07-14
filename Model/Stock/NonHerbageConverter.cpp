@@ -381,7 +381,8 @@ void NonHerbageConverter::respondToGet(unsigned int& fromID,
    else if (queryData.ID == intakeSendID) intakeRelay(queryData);
 
    else
-   {   // don't respond to any other gets.
+   {   // Use hanlder in base class
+         protocol::Component::respondToGet(fromID, queryData);
    }
 }
 

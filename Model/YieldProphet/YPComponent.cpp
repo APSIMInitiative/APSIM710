@@ -106,6 +106,10 @@ void YPComponent::respondToGet(unsigned int& fromID, QueryValueData& queryData)
       double critSWToday = llToday + (dulToday - llToday) * 0.30;
       sendVariable(queryData, critSWToday);
       }
+   else
+	  {
+      protocol::Component::respondToGet(fromID, queryData);
+      }
    }
 
 // ------------------------------------------------------------------

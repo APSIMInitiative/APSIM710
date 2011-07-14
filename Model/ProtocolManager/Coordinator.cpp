@@ -547,7 +547,7 @@ void Coordinator::onReplyValueMessage(unsigned fromID, protocol::ReplyValueData 
    {
    int toID = previousGetValueCompID.top();
 
-   if (toID == parentID || components[toID]->isSystem())
+   if (toID == parentID || (components.find(toID) != components.end() && components[toID]->isSystem()))
       {
       sendMessage(protocol::newReplyValueMessage(componentID,
                                        toID,
@@ -983,7 +983,8 @@ void Coordinator::respondToGet(unsigned int& fromID, protocol::QueryValueData& q
       sendVariable(queryValueData, comps);
       }
    else
-      sendQueryValueMessage(fromID, queryValueData.ID);
+      protocol::Component::respondToGet(fromID, queryValueData);
+      // sendQueryValueMessage(fromID, queryValueData.ID);
    }
 // ------------------------------------------------------------------
 // respond to a method call request
