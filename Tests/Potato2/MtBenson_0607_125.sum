@@ -14,7 +14,7 @@ Title                  = MtBenson_0607_125
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -46,7 +46,7 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\Potato2\KingstonWoolmit.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- Outputs Initialisation ------------------------------------------------
      Output frequency:
         post
      Output variables:
@@ -100,30 +100,24 @@ Paddock:
         TuberLiveWt
         RootDeadWt
         RootLiveWt
-        GrainLIveWt
-        GrainDeadWt
-        FloretLIveWt
-        FloretDeadWt
         AboveGroundN
         BelowGroundN
         TotalN
-        RootLiveN
-        RootDeadN
+        TotalLiveN
+        TotalDeadN
         LeafDeadN
         LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
         TuberLiveN
-        GrainLiveN
-        GrainDeadN
-        FloretLiveN
-        FloretDeadN
-        GrainLiveNconc
-        FloretLiveNconc
-        TuberLiveNConc
+        RootLiveN
+        RootDeadN
         LeafLiveNConc
+        LeafDeadNConc
         StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -143,30 +137,24 @@ Paddock:
         LeafGreenNo
         LeafExpandingNodeNo
         LeafCohortNo
-        LeafBranchNo
         LeafDeadNodeNo
         LeafNodeNo
         LeafSenescingNodeNo
+        LeafLeafNo
         sw
         no3
-        LeafPartitionFractionValue
-        StemPartitionFractionValue
-        TuberPartitionFractionValue
-        GrainPartitionFractionValue
-        FloretPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumNConcValue
-        FloretMinimumNConcValue
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
-        GrainMaximumNConcValue
-        FloretMaximumNConcValue
+        RootMinimumNConcValue
         LeafMaximumNConcValue
         StemMaximumNConcValue
         TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
 
-     Output file = MtBenson_0607_125 Plant2 diagnostic variables.out
+     Output file = MtBenson_0607_125 Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -248,7 +236,6 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -257,7 +244,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -275,9 +262,6 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
-     endif
      if potato2.stagecodevalue >= 3 then
      accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
@@ -308,7 +292,6 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -465,20 +448,20 @@ Paddock:
            Above Ground Biomass = 0.00 (g/m^2)
 29/11/2006 - FloralInitiation
                             LAI = 1.17 (m^2/m^2)
-           Above Ground Biomass = 71.33 (g/m^2)
+           Above Ground Biomass = 78.93 (g/m^2)
 1/12/2006 - TuberInitiation
                             LAI = 1.37 (m^2/m^2)
-           Above Ground Biomass = 85.43 (g/m^2)
+           Above Ground Biomass = 93.03 (g/m^2)
 1/02/2007 - FinalLeaf
-                            LAI = 0.84 (m^2/m^2)
-           Above Ground Biomass = 926.78 (g/m^2)
+                            LAI = 0.47 (m^2/m^2)
+           Above Ground Biomass = 940.00 (g/m^2)
 Removing Leaves from plant
 8/04/2007 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 907.20 (g/m^2)
+           Above Ground Biomass = 899.34 (g/m^2)
 24/04/2007 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 907.20 (g/m^2)
+           Above Ground Biomass = 899.34 (g/m^2)
 24 April 2007(Day of year=114), Harvesting rule: 
      Manager sending message :- potato2 harvest
      Manager sending message :- potato2 endcrop

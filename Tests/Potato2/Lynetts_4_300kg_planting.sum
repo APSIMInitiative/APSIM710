@@ -15,6 +15,7 @@ Title                  = Lynetts_4_300kg_planting
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -38,7 +39,7 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date = 20/09/1992
+     Simulation start date =  4/11/1992
      Simulation end date   =  2/06/1993
      Time step =           = 1440 (mins)
 
@@ -161,8 +162,34 @@ Paddock:
         LeafDMSupply
         ArbitratorDeltaWt
         No3_30cm
+        TotalDeadWt
 
      Output file = Lynetts_4_300kg_planting Outputs.out
+     Format = normal
+
+------- Leaf Cohort Analysis Initialisation -----------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafCohortLiveStructuralWt
+        LeafCohortLiveNonStructuralWt
+        LeafCohortLiveMetabolicWt
+        LeafCohortLiveStructuralN
+        LeafCohortLiveMetabolicN
+        LeafCohortLiveNonStructuralN
+        LeafCohortStructuralFrac
+        LeafStructuralFractionValue
+        LeafCohortLiveStructuralNConc
+        LeafCohortLiveMetabolicNconc
+        LeafCohortLiveNconc
+        LeafCohortSLA
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafCohortSize
+        LeafCohortArea
+
+     Output file = Lynetts_4_300kg_planting Leaf Cohort Analysis.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -442,30 +469,29 @@ Paddock:
            Totals  175944.4 15299.5  1175.6   146.9   400.0    20.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager creating a new local real variable : initialsoilomn = 15466.46090
-     Manager creating a new local real variable : initialsurfaceomn = 0.00000
-     Manager creating a new local real variable : initialmineraln = 125.16300
-4 November 1992(Day of year=309), operations: 
       Sending apply message to fertiliser
-4 November 1992(Day of year=309), fertiliser: 
-4/11/1992 - Peeping
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
+fertiliser: 
      
    - Reading Fertiliser Type Parameters
        300.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
+     Manager creating a new local real variable : initialsoilomn = 15466.46090
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 425.16299
+4/11/1992 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
 26/11/1992 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 18 December 1992(Day of year=353), operations: 
       Sending apply message to irrigation
 21/12/1992 - FloralInitiation
-                            LAI = 1.41 (m^2/m^2)
-           Above Ground Biomass = 85.74 (g/m^2)
+                            LAI = 1.35 (m^2/m^2)
+           Above Ground Biomass = 101.03 (g/m^2)
 23/12/1992 - TuberInitiation
-                            LAI = 1.67 (m^2/m^2)
-           Above Ground Biomass = 105.11 (g/m^2)
+                            LAI = 1.60 (m^2/m^2)
+           Above Ground Biomass = 120.67 (g/m^2)
 7 January 1993(Day of year=7), operations: 
       Sending apply message to irrigation
 2 February 1993(Day of year=33), operations: 
@@ -473,11 +499,11 @@ Paddock:
 16 February 1993(Day of year=47), operations: 
       Sending apply message to irrigation
 20/02/1993 - FinalLeaf
-                            LAI = 3.93 (m^2/m^2)
-           Above Ground Biomass = 1760.92 (g/m^2)
+                            LAI = 2.78 (m^2/m^2)
+           Above Ground Biomass = 1732.92 (g/m^2)
 Removing Leaves from plant
 16/05/1993 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1952.44 (g/m^2)
+           Above Ground Biomass = 1874.02 (g/m^2)
 2 June 1993(Day of year=153), clock: 
      Simulation is terminating due to end criteria being met.
