@@ -14,13 +14,14 @@ Title                  = RS_Peas_0405_Full9_Nil3_T8
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -45,40 +46,148 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
-------- outputfile Initialisation ---------------------------------------------
+------- Outputs Initialisation ------------------------------------------------
      Output frequency:
         post
      Output variables:
-        dd/mm/yyyy as Date
-        rain
-        day
-        year
+        dd/mmm/yyyy
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
         es
+        sw_dep()
+        dul_dep()
         drain
         runoff
-        irrigation
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundWt
+        BelowGroundWt
+        TotalWt
+        LeafDeadWt
+        LeafLiveWt
+        StemDeadWt
+        StemLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLiveWt
+        GrainDeadWt
+        FloretLiveWt
+        FloretDeadWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        TotalLiveN
+        TotalDeadN
+        LeafDeadN
+        LeafLiveN
+        StemDeadN
+        StemLiveN
+        RootLiveN
+        RootDeadN
+        GrainLiveN
+        GrainDeadN
+        FloretLiveN
+        FloretDeadN
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
+        GrainLiveNConc
+        FloretLiveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
         sw
-        sw_dep()
-        biomass
-        cover_green
-        cover_tot
-        ep
-        grain_wt
-        green_biomass
-        height
-        lai
-        leafgreenwt
-        podgreenwt
-        stemgreenwt
-        node_no
-        esw
-        yieldwet
-        yield
-        grainwt
-        grain_wt
-        senescedwt
+        no3
+        LeafPartitionFractionValue
+        StemPartitionFractionValue
+        TuberPartitionFractionValue
+        GrainPartitionFractionValue
+        FloretPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
+        LeafMinimumNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
+        RootMinimumNConcValue
+        GrainMaximumNConcValue
+        FloretMaximumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        StemLiveNonStructuralN
+        StemLiveStructuralN
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafLiveNonStructuralN
+        LeafLiveNonStructuralWt
+        LeafLiveStructuralN
+        LeafLiveStructuralWt
+        LeafTotalStructuralN
+        LeafTotalNonStructuralN
+        LeafTotalStructuralWt
+        LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
+        RootNUptakeSupply
+        ArbitratorNDemand
+        PodWallLiveWt
 
-     Output file = RS_Peas_0405_Full9_Nil3_T8.out
+     Output file = RS_Peas_0405_Full9_Nil3_T8 Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -151,6 +260,87 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : co2 = 350.00000
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  accumplantn - fieldpea2.rootnuptake
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - fieldpea2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if fieldpea2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -326,6 +516,19 @@ Paddock:
            Totals  134021.3 12183.8  1259.7   157.5   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : initialsoilomn = 12351.21090
+     Manager creating a new local real variable : initialsurfaceomn = 5.00000
+     Manager creating a new local real variable : initialmineraln = 56.03072
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "fertiliser".
+     Variables should have a value before they are used in an expression.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : fertiliser = 0.00000
 28 October 2004(Day of year=302), Sow on a fixed date: 
      Manager sending message :- fieldpea2 sow  population = 120, depth = 40, cultivar = excel, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
 29/10/2004 - Germination
