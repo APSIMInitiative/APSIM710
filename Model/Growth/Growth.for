@@ -7195,6 +7195,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       use GrowthModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -7298,6 +7299,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       use GrowthModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call Growth_create()
@@ -7311,6 +7313,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

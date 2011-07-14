@@ -1430,6 +1430,7 @@ c      not have the same meaning.....
       use TreeModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -1555,6 +1556,7 @@ c      not have the same meaning.....
       use TreeModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       end subroutine
@@ -1567,6 +1569,7 @@ c      not have the same meaning.....
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

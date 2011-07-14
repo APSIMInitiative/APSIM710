@@ -7439,6 +7439,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       use OzcotModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -7572,6 +7573,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       Use infrastructure
       implicit none
       ml_external doInit1
+!STDCALL(doInit1)
       integer dummy
 
       id%crop_chopped = add_registration(eventReg, 'crop_chopped',
@@ -7751,6 +7753,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

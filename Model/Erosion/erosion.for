@@ -1438,6 +1438,7 @@ c     What happens when layer completely eroded?
       use ErosionModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -1540,6 +1541,7 @@ c     What happens when layer completely eroded?
       use ErosionModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       end subroutine
@@ -1551,6 +1553,7 @@ c     What happens when layer completely eroded?
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
       
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

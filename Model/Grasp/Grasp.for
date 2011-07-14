@@ -5607,6 +5607,7 @@ C     zero a few important state variables
       use GraspModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -5740,6 +5741,7 @@ C     zero a few important state variables
       use GraspModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       end subroutine
@@ -5753,6 +5755,7 @@ C     zero a few important state variables
       Use GraspModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

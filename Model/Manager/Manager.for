@@ -3795,6 +3795,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       use ManagerModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -3878,6 +3879,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       use ManagerModule 
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call Manager_zero_variables()
@@ -3891,6 +3893,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

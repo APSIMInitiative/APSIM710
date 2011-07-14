@@ -10241,6 +10241,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       use APSwimModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -10356,6 +10357,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       use APSwimModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call apswim_zero_module_links()
@@ -10370,6 +10372,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       Use ApswimModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

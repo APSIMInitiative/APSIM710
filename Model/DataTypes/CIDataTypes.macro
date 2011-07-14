@@ -351,6 +351,7 @@ module dataTypesInterface
    subroutine publish_null(id)
    use datatypes
    ml_external publish_null
+!STDCALL(publish_null)
    integer :: id
    end subroutine
 
@@ -358,12 +359,14 @@ module dataTypesInterface
    subroutine publish_[type.name](id, data)
    use datatypes
    ml_external publish_[type.name]
+!STDCALL(publish_[type.name])
    integer :: id
    type([type.name]Type) :: data
    end subroutine
    subroutine unpack_[type.name](variant, data)
    use datatypes
    ml_external unpack_[type.name]
+!STDCALL(unpack_[type.name])
    integer :: variant
    type([type.name]Type) :: data
    end subroutine

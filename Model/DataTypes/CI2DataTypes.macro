@@ -668,10 +668,12 @@ module ScienceAPI2
    interface
       subroutine WriteLine(Msg)
       ml_external WriteLine
+!STDCALL(WriteLine)
       character (len=*) :: Msg
       end subroutine
       subroutine SetSearchOrder(SectionName)
       ml_external SetSearchOrder
+!STDCALL(SetSearchOrder)
       character (len=*) :: SectionName
       end subroutine
 
@@ -684,6 +686,7 @@ module ScienceAPI2
    interface ReadParam
       subroutine ReadInteger(Name, Units, OptionalFlag, Value)
       ml_external ReadInteger
+!STDCALL(ReadInteger)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -691,6 +694,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadReal(Name, Units, OptionalFlag, Value)
       ml_external ReadReal
+!STDCALL(ReadReal)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -698,6 +702,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadDouble(Name, Units, OptionalFlag, Value)
       ml_external ReadDouble
+!STDCALL(ReadDouble)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -705,6 +710,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadString(Name, Units, OptionalFlag, Value)
       ml_external ReadString
+!STDCALL(ReadString)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -712,6 +718,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadIntegerArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external ReadIntegerArray
+!STDCALL(ReadIntegerArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -723,6 +730,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadRealArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external ReadRealArray
+!STDCALL(ReadRealArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -734,6 +742,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadDoubleArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external ReadDoubleArray
+!STDCALL(ReadDoubleArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -745,6 +754,7 @@ module ScienceAPI2
       end subroutine
       subroutine ReadStringArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues)
       ml_external ReadStringArray
+!STDCALL(ReadStringArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -757,6 +767,7 @@ module ScienceAPI2
    interface Get
       function GetInteger(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetInteger
+!STDCALL(GetInteger)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -767,6 +778,7 @@ module ScienceAPI2
       end function
       function GetReal(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetReal
+!STDCALL(GetReal)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -777,6 +789,7 @@ module ScienceAPI2
       end function
       function GetDouble(Name, Units, OptionalFlag, Value, Lower, Upper)
       ml_external GetDouble
+!STDCALL(GetDouble)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -787,6 +800,7 @@ module ScienceAPI2
       end function
       function GetString(Name, Units, OptionalFlag, Value)
       ml_external GetString
+!STDCALL(GetString)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -795,6 +809,7 @@ module ScienceAPI2
       end function
       function GetIntegerArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external GetIntegerArray
+!STDCALL(GetIntegerArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -807,6 +822,7 @@ module ScienceAPI2
       end function
       function GetRealArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external GetRealArray
+!STDCALL(GetRealArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -819,6 +835,7 @@ module ScienceAPI2
       end function
       function GetDoubleArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues, Lower, Upper)
       ml_external GetDoubleArray
+!STDCALL(GetDoubleArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -831,6 +848,7 @@ module ScienceAPI2
       end function
       function GetStringArray(Name, Units, OptionalFlag, Value, NumValues, MaxValues)
       ml_external GetStringArray
+!STDCALL(GetStringArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
@@ -844,30 +862,35 @@ module ScienceAPI2
    interface Set
       subroutine SetInteger(Name, Units, Value)
       ml_external SetInteger
+!STDCALL(SetInteger)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: Value
       end subroutine
       subroutine SetReal(Name, Units, Value)
       ml_external SetReal
+!STDCALL(SetReal)
       character (len=*) :: Name
       character (len=*) :: Units
       real              :: Value
       end subroutine
       subroutine SetDouble(Name, Units, Value)
       ml_external SetDouble
+!STDCALL(SetDouble)
       character (len=*) :: Name
       character (len=*) :: Units
       double precision  :: Value
       end subroutine
       subroutine SetString(Name, Units, Value)
       ml_external SetString
+!STDCALL(SetString)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Value
       end subroutine
       subroutine SetIntegerArray(Name, Units, Value, NumValues)
       ml_external SetIntegerArray
+!STDCALL(SetIntegerArray)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: Value(*)
@@ -875,6 +898,7 @@ module ScienceAPI2
       end subroutine
       subroutine SetRealArray(Name, Units, Value, NumValues)
       ml_external SetRealArray
+!STDCALL(SetRealArray)
       character (len=*) :: Name
       character (len=*) :: Units
       real              :: Value(*)
@@ -882,6 +906,7 @@ module ScienceAPI2
       end subroutine
       subroutine SetDoubleArray(Name, Units, Value, NumValues)
       ml_external SetDoubleArray
+!STDCALL(SetDoubleArray)
       character (len=*) :: Name
       character (len=*) :: Units
       double precision  :: Value(*)
@@ -889,6 +914,7 @@ module ScienceAPI2
       end subroutine
       subroutine SetStringArray(Name, Units, Value, NumValues)
       ml_external SetStringArray
+!STDCALL(SetStringArray)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Value(*)
@@ -899,6 +925,7 @@ module ScienceAPI2
    interface Expose
       subroutine ExposeInteger(Name, Units, Description, Writable, Data)
       ml_external ExposeInteger
+!STDCALL(ExposeInteger)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -907,6 +934,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeReal(Name, Units, Description, Writable, Data)
       ml_external ExposeReal
+!STDCALL(ExposeReal)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -915,6 +943,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeDouble(Name, Units, Description, Writable, Data)
       ml_external ExposeDouble
+!STDCALL(ExposeDouble)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -923,6 +952,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeString(Name, Units, Description, Writable, Data)
       ml_external ExposeString
+!STDCALL(ExposeString)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -931,6 +961,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeIntegerArray(Name, Units, Description, Writable, Data)
       ml_external ExposeIntegerArray
+!STDCALL(ExposeIntegerArray)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -939,6 +970,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeRealArray(Name, Units, Description, Writable, Data)
       ml_external ExposeRealArray
+!STDCALL(ExposeRealArray)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -947,6 +979,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeDoubleArray(Name, Units, Description, Writable, Data)
       ml_external ExposeDoubleArray
+!STDCALL(ExposeDoubleArray)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -955,6 +988,7 @@ module ScienceAPI2
       end subroutine
       subroutine ExposeStringArray(Name, Units, Description, Writable, Data)
       ml_external ExposeStringArray
+!STDCALL(ExposeStringArray)
       character (len=*) :: Name
       character (len=*) :: Units
       character (len=*) :: Description
@@ -966,6 +1000,7 @@ module ScienceAPI2
    interface
       subroutine SubscribeNullType(name, proc)
       ml_external SubscribeNullType
+!STDCALL(SubscribeNullType)
       character (len=*), intent(in) :: name
       external :: proc
       end subroutine SubscribeNullType
@@ -975,6 +1010,7 @@ module ScienceAPI2
       subroutine Subscribe[type.name]Type(Name, F)
       Use DataTypes
       ml_external Subscribe[type.name]Type
+!STDCALL(Subscribe[type.name]Type)
       character (len=*), intent(in) :: Name
       external :: F
       end subroutine
@@ -988,6 +1024,7 @@ module ScienceAPI2
       subroutine Publish[type.name]Type(Name, Data)
       Use DataTypes
       ml_external Publish[type.name]Type
+!STDCALL(Publish[type.name]Type)
       character (len=*), intent(in) :: Name
       type([type.name]Type) :: Data
       end subroutine

@@ -6333,6 +6333,7 @@ cpsc need to develop leaf senescence functions for crop
       use MaizeModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 *+  Purpose
 *     Boilerplate instantiation code
@@ -6373,6 +6374,7 @@ cpsc need to develop leaf senescence functions for crop
       use CropLibrary
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

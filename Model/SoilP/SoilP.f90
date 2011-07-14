@@ -2403,6 +2403,7 @@ subroutine alloc_dealloc_instance(doAllocate)
    use SoilPModule
    implicit none
    ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
    logical, intent(in) :: doAllocate
@@ -2498,6 +2499,7 @@ end subroutine
       use SoilPModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call soilp_zero_variables()
@@ -2512,6 +2514,7 @@ subroutine respondToEvent(fromID, eventID, variant)
    Use infrastructure
    implicit none
    ml_external respondToEvent
+!STDCALL(respondToEvent)
 
    integer, intent(in) :: fromID
    integer, intent(in) :: eventID

@@ -3356,6 +3356,7 @@ subroutine alloc_dealloc_instance(doAllocate)
    use SurfaceOMModule
    implicit none
    ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
    logical, intent(in) :: doAllocate
@@ -3460,6 +3461,7 @@ end subroutine
       use SurfaceOMModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call surfom_zero_all_globals ()
@@ -3475,6 +3477,7 @@ subroutine respondToEvent(fromID, eventID, variant)
    Use infrastructure
    implicit none
    ml_external respondToEvent
+!STDCALL(respondToEvent)
 
    integer, intent(in) :: fromID
    integer, intent(in) :: eventID

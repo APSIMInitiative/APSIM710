@@ -2713,6 +2713,7 @@ CCC End new code
       Use Infrastructure
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -2828,6 +2829,7 @@ CCC End new code
       use MicroMetModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       call MicroMet_create()
@@ -2841,6 +2843,7 @@ CCC End new code
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

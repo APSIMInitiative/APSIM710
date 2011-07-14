@@ -4984,6 +4984,7 @@ subroutine alloc_dealloc_instance(doAllocate)
    use Soiln2Module
    implicit none
    ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
    logical, intent(in) :: doAllocate
@@ -5077,6 +5078,7 @@ subroutine doInit1()
    Use infrastructure
    implicit none
    ml_external doInit1
+!STDCALL(doInit1)
    integer dummy
 
    ! events published
@@ -5204,6 +5206,7 @@ subroutine respondToEvent(fromID, eventID, variant)
    Use infrastructure
    implicit none
    ml_external respondToEvent
+!STDCALL(respondToEvent)
 
    integer, intent(in) :: fromID
    integer, intent(in) :: eventID

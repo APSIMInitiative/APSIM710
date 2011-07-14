@@ -784,7 +784,8 @@
       type(NewProfileType) :: newProfile
 
 !+  Constant Values
-      character*(*) myname               ! name of current procedure 
+      character*(*) myname               ! name of current procedure
+ 
       parameter (myname = 'SoilN2_ONNew_Profile')
 
 !- Implementation Section ----------------------------------
@@ -817,6 +818,7 @@
       use SoluteModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -902,6 +904,7 @@
       use SoluteModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       call solute_zero_variables ()
@@ -915,6 +918,7 @@
       Use SoluteModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

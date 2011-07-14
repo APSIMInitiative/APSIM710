@@ -7410,6 +7410,7 @@ c     :                          ,'runoff')
       use APSwimModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -7512,6 +7513,7 @@ c     :                          ,'runoff')
       use APSwimModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       call apswim_zero_module_links()
@@ -7525,6 +7527,7 @@ c     :                          ,'runoff')
       Use ApswimModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

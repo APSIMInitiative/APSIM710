@@ -1,6 +1,7 @@
 module StringModule
 
    ml_external strings_equal
+!STDCALL(strings_equal)
    interface
 
       function strings_equal(st1, st2)

@@ -3327,6 +3327,7 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       use EoModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -3418,6 +3419,7 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       use EoModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       end subroutine
@@ -3429,6 +3431,7 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

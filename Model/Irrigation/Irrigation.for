@@ -1823,6 +1823,7 @@ cnh note that results may be strange if swdep < ll15
       use IrrigateModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -1916,6 +1917,7 @@ cnh note that results may be strange if swdep < ll15
       use IrrigateModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       end subroutine
@@ -1928,6 +1930,7 @@ cnh note that results may be strange if swdep < ll15
       Use IrrigateModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

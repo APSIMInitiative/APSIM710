@@ -7269,6 +7269,7 @@ c
       use Soilwat2Module
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -7447,6 +7448,7 @@ c
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID
@@ -7472,6 +7474,7 @@ c
       Use infrastructure
       implicit none
       ml_external doInit1
+!STDCALL(doInit1)
       integer dummy
 
       ! events published

@@ -2650,6 +2650,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       use ParasiteModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -2802,6 +2803,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       use ParasiteModule
       
       ml_external doInit1
+!STDCALL(doInit1)
       
       call doRegistrations(id)
       call Zero_Variables ()      
@@ -2815,6 +2817,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

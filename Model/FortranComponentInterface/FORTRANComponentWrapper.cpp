@@ -77,7 +77,9 @@ void FortranWrapper::setupFortranDll(void)
 
    if (libraryHandle != NULL)
       {
-      my_Main = (Main_t*) dllProcAddress(libraryHandle, "Main");
+      my_Main = (Main_t*) dllProcAddress(libraryHandle, "Dispatch");
+	  if (my_Main == NULL)
+        my_Main = (Main_t*) dllProcAddress(libraryHandle, "Main");
       my_alloc_dealloc_instance = (alloc_dealloc_instance_t*) dllProcAddress(libraryHandle, "alloc_dealloc_instance");
       my_do_init1 = (do_init1_t*) dllProcAddress(libraryHandle, "doInit1");
       my_respondToEvent = (respondToEvent_t*) dllProcAddress(libraryHandle, "respondToEvent");

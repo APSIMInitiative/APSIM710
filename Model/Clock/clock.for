@@ -346,8 +346,8 @@ C     Last change:  E     5 Dec 2000    8:52 am
       integer  integer_to_return
       integer   doy                    ! day of year
       integer   year                   ! year
-      character str*100                ! string for date formatting
-      character tempstring*100         ! another string for date formatting
+      character str*40                 ! string for date formatting
+      character tempstring*2           ! another string for date formatting
       type (timeType) :: time
 
 *- Implementation Section ----------------------------------
@@ -783,7 +783,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 !+  Local Variables
       character time*(5)               ! time in 24 hour format
       type(TimeType) :: tick
-
 !- Implementation Section ----------------------------------
 
       call push_routine (This_routine)
@@ -857,6 +856,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       use ClockModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -876,7 +876,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       return
       end subroutine
 
-
+ 
 * ====================================================================
       subroutine Main (Action, Data)
 * ====================================================================
@@ -899,7 +899,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
 *- Implementation Section ----------------------------------
 
       if (Action.eq.ACTION_Get_variable) then
-         call clock_send_my_variable (Data)
+         call clock_send_my_variable (Data(:Len_Trim(Data)))
 
       else if (Action .eq. ACTION_Init) then
          call clock_init ()
@@ -940,6 +940,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       use infrastructure
       use ClockModule
       ml_external doInit1
+!STDCALL(doInit1)	  
 
       call doRegistrations(id)
 
@@ -952,6 +953,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

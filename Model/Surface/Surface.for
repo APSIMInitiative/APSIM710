@@ -954,6 +954,7 @@ cnh but is more sensible at low rainfall intensities.
       use SurfaceModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -1065,6 +1066,7 @@ c         call surface_surface ()
       use SurfaceModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       end subroutine
@@ -1076,6 +1078,7 @@ c         call surface_surface ()
       Use infrastructure
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

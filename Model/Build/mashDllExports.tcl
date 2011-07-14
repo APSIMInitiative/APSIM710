@@ -28,6 +28,8 @@ foreach line [split $text "\n"] {
             puts "  $name = $longName"
 			set lcname [string tolower $name]
 			puts "  _$lcname = $longName"
+			set lcLongName [string tolower $longName]
+			if {$lcLongName != $longName} {puts "  $lcLongName = $longName"}
          }
       }
       if {"$ordinal" == "ordinal"} {set pastheader 1}

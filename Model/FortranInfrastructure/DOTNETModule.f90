@@ -4,6 +4,7 @@ module DOTNETModule
    interface
       function CreateClass(DllFileName, ClassName)
       ml_external CreateClass
+!STDCALL(CreateClass)
       character (len=*), intent(in) :: DllFileName
       character (len=*), intent(in) :: ClassName
       integer                       :: CreateClass

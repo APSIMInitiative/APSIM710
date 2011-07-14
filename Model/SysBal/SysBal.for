@@ -2567,6 +2567,7 @@
       use SysBalModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -2672,6 +2673,7 @@
       use SysbalModule
 
       ml_external doInit1
+!STDCALL(doInit1)
 
       call doRegistrations(id)
       end subroutine
@@ -2684,6 +2686,7 @@
       Use SysBalModule
       implicit none
       ml_external respondToEvent
+!STDCALL(respondToEvent)
 
       integer, intent(in) :: fromID
       integer, intent(in) :: eventID

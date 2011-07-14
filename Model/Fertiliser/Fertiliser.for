@@ -369,6 +369,7 @@ c     include   'fertiliz.inc'
       use FertilizModule
       implicit none
       ml_external alloc_dealloc_instance
+!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -393,6 +394,7 @@ c     include   'fertiliz.inc'
       use FertilizModule
       implicit none
       ml_external OnTick
+!STDCALL(OnTick)
 
 *+  Purpose
 *     Update internal time record and reset daily state variables.
@@ -418,6 +420,11 @@ c     include   'fertiliz.inc'
       use FertilizModule
       implicit none
       ml_external OnInit1, OnTick, OnNewProfile, OnApply, OnProcess
+!STDCALL(OnInit1)
+!SDTCALL(OnTick,)
+!STDCALL(OnNewProfile)
+!STDCALL(OnApply)
+!STDCALL(OnProcess)
       external ::OnApply, OnTick, OnNewProfile, OnProcess
        
       call fertiliz_zero_variables ()
@@ -436,6 +443,7 @@ c     include   'fertiliz.inc'
       Use FertilizModule
       implicit none
       ml_external OnNewProfile
+!STDCALL(OnNewProfile)
 
       type(NewProfileType) :: newProfile
       integer numvals
@@ -451,6 +459,7 @@ c     include   'fertiliz.inc'
       Use FertilizModule
       implicit none
       ml_external OnProcess
+!STDCALL(OnProcess)
 
       call fertiliz_get_other_variables ()
 
@@ -464,6 +473,7 @@ c     include   'fertiliz.inc'
       Use FertilizModule
       implicit none
       ml_external OnApply
+!STDCALL(OnApply)
 
       type(FertiliserApplicationType) :: Application
       if (Application%Type .eq. ' ') then
