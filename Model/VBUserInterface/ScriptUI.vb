@@ -2,6 +2,7 @@ Imports System.Xml
 Imports CSGeneral
 Imports System.IO
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 Public Class ScriptUI
 
         ' -----------------------------------
@@ -35,11 +36,12 @@ Public Class ScriptUI
                 Assembly.LoadFile(Types.GetProbeInfoDLLFileName())
 
                 For Each ref As String In XmlHelper.ValuesRecursive(Data, "reference")
-                        If File.Exists(ref) Then
-                                Assembly.LoadFile(ref)
-                        Else
-                                Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + ref)
-                        End If
+                	if File.Exists(val) Then
+				Assembly.LoadFile(ref)
+		    	ElseIf File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + ref) Then
+		    		Assembly.LoadFile(RuntimeEnvironment.GetRuntimeDirectory() + ref)
+		    	Else
+		    		Assembly.LoadFile(Application.ExecutablePath + "\" + ref)
                 Next
 
                 CsParser.RegisterAllAssemblies()

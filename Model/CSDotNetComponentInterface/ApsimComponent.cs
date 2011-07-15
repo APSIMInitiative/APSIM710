@@ -816,6 +816,8 @@ namespace ModelFramework
                         foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
                             if (File.Exists(val))
                                 _params.ReferencedAssemblies.Add(val);
+                            else if (File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + val))
+                                _params.ReferencedAssemblies.Add(RuntimeEnvironment.GetRuntimeDirectory() + val);
                             else
                                 _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\" + val);
 

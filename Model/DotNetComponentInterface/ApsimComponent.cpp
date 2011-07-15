@@ -532,6 +532,8 @@ Assembly^ ApsimComponent::CompileScript(XmlNode^ Node)
 			{
 				if(File::Exists(val))
 					params->ReferencedAssemblies->Add(val);
+				else if (File::Exists(RuntimeEnvironment::GetRuntimeDirectory() + val))
+					params->ReferencedAssemblies->Add(RuntimeEnvironment::GetRuntimeDirectory() + val);
 				else
 					params->ReferencedAssemblies->Add(Path::GetDirectoryName(DllFileName) + "\\" + val);
 			}
