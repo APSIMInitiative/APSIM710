@@ -53,7 +53,6 @@
       implicit none
       ml_external getDescription, getDescriptionInternal
 !STDCALL(getDescription)
-!STDCALL(getDescriptionInternal)
       integer InitScript, Description
       call getDescriptionInternal(InitScript, Description)
       end subroutine
@@ -62,7 +61,6 @@
       implicit none
       ml_external getDescriptionLength, getDescriptionLengthInternal
 !STDCALL(getDescriptionLength)
-!STDCALL(getDescriptionLengthInternal)
       integer InitScript, Length
       call getDescriptionLengthInternal(InitScript, Length)
       end subroutine

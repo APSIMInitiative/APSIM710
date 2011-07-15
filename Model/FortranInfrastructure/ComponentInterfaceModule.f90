@@ -808,6 +808,22 @@ module ComponentInterfaceModule
        integer fast_index
        end function fast_index
 
+      subroutine getDescriptionInternal(InitScript, Description)
+      ml_external getDescriptionInternal
+!STDCALL(getDescriptionInternal)
+      integer, intent(in) :: InitScript
+      integer, intent(in) :: Description
+      integer                       :: add_registration
+      end subroutine getDescriptionInternal
+	  
+      subroutine getDescriptionLengthInternal(InitScript, Description)
+      ml_external getDescriptionLengthInternal
+!STDCALL(getDescriptionLengthInternal)
+      integer, intent(in) :: InitScript
+      integer, intent(in) :: Description
+      integer                       :: add_registration
+      end subroutine getDescriptionLengthInternal
+
    end interface
 
 end module ComponentInterfaceModule
