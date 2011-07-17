@@ -320,7 +320,7 @@ Public Class FarmSimGraze
 
    Private Sub UrineApplication(ByVal UrineN As Double, ByVal StockDensity As Double, ByVal StockType As String)
       Dim ApplyUrineData As New ApplyUrineType
-      ApplyUrineData.AmountUrine = N_Urine
+        ApplyUrineData.UrineNLoad = N_Urine
       ApplyUrineData.StockDensity = EffectiveStockDensity
       ApplyUrineData.StockType = AnimalType
       MyPaddock.Publish("ApplyUrine", ApplyUrineData)

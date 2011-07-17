@@ -377,8 +377,8 @@ Public Class LocalPaddockType
                 End If
                 If Not (UrinePatchComponent Is Nothing) Then ' use Val's new urine patch model is avalible
                         Dim urine As ApplyUrineType = New ApplyUrineType()
-                        urine.AmountUrine = kgN_ha
-                        urine.StockDensity = StockingDensity
+            urine.UrineNLoad = kgN_ha
+            urine.StockDensity = StockingDensity
                         urine.StockType = "DairyCow"
                         UrinePatchComponent.Publish("ApplyUrine", urine)
                 Else    ' use simple fertiliser and irrigation events

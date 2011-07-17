@@ -225,7 +225,7 @@ Public Class UrinePatch
 
    <EventHandler()> Public Sub OnApplyUrine(ByVal UrineData As ApplyUrineType)   '(ByVal Amount As Double, ByVal StockDensity As Double, ByVal StockType As String)
 
-      UrineN_FromAnimal = UrineData.AmountUrine
+        UrineN_FromAnimal = UrineData.UrineNLoad
       Effective_StockDensity = UrineData.StockDensity
       AnimalType = UrineData.StockType
 
