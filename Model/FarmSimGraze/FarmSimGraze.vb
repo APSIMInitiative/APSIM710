@@ -318,14 +318,15 @@ Public Class FarmSimGraze
    End Sub
 
 
-   Private Sub UrineApplication(ByVal UrineN As Double, ByVal StockDensity As Double, ByVal StockType As String)
-      Dim ApplyUrineData As New ApplyUrineType
+    Private Sub UrineApplication(ByVal UrineN As Double, ByVal StockDensity As Double, ByVal StockType As String)
+        Dim ApplyUrineData As New ApplyUrineType
         ApplyUrineData.UrineNLoad = N_Urine
-      ApplyUrineData.StockDensity = EffectiveStockDensity
-      ApplyUrineData.StockType = AnimalType
-      MyPaddock.Publish("ApplyUrine", ApplyUrineData)
+        ApplyUrineData.StockDensity = EffectiveStockDensity
+        ApplyUrineData.StockType = AnimalType
+        ApplyUrineData.InfiltrationShapeType = "" 'Still needs work
+        MyPaddock.Publish("ApplyUrine", ApplyUrineData)
 
-   End Sub
+    End Sub
 
 
    Private Sub DungApplication(ByVal DungN As Double, ByVal DungDM As Double)
