@@ -1134,28 +1134,28 @@ End Class
         </Sample>
       </soil>
       <manager name="ApplyUrine">
-        <script name="init">
+        <script>
           <text>
           </text>
           <event>init</event>
         </script>
-        <script name="start_of_day">
+        <script>
           <text>
 if day = 9 then
- UrinePatch ApplyUrine AmountUrine = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = DairyCow ()
+ UrinePatch ApplyUrine UrineNLoad = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = DairyCow ()
 elseif day = 11 then
- UrinePatch ApplyUrine AmountUrine = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Sheep ()
+ UrinePatch ApplyUrine UrineNLoad = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Sheep ()
 elseif day = 13 then
- urinePatch ApplyUrine AmountUrine = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Beef ()
+ urinePatch ApplyUrine UrineNLoad = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Beef ()
 elseif day = 15 then
- urinePatch ApplyUrine AmountUrine = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Lamb ()
+ urinePatch ApplyUrine UrineNLoad = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = Lamb ()
 elseif day = 17 then
- urinePatch ApplyUrine AmountUrine = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = SheepBeef ()
+ urinePatch ApplyUrine UrineNLoad = 20.0 (kgN/ha), StockDensity = 40.0 (hd/ha), StockType = SheepBeef ()
 endif
 </text>
           <event>start_of_day</event>
         </script>
-        <script name="end_of_day">
+        <script>
           <text>
           </text>
           <event>end_of_day</event>
@@ -1163,7 +1163,7 @@ endif
       </manager>
       <outputfile name="Outputfile">
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="dd/mm/yyyy as Date" />
           <variable name="UrineN_FromAnimal" />
           <variable name="UrineConcentration" />
           <variable name="UrineN_PropLeached" />
