@@ -9,6 +9,9 @@ for %%f in (JobScheduler*.dll) do attrib -R %%f
 
 rem Need to compile the JobScheduler first.
 cd ..\JobScheduler
+
+rem Force a rebuild by deleting the .exe
+del ..\JobScheduler.exe
 call ..\Build\RunMake.bat APSIM=%APSIM%
 
 rem Make the JobScheduler binary files readonly so that CleanAll doesn't remove them.

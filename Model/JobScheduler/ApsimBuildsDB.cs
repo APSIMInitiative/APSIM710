@@ -42,9 +42,8 @@ public class ApsimBuildsDB
     /// </summary>
     public void Add(string UserName, string Password, string PatchFileName, string Description, int BugID, bool DoCommit)
     {
-        Dummy();
-        string SQL = "INSERT INTO BuildJobs (UserName, Password, PatchFileName, Description, BugID, DoCommit) " +
-                     "VALUES (@UserName, @Password, @PatchFileName, @Description, @BugID, @DoCommit)";
+        string SQL = "INSERT INTO BuildJobs (UserName, Password, PatchFileName, Description, BugID, DoCommit, Status) " +
+                     "VALUES (@UserName, @Password, @PatchFileName, @Description, @BugID, @DoCommit, @Status)";
 
         SqlCommand Cmd = new SqlCommand(SQL, Connection);
 
@@ -53,6 +52,7 @@ public class ApsimBuildsDB
         Cmd.Parameters.Add(new SqlParameter("@PatchFileName", PatchFileName));
         Cmd.Parameters.Add(new SqlParameter("@Description", Description));
         Cmd.Parameters.Add(new SqlParameter("@BugID", BugID));
+        Cmd.Parameters.Add(new SqlParameter("@Status", "Queued"));
         if (DoCommit)
             Cmd.Parameters.Add(new SqlParameter("@DoCommit", "1"));
         else
@@ -148,7 +148,6 @@ public class ApsimBuildsDB
     public void UpdateRevisionNumber(int RevisionNumber)
     {
         GetJobID();
-        Dummy();
         string SQL = "UPDATE BuildJobs SET RevisionNumber = " + RevisionNumber.ToString() + " WHERE ID = " + JobID;
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
