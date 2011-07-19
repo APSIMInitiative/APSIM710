@@ -1,5 +1,10 @@
 @echo off
-call CleanAll
-call MakeAll
 
+pushd ..\..
+set APSIM=%CD%
+popd
+
+%Apsim%\..\BuildLibraries\Tcl\ASTcl\bin\tclsh.exe WriteVersionNumber.tcl
+
+..\JobScheduler BuildAll.xml
 

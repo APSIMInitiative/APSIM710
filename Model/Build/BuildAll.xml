@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="Build.xsl"?>
+<Folder name="Build">
+	<Job name="Clean">
+		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+		<CommandLine>CleanAll.bat</CommandLine>
+	</Job>
+	<Job name="Copy RunTime DLL's into model directory"  wait="yes">
+		<WorkingDirectory>%Apsim%\Model\RunTime</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Version stamp the build" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+		<CommandLine>..\TclLink\bin\tclsh85.exe VersionStamper.tcl</CommandLine>
+	</Job>
+	<Job name="Compile CMPServices">
+		<WorkingDirectory>%Apsim%\Model\CMPServices</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ApsimFile" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\ApsimFile</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile General">
+		<WorkingDirectory>%Apsim%\Model\General</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ApsimShared" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\ApsimShared</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile DataTypes">
+		<WorkingDirectory>%Apsim%\Model\DataTypes</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Protocol" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\Protocol</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ComponentInterface">
+		<WorkingDirectory>%Apsim%\Model\ComponentInterface</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ComponentInterface2">
+		<WorkingDirectory>%Apsim%\Model\ComponentInterface2</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile DotNetComponentInterface">
+		<WorkingDirectory>%Apsim%\Model\DotNetComponentInterface</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile CSDotNetComponentInterface">
+		<WorkingDirectory>%Apsim%\Model\CSDotNetComponentInterface</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile FortranInfrastructure">
+		<WorkingDirectory>%Apsim%\Model\FortranInfrastructure</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile FortranComponentInterface" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\FortranComponentInterface</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile FortranComponentInterface2">
+		<WorkingDirectory>%Apsim%\Model\FortranComponentInterface2</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile CropTemplate">
+		<WorkingDirectory>%Apsim%\Model\CropTemplate</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile VBMet">
+		<WorkingDirectory>%Apsim%\Model\VBMet</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>   
+	<Job name="Compile DotNetProxies">
+		<WorkingDirectory>%Apsim%\Model\DotNetProxies</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>   
+	<Job name="Compile Input">
+		<WorkingDirectory>%Apsim%\Model\Input</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>  
+
+
+	<Job name="Compile Plant">
+		<WorkingDirectory>%Apsim%\Model\Plant</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Accum">
+		<WorkingDirectory>%Apsim%\Model\Accum</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile AgPasture">
+		<WorkingDirectory>%Apsim%\Model\AgPasture</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Apsim">
+		<WorkingDirectory>%Apsim%\Model\Apsim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ApsimToSim">
+		<WorkingDirectory>%Apsim%\Model\ApsimToSim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Canopy">
+		<WorkingDirectory>%Apsim%\Model\Canopy</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Clock">
+		<WorkingDirectory>%Apsim%\Model\Clock</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ConToApsim">
+		<WorkingDirectory>%Apsim%\Model\ConToApsim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ConToSim">
+		<WorkingDirectory>%Apsim%\Model\ConToSim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile CropMod">
+		<WorkingDirectory>%Apsim%\Model\CropMod</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Eo">
+		<WorkingDirectory>%Apsim%\Model\Eo</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Erosion">
+		<WorkingDirectory>%Apsim%\Model\Erosion</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Fertiliser">
+		<WorkingDirectory>%Apsim%\Model\Fertiliser</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Grasp">
+		<WorkingDirectory>%Apsim%\Model\Grasp</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Graz">
+		<WorkingDirectory>%Apsim%\Model\Graz</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Growth">
+		<WorkingDirectory>%Apsim%\Model\Growth</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Irrigation">
+		<WorkingDirectory>%Apsim%\Model\Irrigation</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Log">
+		<WorkingDirectory>%Apsim%\Model\Log</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Maize">
+		<WorkingDirectory>%Apsim%\Model\Maize</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Manager">
+		<WorkingDirectory>%Apsim%\Model\Manager</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+
+	<Job name="Compile Map">
+		<WorkingDirectory>%Apsim%\Model\Map</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile MicroMet">
+		<WorkingDirectory>%Apsim%\Model\MicroMet</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Millet">
+		<WorkingDirectory>%Apsim%\Model\Millet</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Operations">
+		<WorkingDirectory>%Apsim%\Model\Operations</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Oryza">
+		<WorkingDirectory>%Apsim%\Model\Oryza</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Ozcot">
+		<WorkingDirectory>%Apsim%\Model\Ozcot</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Parasite">
+		<WorkingDirectory>%Apsim%\Model\Parasite</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Pasture">
+		<WorkingDirectory>%Apsim%\Model\Pasture</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile PatchInput">
+		<WorkingDirectory>%Apsim%\Model\PatchInput</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Plant2">
+		<WorkingDirectory>%Apsim%\Model\Plant2</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Pond">
+		<WorkingDirectory>%Apsim%\Model\Pond</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ProtocolManager">
+		<WorkingDirectory>%Apsim%\Model\ProtocolManager</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Report">
+		<WorkingDirectory>%Apsim%\Model\Report</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Root">
+		<WorkingDirectory>%Apsim%\Model\Root</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SiloInput">
+		<WorkingDirectory>%Apsim%\Model\SiloInput</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SOI">
+		<WorkingDirectory>%Apsim%\Model\SOI</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SoilErosion">
+		<WorkingDirectory>%Apsim%\Model\SoilErosion</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>          
+	<Job name="Compile SoilN">
+		<WorkingDirectory>%Apsim%\Model\SoilN</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SoilNitrogen">
+		<WorkingDirectory>%Apsim%\Model\SoilNitrogen</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>         
+	<Job name="Compile SoilP">
+		<WorkingDirectory>%Apsim%\Model\SoilP</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SoilTemp">
+		<WorkingDirectory>%Apsim%\Model\SoilTemp</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SoilTemp2">
+		<WorkingDirectory>%Apsim%\Model\SoilTemp2</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SoilWat">
+		<WorkingDirectory>%Apsim%\Model\SoilWat</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Solute">
+		<WorkingDirectory>%Apsim%\Model\Solute</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Sorghum">
+		<WorkingDirectory>%Apsim%\Model\Sorghum</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Stock">
+		<WorkingDirectory>%Apsim%\Model\Stock</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Sugar">
+		<WorkingDirectory>%Apsim%\Model\Sugar</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Supplement">
+		<WorkingDirectory>%Apsim%\Model\Supplement</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Surface">
+		<WorkingDirectory>%Apsim%\Model\Surface</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SurfaceOM">
+		<WorkingDirectory>%Apsim%\Model\SurfaceOM</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SurfaceTemp">
+		<WorkingDirectory>%Apsim%\Model\SurfaceTemp</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SWIM2">
+		<WorkingDirectory>%Apsim%\Model\SWIM2</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SWIM3">
+		<WorkingDirectory>%Apsim%\Model\SWIM3</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SysBal">
+		<WorkingDirectory>%Apsim%\Model\SysBal</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+
+
+
+	<Job name="Compile TclLink">
+		<WorkingDirectory>%Apsim%\Model\TclLink</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+
+
+
+	<Job name="Compile Tracker">
+		<WorkingDirectory>%Apsim%\Model\Tracker</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Tree">
+		<WorkingDirectory>%Apsim%\Model\Tree</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile UrinePatch">
+		<WorkingDirectory>%Apsim%\Model\UrinePatch</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile VenLink">
+		<WorkingDirectory>%Apsim%\Model\VenLink</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile WaterSupply">
+		<WorkingDirectory>%Apsim%\Model\WaterSupply</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile YieldProphet">
+		<WorkingDirectory>%Apsim%\Model\YieldProphet</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile DDRules">
+		<WorkingDirectory>%Apsim%\Model\DDRules</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile FarmSimGraze">
+		<WorkingDirectory>%Apsim%\Model\FarmSimGraze</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile SetXMLValue">
+		<WorkingDirectory>%Apsim%\Model\SetXMLValue</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile Plant2Documentation">
+		<WorkingDirectory>%Apsim%\Model\Plant2Documentation</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile RunMacro">
+		<WorkingDirectory>%Apsim%\Model\RunMacro</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile UpdateDotNetProxies">
+		<WorkingDirectory>%Apsim%\Model\UpdateDotNetProxies</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+
+	<Job name="Compile ExcelUtility">
+		<WorkingDirectory>%Apsim%\Model\Excel</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ApsimUI">
+		<WorkingDirectory>%Apsim%\Model\ApsimUI</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile MergeOutputFiles">
+		<WorkingDirectory>%Apsim%\Model\MergeOutputFiles</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ShellExtensions">
+		<WorkingDirectory>%Apsim%\Model\ShellExtensions</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile RunEditor">
+		<WorkingDirectory>%Apsim%\Model\RunEditor</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile ApsimRun" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\ApsimRun</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+	<Job name="Compile JobSchedulerFindJobs" wait="yes">
+		<WorkingDirectory>%Apsim%\Model\JobSchedulerFindJobs</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
+
+	<Job name="Update all .NET proxy classes">
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>UpdateDotNetProxies.exe</CommandLine>
+	</Job>
+
+ </Folder>

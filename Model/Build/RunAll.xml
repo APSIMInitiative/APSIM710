@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="Build.xsl"?>
+<Folder name="RunAll">
+	<Job name="FindExamples">
+		<WorkingDirectory>%Apsim%</WorkingDirectory>
+		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
+	</Job>
+	<Job name="FindTests" wait="yes">
+		<WorkingDirectory>%Apsim%</WorkingDirectory>
+		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
+	</Job>      
+	<Job name="FindControlFiles" wait="yes">
+		<WorkingDirectory>%Apsim%</WorkingDirectory>
+		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
+	</Job>      
+	<Folder name="Examples" wait="yes" />
+	<Folder name="Tests" />
+     
+	<!--
+    Unit tests.
+	-->	
+	
+	<Job name="Unit tests" wait="yes" IgnoreErrors="yes">
+		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+		<CommandLine>RunAllUnitTests.bat</CommandLine>
+	</Job>     
+
+	<!--
+    Execute all post simulation batch files.
+	-->	
+	
+	<Job name="Find post simulation jobs" IgnoreErrors="yes">
+		<WorkingDirectory>%Apsim%</WorkingDirectory>
+		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\PostRunAll.bat" "%JobPath%/../Jobs"</CommandLine>
+	</Job>
+	<Folder name="Jobs" wait="yes" IgnoreErrors="yes" />
+</Folder>
