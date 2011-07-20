@@ -262,7 +262,6 @@ class Program
         // Now we should have a list of the "real" diffs.
         ApsimBuildsDB Db = new ApsimBuildsDB();
         Db.Open();
-        Db.Dummy();
         Db.SetNumDiffs(ModifiedFiles.Count);
         if (ModifiedFiles.Count == 0 && !SomeJobsHaveFailed)
             Db.UpdateStatus("Pass");
