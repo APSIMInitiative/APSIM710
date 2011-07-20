@@ -249,8 +249,11 @@ class Program
                 FileName = FileName.Replace("/", "\\");
                 int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileName);
                 if (I == -1)
-                    throw new Exception("File: " + FileName + " should be different as it came from the patch file. Error, not found");
-                ModifiedFiles.RemoveAt(I);
+                {
+                    // This can happen when a patch file has added or deleted files in it.
+                } 
+                else
+                    ModifiedFiles.RemoveAt(I);
             }
         }
 

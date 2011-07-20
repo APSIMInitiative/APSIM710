@@ -13,102 +13,105 @@
 -->
 <Folder name="Bob" LoopForever="no">
 
-	<!--
+	<Folder name="BuildAndRun">
+		<!--
     Get the APSIM directory up to date and clean.
 	-->
-	
-	<Job name="JobSchedulerWaitForPatch">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\JobSchedulerWaitForPatch.exe C:\Upload</CommandLine>
-	</Job>
-	<Job name="SVN Revert"  wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>svn.exe revert -R %Apsim%</CommandLine>
-	</Job>
-	<Job name="SVN Update"  wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>svn.exe update %Apsim%</CommandLine>
-	</Job>	
-<!-- 	<Job name="Remove unversioned files"  wait="yes">
+
+		<Job name="JobSchedulerWaitForPatch">
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\JobSchedulerWaitForPatch.exe C:\Upload</CommandLine>
+		</Job>
+		<Job name="SVN Revert"  wait="yes">
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>svn.exe revert -R %Apsim%</CommandLine>
+		</Job>
+		<Job name="SVN Update"  wait="yes">
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>svn.exe update %Apsim%</CommandLine>
+		</Job>	
+		<!-- 	<Job name="Remove unversioned files"  wait="yes">
 		<WorkingDirectory>%Apsim%</WorkingDirectory>
 		<CommandLine>%Apsim%\Model\RemoveUnversionedFiles.exe %Apsim%</CommandLine>
 	</Job> -->
-	<Job name="Apply patch"  wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\..\BuildLibraries\Pat-ch.exe -p0 -i "C:\Upload\%PatchFileName%.patch"</CommandLine>
-	</Job>
-	<Job name="Remove all .out and .sum files" wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\RemoveOutAndSumFiles.bat</CommandLine>
-	</Job>
-	<Job name="Delete the apsim.xml file in Bobs profile">
-		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
-		<CommandLine>DeleteFileIfExists.bat %APPDATA%\Apsim</CommandLine>
-	</Job>
-	<Job name="Write potential revision number into Apsim.xml">
-		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
-		<CommandLine>%Apsim%\..\BuildLibraries\Tcl\ASTcl\bin\tclsh.exe WriteVersionNumberBob.tcl</CommandLine>
-	</Job>
-	
-	<!--
+		<Job name="Apply patch"  wait="yes">
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>%Apsim%\..\BuildLibraries\Pat-ch.exe -p0 -i "C:\Upload\%PatchFileName%.patch"</CommandLine>
+		</Job>
+		<Job name="Remove all .out and .sum files" wait="yes">
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\RemoveOutAndSumFiles.bat</CommandLine>
+		</Job>
+		<Job name="Delete the apsim.xml file in Bobs profile">
+			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>DeleteFileIfExists.bat %APPDATA%\Apsim</CommandLine>
+		</Job>
+		<Job name="Write potential revision number into Apsim.xml">
+			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>%Apsim%\..\BuildLibraries\Tcl\ASTcl\bin\tclsh.exe WriteVersionNumberBob.tcl</CommandLine>
+		</Job>
+
+		<!--
     Build APSIM
 	-->
 
-	<Job name="Load in Build.xml" wait="yes">
-		<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
-		<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~BuildAll.xml~%JobPath%/../Build</CommandLine>
-	</Job>
-    <Folder name="Build" />
+		<Job name="Load in Build.xml" wait="yes">
+			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~BuildAll.xml~%JobPath%/../Build</CommandLine>
+		</Job>
+		<Folder name="Build" />
 
-	<!--
+		<!--
     Run all APSIM tests
 	-->
-	
-	<Job name="Load in Run.xml" wait="yes">
-		<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
-		<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~RunAll.xml~%JobPath%/../Run</CommandLine>
-	</Job>
-    <Folder name="Run" />
-	
-	<!--
+
+		<Job name="Load in Run.xml" wait="yes">
+			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~RunAll.xml~%JobPath%/../Run</CommandLine>
+		</Job>
+		<Folder name="Run" />
+
+		<!--
     Build APSIM Documentation
 	-->	
-	
-	<Folder name="Plant2 Documentation" wait="yes">
-		<Job name="Create Broccoli Documentation">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
-		</Job>
-		<Job name="Create Vine Documentation">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
-		</Job>
-		<Job name="Create documentation">
-			<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
-			<CommandLine>CreateIndex.bat</CommandLine>
-		</Job> 	
-	</Folder>
 
-	<!--
+		<Folder name="Plant2 Documentation" wait="yes">
+			<Job name="Create Broccoli Documentation">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
+			</Job>
+			<Job name="Create Vine Documentation">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
+			</Job>
+			<Job name="Create documentation">
+				<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
+				<CommandLine>CreateIndex.bat</CommandLine>
+			</Job> 	
+		</Folder>
+
+		<!--
     Build APSIM Release
 	-->	
 
-	<Folder name="Release" wait="yes">
-		<Job name="Create release">
-			<WorkingDirectory>%Apsim%\Release</WorkingDirectory>
-			<CommandLine>Release.bat %PatchFileName%</CommandLine>
-		</Job>	
-		<Job name="Update DB Setup" wait="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe</CommandLine>
-		</Job>
-		<Job name="Update DB Setup">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
-		</Job>	
+		<Folder name="Release" wait="yes">
+			<Job name="Create release">
+				<WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+				<CommandLine>Release.bat %PatchFileName%</CommandLine>
+			</Job>	
+			<Job name="Update DB Setup" wait="yes">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe</CommandLine>
+			</Job>
+			<Job name="Update DB Setup">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
+			</Job>	
+		</Folder>
+
 	</Folder>
-	
-	<!--
+
+		<!--
     Finish up by collecting diffs and sending the email.
 	-->	
 	
@@ -127,30 +130,30 @@
 		</Job>
 		<Job name="CreateSummaryHtml">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerCreateSummaryHtml.exe</CommandLine>
+			<CommandLine>%Apsim%\Model\JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
 		</Job>		
- 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
+		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim%</CommandLine>
+			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% %PatchFileName%</CommandLine>
 		</Job>			
- 		<Job name="Update DB Details" wait="yes" IgnoreErrors="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileName%.diffs.zip</CommandLine>
-		</Job>		
- 		<Job name="Update DB Binaries" wait="yes" IgnoreErrors="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>UpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileName%.binaries.zip</CommandLine>
-		</Job>		
- 		<Job name="Send email" wait="yes" IgnoreErrors="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>SendEmail.exe @Build\MailList.txt</CommandLine>
-		</Job>
-		
 	</Folder>
 
-	<Job name="Save the XML to a file" wait="yes" IgnoreErrors="yes">
-		<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
-		<CommandLine>JobSchedulerSendCommand.exe SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml</CommandLine>
-	</Job>
-	
+	<Folder name="Final jobs that should always run" wait="yes" IgnoreErrors="yes">
+		<Job name="Update DB Details">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileName%.diffs.zip</CommandLine>
+		</Job>		
+		<Job name="Update DB Binaries" wait="yes" IgnoreErrors="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileName%.binaries.zip</CommandLine>
+		</Job>		
+		<Job name="Send email" wait="yes" IgnoreErrors="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerSendEmail.exe @Build\MailList.txt</CommandLine>
+		</Job>
+		<Job name="Save the XML to a file" wait="yes" IgnoreErrors="yes">
+			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>JobSchedulerSendCommand.exe SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml</CommandLine>
+		</Job>
+	</Folder>
 </Folder>
