@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.Collections.Generic;
 
 class Program
 {
@@ -25,12 +26,13 @@ class Program
 
         try
         {
-            string PatchFileName = "";
+            
+            int JobID;
             do
             {
-                PatchFileName = BuildsDB.GetPatchFileName();
+                JobID = BuildsDB.FindNextJob();
 
-                if (PatchFileName != "")
+                if (JobID != -1)
                 {
                     // Need to get the tip revision.
                     string SVNFileName = Utility.FindFileOnPath("svn.exe");
@@ -43,8 +45,12 @@ class Program
                         throw new Exception("Invalid output from svn INFO: \n" + StdOut);
                     int TipRevisionNumber = Convert.ToInt32(StringManip.SplitOffAfterDelimiter(ref StdOutLines[4], " "));
 
-                    // Let the jobscheduler have a new variable called PatchFileName.
+                    Dictionary<string, object> Details = BuildsDB.GetDetails(JobID);
+                    string PatchFileName = Details["PatchFileName"].ToString();
+
+                    // Let the jobscheduler have a new variable called PatchFileName and JobID.
                     TalkToJobScheduler("AddVariable~PatchFileName~" + Path.GetFileNameWithoutExtension(PatchFileName));
+                    TalkToJobScheduler("AddVariable~JobID~" + JobID.ToString());
 
                     // NB *******************
                     // Increments the TipRevisionNumber
@@ -54,15 +60,15 @@ class Program
                     TipRevisionNumber = TipRevisionNumber + 1;
 
                     // Update the builds database.
-                    BuildsDB.UpdateStatus("Running");
-                    BuildsDB.UpdateStartDateToNow();
-                    BuildsDB.UpdateRevisionNumber(TipRevisionNumber);
+                    BuildsDB.UpdateStatus(JobID, "Running");
+                    BuildsDB.UpdateStartDateToNow(JobID);
+                    BuildsDB.UpdateRevisionNumber(JobID, TipRevisionNumber);
                 }
                 else
                     Thread.Sleep(3 * 60 * 1000); // 3 minutes
 
             }
-            while (PatchFileName == "");
+            while (JobID == -1);
         }
         catch (Exception err)
         {

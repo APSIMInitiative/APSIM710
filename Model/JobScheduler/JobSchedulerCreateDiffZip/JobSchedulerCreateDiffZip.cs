@@ -259,17 +259,19 @@ class Program
 
         bool SomeJobsHaveFailed = JobScheduler.TalkToJobScheduler("GetVariable~SomeJobsHaveFailed") == "Yes";
 
+        int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
+
         // Now we should have a list of the "real" diffs.
         ApsimBuildsDB Db = new ApsimBuildsDB();
         Db.Open();
-        Db.SetNumDiffs(ModifiedFiles.Count);
+        Db.SetNumDiffs(JobID, ModifiedFiles.Count);
         if (ModifiedFiles.Count == 0 && !SomeJobsHaveFailed)
-            Db.UpdateStatus("Pass");
+            Db.UpdateStatus(JobID, "Pass");
         else
         {
-            Db.UpdateStatus("Fail");
+            Db.UpdateStatus(JobID, "Fail");
             string DiffsFileName = "<a href=\"http://bob.apsim.info/files/" + PatchFileName + ".diffs.zip\" alt=\"Diffs\">Diffs</a>";
-            Db.UpdateDiffFileName(DiffsFileName);
+            Db.UpdateDiffFileName(JobID, DiffsFileName);
         }        
 
         Db.Close();        

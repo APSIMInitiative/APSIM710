@@ -27,10 +27,12 @@ class Program
 
     private static void Go(string FieldName, string Value)
     {
+        int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
+
         ApsimBuildsDB DB = new ApsimBuildsDB();
         DB.Open();
 
-        DB.UpdateField(FieldName, Value);
+        DB.UpdateField(JobID, FieldName, Value);
 
         DB.Close();
     }

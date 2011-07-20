@@ -63,10 +63,12 @@ class Program
 
     private static string CreateHTMLRow()
     {
+        int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
+
         // Get some info about the current job.
         ApsimBuildsDB DB = new ApsimBuildsDB();
         DB.Open();
-        Dictionary<string, object> Details = DB.GetDetails();
+        Dictionary<string, object> Details = DB.GetDetails(JobID);
         
         // Create our list items for the HTML row.
         string ListItemsHTML = "";

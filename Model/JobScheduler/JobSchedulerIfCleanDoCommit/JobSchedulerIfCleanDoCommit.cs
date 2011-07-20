@@ -33,8 +33,10 @@ class JobSchedulerIfCleanDoCommit
     {
         ApsimBuildsDB DB = new ApsimBuildsDB();
         DB.Open();
-        int NumDiffs = DB.GetNumDiffs();
-        Dictionary<string, object> Details = DB.GetDetails();
+
+        int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
+        Dictionary<string, object> Details = DB.GetDetails(JobID);
+        int NumDiffs = Convert.ToInt32(Details["NumDiffs"]);
         if (Details["DoCommit"].ToString() == "0")
             Console.WriteLine("The commit option was unchecked on the upload patch form");
 

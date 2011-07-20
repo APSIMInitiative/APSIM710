@@ -39,8 +39,8 @@
 			<CommandLine>%Apsim%\..\BuildLibraries\Pat-ch.exe -p0 -i "C:\Upload\%PatchFileName%.patch"</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files" wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\RemoveOutAndSumFiles.bat</CommandLine>
+			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+			<CommandLine>RemoveOutAndSumFiles.bat</CommandLine>
 		</Job>
 		<Job name="Delete the apsim.xml file in Bobs profile">
 			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
@@ -57,7 +57,7 @@
 
 		<Job name="Load in Build.xml" wait="yes">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~BuildAll.xml~%JobPath%/../Build</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~BuildAll.xml~%JobPath%/../Build"</CommandLine>
 		</Job>
 		<Folder name="Build" />
 
@@ -67,7 +67,7 @@
 
 		<Job name="Load in Run.xml" wait="yes">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~RunAll.xml~%JobPath%/../Run</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~RunAll.xml~%JobPath%/../Run"</CommandLine>
 		</Job>
 		<Folder name="Run" />
 
@@ -114,23 +114,24 @@
 		<!--
     Finish up by collecting diffs and sending the email.
 	-->	
-	
+
+	<Job name="CreateBuildTreeZip">
+		<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+		<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.zip %Apsim% > nul</CommandLine>
+	</Job>	
+	<Job name="CreateBinariesZip">
+		<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+		<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll > nul</CommandLine>
+	</Job>
+
 	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
-		<Job name="CreateBuildTreeZip">
-			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.zip %Apsim% > nul</CommandLine>
-		</Job>
-		<Job name="CreateBinariesZip">
-			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll > nul</CommandLine>
-		</Job>
 		<Job name="CreateDiffsZip">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerCreateDiffZip.exe %Apsim% %PatchFileName%</CommandLine>
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% %PatchFileName%</CommandLine>
 		</Job>
 		<Job name="CreateSummaryHtml" wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
 		</Job>		
 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
@@ -153,7 +154,7 @@
 		</Job>
 		<Job name="Save the XML to a file" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml"</CommandLine>
 		</Job>
 	</Folder>
 </Folder>
