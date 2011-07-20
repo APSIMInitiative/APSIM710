@@ -15,7 +15,7 @@ class Program
             if (args.Length != 2)
                 throw new Exception("Usage: UpdateFieldInDB FieldName Value");
 
-            Go(args[0], args[1]);
+            Go(args[0], args[1].Replace("\"", ""));
         }
         catch (Exception err)
         {

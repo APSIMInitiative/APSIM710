@@ -56,7 +56,7 @@
 	-->
 
 		<Job name="Load in Build.xml" wait="yes">
-			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~BuildAll.xml~%JobPath%/../Build</CommandLine>
 		</Job>
 		<Folder name="Build" />
@@ -66,7 +66,7 @@
 	-->
 
 		<Job name="Load in Run.xml" wait="yes">
-			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerSendCommand.exe AddXMLFile~RunAll.xml~%JobPath%/../Run</CommandLine>
 		</Job>
 		<Folder name="Run" />
@@ -101,11 +101,11 @@
 			</Job>	
 			<Job name="Update DB Setup" wait="yes">
 				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-				<CommandLine>UpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe</CommandLine>
+				<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe</CommandLine>
 			</Job>
 			<Job name="Update DB Setup">
 				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-				<CommandLine>UpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
+				<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
 			</Job>	
 		</Folder>
 
@@ -128,7 +128,7 @@
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\JobSchedulerCreateDiffZip.exe %Apsim% %PatchFileName%</CommandLine>
 		</Job>
-		<Job name="CreateSummaryHtml">
+		<Job name="CreateSummaryHtml" wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
 		</Job>		
@@ -152,7 +152,7 @@
 			<CommandLine>JobSchedulerSendEmail.exe @Build\MailList.txt</CommandLine>
 		</Job>
 		<Job name="Save the XML to a file" wait="yes" IgnoreErrors="yes">
-			<WorkingDirectory>%apsim%\Model\Build</WorkingDirectory>
+			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerSendCommand.exe SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml</CommandLine>
 		</Job>
 	</Folder>

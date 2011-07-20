@@ -160,7 +160,7 @@ public class ApsimBuildsDB
     public void UpdateDiffFileName(string DiffsFileName)
     {
         GetJobID();
-        string SQL = "UPDATE BuildJobs SET DiffsFileName = " + StringManip.DQuote(DiffsFileName) +
+        string SQL = "UPDATE BuildJobs SET DiffsFileName = '" + DiffsFileName + "'" +
                                          " WHERE ID = " + JobID;
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
@@ -204,7 +204,7 @@ public class ApsimBuildsDB
     public void UpdateField(string FieldName, string FieldValue)
     {
         GetJobID();
-        string SQL = "UPDATE BuildJobs SET " + FieldName + " = " + StringManip.DQuote(FieldValue) +
+        string SQL = "UPDATE BuildJobs SET " + FieldName + " = '" + FieldValue + "'" +
                                          " WHERE ID = " + JobID;
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
