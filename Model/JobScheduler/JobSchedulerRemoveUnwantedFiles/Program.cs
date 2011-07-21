@@ -29,7 +29,7 @@ class Program
             string StdOut = Utility.CheckProcessExitedProperly(P);
             string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-            // Loop through all lines the SVN process produced. If a line 
+            // Loop through all lines the SVN process produced.
             foreach (string line in StdOutLines)
             {
                 if (line.Length > 8)
@@ -43,8 +43,15 @@ class Program
                             Directory.Delete(path, true);
                         else if (File.Exists(path))
                         {
-                            File.SetAttributes(path, FileAttributes.Normal);
-                            File.Delete(path);
+                            if ((File.GetAttributes(path) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                            {
+                                // do nothing
+                            }
+                            else
+                            {
+                                File.SetAttributes(path, FileAttributes.Normal);
+                                File.Delete(path);
+                            }
                         }
                     }
                 }
