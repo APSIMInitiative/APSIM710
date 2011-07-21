@@ -17,3 +17,4 @@ if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\Version
 %APSIM%\Model\Build\make %3
 
 set PATH=%PATHSAVED%
+set LIBPATH=

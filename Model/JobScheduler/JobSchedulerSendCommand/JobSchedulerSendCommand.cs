@@ -19,7 +19,9 @@ class Program
         {
             if (args.Length != 1)
                 throw new Exception("Usage: JobSchedulerSendCommand command");
-            TalkToJobScheduler(args[0].Replace("\"", ""));
+            string Response = TalkToJobScheduler(args[0].Replace("\"", ""));
+            if (Response != "OK")
+                throw new Exception(Response);
         }
         catch (Exception err)
         {
@@ -31,9 +33,10 @@ class Program
 
 
     /// <summary>
-    /// Talk to JobScheduler socket and tell it to save it's XML.
+    /// A static helper method to let other classes talk to this Job Scheduler via a socket connection.
+    /// The response from the JobScheduler is returned.
     /// </summary>
-    private static void TalkToJobScheduler(string FileName)
+    public static string TalkToJobScheduler(string Data)
     {
         // Open a socket connection to JobScheduler.
         int PortNumber = 13000;  // Some arbitary number.
@@ -45,12 +48,17 @@ class Program
             throw new Exception("Cannot connect to JobScheduler via socket");
 
         // Send our XML to JobScheduler.
-        Byte[] bytes = Encoding.ASCII.GetBytes(FileName);
+        Byte[] bytes = Encoding.ASCII.GetBytes(Data);
         S.Send(bytes);
 
         // Now wait for a response.
-        S.Receive(bytes);
+        bytes = new byte[100];
+        int NumBytes = S.Receive(bytes);
         S.Close();
+
+        System.Text.Encoding enc = System.Text.Encoding.UTF8;
+        return enc.GetString(bytes, 0, NumBytes);
     }
+
 }
 

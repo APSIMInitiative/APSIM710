@@ -4,22 +4,21 @@ set APSIM=%CD%
 popd
 
 rem Remove any previous readonly attributes from the jobscheduler binaries.
-for %%f in (JobScheduler*.exe) do attrib -R %%f
-for %%f in (JobScheduler*.dll) do attrib -R %%f
+for %%f in (%APSIM%\Model\JobScheduler*.exe) do attrib -R %%f
+for %%f in (%APSIM%\Model\JobScheduler*.dll) do attrib -R %%f
 
 rem Need to compile the JobScheduler first.
-cd ..\JobScheduler
-
 rem Force a rebuild by deleting the .exe
+cd %APSIM%\Model\JobScheduler
 del ..\JobScheduler.exe
 call ..\Build\RunMake.bat APSIM=%APSIM%
 
 rem Make the JobScheduler binary files readonly so that CleanAll doesn't remove them.
-for %%f in (JobScheduler*.exe) do attrib +R %%f
-for %%f in (JobScheduler*.dll) do attrib +R %%f
+for %%f in (%APSIM%\Model\JobScheduler*.exe) do attrib +R %%f
+for %%f in (%APSIM%\Model\JobScheduler*.dll) do attrib +R %%f
 
 rem Now go and do full build and run.
-cd ..\Build
+cd %APSIM%\Model\Build
 ..\JobScheduler Bob.xml
 
 set APSIM=

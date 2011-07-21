@@ -13,7 +13,7 @@
 -->
 <Folder name="Bob" LoopForever="no">
 
-	<Folder name="BuildAndRun">
+	<Folder name="BuildAndRun" wait="yes">
 		<!--
     Get the APSIM directory up to date and clean.
 	-->
@@ -55,21 +55,21 @@
     Build APSIM
 	-->
 
-		<Job name="Load in Build.xml" wait="yes">
+		<Job name="Load in Build.xml">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~BuildAll.xml~%JobPath%/../Build"</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Build~%apsim%\Model\Build\BuildAll.xml"</CommandLine>
 		</Job>
-		<Folder name="Build" />
+		<Folder name="Build" wait="yes"/>
 
 		<!--
     Run all APSIM tests
 	-->
 
-		<Job name="Load in Run.xml" wait="yes">
+		<Job name="Load in Run.xml">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~RunAll.xml~%JobPath%/../Run"</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%apsim%\Model\Build\RunAll.xml"</CommandLine>
 		</Job>
-		<Folder name="Run" />
+		<Folder name="Run" wait="yes"/>
 
 		<!--
     Build APSIM Documentation
@@ -109,20 +109,27 @@
 			</Job>	
 		</Folder>
 
+		<Job name="CreateBuildTreeZip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.zip %Apsim% > nul</CommandLine>
+		</Job>	
+		<Job name="Update DB Build tree" wait="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileName%.zip</CommandLine>
+		</Job>		
+		<Job name="CreateBinariesZip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll > nul</CommandLine>
+		</Job>		
+		<Job name="Update DB Binaries" wait="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileName%.binaries.zip</CommandLine>
+		</Job>		
 	</Folder>
 
 		<!--
     Finish up by collecting diffs and sending the email.
 	-->	
-
-	<Job name="CreateBuildTreeZip">
-		<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-		<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.zip %Apsim% > nul</CommandLine>
-	</Job>	
-	<Job name="CreateBinariesZip">
-		<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
-		<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.binaries.zip %Apsim%\Model\*.exe %Apsim%\Model\*.dll > nul</CommandLine>
-	</Job>
 
 	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
 		<Job name="CreateDiffsZip">
@@ -143,10 +150,6 @@
 		<Job name="Update DB Details">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerUpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileName%.diffs.zip</CommandLine>
-		</Job>		
-		<Job name="Update DB Binaries" wait="yes" IgnoreErrors="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerUpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileName%.binaries.zip</CommandLine>
 		</Job>		
 		<Job name="Send email" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>

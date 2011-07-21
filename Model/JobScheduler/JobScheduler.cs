@@ -347,6 +347,9 @@ public class JobScheduler
     private void RunJob(object xmlNode)
     {
         XmlNode JobNode = (XmlNode)xmlNode;
+        string NodePath = "/" + XmlHelper.FullPath(JobNode);
+        if (NodePath[NodePath.Length - 1] == '/')
+            NodePath = NodePath.Remove(NodePath.Length - 1);
 
         // Get and break up the command line. First "word" on command line will be the
         // executable name, the rest will be the argments.
@@ -360,6 +363,7 @@ public class JobScheduler
 
         // Replace any environment variables on commandline and workingdirectory.
         CommandLine = ReplaceEnvironmentVariables(CommandLine);
+        CommandLine = CommandLine.Replace("%JobPath%", NodePath);
         WorkingDirectory = ReplaceEnvironmentVariables(WorkingDirectory);
 
         // Strip of any redirection character.
@@ -400,10 +404,6 @@ public class JobScheduler
                 Arguments += CommandLineBits[i];
         }
 
-        string NodePath = "/" + XmlHelper.FullPath(JobNode);
-        if (NodePath[NodePath.Length-1] == '/')
-            NodePath = NodePath.Remove(NodePath.Length-1);
-
         // Create a process object, configure it and then start it.
         DateTime StartTime = DateTime.Now;
 
@@ -415,7 +415,7 @@ public class JobScheduler
             p.StartInfo.RedirectStandardError = !Executable.ToLower().Contains("apsim.exe");
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.FileName = Path.Combine(WorkingDirectory, Executable);
-            p.StartInfo.Arguments = Arguments.Replace("%JobPath%", NodePath);
+            p.StartInfo.Arguments = Arguments;
             p.StartInfo.WorkingDirectory = WorkingDirectory;
             p.Start();
 
@@ -511,7 +511,10 @@ public class JobScheduler
             else
                 PosPercent = PosPercent + 1;
 
-            PosPercent = CommandLine.IndexOf('%', PosPercent + 1);
+            if (PosPercent >= CommandLine.Length)
+                PosPercent = -1;
+            else
+                PosPercent = CommandLine.IndexOf('%', PosPercent);
         }
         return CommandLine;
     }
@@ -561,7 +564,15 @@ public class JobScheduler
                     }
 
                     // Interpret the data.
-                    string Response = InterpretSocketData(data, RootNode);
+                    string Response;
+                    try
+                    {
+                        Response = InterpretSocketData(data, RootNode);
+                    }
+                    catch (Exception err)
+                    {
+                        Response = err.Message;
+                    }
 
                     // Shutdown and end connection
                     client.Client.Send(Encoding.UTF8.GetBytes(Response));
@@ -603,21 +614,25 @@ public class JobScheduler
                 if (JobNode != null)
                 {
                     XmlDocument Doc = new XmlDocument();
-                    Doc.LoadXml("<Dummy>" + CommandBits[2] + "</Dummy>");
+                    Doc.LoadXml(CommandBits[2]);
                     foreach (XmlNode Child in Doc.DocumentElement)
                     {
                         JobNode.AppendChild(JobNode.OwnerDocument.ImportNode(Child, true));
                     }
                 }
+                else
+                    throw new Exception("Cannot find job node: " + CommandBits[1]);
             }
             else if (CommandBits.Length == 3 && CommandBits[0] == "AddXMLFile")
             {
-                
+
                 if (File.Exists(CommandBits[2]))
                 {
                     StreamReader In = new StreamReader(CommandBits[2]);
                     InterpretSocketData("AddXML~" + CommandBits[1] + "~" + In.ReadToEnd(), RootNode);
                 }
+                else
+                    throw new Exception("Cannot find file: " + CommandBits[2]);
             }
             else if (CommandBits.Length == 2 && CommandBits[0] == "SaveXMLToFile")
             {
@@ -625,16 +640,16 @@ public class JobScheduler
             }
             else if (CommandBits.Length == 3 && CommandBits[0] == "AddVariable")
             {
-                if (Macros.ContainsKey(CommandBits[0]))
-                    Macros[CommandBits[0]] = CommandBits[1];
+                if (Macros.ContainsKey(CommandBits[1]))
+                    Macros[CommandBits[1]] = CommandBits[2];
                 else
                     Macros.Add(CommandBits[1], CommandBits[2]);
             }
             else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
             {
-                if (Macros.ContainsKey(CommandBits[0]))
-                    return Macros[CommandBits[0]];
-                else if (CommandBits[0] == "SomeJobsHaveFailed")
+                if (Macros.ContainsKey(CommandBits[1]))
+                    return Macros[CommandBits[1]];
+                else if (CommandBits[1] == "SomeJobsHaveFailed")
                 {
                     if (SomeJobsHaveFailed)
                         return "Yes";
@@ -669,9 +684,12 @@ public class JobScheduler
         S.Send(bytes);
 
         // Now wait for a response.
-        S.Receive(bytes);
+        bytes = new byte[100];
+        int NumBytes = S.Receive(bytes);
         S.Close();
-        return bytes.ToString();
+
+        System.Text.Encoding enc = System.Text.Encoding.UTF8;
+        return enc.GetString(bytes, 0, NumBytes);
     }
 
 }
