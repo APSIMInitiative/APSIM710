@@ -72,7 +72,7 @@ class Program
                 throw new Exception(err.Message + ". File name = " + FileName);
             }
         }
-        XML += Doc.DocumentElement.InnerXml;
+        XML += Doc.DocumentElement.OuterXml;
         TalkToJobScheduler(XML);
     }
 

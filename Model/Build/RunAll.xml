@@ -2,16 +2,16 @@
 <?xml-stylesheet type="text/xsl" href="Build.xsl"?>
 <Folder name="RunAll">
 	<Job name="FindExamples">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
 	</Job>
 	<Job name="FindTests" wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
 	</Job>      
 	<Job name="FindControlFiles" wait="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
 	</Job>      
 	<Folder name="Examples" wait="yes" />
 	<Folder name="Tests" />
