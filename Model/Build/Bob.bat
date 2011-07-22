@@ -16,6 +16,9 @@ rem Make the JobScheduler binary files readonly so that CleanAll doesn't remove 
 for %%f in (%APSIM%\Model\JobScheduler*.exe) do attrib +R %%f
 for %%f in (%APSIM%\Model\JobScheduler*.dll) do attrib +R %%f
 
+rem Bob compiles JobSchedulerFindJobs so make it readwrite.
+for %%f in (%APSIM%\Model\JobSchedulerFindJobs.*) do attrib -R %%f
+
 rem Now go and do full build and run.
 cd %APSIM%\Model\Build
 ..\JobScheduler Bob.xml
