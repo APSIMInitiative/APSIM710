@@ -168,7 +168,10 @@ public class JobScheduler
         while (NumberJobsRunning > 0 || SocketListener != null)
             Thread.Sleep(500);
 
-        Doc.Save(JobFileName.Replace(".xml", "Output.xml"));
+        if (Macros.ContainsKey("OutputFileName"))
+            Doc.Save(Macros["OutputFileName"]);
+        else
+            Doc.Save(JobFileName.Replace(".xml", "Output.xml"));
         return !ESCWasPressed & XmlHelper.Attribute(Doc.DocumentElement, "LoopForever") == "yes";
     }
 

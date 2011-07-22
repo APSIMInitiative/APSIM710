@@ -74,17 +74,17 @@ class Program
         string ListItemsHTML = "";
 
         if (!Convert.IsDBNull(Details["DetailsFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.xml\" alt=\"Detail\">Detail</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["DetailsFileName"].ToString() + "\">Detail</a></li>";
         if (!Convert.IsDBNull(Details["DiffsFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.diffs.zip\" alt=\"Changed output files\">%NUMDIFFS% diffs.</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["DiffsFileName"].ToString() + "\">%NUMDIFFS% diffs.</a></li>";
         if (!Convert.IsDBNull(Details["BinariesFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.binaries.zip\" alt=\"Binaries\">Binaries</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["BinariesFileName"].ToString() + "\">Binaries</a></li>";
         if (!Convert.IsDBNull(Details["BuildTreeFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.zip\" alt=\"Build tree\">Build tree</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["BuildTreeFileName"].ToString() + "\">Build tree</a></li>";
         if (!Convert.IsDBNull(Details["SetupFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe\" alt=\"Installation\">Installation (bootleg)</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["SetupFileName"].ToString() + "\">Installation (full)</a></li>";
         if (!Convert.IsDBNull(Details["SetupForReleaseFileName"]))
-            ListItemsHTML += "<li><a href=\"http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe\" alt=\"Installation Bootleg\">Installation (release)</a></li>";
+            ListItemsHTML += "<li><a href=\"" + Details["SetupForReleaseFileName"].ToString() + "\">Installation (release)</a></li>";
 
         // Write out our table row.
         int ModifiedFilesCount = Convert.ToInt32(Details["NumDiffs"]);

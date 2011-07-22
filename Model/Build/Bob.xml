@@ -11,7 +11,7 @@
 		i.e. YOU MAY LOSE YOUR WORK !!!!!!!!
 
 -->
-<Folder name="Bob" LoopForever="no">
+<Folder name="Bob" LoopForever="yes">
 
 	<Folder name="BuildAndRun" wait="yes">
 		<!--
@@ -39,8 +39,8 @@
 			<CommandLine>%Apsim%\..\BuildLibraries\Pat-ch.exe -p0 -i "C:\Upload\%PatchFileName%.patch"</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files" wait="yes">
-			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
-			<CommandLine>RemoveOutAndSumFiles.bat</CommandLine>
+			<WorkingDirectory>%Apsim%</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
 		</Job>
 		<Job name="Delete the apsim.xml file in Bobs profile">
 			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
@@ -136,10 +136,6 @@
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% %PatchFileName%</CommandLine>
 		</Job>
-		<Job name="CreateSummaryHtml" wait="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
-		</Job>		
 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% %PatchFileName%</CommandLine>
@@ -151,13 +147,17 @@
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerUpdateFieldInDB.exe DetailsFileName http://bob.apsim.info/files/%PatchFileName%.xml</CommandLine>
 		</Job>		
+		<Job name="CreateSummaryHtml" wait="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerCreateSummaryHtml.exe %Apsim%</CommandLine>
+		</Job>		
 		<Job name="Send email" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerSendEmail.exe @Build\MailList.txt</CommandLine>
 		</Job>
 		<Job name="Save the XML to a file" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerSendCommand.exe "SaveXMLToFile~C:\inetpub\wwwroot\Files\%PatchFileName%.xml"</CommandLine>
+			<CommandLine>JobSchedulerSendCommand.exe "AddVariable~OutputFileName~C:\inetpub\wwwroot\Files\%PatchFileName%.xml"</CommandLine>
 		</Job>
 	</Folder>
 </Folder>

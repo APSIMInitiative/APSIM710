@@ -101,7 +101,7 @@ public class ApsimBuildsDB
     /// </summary>
     public void UpdateStartDateToNow(int JobID)
     {
-        string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+        string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
         string SQL = "UPDATE BuildJobs SET StartTime = '" + NowString + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
@@ -113,7 +113,7 @@ public class ApsimBuildsDB
     /// </summary>
     public void UpdateEndDateToNow(int JobID)
     {
-        string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+        string NowString = DateTime.Now.ToString("yyyy-MM-dd hh:mm tt");
         string SQL = "UPDATE BuildJobs SET FinishTime = '" + NowString + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
