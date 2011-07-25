@@ -95,7 +95,8 @@ class JobSchedulerIfCleanDoCommit
                 }
             }
 
-            string Description = Details["Description"].ToString();
+            string BugID = Details["BugID "].ToString();
+            string Description = Details["Description"].ToString() + "\r\nbugid: " + BugID;
             Arguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"] +
                               " -m " + StringManip.DQuote(Description);
             P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
