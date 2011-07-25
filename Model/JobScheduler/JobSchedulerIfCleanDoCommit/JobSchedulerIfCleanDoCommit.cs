@@ -95,8 +95,9 @@ class JobSchedulerIfCleanDoCommit
                 }
             }
 
-
-            Arguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"];
+            string Description = Details["Description"].ToString();
+            Arguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"] +
+                              " -m " + StringManip.DQuote(Description);
             P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
             StdOut += Utility.CheckProcessExitedProperly(P);
             Console.WriteLine(StdOut);

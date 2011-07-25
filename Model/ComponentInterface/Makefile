@@ -24,6 +24,9 @@ PROJECTTYPE = libdll
 
 ifeq ($(PLATFORM),Linux)
 everything: $(SRC) $(APSIM)/Model/$(PROJECT).so EntryPoints.o
+clean: cleanentry
+cleanentry:
+	rm -f EntryPoints.o
 else
 everything: $(SRC) $(PROJECT).dll EntryPoints.obj
 endif
