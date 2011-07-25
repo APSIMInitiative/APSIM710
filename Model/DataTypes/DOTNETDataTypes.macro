@@ -58,6 +58,7 @@ using namespace System::Runtime::InteropServices;
    public ref class [type.name]Type : public ApsimType
       {
       public:
+  	  [type.name]Type();
       [foreach type.field]
       [field.dotnettype] [field.name];
       [endfor]
@@ -90,6 +91,7 @@ using namespace System::Runtime::InteropServices;
 [endfor]
 [foreach types.type]
    // ------ [type.name] ------
+   [type.name]Type::[type.name]Type() {[foreach type.field][if [field.cstype] = String] [field.name] = ""; [endif][endfor] }
    void [type.name]Type::pack(char* messageData)
       {
       [foreach type.field]

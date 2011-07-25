@@ -137,7 +137,7 @@ using CMPServices;
 	     private static TDDMLValue typeTemplate;
 		 public [type.name]Type() : base (ref typeTemplate) {}
          [foreach type.field]
-         public [field.cstype] [field.name];
+         public [field.cstype] [field.name][if [field.cstype] = String] = ""[endif];
          [endfor]
          public override void pack(out byte[] messageData)
          {
