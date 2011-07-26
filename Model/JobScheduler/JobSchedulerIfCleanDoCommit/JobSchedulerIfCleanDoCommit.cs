@@ -71,7 +71,7 @@ class JobSchedulerIfCleanDoCommit
                         if (Line.Contains("(revision 0)"))
                         {
                             // File has been added in this patch.
-                            Arguments += "add --force " + FileName;
+                            Arguments += "add --force " + StringManip.DQuote(FileName);
                         }
                         else
                         {
@@ -79,7 +79,7 @@ class JobSchedulerIfCleanDoCommit
                             if (info.Length == 0)
                             {
                                 // File has been deleted in this patch - add to SVN.
-                                Arguments += "delete --force " + FileName;
+                                Arguments += "delete --force " + StringManip.DQuote(FileName);
                             }
                         }
 

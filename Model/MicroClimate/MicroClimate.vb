@@ -448,37 +448,22 @@ Partial Public Class MicroMet
 #End Region
 
 #Region "Useful constants"
-    Private Const svp_A As Double = 6.106
-    ' Teten coefficients
-    Private Const svp_B As Double = 17.27
-    ' Teten coefficients
-    Private Const svp_C As Double = 237.3
-    ' Teten coefficients
-    Private Const abs_temp As Double = 273.16
-    ' 0 C in Kelvin (g_k)
-    Private Const r_gas As Double = 8.3143
-    ' universal gas constant (J/mol/K)
-    Private Const mwh2o As Double = 0.018016
-    ' molecular weight water (kg/mol)
-    Private Const mwair As Double = 0.02897
-    ' molecular weight air (kg/mol)
-    Private Const molef As Double = mwh2o / mwair
-    ' molecular fraction of water to air ()
-    Private Const Cp As Double = 1010.0
-    ' Specific heat of air at constant pressure (J/kg/K)
-    Private Const stef_boltz As Double = 0.0000000567
-    ' Stefan-Boltzman constant
-    Private Const c_cloud As Double = 0.1
-    ' constant for cloud effect on longwave radiation
-    Private Const Deg2Rad As Double = Math.PI / 180.0
-    ' convert degrees to radians
-    Private Const RhoW As Double = 998.0
-    ' kg/m3
-    Private Const svp_fract As Double = 0.66
-    ' weights vpd towards vpd at maximum temperature
+    Private Const svp_A As Double = 6.106    ' Teten coefficients
+    Private Const svp_B As Double = 17.27    ' Teten coefficients
+    Private Const svp_C As Double = 237.3    ' Teten coefficients
+    Private Const abs_temp As Double = 273.16    ' 0 C in Kelvin (g_k)
+    Private Const r_gas As Double = 8.3143    ' universal gas constant (J/mol/K)
+    Private Const mwh2o As Double = 0.018016    ' molecular weight water (kg/mol)
+    Private Const mwair As Double = 0.02897    ' molecular weight air (kg/mol)
+    Private Const molef As Double = mwh2o / mwair    ' molecular fraction of water to air ()
+    Private Const Cp As Double = 1010.0    ' Specific heat of air at constant pressure (J/kg/K)
+    Private Const stef_boltz As Double = 0.0000000567    ' Stefan-Boltzman constant
+    Private Const c_cloud As Double = 0.1    ' constant for cloud effect on longwave radiation
+    Private Const Deg2Rad As Double = Math.PI / 180.0    ' convert degrees to radians
+    Private Const RhoW As Double = 998.0    ' kg/m3
+    Private Const svp_fract As Double = 0.66    ' weights vpd towards vpd at maximum temperature
     Private Const SunSetAngle As Double = 0.0
-    Private Const hr2s As Double = 60.0 * 60.0
-    ' hours to seconds
+    Private Const hr2s As Double = 60.0 * 60.0    ' hours to seconds
 #End Region
 #Region "Various class variables"
 

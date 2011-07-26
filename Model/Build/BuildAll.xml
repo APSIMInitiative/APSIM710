@@ -168,6 +168,10 @@
 		<WorkingDirectory>%Apsim%\Model\Map</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 	</Job>
+	<Job name="Compile MicroClimate">
+		<WorkingDirectory>%Apsim%\Model\MicroClimate</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+	</Job>
 	<Job name="Compile MicroMet">
 		<WorkingDirectory>%Apsim%\Model\MicroMet</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -389,8 +393,11 @@
 		<WorkingDirectory>%Apsim%\Model\JobScheduler\JobSchedulerFindJobs</WorkingDirectory>
 		<CommandLine>..\..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 	</Job>
-
-	<Job name="Update all .NET proxy classes">
+	<Job name="Delete old .NET proxy classes">
+		<WorkingDirectory>%Apsim%\Model\DotNetProxies</WorkingDirectory>
+		<CommandLine>..\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
+	</Job>
+	<Job name="Create new .NET proxy classes" wait="yes">
 		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 		<CommandLine>UpdateDotNetProxies.exe</CommandLine>
 	</Job>
