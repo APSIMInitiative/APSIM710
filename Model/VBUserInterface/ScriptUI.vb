@@ -40,8 +40,15 @@ Public Class ScriptUI
                 Assembly.LoadFile(ref)
             ElseIf File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + ref) Then
                 Assembly.LoadFile(RuntimeEnvironment.GetRuntimeDirectory() + ref)
+            ElseIf File.Exists(Path.GetDirectoryName(Application.ExecutablePath) + "\" + ref) Then
+                Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + ref)
             Else
-                Assembly.LoadFile(Application.ExecutablePath + "\" + ref)
+            	MessageBox.Show("Error loading reference '" + ref + "' - file does not exist" + Environment.NewLine +
+            	"Tried:" + Environment.NewLine +
+            	ref + Environment.NewLine +
+            	RuntimeEnvironment.GetRuntimeDirectory() + ref + Environment.NewLine +
+            	Path.GetDirectoryName(Application.ExecutablePath) + "\" + ref
+            	)
             End If
         Next
 
