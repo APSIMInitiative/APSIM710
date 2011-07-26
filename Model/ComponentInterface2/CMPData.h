@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <typeinfo>
 #include <boost/function.hpp>
+#include <ComponentInterface2/BuiltIns.h>
 #include <ComponentInterface2/Interfaces.h>
 #include <ComponentInterface2/DataTypes.h>
 #include <ComponentInterface2/Messages.h>
@@ -33,7 +34,6 @@ class PackableWrapper : public Packable
                                                   {::unpack(messageData, variable);}
       virtual std::string ddml()                  {return DDML(variable);}
    };
-#include <ComponentInterface2/BuiltIns.h>
 
 template <typename T>
 class PackableWrapper2 : public Packable

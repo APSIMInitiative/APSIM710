@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{416A3885-FD38-46D0-BE42-54AA33D146B7}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -95,6 +95,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMPServices, Version=1.0.4140.20625, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
     <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSGeneral.dll</HintPath>
@@ -178,12 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Blank.soil" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CMPServices\CMPServices.csproj">
-      <Project>{4A1A4A3C-F937-488D-BE0B-F2435678FCEF}</Project>
-      <Name>CMPServices</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

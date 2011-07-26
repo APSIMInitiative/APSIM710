@@ -12,14 +12,14 @@ F95 =  /usr/bin/gfortran
 LIBS := -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) -ldl $(LDDEBUGFLAGS)
 STATICLIBS := $(foreach library,$(STATICLIBS),$(APSIM)/Model/$(library).a)
 
-F90FLAGS= -D"ml_external=!external" -static -mrtd \
-          -fno-underscoring -ffree-line-length-none -finit-local-zero \
-	  $(F95DEBUGFLAGS) -O0
+F90FLAGS= -D"ml_external=!external" -D"STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x" -static \
+          -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false \
+          $(F95DEBUGFLAGS) -frounding-math -O3
 F90INCLUDES = 
 F90MODS=-I$(APSIM)/Model/FortranInfrastructure -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod 
 
 CFLAGS= -Wall -I$(APSIM)/Model -Wno-write-strings -fpermissive -fPIC \
-        $(CPPDEBUGFLAGS) -O0
+        $(CPPDEBUGFLAGS) -O3
 
 OBJS:=	$(SRC:.for=.o) 
 OBJS:=	$(OBJS:.f90=.o)

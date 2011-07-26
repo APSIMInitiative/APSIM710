@@ -9,7 +9,6 @@
 #include <ComponentInterface2/MessageData.h>
 #include <ComponentInterface2/FortranString.h>
 
-#include "CMPData.h"
 // ------ boolean ------
 inline unsigned int memorySize(const bool& value)
    {return 1;}
@@ -226,7 +225,7 @@ inline void Convert(const std::vector<FROM>& from, std::string& to)
    to = "";
    for (unsigned i = 0; i < from.size(); i++)
       {
-	  string st;
+	  std::string st;
       ::Convert(from[i], st);
 	  if (to != "")
 	     to += " ";
