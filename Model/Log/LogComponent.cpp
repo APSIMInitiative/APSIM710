@@ -253,6 +253,23 @@ void LogComponent::writeMessage(const string& toName,
    writeMessageData(message);
    }
 
+//---------------------------------------------------------------------------
+// Return a string representation of the specified registration type.
+//---------------------------------------------------------------------------
+const std::string LogComponent::queryCodeToString (const protocol::SimulationInformationKind type)
+   {
+   switch (type)
+      {
+      case respondToGetInfo     : return "respondToGet";
+      case respondToSetInfo     : return "respondToSet";
+      case respondToEventInfo   : return "respondToEvent";
+      case respondToGetSetInfo  : return "respondToGetSet";
+      case eventInfo            : return "event";
+	  case componentInfo        : return "component";
+	  case systemInfo           : return "system";
+      };
+   throw std::runtime_error(std::string("Invalid queryInfo type: ") + itoa(type));
+   }
 // ------------------------------------------------------------------
 //  Short description:
 //    Write message data
@@ -339,11 +356,13 @@ void LogComponent::writeMessageData(const protocol::Message* message)
          protocol::QueryInfoData queryInfo;
          messageData >> queryInfo;
          out << " name=\"" << asString(queryInfo.name) << "\"";
-         out << " kind=\"" << typeCodeToString((EventTypeCode)queryInfo.kind) << "\"";
+         out << " kind=\"" << queryCodeToString(queryInfo.kind) << "\"";
          break;
          }
       }
    }
+
+
 // ------------------------------------------------------------------
 //  Short description:
 //    Store this registration

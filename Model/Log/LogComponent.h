@@ -36,6 +36,7 @@ class LogComponent : public protocol::Component,
 //      typedef std::map<unsigned int, RegComponent> Components;
 //      Components components;
 
+      const std::string queryCodeToString (const protocol::SimulationInformationKind type);
       void writeMessage(const std::string& toName,
                         const protocol::Message* message,
                         std::ostream& out);
