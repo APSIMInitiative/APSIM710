@@ -88,8 +88,9 @@ class Program
 
         // Write out our table row.
         int ModifiedFilesCount = Convert.ToInt32(Details["NumDiffs"]);
+        string Status = Details["Status"].ToString();
         string CommitCell;        
-        if (ModifiedFilesCount == 0)
+        if (Status == "Pass")
             CommitCell = "<td bgcolor=\"GreenYellow\">Pass!" + "<ul>" + ListItemsHTML + "</ul></td>";
         else
             CommitCell = "<td bgcolor=\"Tomato\">Fail!" + "<ul>" + ListItemsHTML + "</ul></td>";

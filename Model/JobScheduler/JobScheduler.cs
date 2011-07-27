@@ -123,6 +123,7 @@ public class JobScheduler
         bool ESCWasPressed = false;
         CancelWorkerThread = false;
         NumberJobsRunning = 0;
+        SomeJobsHaveFailed = false;
 
         // Load the job file.
         Doc.Load(JobFileName);

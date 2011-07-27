@@ -39,11 +39,11 @@ class JobSchedulerIfCleanDoCommit
         {
             Dictionary<string, object> Details = DB.GetDetails(JobID);
 
-            int NumDiffs = Convert.ToInt32(Details["NumDiffs"]);
+            string Status = Details["Status"].ToString();
             if (Details["DoCommit"].ToString() == "0")
                 Console.WriteLine("The commit option was unchecked on the upload patch form");
 
-            else if (NumDiffs == 0)
+            else if (Status == "Pass")
             {
                 // Find SVN.exe on the path.
                 string SVNFileName = Utility.FindFileOnPath("svn.exe");
