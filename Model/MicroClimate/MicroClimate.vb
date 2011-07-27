@@ -414,10 +414,8 @@ Partial Public Class MicroMet
         ComponentData(senderIdx).LAItot = newCanopy.lai_tot
         ComponentData(senderIdx).CoverGreen = newCanopy.cover
         ComponentData(senderIdx).CoverTot = newCanopy.cover_tot
-        ComponentData(senderIdx).Height = newCanopy.height / 1000.0
-        ' to convert from mm to m
-        ComponentData(senderIdx).Depth = newCanopy.depth / 1000.0
-        ' to convert from mm to m
+        ComponentData(senderIdx).Height = Math.Round(newCanopy.height, 5) / 1000.0 ' Round off a bit and convert mm to m
+        ComponentData(senderIdx).Depth = Math.Round(newCanopy.depth, 5) / 1000.0 ' Round off a bit and convert mm to m
     End Sub
 
     ''' <summary>
@@ -569,9 +567,9 @@ Partial Public Class MicroMet
         Console.WriteLine(lineRule)
         Console.Write("          Canopy Layer Height    ")
         For j As Integer = 0 To ComponentData.Length - 1
-            Console.Write(ComponentData(j).Name.PadRight(11))
+            Console.Write(ComponentData(j).Name.PadRight(10))
         Next
-        Console.WriteLine("    Total")
+        Console.WriteLine("     Total")
         Console.WriteLine(lineRule)
 
         Dim compTot As Double() = New Double(ComponentData.Length - 1) {}

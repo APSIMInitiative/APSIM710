@@ -1,0 +1,596 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = WheatTest
+   Component                          "log" = %apsim%\Model\Log.dll
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component                       "wheat2" = %apsim%\Model\Plant.dll
+   Component                     "Micromet" = %apsim%\Model\MicroClimate.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1960
+     Simulation end date   = 20/01/1960
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        lai
+        ep
+
+     Output file = WheatTest.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     if day = 1 and year = 1960 then
+        wheat sow cultivar = hartog, plants = 100, row_spacing = 250, sowing_depth = 30
+        wheat2 sow cultivar = hartog, plants = 100, row_spacing = 250, sowing_depth = 30
+     endif
+     
+     SECTION:- end_of_day
+     micromet lai_table
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.150  0.290  0.540  0.590  0.540  1.020  0.613  0.300
+          100.-  350.  0.260  0.290  0.530  0.580  0.530  1.030  0.363  0.300
+          350.-  650.  0.290  0.290  0.540  0.590  0.540  1.020  0.024  0.300
+          650.- 1000.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+         1000.- 1400.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1400.- 1700.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1700.- 2000.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         2000.- 2300.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2300.- 2600.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2600.- 2900.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2900.- 3200.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      29.00      25.00      25.00       5.00
+          100.-  350.      72.50      60.00      60.00      12.50
+          350.-  650.      87.00      75.00      75.00      15.00
+          650.- 1000.     101.50      87.50      87.50      14.00
+         1000.- 1400.     120.00      88.00      88.00      20.00
+         1400.- 1700.      93.00      57.00      57.00      15.00
+         1700.- 2000.      96.00      54.00      54.00      15.00
+         2000.- 2300.      99.00      45.00      45.00      15.00
+         2300.- 2600.     102.00      39.00      39.00      15.00
+         2600.- 2900.     105.00      33.00      33.00      15.00
+         2900.- 3200.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals    1013.00     587.50     587.50     156.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    6.63    0.61    0.00
+             2     8.80  0.89    5.41    0.26    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    6.07    0.36    0.00
+             5     9.20  0.77    7.21    0.42    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               67.53    4.06    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      10452.8   836.2   155.2    19.4    20.7     0.5
+             2      22737.8  1819.0   179.7    22.5    16.4     0.4
+             3      27153.5  2172.3    80.5    10.1    12.4     0.3
+             4      31741.5  2539.3    31.5     3.9     8.9     0.2
+             5      32631.8  2610.5    16.2     2.0     6.1     0.2
+             6      14977.6  1198.2     7.4     0.9     4.6     0.1
+             7       9067.5   725.4     4.5     0.6     3.5     0.1
+             8       7586.2   606.9     3.8     0.5     2.6     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.0
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  171185.4 13694.8   486.1    60.8    80.0     2.0
+          ---------------------------------------------------------
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- wheat sow  cultivar = hartog, plants = 100, row_spacing = 250, sowing_depth = 30
+1 January 1960(Day of year=1), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.290       1.000
+         250.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         350.0     0.060          0.290       1.000
+         400.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   588mm in  3200mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+              1   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- wheat2 sow  cultivar = hartog, plants = 100, row_spacing = 250, sowing_depth = 30
+1 January 1960(Day of year=1), wheat2: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.290       1.000
+         250.0     0.060          0.290       1.000
+         300.0     0.060          0.290       1.000
+         350.0     0.060          0.290       1.000
+         400.0     0.060          0.300       1.000
+         300.0     0.060          0.310       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.060          0.330       1.000
+         300.0     0.060          0.340       1.000
+         300.0     0.060          0.350       1.000
+         300.0     0.060          0.360       1.000
+         -----------------------------------------------
+         Extractable SW:   588mm in  3200mm total depth ( 18%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+              1   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- micromet lai_table
+1 January 1960(Day of year=1), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+2 January 1960(Day of year=2), wheat: 
+      stage 2.0 germination
+2 January 1960(Day of year=2), wheat2: 
+      stage 2.0 germination
+2 January 1960(Day of year=2), manager: 
+     Manager sending message :- micromet lai_table
+2 January 1960(Day of year=2), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+3 January 1960(Day of year=3), manager: 
+     Manager sending message :- micromet lai_table
+3 January 1960(Day of year=3), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+4 January 1960(Day of year=4), manager: 
+     Manager sending message :- micromet lai_table
+4 January 1960(Day of year=4), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+5 January 1960(Day of year=5), manager: 
+     Manager sending message :- micromet lai_table
+5 January 1960(Day of year=5), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+6 January 1960(Day of year=6), manager: 
+     Manager sending message :- micromet lai_table
+6 January 1960(Day of year=6), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+7 January 1960(Day of year=7), manager: 
+     Manager sending message :- micromet lai_table
+7 January 1960(Day of year=7), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+8 January 1960(Day of year=8), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   86.46 (mm)
+8 January 1960(Day of year=8), wheat2: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   86.46 (mm)
+8 January 1960(Day of year=8), manager: 
+     Manager sending message :- micromet lai_table
+8 January 1960(Day of year=8), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+          ----------------------------------------------------------------------
+             Total               0.000     0.000     0.000
+          ----------------------------------------------------------------------
+9 January 1960(Day of year=9), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   82.33 (mm)
+9 January 1960(Day of year=9), wheat2: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   82.33 (mm)
+9 January 1960(Day of year=9), manager: 
+     Manager sending message :- micromet lai_table
+9 January 1960(Day of year=9), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+10 January 1960(Day of year=10), manager: 
+     Manager sending message :- micromet lai_table
+10 January 1960(Day of year=10), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+11 January 1960(Day of year=11), manager: 
+     Manager sending message :- micromet lai_table
+11 January 1960(Day of year=11), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+12 January 1960(Day of year=12), manager: 
+     Manager sending message :- micromet lai_table
+12 January 1960(Day of year=12), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+13 January 1960(Day of year=13), manager: 
+     Manager sending message :- micromet lai_table
+13 January 1960(Day of year=13), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+14 January 1960(Day of year=14), manager: 
+     Manager sending message :- micromet lai_table
+14 January 1960(Day of year=14), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+15 January 1960(Day of year=15), manager: 
+     Manager sending message :- micromet lai_table
+15 January 1960(Day of year=15), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+16 January 1960(Day of year=16), manager: 
+     Manager sending message :- micromet lai_table
+16 January 1960(Day of year=16), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+17 January 1960(Day of year=17), manager: 
+     Manager sending message :- micromet lai_table
+17 January 1960(Day of year=17), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+18 January 1960(Day of year=18), manager: 
+     Manager sending message :- micromet lai_table
+18 January 1960(Day of year=18), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+19 January 1960(Day of year=19), manager: 
+     Manager sending message :- micromet lai_table
+19 January 1960(Day of year=19), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+20 January 1960(Day of year=20), manager: 
+     Manager sending message :- micromet lai_table
+20 January 1960(Day of year=20), Micromet: 
+     Table for LAI
+          ----------------------------------------------------------------------
+          Canopy Layer Height    wheat     wheat2         Total
+          ----------------------------------------------------------------------
+        0.000 -   0.000          0.020     0.020     0.040
+          ----------------------------------------------------------------------
+             Total               0.020     0.020     0.040
+          ----------------------------------------------------------------------
+20 January 1960(Day of year=20), clock: 
+     Simulation is terminating due to end criteria being met.
