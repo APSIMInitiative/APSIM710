@@ -235,8 +235,8 @@ class Program
         // Some of the diffs in ModifiedFiles will be from the patch, so to get a count of
         // the number of files that were changed by APSIM running we need to remove those
         // files from the list that were sent in the patch.
-        PatchFileName = "C:\\Upload\\" + PatchFileName + ".patch";
-        Dictionary<string, int> FileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectoryName);
+        Dictionary<string, int> FileNames = Patch.FilesInPatch("C:\\Upload\\" + PatchFileName + ".patch", 
+                                                               ApsimDirectoryName);
         foreach (KeyValuePair<string, int> Line in FileNames)
         {
             int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, Line.Key);
