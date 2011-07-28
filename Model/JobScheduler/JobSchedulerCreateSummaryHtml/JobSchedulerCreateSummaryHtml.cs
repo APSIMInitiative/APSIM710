@@ -8,6 +8,30 @@ using System.IO;
 
 class Program
 {
+    private static string  Header = 
+                        "<html>\r\n" +
+                        "<head><title>APSIM Build Machine</title>\r\n" +
+                        "<style type=\"text/css\">\r\n" +
+                        "   table, td, th { border:1px solid blue; border-collapse:collapse; color:blue; font-family:\"Arial\", Arial, Sans-serif;}\r\n" +
+                        "   th { background-color:lightblue; color:blue;}\r\n" +
+                        "   p { color:blue; font-family:\"Arial\", Arial, Sans-serif; }\r\n" +
+                        "   h1 { font-family:\"Arial\", Arial, Sans-serif; color:blue; }\r\n" +
+                        "   ul { padding: 0px; margin: 10px; }\r\n" +
+                        "</style>\r\n" +
+                        "</head>\r\n" +
+                        "<body>\r\n" +
+                        "   <h1>APSIM Build Log</h1>\r\n" +
+                        "   <table border=\"1\" cellpadding=\"10\">\r\n" +
+                        "   <th>Revision</th>\r\n" +
+                        "   <th>Task ID</th>\r\n" +
+                        "   <th>Author</th>\r\n" +
+                        "   <th>Status</th>\r\n" +
+                        "   <th>Message</th>\r\n";
+    private static string Footer =
+                        "   </table>\r\n" +
+                        "</body>\r\n" +
+                        "</html>";
+
     /// <summary>
     /// This program creates C:\\inetpub\\wwwroot\\Files\\Summary.html
     /// </summary>
@@ -30,86 +54,73 @@ class Program
 
     private static void Go(string ApsimDirectoryName)
     {
-        if (!File.Exists("C:\\inetpub\\wwwroot\\Summary.html"))
-            throw new Exception("Cannot find C:\\inetpub\\wwwroot\\Summary.html");
-        StreamReader In = new StreamReader("C:\\inetpub\\wwwroot\\Summary.html");
-        string[] Lines = In.ReadToEnd().Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        In.Close();
-
         StreamWriter Out = new StreamWriter("C:\\inetpub\\wwwroot\\Summary.html");
+        Out.Write(Header);
 
-        // Echo everything to Out until we see a table row (<tr>)
-        int i = 0;
-        while (i < Lines.Length && !Lines[i].Contains("<tr>"))
-        {
-            Out.WriteLine(Lines[i]);
-            i++;
-        }
+        // Write out the last 20 build jobs.
+        int NumRows = 20;
+        int TopJobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
+        for (int JobID = TopJobID; JobID > Math.Max(0, TopJobID-NumRows); JobID--)
+            Out.WriteLine(CreateHTMLRow(JobID));
 
-        // Write our table row.
-        Out.WriteLine(CreateHTMLRow());
-
-        // No echo no more than 20 rows
-        int j = i;
-        while (j < Lines.Length && j < i + 20 && Lines[j].Contains("<tr>"))
-        {
-            Out.WriteLine(Lines[j]);
-            j++;
-        }
-        Out.WriteLine("</table></html>");
+        Out.WriteLine(Footer);
         Out.Close();
     }
 
-
-    private static string CreateHTMLRow()
+    private static string CreateHTMLRow(int JobID)
     {
-        int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
-
         // Get some info about the current job.
         ApsimBuildsDB DB = new ApsimBuildsDB();
         DB.Open();
         Dictionary<string, object> Details = DB.GetDetails(JobID);
-        
-        // Create our list items for the HTML row.
-        string ListItemsHTML = "";
-
-        if (!Convert.IsDBNull(Details["DetailsFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["DetailsFileName"].ToString() + "\">Detail</a></li>";
-        if (!Convert.IsDBNull(Details["DiffsFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["DiffsFileName"].ToString() + "\">%NUMDIFFS% diffs.</a></li>";
-        if (!Convert.IsDBNull(Details["BinariesFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["BinariesFileName"].ToString() + "\">Binaries</a></li>";
-        if (!Convert.IsDBNull(Details["BuildTreeFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["BuildTreeFileName"].ToString() + "\">Build tree</a></li>";
-        if (!Convert.IsDBNull(Details["SetupFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["SetupFileName"].ToString() + "\">Installation (full)</a></li>";
-        if (!Convert.IsDBNull(Details["SetupForReleaseFileName"]))
-            ListItemsHTML += "<li><a href=\"" + Details["SetupForReleaseFileName"].ToString() + "\">Installation (release)</a></li>";
-
-        // Write out our table row.
-        int ModifiedFilesCount = Convert.ToInt32(Details["NumDiffs"]);
-        string Status = Details["Status"].ToString();
-        string CommitCell;        
-        if (Status == "Pass")
-            CommitCell = "<td bgcolor=\"GreenYellow\">Pass!" + "<ul>" + ListItemsHTML + "</ul></td>";
-        else
-            CommitCell = "<td bgcolor=\"Tomato\">Fail!" + "<ul>" + ListItemsHTML + "</ul></td>";
-
-        string TableRow = "<tr>" +
-                          "<td><a href=\"http://apsrunet.apsim.info/websvn/revision.php?repname=apsim&path=%2Ftrunk%2F&rev=%REVISIONNUMBER%&\" alt=\"Verbose details\">%REVISIONNUMBER%</a></td>" +
-                          "<td>%AUTHOR%</td>" +
-                          CommitCell +
-                          "<td><a href=\"http://www.apsim.info/BugTracker/edit_bug.aspx?id=%BugID%\" alt=\"Bug ID\">%BugID%</a></td>" +
-                          "<td>%DESCRIPTION%</td>" +
-                          "</tr>";
-
-        TableRow = TableRow.Replace("%REVISIONNUMBER%", Details["RevisionNumber"].ToString());
-        TableRow = TableRow.Replace("%AUTHOR%", Details["UserName"].ToString());
-        TableRow = TableRow.Replace("%NUMDIFFS%", ModifiedFilesCount.ToString());
-        TableRow = TableRow.Replace("%DESCRIPTION%", Details["Description"].ToString());
-        TableRow = TableRow.Replace("%BugID%", Details["BugID"].ToString());
-
         DB.Close();
-        return TableRow;
+
+        // Create our list items for the HTML row.
+        if (Details != null)
+        {
+            string ListItemsHTML = "";
+
+            if (!Convert.IsDBNull(Details["DetailsFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["DetailsFileName"].ToString() + "\">Detail</a></li>";
+            if (!Convert.IsDBNull(Details["DiffsFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["DiffsFileName"].ToString() + "\">%NUMDIFFS% diffs.</a></li>";
+            if (!Convert.IsDBNull(Details["BinariesFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["BinariesFileName"].ToString() + "\">Binaries</a></li>";
+            if (!Convert.IsDBNull(Details["BuildTreeFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["BuildTreeFileName"].ToString() + "\">Build tree</a></li>";
+            if (!Convert.IsDBNull(Details["SetupFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["SetupFileName"].ToString() + "\">Installation (full)</a></li>";
+            if (!Convert.IsDBNull(Details["SetupForReleaseFileName"]))
+                ListItemsHTML += "<li><a href=\"" + Details["SetupForReleaseFileName"].ToString() + "\">Installation (release)</a></li>";
+
+            // Write out our table row.
+            int ModifiedFilesCount = -1;
+            if (!Convert.IsDBNull(Details["NumDiffs"]))
+                ModifiedFilesCount = Convert.ToInt32(Details["NumDiffs"]);
+            string Status = Details["Status"].ToString();
+            string CommitCell;
+            if (Convert.IsDBNull(Status) || Status == "Fail")
+                CommitCell = "<td bgcolor=\"Tomato\">Fail!" + "<ul>" + ListItemsHTML + "</ul></td>";
+            else
+                CommitCell = "<td bgcolor=\"GreenYellow\">Pass!" + "<ul>" + ListItemsHTML + "</ul></td>";
+
+            string TableRow = "   <tr>" +
+                              "<td><a href=\"http://apsrunet.apsim.info/websvn/revision.php?repname=apsim&path=%2Ftrunk%2F&rev=%REVISIONNUMBER%&\" alt=\"Verbose details\">%REVISIONNUMBER%</a></td>" +
+                              "<td><a href=\"http://www.apsim.info/BugTracker/edit_bug.aspx?id=%BugID%\" alt=\"Bug ID\">%BugID%</a></td>" +
+                              "<td>%AUTHOR%</td>" +
+                              CommitCell +
+                              
+                              "<td>%DESCRIPTION%</td>" +
+                              "</tr>";
+
+            TableRow = TableRow.Replace("%REVISIONNUMBER%", Details["RevisionNumber"].ToString());
+            TableRow = TableRow.Replace("%AUTHOR%", Details["UserName"].ToString());
+            TableRow = TableRow.Replace("%NUMDIFFS%", ModifiedFilesCount.ToString());
+            TableRow = TableRow.Replace("%DESCRIPTION%", Details["Description"].ToString());
+            TableRow = TableRow.Replace("%BugID%", Details["BugID"].ToString());
+            return TableRow;
+        }
+        else
+            return "";
     }
 }

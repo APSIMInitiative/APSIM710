@@ -52,58 +52,42 @@ class JobSchedulerIfCleanDoCommit
 
                 // Some of the files in the patch file will be additions or deletions. We need to tell SVN 
                 // about these before we do a commit.
-                string Arguments = " --verbose -t --dry-run -p0 -i \"c:\\Upload\\" + PatchFileName + ".patch\"";
-                Process P = Utility.RunProcess(ApsimDirectory + "\\..\\BuildLibraries\\pat-ch.exe",
-                                               Arguments, ApsimDirectory);
-                string StdOut = P.StandardOutput.ReadToEnd();
-                P.WaitForExit();
-                string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                StdOut = "";
-                foreach (string Line in StdOutLines)
+                Dictionary<string, int> FileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectory);
+                foreach (KeyValuePair<string, int> Line in FileNames)
                 {
-                    if (Line.IndexOf("|--- ") == 0)
+                    string Arguments = null;
+                    string FileName = Line.Key;
+                    int Revision = Line.Value;
+                    if (Revision == 0)
                     {
-                        int PosTab = Line.IndexOf('\t');
-                        if (PosTab != -1)
+                        // File has been added in this patch.
+                        Arguments += "add --force " + StringManip.DQuote(FileName);
+                    }
+                    else
+                    {
+                        FileInfo info = new FileInfo(FileName);
+                        if (info.Exists && info.Length == 0)
                         {
-                            Arguments = null;
-
-                            string FileName = Line.Substring(5, PosTab - 5);
-                            FileName = Path.Combine(ApsimDirectory, FileName);
-                            FileName = FileName.Replace("/", "\\");
-                            if (Line.Contains("(revision 0)"))
-                            {
-                                // File has been added in this patch.
-                                Arguments += "add --force " + StringManip.DQuote(FileName);
-                            }
-                            else
-                            {
-                                FileInfo info = new FileInfo(FileName);
-                                if (info.Length == 0)
-                                {
-                                    // File has been deleted in this patch - add to SVN.
-                                    Arguments += "delete --force " + StringManip.DQuote(FileName);
-                                }
-                            }
-
-                            if (Arguments != null)
-                            {
-                                EnsureDirectoryIsUnderSVN(Path.GetDirectoryName(FileName), SVNFileName);
-                                Console.WriteLine(SVNFileName + " " + Arguments);
-                                P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
-                                Console.WriteLine(Utility.CheckProcessExitedProperly(P));
-                            }
+                            // File has been deleted in this patch - add to SVN.
+                            Arguments += "delete --force " + StringManip.DQuote(FileName);
                         }
+                    }
 
+                    if (Arguments != null)
+                    {
+                        EnsureDirectoryIsUnderSVN(Path.GetDirectoryName(FileName), SVNFileName);
+                        Console.WriteLine(SVNFileName + " " + Arguments);
+                        Process P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
+                        Console.WriteLine(Utility.CheckProcessExitedProperly(P));
                     }
                 }
 
                 string BugID = Details["BugID"].ToString();
                 string Description = Details["Description"].ToString() + "\r\nbugid: " + BugID;
-                Arguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"] +
+                string SVNArguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"] +
                                   " -m " + StringManip.DQuote(Description);
-                P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
-                StdOut += Utility.CheckProcessExitedProperly(P);
+                Process SVNP = Utility.RunProcess(SVNFileName, SVNArguments, ApsimDirectory);
+                string StdOut = Utility.CheckProcessExitedProperly(SVNP);
                 Console.WriteLine(StdOut);
             }
             else

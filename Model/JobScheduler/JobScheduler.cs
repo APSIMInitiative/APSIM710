@@ -71,6 +71,8 @@ public class JobScheduler
                 // Potentially loop forever if the Go method returns true.
                 while (Scheduler.Go(args[0]))
                 {
+                    Scheduler.Macros.Clear();
+                    Scheduler.StoreMacros(args);
                 }
             }
             else

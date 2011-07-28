@@ -235,26 +235,17 @@ class Program
         // Some of the diffs in ModifiedFiles will be from the patch, so to get a count of
         // the number of files that were changed by APSIM running we need to remove those
         // files from the list that were sent in the patch.
-
-        string Arguments = " --verbose -t --dry-run -p0 -i \"c:\\Upload\\" + PatchFileName + ".patch\"";
-        Process P = Utility.RunProcess(ApsimDirectoryName + "\\..\\BuildLibraries\\pat-ch.exe", 
-                                       Arguments, ApsimDirectoryName);
-        string StdOut = Utility.CheckProcessExitedProperly(P);
-        string[] StdOutLines = StdOut.Split("\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        foreach (string Line in StdOutLines)
+        PatchFileName = "C:\\Upload\\" + PatchFileName + ".patch";
+        Dictionary<string, int> FileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectoryName);
+        foreach (KeyValuePair<string, int> Line in FileNames)
         {
-            if (Line.IndexOf("|Index: ") == 0)
+            int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, Line.Key);
+            if (I == -1)
             {
-                string FileName = Path.Combine(ApsimDirectoryName, Line.Substring(8).Replace("\r", ""));
-                FileName = FileName.Replace("/", "\\");
-                int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileName);
-                if (I == -1)
-                {
-                    // This can happen when a patch file has added or deleted files in it.
-                } 
-                else
-                    ModifiedFiles.RemoveAt(I);
+                // This can happen when a patch file has added or deleted files in it.
             }
+            else
+                ModifiedFiles.RemoveAt(I);
         }
 
         bool SomeJobsHaveFailed = JobScheduler.TalkToJobScheduler("GetVariable~SomeJobsHaveFailed") == "Yes";
