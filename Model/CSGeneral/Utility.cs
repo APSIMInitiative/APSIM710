@@ -160,8 +160,16 @@ namespace CSGeneral
             string PathVariable = Environment.GetEnvironmentVariable("PATH");
             if (PathVariable == null)
                 throw new Exception("Cannot find PATH environment variable");
+			string[] Paths;
+			string PathSeparator;
+			
+			if (Path.VolumeSeparatorChar == '/') 
+				PathSeparator = ":";
+			else
+				PathSeparator = ";";
 
-            string[] Paths = PathVariable.Split(";".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			Paths = PathVariable.Split(PathSeparator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			
             foreach (string DirectoryName in Paths)
             {
                 string FullPath = Path.Combine(DirectoryName, FileName);
