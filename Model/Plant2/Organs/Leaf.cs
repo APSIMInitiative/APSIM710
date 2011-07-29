@@ -72,6 +72,8 @@ public class Leaf : BaseOrgan, AboveGround
     protected double FinalNodeNoEstimate = 0;
     public double DeltaNodeNumber = 0;
     public double StemPopulation = 0;
+    public double DeadNodesYesterday = 0;
+    public double FractionDied = 0;
  #endregion
 
  #region Outputs
@@ -497,6 +499,12 @@ public class Leaf : BaseOrgan, AboveGround
 
         PublishNewCanopyEvent();
 
+        FractionDied = 0;
+        if (DeadNodeNo > 0 && GreenNodeNo > 0)
+        {
+            double DeltaDeadLeaves = DeadNodeNo - DeadNodesYesterday;
+            FractionDied = DeltaDeadLeaves / GreenNodeNo;
+        }
     }
     public virtual void ZeroLeaves()
     {

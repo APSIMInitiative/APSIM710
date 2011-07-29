@@ -19,7 +19,6 @@ Paddock:
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component           "Potato Sowing Rule" = %apsim%\Model\Manager.dll
    Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
@@ -187,17 +186,6 @@ Paddock:
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
-
-------- Harvesting rule Initialisation ----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
-       potato2  harvest
-       potato2  endcrop
-                endif
-     END of rules
-     
 
 ------- Potato Sowing Rule Initialisation -------------------------------------
      Manager rules:
@@ -465,12 +453,9 @@ fertiliser:
       Sending apply message to irrigation
 4 December 2003(Day of year=338), operations: 
       Sending apply message to irrigation
-14/12/2003 - FloralInitiation
-                            LAI = 1.98 (m^2/m^2)
-           Above Ground Biomass = 137.29 (g/m^2)
 15/12/2003 - TuberInitiation
                             LAI = 2.14 (m^2/m^2)
-           Above Ground Biomass = 148.49 (g/m^2)
+           Above Ground Biomass = 142.12 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -485,14 +470,16 @@ fertiliser:
       Sending apply message to irrigation
 31 January 2004(Day of year=31), operations: 
       Sending apply message to irrigation
-13/02/2004 - FinalLeaf
-                            LAI = 3.42 (m^2/m^2)
-           Above Ground Biomass = 1761.21 (g/m^2)
+21/02/2004 - FinalLeaf
+                            LAI = 2.47 (m^2/m^2)
+           Above Ground Biomass = 1903.61 (g/m^2)
 27 February 2004(Day of year=58), operations: 
       Sending apply message to irrigation
-Removing Leaves from plant
-4/05/2004 - FullSenescence
+22/04/2004 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1894.61 (g/m^2)
+           Above Ground Biomass = 2169.68 (g/m^2)
+15/05/2004 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 2169.68 (g/m^2)
 23 May 2004(Day of year=144), clock: 
      Simulation is terminating due to end criteria being met.

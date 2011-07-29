@@ -177,6 +177,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
+
  #endregion
 
  #region Leaf functions
@@ -213,7 +214,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
         EP = 0;
         Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
-
         if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
             _FinalNodeNo = InitialLeafPrimordia;
 
@@ -237,7 +237,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo > Leaves.Count + 1)
+        if (NodeNo + 0.01 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort
         {
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
 
@@ -274,6 +274,32 @@ public class SIRIUSLeaf : Leaf, AboveGround
             L.DoPotentialGrowth(ThermalTime.Value);
         }
 
+    }
+    public override void DoActualGrowth()
+    {
+        //base.DoActualGrowth();
+        foreach (LeafCohort L in Leaves)
+        {
+            L.DoActualGrowth(ThermalTime.Value);
+        }
+        //if (Leaves.Count > 0)
+        //    if (Leaves[Leaves.Count].Finished)
+        //    {
+                // All leaves are dead
+        //        ZeroLeaves();
+        //    }
+
+        Function HeightModel = Children["Height"] as Function;
+        Height = Math.Max(Height, HeightModel.Value);
+
+        PublishNewCanopyEvent();
+
+        FractionDied = 0;
+        if (DeadNodeNo > 0 && GreenNodeNo > 0)
+        {
+            double DeltaDeadLeaves = DeadNodeNo - DeadNodesYesterday;
+            FractionDied = DeltaDeadLeaves / GreenNodeNo;
+        }
     }
     public override void InitialiseCohorts()
     {

@@ -1120,4 +1120,40 @@ General Format:
 </Memo>
     </ExternalVariable>
   </folder>
+  <GenericPhase name="EarlyTuber">
+    <Start type="text" description="Start">TuberInitiation</Start>
+    <End type="text" description="End">FinalLeaf</End>
+    <LinearInterpolationFunction name="Target">
+      <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+      <XYPairs>
+        <XY>8 300</XY>
+        <XY>13 300</XY>
+        <XY>15 800</XY>
+        <XY>20 800</XY>
+      </XYPairs>
+    </LinearInterpolationFunction>
+    <TemperatureFunction name="ThermalTime">
+      <XYPairs />
+    </TemperatureFunction>
+  </GenericPhase>
+  <GenericPhase name="LateTuber">
+    <Start type="text" description="Start">FinalLeaf</Start>
+    <End type="text" description="End">FullSenescence</End>
+    <LinearInterpolationFunction name="Target">
+      <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+      <XYPairs>
+        <XY>8 850</XY>
+        <XY>13 850</XY>
+        <XY>16 850</XY>
+        <XY>20 850</XY>
+      </XYPairs>
+    </LinearInterpolationFunction>
+    <TemperatureFunction name="ThermalTime">
+      <XYPairs>
+        <XY>2 0</XY>
+        <XY>20 18</XY>
+        <XY>35 0</XY>
+      </XYPairs>
+    </TemperatureFunction>
+  </GenericPhase>
 </folder>

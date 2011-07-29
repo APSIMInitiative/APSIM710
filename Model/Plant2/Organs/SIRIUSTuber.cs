@@ -13,12 +13,13 @@ public class SIRIUSTuber : SIRIUSGenericOrgan, Reproductive, BelowGround
             Function TubersPerStem = Children["TubersPerStem"] as Function;
             Leaf L = Plant.Children["Leaf"] as Leaf;
             Phenology P = Plant.Children["Phenology"] as Phenology;
-            if (P.Between("FloralInitiation", "TuberInitiation") && (InitialWt == 0))
+            if (P.Between("TuberInitiation", "FinalLeaf") && (InitialWt == 0))
                 InitialWt = 500;                                                      //This is to initiate tuber mass so relative growth rate can kick in
             double CurrentWt = Math.Max(InitialWt, Live.Wt);  
             return CurrentWt * RelativeGrowthRate.Value;
         }
     }
+
 }
 
 
