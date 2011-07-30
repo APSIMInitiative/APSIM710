@@ -4,7 +4,13 @@ using System.Text;
 
 class SIRIUSGrain : ReproductiveOrgan
 {
+    [Link(IsOptional.Yes)]
+    protected Function NitrogenDemandSwitch = null;
+    
     private double PotentialDMAllocation = 0;
+
+    
+
     public override double DMPotentialAllocation
     {
         set
@@ -20,11 +26,13 @@ class SIRIUSGrain : ReproductiveOrgan
     {
         get
         {
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             Function NFillingRate = Children["NFillingRate"] as Function;
             Function MaxNconc = Children["MaximumNconc"] as Function;
-            Function NitrogenDemandSwitch = Children["NitrogenDemandSwitch"] as Function;
             double demand = Number * NFillingRate.Value;
-            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * NitrogenDemandSwitch.Value;
+            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * _NitrogenDemandSwitch;
         }
 
     }
