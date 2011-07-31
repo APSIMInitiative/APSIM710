@@ -66,7 +66,7 @@ class JobSchedulerIfCleanDoCommit
                     else
                     {
                         FileInfo info = new FileInfo(FileName);
-                        if (info.Exists && info.Length == 0)
+                        if (!info.Exists || info.Length == 0)
                         {
                             // File has been deleted in this patch - add to SVN.
                             Arguments += "delete --force " + StringManip.DQuote(FileName);
