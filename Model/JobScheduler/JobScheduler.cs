@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -67,7 +67,8 @@ public class JobScheduler
                 {
                 JobScheduler Scheduler = new JobScheduler ();
                 Scheduler.StoreMacros (args);
-                
+                Scheduler.StoreOptions (args);
+
                 // Potentially loop forever if the Go method returns true.
                 while (Scheduler.Go (args[0]))
                     {
@@ -77,7 +78,7 @@ public class JobScheduler
                 }
 
             else
-                throw new Exception ("Usage: JobScheduler job.xml [MACRONAME=MACROVALUE] ...");
+                throw new Exception ("Usage: JobScheduler job.xml [MACRONAME=MACROVALUE] [-IgnoreErrors yes]...");
             }
         catch (Exception err)
             {
@@ -95,6 +96,7 @@ public class JobScheduler
     private Thread SocketListener = null;
     private XmlDocument Doc = new XmlDocument ();
     private Dictionary<string, string> Macros = new Dictionary<string, string> (StringComparer.CurrentCultureIgnoreCase);
+    private Dictionary<string, string> Options = new Dictionary<string, string> (StringComparer.CurrentCultureIgnoreCase);
     private bool SomeJobsHaveFailed = false;
 
     /// <summary>
@@ -107,6 +109,26 @@ public class JobScheduler
             string[] MacroBits = args[i].Split ("=".ToCharArray (), StringSplitOptions.RemoveEmptyEntries);
             if (MacroBits.Length == 2)
                 Macros.Add (MacroBits[0], MacroBits[1]);
+            }
+    }
+
+    private void StoreOptions (string[] args)
+    {
+        Options.Add("-IgnoreErrors", "no");
+
+        for (int i = 1; i < args.Length; i++)
+            if (args[i][0] == '-')
+            {
+                string option = args[i];
+                string arg = "";
+                if (i+1 < args.Length && args[i+1][0] != '-')
+                {
+                    arg = args[i+1];
+                    i++;
+                }
+                if (Options.ContainsKey(option))
+                   Options.Remove(option);
+                Options.Add(option, arg);
             }
     }
 
@@ -227,7 +249,8 @@ public class JobScheduler
                     {
                     if (AllPreviousSiblingsHaveCompleted (JobToRun))
                         {
-                        bool IgnoreErrors = XmlHelper.Attribute (JobToRun, "IgnoreErrors") == "yes";
+                        bool IgnoreErrors = XmlHelper.Attribute (JobToRun, "IgnoreErrors") == "yes" ||
+                                            Options["-IgnoreErrors"] == "yes";
                         
                         if (!AllPreviousSiblingsPassed (JobToRun) && !IgnoreErrors)
                             {
@@ -423,11 +446,8 @@ public class JobScheduler
         try
             {
             int ExitCode = 0;
-            lock (this)
-                {
-                _StdErr.Clear ();
-                _StdOut.Clear ();
-                }
+            OutputReader stdoutReader = null;
+            OutputReader stderrReader = null;
             if (Executable != "")
                 {
                 Process process = new Process ();
@@ -438,18 +458,18 @@ public class JobScheduler
                 process.StartInfo.RedirectStandardInput = true;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.FileName = Path.Combine (WorkingDirectory, Executable);
-                
                 process.StartInfo.Arguments = Arguments;
                 process.StartInfo.WorkingDirectory = WorkingDirectory;
+
                 process.Start ();
-                
+
                 ManualResetEvent _setStdOutFinished = new ManualResetEvent (false);
+                stdoutReader = new OutputReader (process.StandardOutput, _setStdOutFinished);
+
                 ManualResetEvent _setStdErrFinished = new ManualResetEvent (false);
-                
-                new OutputReader (process.StandardOutput, ref _StdOut, _setStdOutFinished);
-                new OutputReader (process.StandardError, ref _StdErr, _setStdErrFinished);
+                stderrReader = new OutputReader (process.StandardError, _setStdErrFinished);
+
                 process.StandardInput.Close ();
-                
                 process.WaitForExit ();
                 _setStdOutFinished.WaitOne ();
                 _setStdErrFinished.WaitOne ();
@@ -465,23 +485,23 @@ public class JobScheduler
                 
                 XmlHelper.SetValue (JobNode, "ExitCode", ExitCode.ToString ());
                 XmlHelper.SetAttribute (JobNode, "ElapsedTime", ElapsedTime.TotalSeconds.ToString ("f0"));
-                if (_StdOut.Length > 0)
+                if (stdoutReader != null && stdoutReader.buffer.Length > 0)
                     {
                     if (StdOutFile != "")
                         {
                         if (StdOutFile.ToLower () != "nul")
                             {
                             StreamWriter StdOutStream = new StreamWriter (StdOutFile);
-                            StdOutStream.Write (_StdOut);
+                            StdOutStream.Write (stdoutReader.buffer);
                             StdOutStream.Close ();
                             }
                         }
 
                     else
-                        XmlHelper.SetValue (JobNode, "StdOut", _StdOut.ToString ());
+                        XmlHelper.SetValue (JobNode, "StdOut", stdoutReader.buffer.ToString ());
                     }
-                if (_StdErr.Length > 0)
-                    XmlHelper.SetValue (JobNode, "StdErr", _StdErr.ToString ());
+                if (stderrReader != null && stderrReader.buffer.Length > 0)
+                    XmlHelper.SetValue (JobNode, "StdErr", stderrReader.buffer.ToString ());
                 }
             }
         catch (Exception err)
@@ -511,19 +531,15 @@ public class JobScheduler
     /// Output handling for the above job runner. 
     /// </summary>
 
-    private StringBuilder _StdOut = new StringBuilder ();
-    private StringBuilder _StdErr = new StringBuilder ();
-
     private class OutputReader
     {
         private StreamReader _reader;
         private ManualResetEvent _complete;
-        StringBuilder buffer = new StringBuilder ();
-        public OutputReader (StreamReader reader, ref StringBuilder _buffer, ManualResetEvent complete)
+        public StringBuilder buffer = new StringBuilder ();
+        public OutputReader (StreamReader reader,  ManualResetEvent complete)
         {
             _reader = reader;
             _complete = complete;
-            _buffer = buffer;
             Thread t = new Thread (new ThreadStart (ReadAll));
             t.Start ();
         }
@@ -532,12 +548,8 @@ public class JobScheduler
         {
             int ch;
             while (-1 != (ch = _reader.Read ()))
-                {
-                lock (this)
-                    {
-                    buffer.Append ((char)ch);
-                    }
-                }
+                buffer.Append ((char)ch);
+
             _complete.Set ();
         }
     }

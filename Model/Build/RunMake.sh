@@ -11,5 +11,5 @@ if [ -f "$APSIM/Model/Build/VersionInfo.sh" ] ; then
   . "$APSIM/Model/Build/VersionInfo.sh"
 fi
 
-make $1 $2 $3 $4 
+make $1 $2 $3 $4
 

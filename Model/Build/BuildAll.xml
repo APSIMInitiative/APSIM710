@@ -1,11 +1,8 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="Build.xsl"?>
 <Folder name="Build">
-	<Job name="Clean">
-		<WorkingDirectory>%Apsim%/Model/Build</WorkingDirectory>
-		<CommandLine>CleanAll.bat</CommandLine>
-	</Job>
-	<Job name="Copy RunTime DLL's into model directory"  wait="yes">
+   <Folder name="Infrastructure">
+	<Job name="Copy RunTime DLL's into model directory" >
 		<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 	</Job>
@@ -57,7 +54,6 @@
 	<Job name="Compile DotNetComponentInterface">
 		<WorkingDirectory>%Apsim%/Model/DotNetComponentInterface</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
 	<Job name="Compile CSDotNetComponentInterface">
 		<WorkingDirectory>%Apsim%/Model/CSDotNetComponentInterface</WorkingDirectory>
@@ -94,14 +90,9 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>   
-	<Job name="Compile Input">
-		<WorkingDirectory>%Apsim%/Model/Input</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
-	</Job>  
-
-
-	<Job name="Compile Plant" wait="yes">
+    </Folder>
+    <Folder name="Apsim modules" wait="yes">
+	<Job name="Compile Plant">
 		<WorkingDirectory>%Apsim%/Model/Plant</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
@@ -121,11 +112,6 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
-	<Job name="Compile ApsimToSim">
-		<WorkingDirectory>%Apsim%/Model/ApsimToSim</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
-	</Job>
 	<Job name="Compile Canopy">
 		<WorkingDirectory>%Apsim%/Model/Canopy</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -133,16 +119,6 @@
 	</Job>
 	<Job name="Compile Clock">
 		<WorkingDirectory>%Apsim%/Model/Clock</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
-	</Job>
-	<Job name="Compile ConToApsim">
-		<WorkingDirectory>%Apsim%/Model/ConToApsim</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
-	</Job>
-	<Job name="Compile ConToSim">
-		<WorkingDirectory>%Apsim%/Model/ConToSim</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
@@ -181,6 +157,23 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
+      <Folder name="Input Modules">
+	<Job name="Compile Input">
+		<WorkingDirectory>%Apsim%/Model/Input</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>  
+	<Job name="Compile PatchInput" wait="yes">
+		<WorkingDirectory>%Apsim%/Model/PatchInput</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+	<Job name="Compile SiloInput">
+		<WorkingDirectory>%Apsim%/Model/SiloInput</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+      </Folder>
 	<Job name="Compile Irrigation">
 		<WorkingDirectory>%Apsim%/Model/Irrigation</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -381,7 +374,6 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
-
 	<Job name="Compile TclLink">
 		<WorkingDirectory>%Apsim%/Model/TclLink</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -427,6 +419,23 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
+   </Folder>
+   <Folder name="Sundry Executables">
+	<Job name="Compile ApsimToSim">
+		<WorkingDirectory>%Apsim%/Model/ApsimToSim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+	<Job name="Compile ConToApsim">
+		<WorkingDirectory>%Apsim%/Model/ConToApsim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+	<Job name="Compile ConToSim">
+		<WorkingDirectory>%Apsim%/Model/ConToSim</WorkingDirectory>
+		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
 	<Job name="Compile SetXMLValue">
 		<WorkingDirectory>%Apsim%/Model/SetXMLValue</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -447,7 +456,13 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
-
+	<Job name="Compile JobSchedulerFindJobs" wait="yes">
+		<WorkingDirectory>%Apsim%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
+		<CommandLine>..\..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+   </Folder>
+   <Folder name="GUI">
 	<Job name="Compile ExcelUtility">
 		<WorkingDirectory>%Apsim%/Model/Excel</WorkingDirectory>
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
@@ -477,9 +492,11 @@
 		<CommandLine>..\..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>
+    </Folder>
 	<Job name="Delete old .NET proxy classes">
 		<WorkingDirectory>%Apsim%\Model\DotNetProxies</WorkingDirectory>
 		<CommandLine>..\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
+		<CommandLineUnix>rm -f DotNetProxies.cs</CommandLineUnix>
 	</Job>
 	<Job name="Create new .NET proxy classes" wait="yes">
 		<WorkingDirectory>%Apsim%/Model</WorkingDirectory>
