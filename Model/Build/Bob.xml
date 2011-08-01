@@ -11,7 +11,7 @@
 		i.e. YOU MAY LOSE YOUR WORK !!!!!!!!
 
 -->
-<Folder name="Bob" LoopForever="yes">
+<Folder name="Bob" LoopForever="no">
 
 	<Folder name="BuildAndRun" wait="yes">
 		<!--
@@ -36,7 +36,7 @@
 		</Job>
 		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\..\BuildLibraries\Pat-ch.exe -p0 -i "C:\Upload\%PatchFileName%.patch"</CommandLine>
+			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.patch"</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files" wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
@@ -134,7 +134,7 @@
 	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
 		<Job name="CreateDiffsZip">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% %PatchFileName%</CommandLine>
+			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.patch</CommandLine>
 		</Job>
 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
