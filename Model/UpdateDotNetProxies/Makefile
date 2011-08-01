@@ -2,6 +2,6 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = UpdateDotNetProxies
 
-PROJECTTYPE = dll
+PROJECTTYPE = exe
 
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make

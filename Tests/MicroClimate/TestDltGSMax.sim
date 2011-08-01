@@ -58,6 +58,79 @@ endif</text>
         </script>
       </initdata>
     </component>
+    <component name="Micromet" executable="%apsim%/Model/MicroClimate.dll">
+      <executable name="%apsim%/Model/MicroClimate.dll" version="1.0" />
+      <initdata>
+        <MicroMet>
+          <air_pressure>1010.</air_pressure>
+          <soil_emissivity>0.96</soil_emissivity>
+          <sun_angle>15.0</sun_angle>
+          <soil_heat_flux_fraction>0.40</soil_heat_flux_fraction>
+          <night_interception_fraction>0.5</night_interception_fraction>
+          <windspeed_default>3.0</windspeed_default>
+          <refheight>2.0</refheight>
+          <soil_albedo>0.3</soil_albedo>
+          <a_interception>0.0</a_interception>
+          <b_interception>1.0</b_interception>
+          <c_interception>0.0</c_interception>
+          <d_interception>0.0</d_interception>
+          <!--  ______________________
+      Not read in - yet!
+        <svp_frac>0.65</svp_frac>
+        <cloud_factor>0.1</cloud_factor>
+      -->
+          <!-- default values for type-specific parameters -->
+          <albedo>0.15</albedo>
+          <gsmax>0.010</gsmax>
+          <r50>200</r50>
+          <emissivity>0.96</emissivity>
+          <CropType name="crop">
+            <albedo>0.26</albedo>
+            <gsmax>0.011</gsmax>
+            <apply_to>crop broccoli wheat chickpea weed oats chickpea fieldpea sugar frenchbean lucerne maize understorey vine sorghum</apply_to>
+          </CropType>
+          <CropType name="potato">
+            <albedo>0.26</albedo>
+            <gsmax>0.03</gsmax>
+            <!-- gsmax for potatotype set to 0.03 based on Amer KH, Hatfield JL (2004) Canopy resistance as affected by 
+			          soil and meteorological factors in potato. Agronomy Journal 96(4), 978-985. and supported by results from NZ and Scottland -->
+            <apply_to>potato</apply_to>
+          </CropType>
+          <CropType name="grass">
+            <albedo>0.23</albedo>
+            <!-- gsmax = 0.08 ! From Kelliher et al Fig 3
+         -->
+            <gsmax>0.010</gsmax>
+            <apply_to>grass danthonia ryegrass</apply_to>
+          </CropType>
+          <CropType name="c4grass">
+            <albedo>0.23</albedo>
+            <!-- gsmax = 0.08 ! From Kelliher et al Fig 3
+         -->
+            <gsmax>0.015</gsmax>
+            <r50 description="lower value partly reflects the higher k value of grasses">150 </r50>
+            <apply_to>bambatsi nativepasture</apply_to>
+          </CropType>
+          <!--  might be best to make the input Ra50 rather than R50
+      -->
+          <CropType name="tree">
+            <albedo>0.15</albedo>
+            <gsmax>0.005</gsmax>
+            <apply_to>tree grandis globulus camaldulensis banksia saltbush</apply_to>
+          </CropType>
+          <CropType name="tree2">
+            <albedo>0.15</albedo>
+            <gsmax>0.010</gsmax>
+            <r50>100</r50>
+          </CropType>
+        </MicroMet>
+        <soil_albedo>0.23</soil_albedo>
+        <a_interception>0</a_interception>
+        <b_interception>0</b_interception>
+        <c_interception>0</c_interception>
+        <d_interception>0</d_interception>
+      </initdata>
+    </component>
     <component name="Soil Water" executable="%apsim%/Model/SoilWat.dll">
       <executable name="%apsim%/Model/SoilWat.dll" version="1.0" />
       <initdata>
@@ -4637,79 +4710,6 @@ endif</text>
         <ll>     0.290     0.290     0.290     0.290     0.300     0.310     0.320     0.330     0.340     0.350     0.360</ll>
         <kl>     0.060     0.060     0.060     0.060     0.060     0.060     0.060     0.060     0.060     0.060     0.060</kl>
         <xf>     1.000     1.000     1.000     1.000     1.000     1.000     1.000     1.000     1.000     1.000     1.000</xf>
-      </initdata>
-    </component>
-    <component name="Micromet" executable="%apsim%/Model/MicroClimate.dll">
-      <executable name="%apsim%/Model/MicroClimate.dll" version="1.0" />
-      <initdata>
-        <MicroMet>
-          <air_pressure>1010.</air_pressure>
-          <soil_emissivity>0.96</soil_emissivity>
-          <sun_angle>15.0</sun_angle>
-          <soil_heat_flux_fraction>0.40</soil_heat_flux_fraction>
-          <night_interception_fraction>0.5</night_interception_fraction>
-          <windspeed_default>3.0</windspeed_default>
-          <refheight>2.0</refheight>
-          <soil_albedo>0.3</soil_albedo>
-          <a_interception>0.0</a_interception>
-          <b_interception>1.0</b_interception>
-          <c_interception>0.0</c_interception>
-          <d_interception>0.0</d_interception>
-          <!--  ______________________
-      Not read in - yet!
-        <svp_frac>0.65</svp_frac>
-        <cloud_factor>0.1</cloud_factor>
-      -->
-          <!-- default values for type-specific parameters -->
-          <albedo>0.15</albedo>
-          <gsmax>0.010</gsmax>
-          <r50>200</r50>
-          <emissivity>0.96</emissivity>
-          <CropType name="crop">
-            <albedo>0.26</albedo>
-            <gsmax>0.011</gsmax>
-            <apply_to>crop broccoli wheat chickpea weed oats chickpea fieldpea sugar frenchbean lucerne maize understorey vine sorghum</apply_to>
-          </CropType>
-          <CropType name="potato">
-            <albedo>0.26</albedo>
-            <gsmax>0.03</gsmax>
-            <!-- gsmax for potatotype set to 0.03 based on Amer KH, Hatfield JL (2004) Canopy resistance as affected by 
-			          soil and meteorological factors in potato. Agronomy Journal 96(4), 978-985. and supported by results from NZ and Scottland -->
-            <apply_to>potato</apply_to>
-          </CropType>
-          <CropType name="grass">
-            <albedo>0.23</albedo>
-            <!-- gsmax = 0.08 ! From Kelliher et al Fig 3
-         -->
-            <gsmax>0.010</gsmax>
-            <apply_to>grass danthonia ryegrass</apply_to>
-          </CropType>
-          <CropType name="c4grass">
-            <albedo>0.23</albedo>
-            <!-- gsmax = 0.08 ! From Kelliher et al Fig 3
-         -->
-            <gsmax>0.015</gsmax>
-            <r50 description="lower value partly reflects the higher k value of grasses">150 </r50>
-            <apply_to>bambatsi nativepasture</apply_to>
-          </CropType>
-          <!--  might be best to make the input Ra50 rather than R50
-      -->
-          <CropType name="tree">
-            <albedo>0.15</albedo>
-            <gsmax>0.005</gsmax>
-            <apply_to>tree grandis globulus camaldulensis banksia saltbush</apply_to>
-          </CropType>
-          <CropType name="tree2">
-            <albedo>0.15</albedo>
-            <gsmax>0.010</gsmax>
-            <r50>100</r50>
-          </CropType>
-        </MicroMet>
-        <soil_albedo>0.23</soil_albedo>
-        <a_interception>0</a_interception>
-        <b_interception>0</b_interception>
-        <c_interception>0</c_interception>
-        <d_interception>0</d_interception>
       </initdata>
     </component>
   </system>
