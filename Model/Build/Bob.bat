@@ -32,7 +32,8 @@ for %%f in (%APSIM%\Model\JobScheduler*.exe) do attrib -R %%f
 for %%f in (%APSIM%\Model\JobScheduler*.dll) do attrib -R %%f
 
 set APSIM=
-
+set PATH=%PATHSAVED%
+set LIBPATH=
 
 cd %APSIM%\Model\Build
 goto Start
