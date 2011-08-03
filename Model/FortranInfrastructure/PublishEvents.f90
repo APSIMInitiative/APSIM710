@@ -112,15 +112,13 @@ module PublishEventsModule
    integer NumValues
 
    ! Loop through each variable on data string and store in postbox.
-   call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
-
-   do while (NumValues > 0)
+   do while (DataString /= '')
+      call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
       if (NumValues > 1) then
          call Post_char_array (KeyName, KeyUnits, KeyValues, NumValues)
       else if (NumValues == 1) then
          call Post_char_var(KeyName, KeyUnits, KeyValues(1))
       endif
-      call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
    end do
    end subroutine
 
