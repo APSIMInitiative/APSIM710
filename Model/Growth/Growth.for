@@ -115,7 +115,7 @@
       integer year
 
       character plant_status*5
-      character N_uptake_switch*3
+      logical N_uptake_switch
 
       real root_length (max_layer), dlt_root_length(max_layer)
       real dlt_root_length_sen(max_layer)
@@ -653,7 +653,7 @@
       g%foliage_n_Demand = 0.0
 
       g%plant_status = status_out
-      g%N_uptake_switch = 'on'
+      g%N_uptake_switch = .true.
 
       call fill_real_array(c%x_adm,            0.0, max_table)
       call fill_real_array(c%y_fixation,       0.0, max_table)
@@ -836,12 +836,17 @@
      :              ,g%plant_status)      ! variable
 
       elseif (variable_name .eq. 'n_uptake_switch') then
-
-         call respond2get_char_var (
+         if (g%n_uptake_switch) then
+           call respond2get_char_var (
      :               variable_name     ! variable name
      :              ,'()'              ! variable units
-     :              ,g%n_uptake_switch)      ! variable
-     
+     :              ,'on')      ! variable
+         else
+           call respond2get_char_var (
+     :               variable_name     ! variable name
+     :              ,'()'              ! variable units
+     :              ,'off')      ! variable
+         endif
       elseif (variable_name .eq. 'dlt_an_green') then
           call respond2get_real_array (
      :               variable_name     ! variable name
@@ -2752,10 +2757,10 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 
 *+  Local Variables
       integer numvals                  ! number of values returned
+      character buffer*10
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
-
 
       if (variable_name.eq.'foliage_n_conc') then
 
@@ -2790,8 +2795,18 @@ c     :          ,1.0)                 ! Upper Limit for bound check
          call collect_char_var (
      :               variable_name         ! variable name
      :            ,'()'                    ! units
-     :            ,g%n_uptake_switch ! variable
-     :            ,numvals)     ! number of elements returned
+     :            ,buffer ! variable
+     :            ,numvals)                ! number of elements returned
+         if (numvals .gt. 0 .and. trim(buffer) .eq. 'on') then
+            g%n_uptake_switch = .true.
+         else
+            if (numvals .gt. 0 .and. trim(buffer) .eq. 'off') then
+               g%n_uptake_switch = .false.
+            else
+               call fatal_error (err_user, 
+     :             'n_uptake_switch: should be "on" or "off"')
+            endif
+         endif
      
       else
          ! Don't know this variable name
@@ -5507,7 +5522,7 @@ cvs adding the rest to foliage.
 
 
       !if((g%lai.gt.0.0).and.(g%N_uptake_switch.eq.'on')) then
-      if((g%N_uptake_switch.eq.'on')) then
+      if( g%N_uptake_switch ) then
       if (p%site_index.gt.0.0) then
          foliage_n_demand =  linear_interp_Real (p%site_index
      :                        ,c%Fn
