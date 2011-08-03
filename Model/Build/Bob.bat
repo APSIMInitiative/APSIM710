@@ -15,6 +15,8 @@ set PATHSAVED=%PATH%
 call ..\Build\RunMake.bat APSIM=%APSIM%
 set PATH=%PATHSAVED%
 set LIBPATH=
+set INCLUDE=
+set LIB=
 
 rem Make the JobScheduler binary files readonly so that CleanAll doesn't remove them.
 for %%f in (%APSIM%\Model\JobScheduler*.exe) do attrib +R %%f
@@ -34,6 +36,8 @@ for %%f in (%APSIM%\Model\JobScheduler*.dll) do attrib -R %%f
 set APSIM=
 set PATH=%PATHSAVED%
 set LIBPATH=
+set INCLUDE=
+set LIB=
 
 cd %APSIM%\Model\Build
 goto Start
