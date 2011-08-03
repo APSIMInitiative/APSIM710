@@ -25,16 +25,16 @@ void LinkField::Resolve()
       Assembly^ ProbeInfo = Types::GetProbeInfoAssembly();
 
       String^ TypeToFind = Field->FieldType->Name;
-      String^ NameToFind = Field->Name;
+      String^ NameToFind;
+      if (LinkAttr->_Path == nullptr)
+         NameToFind = Field->Name;
+      else
+         NameToFind = LinkAttr->_Path;
 
       if (IsAPSIMType(TypeToFind))
          {
          if (LinkAttr->_Path == nullptr)
             NameToFind = nullptr; // default is not to use name.
-         else
-            {
-            NameToFind = LinkAttr->_Path;
-            }
          if (NameToFind != nullptr && NameToFind->Contains("."))
             ReferencedObject = GetSpecificApsimComponent(NameToFind);
          else
@@ -66,7 +66,7 @@ Object^ LinkField::FindInstanceObject(String^ NameToFind, String^ TypeToFind)
    // Check our children first.
    for each (NamedItem^ Child in In->Children)
       {
-      if (NameToFind == Child->Name && Utility::IsOfType(Child->GetType(), TypeToFind))
+      if (NameToFind->ToLower() == Child->Name->ToLower() && Utility::IsOfType(Child->GetType(), TypeToFind))
          return Child;
       }
 
@@ -74,11 +74,11 @@ Object^ LinkField::FindInstanceObject(String^ NameToFind, String^ TypeToFind)
    Instance^ Parent = In->Parent;
    while (Parent != nullptr)
       {
-      if (Parent->Name == TypeToFind)
+      if (Parent->Name->ToLower() == TypeToFind->ToLower())
          return Parent;
       for each (NamedItem^ Sibling in Parent->Children)
          {
-         if (NameToFind == Sibling->Name && Utility::IsOfType(Sibling->GetType(), TypeToFind))
+         if (NameToFind->ToLower() == Sibling->Name->ToLower() && Utility::IsOfType(Sibling->GetType(), TypeToFind))
             return Sibling;
          }
       Parent = Parent->Parent;

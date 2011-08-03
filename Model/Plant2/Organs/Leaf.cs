@@ -11,7 +11,8 @@ public class Leaf : BaseOrgan, AboveGround
     protected double _WaterAllocation;
     protected double PEP = 0;
     protected double EP = 0;
-    protected List<LeafCohort> Leaves = new List<LeafCohort>();
+    [Param]
+    public List<LeafCohort> Leaves;
     protected double _FinalNodeNo = 0;
     [Link]
     protected Plant Plant = null;
@@ -47,7 +48,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Param]
     [Output]
     [Description("Primary Bud")]
-    protected double PrimaryBudNo = 1;
+    public double PrimaryBudNo = 1;
     [Param]
     [Description("Extinction Coefficient (Dead)")]
     protected double KDead = 0;
@@ -56,14 +57,8 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Maximum Final Leaf Number ")]
     protected double MaxNodeNo = 0;
     [Param]
-    [Description("Max Leaf Number")]
-    protected string InitialiseStage = "";
-    [Param]
-    [Description("Initial number of leaf nodes")]
-    protected double[] InitialAreas = null;
-    [Param]
-    [Description("Initial number of leaf nodes")]
-    protected double[] InitialAges = null;
+    [Description("The stage name that leaves get initialised.")]
+    public string InitialiseStage = "";
     [Param]
     [Description("Initial number of leaf primordia")]
     protected double InitialLeafPrimordia = 0;
@@ -74,6 +69,7 @@ public class Leaf : BaseOrgan, AboveGround
     public double StemPopulation = 0;
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;
+    public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
  #endregion
 
  #region Outputs
@@ -278,7 +274,14 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     public virtual double CohortNo
     {
-        get { return Leaves.Count; }
+        get 
+        {
+            int Count = 0;
+            foreach (LeafCohort L in Leaves)
+                if (L.IsInitialised)
+                    Count++;
+            return Count; 
+        }
     }
     [Output]
     public int DeadNodeNo
@@ -393,6 +396,11 @@ public class Leaf : BaseOrgan, AboveGround
  #endregion
 
  #region Leaf functions
+    protected void CopyLeaves(List<LeafCohort> From, List<LeafCohort> To)
+    {
+        foreach (LeafCohort Leaf in From)
+            To.Add(Leaf.Clone());
+    }
     public override void DoPotentialGrowth()
     {
         EP = 0;
@@ -405,7 +413,7 @@ public class Leaf : BaseOrgan, AboveGround
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-
+            CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
 
         }
@@ -433,19 +441,13 @@ public class Leaf : BaseOrgan, AboveGround
                 BranchNo = Leaves[Leaves.Count - 1].Population;
             BranchNo += BranchingRate.Value * Population.Value * PrimaryBudNo;
 
-            Leaves.Add(new LeafCohort(BranchNo,
-                                   CohortAge,
-                                   Math.Truncate(NodeNo + 1),
-                                   Children["MaxArea"] as Function,
-                                   Children["GrowthDuration"] as Function,
-                                   Children["LagDuration"] as Function,
-                                   Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafArea"] as Function,
-                                   0.0,
-                                   Children["MaximumNConc"] as Function,
-                                   Children["MinimumNConc"] as Function,
-                                   Children["StructuralNConc"] as Function,
-                                   Children["InitialNConc"] as Function));
+            LeafCohort NewLeaf = InitialLeaves[0].Clone();
+            NewLeaf._Population = BranchNo;
+            NewLeaf.Age = CohortAge;
+            NewLeaf.Rank = Math.Truncate(NodeNo + 1);
+            NewLeaf.Area = 0.0;
+            NewLeaf.DoInitialisation();
+            Leaves.Add(NewLeaf);
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -455,25 +457,14 @@ public class Leaf : BaseOrgan, AboveGround
     }
     public virtual void InitialiseCohorts()
     {
-        for (int i = 0; i < InitialAreas.Length; i++)
+        Leaves.Clear();
+        CopyLeaves(InitialLeaves, Leaves);
+        foreach (LeafCohort Leaf in Leaves)
         {
-            NodeNo = i + 1;
-
+            NodeNo = Leaf.Rank;
             Population Population = Plant.Children["Population"] as Population;
-            Leaves.Add(new LeafCohort(Population.Value * PrimaryBudNo,  //Branch No 
-                                   InitialAges[i],  // Cohort Age
-                                   NodeNo,  // Cohort rank
-                                   Children["MaxArea"] as Function,
-                                   Children["GrowthDuration"] as Function,
-                                   Children["LagDuration"] as Function,
-                                   Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafArea"] as Function,
-                                   InitialAreas[i],
-                                   Children["MaximumNConc"] as Function,
-                                   Children["MinimumNConc"] as Function,
-                                   Children["StructuralNConc"] as Function,
-                                   Children["InitialNConc"] as Function));
-
+            Leaf._Population = Population.Value * PrimaryBudNo;
+            Leaf.DoInitialisation();
         }
         
         // Add fraction of top leaf expanded to node number.

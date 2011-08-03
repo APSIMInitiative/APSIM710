@@ -13,10 +13,8 @@ public class XYPairs : Function
     public double[] X;
     public double[] Y;
 
-    public override void Initialised()
+    public void DoInitialisation()
     {
-        base.Initialised();
-
         X = new double[XYs.Length];
         Y = new double[XYs.Length];
         for (int i = 0; i < XYs.Length; i++)
@@ -32,6 +30,8 @@ public class XYPairs : Function
 
     public double ValueIndexed(double dX)
     {
+        if (X == null)
+            DoInitialisation();
         bool DidInterpolate = false;
         return MathUtility.LinearInterpReal(dX, X, Y, out DidInterpolate);
     }

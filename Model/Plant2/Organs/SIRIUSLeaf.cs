@@ -12,19 +12,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         get
         {
-            int i = 0;
-
-            double[] values = new double[(int)MaxNodeNo];
-            for (i = 0; i <= ((int)MaxNodeNo - 1); i++)
-                values[i] = 0;
-            i = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                values[i] = L.Size;
-                i++;
-            }
-
-            return values;
+            return Size;
         }
     }
     [Output]
@@ -177,7 +165,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return values;
         }
     }
-
  #endregion
 
  #region Leaf functions
@@ -214,12 +201,14 @@ public class SIRIUSLeaf : Leaf, AboveGround
         EP = 0;
         Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
+
         if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
             _FinalNodeNo = InitialLeafPrimordia;
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+            CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
         }
 
@@ -247,27 +236,14 @@ public class SIRIUSLeaf : Leaf, AboveGround
             if (Leaves.Count > 0)
                 BranchNumber = Leaves[Leaves.Count - 1].Population;
             BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
-            Leaves.Add(new SIRIUSLeafCohort(BranchNumber,
-                                   CohortAge,
-                                   Math.Truncate(NodeNo),
-                                   Children["MaxArea"] as Function,
-                                   Children["GrowthDuration"] as Function,
-                                   Children["LagDuration"] as Function,
-                                   Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafAreaMax"] as Function,
-                                   0.0,
-                                   Children["MaximumNConc"] as Function,
-                                   Children["MinimumNConc"] as Function,
-                                   Children["StructuralFraction"] as Function,
-                                   Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationFactor"] as Function,
-                                   Children["ExpansionStress"] as Function,
-                                   Children["SpecificLeafAreaMin"] as Function,
-                                   this,
-                                   Children["CriticalNConc"] as Function,
-                                   Children["SenescenceInducingCover"] as Function,
-                                   Children["DMRetranslocationFactor"] as Function,
-                                   Children["ShadeInducedSenRate"] as Function));
+
+            LeafCohort NewLeaf = InitialLeaves[0].Clone();
+            NewLeaf._Population = BranchNumber;
+            NewLeaf.Age = CohortAge;
+            NewLeaf.Rank = Math.Truncate(NodeNo);
+            NewLeaf.Area = 0.0;
+            NewLeaf.DoInitialisation();
+            Leaves.Add(NewLeaf);
         }
         foreach (LeafCohort L in Leaves)
         {
@@ -301,38 +277,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
             FractionDied = DeltaDeadLeaves / GreenNodeNo;
         }
     }
-    public override void InitialiseCohorts()
-    {
-        for (int i = 0; i < InitialAreas.Length; i++)
-        {
-            NodeNo = i + 1;
 
-            Population Population = Plant.Children["Population"] as Population;
-            Leaves.Add(new SIRIUSLeafCohort(Population.Value * PrimaryBudNo,  //Branch No 
-                                   InitialAges[i],  // Cohort Age
-                                   NodeNo,  // Cohort rank
-                                   Children["MaxArea"] as Function,
-                                   Children["GrowthDuration"] as Function,
-                                   Children["LagDuration"] as Function,
-                                   Children["SenescenceDuration"] as Function,
-                                   Children["SpecificLeafAreaMax"] as Function,
-                                   InitialAreas[i],
-                                   Children["MaximumNConc"] as Function,
-                                   Children["MinimumNConc"] as Function,
-                                   Children["StructuralFraction"] as Function,
-                                   Children["NReallocationFactor"] as Function,
-                                   Children["NRetranslocationFactor"] as Function,
-                                   Children["ExpansionStress"] as Function,
-                                   Children["SpecificLeafAreaMin"] as Function,
-                                   this,
-                                   Children["CriticalNConc"] as Function,
-                                   Children["SenescenceInducingCover"] as Function,
-                                   Children["DMRetranslocationFactor"] as Function,
-                                   Children["ShadeInducedSenRate"] as Function));
-        }
-        // Add fraction of top leaf expanded to node number.
-        NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
-    }
     public double CoverAboveCohort(double cohortno)
     {
         double LAIabove = 0;

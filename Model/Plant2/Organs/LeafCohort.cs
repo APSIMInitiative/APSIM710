@@ -2,13 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
+using ModelFramework;
 
-public class LeafCohort
+public class LeafCohort : Instance
 {
  #region Class Data Members
-    protected double _Population = 0;
-    protected double Age = 0;
-    protected double Rank = 0;
+    public double _Population = 0;
+
+    [Param]
+    public double Age = 0;
+
+    [Param]
+    public double Rank = 0;
+
+    [Param]
+    public double Area = 0;
+
     protected double PotentialAreaGrowth = 0;
     protected double MaxLiveArea = 0;
     public Biomass Live = new Biomass();
@@ -31,6 +40,42 @@ public class LeafCohort
     public double StructuralNDemand = 0;
     public double MetabolicNDemand = 0;
     public double NonStructuralNDemand = 0;
+
+    [Link]
+    public Leaf Leaf = null;
+
+    [Link("Population")]
+    public Population Popn = null;
+
+    [Link("MaxArea")]
+    public Function ma;
+    
+    [Link("GrowthDuration")]
+    public Function gd;
+    
+    [Link("LagDuration")]
+    public Function ld;
+    
+    [Link("SenescenceDuration")]
+    public Function sd;
+
+    [Link("SpecificLeafAreaMax")]
+    public Function sla;
+
+    [Link("MaximumNConc")]
+    public Function CNC;
+    
+    [Link("MinimumNConc")]
+    public Function MNC;
+    
+    [Link("StructuralNConc", IsOptional.Yes)]
+    public Function SNC;
+
+    [Link("InitialNConc", IsOptional.Yes)]
+    public Function INC;
+
+    [Link]
+    public Paddock Paddock;
 #endregion
     
  #region arbitration methods
@@ -118,7 +163,7 @@ public class LeafCohort
     {
         get
         {
-            return Age > (GrowthDuration + LagDuration + SenescenceDuration);
+            return IsInitialised && Age > (GrowthDuration + LagDuration + SenescenceDuration);
         }
     }
     public bool IsGrowing
@@ -145,6 +190,10 @@ public class LeafCohort
     {
         get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
     }
+    public bool IsInitialised
+    {
+        get { return _Population > 0; }
+    }
     public bool IsDead
     {
         get
@@ -156,7 +205,7 @@ public class LeafCohort
     {
         get
         {
-            return (Age > GrowthDuration);
+            return (IsInitialised && Age > GrowthDuration);
         }
     }
  #endregion
@@ -180,7 +229,10 @@ public class LeafCohort
     {
         get
         {
-            return LiveArea / Population;
+            if (IsInitialised)
+                return LiveArea / Population;
+            else
+                return 0;
         }
     }
     virtual public double PotentialAreaGrowthFunction(double TT) // Potential delta LAI
@@ -200,11 +252,32 @@ public class LeafCohort
  #endregion
 
  #region Leaf cohort functions
-    public LeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function CNC, Function MNC, Function SNC, Function INC)
+
+    /// <summary>
+    /// The default constuctor that will be called by the APSIM infrastructure.
+    /// </summary>
+    public LeafCohort()
     {
-        _Population = popn;
-        Rank = rank;
-        Age = age;
+    }
+    /// <summary>
+    /// Returns a clone of this object
+    /// </summary>
+    public virtual LeafCohort Clone()
+    {
+        LeafCohort NewLeaf = (LeafCohort) this.MemberwiseClone();
+        NewLeaf.Live = new Biomass();
+        NewLeaf.Dead = new Biomass();
+        return NewLeaf;
+    }
+
+
+    virtual public void DoInitialisation()
+    {
+        // _Population will equal 0 when the APSIM infrastructure creates this object.
+        // It will already be set if PLANT creates this object and population is passed
+        // in as an argument in the constructor below. Confusing isn't it?
+        if (_Population == 0)
+            _Population = Popn.Value * Leaf.PrimaryBudNo;
         MaxArea = ma.Value;
         GrowthDuration = gd.Value;
         LagDuration = ld.Value;
@@ -218,116 +291,127 @@ public class LeafCohort
         if (INC != null)
             InitialNConc = INC.Value;
 
-        //if (InitialArea != 0)
-        //   if (InitialArea < MaxArea)
-        //      Age = GrowthDuration * InitialArea / MaxArea;
-        //   else
-        //      Age = GrowthDuration;
-
-
-        LiveArea = InitialArea * Population;
+        LiveArea = Area * _Population;
         Live.StructuralWt = LiveArea / SpecificLeafAreaMax;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
 
     }
+
+    public override void Initialised()
+    {
+        Paddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
+    }
+
+
     virtual public void DoStartSet(double TT)
     {
     }
     virtual public void DoPotentialGrowth(double TT)
     {
-        PotentialAreaGrowth = PotentialAreaGrowthFunction(TT);
+        if (IsInitialised)
+            PotentialAreaGrowth = PotentialAreaGrowthFunction(TT);
     }
     virtual public void DoActualGrowth(double TT)
     {
-        if (MaxLiveArea < LiveArea)
-            MaxLiveArea = LiveArea;
-        //Calculate Senescence
-        double FractionSenescing = 0;
-        double AreaSenescing = 0;
-        double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);
-
-        if (TTInSenPhase > 0)
+        if (IsInitialised)
         {
+            if (MaxLiveArea < LiveArea)
+                MaxLiveArea = LiveArea;
+            //Calculate Senescence
+            double FractionSenescing = 0;
+            double AreaSenescing = 0;
+            double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);
 
-            if (Rank == 10)
-            { }
-
-            double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
-            double RemainingTT = Math.Max(0, LeafDuration - Age);
-
-            if (RemainingTT == 0)
-                FractionSenescing = 1;
-            else
-                FractionSenescing = Math.Min(1, Math.Min(TT, TTInSenPhase) / RemainingTT);
-
-            if ((FractionSenescing > 1) || (FractionSenescing < 0))
+            if (TTInSenPhase > 0)
             {
-                throw new Exception("Bad Fraction Senescing");
+
+                if (Rank == 10)
+                { }
+
+                double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
+                double RemainingTT = Math.Max(0, LeafDuration - Age);
+
+                if (RemainingTT == 0)
+                    FractionSenescing = 1;
+                else
+                    FractionSenescing = Math.Min(1, Math.Min(TT, TTInSenPhase) / RemainingTT);
+
+                if ((FractionSenescing > 1) || (FractionSenescing < 0))
+                {
+                    throw new Exception("Bad Fraction Senescing");
+                }
+                // Update State Variables
+                AreaSenescing = LiveArea * FractionSenescing;
+                DeadArea = DeadArea + AreaSenescing;
+                LiveArea = LiveArea - AreaSenescing;
+
+                double Senescing = FractionSenescing * Live.StructuralWt;
+                Live.StructuralWt -= Senescing;
+                Dead.StructuralWt += Senescing;
+
+                Senescing = FractionSenescing * Live.NonStructuralWt;
+                Live.NonStructuralWt -= Senescing;
+                Dead.NonStructuralWt += Senescing;
+
+                Senescing = FractionSenescing * Live.NonStructuralN;
+                Live.NonStructuralN -= Senescing;
+                Dead.NonStructuralN += Senescing;
+
+                Senescing = FractionSenescing * Live.StructuralN;
+                Live.StructuralN -= Senescing;
+                Dead.StructuralN += Senescing;
             }
-            // Update State Variables
-            AreaSenescing = LiveArea * FractionSenescing;
-            DeadArea = DeadArea + AreaSenescing;
-            LiveArea = LiveArea - AreaSenescing;
 
-            double Senescing = FractionSenescing * Live.StructuralWt;
-            Live.StructuralWt -= Senescing;
-            Dead.StructuralWt += Senescing;
-
-            Senescing = FractionSenescing * Live.NonStructuralWt;
-            Live.NonStructuralWt -= Senescing;
-            Dead.NonStructuralWt += Senescing;
-
-            Senescing = FractionSenescing * Live.NonStructuralN;
-            Live.NonStructuralN -= Senescing;
-            Dead.NonStructuralN += Senescing;
-
-            Senescing = FractionSenescing * Live.StructuralN;
-            Live.StructuralN -= Senescing;
-            Dead.StructuralN += Senescing;
+            Age = Age + TT;
         }
-
-        Age = Age + TT;
-
     }
     private double NFac()
     {
-        double Nconc = Live.NConc;
-        double value = Math.Min(1.0, Math.Max(0.0, (Nconc - MinimumNConc) / (MaximumNConc - MinimumNConc)));
-        return value;
+        if (IsInitialised)
+        {
+            double Nconc = Live.NConc;
+            double value = Math.Min(1.0, Math.Max(0.0, (Nconc - MinimumNConc) / (MaximumNConc - MinimumNConc)));
+            return value;
+        }
+        else
+            return 0;
     }
     virtual public void DoKill(double fraction)
     {
-        double change;
-        change = LiveArea * fraction;
-        LiveArea -= change;
-        DeadArea += change;
+        if (IsInitialised)
+        {
+            double change;
+            change = LiveArea * fraction;
+            LiveArea -= change;
+            DeadArea += change;
 
-        change = Live.StructuralWt * fraction;
-        Live.StructuralWt -= change;
-        Dead.StructuralWt += change;
+            change = Live.StructuralWt * fraction;
+            Live.StructuralWt -= change;
+            Dead.StructuralWt += change;
 
-        change = Live.NonStructuralWt * fraction;
-        Live.NonStructuralWt -= change;
-        Dead.NonStructuralWt += change;
+            change = Live.NonStructuralWt * fraction;
+            Live.NonStructuralWt -= change;
+            Dead.NonStructuralWt += change;
 
-        change = Live.StructuralN * fraction;
-        Live.StructuralN -= change;
-        Dead.StructuralN += change;
+            change = Live.StructuralN * fraction;
+            Live.StructuralN -= change;
+            Dead.StructuralN += change;
 
-        change = Live.NonStructuralN * fraction;
-        Live.NonStructuralN -= change;
-        Dead.NonStructuralN += change;
-
+            change = Live.NonStructuralN * fraction;
+            Live.NonStructuralN -= change;
+            Dead.NonStructuralN += change;
+        }
     }
     virtual public void DoFrost(double fraction)
     {
-        DoKill(fraction);
+        if (IsInitialised)
+            DoKill(fraction);
     }    
     public double FractionExpanded
     {
         get
         {
-            if (Age < GrowthDuration)
+            if (IsInitialised && Age < GrowthDuration)
                 return Age / GrowthDuration;
             else
                 return 1.0;

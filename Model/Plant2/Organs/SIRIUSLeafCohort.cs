@@ -6,13 +6,13 @@ using CSGeneral;
 class SIRIUSLeafCohort : LeafCohort
 {
  #region Class Data Members
-    public SIRIUSLeaf ParentLeafOrgan = null;
+
+
     //Leaf coefficients
     private double StructuralFraction = 0;
     private double NReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
-    new double SpecificLeafAreaMax = 0;
     private double SpecificLeafAreaMin = 0;
     //Local variables
     private double SenescedFrac = 0;
@@ -55,6 +55,37 @@ class SIRIUSLeafCohort : LeafCohort
     private double MetabolicDMAllocation = 0;
     private double CoverAbove = 0;
     private double FracSenShade = 0;
+
+    [Link("Leaf")]
+    public SIRIUSLeaf SIRIUSLeaf;
+
+    [Link("StructuralFraction")]
+    public Function SF;
+    
+    [Link("NReallocationFactor")]
+    public Function NRF;
+    
+    [Link("NRetranslocationFactor")]
+    public Function NRR;
+    
+    [Link("ExpansionStress")]
+    public Function Stressfact;
+    
+    [Link("SpecificLeafAreaMin")]
+    public Function SLAmin;
+    
+    [Link("CriticalNConc")]
+    public Function CritNC;
+    
+    [Link("SenescenceInducingCover")]
+    public Function CritCover;
+    
+    [Link("DMRetranslocationFactor")]
+    public Function DMRF;
+    
+    [Link("ShadeInducedSenRate")]
+    public Function ShadeSenRate;
+
  #endregion
     
  #region Arbitrator method calls
@@ -240,158 +271,166 @@ class SIRIUSLeafCohort : LeafCohort
  #endregion
 
  #region Leaf Cohort Functions
-    // Functions used to produce leaf cohort behaviour
-    public SIRIUSLeafCohort(double popn, double age, double rank, Function ma, Function gd, Function ld, Function sd, Function sla, double InitialArea, Function MaxNC, Function MinNC, Function SF, Function NRF, Function NRR, Function Stressfact, Function SLAmin, SIRIUSLeaf Parent, Function CritNC, Function CritCover, Function DMRF, Function ShadeSenRate)
-        : base(popn, age, rank, ma, gd, ld, sd, sla, InitialArea, MaxNC, MinNC, null, null)
-{
-        _Population = popn;
-        Rank = rank;
-        Age = age;
-        MaxArea = ma.Value; 
-        GrowthDuration = gd.Value;
-        LagDuration = ld.Value;
-        SenescenceDuration = sd.Value;
-        SpecificLeafAreaMax = sla.Value;
+    /// <summary>
+    /// The default constuctor that will be called by the APSIM infrastructure.
+    /// </summary>
+    public SIRIUSLeafCohort()
+    {
+    }
+
+    public override void DoInitialisation()
+    {
+        base.DoInitialisation();
+
         SpecificLeafAreaMin = SLAmin.Value;
-        StructuralNConc = MinNC.Value;
-        FunctionalNConc = (CritNC.Value - (MinNC.Value * SF.Value)) * (1 / (1 - SF.Value));
-        LuxaryNConc = (MaxNC.Value - CritNC.Value);
+        StructuralNConc = MinimumNConc;
+        FunctionalNConc = (CritNC.Value - (MNC.Value * SF.Value)) * (1 / (1 - SF.Value));
+        LuxaryNConc = (CNC.Value - CritNC.Value);
         StructuralFraction = SF.Value;
-        LiveArea = InitialArea * Population;
-        Live.StructuralWt = LiveArea / SpecificLeafAreaMax; 
-        Live.MetabolicWt = (Live.StructuralWt/SF.Value) * (1-SF.Value);
-        Live.NonStructuralWt = 0;  
+        Live.MetabolicWt = (Live.StructuralWt / SF.Value) * (1 - SF.Value);
+        Live.NonStructuralWt = 0;
         Live.StructuralN = Live.StructuralWt * StructuralNConc;
         Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;
         Live.NonStructuralN = 0;
         NReallocationFactor = NRF.Value;
         NRetranslocationFactor = NRR.Value;
         //Fw = Stressfact.Value;
-        ParentLeafOrgan = Parent;
         CriticalCover = CritCover.Value;
         DMRetranslocationFactor = DMRF.Value;
         FracSenShade = ShadeSenRate.Value;
-}
+    }
+
     public override void DoPotentialGrowth(double TT)
     {
-        //Leaf area growth parameters
-        _ExpansionStress = ParentLeafOrgan.ExpansionStress;  //Get daily expansion stress value
-        DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
-        DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
-        CoverAbove = ParentLeafOrgan.CoverAboveCohort(Rank); // Calculate cover above leaf cohort
-        SenescedFrac = FractionSenescing(TT);
-        SLA = 0;
-        if (Live.Wt > 0)
-            SLA = LiveArea / Live.Wt; 
-        //Set initial leaf status values
-        LeafStartArea = LiveArea;
-        LeafStartStructuralWt = Live.StructuralWt;
-        LeafStartMetabolicWt = Live.MetabolicWt;
-        LeafStartMetabolicN = Live.MetabolicN;
-        LeafStartNonStructuralWt = Live.NonStructuralWt; 
-        LeafStartNonStructuralN = Live.NonStructuralN;
-        LeafStartDMRetranslocationSupply = LeafStartNonStructuralWt * DMRetranslocationFactor;
-        //Nretranslocation is that which occurs before uptake (senessed metabolic N and all non-structuralN)
-        LeafStartMetabolicNReallocationSupply = SenescedFrac * LeafStartMetabolicN * NReallocationFactor;
-        LeafStartNonStructuralNReallocationSupply = SenescedFrac * LeafStartNonStructuralN * NReallocationFactor;  
-        //Retranslocated N is only that which occurs after N uptake. Both Non-structural and metabolic N are able to be retranslocated but metabolic N will only be moved if remobilisation of non-structural N does not meet demands
-        LeafStartMetabolicNRetranslocationSupply = Math.Max(0.0, (LeafStartMetabolicN * NRetranslocationFactor) - LeafStartMetabolicNReallocationSupply);
-        LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LeafStartNonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply); 
-        LeafStartNReallocationSupply = NReallocationSupply;
-        LeafStartNRetranslocationSupply = NRetranslocationSupply;
-        //zero locals variables
-        StructuralDMDemand = 0;
-        MetabolicDMDemand = 0;
-        StructuralNDemand = 0;
-        MetabolicNDemand = 0;
-        NonStructuralNDemand = 0;
-        PotentialStructuralDMAllocation = 0;
-        PotentialMetabolicDMAllocation = 0;
-        DMRetranslocated = 0;
-        MetabolicNReallocated = 0;
-        NonStructuralNReallocated = 0;
-        MetabolicNRetranslocated = 0;
-        NonStructuralNRetrasnlocated = 0;
-        StructuralNAllocation = 0;
-        MetabolicNAllocation = 0;
+        if (IsInitialised)
+        {
+            //Leaf area growth parameters
+            _ExpansionStress = SIRIUSLeaf.ExpansionStress;  //Get daily expansion stress value
+            DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
+            DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
+            CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort
+            SenescedFrac = FractionSenescing(TT);
+            SLA = 0;
+            if (Live.Wt > 0)
+                SLA = LiveArea / Live.Wt;
+            //Set initial leaf status values
+            LeafStartArea = LiveArea;
+            LeafStartStructuralWt = Live.StructuralWt;
+            LeafStartMetabolicWt = Live.MetabolicWt;
+            LeafStartMetabolicN = Live.MetabolicN;
+            LeafStartNonStructuralWt = Live.NonStructuralWt;
+            LeafStartNonStructuralN = Live.NonStructuralN;
+            LeafStartDMRetranslocationSupply = LeafStartNonStructuralWt * DMRetranslocationFactor;
+            //Nretranslocation is that which occurs before uptake (senessed metabolic N and all non-structuralN)
+            LeafStartMetabolicNReallocationSupply = SenescedFrac * LeafStartMetabolicN * NReallocationFactor;
+            LeafStartNonStructuralNReallocationSupply = SenescedFrac * LeafStartNonStructuralN * NReallocationFactor;
+            //Retranslocated N is only that which occurs after N uptake. Both Non-structural and metabolic N are able to be retranslocated but metabolic N will only be moved if remobilisation of non-structural N does not meet demands
+            LeafStartMetabolicNRetranslocationSupply = Math.Max(0.0, (LeafStartMetabolicN * NRetranslocationFactor) - LeafStartMetabolicNReallocationSupply);
+            LeafStartNonStructuralNRetranslocationSupply = Math.Max(0.0, (LeafStartNonStructuralN * NRetranslocationFactor) - LeafStartNonStructuralNReallocationSupply);
+            LeafStartNReallocationSupply = NReallocationSupply;
+            LeafStartNRetranslocationSupply = NRetranslocationSupply;
+            //zero locals variables
+            StructuralDMDemand = 0;
+            MetabolicDMDemand = 0;
+            StructuralNDemand = 0;
+            MetabolicNDemand = 0;
+            NonStructuralNDemand = 0;
+            PotentialStructuralDMAllocation = 0;
+            PotentialMetabolicDMAllocation = 0;
+            DMRetranslocated = 0;
+            MetabolicNReallocated = 0;
+            NonStructuralNReallocated = 0;
+            MetabolicNRetranslocated = 0;
+            NonStructuralNRetrasnlocated = 0;
+            StructuralNAllocation = 0;
+            MetabolicNAllocation = 0;
+        }
     }
     public override void DoActualGrowth(double TT)
     {
-        //Grow leaf area after DM allocated
-        double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax);
-        LiveArea += DeltaActualArea;
-        
-        //Seness leaf area and reduce biomass components
-        double AreaSenescing = LiveArea * SenescedFrac;
-        double AreaSenescingN = 0;
-        if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0)) 
-            AreaSenescingN =  LeafStartArea * (MetabolicNRetranslocated  - MetabolicNAllocation)/ LeafStartMetabolicN;
-        
-        double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
-        if (LeafAreaLoss > 0)
-        SenescedFrac = Math.Min(1.0, LeafAreaLoss/LeafStartArea); 
+        if (IsInitialised)
+        {
+            //Grow leaf area after DM allocated
+            double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax);
+            LiveArea += DeltaActualArea;
 
-        double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
-        double StructuralNSenescing = SenescedFrac * Live.StructuralN;
-        double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
-        double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
-        double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
-        double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
-        
-        
-        DeadArea = DeadArea + LeafAreaLoss;
-        LiveArea = LiveArea - LeafAreaLoss;
+            //Seness leaf area and reduce biomass components
+            double AreaSenescing = LiveArea * SenescedFrac;
+            double AreaSenescingN = 0;
+            if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
+                AreaSenescingN = LeafStartArea * (MetabolicNRetranslocated - MetabolicNAllocation) / LeafStartMetabolicN;
 
-        Live.StructuralWt -= StructuralWtSenescing;
-        Dead.StructuralWt += StructuralWtSenescing;
+            double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
+            if (LeafAreaLoss > 0)
+                SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
-        Live.StructuralN -= StructuralNSenescing;
-        Dead.StructuralN += StructuralNSenescing;
+            double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
+            double StructuralNSenescing = SenescedFrac * Live.StructuralN;
+            double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
+            double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
+            double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
+            double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
 
-        Live.MetabolicWt -= (MetabolicWtSenescing);
-        Dead.MetabolicWt += (MetabolicWtSenescing);
 
-        Live.MetabolicN -= Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));  //Don't Seness todays N if it has been taken for reallocation
-        Dead.MetabolicN += Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));
+            DeadArea = DeadArea + LeafAreaLoss;
+            LiveArea = LiveArea - LeafAreaLoss;
 
-        Live.NonStructuralN -= Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);  //Dont Senesess todays NonStructural N if it was retranslocated or reallocated 
-        Dead.NonStructuralN += Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);
+            Live.StructuralWt -= StructuralWtSenescing;
+            Dead.StructuralWt += StructuralWtSenescing;
 
-        Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-        Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+            Live.StructuralN -= StructuralNSenescing;
+            Dead.StructuralN += StructuralNSenescing;
 
-        Age = Age + TT;
+            Live.MetabolicWt -= (MetabolicWtSenescing);
+            Dead.MetabolicWt += (MetabolicWtSenescing);
+
+            Live.MetabolicN -= Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));  //Don't Seness todays N if it has been taken for reallocation
+            Dead.MetabolicN += Math.Max(0.0, (MetabolicNSenescing - MetabolicNReallocated - MetabolicNRetranslocated));
+
+            Live.NonStructuralN -= Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);  //Dont Senesess todays NonStructural N if it was retranslocated or reallocated 
+            Dead.NonStructuralN += Math.Max(0.0, NonStructuralNSenescing - NonStructuralNReallocated - NonStructuralNRetrasnlocated);
+
+            Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+            Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+
+            Age = Age + TT;
+        }
     }
     public double FractionSenescing(double TT)
     {
-        double FracSenAge = 0;
-        double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);
-        if (TTInSenPhase > 0)
+        if (IsInitialised)
         {
-
-            if (Rank == 10)
-            { }
-
-            double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
-            double RemainingTT = Math.Max(0, LeafDuration - Age);
-
-            if (RemainingTT == 0)
-                FracSenAge = 1;
-            else
-                FracSenAge = Math.Min(1, Math.Min(TT, TTInSenPhase) / RemainingTT);
-            if ((FracSenAge > 1) || (FracSenAge < 0))
+            double FracSenAge = 0;
+            double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);
+            if (TTInSenPhase > 0)
             {
-                throw new Exception("Bad Fraction Senescing");
+
+                if (Rank == 10)
+                { }
+
+                double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
+                double RemainingTT = Math.Max(0, LeafDuration - Age);
+
+                if (RemainingTT == 0)
+                    FracSenAge = 1;
+                else
+                    FracSenAge = Math.Min(1, Math.Min(TT, TTInSenPhase) / RemainingTT);
+                if ((FracSenAge > 1) || (FracSenAge < 0))
+                {
+                    throw new Exception("Bad Fraction Senescing");
+                }
             }
+            else
+            {
+                FracSenAge = 0;
+            }
+            double _FracSenShade = 0;
+            if (CoverAbove >= CriticalCover)
+                _FracSenShade = FracSenShade;
+            return Math.Max(FracSenAge, _FracSenShade);
         }
         else
-        {
-            FracSenAge = 0;
-        }
-        double _FracSenShade = 0;
-        if (CoverAbove >= CriticalCover)
-            _FracSenShade = FracSenShade;
-        return Math.Max(FracSenAge, _FracSenShade);
+            return 0;
     }
  #endregion
 }

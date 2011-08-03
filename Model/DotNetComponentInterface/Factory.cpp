@@ -214,32 +214,27 @@ void Factory::GetAllEvents(Instance^ Obj)
             {
             if (dynamic_cast<XmlComment^>(Child) == nullptr)
                {
-               FactoryProperty^ Parameter = FindProperty(Child);
                Type^ t = GetTypeOfChild(Child, Obj);
                if (t != nullptr && t->IsSubclassOf(Instance::typeid))
                   {
                   // Create a child instance - indirect recursion.
                   Instance^ ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                   Obj->Add(ChildInstance);   
-                  if (Parameter != nullptr && Parameter->IsParam && !Parameter->TypeName->Contains("System::"))
-                     Parameter->SetObject(ChildInstance);
 
-                  // See if there is an array of the right type with the plural version of our child name
-                  // e.g. if Child is LeafCohort, look for a LeafCohorts member.
-                  String^ PluralName = CalcParentName(Child) + "s";
-                  for each (FactoryProperty^ Property in RegisteredProperties)
+                  FactoryProperty^ Parameter = FindProperty(Child);
+                  if (XmlHelper::Name(Child)->Contains("["))
                      {
-                     if (Property->FQN == PluralName)
-                        {
-                        // Found a list - see if it is the right type.
-                        if (Property->TypeName->Contains("List"))
-                           {
-                           // It is the right type so add our newly created child to the list.
-                           Property->AddToList(ChildInstance);
-                           }
-                        break;
-                        }
+                     String^ ArrayName = XmlHelper::Name(Child);
+                     StringManip::SplitOffBracketedValue(ArrayName, '[', ']');
+                     XmlHelper::SetName(Child, ArrayName);
+                     Parameter = FindProperty(Child);
+                     if (Parameter == nullptr)
+                        throw gcnew Exception("Cannot find array: " + ArrayName);
+                     Parameter->AddToList(ChildInstance);
                      }
+
+                  else if (Parameter != nullptr && Parameter->IsParam && !Parameter->TypeName->Contains("System::"))
+                     Parameter->SetObject(ChildInstance);
                   }
                else if (Child->Name == "Memo")
                   {
@@ -249,6 +244,7 @@ void Factory::GetAllEvents(Instance^ Obj)
                   throw gcnew Exception("Cannot have a blank value for property: " + Child->Name);
                else if (Child->HasChildNodes)
                   {
+                  FactoryProperty^ Parameter = FindProperty(Child);                  
                   if (Parameter == nullptr)
                      throw gcnew Exception("Cannot set value of property: " + Child->Name + " in object: " + Obj->InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                   else
