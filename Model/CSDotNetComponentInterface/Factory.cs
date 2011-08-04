@@ -280,32 +280,28 @@ public class Factory
             {
                 if (Child.GetType() != typeof(XmlComment))
                 {
-                    FactoryProperty Parameter = FindProperty(Child);
                     Type t = GetTypeOfChild(Child, Obj);
                     if ((t != null) && (t.IsSubclassOf(typeof(Instance))))
                     {
                         // Create a child instance - indirect recursion.
                         Instance ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);
                         Obj.Add(ChildInstance);
-                        if ((Parameter != null) && (Parameter.IsParam && !Parameter.TypeName.Contains("System::")))
+
+                        FactoryProperty Parameter = FindProperty(Child);
+                        if (XmlHelper.Name(Child).Contains("["))
+                        {
+                            String ArrayName = XmlHelper.Name(Child);
+                            StringManip.SplitOffBracketedValue(ref ArrayName, '[', ']');
+                            XmlHelper.SetName(Child, ArrayName);
+                            Parameter = FindProperty(Child);
+                            if (Parameter == null)
+                                throw new Exception("Cannot find array: " + ArrayName);
+                            Parameter.AddToList(ChildInstance);
+                        }
+
+                        else if ((Parameter != null) && (Parameter.IsParam && !Parameter.TypeName.Contains("System::")))
                             Parameter.SetObject(ChildInstance);
 
-                        // See if there is an array of the right type with the plural version of our child name
-                        // e.g. if Child is LeafCohort, look for a LeafCohorts member.
-                        String PluralName = CalcParentName(Child) + "s";
-                        foreach (FactoryProperty Property in RegisteredProperties)
-                        {
-                            if (Property.FQN == PluralName)
-                            {
-                                // Found a list - see if it is the right type.
-                                if (Property.TypeName.Contains("List"))
-                                {
-                                    // It is the right type so add our newly created child to the list.
-                                    Property.AddToList(ChildInstance);
-                                }
-                                break;
-                            }
-                        }
                     }
                     else if (Child.Name == "Memo")
                     {
@@ -315,6 +311,7 @@ public class Factory
                         throw new Exception("Cannot have a blank value for property: " + Child.Name);
                     else if (Child.HasChildNodes)
                     {
+                        FactoryProperty Parameter = FindProperty(Child);
                         if (Parameter == null)
                             throw new Exception("Cannot set value of property: " + Child.Name + " in object: " + Obj.InstanceName + ". The property must have either a [Param] or [Input] attribute.");
                         else

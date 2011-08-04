@@ -64,16 +64,16 @@ public class LinkField
             Assembly ProbeInfo = Types.GetProbeInfoAssembly();
 
             String TypeToFind = Field.FieldType.Name;
-            String NameToFind = Field.Name;
+            String NameToFind;
+            if (LinkAttr._Path == null)
+                NameToFind = Field.Name;
+            else
+                NameToFind = LinkAttr._Path;
 
             if (IsAPSIMType(TypeToFind))
             {
                 if (LinkAttr._Path == null)
                     NameToFind = null; // default is not to use name.
-                else
-                {
-                    NameToFind = LinkAttr._Path;
-                }
                 if (NameToFind != null && NameToFind.Contains("."))
                     ReferencedObject = GetSpecificApsimComponent(NameToFind);
                 else
@@ -108,7 +108,7 @@ public class LinkField
         // Check our children first.
         foreach (NamedItem Child in In.Children)
         {
-            if (NameToFind == Child.Name && Utility.IsOfType(Child.GetType(), TypeToFind))
+            if (NameToFind.ToLower() == Child.Name.ToLower() && Utility.IsOfType(Child.GetType(), TypeToFind))
                 return Child;
         }
 
@@ -116,11 +116,11 @@ public class LinkField
         Instance Parent = In.Parent;
         while (Parent != null)
         {
-            if (Parent.Name == TypeToFind)
+            if (Parent.Name.ToLower() == TypeToFind.ToLower())
                 return Parent;
             foreach (NamedItem Sibling in Parent.Children)
             {
-                if (NameToFind == Sibling.Name && Utility.IsOfType(Sibling.GetType(), TypeToFind))
+                if (NameToFind.ToLower() == Sibling.Name.ToLower() && Utility.IsOfType(Sibling.GetType(), TypeToFind))
                     return Sibling;
             }
             Parent = Parent.Parent;
