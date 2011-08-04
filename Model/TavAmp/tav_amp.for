@@ -20,8 +20,8 @@
 
 *+ Local Variables
       integer, parameter   :: record_length = 200
-      integer, parameter   :: first_year = 1850
-      integer, parameter   :: last_year = 2020
+      integer, parameter   :: first_year = 1600
+      integer, parameter   :: last_year = 2300
       character (len=1), parameter    :: comment = '!'
       character (len=1), parameter    :: blank = ' '
       integer              :: data_end = record_length
