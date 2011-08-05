@@ -18,10 +18,10 @@ rem Make the JobScheduler binary files readonly so that CleanAll doesn't remove 
 for %%f in (JobScheduler*.exe) do attrib +R %%f
 for %%f in (JobScheduler*.dll) do attrib +R %%f
 
+cd ..\Build
 %Apsim%\..\BuildLibraries\Tcl\ASTcl\bin\tclsh.exe WriteVersionNumber.tcl
 
 rem Now go and do full build and run.
-cd ..\Build
 ..\JobScheduler BuildAll.xml
 
 set APSIM=
