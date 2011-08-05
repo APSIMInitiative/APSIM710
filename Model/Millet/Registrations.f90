@@ -1,4 +1,5 @@
 module Registrations
+   use infrastructure
    use DataTypes
    type IDsType
       sequence
@@ -25,7 +26,6 @@ module Registrations
    contains
 
       subroutine doRegistrations(id)
-         use Infrastructure
          type(IDsType) :: id
 
          id%incorp_fom = add_registration(eventReg, 'incorpfom', FomLayerTypeDDML, '')
@@ -45,6 +45,37 @@ module Registrations
          id%newmet = add_registration(respondToEventReg, 'newmet', NewMetTypeDDML, '')
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
+      end subroutine
+	  
+! ====================================================================
+! This routine registers variables needec by sysbal
+! ====================================================================
+      subroutine doSysbalRegistrations()
+      integer :: id
+      character DDML*128
+
+      DDML = '<type kind="single" />'
+
+         ! WATER
+      id = add_registration(respondToGetReg, 'ep', floatTypeDDML, '') ! 'mm')
+
+         ! P
+!      id = add_registration(respondToGetReg, 'p_green', DDML , 'g/m^2', 'P in green')
+!      id = add_registration(respondToGetReg, 'p_senesced', DDML, 'g/m^2', 'P in senesced')
+!      id = add_registration(respondToGetReg, 'p_dead', DDML, 'g/m^2', 'P in dead')
+
+         ! N
+      id = add_registration(respondToGetReg, 'n_green', DDML, '') ! 'g/m^2')
+      id = add_registration(respondToGetReg, 'n_senesced', DDML, '') ! 'g/m^2')
+      id = add_registration(respondToGetReg, 'n_dead', DDML, '') ! 'g/m^2')
+
+         ! DM
+      id = add_registration(respondToGetReg, 'dm_green', DDML, '') ! 'g/m^2')
+      id = add_registration(respondToGetReg, 'dm_senesced', DDML, '') ! 'g/m^2')
+      id = add_registration(respondToGetReg, 'dm_dead', DDML, '') ! 'g/m^2')
+      id = add_registration(respondToGetReg, 'dlt_dm_green', DDML, '') ! 'g/m^2'
+
+      return
       end subroutine
 end module Registrations
 

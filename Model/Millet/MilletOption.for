@@ -2,7 +2,6 @@
       Recursive
      :subroutine Millet_water_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -53,7 +52,6 @@
       Recursive
      :subroutine Millet_nit_stress(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -114,7 +112,6 @@
       Recursive
      :subroutine Millet_temp_stress(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -158,7 +155,6 @@
       Recursive
      :subroutine Millet_light_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -197,7 +193,6 @@
       Recursive
      :subroutine millet_bio_TE (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -244,7 +239,6 @@
       Recursive
      :subroutine Millet_bio_RUE (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -291,7 +285,6 @@
       Recursive
      :subroutine Millet_transpiration_eff (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -337,7 +330,6 @@
       Recursive
      :subroutine Millet_water_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -380,7 +372,6 @@
       Recursive
      :subroutine Millet_root_depth (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -431,7 +422,6 @@
       Recursive
      :subroutine Millet_root_depth_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -489,7 +479,6 @@
       Recursive
      :subroutine Millet_water_stress(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -584,7 +573,6 @@
       Recursive
      :subroutine Millet_water_uptake (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -649,7 +637,6 @@
       Recursive
      :subroutine Millet_leaf_area_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -694,7 +681,6 @@
       Recursive
      :subroutine Millet_leaf_no_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -739,7 +725,6 @@
       Recursive
      :subroutine Millet_leaf_no_pot (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -809,7 +794,6 @@ cjh special for erik - end
       Recursive
      :subroutine Millet_leaf_area_potential (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -873,7 +857,6 @@ cjh special for erik - end
       Recursive
      :subroutine Millet_leaf_area_stressed (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -923,7 +906,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_bio_actual (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -984,7 +966,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_bio_partition (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1057,7 +1038,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_bio_retrans (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1121,7 +1101,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_leaf_actual(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1164,7 +1143,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_height (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1218,7 +1196,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_bio_grain_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1411,7 +1388,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_leaf_death (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1449,7 +1425,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_leaf_area_sen (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1518,7 +1493,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_sen_bio (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1567,7 +1541,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_sen_nit (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1615,7 +1588,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1663,7 +1635,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1729,7 +1700,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_retrans (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1785,7 +1755,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1853,7 +1822,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_uptake (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1921,7 +1889,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_partition (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1965,7 +1932,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_nit_demand_est (Option)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2051,7 +2017,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_P_uptake (Option)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2112,7 +2077,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_p_stress_photo (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2159,7 +2123,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_p_stress_pheno (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2206,7 +2169,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_p_stress_expansion (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2257,7 +2219,6 @@ cjh special for erik - end
 *   Short description:
 *         Get current P stress factors (0-1)
 
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2308,7 +2269,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_P_demand_est (Option)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2356,7 +2316,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_P_conc (Option)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2397,7 +2356,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_Phos_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2443,7 +2401,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_plant_death (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2640,7 +2597,6 @@ cnh      real dlt_plants
       Recursive
      :subroutine millet_detachment(option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2702,7 +2658,6 @@ c in millet
       Recursive
      :subroutine millet_phenology (option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2813,7 +2768,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_phenology_init (option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments

@@ -1,7 +1,8 @@
 
       module MilletModule
       Use Registrations
-      Use CropLibrary 
+      Use CropLibrary
+      Use Infrastructure
 
 !      millet_array_sizes
 
@@ -736,7 +737,6 @@
       Recursive
      :subroutine Millet_prepare ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -787,7 +787,6 @@
       Recursive
      :subroutine millet_process ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -890,7 +889,6 @@ c+!!!!!!!!! check order dependency of deltas
       Recursive
      :subroutine millet_dead ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -920,7 +918,6 @@ c+!!!!!!!!! check order dependency of deltas
       Recursive
      :subroutine millet_harvest ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1178,7 +1175,6 @@ cejvo      leaf_no = sum_between (germ, harvest_ripe, g%leaf_no)
       Recursive
      :subroutine millet_zero_all_globals ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1620,7 +1616,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_zero_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1781,7 +1776,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_zero_daily_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1864,7 +1858,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_init ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1903,7 +1896,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_start_crop (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2025,7 +2017,6 @@ cjh      endif
       Recursive
      :subroutine millet_initiate ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2143,7 +2134,6 @@ cjh      endif
 *     ===========================================================
       subroutine millet_read_cultivar_params ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2333,7 +2323,6 @@ cgd   Eriks modifications for Leaf Area
 *     ===========================================================
       subroutine millet_read_root_params ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2477,7 +2466,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_get_other_parameters ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2519,7 +2507,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_end_crop ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2663,7 +2650,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_store_value (array, value)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2702,7 +2688,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_ONtick (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -2739,7 +2724,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_ONnewmet (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -2779,7 +2763,6 @@ cgd   Eriks modifications for Leaf Area
       Recursive
      :subroutine millet_get_other_variables ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2924,7 +2907,6 @@ c+!!!!!!!! what to do if no waterbalance variables found
       Recursive
      :subroutine millet_set_other_variables ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2981,7 +2963,6 @@ c+!!!! perhaps we should get number of layers at init and keep it
       Recursive
      :subroutine millet_update_other_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3072,7 +3053,6 @@ c+!!!! perhaps we should get number of layers at init and keep it
      :                                           , fraction_to_Residue
      :                                           , max_part)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3149,7 +3129,6 @@ c+!!!! perhaps we should get number of layers at init and keep it
       Recursive
      :subroutine millet_set_my_variable (Variable_name)
 *     ===============================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3223,7 +3202,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_send_my_variable (variable_name)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4015,7 +3993,6 @@ cejvo
 *     ===========================================================
       subroutine millet_read_constants ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5099,7 +5076,6 @@ cpsc
       Recursive
      :subroutine millet_set_my_class (module_name)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5171,7 +5147,6 @@ cpsc
       Recursive
      :subroutine Main (action, data_string)
 *     ================================================================
-      Use infrastructure
       Use MilletModule
       implicit none
       ml_external Main
@@ -5302,7 +5277,6 @@ cjh special for erik - end
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use MilletModule
       
       ml_external doInit1
@@ -5318,7 +5292,6 @@ cjh special for erik - end
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use MilletModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)
@@ -5349,45 +5322,3 @@ cjh special for erik - end
       return
       end subroutine respondToEvent
 
-! ====================================================================
-! This routine registers variables needec by sysbal
-! ====================================================================
-      subroutine doSysbalRegistrations()
-      use Infrastructure
-      integer :: id
-      character DDML*128
-
-      DDML = '<type kind="single" />'
-
-         ! WATER
-      id = add_registration(respondToGetReg, 'ep'
-     :         , floatTypeDDML, '') ! 'mm')
-
-         ! P
-!      id = add_registration(respondToGetReg, 'p_green'
-!     :         , DDML , 'g/m^2', 'P in green')
-!      id = add_registration(respondToGetReg, 'p_senesced'
-!     :         , DDML, 'g/m^2', 'P in senesced')
-!      id = add_registration(respondToGetReg, 'p_dead'
-!     :         , DDML, 'g/m^2', 'P in dead')
-
-         ! N
-      id = add_registration(respondToGetReg, 'n_green'
-     :         , DDML, '') ! 'g/m^2')
-      id = add_registration(respondToGetReg, 'n_senesced'
-     :         , DDML, '') ! 'g/m^2')
-      id = add_registration(respondToGetReg, 'n_dead'
-     :         , DDML, '') ! 'g/m^2')
-
-         ! DM
-      id = add_registration(respondToGetReg, 'dm_green'
-     :         , DDML, '') ! 'g/m^2')
-      id = add_registration(respondToGetReg, 'dm_senesced'
-     :         , DDML, '') ! 'g/m^2')
-      id = add_registration(respondToGetReg, 'dm_dead'
-     :         , DDML, '') ! 'g/m^2')
-      id = add_registration(respondToGetReg, 'dlt_dm_green'
-     :         , DDML, '') ! 'g/m^2'
-
-      return
-      end subroutine

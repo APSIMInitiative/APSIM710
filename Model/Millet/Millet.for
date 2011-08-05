@@ -8,7 +8,6 @@
       Recursive
      :subroutine millet_dm_init (dm_green, dm_plant_min)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -105,7 +104,6 @@
       Recursive
      :subroutine millet_dm_retranslocate (dm_retranslocate)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -226,7 +224,6 @@
       Recursive
      :subroutine millet_leaf_number_final (leaf_no_final)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -336,7 +333,6 @@ cgd
       Recursive
      :subroutine millet_leaf_appearance (dlt_leaf_no_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -423,7 +419,6 @@ cgd
       Recursive
      :subroutine millet_leaf_area ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -508,7 +503,6 @@ cejvo
       Recursive
      :subroutine millet_N_init (N_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -566,7 +560,6 @@ cejvo
       Recursive
      :subroutine millet_tt (dlt_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -627,7 +620,6 @@ cejvo
       Recursive
      :subroutine millet_phenology_init_o (phase_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -739,7 +731,6 @@ cjh
       Recursive
      :subroutine millet_devel (dlt_stage, current_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -797,7 +788,6 @@ cjh      dlt_stage = l_bound(new_stage - g%current_stage,0.0)
       Recursive
      :subroutine millet_phase_devel (phase_devel)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -844,7 +834,6 @@ cjh         phase_devel = 0.0
       Recursive
      :real function millet_germination (current_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -909,7 +898,6 @@ cjh         phase_devel = 0.0
       Recursive
      :real function millet_phase_tt (stage_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -951,7 +939,6 @@ cjh  changed 0.0 to 1.0
       Recursive
      :subroutine millet_leaf_death_o (dlt_leaf_no_dead)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1077,7 +1064,6 @@ cccc
       Recursive
      :subroutine millet_N_senescence (dlt_N_senesced)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1119,7 +1105,6 @@ cccc
       Recursive
      :subroutine millet_update ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1429,7 +1414,6 @@ cjh
       Recursive
      :subroutine millet_check_bounds ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1635,7 +1619,6 @@ cjh
       Recursive
      :subroutine millet_totals ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1761,7 +1744,6 @@ cpsc  add above
       Recursive
      :subroutine millet_event ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1859,7 +1841,6 @@ cpsc  add above
       Recursive
      :subroutine millet_root_distrib (root_array, root_sum)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1923,7 +1904,6 @@ cpsc  add above
       Recursive
      :subroutine millet_root_incorp (dlt_dm_root, dlt_N_root)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2000,7 +1980,6 @@ cjh      character  string*(ACTION_data_size) ! output string
       Recursive
      :subroutine millet_tillering ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2051,7 +2030,6 @@ cjh      character  string*(ACTION_data_size) ! output string
       Recursive
      :subroutine millet_tiller_appearance_tt (dlt_tiller_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2175,7 +2153,6 @@ cgol bounds added to tiller number determination
       Recursive
      :subroutine millet_tiller_appearance_dm (dlt_tiller_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2231,7 +2208,6 @@ cgol bounds added to tiller number determination
      :                                    , dm_tiller_independence
      :                                    , N_tiller_independence)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2298,7 +2274,6 @@ cgol bounds added to tiller number determination
      :subroutine millet_tiller_initiate (dm_tiller_independence
      :                                , N_tiller_independence)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2449,7 +2424,6 @@ cgol bounds added to tiller number determination
      :        , g_swdef_expansion
      :        , dlt_lai_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2539,7 +2513,6 @@ cgol bounds added to tiller number determination
      :        , c_b_slope2
      :        , leaf_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2622,7 +2595,6 @@ cgol bounds added to tiller number determination
      :        , g_dm_green
      :        , g_dm_senesced)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2835,7 +2807,6 @@ cgol bounds added to tiller number determination
      :        , g_dm_green
      :        , g_dm_senesced)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3050,7 +3021,6 @@ cgol bounds added to tiller number determination
      :        ,               c_temp_grain_crit_stress
      :        ,               dlt_tt_heat_stress)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3108,7 +3078,6 @@ cgol bounds added to tiller number determination
      :        , c_grain_N_conc_min
      :        , grain_num)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3261,7 +3230,6 @@ cgol bounds added to tiller number determination
      :        , c_grain_N_conc_min
      :        , grain_num)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3420,7 +3388,6 @@ c     :                           , 'grain_no_fract')
      :        , g_nfact_grain_conc
      :        , dlt_dm_grain_demand)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3550,7 +3517,6 @@ c     :                           , 'grain_no_fract')
      :        , g_swdef_expansion
      :        , g_nfact_grain_conc)
 *     ===========================================================
-      Use infrastructure
       Use CropLibrary
       implicit none
 
@@ -3637,7 +3603,6 @@ c     :                           , 'grain_no_fract')
      :        , g_nfact_grain_conc
      :        , dlt_N_retrans)
 *     ===========================================================
-      Use infrastructure
       Use CropLibrary
       implicit none
 
@@ -3780,7 +3745,6 @@ csc  true....
      :        , dlt_N_green
      :                     )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3899,7 +3863,6 @@ csc  true....
      :        , N_conc_max
      :        , N_conc_min)
 *     ===========================================================
-      Use infrastructure
       Use CropLibrary
       implicit none
 
@@ -4047,7 +4010,6 @@ csc  true....
      :                        , g_cover_green
      :                         )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4102,7 +4064,6 @@ csc  true....
      :        , P_conc_max
      :        , P_conc_min)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4194,7 +4155,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :              , pfact
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4275,7 +4235,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , g_P_demand)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4353,7 +4312,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , g_p_conc_max
      :        , g_plant_p)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4417,7 +4375,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :                          , g_plants
      :                          , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4472,7 +4429,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :            , g_plants
      :            , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4537,7 +4493,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :          , g_plants
      :          , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4623,7 +4578,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :            , g_plants
      :            , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4699,7 +4653,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :            , g_plants
      :            , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4779,7 +4732,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :                    , dlt_plants
      :                       )
 *     ==========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4833,7 +4785,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , c_num_weighted_temp
      :        , killfr)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4896,7 +4847,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , g_plants
      :        , killfr)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4973,7 +4923,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , p_head_grain_no_max
      :        , c_barren_crit)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5030,7 +4979,6 @@ cnh         P_conc_min = linear_interp_real (current_stage_code
      :        , g_dm_senesced
      :        , g_dm_dead)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5100,7 +5048,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :            , g_plants
      :            , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5176,7 +5123,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :        , g_plants
      :        , killfr)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5248,7 +5194,6 @@ cjh special for erik - start
       Recursive
      :subroutine millet_stop_growth (switch)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5284,7 +5229,6 @@ cjh special for erik - end
       Recursive
      :subroutine millet_cleanup ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
