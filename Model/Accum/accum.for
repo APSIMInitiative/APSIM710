@@ -1,6 +1,7 @@
       module AccumModule
       use Registrations
-      
+      use infrastructure
+  
       integer Max_variables            ! Maximum number of variables.
       parameter (Max_variables=50)
 
@@ -37,7 +38,6 @@
 * ====================================================================
        subroutine Accum_Init ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -76,7 +76,6 @@
 * ====================================================================
        subroutine Accum_read_param ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -111,10 +110,10 @@
        integer Numvals                 ! Number of values
        integer Pos                     ! Position in string
        character Size_string*50        ! string version of size
-	   integer I
-	   integer Dummy
-	   integer nDigits
-	   integer idx
+       integer I
+       integer Dummy
+       integer nDigits
+       integer idx
 
 *- Implementation Section ----------------------------------
 
@@ -129,7 +128,7 @@
          Pos = index(g%variable_names(indx), '[')
          if (Pos .eq. 0) then
             call Fatal_error(Err_internal, Err2)
-			
+
          else
             ! Extract size component.
             idx = Pos-1
@@ -170,7 +169,7 @@
                endif
             endif
          endif
-		 
+ 
  
 10    continue
 
@@ -183,7 +182,6 @@
 * ====================================================================
        subroutine Accum_zero_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -212,7 +210,6 @@
 * ====================================================================
        subroutine Accum_get_other_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -252,7 +249,6 @@
 * ====================================================================
        subroutine Accum_Send_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -373,7 +369,6 @@
 * ====================================================================
        subroutine Main (Action, Data)
 * ====================================================================
-      Use infrastructure
       Use AccumModule
       implicit none
       ml_external Main
@@ -418,7 +413,6 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use AccumModule
       
       ml_external doInit1
@@ -432,7 +426,6 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

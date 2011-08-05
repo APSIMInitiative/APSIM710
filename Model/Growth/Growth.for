@@ -7141,7 +7141,6 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
      :                                           , fraction_to_Residue
      :                                           , max_part)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7310,7 +7309,6 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use GrowthModule
 
       ml_external doInit1
@@ -7325,7 +7323,6 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use GrowthModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

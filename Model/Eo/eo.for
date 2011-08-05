@@ -1,5 +1,6 @@
       module EoModule
       use Registrations
+      use infrastructure
 !     ================================================================
 !      Eo constants
 !     ================================================================
@@ -198,7 +199,6 @@
 *====================================================================
       subroutine Eo_zero_variables ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -313,7 +313,6 @@
 *====================================================================
       subroutine Eo_zero_daily_variables ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -340,7 +339,6 @@
 *====================================================================
       subroutine Eo_init ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -382,7 +380,6 @@
 *===========================================================
       subroutine Eo_read_param ()
 *===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -639,7 +636,6 @@
 *===========================================================
       subroutine Eo_read_constants ()
 *===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -859,7 +855,6 @@
 *====================================================================
       subroutine Eo_get_other_var_ini ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1047,7 +1042,6 @@
 *================================================================
       subroutine Eo_prepare ()
 *================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1075,7 +1069,6 @@
 *====================================================================
       subroutine Eo_get_other_variables ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1366,7 +1359,6 @@ cjh   crop type.
 *====================================================================
       subroutine Eo_pen_mon ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1460,7 +1452,6 @@ cjh   crop type.
 *====================================================================
       subroutine Eo_radiation (radn_net)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1535,7 +1526,6 @@ cjh   crop type.
 *====================================================================
       subroutine Eo_vp (vapour_pressure, temperature)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1568,7 +1558,6 @@ cjh   crop type.
 *====================================================================
       subroutine Eo_esat (esat)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1611,7 +1600,6 @@ cjh   crop type.
 *====================================================================
       subroutine Eo_da (da)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1686,7 +1674,6 @@ cjh      print*, 'da, source = ', da,'  ', trim(g%vpd_source)
 *====================================================================
       subroutine Eo_aerodynamic (ra)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1859,7 +1846,6 @@ c     *           usuhm = 1.0,          ! (max of us/uh)
      :                     , rc_kelliher
      :                     , rc_raupach)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2044,7 +2030,6 @@ c     *           usuhm = 1.0,          ! (max of us/uh)
       subroutine Eo_wind_conv (z1, d1, zruff1, windz1
      :                        , z2, d2, zruff2, windz2)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2122,7 +2107,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       real function Eo_lambda ()
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2157,7 +2141,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       subroutine Eo_epsilon (epsilon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2210,7 +2193,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       subroutine Eo_penman (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2278,7 +2260,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       subroutine Eo_penman_doorenbos (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2519,7 +2500,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       subroutine Eo_penman_monteith (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2575,7 +2555,6 @@ cjh!         conversion_height = c%zc_conversion + g%canopy_height
 *====================================================================
       subroutine Eo_penman_monteith_transp (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2629,7 +2608,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_radn_x_Kfunction (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2687,7 +2665,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_pm_x_kfunction (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2723,7 +2700,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_pm_x_cover (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2754,7 +2730,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_penman_x_cover (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2787,7 +2762,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_penman_doorenbos_x_cover (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2819,7 +2793,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_pm_plant (pen_mon)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2885,7 +2858,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_priestly_taylor (priestly_taylor)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2931,7 +2903,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Eo_send_my_variable (Variable_name)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3133,7 +3104,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *================================================================
       subroutine Eo_process ()
 *================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3157,7 +3127,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *     ================================================================
       subroutine Eo_set_my_variable (Variable_name)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3204,7 +3173,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *     ===========================================================
       subroutine eo_ritchie (eo)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3271,7 +3239,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *     ===========================================================
       real function eo_eeq_fac ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3355,7 +3322,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 *====================================================================
       subroutine Main (Action, Data_string)
 *====================================================================
-      Use infrastructure
       use EoModule
       implicit none
       ml_external Main
@@ -3415,7 +3381,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use EoModule
 
       ml_external doInit1
@@ -3428,7 +3393,6 @@ cjh      print*, 'g%da, fe = ', g%da, fe
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

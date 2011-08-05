@@ -1,6 +1,7 @@
       module GraspModule
       use Registrations
       Use ConstantsModule
+      use infrastructure	  
 
 !      ====================================================================
 !      grasp_array_sizes
@@ -382,7 +383,6 @@
 *     ===========================================================
       subroutine grasp_process ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -435,7 +435,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_prepare ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -472,7 +471,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_phenology ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -509,7 +507,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_devel (dlt_stage, current_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -586,7 +583,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_canopy_height (dlt_canopy_height)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -627,7 +623,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_transpiration ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -697,7 +692,6 @@ c        do N at start of day to calculate N indexes for growth.
 *     ===========================================================
       subroutine grasp_calculate_swi ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -747,7 +741,6 @@ c     throughout grasp; rawswi_total, swi_total, swi(layer).
 *     ===========================================================
       subroutine grasp_root_depth (dlt_root_depth)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -778,7 +771,6 @@ c     throughout grasp; rawswi_total, swi_total, swi(layer).
 *     ===========================================================
       real function  grasp_sw_pot ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -827,7 +819,6 @@ c     be removed. FIXME!
 *     ===========================================================
       subroutine grasp_sw_uptake (dlt_sw_dep)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -885,7 +876,6 @@ c         write (*,*) 'g%sw(',layer,') =', g%sw_dep(layer)
 *     ===========================================================
       real function grasp_swi (layer)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -961,7 +951,6 @@ c         write (*,*) 'g%sw(',layer,') =', g%sw_dep(layer)
 *     ===========================================================
       real function grasp_sw_supply (layer)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1016,7 +1005,6 @@ c$$$      endif
 *     ===========================================================
       real function grasp_clothesline ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1059,7 +1047,6 @@ c cover...  FIXME!
 *     ===========================================================
       real function grasp_vpd_hgt_ndx (sward_mm)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1105,7 +1092,6 @@ c cover...  FIXME!
 *     ===========================================================
       real function grasp_dm_photo ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1155,7 +1141,6 @@ c     radiation under stressed conditions.
 *     ===========================================================
       real function grasp_tfact ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1196,7 +1181,6 @@ c     photosynthesis (0-1)
 *     ===========================================================
       subroutine grasp_radn_int (radn_int)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1243,7 +1227,6 @@ c     photosynthesis (0-1)
 *     ===========================================================
       real function grasp_transp_eff ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1293,7 +1276,6 @@ c     effect on TE.
 *     ===========================================================
       real function grasp_vpd ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1349,7 +1331,6 @@ c     Get vapour pressure deficit when net radiation is positive.
 *     ===========================================================
       subroutine grasp_biomass ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1395,7 +1376,6 @@ c     Get vapour pressure deficit when net radiation is positive.
 *     ===========================================================
       subroutine grasp_basal_area_init (basal_area)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1453,7 +1433,6 @@ c     Get vapour pressure deficit when net radiation is positive.
       subroutine grasp_dm_sen (dlt_dm_sen, dlt_dm_frost,
      :     dlt_dm_pheno, dlt_dm_water)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1520,7 +1499,6 @@ c     Get vapour pressure deficit when net radiation is positive.
 *     ===========================================================
       subroutine grasp_sen_frost(sen_fac)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1574,7 +1552,6 @@ c     Get vapour pressure deficit when net radiation is positive.
 *     ===========================================================
       subroutine grasp_sen_pheno(sen_fac)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1622,7 +1599,6 @@ c     Get vapour pressure deficit when net radiation is positive.
 *     ===========================================================
       subroutine grasp_sen_water (sen_fac)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1703,7 +1679,6 @@ C     Limit cover to potential maximum
       subroutine grasp_dm_production (dlt_dm, dlt_dm_transp,
      :     dlt_dm_photo, dlt_dm_regrow)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1776,7 +1751,6 @@ C     Limit cover to potential maximum
 *     ===========================================================
       subroutine grasp_dm_partition (dlt_dm_plant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1839,7 +1813,6 @@ C     Limit cover to potential maximum
 *     ===========================================================
       real function grasp_dm_regrowth ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1877,7 +1850,6 @@ C     Limit cover to potential maximum
 *     ===========================================================
       real function grasp_rfact ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1910,7 +1882,6 @@ c     NB. straight from grasp - may be another method:
 *     ===========================================================
       subroutine grasp_nitrogen ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1938,7 +1909,6 @@ c     NB. straight from grasp - may be another method:
 *     ===========================================================
       subroutine grasp_N_uptake ( dlt_N_uptake, dlt_No3 )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2041,7 +2011,6 @@ c     PdeV 7/96.
 *     ===========================================================
       real function grasp_nfact ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2120,7 +2089,6 @@ c      need to be changed. FIXME!
 *     ===========================================================
       subroutine grasp_update ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2230,7 +2198,6 @@ c      write (*,*) 'trans_n:      ', g%acc_trans_for_n
 *     ===========================================================
       subroutine grasp_plant_death ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2258,7 +2225,6 @@ c      write (*,*) 'trans_n:      ', g%acc_trans_for_n
 *     ===========================================================
       subroutine grasp_detachment (detach)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2321,7 +2287,6 @@ C     Proportions are different for wet season or dry season.
 *     ===========================================================
       subroutine grasp_store_report_vars ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2366,7 +2331,6 @@ C     Proportions are different for wet season or dry season.
 *     ===========================================================
       real function grasp_total_cover ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2425,7 +2389,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_event ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2482,7 +2445,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_check_sw ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2562,7 +2524,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_zero_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2742,7 +2703,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_zero_daily_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2821,7 +2781,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_init ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2867,7 +2826,6 @@ c     Bound to reasonable values:
 *     ===========================================================
       subroutine grasp_save_yesterday ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2900,7 +2858,6 @@ c     write (*,*) 'biomass = ', g%biomass_yesterday
 *     ===========================================================
       subroutine grasp_balance_check ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3080,7 +3037,6 @@ cplp         call fatal_error(err_internal, 'Negative Pool Error')
 *     ================================================================
       real function grasp_radn_cover ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3120,7 +3076,6 @@ cpdev  bound required..
 *     ================================================================
       real function grasp_transp_cover ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3159,7 +3114,6 @@ cpdev  bound required?..
 *     ================================================================
       subroutine grasp_get_other_variables ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3323,7 +3277,6 @@ cpdev  bound required?..
 *     ================================================================
       subroutine grasp_set_other_variables ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3379,7 +3332,6 @@ cpdev  bound required?..
 *     ===============================================================
       subroutine grasp_set_my_variable (Variable_name)
 *     ===============================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3717,7 +3669,6 @@ cpdev  bound required?..
 *     ================================================================
       subroutine grasp_send_my_variable (variable_name)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4178,7 +4129,6 @@ cpdev. One of these is right. I don't know which...
 *     ===========================================================
       subroutine grasp_read_constants ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4436,7 +4386,6 @@ c     :                    , 0.0, 365.0)
 *     ===========================================================
       subroutine grasp_read_init_parameters (section_name)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4526,7 +4475,6 @@ c     :                    , 0.0, 365.0)
 *     ===========================================================
       subroutine grasp_read_parameters ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4828,7 +4776,6 @@ c     :                    , 0.0, 10000.0)
 *     ===========================================================
       subroutine grasp_write_summary ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4924,7 +4871,6 @@ c     :                    , 0.0, 10000.0)
 *     ===========================================================
       subroutine grasp_write_estab_summary ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5029,7 +4975,6 @@ c     :                    , 0.0, 10000.0)
 *     ===========================================================
       subroutine grasp_soil_loss ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5104,7 +5049,6 @@ c     :                    , 0.0, 10000.0)
       subroutine Grasp_Send_Crop_Chopped_Event ( dlt_crop_dm
      :                                           , dlt_dm_n)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5178,7 +5122,6 @@ c     :                    , 0.0, 10000.0)
 *     ===========================================================
       subroutine grasp_establish ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5250,7 +5193,6 @@ c     :                    , 0.0, 10000.0)
 *     ===========================================================
       subroutine grasp_kill ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5305,7 +5247,6 @@ C     zero a few important state variables
 *     ===========================================================
       subroutine Grasp_remove_crop_biomass (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5496,7 +5437,6 @@ C     zero a few important state variables
 *     ===========================================================
       subroutine Grasp_detach_crop_biomass (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -5636,7 +5576,6 @@ C     zero a few important state variables
 *     ================================================================
       subroutine Main (action, data_string)
 *     ================================================================
-      Use infrastructure
       Use GraspModule
       implicit none
       ml_external Main
@@ -5737,7 +5676,6 @@ C     zero a few important state variables
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use GraspModule
 
       ml_external doInit1
@@ -5751,7 +5689,6 @@ C     zero a few important state variables
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       Use GraspModule
       implicit none
       ml_external respondToEvent

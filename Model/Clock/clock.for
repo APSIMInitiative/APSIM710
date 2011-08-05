@@ -1,6 +1,7 @@
 C     Last change:  E     5 Dec 2000    8:52 am
       module ClockModule
       use Registrations
+      use infrastructure
 
       integer, parameter :: MAX_NUM_EVENTS = 50
       type ClockData
@@ -44,7 +45,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
       subroutine clock_init ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -160,7 +160,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
       subroutine clock_read_params ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -193,7 +192,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
       subroutine clock_read_timesteps ()
 * ====================================================================
       use DateModule
-      use Infrastructure
       implicit none
 
 *+  Purpose
@@ -242,7 +240,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
       subroutine clock_advance_clock ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -320,7 +317,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
        subroutine clock_send_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -587,7 +583,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
        subroutine clock_start ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -623,7 +618,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
        subroutine Clock_next_phase ()
 * ====================================================================
-      use Infrastructure
       implicit none
 
 *+  Purpose
@@ -684,7 +678,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
        subroutine Clock_idle_loop ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -710,7 +703,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 * ====================================================================
        character*(10) function Clock_time_string ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -765,7 +757,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 ! ====================================================================
        subroutine Clock_DoTick ()
 ! ====================================================================
-      Use infrastructure
       implicit none
 
 !+  Calls
@@ -797,7 +788,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 ! ====================================================================
        function Clock_get_time()
 ! ====================================================================
-      Use infrastructure
 
       implicit none
 
@@ -881,7 +871,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
       subroutine Main (Action, Data)
 * ====================================================================
       use ClockModule
-      Use infrastructure
       implicit none
       ml_external Main
 
@@ -937,10 +926,9 @@ C     Last change:  E     5 Dec 2000    8:52 am
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use ClockModule
       ml_external doInit1
-!STDCALL(doInit1)	  
+!STDCALL(doInit1)
 
       call doRegistrations(id)
 
@@ -950,7 +938,6 @@ C     Last change:  E     5 Dec 2000    8:52 am
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

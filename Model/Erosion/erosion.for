@@ -1,5 +1,6 @@
       module ErosionModule
       use Registrations
+      use infrastructure	  
 !     ================================================================
 !     Erosion array sizes and constants
 !     ================================================================
@@ -106,7 +107,6 @@
 * ====================================================================
       subroutine erosion_init ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -177,7 +177,6 @@
 * ====================================================================
       subroutine erosion_write_summary ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -306,7 +305,6 @@
 * ====================================================================
       subroutine erosion_read_param ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -543,7 +541,6 @@ c     :   , 1.0)                 ! Upper Limit for bound checking
 * ====================================================================
       subroutine erosion_zero_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -602,7 +599,6 @@ c      g%total_cover  = 0.0
 *     ===========================================================
       subroutine erosion_zero_daily_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -645,7 +641,6 @@ c      g%resid_cover = 0.0
 * ====================================================================
       subroutine erosion_get_other_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -791,7 +786,6 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
 * ====================================================================
       subroutine erosion_set_my_variable (variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -844,7 +838,6 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
 * ====================================================================
       subroutine erosion_set_other_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -895,7 +888,6 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
 * ====================================================================
       subroutine erosion_send_my_variable (variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1001,7 +993,6 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
 * ====================================================================
       subroutine erosion_process ( )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1050,7 +1041,6 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
 *     ===========================================================
       subroutine erosion_freeb (bed_loss, susp_loss)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1112,7 +1102,6 @@ cjh       (100*g/(1000*1000))/(g*1000/1000000) *mm  -> t/ha
 *     ===========================================================
       subroutine erosion_rose (bed_loss, susp_loss)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1185,7 +1174,6 @@ cjh           what is the unit conversion here???
 *     ================================================================
       subroutine erosion_move_profile ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1240,7 +1228,6 @@ c      write (*,*) 'xxx',g%dlt_dlayer, dlt_bed_depth
 *     ================================================================
       subroutine erosion_bomb_run ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1271,7 +1258,6 @@ c      write (*,*) 'xxx',g%dlt_dlayer, dlt_bed_depth
 *     ================================================================
       subroutine erosion_move_dlayr (dlt_dlayer, dlt_bed_depth)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1399,7 +1385,6 @@ c     What happens when layer completely eroded?
 *     ================================================================
       subroutine erosion_end_run ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1465,7 +1450,6 @@ c     What happens when layer completely eroded?
 * ====================================================================
       subroutine Main (Action, Data_string)
 * ====================================================================
-      Use infrastructure
       Use ErosionModule
       implicit none
       ml_external Main
@@ -1537,7 +1521,6 @@ c     What happens when layer completely eroded?
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use ErosionModule
       
       ml_external doInit1
@@ -1550,7 +1533,6 @@ c     What happens when layer completely eroded?
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

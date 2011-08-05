@@ -1,5 +1,6 @@
       module CanopyModule
       use Registrations
+      use infrastructure
 ! ====================================================================
 !     canopy constants
 ! ====================================================================
@@ -62,7 +63,6 @@
       subroutine canopy_init ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -129,7 +129,6 @@
       subroutine canopy_find_crops ()
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -190,7 +189,6 @@
       subroutine canopy_zero_all_variables ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -229,7 +227,6 @@
       subroutine canopy_zero_variables ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -266,7 +263,6 @@
       subroutine canopy_get_other_variables ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -409,7 +405,6 @@
       subroutine canopy_send_my_variable (Variable_name)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -540,7 +535,6 @@ c      integer    canopy_crop_number    ! function
        integer function canopy_crop_number (module_id)
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -590,7 +584,6 @@ c      integer    canopy_crop_number    ! function
       subroutine canopy_prepare ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -636,7 +629,6 @@ c      integer    canopy_crop_number    ! function
       subroutine canopy_canopies_present (canopy_index, num_canopies)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -690,7 +682,6 @@ c      integer    canopy_crop_number    ! function
       subroutine canopy_top_layer_light (layer_light)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -769,7 +760,6 @@ c      integer    canopy_crop_number    ! function
       subroutine canopy_intc_light (intc_light)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -858,7 +848,6 @@ cjh            of the canopies within the layer.
       subroutine canopy_k_lai (K_lai_in_layer, K_lai, layer)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -912,7 +901,6 @@ c      real       canopy_fract_canopy   ! function
       real function canopy_fract_canopy (crop, layer)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -977,7 +965,6 @@ c      real       canopy_width          ! function
       real function canopy_width (height_in_canopy)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1010,7 +997,6 @@ c      real       canopy_width          ! function
       subroutine canopy_post ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1078,7 +1064,6 @@ c      real       canopy_width          ! function
       subroutine Main (Action, Data_string)
 *     ===========================================================
 
-      Use Infrastructure
       use CanopyModule
       implicit none
       ml_external Main
@@ -1144,7 +1129,6 @@ c      real       canopy_width          ! function
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use CanopyModule
       
       ml_external doInit1
@@ -1158,7 +1142,6 @@ c      real       canopy_width          ! function
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)
