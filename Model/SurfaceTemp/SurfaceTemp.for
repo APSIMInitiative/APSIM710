@@ -1,5 +1,6 @@
       module SoilTModule
       use Registrations
+      use infrastructure
 
 ! ====================================================================
 !      soilt parameters
@@ -79,7 +80,7 @@
       Recursive
      :Subroutine soilt_Init ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -115,7 +116,7 @@
       Recursive
      :Subroutine soilt_read_param ()
 * ====================================================================
-       Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -148,7 +149,7 @@
       Recursive
      :Subroutine soilt_zero_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -173,7 +174,7 @@
       Recursive
      :Subroutine soilt_manager (Event_action, Event_data)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -206,7 +207,7 @@
       Recursive
      :Subroutine soilt_get_other_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -320,7 +321,7 @@ cjh100   continue
       Recursive
      :Subroutine soilt_set_other_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -351,7 +352,7 @@ cjh100   continue
       Recursive
      :Subroutine soilt_Send_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -403,7 +404,7 @@ c     1     ttav,hv,g%es,beta2,g%ys,g%phis
       Recursive
      :Subroutine soilt_set_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -432,7 +433,7 @@ c     endif
       Recursive
      :Subroutine soilt_Process ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -461,7 +462,7 @@ c     endif
       Recursive
      :Subroutine soilt_Prepare ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -479,7 +480,7 @@ c     endif
       Recursive
      :Subroutine soilt_post ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -497,7 +498,7 @@ c     endif
       Recursive
      :Subroutine soilt_end_run ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -515,7 +516,7 @@ c     endif
       Recursive
      :Subroutine TC1MAX ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -718,7 +719,7 @@ c     endif
       Recursive
      :Subroutine SOILT (ys, phis, ratio_G, ratio_T)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -850,7 +851,7 @@ c     endif
       Recursive
      :Subroutine GETCK (VWC, C, K)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -893,7 +894,7 @@ c     endif
       Recursive
      :Subroutine ADMIT1 (P, Z, C, K, YS1, Y, RG, RT)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -980,7 +981,7 @@ c     endif
       Recursive
      :Subroutine Main (action, data_string)
 * ====================================================================
-      Use infrastructure
+
       Use SoilTModule
       implicit none
       ml_external Main
@@ -1050,7 +1051,7 @@ c     endif
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SoilTModule
       
       ml_external doInit1
@@ -1063,7 +1064,7 @@ c     endif
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

@@ -1459,7 +1459,7 @@ c      not have the same meaning.....
 *     ================================================================
       subroutine main (action, data_string)
 *     ================================================================
-      Use Infrastructure
+
       Use TreeModule
       implicit none
       ml_external Main
@@ -1552,7 +1552,7 @@ c      not have the same meaning.....
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use TreeModule
       
       ml_external doInit1
@@ -1566,7 +1566,7 @@ c      not have the same meaning.....
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

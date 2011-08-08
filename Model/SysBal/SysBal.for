@@ -1,6 +1,7 @@
       module SysBalModule
       use ComponentInterfaceModule
       use Registrations
+      use infrastructure
 ! ====================================================================
 !     sysbal constants
 ! ====================================================================
@@ -144,7 +145,7 @@
       subroutine sysbal_init ()
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -213,7 +214,7 @@
       subroutine sysbal_zero_all_variables ()
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -371,7 +372,7 @@
       subroutine sysbal_zero_variables ()
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -415,7 +416,7 @@
      :                                  )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       real       state_crop
@@ -556,7 +557,7 @@
      :                                  )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       real       state_crop
@@ -696,7 +697,7 @@
      :                                  )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       real       state_crop
@@ -849,7 +850,7 @@
      :                                  )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       real       state_crop
@@ -990,7 +991,7 @@
      :                                  )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       real       state_crop
@@ -1081,7 +1082,7 @@
       real function sysbal_get_variable (var_name, units)
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       character var_name*(*)
@@ -1164,7 +1165,7 @@
       integer function sysbal_get_last_index (var_name, units)
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
       character var_name*(*)
@@ -1211,7 +1212,7 @@
       subroutine sysbal_send_my_variable (Variable_name)
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Sub-Program Arguments
@@ -1505,7 +1506,7 @@
       subroutine sysbal_prepare ()
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -1551,7 +1552,7 @@
       subroutine sysbal_modules_present (sysbal_index, num_modules)
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Sub-Program Arguments
@@ -1604,7 +1605,7 @@
       subroutine sysbal_post ()
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -1887,7 +1888,7 @@
      :                      )
 !     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 
@@ -1987,7 +1988,7 @@
 ! ====================================================================
        subroutine sysbal_ONirrigated ()
 ! ====================================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2042,7 +2043,7 @@
 !===========================================================
       subroutine sysbal_ON_Crop_chopped ()
 !===========================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2144,7 +2145,7 @@
 !===========================================================
       subroutine sysbal_ONBiomassRemoved (variant)
 !===========================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2203,7 +2204,7 @@
 !===========================================================
       subroutine sysbal_ON_Residue_removed ()
 !===========================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2305,7 +2306,7 @@
 !================================================================
       subroutine sysbal_add_surfom ()
 !================================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2380,7 +2381,7 @@
 !================================================================
       subroutine sysbal_set_phosphorus_aware ()
 !================================================================
-      Use infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2411,7 +2412,7 @@
 ! ====================================================================
        subroutine sysbal_create ()
 ! ====================================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -2438,7 +2439,7 @@
 ! ====================================================================
        subroutine sysbal_ONExternalMassFlow (variant)
 ! ====================================================================
-      Use Infrastructure
+
       implicit none
 
       integer, intent(in) :: variant
@@ -2594,7 +2595,7 @@
       subroutine Main (Action, Data_string)
 !     ===========================================================
 
-      Use Infrastructure
+
       use SysBalModule
       implicit none
       ml_external Main
@@ -2669,7 +2670,7 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SysbalModule
 
       ml_external doInit1
@@ -2682,7 +2683,7 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       Use SysBalModule
       implicit none
       ml_external respondToEvent

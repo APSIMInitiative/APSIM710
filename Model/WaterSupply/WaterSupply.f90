@@ -2,6 +2,7 @@ module WaterSupplyModule
    use ComponentInterfaceModule
    use ConstantsModule
    use Registrations
+   use infrastructure
 
 !  ====================================================================
 !  WaterSupply constants
@@ -102,7 +103,7 @@ module WaterSupplyModule
 subroutine WaterSupply_read_parameters ()
 !  ===========================================================
 
-   Use Infrastructure
+
    Use ComponentInterfaceModule
    implicit none
 
@@ -307,7 +308,7 @@ end subroutine
 !  ====================================================================
 subroutine WaterSupply_read_constants ()
 !  ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -365,7 +366,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONprocess ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -437,7 +438,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_rain_capture ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -506,7 +507,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONrunoff (senderID, variant)
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: senderID  ! ID of sending module
@@ -593,7 +594,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_evaporation_seepage ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -682,7 +683,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_check_allocation ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -743,7 +744,7 @@ end subroutine
 !  ====================================================================
 subroutine WaterSupply_send_my_variable (variable_name)
 !  ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Sub-Program Arguments
@@ -840,7 +841,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONgimme_water ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -946,7 +947,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONwater_supplied ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1077,7 +1078,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONtop_up ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1136,7 +1137,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_zero_variables ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1179,7 +1180,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_zero_event_data ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1213,7 +1214,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_zero_daily_variables ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1255,7 +1256,7 @@ end subroutine
 !  ====================================================================
 subroutine WaterSupply_sum_report ()
 !  ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1373,7 +1374,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_set_my_variable (variable_name)
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1428,7 +1429,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_init ()
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1503,7 +1504,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONtick (variant)
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -1536,7 +1537,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONnewmet (variant)
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -1575,7 +1576,7 @@ end subroutine
 !  ===========================================================
 subroutine WaterSupply_ONnew_solute (variant)
 !  ===========================================================
-   Use infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1636,7 +1637,7 @@ end subroutine
 !  ====================================================================
 integer function WaterSupply_solute_number (solname)
 !  ====================================================================
-   Use infrastructure
+
    implicit none
 
 
@@ -1681,7 +1682,7 @@ end function
 !  ====================================================================
 subroutine WaterSupply_create ()
 !  ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+ Purpose
@@ -1715,7 +1716,7 @@ end module WaterSupplyModule
 subroutine doInit1()
 !* ====================================================================
    use WaterSupplyModule
-   Use infrastructure
+
    implicit none
    ml_external doInit1
 !STDCALL(doInit1)
@@ -1782,7 +1783,7 @@ end subroutine
 !  ====================================================================
 subroutine Main (action, data_string)
 !  ====================================================================
-   Use Infrastructure
+
    use WaterSupplyModule
    implicit none
    ml_external Main
@@ -1844,7 +1845,7 @@ end subroutine
 !  ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use WaterSupplyModule
-   Use infrastructure
+
    implicit none
    ml_external respondToEvent
 !STDCALL(respondToEvent)

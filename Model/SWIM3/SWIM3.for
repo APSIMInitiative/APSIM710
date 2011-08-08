@@ -3,6 +3,7 @@
 ! 3) Remove rainfall log and replace with average daily intensity
       Module APSwimModule
       use Registrations
+      use infrastructure	  
 
       character calc_section*(*)
       parameter (calc_section = 'calc')
@@ -351,7 +352,7 @@
 * ====================================================================
        subroutine apswim_Reset ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -399,7 +400,7 @@
 * ====================================================================
        subroutine apswim_read_param ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -905,7 +906,7 @@ c     :              1d0)
 * ====================================================================
        subroutine apswim_get_other_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -950,7 +951,7 @@ c     :              1d0)
 * ====================================================================
        subroutine apswim_set_other_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -972,7 +973,7 @@ c     :              1d0)
 * ====================================================================
        subroutine apswim_set_rain_variable ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1013,7 +1014,7 @@ c     :              1d0)
        subroutine apswim_Send_my_variable (Variable_name)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1469,7 +1470,7 @@ cnh added as per request by Dr Val Snow
 * ====================================================================
        subroutine apswim_set_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1590,7 +1591,7 @@ cnh added as per request by Dr Val Snow
 * ====================================================================
        subroutine apswim_zero_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1878,7 +1879,7 @@ c      eqr0 = 0d0
 * ====================================================================
        subroutine apswim_zero_module_links ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1901,7 +1902,7 @@ c      eqr0 = 0d0
 * ====================================================================
        subroutine apswim_Prepare ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1934,7 +1935,7 @@ c      eqr0 = 0d0
 * ====================================================================
        subroutine apswim_init_calc ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2086,7 +2087,7 @@ c   50    continue
        subroutine map_sw (old_n, old_dlayer, old_sw, 
      :                    new_n, new_dlayer, new_sw)
 * ====================================================================
-      Use infrastructure
+
       implicit none
       integer old_n, new_n
        double precision old_dlayer(:),old_sw(:),new_dlayer(:),new_sw(:)
@@ -2121,7 +2122,7 @@ c   50    continue
        subroutine apswim_interp (node,tpsi,tth,thd,hklg,hklgd)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2399,7 +2400,7 @@ c         MicroP = log10(Kdula/Kll)/log10(dul/ll)
        double precision function apswim_suction (node, theta)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2468,7 +2469,7 @@ c      endif
        logical function apswim_swim (timestep_start, timestep)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2778,7 +2779,7 @@ cnh
 * ====================================================================
        integer function apswim_time_to_mins (timestring)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2816,7 +2817,7 @@ cnh
 * ====================================================================
        subroutine apswim_Process ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2878,7 +2879,7 @@ cnh
 * ====================================================================
        subroutine apswim_sum_report ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3092,7 +3093,7 @@ c     :           ,-1d7/
 * ====================================================================
        subroutine apswim_reset_daily_totals()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -3133,7 +3134,7 @@ c     :           ,-1d7/
 * ====================================================================
        subroutine apswim_check_inputs ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -3150,7 +3151,7 @@ c     :           ,-1d7/
 * ====================================================================
        subroutine apswim_init_defaults ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
       real temp(0:M)
       integer numvals
@@ -3194,7 +3195,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_crain (time)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3218,7 +3219,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_cevap (time)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3248,7 +3249,7 @@ c      eqr0  = 0.d0
 *     ===========================================================
       double precision function dlinint (x, x_cord, y_cord, num_cord)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3328,7 +3329,7 @@ c      eqr0  = 0.d0
       double precision function ddivide (dividend, divisor, default)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3398,7 +3399,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        double precision function apswim_time (yy,dd,tt)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3445,7 +3446,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_init_change_units ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3486,7 +3487,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        real function apswim_eqrain (time)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3508,7 +3509,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_read_solute_params ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -3577,7 +3578,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_get_solute_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3608,7 +3609,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_set_solute_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3710,7 +3711,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_assign_crop_params ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 
@@ -3778,7 +3779,7 @@ c      eqr0  = 0.d0
 *     ===========================================================
       subroutine apswim_OnNewCrop (variant)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
       integer, intent(in) :: variant
 
@@ -3832,7 +3833,7 @@ c      eqr0  = 0.d0
 *     ===========================================================
       subroutine apswim_OnCropEnding (variant)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
       integer, intent(in) :: variant
 
@@ -3865,7 +3866,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_register_crop_outputs ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3896,7 +3897,7 @@ c      eqr0  = 0.d0
 * ====================================================================
        subroutine apswim_register_solute_outputs ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -3960,7 +3961,7 @@ c      eqr0  = 0.d0
        subroutine apswim_get_crop_variables ()
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4126,7 +4127,7 @@ c      eqr0  = 0.d0
        subroutine apswim_ONirrigated ()
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4321,7 +4322,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_OnSubSurfaceFlow ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -4355,7 +4356,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
        double precision function apswim_csol (solnum,time)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4408,7 +4409,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
        subroutine apswim_get_sw_uptake (ucrop, uarray,uflag)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4456,7 +4457,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
       subroutine PublishUptakes()
 * ====================================================================
-      Use infrastructure
+
       implicit none
       integer counter
       integer node
@@ -4487,8 +4488,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_get_supply (ucrop, uname, uarray, uunits,uflag)
 * ====================================================================
-      use Infrastructure
-      Use infrastructure
+
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4566,8 +4567,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *     ===========================================================
       double precision function dubound (var, upper)
 *     ===========================================================
-      use Infrastructure
-      Use infrastructure
+
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4593,8 +4594,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *     ===========================================================
       double precision function dlbound (var, lower)
 *     ===========================================================
-      use Infrastructure
-      Use infrastructure
+
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4621,7 +4622,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
        integer function apswim_solute_number (solname)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4655,7 +4656,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_get_rain_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4769,7 +4770,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *     ===========================================================
       subroutine apswim_pot_evapotranspiration (pot_eo)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4820,7 +4821,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       real function apswim_eeq_fac ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4858,7 +4859,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_read_constants ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5171,7 +5172,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_get_green_cover (cover_green_sum)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -5220,7 +5221,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_calc_evap_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -5287,7 +5288,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_recalc_eqrain ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -5327,7 +5328,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_tillage ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -5438,7 +5439,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_reset_water_balance (wc_flag, water_content)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5484,7 +5485,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        double precision function apswim_theta (i,suction)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5512,7 +5513,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine union_double_arrays (a,na,b,nb,c,nc,nc_max)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5574,8 +5575,8 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *     ===========================================================
       SUBROUTINE Shell_sort_double (array, size_of, key)
 *     ===========================================================
-      use Infrastructure
-      Use infrastructure
+
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5674,7 +5675,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 * ====================================================================
        subroutine apswim_hmin (deqrain, sstorage)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5734,7 +5735,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_freundlich (node, solnum, Cw, Ctot, dCtot)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5777,7 +5778,7 @@ cnh      end if
        double precision function apswim_solve_freundlich
      :                                      (node, solnum, Ctot)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5878,7 +5879,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_get_obs_evap_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5958,7 +5959,7 @@ cnh      end if
 * ====================================================================
        double precision function apswim_solute_amount (solnum,node)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5998,7 +5999,7 @@ cnh      end if
 * ====================================================================
        double precision function dbound (x,l,u)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6017,7 +6018,7 @@ cnh      end if
        double precision function apswim_solute_conc (solnum,node,amount)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6054,7 +6055,7 @@ cnh      end if
 * ====================================================================
        double precision function apswim_slupf (crop, solnum)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6075,7 +6076,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_check_demand ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Local Variables
@@ -6116,7 +6117,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_report_status ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6167,7 +6168,7 @@ cnh      end if
      :                                  ,SWIMNumPairs
      :                                  ,SWIMArraySize)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6293,7 +6294,7 @@ cnh      end if
      :                                 ,SWIMAmt
      :                                 ,SWIMNumPairs)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6344,7 +6345,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_conc_water_solute (solname,conc_water_solute)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6437,7 +6438,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_conc_adsorb_solute (solname,conc_adsorb_solute)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6538,7 +6539,7 @@ cnh      end if
       subroutine apswim_get_flow (flow_name, flow_array, flow_units
      :                           ,flow_flag)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6592,7 +6593,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_diagnostics (pold)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6649,7 +6650,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_get_residue_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+   Purpose
@@ -6680,7 +6681,7 @@ cnh      end if
 * ====================================================================
       double precision function apswim_cover_eos_redn  ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6737,7 +6738,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_on_new_solute (variant)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6849,7 +6850,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_ONtick (variant)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
       integer, intent(in) :: variant
@@ -6928,7 +6929,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_remove_interception ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+   Purpose
@@ -6977,7 +6978,7 @@ cnh      end if
 * ====================================================================
        subroutine apswim_remove_from_rainfall(amount)
 * ====================================================================
-      Use infrastructure
+
       implicit none
       double precision amount
       integer start                ! record for start of interception      
@@ -7034,7 +7035,7 @@ cnh      end if
 * ====================================================================
        double precision function apswim_water_table ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+   Purpose
@@ -7065,7 +7066,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_New_Profile_Event ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -7105,7 +7106,7 @@ cnh      end if
 !     ===========================================================
       double precision function NextLogTime(logtime,numpairs)
 !     ===========================================================
-      Use infrastructure
+
       implicit none
 
       double precision logtime(*)
@@ -7145,7 +7146,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_CN_runoff ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
       double precision rain
        double precision start_of_day
@@ -7173,7 +7174,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_cover_surface_runoff (cover_surface_runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7223,7 +7224,7 @@ cnh      end if
 *     ===========================================================
       subroutine apswim_scs_runoff (rain,runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7309,7 +7310,7 @@ c     :                          ,'runoff')
 * ====================================================================
        integer function find_swim_layer (depth)
 * ====================================================================       
-      Use Infrastructure
+
       implicit none
 
        double precision depth
@@ -7330,7 +7331,7 @@ c     :                          ,'runoff')
 * ====================================================================
        subroutine apswim_runoff_depth_factor (runoff_wf)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7440,7 +7441,7 @@ c     :                          ,'runoff')
        subroutine Main (Action, Data_string)
 * ====================================================================
 
-      Use infrastructure
+
       use APSwimModule
       implicit none
       ml_external Main
@@ -7509,7 +7510,7 @@ c     :                          ,'runoff')
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use APSwimModule
 
       ml_external doInit1
@@ -7523,7 +7524,7 @@ c     :                          ,'runoff')
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       Use ApswimModule
       implicit none
       ml_external respondToEvent

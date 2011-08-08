@@ -7,7 +7,7 @@ C     Last change:  DSG  15 Jun 2000    3:40 pm
 *     Short Description:
 *     gets soil surface conductance, surfcon
 *
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -65,7 +65,7 @@ C     Last change:  DSG  15 Jun 2000    3:40 pm
 *     Short description:
 *     solves for this time step
 *
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -204,7 +204,7 @@ cnh
 *     g%resp,p%slupf and g%csl were renamed to tslupf,trep,tcsl as there were
 *     already variables with those names in common
 
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -352,7 +352,7 @@ c        timestep??????? !!
 *     these were renamed (by prefixing with g%t - for temp)
 *     this include p%isol, g%csl, p%slos
 
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -833,7 +833,7 @@ cnh         if(g%psi(p%n).ge.0.)then
 *     Short description:
 *     gets water present in profile
 *
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -863,7 +863,7 @@ cnh         if(g%psi(p%n).ge.0.)then
 *     get and solve solute balance eqns
 *
 
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1361,7 +1361,7 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
 *     Thomas algorithm for solving tridiagonal system of eqns
 *     Allow for bypass flow if ib from 1 to N and rb nonzero
 *
-      Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1432,7 +1432,7 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
 *     Short description:
 *     gets psi and its partial derivitives
 *
-      Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1484,7 +1484,7 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
 *     Short description:
 *     returns transform p
 *
-      Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1529,7 +1529,7 @@ cnh     :              -g%qex(p%n)*g%csl(solnum,p%n)*apswim_slupf(1,solnum)
 * g%q->tq
 * tr->ttr
 
-            Use infrastructure
+
       implicit none
 
 *     Subroutine Arguments
@@ -1663,7 +1663,7 @@ cnh                  g(i)=1./(g%rc(i,iveg)/thk(i)+1./(gr*g%rld(i,iveg)*p%dx(i)))
 *     to rename them. I added a g%t (for temp) to start of name for
 *     g%psi, g%hk, g%p, g%th, p%x, p%dx,g%dc
 
-            Use infrastructure
+
       implicit none
 
 *     notes
@@ -1776,7 +1776,7 @@ c      end if
 *     g%t was renamed to ttt as g%t already exists in common
 *     g%h was renamed to tth as g%h already exists in common
 
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1817,7 +1817,7 @@ cnh      end if
 *     g%h was renamed to tth as g%h already exists in common
 *     g%roff was renamed to ttroff as g%roff already exists in common
 
-            Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1864,7 +1864,7 @@ cnh      end if
 *     gets new reference point x0new on drying curve if necessary
 *     returns 0, 1 or 2 for drying, scanning or wetting curve
 *
-      Use infrastructure
+
       implicit none
 
 *     Global Variables
@@ -1952,7 +1952,7 @@ cnh added following declarations
 *     gets flow rate into drain
 *     All units are mm and days
 
-      Use infrastructure
+
       implicit none
 
 *     Subroutine Arguments
@@ -2021,7 +2021,7 @@ cnh added following declarations
 *     ===========================================================
       double precision function Hooghoudt (d,m,L,r,Ke)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
