@@ -38,7 +38,7 @@
       subroutine doInit1()
 * ====================================================================
       use CropModData
-      Use infrastructure
+      use CropModModule
       implicit none
       ml_external doInit1
 !STDCALL(doInit1)
@@ -530,7 +530,6 @@
       subroutine Main (action, data_string)
 *=====================================================================
       use CropLibrary
-      Use infrastructure
       Use CropModModule
       implicit none
       ml_external Main
@@ -756,7 +755,6 @@ c        if (TestTrue)   close (1)
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       use CropModData
       Use CropModModule
 

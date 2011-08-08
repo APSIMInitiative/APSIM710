@@ -27,7 +27,6 @@
 *+  Changes
 *     010994 sc   specified and programmed
 *----------------------------------------------------------
-            Use infrastructure
       implicit none
 
 *+  Calls
@@ -72,7 +71,6 @@
 *     ===========================================================
       subroutine Start_Crop (variant)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -244,7 +242,6 @@ cjh      endif
 *     ===========================================================
       subroutine Read_Root_Params ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -429,7 +426,6 @@ cjh      endif
 *     ===========================================================
       subroutine Read_Module_Switches ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -682,7 +678,6 @@ c      end if
 
 *-----Variable declaration---------------------------------
 
-            Use infrastructure
       implicit none
 
 *     Constant Values
@@ -709,7 +704,6 @@ c      end if
 *     ================================================================
       subroutine Send_My_Variable (variable_name)
 *     ================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2364,7 +2358,6 @@ c      end if
 *     ===============================================================
       subroutine Set_My_Variable (Variable_name)
 *     ===============================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2506,7 +2499,6 @@ c         g%co2level = c%co2level
 *     ================================================================
       subroutine Get_Other_Variables ()
 *     ================================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2799,7 +2791,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 *     ================================================================
       subroutine Set_Other_Variables ()
 *     ================================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2906,7 +2897,6 @@ c        end if
 *     ===========================================================
       subroutine Update_Other_Variables()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 
@@ -3120,7 +3110,6 @@ c        end if
      .          g_cnd_grain_conc,
      .          c_stage_names)
 *     ===========================================================
-      Use infrastructure
 
       implicit none
 
@@ -3200,7 +3189,7 @@ c        end if
       real       dlt_dm_P(max_part)    ! P content of changeed dry matter (kg/ha)
       real       incorp_fr(max_part)   ! fraction of each pool to incorporate(0-1)
       real       P_residue             ! P added to residue (kg/ha)
-	  
+  
       ! UGLY HACK
       character(len=*), dimension(max_part), parameter ::
      :            partname=(/'root      ',   'leaf      '
@@ -3450,7 +3439,6 @@ c        end if
 *     ===========================================================
       subroutine End_Crop ()
 *     ===========================================================
-            Use infrastructure
 
       implicit none
 
@@ -3659,7 +3647,6 @@ c    :             - g%N_dead(root) - g%N_dead(grain))
      .          g_dm_senesced,
      .          g_dm_dead)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3733,7 +3720,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Crop_Cleanup ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3838,7 +3824,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Crop_Update ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4301,7 +4286,6 @@ c         enddo
      .          g_dm_green,
      .          g_dm_senesced)
 *     ===========================================================
-      Use infrastructure
 
       implicit none
 
@@ -4568,7 +4552,6 @@ c         enddo
      .          g_N_senesced,
      .          g_day_of_year)
 *     ===========================================================
-      Use infrastructure
 
       implicit none
 
@@ -4745,7 +4728,6 @@ cpsc  add above
      .          g_lai)
 
 *     ===========================================================
-      Use infrastructure
 
       implicit none
 
@@ -4894,7 +4876,6 @@ cpsc  add above
      .          N_conc_max,
      .          N_conc_min)
 *     ===========================================================
-      Use infrastructure
       Use CropLibrary
       implicit none
 
@@ -5058,7 +5039,6 @@ cpsc  add above
 *     ===========================================================
       subroutine Crop_Detachment(option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5135,7 +5115,6 @@ c in maize
      .                               pos     ! position of the digital
      .                               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5202,7 +5181,6 @@ c in maize
      .                               pos     ! position of the digital
      .                               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *+  Sub-Program Arguments
       character  switch*(*)
@@ -5274,7 +5252,6 @@ c           string_to_integer_var(value_string, value, numvals)
 *     000121 ew   generalised for all crops
 
 *------------------------------------------------------------
-            Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -6191,7 +6168,6 @@ c      g%dlt_n_uptake_stover=0.0
 *     010994 sc   specified and programmed
 *     000121 ew   generalised for all crops
 *--------------------------------------------------------------
-            Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -6340,7 +6316,6 @@ c      g%dlt_n_uptake_stover=0.0
 *     ===========================================================
       subroutine Read_Constants ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -7336,7 +7311,6 @@ cew - added this section
      .          cover_leaf,
      .          lai)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7401,7 +7375,6 @@ c      call Write_string ( my_name)
      .          lai,
      .          cover)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7445,7 +7418,6 @@ c  Skip row   gmc
      .          g_lai,g_skip,
      .          g_cover_green)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments

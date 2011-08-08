@@ -3,7 +3,6 @@ C     Last change:  E    29 Aug 2001    9:19 pm
 *     ===========================================================
       subroutine Read_Constants_Wheat ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -140,7 +139,6 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *     ===========================================================
       subroutine Read_Cultivar_Params_Wheat (cultivar)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -377,7 +375,6 @@ c      call write_string (string)
      .                              nfact_photo,
      .                              dlt_dm_pot)
 *     ===========================================================
-       Use infrastructure
       implicit none
 C      dll_export crop_dm_pot_rue
 
@@ -442,7 +439,6 @@ C      dll_export crop_dm_pot_rue
      :                   g_plsc,
      :                   g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+ Sub-program arguments
@@ -586,7 +582,6 @@ c----------------------------------------------------------------------
      :                   g_plsc,
      :                   g_dlt_slai_shade)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+ Sub-program arguments
@@ -665,7 +660,6 @@ c----------------------------------------------------------------------
      :                g_plsc,
      :                g_dlt_slai )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -769,7 +763,6 @@ c     REAL       excess_sla
      :                   g_plsc,
      :                   g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+ Sub-program arguments
@@ -926,7 +919,6 @@ c     REAL       excess_sla
      :                          g_nfact_pheno,
      :                          g_nfact_tiller)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *     Arguments
@@ -1061,7 +1053,6 @@ c      end if
      :           dlayer, root_depth, sw_avail, sw_avail_pot,
      :           swdef)
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export crop_swdef_pheno
 
@@ -1122,37 +1113,36 @@ c      end if
 
 *     ===========================================================
       subroutine cproc_bio_partition_iwheat (
-     : 				g_current_stage,
-     : 				g_dlt_dm,
-     :                          g_dm_seed_reserve,
-     :                          g_lai,
-     : 				g_accum_rad_10d,
-     : 				g_plants,
-     : 				g_dlt_tt,
-     : 				g_phase_tt,
-     : 				g_tt_tot,
+     :              g_current_stage,
+     :              g_dlt_dm,
+     :              g_dm_seed_reserve,
+     :              g_lai,
+     :              g_accum_rad_10d,
+     :              g_plants,
+     :              g_dlt_tt,
+     :              g_phase_tt,
+     :              g_tt_tot,
 
-     .                          c_max_tiller_area,
-     .                          c_tiller_area_tt_steepness,
-     .                          c_tiller_area_tt_inflection,
+     .              c_max_tiller_area,
+     .              c_tiller_area_tt_steepness,
+     .              c_tiller_area_tt_inflection,
 
 
-     .                          c_tiller_curve,
-     .                          c_tiller_tt_infl,
-     .                          g_tiller_tt_tot,
-     .                          g_tiller_area_pot,
-     : 				c_ratio_root_shoot,
-     : 				g_tiller_area_max,
+     .              c_tiller_curve,
+     .              c_tiller_tt_infl,
+     .              g_tiller_tt_tot,
+     .              g_tiller_area_pot,
+     :              c_ratio_root_shoot,
+     :              g_tiller_area_max,
      :                          g_dm_green,
-     : 				c_leaf_app_rate1,
-     : 				g_swdef_photo,
-     : 				g_nfact_photo,
-     : 				g_swdef_expansion,
-     : 				g_nfact_expansion,
-     : 				g_dlt_dm_grain_demand,
-     : 				g_dlt_dm_green)
+     :              c_leaf_app_rate1,
+     :              g_swdef_photo,
+     :              g_nfact_photo,
+     :              g_swdef_expansion,
+     :              g_nfact_expansion,
+     :              g_dlt_dm_grain_demand,
+     :              g_dlt_dm_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1358,7 +1348,7 @@ c      end if
 *     ===========================================================
       subroutine cproc_bio_partition_wheat (
      :                  g_current_stage,
-     : 	        	c_ratio_root_shoot,
+     :                  c_ratio_root_shoot,
      :                  c_sla_min,
      :                  g_dlt_lai,
      :                  g_dlt_dm,
@@ -1378,7 +1368,6 @@ c      end if
      :                  g_dlt_dm_green_retrans_pool)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1649,7 +1638,6 @@ c     :        - g_dlt_dm_green(root)
      :              , dlt_dm_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1872,7 +1860,6 @@ c     real       harvest_index         ! last harvest index (g grain/g biomass)
      .          g_dm_seed_reserve,
      .          g_lai)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1989,7 +1976,6 @@ c for nwheat min stem weight at beginning of grain filling stage, no carbon mobi
      .          g_lai,
      .          g_grain_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2122,7 +2108,6 @@ c        dm_green(grain)   = min(0.0035*grain_num, dm_plant_min(stem))
 *+  Changes
 *    Enli programmed based on the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -2218,7 +2203,6 @@ c        dm_green(grain)   = min(0.0035*grain_num, dm_plant_min(stem))
 *+  Changes
 *    EW modified from the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Function arguments
@@ -2372,7 +2356,6 @@ c      elseif (stage_is_between(emerg,flowering,g_current_stage)) then !original
 *+  Changes
 *    EW modified from the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Function arguments
@@ -2485,7 +2468,6 @@ c      elseif (stage_is_between(emerg,flowering,g_current_stage)) then !original
 *     0596   glh  fixed it up
 
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2594,7 +2576,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 *+  Include section
 
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -2748,7 +2729,6 @@ c        end do
 *     EW programmed from i_wheat - Jan. 1999
 
 *+ Include section
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2828,7 +2808,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *    EW reprogrammed on 15/01/1999
 
 *+  Include section
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -2908,7 +2887,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *     EW programmed from i_wheat - Jan. 1999
 
 *+  Include section
-      Use infrastructure
       implicit none
 
 *+  Subprogram arguments
@@ -2977,7 +2955,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *     EW programmed from i_wheat - Jan. 1999
 
 *+ Include section
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3122,7 +3099,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *     EW reprogrammed - Jan. 99
 
 *+  Include section
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -3198,7 +3174,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *     EW reprogrammed from i_wheat source code Jan. 1999
 
 *+  Include section
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -3335,7 +3310,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
 *     EW reprogrammed from i_wheat source code Jan. 1999
 
 *+  Include section
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -3384,7 +3358,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
      .                          rue_red_fac)
 
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3465,7 +3438,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
      .                        g_phase_tt,
      .                        sla_est)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -3600,7 +3572,6 @@ c     g_accum_rad_10d = iw_rad_accum_10d(g_radn,g_current_stage)
      .          g_N_death,
      .          o_dlt_N_retrans)
 *========= ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3754,7 +3725,6 @@ c""""""""""""""""""""""""""""""""""""""""""""""""""
      .                         n_conc_grain_max,
      .                         grain_n_demand)
 *========= ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3864,7 +3834,6 @@ c""""""""""""""""""""""""""""""""""""""""""""""""""
      .          dlt_N_green
      .                     )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3995,7 +3964,6 @@ c""""""""""""""""""""""""""""""""""""""""""""""""""
      :              , p_tt_ripe_to_harvest
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4145,7 +4113,6 @@ c      endif
      :                                  tempcx,
      :                                  tempcn)
 *     =====================================================================
-      Use infrastructure
       implicit none
 
 
@@ -4203,7 +4170,6 @@ c      endif
      :                               ,g_dlt_cumvd
      :                               ,g_cumvd)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4299,7 +4265,6 @@ c      endif
      :                                 reqvd,
      :                                 vern_effect)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 
@@ -4361,7 +4326,6 @@ c      endif
      :                                    p_photop_sen,
      :                                    photop_eff)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4414,7 +4378,6 @@ c      endif
      :                              , g_dm_green
      :                              , g_dlt_N_sen_supply)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4497,7 +4460,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      :                               dlt_dm_senesced,
      :                               dlt_dm_sen_retrans)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4603,7 +4565,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      :                               dlt_dm_senesced,
      :                               dlt_dm_sen_retrans)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4715,7 +4676,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
      :          , g_N_fix_pot
      :          )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4826,7 +4786,6 @@ c    .          g_sw_avail_pot,
      :                            NO3gsm_mflow_pot,
      :                            NH4gsm_mflow_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4913,7 +4872,6 @@ c    .          g_sw_avail_pot,
      :               no3gsm_min, root_depth, sw_avail,
      :               sw_avail_pot, NO3gsm_diffn_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5006,7 +4964,6 @@ c    .              , n_demand_grain,
      :              , dlt_NH4gsm
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 c      include   'cmxlayer.inc'
 
@@ -5184,7 +5141,6 @@ c         NO3gsm_diffn = divide (NO3gsm_diffn, c_NO3_diffn_const, 0.0)
      .          dlt_n_uptake_sum,
      .          dlt_N_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5293,7 +5249,6 @@ c         NO3gsm_diffn = divide (NO3gsm_diffn, c_NO3_diffn_const, 0.0)
      :              , N_demand, N_max
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5420,7 +5375,6 @@ ccc==================NITROGEN PART OF I_WHEAT ================================
      :                              , g_dm_green
      :                              , dlt_N_senesced)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5503,7 +5457,6 @@ c    :                        * sen_n_conc
      .          dlt_N_retrans,
      .          dlt_N_sen_retrans)
 *========= ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6067,7 +6020,6 @@ C     Last change:  E    21 Jan 2000    5:18 pm
      :                  g_swdef_pheno,
      :                  g_swdef_tiller)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -6245,7 +6197,6 @@ C     Last change:  E    21 Jan 2000    5:18 pm
      :                  g_sw_avail_pot,
      :                  pot_extraction)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6342,7 +6293,7 @@ c     REAL       leaf_no
             istage = INT(g_current_stage)
 
             if (g_leaf_no(istage) .lt. 4.0 .and. g_lai .lt. 1.0) then !!This is something I can not understand ????
-            	pot_extraction(layer)=
+               pot_extraction(layer)=
      :                pot_extraction(layer)*(3. - 2. * g_lai)
             endif
             ! --------------------------------------------------------------
@@ -6385,7 +6336,6 @@ c     REAL       leaf_no
      :                            g_current_stage,
      :                            g_dlt_dm_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6471,7 +6421,6 @@ c      endif
      :                          phase_tt_grain_fill,
      :                          g_dlt_dm)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6549,7 +6498,6 @@ c      endif
      :                          g_mint,
      :                          temp_stress_photo)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6601,7 +6549,6 @@ c      endif
      :                  g_current_stage,
      :                  grain_fill_stage)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Arguments
@@ -6647,7 +6594,6 @@ c      endif
 *     ===========================================================
       real function nwheat_min_root_fraction (g_current_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -6718,7 +6664,6 @@ cnh now put at least 1/4 of C into roots
      :                          g_nfact_pheno,
      :                          g_nfact_tiller)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *     Arguments
@@ -6845,7 +6790,6 @@ cnh now put at least 1/4 of C into roots
      :              , dlt_dm_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *      dll_export cproc_bio_yieldpart_demand1
 
@@ -7042,7 +6986,6 @@ c      PRINT *, 'dlt_dm_yield     =', dlt_dm_yield
      :                  g_dlt_dm_leaf_pot)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7338,7 +7281,6 @@ c         g_dlt_dm_green(stem) = max(0.0, g_dlt_dm_green(stem))
      :                  g_dlt_dm_leaf_pot)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7639,7 +7581,6 @@ c         g_dlt_dm_green(stem) = max(0.0, g_dlt_dm_green(stem))
      :                  g_dlt_tiller_no,
      :                  g_dlt_tiller_no_sen)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 * arguments
@@ -7825,7 +7766,6 @@ c           nfactor = 1.0 !l_bound (nfactor, 0.0)
      :                  g_plants,
      :                  g_dlt_lai)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 * arguments
@@ -7923,7 +7863,6 @@ c     endif
      :                  g_plant,
      :                  dlt_leaf_area)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -8007,7 +7946,6 @@ c      istage = int(g_current_stage)
      :                                     g_tt_tot,
      :                                     g_sla)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Mission Statement
@@ -8056,7 +7994,6 @@ c      istage = int(g_current_stage)
      :                             g_tt_tot,
      :                             g_xstage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -8186,7 +8123,6 @@ c      istage = int(g_current_stage)
      :                  g_pot_extract_NO3gsm,
      :                  g_pot_extract_NH4gsm)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -8350,7 +8286,6 @@ c        g_NH4gsm_min(layer)= 0.5* NH4gsm_min
      :              , dlt_NH4gsm
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     dll_export cproc_n_uptake_nw
 
@@ -8446,7 +8381,6 @@ c     N_max    = sum_real_array (g_N_max,    max_part)
      .          g_N_death,
      .          o_dlt_N_retrans)
 *========= ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -8572,7 +8506,6 @@ c     N_max    = sum_real_array (g_N_max,    max_part)
      .           c_N_conc_max_grain,
      .           n_demand_grain)
 *====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -8658,7 +8591,6 @@ c     N_max    = sum_real_array (g_N_max,    max_part)
      :                  g_grain_num,
      :                  grain_n_demand)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -8766,7 +8698,6 @@ c      pause
      :                                   g_N_green,
      :                                   N_avail)
 *     ===========================================================
-      Use infrastructure
       implicit none
 *     dll_export crop_n_retrans_avail
 
@@ -8864,7 +8795,6 @@ c      pause
      :                   g_plsc,
      :                   g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -9012,7 +8942,6 @@ c      pause
      :                g_nfact_photo,
      :                   g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+ Sub-program arguments
@@ -9177,7 +9106,6 @@ c     :             * g_lai_stage
      :                g_plsc,
      :                g_dlt_slai )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -9275,7 +9203,6 @@ c         g_dlt_slai_age = 5* (1 - stress_fact) * g_dlt_slai_age
      :                g_plsc,
      :                g_dlt_slai )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+ Arguments
@@ -9430,7 +9357,6 @@ c         slfn = bound (slfn, 1.0, 10.0)
      :                            ,g_days_tot
      :                            )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -9607,7 +9533,6 @@ c==============================================================================
      :                                  tmax,   !34.0
      :                                  g_dlt_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -9709,7 +9634,6 @@ c==============================================================================
       subroutine cproc_transp_eff_nw(svp_fract, transp_eff_cf,
      :                 current_stage,maxt, mint, transp_eff)
 *     ===========================================================
-      Use infrastructure
       implicit none
 !      dll_export cproc_transp_eff1
 
@@ -9804,7 +9728,6 @@ c      transp_eff = l_bound (transp_eff, 0.0)
      :              , dm_retranslocate
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     dll_export dm_retranslocate_nw
 
@@ -9965,7 +9888,6 @@ c     dll_export dm_retranslocate_nw
      :                  g_dlt_dm_leaf_pot)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -10216,7 +10138,6 @@ c        g_dlt_dm_green(stem) = g_dlt_dm
      :                  g_dlt_dm_leaf_pot)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -10474,7 +10395,6 @@ C     Last change:  E    18 Aug 2000    3:51 pm
 *+  Changes
 *    Enli programmed based on the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -10559,7 +10479,7 @@ c      if (leaf_no_after_fi.le.0.0) then
 
        if (INT(leaf_no_new).GT.INT(leaf_no_now)) then
            dLFN1 = 1.0 - (leaf_no_now- INT(leaf_no_now))
-	   dLFN2 = leaf_no_new - INT(leaf_no_new)
+           dLFN2 = leaf_no_new - INT(leaf_no_new)
        else
            dLFN1 = dlt_leaf_no
            dLFN2 = 0.0
@@ -10620,7 +10540,6 @@ c      PRINT *, 'leaf_size     =', leaf_size(1:14)
 *+  Changes
 *    Enli programmed based on the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -10723,7 +10642,6 @@ c      PRINT *, 'leaf_size     =', leaf_size(1:14)
 *+  Changes
 *    EW modified from the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Function arguments
@@ -10885,7 +10803,6 @@ c       if (stage_is_between(floral_init,flag_leaf,g_current_stage)) then !origi
 *+  Changes
 *    EW modified from the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Function arguments
@@ -10995,7 +10912,6 @@ c             tt_til = tt_tot - (1.5+n-1) * phint
 *       20000305 Ew programmed
 
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -11095,7 +11011,6 @@ c             tt_til = tt_tot - (1.5+n-1) * phint
      :                  g_dlt_tiller_no,
      :                  g_dlt_tiller_no_sen)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 * arguments
@@ -11231,7 +11146,6 @@ c             tt_til = tt_tot - (1.5+n-1) * phint
      :                  g_dlt_tiller_no,
      :                  g_dlt_tiller_no_sen)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 * arguments
@@ -11395,7 +11309,6 @@ c      g_dlt_tiller_no = dlt_tiller_no_stressed
 *+  Changes
 *    Enli programmed based on the old i-wheat routine
 
-      Use infrastructure
       implicit none
 
 *+  Constant Values

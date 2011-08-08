@@ -3,7 +3,6 @@ C     Last change:  E     7 Sep 2001    3:42 pm
       subroutine sorg_nfact_photo(leaf,lai,
      :                  n_green, nfact)
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     dll_export sorg_nfact_photo
 
@@ -66,7 +65,6 @@ cew   SLN = n_green(leaf)/lai
      :                              , g_nfact_expansion
      :                              , dlt_N_senesced)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -150,7 +148,6 @@ cew   SLN = n_green(leaf)/lai
      :              , N_green
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -220,7 +217,6 @@ cew   SLN = n_green(leaf)/lai
      :                N_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -396,7 +392,6 @@ cew     SLN = G_n_green(leaf)/(g_lai + g_dlt_lai - g_dlt_slai)
      :                dlt_NO3gsm
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 !      dll_export sorg_N_uptake2
 
@@ -557,7 +552,6 @@ cew     SLN = G_n_green(leaf)/(g_lai + g_dlt_lai - g_dlt_slai)
      .          dlt_N_green)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 c      dll_export sorg_N_partition1
 
@@ -626,7 +620,6 @@ c      dll_export sorg_N_partition1
      .          g_dlt_N_retrans)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -850,7 +843,6 @@ cew   SLN = LeafN/lai
      .          p_tt_maturity_to_ripe,
      .          g_phase_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1009,7 +1001,6 @@ cew   SLN = LeafN/lai
 
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     include 'stress.inc' !to set value of photo - not sure if correct way
 
@@ -1234,7 +1225,6 @@ c (how do we do this w. TPLA approach?)
      .          g_phase_tt,
      .          phase_dvl)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1306,7 +1296,6 @@ c (how do we do this w. TPLA approach?)
      .          g_dlt_tt,
      .          g_phase_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1361,7 +1350,6 @@ cjh  changed 0.0 to 1.0
      .          g_current_stage,
      .          g_days_tot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1442,7 +1430,6 @@ cjh  changed 0.0 to 1.0
      .          c_num_temp,
      .          g_dlt_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1501,7 +1488,6 @@ cjh  changed 0.0 to 1.0
      .          c_tt_opt,
      .          g_dlt_tt_fm)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1565,7 +1551,6 @@ cjh  changed 0.0 to 1.0
      .          phase_devel,
      .          max_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1632,7 +1617,6 @@ cjh  changed 0.0 to 1.0
      .          c_leaf_no_max,
      .          g_leaf_no_final)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1721,7 +1705,6 @@ cjh  changed 0.0 to 1.0
      .          c_leaf_trans_frac,
      .          dm_green, dm_plant_min)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1857,7 +1840,6 @@ c################################################################
 *      Revised 10/5/97 to reset maximum amount translocated from stem and leaf
 
 *+  Declaration section -----------------------------------------------
-      Use infrastructure
       implicit none
 *   Subroutine arguments
       real       stem_trans_frac
@@ -2003,7 +1985,6 @@ c################################################################
      .          g_dlt_dm_grain_demand,
      .          g_dlt_dm_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2162,7 +2143,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      .          c_sla_max
      .          )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2219,7 +2199,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
 *     ===========================================================
       subroutine sorg_leaf_area_sen ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2374,7 +2353,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      .          g_dlt_lai_stressed)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2475,7 +2453,6 @@ c look at its calculation. Not used at present.
      .          g_dlt_lai,
      .          g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2589,7 +2566,6 @@ c     :   , g_lai_max_possible, g_dlt_slai_age
      .          g_year,
      .          g_lai_eqlb_light)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2661,7 +2637,6 @@ c     :   , g_lai_max_possible, g_dlt_slai_age
      .          c_sen_light_time_const,
      .          g_dlt_slai_light)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2749,7 +2724,6 @@ c the leaf can't sustain itself.
      .           g_transp_eff,
      .           g_lai_equilib_water)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2847,7 +2821,6 @@ c the leaf can't sustain itself.
      .          g_sw_supply,
      .          g_dlt_slai_water)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2926,7 +2899,6 @@ c the leaf can't sustain itself.
      .          g_mint,
      .          g_dlt_slai_frost)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2969,7 +2941,6 @@ c the leaf can't sustain itself.
 *     ===========================================================
       subroutine Read_Constants_Sorghum ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -4033,7 +4004,6 @@ c     :                    , 0.0, 100.0)
 *     ===========================================================
       subroutine Read_Cultivar_Params_Sorghum (cultivar)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments

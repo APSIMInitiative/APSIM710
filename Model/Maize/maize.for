@@ -3,6 +3,7 @@ C     Last change:  E    31 Jul 2001    1:26 pm
       module maizemodule
       use cropmoddata
       use croplibrary
+      use infrastructure
 
       contains
 
@@ -11,7 +12,6 @@ C     Last change:  E    31 Jul 2001    1:26 pm
 *     ===========================================================
       subroutine Crop_process ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -141,7 +141,7 @@ cnh      call Maize_water_stress(1)
 *     ===========================================================
       subroutine Crop_Read_Cultivar_Params (cultivar)
 *     ===========================================================
-      Use infrastructure
+!      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -346,7 +346,7 @@ cnh      call Maize_water_stress(1)
 *     ===========================================================
       subroutine Crop_Read_Constants ()
 *     ===========================================================
-      Use infrastructure
+!      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1453,7 +1453,6 @@ c     :                    , 0.0, 100.0)
 * ====================================================================
        subroutine Simulation_Prepare ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1507,7 +1506,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 *     ===========================================================
       subroutine Maize_water_stress(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1600,7 +1598,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 *     ===========================================================
       subroutine Maize_bio_actual (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1663,7 +1660,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :        , c_leaf_trans_frac
      :        , dm_green, dm_plant_min)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1756,7 +1752,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 *     ===========================================================
       subroutine Maize_bio_grain_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1844,7 +1839,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :                      , c_temp_grain_crit_stress
      :                      , dlt_tt_heat_stress)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1889,7 +1883,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 *     ===========================================================
       subroutine Maize_bio_TE (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1951,7 +1944,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
 *     ===========================================================
       subroutine Maize_bio_partition (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2021,7 +2013,6 @@ C     Last change:  E    24 Aug 2001    4:50 pm
      :        , g_dlt_dm_grain_demand
      :        , dlt_dm_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2203,7 +2194,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      :        , g_nfact_grain_conc
      :        , dlt_dm_grain_demand)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2340,7 +2330,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      :        , g_swdef_expansion
      :        , g_nfact_grain_conc)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2413,7 +2402,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
 *     ===========================================================
       subroutine Maize_bio_retrans (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2477,7 +2465,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
 *     ===========================================================
       subroutine Maize_plant_death (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2696,7 +2683,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      :                    , g_plants
      :                    , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2760,7 +2746,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      :                    , g_plants
      :                    , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2837,7 +2822,6 @@ c scc This effect must cut in a bit, as changing c_sla_min seems to affect thing
      :        , g_plants
      :        , killfr)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2914,7 +2898,6 @@ cSCC/JNGH changed le to lt
      :        , p_head_grain_no_max
      :        , c_barren_crit)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2985,7 +2968,6 @@ cSCC/JNGH changed le to lt
      :        , c_grain_N_conc_min
      :        , grain_num)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3122,7 +3104,6 @@ c     :                           , 'grain_no_fract')
 * ====================================================================
        subroutine maize_nit_demand_est (Option)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3215,7 +3196,6 @@ c     :                           , 'grain_no_fract')
      :        , g_plants
      :        , killfr)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3296,7 +3276,6 @@ c     :                           , 'grain_no_fract')
      :                    , g_plants
      :                    , dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3368,7 +3347,6 @@ c     :                           , 'grain_no_fract')
 *     ===========================================================
       subroutine Maize_leaf_actual(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3427,7 +3405,6 @@ c     .          interp_sla_max)
 *     ===========================================================
       subroutine Maize_leaf_area_potential (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3514,7 +3491,6 @@ c     .          interp_sla_max)
 *     ===========================================================
       subroutine Maize_leaf_area_stressed (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3573,7 +3549,6 @@ c     .          interp_sla_max)
      :        , leaf_no_final)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3663,7 +3638,6 @@ c     .          interp_sla_max)
 *     ===========================================================
       subroutine Maize_leaf_no_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3710,7 +3684,6 @@ c     .          interp_sla_max)
 *     ===========================================================
       subroutine Maize_leaf_area_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3757,7 +3730,6 @@ c     .          interp_sla_max)
 *     ===========================================================
       subroutine Maize_leaf_no_pot (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3860,7 +3832,6 @@ c     .          interp_sla_max)
      :        , g_swdef_expansion
      :        , dlt_lai_pot)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3953,7 +3924,6 @@ c     .          interp_sla_max)
      :        , c_b_slope1
      :        , leaf_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4038,7 +4008,6 @@ c     .          interp_sla_max)
      :        , g_dlt_tt
      :        , dlt_leaf_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4144,7 +4113,6 @@ cSCC normal leaf app rate
 *     ===========================================================
       subroutine Maize_nit_retrans (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4214,7 +4182,6 @@ cSCC normal leaf app rate
      :        , g_nfact_grain_conc
      :        , dlt_N_retrans)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4348,7 +4315,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4416,7 +4382,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_uptake (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4483,7 +4448,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_stress(Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4555,7 +4519,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4623,7 +4586,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4690,7 +4652,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_nit_partition (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4743,7 +4704,6 @@ csc  true....
      :        , dlt_N_green
      :                     )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4838,7 +4798,6 @@ csc  true....
 *     ===========================================================
       subroutine Maize_phenology (option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4922,7 +4881,6 @@ c (how do we do this w. TPLA approach?)
 *     ===========================================================
       subroutine Maize_height (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4971,7 +4929,6 @@ c (how do we do this w. TPLA approach?)
 *     ===========================================================
       subroutine Maize_phenology_init (option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5057,7 +5014,6 @@ c (how do we do this w. TPLA approach?)
      :        , p_tt_maturity_to_ripe
      :        , phase_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5221,7 +5177,6 @@ cjh
 *     ===========================================================
       subroutine Maize_leaf_area_sen_actual (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5267,7 +5222,6 @@ cjh
 *     ===========================================================
       subroutine Maize_leaf_death (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5323,7 +5277,6 @@ cjh
      :        , g_days_tot
      :        , dlt_leaf_no_dead)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5394,7 +5347,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_sen_bio (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5445,7 +5397,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_sen_nit (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5491,7 +5442,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_leaf_area_sen (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5561,7 +5511,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_root_depth (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5613,7 +5562,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_water_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5666,7 +5614,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_water_demand (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5722,7 +5669,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_water_uptake (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5805,7 +5751,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_light_supply (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5847,7 +5792,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_transpiration_eff (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5901,7 +5845,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_bio_RUE (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5948,7 +5891,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_temp_stress (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5993,7 +5935,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine maize_sen_root_length (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6041,7 +5982,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine maize_root_dist (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6102,7 +6042,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_root_depth_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6160,7 +6099,6 @@ cpsc need to develop leaf senescence functions for crop
 *     ===========================================================
       subroutine Maize_root_length_init (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6212,7 +6150,6 @@ cpsc need to develop leaf senescence functions for crop
       subroutine Main (action, data_string)
 *=====================================================================
       Use MaizeModule
-      Use infrastructure
       implicit none
       ml_external Main
 
@@ -6368,7 +6305,6 @@ cpsc need to develop leaf senescence functions for crop
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       use CropModData
       Use MaizeModule
       use CropLibrary

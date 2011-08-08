@@ -16,7 +16,6 @@ C     Last change:  E    14 Sep 2001    1:00 pm
      :                               ,dlt_vernalisation
      :                               ,vernalisation)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -146,7 +145,6 @@ C     Last change:  E    14 Sep 2001    1:00 pm
      :               , g_phase_tt
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -413,7 +411,6 @@ c       PRINT *, 'g_phase_tt = ',g_phase_tt(germ_to_emerg)
      :               , g_phase_tt
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -588,7 +585,6 @@ c       PRINT *, 'g_phase_tt = ',g_phase_tt(germ_to_emerg)
      .          g_grain_no,
      .          g_dm_green_retrans_pool )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -768,7 +764,6 @@ c    :               + c_dm_stem_init * g_plants
      .           c_leaf_no_max,
      .           g_leaf_no_final)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -871,7 +866,6 @@ c    :               + c_dm_stem_init * g_plants
 *     0596   glh  fixed it up
 
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -947,7 +941,6 @@ c     :                            , 'leaf_no_final')
      .          g_dlt_tt,
      .          g_dlt_leaf_no)
 *======================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1070,7 +1063,6 @@ c     :  leaf_no_now
      .          tiller_no,
      .          zadok_stage)
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export zadok_stage_decimal_code
 
@@ -1195,7 +1187,6 @@ c     :  leaf_no_now
 
      :           g_extinction_coeff )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1316,7 +1307,6 @@ c        endif
      :              , dlt_NO3gsm_diffusion
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -1507,7 +1497,6 @@ c        endif
      :          , g_swdef_fixation
      :          , g_N_fix_pot        )
 * ====================================================================
-      Use infrastructure
       implicit none
 c     dll_export Cproc_N_Supply_Massflow_Diffusion_Fixation
 
@@ -1617,7 +1606,6 @@ c     dll_export Cproc_N_Supply_Massflow_Diffusion_Fixation
      .          NH4gsm_mflow_pot   )
 *     ===========================================================
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1723,7 +1711,6 @@ c     dll_export Cproc_N_Supply_Massflow_Diffusion_Fixation
      .          NH4gsm_diffn_pot)
 *     ===========================================================
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1809,7 +1796,6 @@ c     dll_export Cproc_N_Supply_Massflow_Diffusion_Fixation
      :              swdef_fixation,
      :              n_fix_pot )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1883,7 +1869,6 @@ c     dll_export Cproc_N_Supply_Massflow_Diffusion_Fixation
      :              , n_fix_pot
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     dll_export cproc_n_uptake_massflow_diffusion_fixation
 
@@ -2131,7 +2116,6 @@ c     dll_export cproc_n_uptake_massflow_diffusion_fixation
      :              , dlt_dm_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *     dll_export Cproc_Bio_Yieldpart_Demand_Temp_Driven
 
@@ -2232,7 +2216,6 @@ c     dll_export cproc_n_uptake_massflow_diffusion_fixation
      :              , dlt_N_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *     dll_export Cproc_N_Yieldpart_Demand_Temp_Driven
 
@@ -2351,7 +2334,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :              , dlt_dm_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *     dll_export Cproc_Bio_Yieldpart_Demand_Temp_Driven1
 
@@ -2455,7 +2437,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :              , dlt_N_yieldpart_demand
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 *     dll_export Cproc_N_Yieldpart_Demand_Temp_Driven1
 
@@ -2549,7 +2530,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :              , bio_temp_max
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2622,7 +2602,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :              , bio_temp_max
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -2692,7 +2671,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
 *     ===========================================================
       subroutine Photoperiod_Wang (day, latitude, twilight, photoperiod)
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export Photoperiod_Wang
 
@@ -2739,7 +2717,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :                            radiation
      :                            )
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export ExtraTerrestrialRadiationDailyTotal(
 
@@ -2803,14 +2780,14 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
 
 
 
-      !	*RadTopAtm=1370.*(1.+0.033*cos(PI/180*360*ZDAY/365))*
-      !		3600.*(DL[2]*sin(ALAT)*sin(DEC)+24./PI*cos(ALAT)*cos(DEC))
-      !	*(1.-pow(tan(ALAT),2)*pow(tan(DEC),2))/1000000;
+      !    *RadTopAtm=1370.*(1.+0.033*cos(PI/180*360*ZDAY/365))*
+      !    3600.*(DL[2]*sin(ALAT)*sin(DEC)+24./PI*cos(ALAT)*cos(DEC))
+      !    *(1.-pow(tan(ALAT),2)*pow(tan(DEC),2))/1000000;
       !
 
-      	Radiation =1370.0*(1.+0.033*cos(PI/180*360*DAY/365.0))*
+        Radiation =1370.0*(1.+0.033*cos(PI/180*360*DAY/365.0))*
      :             3600.0*(daylength * SINLD + 24.0/PI * COSLD)
-     : 	*(1.0 - (tan(RAD*latitude))**2 * (tan(DEC))**2)/1000000.0
+     :   *(1.0 - (tan(RAD*latitude))**2 * (tan(DEC))**2)/1000000.0
 
 
       end subroutine
@@ -2824,7 +2801,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :                    diff_radn_frac
      :                    )
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export Diffuse_Radiation_fraction
 
@@ -2863,7 +2839,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      :                    rue_modifier
      :                    )
 *     ===========================================================
-      Use infrastructure
       implicit none
       !dll_export RUE_Diffuse_Radiation_Modifier
 
@@ -2889,7 +2864,6 @@ c     :                           (dm_grain + dlt_dm_grain + 0.0001)
      .                                co2_modifier,
      .                                dlt_dm_pot)
 *     ===========================================================
-       Use infrastructure
       implicit none
 c      dll_export crop_dm_pot_rue_wang
 
@@ -2961,7 +2935,6 @@ c      dll_export crop_dm_pot_rue_wang
      :                         , dlt_vernalisation
      :                          )
 *     ===========================================================
-       Use infrastructure
       implicit none
 c      dll_export crop_dm_pot_rue_wang
 
@@ -3029,9 +3002,9 @@ c      dll_export crop_dm_pot_rue_wang
 
          !first stopping rule: Vernalization is completed when cum_vern reaches 1.0
          if ((cum_vern.ge.1.0).OR.(primordia_no.ge.leaf_no_max)) then
-	   leaf_no_min = MAX(primordia_no, leaf_no_min)
+           leaf_no_min = MAX(primordia_no, leaf_no_min)
          else
-	   leaf_no_pot = leaf_no_max-(leaf_no_max-leaf_no_min)*cum_vern
+           leaf_no_pot = leaf_no_max-(leaf_no_max-leaf_no_min)*cum_vern
            !Second stopping rule Vernalization is completed when primodia number exeeds potential number of leaves
            if(primordia_no.ge.leaf_no_pot) THEN
              leaf_no_min=MAX(0.5*(leaf_no_pot+primordia_no),leaf_no_min)
@@ -3058,7 +3031,6 @@ c      dll_export crop_dm_pot_rue_wang
      .          leaf_no_now,
      .          leaf_no_final )
 *======================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3132,7 +3104,7 @@ c      PRINT *, 'leaf_no_final = ', leaf_no_final
 *     ===========================================================
       subroutine cproc_bio_partition_Grass (
      :                  g_current_stage,
-     : 	        	c_ratio_root_shoot,
+     :                  c_ratio_root_shoot,
      :                  c_x_stage_partitn,
      :                  c_y_leaf_fraction,
      :                  c_num_stage_partitn,
@@ -3155,7 +3127,6 @@ c      PRINT *, 'leaf_no_final = ', leaf_no_final
      :                  g_dlt_dm_green_retrans_pool)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3426,7 +3397,7 @@ c     :        , g_days_tot
 c     :        , g_dlt_tt
 c     :        , dlt_leaf_no)
 c*     ===========================================================
-c      Use infrastructure
+c      !use infrastructure
 c      implicit none
 c
 c*+  Sub-Program Arguments
@@ -3548,7 +3519,6 @@ c      end subroutine
      .           g_nfact_grain_conc,
      .           grain_n_demand)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3624,7 +3594,6 @@ c      end subroutine
      .              g_n_conc_min_grain,
      .              g_swdef_expansion)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3713,7 +3682,6 @@ c+!!!!!!!!!! return to orig cm
      .            g_N_green,
      .            o_dlt_N_retrans)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments

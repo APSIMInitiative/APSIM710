@@ -3,7 +3,6 @@ C     Last change:  E    14 Sep 2001    1:43 pm
 *     ===========================================================
       subroutine Crop_Read_Constants ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -65,7 +64,6 @@ c         call Read_Constants_Maize ()
 *     ===========================================================
       subroutine Crop_Read_Cultivar_Params (cultivar)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -140,7 +138,6 @@ c           call Read_Cultivar_Params_Maize (cultivar)
 
 *+  Include section
 
-            Use infrastructure
       implicit none
 
 
@@ -252,7 +249,7 @@ c      call leaf_area_potential       (GetSwitchCode(c%can_switch,2))
 
 
       !SECTION 9: DEATH of PLANTS (cf. plant part pools)
-      call Crop_Death		      (GetSwitchCode(c%die_switch,1))
+      call Crop_Death      (GetSwitchCode(c%die_switch,1))
 
 
 
@@ -288,7 +285,6 @@ c      call leaf_area_potential       (GetSwitchCode(c%can_switch,2))
 *     ===========================================================
       subroutine water_supply (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -378,7 +374,6 @@ c      call leaf_area_potential       (GetSwitchCode(c%can_switch,2))
 *     ===========================================================
       subroutine water_demand (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -497,7 +492,6 @@ c      call leaf_area_potential       (GetSwitchCode(c%can_switch,2))
 *     ===========================================================
       subroutine water_uptake (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -569,7 +563,6 @@ c     integer    deepest_layer
 *     ===========================================================
       subroutine water_stress(Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 
@@ -709,7 +702,6 @@ c      REAL    deepest_layer
 *     ===========================================================
       subroutine vernalization (option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -810,7 +802,6 @@ c      REAL    deepest_layer
 *     ===========================================================
       subroutine photoperiodism (option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -872,7 +863,6 @@ c      REAL    deepest_layer
 *     ===========================================================
       subroutine phenology_initalisation (option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1168,7 +1158,6 @@ c     :        , g%phase_tt)
 * ====================================================================
        subroutine phenology (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1209,7 +1198,7 @@ c      if (Option.eq.1) Option = 2 !force to use the nwheat original phenology
      :                            ,g%maxt
      :                            ,g%mint
      :                            ,min(g%nfact_pheno
-     :                                ,PlantP_Pfact_Pheno())
+     :                            ,PlantP_Pfact_Pheno())
      :                            ,g%swdef_pheno
      :                            ,c%pesw_germ
      :                            ,c%fasw_emerg
@@ -1339,7 +1328,6 @@ c      if (Option.eq.1) Option = 2 !force to use the nwheat original phenology
 *     ===========================================================
       subroutine biomass_rue (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 
@@ -1576,7 +1564,6 @@ c      if (Option.eq.1) Option = 2 !force to use the nwheat original phenology
 *     ===========================================================
       subroutine biomass_te (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1693,7 +1680,6 @@ c      if (Option.eq.1) Option = 2 !force to use the nwheat original phenology
 *     ===========================================================
       subroutine biomass_actual (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1764,7 +1750,6 @@ c      if (Option.eq.1) Option = 2 !force to use the nwheat original phenology
 *     ===========================================================
       subroutine biomass_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1893,7 +1878,6 @@ c     :        , g%dm_green, g%dm_plant_min)
 *     ===========================================================
       subroutine biomass_yieldpart_demand (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2145,7 +2129,6 @@ c     :    , g%dlt_dm_grain_demand)
 *     ===========================================================
       subroutine biomass_grain_demand_stress (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2203,7 +2186,6 @@ c     :    , g%dlt_dm_grain_demand)
 * ====================================================================
        subroutine biomass_partition (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2253,7 +2235,7 @@ c     :    , g%dlt_dm_grain_demand)
 
          call cproc_bio_partition_Grass (
      :                  g%current_stage,
-     : 	 		c%ratio_root_shoot,
+     :                  c%ratio_root_shoot,
      :                  c%x_stage_partitn,
      :                  c%y_leaf_fraction,
      :                  c%num_stage_partitn,
@@ -2280,34 +2262,34 @@ c     :    , g%dlt_dm_grain_demand)
       elseif (Option.eq.2) then
 
          call cproc_bio_partition_iwheat (
-     : 				g%current_stage,
-     : 				g%dlt_dm,
-     :                          g%dm_seed_reserve,
-     :                          g%lai,
-     : 				g%accum_rad_10d,
-     : 				g%plants,
-     : 				g%dlt_tt,
-     : 				g%phase_tt,
-     : 				g%tt_tot,
+     :              g%current_stage,
+     :                 g%dlt_dm,
+     :                 g%dm_seed_reserve,
+     :                 g%lai,
+     :                 g%accum_rad_10d,
+     :                 g%plants,
+     :                 g%dlt_tt,
+     :                 g%phase_tt,
+     :                 g%tt_tot,
 
-     .                          c%max_tiller_area,
-     .                          c%tiller_area_tt_steepness,
-     .                          c%tiller_area_tt_inflection,
+     .                 c%max_tiller_area,
+     .                 c%tiller_area_tt_steepness,
+     .                 c%tiller_area_tt_inflection,
 
-     .                          p%tiller_curve,
-     .                          p%tiller_tt_infl,
-     .                          g%tiller_tt_tot,
-     .                          g%tiller_area_pot,
-     : 				c%ratio_root_shoot,
-     : 				g%tiller_area_max,
-     :                          g%dm_green,
-     : 				c%leaf_app_rate1,
-     : 				g%swdef_photo,
-     : 				g%nfact_photo,
-     : 				g%swdef_expansion,
-     : 				g%nfact_expansion,
-     : 				g%dlt_dm_grain_demand,
-     : 				g%dlt_dm_green)
+     .                 p%tiller_curve,
+     .                 p%tiller_tt_infl,
+     .                 g%tiller_tt_tot,
+     .                 g%tiller_area_pot,
+     :                 c%ratio_root_shoot,
+     :                 g%tiller_area_max,
+     :                 g%dm_green,
+     :                 c%leaf_app_rate1,
+     :                 g%swdef_photo,
+     :                 g%nfact_photo,
+     :                 g%swdef_expansion,
+     :                 g%nfact_expansion,
+     :                 g%dlt_dm_grain_demand,
+     :                 g%dlt_dm_green)
 
 
       elseif (Option.eq.3) then
@@ -2462,7 +2444,6 @@ c     :        , g%dlt_dm_green)
 *     ===========================================================
       subroutine biomass_retranslocation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2581,7 +2562,6 @@ c             call Maize_bio_retrans ()
 *     ===========================================================
       subroutine leaf_number_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2644,7 +2624,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 * ====================================================================
        subroutine leaf_number_final (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2771,7 +2750,6 @@ c     :        , g%leaf_no_final)
 * ====================================================================
        subroutine leaf_initiation (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2823,7 +2801,6 @@ c     :        , g%leaf_no_final)
 * ====================================================================
        subroutine leaf_appearance (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2902,7 +2879,6 @@ c     .          g%dlt_leaf_no) ! fraction of leaf emerged
 *     ===========================================================
       subroutine tillering_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2953,7 +2929,6 @@ c     .          g%dlt_leaf_no) ! fraction of leaf emerged
 *     ===========================================================
       subroutine tillering (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3074,7 +3049,6 @@ c     .          g%dlt_leaf_no) ! fraction of leaf emerged
 * ====================================================================
        subroutine leaf_area_initialisation (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 
@@ -3130,7 +3104,6 @@ c          endif
 * ====================================================================
        subroutine leaf_area_potential (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3351,7 +3324,6 @@ c          endif
 *     ===========================================================
       subroutine leaf_area_actual (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3491,7 +3463,6 @@ c      endif
 *     ===========================================================
       subroutine crop_height (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3539,7 +3510,6 @@ c      endif
 *     ===========================================================
       subroutine root_depth_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3585,7 +3555,6 @@ c      endif
 *     ===========================================================
       subroutine root_depth (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3662,7 +3631,6 @@ c      endif
 *     ===========================================================
       subroutine root_length_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3711,7 +3679,6 @@ c      endif
 *     ===========================================================
       subroutine root_length (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -3787,7 +3754,6 @@ c      endif
 *     ===========================================================
       subroutine senescence_leaf_area (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4127,7 +4093,6 @@ c     :        , g%dlt_leaf_no_dead)
 *     EW reprogrammed Jan. 1999
 
 *+  Include section
-            Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -4212,7 +4177,6 @@ c     :        , g%dlt_leaf_no_dead)
 *     EW reprogrammed Jan. 1999
 
 *+  Include section
-            Use infrastructure
       implicit none
 
 *+  Constant Values
@@ -4277,7 +4241,6 @@ c       end do
 *     ===========================================================
       subroutine senescence_biomass (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4372,7 +4335,6 @@ c       end do
 *     ===========================================================
       subroutine senescence_root_length (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4421,7 +4383,6 @@ c       end do
 *     ===========================================================
       subroutine senescence_nitrogen (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4715,7 +4676,6 @@ c"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 *     ===========================================================
       subroutine nitrogen_initialisation (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -4842,7 +4802,6 @@ c"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 *     ===========================================================
       subroutine nitrogen_supply (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5015,7 +4974,6 @@ c     :          )
 *     ===========================================================
       subroutine nitrogen_demand (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5161,7 +5119,6 @@ c      call fill_real_array (g%dlt_N_retrans, 0.0, max_part)
 *     ===========================================================
       subroutine nitrogen_uptake (Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5401,7 +5358,6 @@ c     :               )
 * ====================================================================
        subroutine Nitrogen_partition (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5471,7 +5427,6 @@ c     :               )
 * ====================================================================
        subroutine nitrogen_yieldpart_demand (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5586,7 +5541,6 @@ c     :               )
 * ====================================================================
        subroutine nitrogen_retranslocation (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5720,7 +5674,6 @@ c     :               )
 *     ===========================================================
       subroutine nitrogen_stress(Option)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5905,7 +5858,6 @@ c         g%nfact_tiller = g%nfact_expansion
       subroutine Phosphorus_demand (Option)
 *     ===========================================================
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -5975,7 +5927,6 @@ c     :        , g%P_demand)
 *     ===========================================================
       subroutine Phosphorus_uptake (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6043,7 +5994,6 @@ c     :        , g%P_demand)
 *     ===========================================================
       subroutine Phosphorus_stress (Option)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6158,7 +6108,6 @@ c     :        , g%P_demand)
 * ====================================================================
        subroutine Crop_death (Option)
 * ====================================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -6334,7 +6283,6 @@ c     :        , g%dlt_plants_death_barrenness)
 * ====================================================================
        subroutine Simulation_Prepare ()
 * ====================================================================
-            Use infrastructure
 
       implicit none
 
@@ -6400,7 +6348,6 @@ c            endif
 * ====================================================================
        subroutine biomass_rue_partition ()
 * ====================================================================
-            Use infrastructure
       implicit none
 
 

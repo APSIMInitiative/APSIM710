@@ -4,8 +4,9 @@
       use CropModData
       Use infrastructure
       implicit none
-	  ! Comment out the following line if building under gfortran
-      ml_external doInit1        
+      ! Comment out the following line if building under gfortran
+      ml_external doInit1
+!STDCALL(doInit1)
       integer dummy
 
       id%externalmassflow = add_registration(eventReg

@@ -34,7 +34,6 @@ C     Last change:  E    29 Aug 2001    9:15 pm
      .          p_tt_maturity_to_ripe,
      .          g_phase_tt)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -215,7 +214,6 @@ c     :              - g_phase_tt(endjuv_to_init)
      :              ,p_mum_hi_incr_min_temp
      :               )
 *     ===========================================================
-      Use infrastructure
       implicit none
 c     dll_export cproc_bio_yieldpart_demand1
 
@@ -367,7 +365,6 @@ c      print *, "min_temp_fact_hi_incr", min_temp_fact_hi_incr
      .          c_leaf_no_max,
      .          g_leaf_no_final)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -464,7 +461,6 @@ c      print *, "min_temp_fact_hi_incr", min_temp_fact_hi_incr
      .          g_dlt_tt,
      .          g_dlt_leaf_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -568,7 +564,6 @@ c      print *, "min_temp_fact_hi_incr", min_temp_fact_hi_incr
 *     ===========================================================
       subroutine sunf_leaf_area_sen ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -730,7 +725,6 @@ c      print *, "min_temp_fact_hi_incr", min_temp_fact_hi_incr
      .          g_dlt_lai,
      .          g_dlt_slai_age)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -864,7 +858,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          g_tt_tot,
      .          g_dlt_plants)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -926,7 +919,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          array,
      .          number_of_days)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -979,7 +971,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          array,
      .          value)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1037,7 +1028,6 @@ c What if you harvest the crop and leave it to rattoon?
      .           g_plants,
      .           g_dlt_plants_water)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1124,7 +1114,6 @@ c What if you harvest the crop and leave it to rattoon?
      :          g_tt_tot,
      .          g_dlt_dm_green)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1333,7 +1322,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          dlt_N_green
      .                     )
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1449,7 +1437,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          g_dlt_plants_dead)
 
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1541,7 +1528,6 @@ c What if you harvest the crop and leave it to rattoon?
      .          g_plants,
      .          tpla_max)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1609,7 +1595,6 @@ c What if you harvest the crop and leave it to rattoon?
 * ====================================================================
        real function sunflower_dens_fact(plants)
 * ====================================================================
-      Use infrastructure
       implicit none
 
       real     plants
@@ -1674,7 +1659,6 @@ c What if you harvest the crop and leave it to rattoon?
 *     ===========================================================
       subroutine Read_Constants_Sunf ()
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Purpose
@@ -2159,7 +2143,6 @@ cew - added this section
 *     ===========================================================
       subroutine Read_Cultivar_Params_Sunf (cultivar)
 *     ===========================================================
-            Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments

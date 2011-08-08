@@ -4,7 +4,6 @@
 * ====================================================================
        subroutine PlantP_zero_variables (param_init)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Argument Values
@@ -90,7 +89,6 @@ c      p%crop_type = ' '       ! Characters
 * ====================================================================
        subroutine PlantP_get_other_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -129,7 +127,6 @@ c     :     ,1000.)          ! Upper Limit for bound checking
        logical function PlantP_Send_my_variable (Variable_name)
 * ====================================================================
 
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -427,7 +424,6 @@ cih     :            *gm2kg /sm2ha
 *     ===========================================================
       subroutine PlantP_read_param ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -478,7 +474,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
       subroutine PlantP_read_constants ()
 *     ===========================================================
 
-      Use infrastructure
       implicit none
 
 
@@ -636,7 +631,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :                           ,part_wts
      :                           ,dlt_dm_pot)
 * ====================================================================
-      Use infrastructure
        implicit none
 
 *+  Sub-Program Arguments
@@ -675,7 +669,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :                           ,dlt_dm_senesced
      :                           ,dlt_dm_detached)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -738,7 +731,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_partition ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -815,7 +807,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
        subroutine PlantP_senescence (growth_stage, part_wts
      :                              , dlt_part_sen)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -869,7 +860,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_detachment (dm_senesced, dlt_dm_detached)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -914,7 +904,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_zero_daily_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -942,7 +931,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_Create ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -974,7 +962,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_Init (crop_type, part_names, num_parts)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1023,7 +1010,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_Set_Up_Parts (part_names, num_parts)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1060,7 +1046,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 *     ================================================================
       subroutine PlantP_set_phosphorus_aware ()
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1115,7 +1100,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_demand (growth_stage, parts_wt, dlt_dm_pot)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1254,7 +1238,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        real function PlantP_Pfact_photo ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1290,7 +1273,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        real function PlantP_Pfact_grain ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1325,7 +1307,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        real function PlantP_Pfact_expansion ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1360,7 +1341,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        real function PlantP_Pfact_pheno ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1398,7 +1378,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :                        ,chop_fr_dead, fraction_to_residue
      :                        )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1473,7 +1452,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :                        , dlt_residue_p, dlt_dm_P
      :                        )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1542,7 +1520,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
      :                        , p_incorporated
      :                        )
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1624,7 +1601,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        real function PlantP_Pfact (growth_stage, dm_green)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1721,7 +1697,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_Stress (growth_stage, dm_green)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1775,7 +1750,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_init_pools (dm_green)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1839,7 +1813,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_retrans (growth_stage,dm_green)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1944,7 +1917,6 @@ c     :          ,1.0)                 ! Upper Limit for bound check
 * ====================================================================
        subroutine PlantP_summary ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
