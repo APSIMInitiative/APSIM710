@@ -17,7 +17,6 @@
      :              ,CanopyCond)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -127,7 +126,6 @@
      :              ,CanopyCond)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -190,7 +188,6 @@
      :              ,Transpiration)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -292,7 +289,6 @@
      :                            ,AirPressure)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -329,7 +325,6 @@
 *====================================================================
       real function micromet_Lambda (temperature)
 *====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -360,7 +355,6 @@
       real function micromet_svp (temperature)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -392,7 +386,6 @@
      :                                     ,air_pressure)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -440,7 +433,6 @@
      :                                ,emmis_canopy)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -502,7 +494,6 @@
      :                                      ,Sun_angle)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -543,7 +534,6 @@
      :                                      ,day)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -627,7 +617,6 @@
      :                                        ,AirPressure)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -667,7 +656,6 @@
      :                       , RoughnessLength)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -719,7 +707,6 @@
       real function micromet_ZeroPlaneDispl (CropHeight, CropLAI)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -767,7 +754,6 @@
       real function micromet_RoughnessLength (CropHeight,ZeroPlaneDispl)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -815,7 +801,6 @@
      :                                        , LayerSolRad)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -883,7 +868,6 @@
      :              ,radn)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -939,7 +923,6 @@
      :              ,Sun_Angle)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1004,7 +987,6 @@
      :                        , maxt)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1053,7 +1035,6 @@
      :                                 , AirPressure)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1099,7 +1080,6 @@
      :                       , LAItot)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1170,7 +1150,6 @@
      :                       , LAItot)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1256,7 +1235,6 @@
      :                        , maxt)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -1296,7 +1274,6 @@
      :                        , soil_heat_flux_fraction)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 

@@ -1,5 +1,6 @@
       module oryzaModule
       use registrations
+      use infrastructure
       Use CropLibrary
  
 ! ===================================================================
@@ -423,7 +424,6 @@
 *     ===========================================================
       subroutine oryza_read_cultivar_params ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -515,7 +515,6 @@
 *     ===========================================================
       subroutine oryza_start_crop (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -639,7 +638,6 @@
 *     ===========================================================
       subroutine oryza_end_crop ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -770,7 +768,6 @@
 * ====================================================================
        subroutine oryza_Create ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -799,7 +796,6 @@
 * ====================================================================
        subroutine oryza_Init ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 *+  Purpose
 *     Initialise oryza module. The rest of the system is plugged in now.
@@ -937,7 +933,6 @@
 * ====================================================================
        subroutine oryza_zero_variables ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -1290,7 +1285,6 @@
 * ====================================================================
        subroutine oryza_Send_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1788,7 +1782,6 @@
 *     ===========================================================
       subroutine oryza_read_param ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2742,7 +2735,6 @@
 * ====================================================================
        subroutine Oryza_get_other_variables()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2835,7 +2827,6 @@
 !----------------------------------------------------------------------!
       SUBROUTINE ORYZAMODEL()
 
-        Use Infrastructure
         IMPLICIT NONE
         Integer I,num_layers
 
@@ -2918,7 +2909,6 @@
 ! Files included: -                                                    !
 !----------------------------------------------------------------------!
       SUBROUTINE Oryza_ET()
-      Use Infrastructure
       IMPLICIT NONE
 !
 !!        Estimate radiation-driven and wind- and humidity-driven part
@@ -2962,7 +2952,6 @@
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
        SUBROUTINE Oryza_SUBDD()! different arguments TMAX,TMIN,TBD,TOD,TMD,HU
-       Use Infrastructure
        IMPLICIT NONE
 
 !-----Local parameters
@@ -3117,7 +3106,6 @@
 !----------------------------------------------------------------------*
 
       SUBROUTINE Oryza_SASTRO() !Diffferent arguments
-      Use Infrastructure
        !g%IDOY,p%lat, g%SOLCON,g%ANGOT,g%DAYL,g%DAYLP,g%DSINB,g%DSINBE,g%SINLD,g%COSLD
 
       IMPLICIT NONE
@@ -3214,7 +3202,6 @@
 
       SUBROUTINE Oryza_SSKYC() !Same arguments: HOUR, SOLCON, FRPAR, DSINBE, SINLD, COSLD, RDD, &
                      !SINB, RDPDR, RDPDF. By Xike 14/10/03
-      Use Infrastructure
       IMPLICIT NONE
 
 !     Formal parameters
@@ -3440,7 +3427,6 @@
 !----------------------------------------------------------------------*
 
       SUBROUTINE Oryza_SGPL()
-      Use Infrastructure
       IMPLICIT NONE
 
 !     Gauss parameters
@@ -3633,7 +3619,6 @@
 !----------------------------------------------------------------------*
 
       SUBROUTINE Oryza_SGPC2()
-      Use Infrastructure
       IMPLICIT NONE
 !
 !!     Local variables
@@ -3755,7 +3740,6 @@
 !----------------------------------------------------------------------*
 
       SUBROUTINE Oryza_SGPCDT()
-      Use Infrastructure
       IMPLICIT NONE
 
 !     Gauss parameters
@@ -3847,7 +3831,6 @@
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_SUBGRN()
-      Use Infrastructure
       IMPLICIT NONE
 
 !-----Local parameters
@@ -3941,8 +3924,6 @@
 !
       Subroutine Oryza_Sublai2()
 !
-      use infrastructure
-
       IMPLICIT NONE
 !
 !-----Local parameters
@@ -4066,7 +4047,6 @@
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_SUBCBC()
-      Use Infrastructure
       IMPLICIT NONE
 !-----Formal parameters
       REAL CBCHK
@@ -4178,7 +4158,6 @@
 !===================================================================*
 !     DECLARATION SECTION                                           *
 !===================================================================*
-         Use Infrastructure
          implicit none
 !-----Formal parameters
 
@@ -4608,7 +4587,6 @@
       SUBROUTINE Oryza_WSTRESS ()
 
 
-      USE infrastructure
       IMPLICIT NONE
 
 !-----Formal parameters
@@ -4796,7 +4774,6 @@
 !                                                                      !
 !----------------------------------------------------------------------!
       SUBROUTINE Oryza_WNOSTRESS ()
-      Use infrastructure
       IMPLICIT NONE
 
 !-----Local variables
@@ -4902,8 +4879,6 @@
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_NCROP ()
 
-
-      USE infrastructure
 
       IMPLICIT NONE
 
@@ -5141,7 +5116,6 @@
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_NNOSTRESS()
 
-      Use Infrastructure
       IMPLICIT NONE
 
 
@@ -5183,8 +5157,6 @@
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_SUBNBC(NCHKIN, NCKCFL)
-      Use Infrastructure
-
       IMPLICIT NONE
       Real NCKCFL,NCHKIN
 
@@ -5211,7 +5183,6 @@
 * ====================================================================
        subroutine oryza_set_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -5331,7 +5302,6 @@
 * ====================================================================
        subroutine oryza_prepare ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -5378,7 +5348,6 @@
 * ====================================================================
        subroutine oryza_process ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -5411,7 +5380,6 @@
 * ====================================================================
        subroutine oryza_process1 ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -5441,7 +5409,6 @@
 * ====================================================================
        subroutine oryza_process3 ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -5499,7 +5466,6 @@
 * ====================================================================
        subroutine oryza_set_other_variables ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -5583,7 +5549,6 @@
 *     ===========================================================
       subroutine oryza_ONNew_Profile (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -5647,7 +5612,6 @@
       subroutine oryza_OnNewMet (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -5699,7 +5663,6 @@
      :                        , maxt)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -5743,7 +5706,6 @@
 !*     ===========================================================
       subroutine oryza_ONtick (variant)
 !*     ===========================================================
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -5781,7 +5743,6 @@
       real function oryza_svp (temperature)
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -5849,7 +5810,6 @@
        subroutine Main (Action, Data_string)
 * ====================================================================
       use oryzaModule
-      Use Infrastructure
       implicit none
       ml_external Main
 
@@ -5914,7 +5874,6 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use OryzaModule
 
       ml_external doInit1
@@ -5930,7 +5889,6 @@
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use oryzaModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

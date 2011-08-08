@@ -1,5 +1,6 @@
 *     ========================================
       module MicrometModule
+      use infrastructure
 *     ========================================
       use Registrations
 
@@ -162,7 +163,6 @@
 * ====================================================================
        subroutine Micromet_Create ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 
@@ -196,7 +196,6 @@
        subroutine Micromet_Init ()
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 
@@ -245,7 +244,6 @@
        subroutine Micromet_zero_variables ()
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -339,7 +337,6 @@
        subroutine Micromet_Send_my_variable (Variable_name)
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -507,7 +504,6 @@ CCC End new code
        subroutine Micromet_set_my_variable (Variable_name)
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -576,7 +572,6 @@ CCC End new code
       subroutine Micromet_read_param ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -679,7 +674,6 @@ CCC End new code
        subroutine Micromet_read_constants ()
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -778,7 +772,6 @@ CCC End new code
       subroutine Micromet_OnNewCrop (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -853,7 +846,6 @@ CCC End new code
       subroutine Micromet_OnNewCanopy (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
       integer, intent(in) :: variant
 
@@ -918,7 +910,6 @@ CCC End new code
       subroutine Micromet_Prepare ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -955,7 +946,6 @@ CCC End new code
       subroutine Micromet_Process ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -998,7 +988,6 @@ CCC End new code
       subroutine Micromet_Canopy_Compartments ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1037,7 +1026,6 @@ CCC End new code
       subroutine Micromet_Define_Layers ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1116,7 +1104,6 @@ CCC End new code
       subroutine Micromet_Divide_Components ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1202,7 +1189,6 @@ CCC End new code
       subroutine Micromet_Table (Title,Array)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1288,7 +1274,6 @@ CCC End new code
       subroutine Micromet_Light_Extinction ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1352,7 +1337,6 @@ CCC End new code
       subroutine Micromet_Canopy_Energy_Balance ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1390,7 +1374,6 @@ CCC End new code
       subroutine Micromet_short_wave_radiation ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1450,7 +1433,6 @@ CCC End new code
       subroutine Micromet_OnNewMet (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -1494,7 +1476,6 @@ CCC End new code
       subroutine Micromet_Long_Wave_Radiation ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1554,7 +1535,6 @@ CCC End new code
       subroutine Micromet_SoilHeat_Radiation ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1616,7 +1596,6 @@ CCC End new code
       subroutine Micromet_Met_Variables ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1676,7 +1655,6 @@ CCC End new code
       subroutine micromet_ONtick (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -1711,7 +1689,6 @@ CCC End new code
       subroutine Micromet_Energy_Terms ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1783,7 +1760,6 @@ CCC End new code
       subroutine Micromet_component_constants (Cno)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1878,7 +1854,6 @@ CCC End new code
       subroutine Micromet_Calculate_Gc ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1943,7 +1918,6 @@ CCC End new code
       subroutine Micromet_Calculate_Ga ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2009,7 +1983,6 @@ CCC End new code
       subroutine Micromet_Calculate_Interception ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2065,7 +2038,6 @@ CCC End new code
       subroutine Micromet_Calculate_Omega ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2114,7 +2086,6 @@ CCC End new code
       subroutine micromet_calculate_PM ()
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2262,7 +2233,6 @@ CCC End new code
      :              )
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2349,7 +2319,6 @@ CCC End new code
      :              )
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2421,7 +2390,6 @@ CCC End new code
      :              )
 *====================================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2498,7 +2466,6 @@ CCC End new code
       subroutine Micromet_Energy_Balance_Event ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2555,7 +2522,6 @@ CCC End new code
       real function Micromet_radn_green_fraction (j)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 *+  Sub-Program Arguments
       integer j
@@ -2600,7 +2566,6 @@ CCC End new code
       subroutine Micromet_Water_Balance_Event ()
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2650,7 +2615,6 @@ CCC End new code
       subroutine Micromet_OnNewPotGrowth (variant)
 *     ===========================================================
 
-      Use Infrastructure
       implicit none
       integer, intent(in) :: variant
 
@@ -2710,7 +2674,6 @@ CCC End new code
       subroutine alloc_dealloc_instance(doAllocate)
 !     ===========================================================
       Use MicrometModule
-      Use Infrastructure
       implicit none
       ml_external alloc_dealloc_instance
 !STDCALL(alloc_dealloc_instance)
@@ -2742,7 +2705,6 @@ CCC End new code
        subroutine Main (Action, Data_string)
 * ====================================================================
       Use MicrometModule
-      Use Infrastructure
       implicit none
       ml_external Main
 
@@ -2825,7 +2787,6 @@ CCC End new code
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use MicroMetModule
       
       ml_external doInit1
@@ -2840,7 +2801,6 @@ CCC End new code
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use MicroMetModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

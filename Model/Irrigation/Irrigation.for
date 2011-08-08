@@ -1,6 +1,7 @@
       module IrrigateModule
       use ComponentInterfaceModule
       use Registrations
+      use infrastructure
 !     ================================================================
 !     Irrigate array sizes and constants
 !     ================================================================
@@ -109,7 +110,6 @@
 *     ===========================================================
       subroutine irrigate_ONApply(variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -214,7 +214,6 @@
 
       ! Store the specified solute amount in the solute array.
       subroutine StoreSolute(SoluteName, AmountSolute, Amount)
-      Use infrastructure
       implicit none
       character*(*) SoluteName
       real AmountSolute
@@ -237,7 +236,6 @@
 *     ===========================================================
       subroutine irrigate_sendirrigated ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -303,7 +301,6 @@
 *     ===========================================================
       subroutine irrigate_ONwater_supplied ()
 *     ===========================================================
-      Use infrastructure
 
 *+  Purpose
 *       Receive irrigation water from a sending module
@@ -498,7 +495,6 @@
 *     ===========================================================
       subroutine irrigate_Init ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -587,7 +583,6 @@
 *     ===========================================================
       subroutine irrigate_read_param ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 
@@ -772,7 +767,6 @@
 *     ===========================================================
       subroutine irrigate_zero_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -829,7 +823,6 @@
 *     ===========================================================
       subroutine irrigate_zero_apply_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -869,7 +862,6 @@
 *     ===========================================================
       subroutine irrigate_get_other_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -940,7 +932,6 @@
 *     ===========================================================
       subroutine irrigate_Send_my_variable (Variable_name)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1088,7 +1079,6 @@
 *     ===========================================================
       subroutine irrigate_set_my_variable (Variable_name)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1216,7 +1206,6 @@
 *     ===========================================================
       subroutine irrigate_Process ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1251,7 +1240,6 @@
 *     ===========================================================
       subroutine irrigate_automatic ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1351,7 +1339,6 @@
 *     ===========================================================
       subroutine irrigate_ONtick (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -1397,7 +1384,6 @@
 * ====================================================================
        subroutine irrigate_check_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1464,7 +1450,6 @@
 *     ===========================================================
       subroutine irrigate_set_amount (amount)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1552,7 +1537,6 @@
 *     ===========================================================
       subroutine irrigate_check_allocation (amount)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1603,7 +1587,6 @@
 *     ===========================================================
       subroutine irrigate_fasw (fasw, swdef)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1667,7 +1650,6 @@ cnh note that results may be strange if swdep < ll15
 *     ===========================================================
       subroutine irrigate_on_new_solute (variant)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1772,7 +1754,6 @@ cnh note that results may be strange if swdep < ll15
 * ====================================================================
        integer function irrigate_solute_number (solname)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 
@@ -1850,7 +1831,6 @@ cnh note that results may be strange if swdep < ll15
 *     ===========================================================
       subroutine Main (Action, Data_String)
 *     ===========================================================
-      Use infrastructure
       Use IrrigateModule
 
       implicit none
@@ -1913,7 +1893,6 @@ cnh note that results may be strange if swdep < ll15
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use IrrigateModule
       
       ml_external doInit1
@@ -1926,7 +1905,6 @@ cnh note that results may be strange if swdep < ll15
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       Use IrrigateModule
       implicit none
       ml_external respondToEvent

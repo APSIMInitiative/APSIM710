@@ -2,6 +2,7 @@ module PondModule
    use ComponentInterfaceModule
    use registrations
    use DataTypes
+   use infrastructure
       
 !  ====================================================================
 !  Pond constants
@@ -165,7 +166,6 @@ module PondModule
 subroutine Pond_read_parameters ()
 !  ===========================================================
 
-   Use Infrastructure
    implicit none
  
 !+ Purpose
@@ -211,7 +211,6 @@ end subroutine
 !  ====================================================================
 subroutine Pond_read_constants ()
 !  ====================================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -290,7 +289,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_ONprocess ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
  
 !+ Purpose
@@ -414,7 +412,6 @@ end subroutine
 !  ====================================================================
 subroutine Pond_send_my_variable (variable_name)
 !  ====================================================================
-   Use Infrastructure
    implicit none
 
 !+ Sub-Program Arguments
@@ -608,7 +605,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_zero_variables ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -719,7 +715,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_zero_event_data ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -753,7 +748,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_zero_daily_variables ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -805,7 +799,6 @@ end subroutine
 !  ====================================================================
 subroutine Pond_sum_report ()
 !  ====================================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -843,7 +836,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_init ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -877,7 +869,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_season_init ()
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -923,7 +914,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_ONtick (variant)
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
    integer, intent(in) :: variant
@@ -956,7 +946,6 @@ end subroutine
 !  ===========================================================
 subroutine Pond_ONnewmet (variant)
 !  ===========================================================
-   Use Infrastructure
    implicit none
 
    integer, intent(in) :: variant
@@ -994,7 +983,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_ONPotentialResidueDecompositionCalculated(variant)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 !+  Purpose
 !     Get information of potential residue decomposition
@@ -1039,7 +1027,6 @@ end subroutine
 !     ===========================================================
 subroutine pond_ActiveCheck ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Purpose
@@ -1109,7 +1096,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_set_my_variable (variable_name)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1176,7 +1162,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_min_residues (dlt_C_decomp, dlt_N_decomp, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_nh4_min, dlt_no3_min)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1295,7 +1280,6 @@ end subroutine
 subroutine Pond_sendActualResidueDecompositionCalculated()
 !     ===========================================================
    use ComponentInterfaceModule
-   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1367,7 +1351,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_temperature_balance ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1424,7 +1407,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_hydrolise_urea (ftemp)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1477,7 +1459,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_move_solutes_down_mass_flow ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1582,7 +1563,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_diffusion()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1823,7 +1803,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_ammonium_isotherm(soil_nh4ppm,SOILC,BP )
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1916,7 +1895,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_calculate_daily_variables ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2087,7 +2065,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_get_daily_variables ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2183,7 +2160,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_ph_balance (timestep)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2242,7 +2218,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_volatilise_ammonia (timestep, ftemp)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2364,7 +2339,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_grow_pab ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2427,7 +2401,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_send_cropchopped_event (amount)
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2490,7 +2463,6 @@ end subroutine
 !     ===========================================================
 subroutine Pond_check_runoff_N ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2537,7 +2509,6 @@ end subroutine
 !================================================================
    real function pond_pab_tf ()
 !================================================================
-   use infrastructure
    implicit none
 
 !+  Purpose
@@ -2594,7 +2565,6 @@ end function
 !================================================================
    real function pond_pab_rcf ()
 !================================================================
-   use infrastructure
    implicit none
 
 !+  Purpose
@@ -2634,7 +2604,6 @@ end function
 !  ====================================================================
 subroutine Pond_create ()
 !  ====================================================================
-   Use Infrastructure
    implicit none
 
 !+ Purpose
@@ -2668,7 +2637,6 @@ end module PondModule
 subroutine doInit1()
 !* ====================================================================
    use PondModule
-   Use infrastructure
    implicit none
    ml_external doInit1
 !STDCALL(doInit1)
@@ -2718,7 +2686,6 @@ end subroutine
 !  ====================================================================
 subroutine Main (action, data_string)
 !  ====================================================================
-   Use Infrastructure
    use PondModule
    implicit none
    ml_external Main
@@ -2784,7 +2751,6 @@ end subroutine
 !  ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use PondModule
-   Use infrastructure
    implicit none
    ml_external respondToEvent
 !STDCALL(respondToEvent)

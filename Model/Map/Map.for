@@ -2,6 +2,7 @@
       module MapModule
 !     ========================================
       use Registrations
+      use infrastructure
       
       integer    max_size              !the greatest size_of the arrays can be
       parameter (max_size = 50)
@@ -70,7 +71,6 @@
 * ====================================================================
        subroutine map_Init ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -115,7 +115,6 @@
 * ====================================================================
        subroutine map_zero_variables ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -181,7 +180,6 @@
 * ====================================================================
        recursive subroutine map_Send_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -260,7 +258,6 @@
 *     ===========================================================
       subroutine map_read_param ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -502,7 +499,6 @@
 * ====================================================================
        subroutine map_set_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -537,7 +533,6 @@ c      endif
 *     ===========================================================
       subroutine map_calc_row_sum ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -579,7 +574,6 @@ c      endif
 *     ===========================================================
       subroutine map_calc_new_dlayer ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -621,7 +615,6 @@ c      endif
 * ====================================================================
        subroutine map_get_sim_dlayer ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -675,7 +668,6 @@ c      endif
 * ====================================================================
        subroutine map_calc_coefficients ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -757,7 +749,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_new_dlayer ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -798,7 +789,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_summed_var (arr_num)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -946,7 +936,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_averaged_var (arr_num)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1098,7 +1087,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_concentration (arr_num)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1252,7 +1240,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_concentration_sw (arr_num)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1438,7 +1425,6 @@ c      endif
 * ====================================================================
        subroutine map_Send_satpaste (arr_num)
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -1666,7 +1652,6 @@ c      endif
 * ====================================================================
        subroutine Main (Action, Data_string)
 * ====================================================================
-      Use infrastructure
       Use MapModule
       implicit none
       ml_external Main
@@ -1715,7 +1700,6 @@ cnh      call set_warning_off ()
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use MapModule
       
       ml_external doInit1
@@ -1730,7 +1714,6 @@ cnh      call set_warning_off ()
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

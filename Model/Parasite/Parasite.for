@@ -2,6 +2,7 @@
       use ComponentInterfaceModule
       use Registrations
       Use CropLibrary
+      use infrastructure
 
 * ====================================================================
 *     Change information
@@ -295,7 +296,6 @@
 *     ================================================================
       subroutine Parasite_get_site_characteristics ()
 *     ================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -325,7 +325,6 @@
 * ====================================================================
        subroutine Initialisation ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Calls
@@ -358,7 +357,6 @@
 *     ================================================================
       subroutine Get_Other_Variables ()
 *     ================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -463,7 +461,6 @@
 *     ================================================================
       subroutine Set_Other_Variables ()
 *     ================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -496,7 +493,6 @@
 *     ================================================================
       subroutine Send_My_Variable (variable_name)
 *     ================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -722,7 +718,6 @@
 *     ===========================================================
       subroutine Zero_Variables()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -752,7 +747,6 @@
 *     ===========================================================
       subroutine Zero_Global_Variables()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -870,7 +864,6 @@
 *     ===========================================================
       subroutine Zero_Daily_Variables()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -928,7 +921,6 @@
 *     ===========================================================
       subroutine Zero_Parameters_and_Constants()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -991,7 +983,6 @@
 *     ===========================================================
       subroutine Harvest ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1023,7 +1014,6 @@
       subroutine parasite_add_residue (dlt_residue_weight
      :                                 , dlt_residue_N)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1074,7 +1064,6 @@
 *     ===============================================================
       subroutine Set_My_Variable (Variable_name)
 *     ===============================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1115,7 +1104,6 @@
 *     ===========================================================
       subroutine End_Parasite ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1144,7 +1132,6 @@
 *     ===========================================================
       subroutine Kill_Parasite ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1176,7 +1163,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Herbicide ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1217,7 +1203,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Weeding ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1280,7 +1265,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Phenology_Init ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1317,7 +1301,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Parasite_Process ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1353,7 +1336,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Parasite_Post ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1391,7 +1373,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Parasite_Potential ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1499,7 +1480,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Parasite_Actual ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1580,7 +1560,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                        , dlt_tt_host
      :                        )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1663,7 +1642,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                        , dlt_tt
      :                        )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1709,7 +1687,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                        , dlt_stage
      :                        )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1794,7 +1771,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                              , cum_root_length
      :                              )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1944,7 +1920,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                              , population_alive
      :                              )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2007,7 +1982,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                              , dlt_dm_pot_tot
      :                              )
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2087,7 +2061,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                              , dlt_dm_act_tot
      :                              , class_dm)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2139,7 +2112,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine UpdateState ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2223,7 +2195,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Read_constants ()
 * ====================================================================
-      use Infrastructure
       implicit none
 
 *+  Calls
@@ -2377,7 +2348,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
        subroutine Start_Parasite ()
 * ====================================================================
-      use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2470,7 +2440,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Read_Cultivar_Parameters (cultivar)
 *     ===========================================================
-      use Infrastructure
       implicit none
 
 
@@ -2542,7 +2511,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Parasite_ONnewmet (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -2575,7 +2543,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine Parasite_ONtick (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -2609,7 +2576,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 *     ===========================================================
       subroutine parasite_ONNew_Profile (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
       integer, intent(in) :: variant
 
@@ -2678,7 +2644,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 * ====================================================================
       subroutine Main (action, data_string)
 * ====================================================================
-      Use Infrastructure
       use ParasiteModule
       implicit none
       ml_external Main
@@ -2799,7 +2764,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use ParasiteModule
       
       ml_external doInit1
@@ -2814,7 +2778,6 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use ParasiteModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

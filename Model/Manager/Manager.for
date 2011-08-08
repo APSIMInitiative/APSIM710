@@ -32,6 +32,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ----------------------- Declaration section ------------------------
       module ManagerModule
       use Registrations
+      use infrastructure
 
 !  Constant variables
       integer Max_local_variables      ! Maximum number of local vars.
@@ -231,7 +232,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          integer       expression_lens(Variable_maximum) ! Lengths of strings in expression_array
          character     stack(stack_maximum)*(Buffer_size)
                                                    ! stack used in expression
-         integer       stack_length(stack_maximum) ! Length of strings on stack												   
+         integer       stack_length(stack_maximum) ! Length of strings on stack
          character     expression_sub_array(Variable_maximum)*
      .                                       (Buffer_size)
          integer       expression_sub_lens(Variable_maximum) ! Length of strings in expression_sub_array
@@ -254,7 +255,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :                                         ,var_name
      :                                         ,variable_value)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Subprogram Arguments
@@ -322,7 +322,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Manager_Init ()
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -380,7 +379,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Manager_zero_variables ()
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -468,7 +466,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Manager_read_rules ()
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -564,7 +561,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine ProcessRules(regId)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -600,7 +596,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       recursive subroutine manager_send_my_variable (variable_name)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -658,7 +653,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 * ====================================================================
        recursive subroutine manager_set_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -697,7 +691,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Parse_read_line(Line, EOF_flag)
 ! ====================================================================
-      Use Infrastructure
       Use ComponentInterfaceModule
       implicit none
 
@@ -766,7 +759,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Manager_new_local_variable(Variable_name,
      .                                      Variable_value, RHSisString)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -804,22 +796,22 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       else
          ! Need to insert item at correct position to keep the names sorted
-         leng = len_trim(variable_name)		 
+         leng = len_trim(variable_name)
          do while (idx .gt. 0 .and.
      .      g%local_variable_names(idx)
      .      .gt. variable_name(:leng))
-	           g%local_variable_names(idx + 1) = 
+               g%local_variable_names(idx + 1) = 
      .              g%local_variable_names(idx)
-	           g%local_variable_values(idx + 1) = 
+               g%local_variable_values(idx + 1) = 
      .              g%local_variable_values(idx)
-	           g%local_variable_is_real(idx + 1) = 
+               g%local_variable_is_real(idx + 1) = 
      .              g%local_variable_is_real(idx)
-	           g%local_variable_regids(idx + 1) = 
+               g%local_variable_regids(idx + 1) = 
      .              g%local_variable_regids(idx)
                idx = idx - 1
          enddo
          idx = idx + 1
-	 
+ 
          g%local_variable_is_real(idx) = .not. RHSisString
          
          call assign_string (
@@ -857,7 +849,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
       subroutine SetLocalVariable(Indx, Value)
 ! ====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -890,7 +881,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine manager_get_params (Function_call, Params)
 ! ====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -922,7 +912,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! locate open and close bracket.
 
       pos_open_bracket = fast_index(Function_call, '(')
-	  if (pos_open_bracket .gt. 0) then
+      if (pos_open_bracket .gt. 0) then
         pos_close_bracket = fast_index(Function_call, ')')
       else
         pos_close_bracket = 0
@@ -973,7 +963,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .           (Variable_Name, Variable_Value, valueIsReal)
 ! ====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1230,7 +1219,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .           (Variable_Name, Variable_Value, RHSisString)
 ! ====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1376,7 +1364,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Parse_action (Action_string)
 ! ====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       !Use ConstantsModule
       implicit none
 
@@ -1519,7 +1506,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       recursive subroutine Replace_local_variables(st)
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
       character st*(*)
@@ -1599,7 +1585,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
        recursive subroutine Parse_error (Error_message, Routine_message)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1651,7 +1636,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Parse ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1712,7 +1696,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Process_if_statement
      .    (Nested_ifs)
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1802,7 +1785,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Process_else_statement
      .  (Nested_ifs)
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1848,7 +1830,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Assignment_Statement ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1890,7 +1871,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Process_Assignment
      .  (Variable_name)
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -1983,7 +1963,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_Action ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2018,7 +1997,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive integer function If_statement ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2076,7 +2054,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_next_expression ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2126,7 +2103,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_And_Or_expression ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2173,7 +2149,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_expression ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2235,12 +2210,12 @@ C     Last change:  P    25 Oct 2000    9:26 am
                 left = 1
              endif
 
-			 g%result_leng = pop_stack(g%expression_result)
+             g%result_leng = pop_stack(g%expression_result)
 
           end if
 
           if (g%all_ok .eq. YES) then
-              leng = g%result_leng			  
+              leng = g%result_leng
               g%expression_array(left)(:leng) =
      :             g%expression_result(:leng)
               g%expression_lens(left) = leng
@@ -2276,7 +2251,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
           leng = g%expression_sub_lens(1)
           g%buffer(:leng) = g%expression_sub_array(1)(:leng)
-          g%buffer_length = leng		  
+          g%buffer_length = leng
           g%token = g%expression_sub_array2(1)
           g%current_token = 1
 
@@ -2320,7 +2295,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .     (String, Double_value, io_result)
 ! =====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2379,7 +2353,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .     (String, Real_value, io_result)
 ! =====================================================================
       Use ComponentInterfaceModule
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2436,7 +2409,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_sub_expression ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2585,7 +2557,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_Simple_Expression ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2673,7 +2644,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_Term ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2768,7 +2738,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_Power ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2832,7 +2801,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Process_Factor ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -2894,7 +2862,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine push_stack (Variable_Value)
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -2934,9 +2901,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive integer function pop_stack (buffer)
 ! =====================================================================
-      Use Infrastructure
       implicit none
-	  
+  
       integer nVars
       character buffer*(*)
 
@@ -2971,7 +2937,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_sub_token ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
       integer leng
 
@@ -3004,9 +2969,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_next_token ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
-	  
+  
       integer leng
 
 !+  Sub-Program Arguments
@@ -3026,7 +2990,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
        g%buffer(:leng) = g%Token_array(g%next_token)(:leng)
        g%token = g%Token_array2(g%next_token)
        g%buffer_length = leng
-	   
+   
        if     (g%token .eq. C_EOF) then
               g%end_of_file = YES
        endif
@@ -3040,7 +3004,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_expression_array ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
       integer leng
 
@@ -3124,7 +3087,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Check_previous_word ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3167,7 +3129,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive character*(buffer_size) function Real_or_not
      .     (Variable_Value, Variable_leng)
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -3205,7 +3166,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Tokenize()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Sub-Program Arguments
@@ -3340,7 +3300,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Token_from_file ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3381,7 +3340,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Char ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3415,7 +3373,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Word ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3494,7 +3451,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Literal ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3532,7 +3488,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Number ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3569,7 +3524,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Special ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3684,7 +3638,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive subroutine Get_Action ()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3716,7 +3669,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! =====================================================================
        recursive logical function Reserved()
 ! =====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Purpose
@@ -3766,8 +3718,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer function LocalVarIndex(varName)
       implicit none
       character*(*), intent(in) :: varName
-	  
-	  
+  
+  
       integer left, right, middle
       LocalVarIndex = 0
       left = 0
@@ -3820,7 +3772,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
        recursive subroutine Main (Action, Data_string)
 ! ====================================================================
       use ManagerModule
-      Use Infrastructure
       implicit none
       ml_external Main
 
@@ -3875,7 +3826,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use ManagerModule 
 
       ml_external doInit1
@@ -3890,7 +3840,6 @@ C     Last change:  P    25 Oct 2000    9:26 am
 ! ====================================================================
       recursive subroutine respondToEvent(fromID, eventID, variant)
       use ManagerModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

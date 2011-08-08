@@ -1,5 +1,6 @@
       module OperatnsModule
       use Registrations
+      use infrastructure	  
 !     ================================================================
 !     operatns module
 !     ================================================================
@@ -56,7 +57,6 @@
      :                                         ,var_name
      :                                         ,variable_value)
 ! ====================================================================
-      Use Infrastructure
       implicit none
 
 !+  Subprogram Arguments
@@ -119,7 +119,6 @@
 *     ===========================================================
       subroutine operatns_Init ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -156,7 +155,6 @@
 *     ===========================================================
       subroutine operatns_EndRun ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -185,7 +183,6 @@
 *     ===========================================================
       subroutine operatns_zero_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -219,7 +216,6 @@
 *     ===========================================================
       subroutine operatns_get_other_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -250,7 +246,6 @@
 *     ===========================================================
       subroutine operatns_list()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -290,7 +285,6 @@
 *     ===========================================================
       subroutine operatns_read_section (section, phase_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -396,7 +390,6 @@
 *     ===========================================================
       subroutine operatns_extract_date (record, date_string)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -472,7 +465,6 @@
 *     ===========================================================
       subroutine operatns_schedule (Phase_no)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -606,7 +598,6 @@
 *     ===========================================================
       subroutine Main (Action, Data_String)
 *     ===========================================================
-      Use infrastructure
       use OperatnsModule
       implicit none
       ml_external Main
@@ -665,7 +656,6 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use OperatnsModule
 
       ml_external doInit1
@@ -678,7 +668,6 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

@@ -1,4 +1,5 @@
       module FertilizModule
+      use Infrastructure2
  
       integer    max_layer
       parameter (max_layer = 100)
@@ -30,7 +31,6 @@
 *     ===========================================================
       subroutine fertiliz_zero_variables ()
 *     ===========================================================
-      Use infrastructure2
       implicit none
 c     include    'fertiliz.inc'        ! fertiliz common block
 
@@ -65,7 +65,6 @@ c     include    'fertiliz.inc'        ! fertiliz common block
 *     ===========================================================
       subroutine fertiliz_get_other_variables ()
 *     ===========================================================
-      Use infrastructure2
       implicit none
 c     include   'fertiliz.inc'         ! fertiliz common block
 
@@ -112,7 +111,6 @@ c     include   'fertiliz.inc'         ! fertiliz common block
 *     ===========================================================
       subroutine fertiliz_apply (amount, depth, type)
 *     ===========================================================
-      Use infrastructure2
       implicit none
 c     include   'fertiliz.inc'
 
@@ -390,7 +388,6 @@ c     include   'fertiliz.inc'
 *     ===========================================================
       subroutine OnTick (tick)
 *     ===========================================================
-      Use infrastructure2
       use FertilizModule
       implicit none
       ml_external OnTick
@@ -415,7 +412,6 @@ c     include   'fertiliz.inc'
       ! do first stage initialisation stuff.
       ! ===========================================================
       subroutine OnInit1()
-      Use infrastructure2
       use ScienceAPI2
       use FertilizModule
       implicit none
@@ -439,7 +435,6 @@ c     include   'fertiliz.inc'
 *     ===========================================================
       subroutine OnNewProfile(newProfile)
 *     ===========================================================
-      Use infrastructure2
       Use FertilizModule
       implicit none
       ml_external OnNewProfile
@@ -455,7 +450,6 @@ c     include   'fertiliz.inc'
 *     ===========================================================
       subroutine OnProcess()
 *     ===========================================================
-      Use infrastructure2
       Use FertilizModule
       implicit none
       ml_external OnProcess
@@ -469,7 +463,6 @@ c     include   'fertiliz.inc'
 *     ===========================================================
       subroutine OnApply (Application)
 *     ===========================================================
-      Use infrastructure2
       Use FertilizModule
       implicit none
       ml_external OnApply
@@ -493,7 +486,6 @@ c     include   'fertiliz.inc'
 *     ===========================================================
       subroutine Main (Action, Data_string)
 *     ===========================================================
-      Use infrastructure2
       Use FertilizModule
       implicit none
       ml_external Main

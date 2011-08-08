@@ -1,6 +1,7 @@
       module OzcotModule
       Use CropLibrary
       use DataTypes
+      use infrastructure
 
 ! ====================================================================
 !      ozcot parameters
@@ -612,7 +613,6 @@
 * ====================================================================
        subroutine ozcot_Init ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -654,7 +654,6 @@
 !obsolete * ====================================================================
 !obsolete        subroutine ozcot_read_param ()
 !obsolete * ====================================================================
-!obsolete !obsolete       Use Infrastructure
 !      implicit none
 !obsolete        include 'const.inc'             ! Constant definitions
 !obsolete       include 'read.pub'
@@ -715,7 +714,6 @@
 *     ===========================================================
       subroutine ozcot_zero_all_globals ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1080,7 +1078,6 @@
 * ====================================================================
        subroutine ozcot_zero_variables ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1155,7 +1152,6 @@
 * ====================================================================
        subroutine ozcot_manager (Event_action, event_data)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1218,7 +1214,6 @@
 *     ===========================================================
       subroutine ozcot_sow (myrecd)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -1294,7 +1289,6 @@
 * ====================================================================
        subroutine ozcot_get_other_variables ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1580,7 +1574,6 @@
 * ====================================================================
        subroutine ozcot_set_other_variables ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -1712,7 +1705,6 @@
        subroutine ozcot_Send_my_variable
      .    (Variable_name)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2070,7 +2062,6 @@
 * ====================================================================
        subroutine ozcot_set_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -2104,7 +2095,6 @@
 * ====================================================================
        subroutine ozcot_Process ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2147,7 +2137,6 @@
 * ====================================================================
        subroutine ozcot_Prepare ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2166,7 +2155,6 @@
 * ====================================================================
        subroutine ozcot_post ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2187,7 +2175,6 @@
 * ====================================================================
        subroutine ozcot_end_run ()
 * ====================================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -2291,7 +2278,6 @@
 * ====================================================================
       subroutine OZCOT2
 * ====================================================================
-      Use Infrastructure
       implicit none
 
       character  myname*(*)            ! name of subroutine
@@ -2378,7 +2364,6 @@
 !      model.                                                      !
 !-------------------------------------------------------------------
 
-      Use Infrastructure
       implicit none
 
  !     real percent_l
@@ -2551,7 +2536,6 @@
 !     bollgrowth rate is driven by dd,limited by water,
 !     n and c(incl water effects on photosynthesis) stress
 
-      Use Infrastructure
       implicit none
 
 
@@ -2657,7 +2641,6 @@
 !     carcap is carrying capacity, maximum number of bolls the crop
 !     can carry, therefore the boll load that causes 100% shedding.
 
-      Use Infrastructure
       implicit none
 
 
@@ -2789,7 +2772,6 @@
       subroutine ozcot_cropn
 * ====================================================================
 
-      Use Infrastructure
       implicit none
 
       real harvest_n
@@ -2915,7 +2897,6 @@
 !
 !------------------------------------------------------------------------------------------------
 
-      Use Infrastructure
       implicit none
 
       real    ESTABLISH
@@ -3084,7 +3065,6 @@
 !          eos = potential et below plant canopy                   c
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      Use Infrastructure
       implicit none
 
 
@@ -3235,7 +3215,6 @@
 
 !      data from "siratac" - 1987-88 hearn (pers. comm.).
 
-      Use Infrastructure
       implicit none
 
       integer ndas
@@ -3340,7 +3319,6 @@
 !      calls s/r ozcot_frugen to estimate new squares when counts not
 !      available.
 
-      Use Infrastructure
       implicit none
 
 
@@ -3604,7 +3582,6 @@
 !     subjects for future development in a more comprehensive whole farm
 !     management model.
 
-      Use Infrastructure
       implicit none
 
       character  string*200            ! output string
@@ -3708,7 +3685,6 @@
 !      the 'init' subroutine.                                      c
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      Use Infrastructure
       implicit none
 
       real pi
@@ -3754,7 +3730,6 @@
 !      key variables:                                              c
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      Use Infrastructure
       implicit none
 
 !pc      real soltro, spi, cumep, cumes, cumet, deltsw, dal
@@ -4032,7 +4007,6 @@
 !     currently sets isq=i, should be isq=iday for consistency between seasons
 !     when convenient, change and check all refs to isq
 
-      Use Infrastructure
       implicit none
 
 !      real ddisq
@@ -4125,7 +4099,6 @@
 
 !     Revised by ABH April 1995
 
-      Use Infrastructure
       implicit none
 
 
@@ -4306,7 +4279,6 @@
 !                                                                  c
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      Use Infrastructure
       implicit none
 
 !jh      integer nsince
@@ -4522,7 +4494,6 @@
 !c      gr rev). assume intial rate is 1.0 (100% recovery) and maximum uptake
 !c      is 240 kg/ha.
 !c
-      Use Infrastructure
       implicit none
 
       real uptakn_max
@@ -4567,7 +4538,6 @@
 !     ie when boll load exceeds carrying capacity.
 !-------------------------------------------------------------------------------
 
-      Use Infrastructure
       implicit none
 
       real over_c
@@ -4663,7 +4633,6 @@
         real FUNCTION ozcot_satvp(Tdeg)
 * ====================================================================
 
-        Use Infrastructure
       implicit none
 
         real Tdeg
@@ -4704,7 +4673,6 @@
 !     reduced by water stress, nitrogen stress, boll load and self shading of
 !     canopy when lai gt 3.
 
-      Use Infrastructure
       implicit none
 
 
@@ -4767,7 +4735,6 @@ C      Day of application of N fertiliser, NDAY(J) from CINPUT2 & AGRON.INP,
 C      can be day of year (+ve) or days after sowing (-ve), assigned to local
 C      variable JNAPLC(J) on first day of season or day of sowing.
 
-      Use Infrastructure
       implicit none
 
 !jh      INTEGER JNAPLC(2)                         ! local variable, day of applcn
@@ -4870,7 +4837,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !                                                                  C
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      Use Infrastructure
       implicit none
 
 !-------INITIALISING -----------------------------------------------------------
@@ -4921,7 +4887,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !     WLI (waterlogging index) adjusted for plant row,
 !     assuming water logging is limited to plant row.
 
-      Use Infrastructure
       implicit none
 
 
@@ -4966,7 +4931,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !     calculates EP, adds to ES, to get ET, limits to EO
 
-      Use Infrastructure
       implicit none
 
 
@@ -5012,7 +4976,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !     calculates SMI AND WLI
 
-      Use Infrastructure
       implicit none
 
       real depth
@@ -5069,7 +5032,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !     calculates SW in each layer & sums down profile
 
-      Use Infrastructure
       implicit none
 
       integer L
@@ -5091,7 +5053,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 * ====================================================================
         real FUNCTION ozcot_stress(LOW,HIGH,A,STRS)
 * ====================================================================
-        Use Infrastructure
       implicit none
 
         real HIGH
@@ -5132,7 +5093,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !     20070911 DBJ  added p%BckGndRetn  to allow varietal adjustment for
 !                   background retention.
 ! ---------------------------------------------------------------------
-      Use Infrastructure
       implicit none
 
       real CAPACITY
@@ -5179,7 +5139,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !   **** soil & plant water balance including rain and soil evaporation, ****
 !   **** beginning with the top soil layer.                      ****
 
-      Use Infrastructure
       implicit none
 
       real ux
@@ -5284,7 +5243,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !      water stress function for root growth.                      c
 !ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      Use Infrastructure
       implicit none
 
       real smi
@@ -5327,7 +5285,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !     estimates yield and gross margin at end of season
 
-      Use Infrastructure
       implicit none
 
 !      real bollsc
@@ -5487,7 +5444,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !              supply_n from system
 !               dn_plant = daily increment of plant n to system
 
-      Use Infrastructure
       implicit none
 
 
@@ -5606,7 +5562,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !      called from s/r yield to calculate stem and root residues
 
-      Use Infrastructure
       implicit none
 
       real conc_res
@@ -5678,7 +5633,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !       supply     day's supply of assimilate available for potential growth
 !       wt_area    leaf weight:area ratio
 
-      Use Infrastructure
       implicit none
 
 
@@ -5861,7 +5815,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !       par_int         intercepted photosynthetically active radiation
 !       tf              temperature scalar for dry matter production
 
-      Use Infrastructure
       implicit none
 
 !      real assim_1
@@ -5984,7 +5937,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_read_constants ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -6455,7 +6407,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_start_crop (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -6574,7 +6525,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_read_cultivar_params ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -6822,7 +6772,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_read_root_params ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -6910,7 +6859,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_end_crop ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -6955,7 +6903,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_harvest_update ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -7076,7 +7023,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_update ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -7174,7 +7120,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_harvest_report ()
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
 *+  Purpose
@@ -7249,7 +7194,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_root_distrib (root_array, root_sum)
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -7313,7 +7257,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine Ozcot_ONNew_Met (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -7355,7 +7298,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 *     ===========================================================
       subroutine ozcot_ONtick (variant)
 *     ===========================================================
-      Use Infrastructure
       implicit none
 
       integer, intent(in) :: variant
@@ -7389,7 +7331,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 !*     ===========================================================
 !      subroutine ozcot_ONHail ()
 !*     ===========================================================
-!      Use Infrastructure
 !      implicit none
 !
 !*+  Purpose
@@ -7419,7 +7360,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 
 !     RUE modification via CO2
       real function co2FertFX ()
-      use infrastructure
       implicit none
       if (p%num_co2_fert .gt. 0) then
         co2FertFX = linear_interp_real (g%co2, p%x_co2_fert,
@@ -7468,7 +7408,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 * ====================================================================
        subroutine Main (action, data_string)
 * ====================================================================
-      Use Infrastructure
       use OzcotModule
       implicit none
       ml_external Main
@@ -7570,7 +7509,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       subroutine doInit1()
 * ====================================================================
       use OzcotModule
-      Use infrastructure
       implicit none
       ml_external doInit1
 !STDCALL(doInit1)
@@ -7750,7 +7688,6 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use OzcotModule
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)
