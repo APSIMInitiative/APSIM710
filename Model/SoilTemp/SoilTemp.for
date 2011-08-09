@@ -1,5 +1,6 @@
       module SoilTempModule
       use Registrations
+      use infrastructure
 ! ====================================================================
 !     soilTemp constants
 ! ====================================================================
@@ -114,7 +115,7 @@
       Recursive
      :subroutine soiltemp_Init ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -160,7 +161,7 @@
       Recursive
      :subroutine soiltemp_process ()
 *     ================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -236,7 +237,7 @@
       Recursive
      :subroutine soiltemp_heat (l_heat_store)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -282,7 +283,7 @@
       Recursive
      :subroutine soiltemp_therm (l_therm_cond)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -339,7 +340,7 @@
       Recursive
      :subroutine soiltemp_thomas ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -414,7 +415,7 @@
       Recursive
      :subroutine soiltemp_thomas_VS ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -517,7 +518,7 @@
       Recursive
      :subroutine soiltemp_update ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -569,7 +570,7 @@
       Recursive
      :subroutine soiltemp_zero_all_globals ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -639,7 +640,7 @@
       Recursive
      :subroutine soiltemp_zero_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -671,7 +672,7 @@
       Recursive
      :subroutine soiltemp_prepare ()
 *     ================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -703,7 +704,7 @@
       Recursive
      :subroutine soiltemp_get_other_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -874,7 +875,7 @@
       Recursive
      :subroutine soiltemp_Send_my_variable (Variable_name)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 
@@ -1007,7 +1008,7 @@
 *     ===========================================================
       subroutine soiltemp_read_param ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1107,7 +1108,7 @@
 *     ===========================================================
       subroutine soiltemp_read_constants ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1189,7 +1190,7 @@
       Recursive
      :subroutine soiltemp_zero_daily_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1223,7 +1224,7 @@
      :              , mint_yesterday
      :              , maxt_yesterday)
 *====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1291,7 +1292,7 @@
       Recursive
      :subroutine soiltemp_get_ini_variables ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1421,7 +1422,7 @@
       Recursive
      :subroutine Main (Action, Data_string)
 * ====================================================================
-      Use infrastructure
+
       Use SoilTempModule
       implicit none
       ml_external Main
@@ -1490,7 +1491,7 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SoilTempModule
       
       ml_external doInit1
@@ -1504,7 +1505,7 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

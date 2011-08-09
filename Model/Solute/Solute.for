@@ -2,6 +2,7 @@
       module SoluteModule
 !     ========================================
       use Registrations
+      use infrastructure
       integer max_layer
       parameter (max_layer = 100)
 
@@ -52,7 +53,7 @@
 * ====================================================================
        subroutine solute_Init ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -101,7 +102,7 @@
 * ====================================================================
        subroutine solute_zero_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -144,7 +145,7 @@
 * ====================================================================
        subroutine solute_get_other_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -185,7 +186,7 @@
 * ====================================================================
        subroutine solute_Send_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -332,7 +333,7 @@
 *     ===========================================================
       subroutine solute_read_param ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -455,7 +456,7 @@
 * ====================================================================
        subroutine solute_set_my_variable (Variable_name)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -552,7 +553,7 @@
 * ====================================================================
        subroutine solute_read_constants ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -605,7 +606,7 @@
 * ====================================================================
        subroutine solute_notification ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -645,7 +646,7 @@
 * ====================================================================
        subroutine solute_check_maximumloads ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -708,7 +709,7 @@
 * ====================================================================
        subroutine solute_diffusion ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -770,7 +771,7 @@
 !     ===========================================================
       subroutine solute_ONnew_profile (variant)
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Purpose
@@ -846,7 +847,7 @@
 * ====================================================================
        subroutine Main (Action, Data_string)
 * ====================================================================
-      Use Infrastructure
+
       Use SoluteModule
       implicit none
       ml_external Main
@@ -900,7 +901,7 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SoluteModule
       
       ml_external doInit1
@@ -914,7 +915,7 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       Use SoluteModule
       implicit none
       ml_external respondToEvent

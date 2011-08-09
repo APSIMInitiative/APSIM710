@@ -3,7 +3,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
 *     ===========================================================
       subroutine sugar_phenology (Option)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -78,7 +78,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
       subroutine sugar_phenology_init (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -144,7 +144,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
      :              , dlt_canopy_height
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -200,7 +200,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
       subroutine sugar_root_depth (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -270,7 +270,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
      :                       )
 !     ===========================================================
 
-      use infrastructure
+
       implicit none
 
 !+  Sub-Program Arguments
@@ -354,7 +354,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
 *     ===========================================================
       real function Sugar_afps_fac(layer)
 *     ===========================================================
-      use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -400,7 +400,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
      :              , G_lodge_redn_photo
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -450,7 +450,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
      :              , radn_int
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -506,7 +506,7 @@ C     Last change:  DSG  19 Jun 2000   12:25 pm
       subroutine sugar_leaf_area_potential (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -565,7 +565,7 @@ c     :                    * g%swdef_expansion
       subroutine sugar_leaf_area_init (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -625,7 +625,7 @@ c     :                    * g%swdef_expansion
      :              , dlt_lai_pot
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -712,7 +712,7 @@ cnh     :            * min (g_swdef_expansion, g_nfact_expansion)
      :              , leaf_no
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -780,7 +780,7 @@ cnh     :            * min (g_swdef_expansion, g_nfact_expansion)
      :              , C_sla_max
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -845,7 +845,7 @@ cnh     :            * min (g_swdef_expansion, g_nfact_expansion)
       subroutine sugar_leaf_death (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -909,7 +909,7 @@ cnh     :            * min (g_swdef_expansion, g_nfact_expansion)
      :              , dlt_dm_senesced
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1020,7 +1020,7 @@ c     :         g_dm_green(cabbage)+g_dlt_dm_green(cabbage))
      :              , lai
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1080,7 +1080,7 @@ c     :         g_dm_green(cabbage)+g_dlt_dm_green(cabbage))
      :              , dlt_N_senesced
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1132,7 +1132,7 @@ cnh what checks are there that there is enough N in plant to provide this
       subroutine sugar_detachment (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1212,7 +1212,7 @@ cnh what checks are there that there is enough N in plant to provide this
      :              , leaf_dm
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1312,7 +1312,7 @@ cnh     NO MINIMUMS SET AS YET
      :                              , partition_xs
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1384,7 +1384,7 @@ cnh     NO MINIMUMS SET AS YET
      :                dm_retranslocate
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1437,7 +1437,7 @@ cnh     NO MINIMUMS SET AS YET
      :              , dlt_N_retrans
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1505,7 +1505,7 @@ cnh     NO MINIMUMS SET AS YET
      :              , N_avail
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1575,7 +1575,7 @@ cnh     NO MINIMUMS SET AS YET
      :              , N_conc_crit, N_conc_min
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -1765,7 +1765,7 @@ cnh     NO MINIMUMS SET AS YET
      :              , C_leaf_no_at_emerg
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -2127,7 +2127,7 @@ c      leaf_no = 1.0 + sum_between (emerg, now, g_leaf_no)
       subroutine sugar_plant_death (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2255,7 +2255,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , P_ll_dep
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -2379,7 +2379,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , N_green
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -2442,7 +2442,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , leaf_no, sla_min
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2492,7 +2492,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , leaf_no
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2536,7 +2536,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
        real function sugar_profile_fasw ()
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2595,7 +2595,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , G_tt_tot
      :               )
 * ====================================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -2700,7 +2700,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
      :              , sucrose_fraction
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2766,7 +2766,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
       subroutine sugar_graze ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2963,7 +2963,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
       subroutine sugar_root_depth_init (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3009,7 +3009,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
       subroutine sugar_root_dist (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3071,7 +3071,7 @@ c         call sugar_death_external_action (g%dlt_plants_death_external)
       subroutine sugar_water_supply (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3148,7 +3148,7 @@ c+!!!!!!!!! check order dependency of deltas
       subroutine sugar_water_uptake (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3207,7 +3207,7 @@ c+!!!!!!!!! check order dependency of deltas
       subroutine sugar_water_demand (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3262,7 +3262,7 @@ c+!!!!!!!!! check order dependency of deltas
       subroutine sugar_light_supply (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3309,7 +3309,7 @@ c+!!!!!!!!! check order dependency of deltas
       subroutine sugar_bio_RUE (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3376,7 +3376,7 @@ c+!!!!!!!!! check order dependency of deltas
      :              , dlt_dm_pot
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3448,7 +3448,7 @@ cnh      call sugar_radn_int (radn_int)
      :              , dlt_dm_pot
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3503,7 +3503,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_transpiration_eff (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3553,7 +3553,7 @@ cnh      call sugar_radn_int (radn_int)
      :              , tfac
      :               )
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3604,7 +3604,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_water_stress_pheno (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 
@@ -3647,7 +3647,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_water_stress_photo (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3687,7 +3687,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_water_stress_expansion (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3729,7 +3729,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_nit_stress_photo (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3778,7 +3778,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_nit_stress_expansion (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3827,7 +3827,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_height (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3880,7 +3880,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_bio_actual (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3937,7 +3937,7 @@ cnh      call sugar_radn_int (radn_int)
       subroutine sugar_bio_partition (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4033,7 +4033,7 @@ cnh      call sugar_radn_int (radn_int)
      :                              , partition_xs
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -4211,7 +4211,7 @@ cnh Due to small rounding errors I will say that small errors are ok
      :                              , partition_xs
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4281,7 +4281,7 @@ cnh Due to small rounding errors I will say that small errors are ok
       subroutine sugar_leaf_area_stressed (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4328,7 +4328,7 @@ cnh Due to small rounding errors I will say that small errors are ok
       subroutine sugar_leaf_actual (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 
@@ -4380,7 +4380,7 @@ cnh Due to small rounding errors I will say that small errors are ok
       subroutine sugar_bio_retrans (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4432,7 +4432,7 @@ cnh Due to small rounding errors I will say that small errors are ok
      :              , dlt_node_no_dead
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -4523,7 +4523,7 @@ cnh Due to small rounding errors I will say that small errors are ok
      :              , dlt_slai_age
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -4608,7 +4608,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_leaf_area_sen_actual (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4653,7 +4653,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_sen_nit (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4700,7 +4700,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_sen_bio (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4756,7 +4756,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_sen_root_length (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4805,7 +4805,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_init (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4855,7 +4855,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_supply (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4964,7 +4964,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
      :         ,g_swdef_fixation
      :         ,g_n_fix_pot)
 
-      use Infrastructure
+
       implicit none
 
   !+  Sub-Program Arguments
@@ -5096,7 +5096,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_retrans (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5142,7 +5142,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_demand (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5190,7 +5190,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_uptake (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5280,7 +5280,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
      :                  , dlt_no3gsm
      :                  , dlt_nh4gsm)
 
-      use Infrastructure
+
       Implicit None
 
       real      g_dlayer(*)
@@ -5352,7 +5352,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_nit_partition (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5400,7 +5400,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
       subroutine sugar_cleanup ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5558,7 +5558,7 @@ c     :                   + sum_between (emerg, now, g_leaf_no_dead))
      :              , G_transpiration_tot
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -5657,7 +5657,7 @@ c     :                   * 0.5
       subroutine sugar_water_content_cane (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5718,7 +5718,7 @@ c     :                   * 0.5
      :              , dlt_plants
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -5787,7 +5787,7 @@ c         call sugar_kill_crop ()
      :              , dlt_plants
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -5851,7 +5851,7 @@ c         call sugar_kill_crop ()
      :              , dlt_plants
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -5916,7 +5916,7 @@ c         call sugar_kill_crop ()
      :              , dlt_plants
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 
@@ -5973,7 +5973,7 @@ c         call sugar_kill_crop ()
      :              , dlt_plants
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -6052,7 +6052,7 @@ c         call sugar_kill_crop ()
      :              , dlt_N_green
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -6128,7 +6128,7 @@ c         call sugar_kill_crop ()
       subroutine sugar_water_log (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6181,7 +6181,7 @@ c         call sugar_kill_crop ()
       subroutine sugar_water_stress_stalk (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6231,7 +6231,7 @@ c         call sugar_kill_crop ()
       subroutine sugar_temp_stress_photo (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6281,7 +6281,7 @@ cnh I made it a subroutine like all the rest
       subroutine sugar_temp_stress_stalk (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6329,7 +6329,7 @@ cnh I made it a subroutine like all the rest
       subroutine sugar_lodge_redn_photo (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6372,7 +6372,7 @@ cnh I made it a subroutine like all the rest
       subroutine sugar_lodge_redn_sucrose (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6415,7 +6415,7 @@ cnh I made it a subroutine like all the rest
       subroutine sugar_lodge_redn_green_leaf (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6458,7 +6458,7 @@ cnh I made it a subroutine like all the rest
       subroutine sugar_nit_stress_stalk (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6514,7 +6514,7 @@ cnh I made it a subroutine like all the rest
      :              , nfact
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -6640,7 +6640,7 @@ c      N_stover_min = N_leaf_min + N_stem_min + N_cabbage_min
      :               )
 
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6697,7 +6697,7 @@ c      N_stover_min = N_leaf_min + N_stem_min + N_cabbage_min
       subroutine sugar_min_sstem_sucrose (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6752,7 +6752,7 @@ c      N_stover_min = N_leaf_min + N_stem_min + N_cabbage_min
       subroutine sugar_realloc (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6820,7 +6820,7 @@ c      N_stover_min = N_leaf_min + N_stem_min + N_cabbage_min
      :               )
 
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6889,7 +6889,7 @@ c      N_stover_min = N_leaf_min + N_stem_min + N_cabbage_min
      :              , dlt_root_depth
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -6960,7 +6960,7 @@ cnh for rlv at initialisation.
       subroutine sugar_bio_water (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7001,7 +7001,7 @@ cnh for rlv at initialisation.
        subroutine sugar_leaf_area_sen (Option)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7080,7 +7080,7 @@ cnh for rlv at initialisation.
      :              , leaf_area
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -7127,7 +7127,7 @@ cnh for rlv at initialisation.
        subroutine sugar_nit_demand_est (Option)
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7207,7 +7207,7 @@ cnh for rlv at initialisation.
      :              , N_demand
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -7339,7 +7339,7 @@ cnh conc for CANE.
       subroutine sugar_nit_stress_pheno (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7399,7 +7399,7 @@ cnh conc for CANE.
      :              , phase_tt
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -7478,7 +7478,7 @@ cnh conc for CANE.
      :              , swdef
      :               )
 *     ===========================================================
-      Use infrastructure
+
 
       implicit none
 
@@ -7536,7 +7536,7 @@ cnh conc for CANE.
       subroutine sugar_leaf_no_init (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -7586,7 +7586,7 @@ cnh conc for CANE.
       subroutine sugar_leaf_no_pot (Option)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments

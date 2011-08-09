@@ -2,6 +2,7 @@
 
       Use CropLibrary
       use Registrations
+      use infrastructure
 
 
 !     ================================================================
@@ -822,7 +823,7 @@
       subroutine sugar_process ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -918,7 +919,7 @@
       subroutine sugar_harvest ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1224,7 +1225,7 @@
       subroutine sugar_zero_all_globals ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1589,7 +1590,7 @@
       subroutine sugar_zero_variables ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1622,7 +1623,7 @@
       subroutine sugar_zero_soil_globals ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1662,7 +1663,7 @@
       subroutine sugar_zero_daily_variables ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1750,7 +1751,7 @@
       subroutine sugar_init ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1798,7 +1799,7 @@ cnh     :                 ' Initialising')
       subroutine sugar_start_crop (variant)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1927,7 +1928,7 @@ cnh     :                 ' Initialising')
       subroutine sugar_read_cultivar_params (section_name)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2045,7 +2046,7 @@ cnh     :                 ' Initialising')
       subroutine sugar_read_root_params ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2248,7 +2249,7 @@ cnh     :                 ' Initialising')
      :              , G_year
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2316,7 +2317,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       subroutine sugar_end_crop ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2451,7 +2452,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       subroutine sugar_get_met_variables ()
 *     ================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2512,7 +2513,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       subroutine sugar_get_soil_variables ()
 *     ================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2669,7 +2670,7 @@ c     :                                    , -10., 80.)
       subroutine sugar_set_other_variables ()
 *     ================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2744,7 +2745,7 @@ c      call sugar_update_other_variables ()
       subroutine sugar_set_my_variable (Variable_name)
 *     ===============================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2829,7 +2830,7 @@ c      call sugar_update_other_variables ()
       subroutine sugar_send_my_variable (variable_name)
 *     ================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3538,7 +3539,7 @@ c      call sugar_nit_stress_expansion (1)
      :              , stage_no, stage_table, numvals
      :               )
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -3632,7 +3633,7 @@ c      call sugar_nit_stress_expansion (1)
       subroutine sugar_read_constants ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3864,7 +3865,7 @@ c      call sugar_nit_stress_expansion (1)
       subroutine sugar_zero_globals ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3949,7 +3950,7 @@ cnh      g%initial_plant_density = 0.0
       subroutine sugar_zero_parameters ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3988,7 +3989,7 @@ cnh      c%crop_type = ' '
        subroutine sugar_prepare ()
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4049,7 +4050,7 @@ cnh      c%crop_type = ' '
       subroutine sugar_read_crop_constants (section_name)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4665,7 +4666,7 @@ cnh      c%crop_type = ' '
       subroutine sugar_update_other_variables ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4740,7 +4741,7 @@ cnh      c%crop_type = ' '
       subroutine sugar_hill_up ()
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4869,7 +4870,7 @@ cnh      c%crop_type = ' '
        subroutine sugar_lodge ()
 * ====================================================================
 
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4899,7 +4900,7 @@ cnh      c%crop_type = ' '
       subroutine sugar_ONtick (variant)
 *     ===========================================================
 
-      Use infrastructure
+
       implicit none
 
       integer ,intent(in) :: variant
@@ -4940,7 +4941,7 @@ cnh      c%crop_type = ' '
      :                                           , fraction_to_Residue
      :                                           , max_part)
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5053,7 +5054,7 @@ cnh      c%crop_type = ' '
       subroutine Main (action, data_string)
 *     ================================================================
 
-      Use infrastructure
+
       use sugarModule
       implicit none
       ml_external Main
@@ -5144,7 +5145,7 @@ cnh      c%crop_type = ' '
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SugarModule
 
       ml_external doInit1
@@ -5159,7 +5160,7 @@ cnh      c%crop_type = ' '
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use SugarModule
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

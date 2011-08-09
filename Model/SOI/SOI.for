@@ -1,5 +1,6 @@
       module SOIModule
       use Registrations
+      use infrastructure
 ! ========================================================================
 !     SOI constants
 ! ========================================================================
@@ -45,7 +46,6 @@
 *     ===========================================================
       subroutine SOI_init ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -98,7 +98,6 @@
 *     ===========================================================
       subroutine SOI_zero_variables ()
 *     ===========================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -141,7 +140,6 @@
 * ====================================================================
       subroutine SOI_read_phases ()
 * ====================================================================
-      Use infrastructure
       implicit none
 
 *+  Purpose
@@ -189,7 +187,6 @@
 *     ================================================================
       recursive subroutine SOI_send_my_variable (variable_name)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -231,7 +228,6 @@
 *     ================================================================
       recursive subroutine SOI_get_phase (variable_name)
 *     ================================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -310,7 +306,6 @@
 * =============================================================
       integer function SOI_get_units (record)
 * =============================================================
-      Use infrastructure
       implicit none
 
 *+  Sub-Program Arguments
@@ -406,7 +401,6 @@
 * ====================================================================
       recursive subroutine Main (action, data)
 * ====================================================================
-      Use infrastructure
       Use SOIModule
       implicit none
       ml_external Main
@@ -452,7 +446,6 @@
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
       use SOIModule
       
       ml_external doInit1
@@ -466,7 +459,6 @@
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)
