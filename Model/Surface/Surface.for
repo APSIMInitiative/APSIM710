@@ -1,5 +1,6 @@
       module SurfaceModule
       use Registrations
+      use infrastructure
 !     ================================================================
 !     Surface array sizes and constants
 !     ================================================================
@@ -68,7 +69,7 @@
 *     ===========================================================
       subroutine surface_Init ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -121,7 +122,7 @@
 *     ===========================================================
       subroutine surface_read_param ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -220,7 +221,7 @@
 *     ===========================================================
       subroutine surface_zero_variables ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -266,7 +267,7 @@
 *     ===========================================================
       subroutine surface_get_other_variables ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -315,7 +316,7 @@
 *     ===========================================================
       subroutine surface_Send_my_variable (Variable_name)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -375,7 +376,7 @@ c RDC
 *     ===========================================================
       subroutine surface_set_my_variable (Variable_name)
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -446,7 +447,7 @@ c RDC
 *     ===========================================================
       subroutine surface_Calc_Scon ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -511,7 +512,7 @@ c RDC
 *     ===========================================================
       subroutine surface_get_swim_variables ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -621,7 +622,7 @@ c RDC
 * =====================================================================
       subroutine surface_scon_calc1(rainfall,duration,Scon)
 * =====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -702,7 +703,7 @@ c RDC
 * =====================================================================
       subroutine surface_scon_calc2(rainfall,duration,Scon)
 * =====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -812,7 +813,7 @@ cnh but is more sensible at low rainfall intensities.
 * ====================================================================
        subroutine surface_timestep_preparation ()
 * ====================================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -850,7 +851,7 @@ cnh but is more sensible at low rainfall intensities.
 *     ===========================================================
       subroutine surface_post_swim_timestep ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -893,7 +894,7 @@ cnh but is more sensible at low rainfall intensities.
 *     ===========================================================
       subroutine surface_tillage ()
 *     ===========================================================
-      Use infrastructure
+
       implicit none
 
 *+  Purpose
@@ -981,7 +982,7 @@ cnh but is more sensible at low rainfall intensities.
 *     ===========================================================
       subroutine Main (Action, Data_String)
 *     ===========================================================
-      Use infrastructure
+
       Use SurfaceModule
       implicit none
       ml_external Main
@@ -1062,7 +1063,7 @@ c         call surface_surface ()
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SurfaceModule
 
       ml_external doInit1
@@ -1075,7 +1076,7 @@ c         call surface_surface ()
 ! This routine is the event handler for all events
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)

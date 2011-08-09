@@ -1,6 +1,8 @@
 !
 module SoilPModule
    use Registrations
+   use infrastructure
+
 
 ! ====================================================================
 !      SoilP_constants
@@ -164,7 +166,6 @@ module SoilPModule
 ! ====================================================================
 subroutine soilp_reset ()
 ! ====================================================================
-   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -216,7 +217,6 @@ end subroutine
 !     ===========================================================
 subroutine soilp_save_state ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 
@@ -250,7 +250,6 @@ end subroutine
 !     ===========================================================
 subroutine soilP_delta_state ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
 
 
@@ -288,7 +287,6 @@ end subroutine
 !     ===========================================================
 real function soilP_total_P ()
 !     ===========================================================
-   Use Infrastructure
    implicit none
    integer    num_layers
       character  string*300            ! output string
@@ -307,7 +305,6 @@ end function
 ! ====================================================================
 subroutine soilp_zero_variables ()
 ! ====================================================================
-   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -396,7 +393,6 @@ end subroutine
 ! ====================================================================
 subroutine soilp_Send_my_variable (Variable_name)
 ! ====================================================================
-   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -533,7 +529,6 @@ end subroutine
 !     ===========================================================
 subroutine soilp_read_param ()
 !     ===========================================================
-   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -624,7 +619,7 @@ end subroutine
 !     ===========================================================
       subroutine soilP_ExternalMassFlow (dltP)
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       real, intent(in) :: dltP
@@ -672,7 +667,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_set_my_variable (Variable_name)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -754,7 +749,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_read_constants ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -843,7 +838,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_get_other_variables ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -903,7 +898,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_process ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -953,7 +948,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_rock_p_dissolution ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -997,7 +992,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_availability_loss ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1070,7 +1065,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_decrease_banded_p_effect ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1111,7 +1106,7 @@ end subroutine
 !     ===========================================================
 real function soilp_wf (layer)
 !     ===========================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1162,7 +1157,7 @@ end function
 ! ====================================================================
 subroutine soilp_find_crops ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1225,7 +1220,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_get_crop_variables ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1298,7 +1293,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_crop_p_uptake ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1383,7 +1378,7 @@ end subroutine
 ! ====================================================================
 real function soilp_sorption_fn (layer)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1413,7 +1408,7 @@ end function
 ! ====================================================================
 real function soilp_root_fac (crop, layer)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1451,7 +1446,7 @@ end function
 ! ====================================================================
 real function soilp_sw_fn (layer)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1492,7 +1487,7 @@ end function
 !     ================================================================
 subroutine soilp_Tillage ()
 !     ================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1576,7 +1571,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_redistribute_p (parray, depth)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1635,7 +1630,7 @@ end subroutine
 !     ===========================================================
 real function soilp_fac (layer)
 !     ===========================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1668,7 +1663,7 @@ end function
 ! ====================================================================
 subroutine soilp_bound_check (num_layers)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1718,7 +1713,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_get_other_init_variables ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1783,7 +1778,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_hum ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1833,7 +1828,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_fom ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1901,7 +1896,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_biom ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1953,7 +1948,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_residues ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2033,7 +2028,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_OnIncorpFOMPool(variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2089,7 +2084,7 @@ end subroutine
 !     ================================================================
 subroutine soilp_Sum_Report ()
 !     ================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2160,7 +2155,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_OnIncorpFOM(variant)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2233,7 +2228,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_currentFOMpoolCPratio (fom_cp_pool, fom_cp, fom_cp_tot)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2307,7 +2302,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_currentFOMCPratio (fom_cp)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2337,7 +2332,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_dlt_fom_p_pools ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2432,7 +2427,7 @@ end subroutine
 ! ====================================================================
 subroutine Main (Action, Data_string)
 ! ====================================================================
-   Use infrastructure
+
    Use SoilPModule
    implicit none
    ml_external Main
@@ -2495,7 +2490,7 @@ end subroutine
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SoilPModule
 
       ml_external doInit1
@@ -2511,7 +2506,7 @@ end subroutine
 ! ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use SoilpModule
-   Use infrastructure
+
    implicit none
    ml_external respondToEvent
 !STDCALL(respondToEvent)
