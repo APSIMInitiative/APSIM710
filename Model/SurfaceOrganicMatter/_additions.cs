@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Reflection;
+using System.Linq;
 
 public partial class SurfaceOrganicMatter : Instance
 {
@@ -12,6 +14,7 @@ public partial class SurfaceOrganicMatter : Instance
     public class ResiduesType : Instance
     {
         Dictionary<string, ResidueType> residues;
+       
         [Param]
         XmlNode xe = null;
 
@@ -23,6 +26,7 @@ public partial class SurfaceOrganicMatter : Instance
             foreach (XmlNode xn in xe.ChildNodes)
                 if (xn.NodeType == XmlNodeType.Element)
                     residues.Add(xn.Name, new ResidueType(xn, ref residues));
+            
         }
 
         public ResidueType getResidue(string name)
@@ -142,8 +146,12 @@ public partial class SurfaceOrganicMatter : Instance
     {
         Dictionary<string, float[]> tillage_types;
 
-        public void ReadFromXML(XmlElement xe)
+        [Param]
+        XmlNode xe = null;
+
+        public override void Initialised()
         {
+            base.Initialised();
             tillage_types = new Dictionary<string, float[]>();
             foreach (XmlNode xnc in xe.ChildNodes)
                 if (xnc.NodeType == XmlNodeType.Element)
@@ -151,13 +159,13 @@ public partial class SurfaceOrganicMatter : Instance
 
         }
 
-        //public TillageType GetTillageData(string name)
-        //{
-            //return tillage_types.ContainsKey(name) ? new TillageType() { f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
-        //}
+        public TillageType GetTillageData(string name)
+        {
+            return tillage_types.ContainsKey(name) ? new TillageType() { type = name, f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
+        }
     }
 
-    public class BaseType
+    public class BaseType : Instance
     {
         protected float[] strToArr(string str)
         {
@@ -270,10 +278,26 @@ public partial class SurfaceOrganicMatter : Instance
         float cum = 0;
         for (int i = 0; i < size_of; i++)
             if ((cum += array[i]) >= cum_sum)
-                return i + 1;
+                return i;
         return size_of;
     }
 
     #endregion
+
+    T[] ToArray<T>(string str)
+    {
+        string[] temp = str.Split(new char[] { ' ', '\t', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+        MethodInfo parser = null;
+        if (typeof(T) != typeof(string))
+            parser = typeof(T).GetMethod("Parse", new Type[] { typeof(string) });
+
+        T[] result = new T[temp.Length];
+
+        for (int i = 0; i < result.Length; i++)
+            result[i] = parser == null ? (T)(object)temp[i] : (T)parser.Invoke(null, new[] { temp[i] });
+
+        return result;
+    }
 }
 

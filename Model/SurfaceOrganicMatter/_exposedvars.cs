@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 public partial class SurfaceOrganicMatter : Instance
 {
-    #region BensParams
+    [Link]
+    Paddock mypaddock;
 
     [Link]
+    Irrigation irr_module;
+
+    #region BensParams
+
+    [Param]
     public ResiduesType residue_types;
 
     [Param]
@@ -14,7 +21,7 @@ public partial class SurfaceOrganicMatter : Instance
 
     [Param]
     [Units("")]
-    public string PoolName;
+    public string pname;
 
     [Param]
     [Units("")]
@@ -22,19 +29,19 @@ public partial class SurfaceOrganicMatter : Instance
 
     [Param]
     [Units("")]
-    public float mass;
+    public string mass;
 
     [Param]
     [Units("")]
-    public float standing_fraction;
+    public string standing_fraction;
 
     [Param]
     [Units("")]
-    public float cpr;
+    public string cpr;
 
     [Param(true)]
     [Units("")]
-    public float cnr;
+    public string cnr;
 
     #endregion
 
@@ -322,18 +329,18 @@ public partial class SurfaceOrganicMatter : Instance
     ///Temperature factor for decomposition
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("0-1")]
     public float tf { get { return surfom_tf(); } }
 
     ///<summary>
     ///Contact factor for decomposition
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("0-1")]
     public float cf { get { return surfom_cf(); } }
 
     [Output]
-    [Units("")]
+    [Units("0-1")]
     public float wf { get { return surfom_wf(); } }
 
     [Output]
@@ -386,7 +393,7 @@ public partial class SurfaceOrganicMatter : Instance
     ///Mass of organic matter in all pools
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float[] surfaceom_wt_all
     {
         get
@@ -407,7 +414,7 @@ public partial class SurfaceOrganicMatter : Instance
     ///Mass of organic carbon in all pools
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float[] surfaceom_c_all
     {
         get
@@ -428,7 +435,7 @@ public partial class SurfaceOrganicMatter : Instance
     ///Mass of organic nitrogen in all pools
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float[] surfaceom_n_all     
     {
         get
@@ -449,7 +456,7 @@ public partial class SurfaceOrganicMatter : Instance
     ///Mass of organic phosphor in all pools
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("kg/ha")]
     public float[] surfaceom_p_all
     {
         get

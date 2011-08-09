@@ -22,6 +22,14 @@ public partial class SurfaceOrganicMatter : Instance
             PotentialResidueDecompositionCalculated.Invoke(SOMDecomp);
     }
 
+   /* [Event]
+    public event IncorpFomDelegate IncorpFOMPool;
+    private void publish_FOMPool(FOMPoolType data)
+    {
+        IncorpFomType event_data = new IncorpFomType();
+        event_data.
+    }*/
+
     [Event]
     public event SurfaceOrganicMatterDelegate SurfaceOrganicMatterState;
     private void publish_SurfaceOrganicMatter(SurfaceOrganicMatterType SOM)

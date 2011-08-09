@@ -1188,6 +1188,92 @@
           <event name="report" />
         </events>
       </outputfile>
+      <manager2 name="SOMThing">
+        <ui />
+        <text>Imports System
+Imports ModelFramework
+
+Public Class Script
+   Inherits Instance
+   
+   &lt;Input()&gt;
+   Private Dim dd_mmm_yyyy As String = "01_Jan_1990"
+   
+   Private Dim Today As DateTime
+   
+   Dim tab As String
+   
+   Sub New ()
+      tab = "    "
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPotentialResidueDecompositionCalculated(ByVal decomp As SurfaceOrganicMatterDecompType)
+      DumpDecomp("OnPotentialResidueDecompositionCalculated", decomp)
+      
+   End Sub
+   
+   &lt;EventHandler()&gt; Public Sub OnActualresiduedecompositioncalculated(ByVal decomp As SurfaceOrganicMatterDecompType)
+      DumpDecomp("OnActualresiduedecompositioncalculated", decomp)
+      
+   End Sub
+   
+   &lt;EventHandler()&gt; Public Sub OnSurfaceOrganicMatterState(ByVal som As SurfaceOrganicMatterType)
+      Today = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+      Console.WriteLine("OnSurfaceOrganicMatterState")
+      For Each pool As SurfaceOrganicMatterPoolType In som.Pool
+
+         Console.WriteLine(tab &amp; "Name: " &amp; pool.Name)
+         Console.WriteLine(tab &amp; "Type: " &amp; pool.OrganicMatterType)
+         Console.WriteLine(tab &amp; "Date: " &amp; Today.ToShortDateString())
+         Console.WriteLine(tab &amp; "Pool:")
+         Console.WriteLine(tab &amp; tab &amp; "nh4: " &amp; pool.nh4.ToString())
+         Console.WriteLine(tab &amp; tab &amp; "no3: " + pool.no3.ToString())
+         Console.WriteLine(tab &amp; tab &amp; "po4: " + pool.po4.ToString())
+         Console.WriteLine(tab &amp; tab &amp; "PotDecompRate: " + pool.PotDecompRate.ToString())
+         Console.WriteLine(tab &amp; tab &amp; "StandingFraction:")
+         DumpFOM(tab &amp; tab &amp; tab, pool.StandingFraction)
+         Console.WriteLine(tab &amp; tab &amp; "LyingFraction:")
+         DumpFOM(tab &amp; tab &amp; tab, pool.LyingFraction)
+
+         Console.WriteLine()
+      Next
+   End Sub
+   
+   Private Sub DumpDecomp(ByVal name As String, ByVal decomp As SurfaceOrganicMatterDecompType)
+      Today = Date.Parse(dd_mmm_yyyy.Replace("_", "/"))
+      
+      Console.WriteLine(name)
+      For Each pool As SurfaceOrganicMatterDecompPoolType In decomp.Pool
+        
+         Console.WriteLine(tab &amp; "Name: " &amp; pool.Name)
+         Console.WriteLine(tab &amp; "Type: " &amp; pool.OrganicMatterType)
+         Console.WriteLine(tab &amp; "Date: " &amp; Today.ToShortDateString())
+         Console.WriteLine(tab &amp; "Pool:")
+         Console.WriteLine(tab &amp; tab &amp; "FOM:")
+         DumpFOM(tab &amp; tab &amp; tab, New FOMType() {pool.FOM})
+
+         Console.WriteLine()
+      Next
+   End Sub
+   
+   Private Sub DumpFOM(ByVal prefix As String, ByVal FOMArray As FOMType())
+      Dim x As Integer = 0
+      For Each FOM As FOMType In FOMArray
+         Console.WriteLine(prefix &amp; x)
+         Console.WriteLine(prefix &amp; "amount: " &amp; FOM.amount)
+         Console.WriteLine(prefix &amp; "AshAlk: " &amp; FOM.AshAlk)
+         Console.WriteLine(prefix &amp; "C: " &amp; FOM.C)
+         Console.WriteLine(prefix &amp; "N: " &amp; FOM.N)
+         Console.WriteLine(prefix &amp; "P: " &amp; FOM.P)
+         
+         x += 1
+      Next
+   End Sub
+  
+
+End Class
+    </text>
+      </manager2>
     </area>
   </simulation>
   <simulation name="Continuous Wheat1" shortcut="/simulations/Continuous Wheat">
