@@ -12,9 +12,9 @@ public class Patch
     /// <summary>
     /// A function for reading the filenames in a patch and returning their revision number.
     /// </summary>
-    public static Dictionary<string, int> FilesInPatch(string PatchFileName, string RootDirectory)
+    public static string[] FilesInPatch(string PatchFileName, string RootDirectory)
     {
-        Dictionary<string, int> FileNames = new Dictionary<string, int>();
+        List<string> FileNames = new List<string>();
 
         StreamReader Patch = new StreamReader(PatchFileName);
 
@@ -33,13 +33,11 @@ public class Patch
                 {
                     FileName = Path.Combine(RootDirectory, FileName);
                     FileName = FileName.Replace("/", "\\");  // get rid of yucky unix slashes.
-
-                    int RevisionNumber = Convert.ToInt32(RevisionBits[1]);
-                    FileNames.Add(FileName, RevisionNumber);
+                    FileNames.Add(FileName);
                 }
             }
         }
         Patch.Close();
-        return FileNames;
+        return FileNames.ToArray();
     }
 }

@@ -7,6 +7,7 @@ using CSGeneral;
 using System.Xml;
 using System.Net;
 using System.Net.Sockets;
+using UIUtility;
 
 class Program
 {
@@ -35,9 +36,6 @@ class Program
 
     private static void Go(string DirectoryName, string PatchFileName)
     {
-        // Ensure that all file in the submitted patch are under SVN control.
-        EnsurePatchFilesAreKnownToSVN(DirectoryName, PatchFileName);
-
         // Get the revision number of this directory.
         string SVNFileName = Utility.FindFileOnPath("svn.exe");
         if (SVNFileName == "")
@@ -98,75 +96,6 @@ class Program
         ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName);
     }
 
-
-    /// <summary>
-    /// Ensure that SVN "knows" about all files in the patch. Quite often a patch contains
-    /// file additions or deletions.
-    /// </summary>
-    private static void EnsurePatchFilesAreKnownToSVN(string ApsimDirectory, string PatchFileName)
-    {
-        // Find SVN.exe on the path.
-        string SVNFileName = Utility.FindFileOnPath("svn.exe");
-        if (SVNFileName == "")
-            throw new Exception("Cannot find svn.exe on PATH");
-
-        // Some of the files in the patch file will be additions or deletions. We need to tell SVN 
-        // about these before we do a commit.
-        Dictionary<string, int> FileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectory);
-        foreach (KeyValuePair<string, int> Line in FileNames)
-        {
-            string Arguments = null;
-            string FileName = Line.Key;
-            int Revision = Line.Value;
-            if (Revision == 0)
-            {
-                // File has been added in this patch.
-                Arguments += "add --force " + StringManip.DQuote(FileName);
-            }
-            else
-            {
-                FileInfo info = new FileInfo(FileName);
-                if (!info.Exists || info.Length == 0)
-                {
-                    // File has been deleted in this patch - add to SVN.
-                    Arguments += "delete --force " + StringManip.DQuote(FileName);
-                }
-            }
-
-            if (Arguments != null)
-            {
-                EnsureDirectoryIsUnderSVN(Path.GetDirectoryName(FileName), SVNFileName);
-                Console.WriteLine(SVNFileName + " " + Arguments);
-                Process P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectory);
-                Console.WriteLine(Utility.CheckProcessExitedProperly(P));
-            }
-        }
-
-
-    }
-
-    /// <summary>
-    /// Ensure a directory is under SVN control.
-    /// </summary>
-    private static void EnsureDirectoryIsUnderSVN(string DirectoryName, string SVNFileName)
-    {
-        if (!Directory.Exists(Path.Combine(DirectoryName, ".svn")))
-        {
-            int PosSlash = DirectoryName.LastIndexOf('\\');
-            if (PosSlash == -1)
-                throw new Exception("Invalid directory found: " + DirectoryName);
-            string ParentName = DirectoryName.Substring(0, PosSlash);
-            string ChildName = DirectoryName.Substring(PosSlash + 1);
-            if (!Directory.Exists(Path.Combine(ParentName, ".svn")))
-                EnsureDirectoryIsUnderSVN(ParentName, SVNFileName);  // parent dir.
-            else
-            {
-                Console.WriteLine(SVNFileName + " add ", DirectoryName);
-                Process P = Utility.RunProcess(SVNFileName, "add " + DirectoryName, DirectoryName);
-                Console.WriteLine(Utility.CheckProcessExitedProperly(P));
-            }
-        }
-    }
 
 
     private static void CopyFileToSVNTempDirectory(string DirectoryName, string FileName, string FullSourceFileName, string FullDestFileName)
@@ -321,18 +250,36 @@ class Program
         // the number of files that were changed by APSIM running we need to remove those
         // files from the list that were sent in the patch.
         string SaveDirectory = Path.Combine(Path.GetTempPath(), "SavedPatchFiles");
-        Dictionary<string, int> PatchFileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectoryName);
-        foreach (KeyValuePair<string, int> Line in PatchFileNames)
+        string[] PatchFileNames;
+        if (Path.GetExtension(PatchFileName) == ".zip")
         {
-            string FileNameInPatch = Line.Key;
+            PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
+            for (int i = 0; i < PatchFileNames.Length; i++)
+                PatchFileNames[i] = Path.Combine(ApsimDirectoryName, PatchFileNames[i]);
+        }
+        else
+            PatchFileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectoryName);
 
-            // Work out the name of the saved file i.e. the file that came out of the patch.
-            string DestFileName = FileNameInPatch.ToLower();
-            DestFileName = DestFileName.Replace(ApsimDirectoryName.ToLower(), SaveDirectory);
+        foreach (string FileNameInPatch in PatchFileNames)
+        {
+            bool AreEqual;
+            if (Path.GetExtension(PatchFileName) == ".zip")
+            {
+                string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
+                Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
 
-            // Compare the working copy of the file to the file that came from the patch.
-            bool AreEqual = FilesAreIdentical(FileNameInPatch, DestFileName);
+                AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);                  
+                
+            }
+            else
+            {
+                // Work out the name of the saved file i.e. the file that came out of the patch.
+                string DestFileName = FileNameInPatch.ToLower();
+                DestFileName = DestFileName.Replace(ApsimDirectoryName.ToLower(), SaveDirectory);
 
+                // Compare the working copy of the file to the file that came from the patch.
+                AreEqual = FilesAreIdentical(FileNameInPatch, DestFileName);
+            }
             // If the files are identical then remove it from the list of ModifiedFiles,
             // otherwise make sure it is in the list.
             int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileNameInPatch);
@@ -372,6 +319,31 @@ class Program
     /// <summary>
     /// Do a binary comparison of the 2 specified files. Return true if they compare the same.
     /// </summary>
+    private static bool FilesAreIdentical(Stream FileFromPatch, string FileName)
+    {
+        // If user has put a deleted file into the patch then always signal true.
+        if (FileFromPatch.Length == 0)
+            return true;
+        
+        // If Bob doesn't have the file on disk then this is a diff - signal false.
+        if (!File.Exists(FileName))
+            return false;
+        
+        // If we get this far then do a binary comparison.
+        FileFromPatch.Seek(0, SeekOrigin.Begin);
+        BinaryReader File1 = new BinaryReader(FileFromPatch);
+        BinaryReader File2 = new BinaryReader(File.Open(FileName, FileMode.Open));
+
+        bool Ok = BinaryComparison(File1, File2);
+        File1.Close();
+        File2.Close();
+        return Ok;
+
+    }
+
+    /// <summary>
+    /// Do a binary comparison of the 2 specified files. Return true if they compare the same.
+    /// </summary>
     private static bool FilesAreIdentical(string FileName1, string FileName2)
     {
         if (!File.Exists(FileName1) && !File.Exists(FileName2))
@@ -382,6 +354,14 @@ class Program
         BinaryReader File1 = new BinaryReader(File.Open(FileName1, FileMode.Open));
         BinaryReader File2 = new BinaryReader(File.Open(FileName2, FileMode.Open));
 
+        bool Ok = BinaryComparison(File1, File2);
+        File1.Close();
+        File2.Close();
+        return Ok;
+    }
+
+    private static bool BinaryComparison(BinaryReader File1, BinaryReader File2)
+    {
         byte[] Contents1 = new byte[100];
         byte[] Contents2 = new byte[100];
 
@@ -410,8 +390,6 @@ class Program
                 Ok = (NumBytesRead1 == NumBytesRead2);
             }
         }
-        File1.Close();
-        File2.Close();
         return Ok;
     }
 

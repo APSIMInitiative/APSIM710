@@ -47,6 +47,46 @@ namespace UIUtility
             }
         }
         /// <summary>
+        /// Zip all the specified files into the specified ZipFileName.
+        /// </summary>
+        public static string ZipFilesWithDirectories(IEnumerable<string> FilesToZip, string ZipFileName, string Password)
+        {
+            if (!File.Exists(ZipFileName))
+                File.Delete(ZipFileName);
+
+            ZipOutputStream Zip = new ZipOutputStream(File.Create(ZipFileName));
+            if (Password != "")
+                Zip.Password = Password;
+            try
+            {
+                Zip.SetLevel(5); // 0 - store only to 9 - means best compression
+                foreach (string FileName in FilesToZip)
+                {
+                    ZipEntry Entry = new ZipEntry(FileName);
+                    Zip.PutNextEntry(Entry);
+                    if (File.Exists(FileName))
+                    {
+                        FileStream fs = File.OpenRead(FileName);
+
+                        byte[] Buffer = new byte[fs.Length];
+                        fs.Read(Buffer, 0, Buffer.Length);
+                        fs.Close();
+                        Zip.Write(Buffer, 0, Buffer.Length);
+                    }
+                }
+                Zip.Finish();
+                Zip.Close();
+                return ZipFileName;
+            }
+            catch (System.Exception)
+            {
+                Zip.Finish();
+                Zip.Close();
+                File.Delete(ZipFileName);
+                throw;
+            }
+        }
+        /// <summary>
         /// Unzips the specified zip file into the specified destination folder. Will use the 
         /// specified password. Returns a list of filenames that were created.
         /// </summary>
@@ -60,7 +100,7 @@ namespace UIUtility
             while ((Entry = Zip.GetNextEntry()) != null)
             {
                 string DestFileName = DestFolder + "\\" + Path.GetFileName(Entry.Name);
-                BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.CreateNew));
+                BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Truncate));
 
                 int size = 2048;
                 byte[] data = new byte[2048];
@@ -78,6 +118,57 @@ namespace UIUtility
             }
             Zip.Close();
             return FilesCreated.ToArray();
+        }
+
+        /// <summary>
+        /// Unzips the specified zip to a memory stream. Returns the stream or null if not found.
+        /// </summary>
+        public static Stream UnZipFile(string ZipFile, string FileToExtract, string Password)
+        {
+            MemoryStream MemStream = null;
+
+            List<string> FilesCreated = new List<string>();
+            ZipInputStream Zip = new ZipInputStream(File.Open(ZipFile, FileMode.Open, FileAccess.Read));
+            if (Password != "" && Password != null)
+                Zip.Password = Password;
+            ZipEntry Entry;
+            while ((Entry = Zip.GetNextEntry()) != null)
+            {
+                if (FileToExtract == Entry.Name)
+                {
+                    MemStream = new MemoryStream();
+                    BinaryWriter FileOut = new BinaryWriter(MemStream);
+
+                    int size = 2048;
+                    byte[] data = new byte[2048];
+                    while (true)
+                    {
+                        size = Zip.Read(data, 0, data.Length);
+                        if (size > 0)
+                            FileOut.Write(data, 0, size);
+                        else
+                            break;
+                    }
+                    break;
+                }
+            }
+            Zip.Close();
+            return MemStream;
+        }
+
+        public static string[] FileNamesInZip(string ZipFile, string Password)
+        {
+            ZipInputStream Zip = new ZipInputStream(File.Open(ZipFile, FileMode.Open, FileAccess.Read));
+            if (Password != "" && Password != null)
+                Zip.Password = Password;
+            List<string> FileNames = new List<string>();
+            ZipEntry Entry;
+            while ((Entry = Zip.GetNextEntry()) != null)
+            {
+                FileNames.Add(Entry.Name);
+            }
+            Zip.Close();
+            return FileNames.ToArray();
         }
     }
 }
