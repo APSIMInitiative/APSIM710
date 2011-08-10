@@ -30,15 +30,15 @@
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>svn.exe update %Apsim%</CommandLine>
 		</Job>	
-		<Job name="Remove unversioned files"  wait="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerRemoveUnwantedFiles.exe %Apsim%</CommandLine>
-		</Job>
 		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.zip"</CommandLine>
 		</Job>
-		<Job name="Remove all .out and .sum files" wait="yes">
+		<Job name="Remove unversioned files"  wait="yes">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerRemoveUnwantedFiles.exe %Apsim%</CommandLine>
+		</Job>
+		<Job name="Remove all .out and .sum files">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
 		</Job>
