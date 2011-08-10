@@ -71,8 +71,8 @@
 *+  Sub-Program Arguments
       character Action*(*)            ! Message action to perform
       character Data*(*)              ! Message data
-	  
-      call Main(Action, Data)	  
+  
+      call Main(Action, Data)  
 
       return
       end subroutine
