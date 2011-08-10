@@ -27,6 +27,7 @@ for %%f in (%APSIM%\Model\JobSchedulerFindJobs.*) do attrib -R %%f
 
 rem Now go and do full build and run.
 cd %APSIM%\Model\Build
+copy %APSIM%\Model\RunTime\ICSharpCode.SharpZipLib.dll %APSIM%\Model
 ..\JobScheduler Bob.xml
 
 rem Remove any previous readonly attributes from the jobscheduler binaries.

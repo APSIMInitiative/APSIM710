@@ -36,7 +36,7 @@
 		</Job>
 		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.patch"</CommandLine>
+			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.zip"</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files" wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
@@ -134,11 +134,11 @@
 	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
 		<Job name="CreateDiffsZip">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.patch</CommandLine>
+			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
 		</Job>
 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% C:\Upload\%PatchFileName%.patch</CommandLine>
+			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
 		</Job>			
 	</Folder>
 

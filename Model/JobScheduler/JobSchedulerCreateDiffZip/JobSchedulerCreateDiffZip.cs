@@ -308,7 +308,7 @@ class Program
         else
         {
             Db.UpdateStatus(JobID, "Fail");
-            string DiffsFileName = "http://bob.apsim.info/files/" + PatchFileName + ".diffs.zip";
+            string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
             Db.UpdateDiffFileName(JobID, DiffsFileName);
         }        
 
