@@ -13,7 +13,7 @@ public class RunEntireApsimFileJob : RunExternalJob
       : base(Path.GetFileName(ApsimFileName), JobRunner)
       {
       _ApsimFileName = ApsimFileName;
-      _Executable = Configuration.RemoveMacros("%apsim%\\Model\\ApsimToSim.exe");
+      _Executable = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe"));
       _Arguments = StringManip.DQuote(_ApsimFileName);
       }
    protected override void OnExited(object sender)

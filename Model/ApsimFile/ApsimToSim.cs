@@ -31,7 +31,7 @@ public class ApsimToSim
          PlugIns.LoadAllFromComponent(PluginsOverride);
 
       TestUniqueNamesUnderPaddock(Child);           //test to see if the .apsim file was valid before writing sim file.
-      string SimFileName = FolderName + "\\" + Child.Name + ".sim";
+      string SimFileName = Path.Combine(FolderName, Child.Name + ".sim");
       XmlDocument SimXML = new XmlDocument();
       SimXML.LoadXml(WriteSimScript(Child));
       SortSimContents(SimXML.DocumentElement);

@@ -28,10 +28,10 @@ public class RunApsimJob : RunExternalJob
          _SimFileName = value;
          if (Path.GetDirectoryName(_SimFileName) == "")
             _SimFileName = Path.Combine(Directory.GetCurrentDirectory(), _SimFileName);
-         _SumFileName = Path.GetDirectoryName(_SimFileName) + "\\"
-                      + Path.GetFileNameWithoutExtension(_SimFileName) + ".sum";
+         _SumFileName = Path.Combine(Path.GetDirectoryName(_SimFileName),
+                        Path.GetFileNameWithoutExtension(_SimFileName) + ".sum");
          _SumFile = new StreamWriter(_SumFileName);
-         _Executable = "%apsim%\\Model\\Apsim.exe";
+         _Executable = Path.Combine("%apsim%", "Model", "Apsim.exe");
          _Arguments = StringManip.DQuote(_SimFileName);
          }
       }

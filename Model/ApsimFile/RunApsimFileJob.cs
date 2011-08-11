@@ -29,11 +29,11 @@ public class RunApsimFileJob : RunApsimJob
       if (PosLastSlash != -1)
          SimulationName = _SimulationPath.Substring(PosLastSlash + 1);
 
-      SimFileName = Path.GetDirectoryName(_ApsimFileName) + "\\"
-                  + SimulationName + ".sim";
+      SimFileName = Path.Combine(Path.GetDirectoryName(_ApsimFileName),
+                                  SimulationName + ".sim");
 
       _ApsimToSimProcess = new ProcessCaller(System.Windows.Forms.Application.OpenForms[0]);
-      _ApsimToSimProcess.FileName = Configuration.RemoveMacros("%apsim%\\Model\\ApsimToSim.exe"); ;
+      _ApsimToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ApsimToSim.exe")); ;
       _ApsimToSimProcess.Arguments = StringManip.DQuote(_ApsimFileName) + " " + StringManip.DQuote(_SimulationPath);
       _ApsimToSimProcess.AllFinished += OnApsimToSimExited;
       _ApsimToSimProcess.StdOutReceived += OnStdOut;

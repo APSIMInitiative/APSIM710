@@ -819,7 +819,7 @@ namespace ModelFramework
                             else if (File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + val))
                                 _params.ReferencedAssemblies.Add(RuntimeEnvironment.GetRuntimeDirectory() + val);
                             else
-                                _params.ReferencedAssemblies.Add(Path.GetDirectoryName(DllFileName) + "\\" + val);
+                                _params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
 
                         String[] source = new String[1];
                         source[0] = Node.InnerText;

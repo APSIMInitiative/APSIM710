@@ -26,13 +26,14 @@ public class RunConJob : RunApsimJob
       // We need to run ConToSim first. When it has finished then we can
       // let the base class run APSIM.
 
-      SimFileName = Path.Combine(Directory.GetCurrentDirectory(), Path.GetDirectoryName(_ConFileName) + "\\" 
-                                                                + Path.GetFileNameWithoutExtension(_ConFileName) + "."
-                                                                + _SimulationName + ".sim");
+      SimFileName = Path.Combine(Directory.GetCurrentDirectory(), 
+                                 Path.GetDirectoryName(_ConFileName), 
+                                 Path.GetFileNameWithoutExtension(_ConFileName) + "."
+                                 + _SimulationName + ".sim");
 
       _ConFileName = Path.Combine(Directory.GetCurrentDirectory(), _ConFileName);
       _ConToSimProcess = new ProcessCaller(Application.OpenForms[0]);
-      _ConToSimProcess.FileName = Configuration.RemoveMacros("%apsim%\\Model\\contosim.exe"); ;
+      _ConToSimProcess.FileName = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe")); ;
       _ConToSimProcess.Arguments = StringManip.DQuote(_ConFileName) + " " + StringManip.DQuote(_SimulationName);
       _ConToSimProcess.AllFinished += OnConToSimExited;
       _ConToSimProcess.StdOutReceived += OnStdOut;

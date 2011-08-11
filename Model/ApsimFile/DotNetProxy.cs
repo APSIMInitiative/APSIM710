@@ -81,7 +81,7 @@ class DLLProber
               }
               else
                 // IF this is a .net component then redirect request to the wrapper DLL.
-                DllFileName = Configuration.ApsimBinDirectory() + "\\DotNetComponentInterface.dll";
+                DllFileName = Path.Combine(Configuration.ApsimBinDirectory(), "DotNetComponentInterface.dll");
               if (!File.Exists(DllFileName))
                   throw new Exception("Cannot find DLL: " + DllFileName);
             }
@@ -409,7 +409,7 @@ class DLLProber
         string Contents = In.ReadToEnd();
         In.Close();
 
-        In = new StreamReader(Configuration.ApsimBinDirectory() + "\\DotNetProxies\\Properties\\AssemblyInfo.cs");
+        In = new StreamReader(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies", "Properties", "AssemblyInfo.cs"));
         string AssemblyInfoContents = In.ReadToEnd();
         In.Close();
 
