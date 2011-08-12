@@ -299,5 +299,14 @@ public partial class SurfaceOrganicMatter : Instance
 
         return result;
     }
+
+    float Sum2DArray(float[,] _2Darray)
+    {
+        float result = 0;
+        foreach (float f in _2Darray)
+            result += f;
+
+        return result;
+    }
 }
 

@@ -31,7 +31,7 @@ public partial class SurfaceOrganicMatter : Instance
     }
 
     [EventHandler]
-    public void OnAdd_surfaceom() { surfom_add_surfom(); }
+    public void OnAdd_surfaceom(Add_SurfaceOMType data) { surfom_add_surfom(data); }
     
     [EventHandler]
     public void OnInit1() { surfom_Reset(); }
