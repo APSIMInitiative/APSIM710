@@ -478,7 +478,12 @@
 		<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 	</Job>
 	<Job name="Compile JobSchedulerFindJobs" wait="yes">
-		<WorkingDirectory>%Apsim%/Model/JobScheduler\JobSchedulerFindJobs</WorkingDirectory>
+		<WorkingDirectory>%Apsim%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
+		<CommandLine>..\..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+	</Job>
+	<Job name="Compile CreatePatch" wait="yes">
+		<WorkingDirectory>%Apsim%/Model/JobScheduler/CreatePatch</WorkingDirectory>
 		<CommandLine>..\..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
 		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
 	</Job>

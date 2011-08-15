@@ -100,7 +100,7 @@ namespace UIUtility
             while ((Entry = Zip.GetNextEntry()) != null)
             {
                 string DestFileName = DestFolder + "\\" + Entry.Name;
-                BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Truncate));
+                BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Create));
 
                 int size = 2048;
                 byte[] data = new byte[2048];
