@@ -100,6 +100,10 @@ namespace UIUtility
             while ((Entry = Zip.GetNextEntry()) != null)
             {
                 string DestFileName = DestFolder + "\\" + Entry.Name;
+
+                // Make sure the destination folder exists.
+                Directory.CreateDirectory(Path.GetDirectoryName(DestFileName));
+
                 BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Create));
 
                 int size = 2048;

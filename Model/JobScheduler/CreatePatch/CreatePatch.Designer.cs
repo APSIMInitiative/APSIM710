@@ -97,6 +97,7 @@ partial class MainForm
         // 
         this.SaveFileDialog.DefaultExt = "zip";
         this.SaveFileDialog.Filter = "Zip files|*.zip";
+        this.SaveFileDialog.RestoreDirectory = true;
         this.SaveFileDialog.Title = "Enter name of patch zip file.";
         // 
         // MainForm

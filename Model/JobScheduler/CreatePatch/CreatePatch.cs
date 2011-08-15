@@ -59,7 +59,11 @@ public partial class MainForm : Form
                 if (Line.Length >= 9)
                 {
                     string FileName = Line.Substring(8);
-                    ListView.Items.Add(FileName);
+
+                    // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
+                    // directory in SVN. The stat command above will report the directory name.
+                    if (!Directory.Exists(FileName))
+                        ListView.Items.Add(FileName);
                 }
             }
         }
