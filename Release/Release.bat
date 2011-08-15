@@ -65,9 +65,30 @@ rem This uses IExpress described here:
 rem http://www.itscodingtime.com/post/Combine-Setup-MSI-and-EXE-into-a-single-package-with-IExpress.aspx
 ..\..\BuildLibraries\IExpress32\iexpress /N /Q ApsimSetupForRelease.sed
 
-REM "c:\Program Files\7-Zip\7z.exe" a -sfx -r -mx=9 Apsim-%1.exe Model/*.xml Model/*.dll Model/*.exe Model/TclLink/CIDataTypes.tcl Model/TclLink/bin Model/TclLink/lib UserInterface/*.xml UserInterface/ToolBoxes/*.xml 
-
-rem Now copy the 2 releases to the right directory - with the revision number.
+rem Now copy the releases to the right directory - with the revision number.
 copy ApsimSetup.exe C:\inetpub\wwwroot\Files\%1.ApsimSetup.exe
 copy ApsimSetupForRelease.exe C:\inetpub\wwwroot\Files\%1.ApsimSetupForRelease.exe
 
+
+rem Now a self extracting "binaries only" for cluster runs
+set dest=Apsim-%1
+mkdir %dest%
+copy  ..\Apsim.xml %dest%\Apsim.xml
+mkdir %dest%\Model
+copy  ..\Model\*.xml %dest%\Model
+copy  ..\Model\*.dll %dest%\Model
+copy  ..\Model\*.exe %dest%\Model
+mkdir %dest%\Model\TclLink
+copy  ..\Model\TclLink\CIDataTypes.tcl %dest%\Model\TclLink
+xcopy /r ..\Model\TclLink\lib %dest%\Model\TclLink
+mkdir %dest%\UserInterface
+copy ..\UserInterface\*.xml %dest%\UserInterface
+mkdir %dest%\UserInterface\ToolBoxes
+copy ..\UserInterface\ToolBoxes\*.xml %dest%\UserInterface\ToolBoxes
+
+"c:\Program Files\7-Zip\7z.exe" a -sfx -mx=9 -mmt=on %dest%.binaries.Win32.exe %dest%
+
+
+rmdir /s /q %dest%
+
+copy %dest%.binaries.Win32.exe C:\inetpub\wwwroot\Files\%dest%.binaries.Win32.exe
