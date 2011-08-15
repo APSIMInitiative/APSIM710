@@ -60,7 +60,8 @@ class Program
                 string FullSourceFileName = Path.Combine(DirectoryName, FileName);
                 string FullDestFileName = Path.Combine(TempDirectory, FileName);
 
-                ModifiedFiles.Add(FullSourceFileName);
+                if (!Directory.Exists(FullSourceFileName))
+                    ModifiedFiles.Add(FullSourceFileName);
             }
         }
 
