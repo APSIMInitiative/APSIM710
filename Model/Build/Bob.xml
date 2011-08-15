@@ -34,6 +34,10 @@
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerRemoveUnwantedFiles.exe %Apsim%</CommandLine>
 		</Job>
+		<Job name="Copy RunTime DLL's into model directory" wait="yes">
+			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
+			<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+		</Job>
 		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.zip"</CommandLine>
