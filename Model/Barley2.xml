@@ -404,9 +404,6 @@
            <Age>50</Age>
         </SIRIUSLeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <MaxNodeNo type="text" description="MaximumNodeNo">50</MaxNodeNo>
-		<InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -432,7 +429,19 @@
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <RUEModel name="Photosynthesis">
+		<FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo type="text" description="MaximumNodeNo">50</MaxNodeNo>
+		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+           <PhaseLookupValue name="NodeInitiationRate">
+             <Start>Emergence</Start>
+             <End>FloralInitiation</End>
+             <Constant name="Function">
+               <Value>95.0</Value>
+             </Constant>
+           </PhaseLookupValue>
+		   <TemperatureFunction shortcut="/Barley2/Model/Plant/Leaf/ThermalTime" />
+        </FinalNodeNumber>
+		<RUEModel name="Photosynthesis">
           <Constant name="RUE">
             <Value type="text" description="Value">1.65</Value>
           </Constant>
@@ -482,13 +491,6 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <PhaseLookupValue name="NodeInitiationRate">
-          <Start>Emergence</Start>
-          <End>FloralInitiation</End>
-          <Constant name="Function">
-            <Value>95.0</Value>
-          </Constant>
-        </PhaseLookupValue>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start>Emergence</Start>
           <End>Maturity</End>

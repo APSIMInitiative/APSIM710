@@ -122,21 +122,30 @@
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>0.5</MaxCover>
         <KDead>0.5</KDead>
-        <InitialLeafPrimordia>1</InitialLeafPrimordia>
         <LeafCohort name="Leaves[1]">
            <Rank>1</Rank>
            <Area>1000</Area>
            <Age>1</Age>
         </LeafCohort>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
-        <MaxNodeNo>24</MaxNodeNo>
         <CompositeBiomass name="Live">
            <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
            <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <Constant name="ExtinctionCoeff">
+        <FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo>24</MaxNodeNo>
+		   <InitialLeafPrimordia>1</InitialLeafPrimordia>
+           <PhaseLookupValue name="NodeInitiationRate">
+             <Start>BudBurst</Start>
+             <End>Veraison</End>
+             <Constant name="Function">
+               <Value>30.0</Value>
+             </Constant>
+           </PhaseLookupValue>
+           <TemperatureFunction shortcut="/Vine/Model/Plant/Leaf/ThermalTime" />
+		</FinalNodeNumber>
+		<Constant name="ExtinctionCoeff">
           <Value>0.5</Value>
         </Constant>
         <LinearInterpolationFunction name="Height">

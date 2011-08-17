@@ -35,7 +35,7 @@
     </Cultivar>
     <Cultivar name="MarisPiper">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override name="Leaf.MaxNodeNo">50</Override>
+      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">50</Override>
       <Override name="Leaf.MaxArea">
         <XYPairs>
           <XY>1 3000</XY>
@@ -408,9 +408,6 @@ In addition this organ has a relative growth rate variable and a tubers per stem
            <Age>10</Age>
         </SIRIUSLeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <MaxNodeNo type="text" description="MaxNodeNo">34</MaxNodeNo>
-        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">34</FinalNodeNoEstimate>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 
 Initial ages and initial areas are array fields so the size and age of multiple leaves can be entered, separated by a space.  The initial age is used to set how far through its expansion phase each leaf is on the day of planting.</Memo>
@@ -435,7 +432,20 @@ Initial ages and initial areas are array fields so the size and age of multiple 
         <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </TemperatureFunction>
-        <PhaseLookupValue name="NodeInitiationRate">
+        <FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
+		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+		   <PhaseLookupValue name="NodeInitiationRate">
+             <Start type="text" description="Start">Emergence</Start>
+             <End type="text" description="End">FinalLeaf</End>
+             <Constant name="Function">
+               <Value type="text" description="Value">30</Value>
+             </Constant>
+             <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+           </PhaseLookupValue>
+		   <TemperatureFunction shortcut="/Potato2/Model/Plant/Phenology/ThermalTime" />
+        </FinalNodeNumber>
+		<PhaseLookupValue name="NodeInitiationRate">
           <Start type="text" description="Start">Emergence</Start>
           <End type="text" description="End">FinalLeaf</End>
           <Constant name="Function">

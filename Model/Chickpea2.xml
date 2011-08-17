@@ -137,15 +137,12 @@
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.3</KDead>
-        <MaxNodeNo>40</MaxNodeNo>
         <LeafCohort name="Leaves[1]">
            <Rank>1</Rank>
            <Area>1000</Area>
            <Age>10</Age>
         </LeafCohort>        
         <InitialiseStage>Emergence</InitialiseStage>
-        <InitialLeafPrimordia>6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -159,7 +156,19 @@
         <CompositeBiomass name="Dead">
            <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <LinearInterpolationFunction name="ExtinctionCoeff">
+        <FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo>40</MaxNodeNo>
+		   <InitialLeafPrimordia>6</InitialLeafPrimordia>
+           <PhaseLookupValue name="NodeInitiationRate">
+             <Start type="text" description="Start">Emergence</Start>
+             <End type="text" description="End">StartPodGrowth</End>
+             <Constant name="Function">
+               <Value type="text" description="Value">40</Value>
+             </Constant>
+           </PhaseLookupValue>
+           <TemperatureFunction shortcut="/Chickpea/Model/Plant/Leaf/ThermalTime" />
+		</FinalNodeNumber>
+		<LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY>0 0.55</XY>

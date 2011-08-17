@@ -5,7 +5,7 @@ using CSGeneral;
 
 public class SIRIUSLeaf : Leaf, AboveGround
 {
-    
+
  #region Outputs Variables
     [Output]
     double[] CohortSize
@@ -199,11 +199,11 @@ public class SIRIUSLeaf : Leaf, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
+        //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
 
-        if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
-            _FinalNodeNo = InitialLeafPrimordia;
+        //if ((NodeInitiationRate.Value > 0) && (_PrimordiaNo == 0))
+        //    _PrimordiaNo = InitialLeafPrimordia;
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
@@ -212,15 +212,16 @@ public class SIRIUSLeaf : Leaf, AboveGround
             InitialiseCohorts();
         }
 
-        if (NodeInitiationRate.Value > 0)
-            _FinalNodeNo = _FinalNodeNo + ThermalTime.Value / NodeInitiationRate.Value;
-        _FinalNodeNo = Math.Min(_FinalNodeNo, MaxNodeNo);
-
+        //if (NodeInitiationRate.Value > 0)
+        //    _PrimordiaNo = _PrimordiaNo + ThermalTime.Value / NodeInitiationRate.Value;
+        //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
+        
+        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
         DeltaNodeNumber = 0;
         if (NodeAppearanceRate.Value > 0)
             DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
             NodeNo += DeltaNodeNumber;
-        NodeNo = Math.Min(NodeNo, _FinalNodeNo);
+        NodeNo = Math.Min(NodeNo, _PrimordiaNo);
 
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)

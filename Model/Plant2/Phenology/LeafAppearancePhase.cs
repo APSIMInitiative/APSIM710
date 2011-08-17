@@ -43,7 +43,7 @@ public class LeafAppearancePhase : Phase
         Function TT = Children["ThermalTime"] as Function;
         CumulativeTT += TT.Value;
 
-        if (Leaf.FullyExpandedNodeNo >= (int)(Leaf.FinalNodeNo - RemainingLeaves))
+        if (Leaf.FullyExpandedNodeNo >= (int)(Leaf.PrimordiaNo - RemainingLeaves))
             return 0.00001;
         else
             return 0;
@@ -56,7 +56,7 @@ public class LeafAppearancePhase : Phase
     {
         get
         {
-            double F = (Leaf.CohortNo - NodeNoAtStart) / (Leaf.FinalNodeNo - NodeNoAtStart);
+            double F = (Leaf.CohortNo - NodeNoAtStart) / (Leaf.PrimordiaNo - NodeNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
             return F;

@@ -13,13 +13,15 @@ public class Leaf : BaseOrgan, AboveGround
     protected double EP = 0;
     [Param]
     public List<LeafCohort> Leaves;
-    protected double _FinalNodeNo = 0;
+    protected double _PrimordiaNo = 0;
     [Link]
     protected Plant Plant = null;
     [Link]
     protected Phenology Phenology = null;
     [Link]
     protected RUEModel Photosynthesis = null;
+    [Link]
+    protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected TemperatureFunction ThermalTime = null;
     [Input]
@@ -53,30 +55,33 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Extinction Coefficient (Dead)")]
     protected double KDead = 0;
     [Output]
-    [Param]
-    [Description("Maximum Final Leaf Number ")]
-    protected double MaxNodeNo = 0;
+    //[Param]
+    //[Description("Maximum Final Leaf Number ")]
+    //protected double MaxNodeNo = 0;
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
-    [Param]
-    [Description("Initial number of leaf primordia")]
-    protected double InitialLeafPrimordia = 0;
-    [Param]
-    [Description("Final Node Number")]
+    //[Param]
+    //[Description("Initial number of leaf primordia")]
+    //protected double InitialLeafPrimordia = 0;
+    //[Param]
+    //[Description("Final Node Number")]
     protected double FinalNodeNoEstimate = 0;
     public double DeltaNodeNumber = 0;
     public double StemPopulation = 0;
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;
+    protected double MaxNodeNo = 0;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
  #endregion
 
  #region Outputs
     [Output]
-    public double FinalNodeNo { get { return Math.Max(_FinalNodeNo, FinalNodeNoEstimate); } }
+    public double PrimordiaNo { get {return _PrimordiaNo; } }
+    //[Output]
+    //public double FinalNodeNo { get { return MaxNodeNo; } }
     [Output]
-    public double RemainingNodeNo { get { return _FinalNodeNo - NodeNo; } }
+    public double RemainingNodeNo { get { return _PrimordiaNo - NodeNo; } }
     [Output]
     public double PotentialGrowth { get { return DMDemand; } }
     [Output]
@@ -404,27 +409,27 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
+        //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
 
-        if ((NodeInitiationRate.Value > 0) && (_FinalNodeNo == 0))
-            _FinalNodeNo = InitialLeafPrimordia;
+        //if ((NodeInitiationRate.Value > 0) && (_PrimordiaNo == 0))
+        //    _PrimordiaNo = InitialLeafPrimordia;
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
-
         }
 
-        if (NodeInitiationRate.Value > 0)
-            _FinalNodeNo = _FinalNodeNo + ThermalTime.Value / NodeInitiationRate.Value;
-        _FinalNodeNo = Math.Min(_FinalNodeNo, MaxNodeNo);
+        //if (NodeInitiationRate.Value > 0)
+        //    _PrimordiaNo = _PrimordiaNo + ThermalTime.Value / NodeInitiationRate.Value;
+        //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
 
+        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
         if (NodeAppearanceRate.Value > 0)
             NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
-        NodeNo = Math.Min(NodeNo, _FinalNodeNo);
+        NodeNo = Math.Min(NodeNo, _PrimordiaNo);
 
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
@@ -500,7 +505,7 @@ public class Leaf : BaseOrgan, AboveGround
     public virtual void ZeroLeaves()
     {
         NodeNo = 0;
-        _FinalNodeNo = 0;
+        _PrimordiaNo = 0;
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -728,6 +733,7 @@ public class Leaf : BaseOrgan, AboveGround
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
         StemPopulation = Sow.Population * Sow.BudNumber;
+        MaxNodeNo = FinalNodeNumber.MaximumNodeNumber();
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
@@ -774,7 +780,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         NodeNo = 0;
-        _FinalNodeNo = 0;
+        _PrimordiaNo = 0;
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();

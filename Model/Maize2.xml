@@ -155,22 +155,31 @@
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
-        <MaxNodeNo type="text" description="MaxNodeNo">40</MaxNodeNo>
         <LeafCohort name="Leaves[1]">
            <Rank>1</Rank>
            <Area>380</Area>
            <Age>30</Age>
         </LeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <CompositeBiomass name="Live">
            <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
            <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <LinearInterpolationFunction name="ExtinctionCoeff">
+        <FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo>40</MaxNodeNo>
+		   <InitialLeafPrimordia>6</InitialLeafPrimordia>
+           <PhaseLookupValue name="NodeInitiationRate">
+             <Start>Germination</Start>
+             <End>FloralInitiation</End>
+             <Constant name="Function">
+               <Value type="text" description="Value">23.2</Value>
+             </Constant>
+           </PhaseLookupValue>
+           <TemperatureFunction shortcut="/Maize2/Model/Plant/Leaf/ThermalTime" />
+		</FinalNodeNumber>
+		<LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY> 0 0.8</XY>
@@ -252,13 +261,6 @@
             <XY>44 0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <PhaseLookupValue name="NodeInitiationRate">
-          <Start>Germination</Start>
-          <End>FloralInitiation</End>
-          <Constant name="Function">
-            <Value type="text" description="Value">23.2</Value>
-          </Constant>
-        </PhaseLookupValue>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start>Emergence</Start>
           <End>Maturity</End>

@@ -847,6 +847,13 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       <EndStageForCumulativeVD type="text" description="EndStageForCumulativeVD">
       </EndStageForCumulativeVD>
     </VernalisationCW>
+    <VernalisationPhaseSW>
+      <Start type="text" description="Start stage name">Germination</Start>
+      <End type="text" description="End stage name">Emergence</End>
+      <VernalisationType type="text" description="0 for winter type 1 for spring type">0</VernalisationType>
+      <VernalisationIntercept type="text" description="vernalisation rate at zero degress">0.012</VernalisationIntercept>
+      <VernalisationSlope type="text" description="Change in rate of vernalisation saturation with increasing temperature between 0 and 15 degrees">0.0012</VernalisationSlope>
+    </VernalisationPhaseSW>
     <EmergingPhase name="Emerging">
       <Start type="text" description="Start stage name">Germination</Start>
       <End type="text" description="End stage name">Emergence</End>
@@ -944,6 +951,32 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </PhaseJumpFunction>
   </folder>
   <folder name="Functions">
+    <FinalNodeNumber>
+		   <MaxNodeNo type="text" description="MaximumNodeNo">50</MaxNodeNo>
+		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+           <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
+	</FinalNodeNumber>
+    <SIRIUSFinalLeafNumber>
+	  <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">0.4</PhotoperiodSensitivity>
+      <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
+      <Twilight type="text" description="Twilight">-6.0</Twilight>
+	</SIRIUSFinalLeafNumber>
+	<LeafPhaseLookupFunction>
+      <Phase1End>
+      </Phase1End>
+      <Phase1Multiplier>
+      </Phase1Multiplier>
+      <Phase2End>
+      </Phase2End>
+      <Phase2Multiplier>
+      </Phase2Multiplier>
+      <Phase3Multiplier>
+      </Phase3Multiplier>
+      <Constant name="Function">
+        <Value type="text">
+        </Value>
+      </Constant>
+    </LeafPhaseLookupFunction>
     <PhaseBasedSwitch>
       <Start>
       </Start>
@@ -1120,40 +1153,4 @@ General Format:
 </Memo>
     </ExternalVariable>
   </folder>
-  <GenericPhase name="EarlyTuber">
-    <Start type="text" description="Start">TuberInitiation</Start>
-    <End type="text" description="End">FinalLeaf</End>
-    <LinearInterpolationFunction name="Target">
-      <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-      <XYPairs>
-        <XY>8 300</XY>
-        <XY>13 300</XY>
-        <XY>15 800</XY>
-        <XY>20 800</XY>
-      </XYPairs>
-    </LinearInterpolationFunction>
-    <TemperatureFunction name="ThermalTime">
-      <XYPairs />
-    </TemperatureFunction>
-  </GenericPhase>
-  <GenericPhase name="LateTuber">
-    <Start type="text" description="Start">FinalLeaf</Start>
-    <End type="text" description="End">FullSenescence</End>
-    <LinearInterpolationFunction name="Target">
-      <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-      <XYPairs>
-        <XY>8 850</XY>
-        <XY>13 850</XY>
-        <XY>16 850</XY>
-        <XY>20 850</XY>
-      </XYPairs>
-    </LinearInterpolationFunction>
-    <TemperatureFunction name="ThermalTime">
-      <XYPairs>
-        <XY>2 0</XY>
-        <XY>20 18</XY>
-        <XY>35 0</XY>
-      </XYPairs>
-    </TemperatureFunction>
-  </GenericPhase>
 </folder>

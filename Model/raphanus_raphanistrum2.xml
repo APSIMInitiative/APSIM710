@@ -107,15 +107,12 @@
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.5</KDead>
-        <MaxNodeNo>40</MaxNodeNo>
         <LeafCohort name="Leaves[1]">
            <Rank>1</Rank>
            <Area>1000</Area>
            <Age>1500</Age>
         </LeafCohort>
         <InitialiseStage>Emergence</InitialiseStage>
-        <InitialLeafPrimordia>6</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -129,7 +126,19 @@
         <CompositeBiomass name="Dead">
           <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <LinearInterpolationFunction name="ExtinctionCoeff">
+        <FinalNodeNumber>
+          <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
+          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
+          <PhaseLookupValue name="NodeInitiationRate">
+            <Start>Emergence</Start>
+            <End>Flowering</End>
+            <Constant name="Function">
+              <Value>30.0</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <TemperatureFunction shortcut="/raphanus_raphanistrum2/Model/Plant/Leaf/ThermalTime" />
+        </FinalNodeNumber>
+		<LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
             <XY> 0 0.8</XY>
@@ -212,13 +221,6 @@
             <XY>37 0.0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <PhaseLookupValue name="NodeInitiationRate">
-          <Start>Emergence</Start>
-          <End>Flowering</End>
-          <Constant name="Function">
-            <Value>30.0</Value>
-          </Constant>
-        </PhaseLookupValue>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start>Emergence</Start>
           <End>Maturity</End>

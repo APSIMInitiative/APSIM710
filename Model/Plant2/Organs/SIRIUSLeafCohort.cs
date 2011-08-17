@@ -14,12 +14,12 @@ class SIRIUSLeafCohort : LeafCohort
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
     private double SpecificLeafAreaMin = 0;
+    private double SpecificLeafAreaMax = 0;
     //Local variables
     private double SenescedFrac = 0;
     public double PotentialSize = 0;
     private double FunctionalNConc = 0;
     private double LuxaryNConc = 0;
-    //private double Fw = 0;
     private double _ExpansionStress = 0;
     public double SLA = 0.0;
     private double CriticalCover = 0;
@@ -73,6 +73,9 @@ class SIRIUSLeafCohort : LeafCohort
     
     [Link("SpecificLeafAreaMin")]
     public Function SLAmin;
+
+    [Link("SpecificLeafAreaMax")]
+    public Function SLAmax;
     
     [Link("CriticalNConc")]
     public Function CritNC;
@@ -277,12 +280,12 @@ class SIRIUSLeafCohort : LeafCohort
     public SIRIUSLeafCohort()
     {
     }
-
     public override void DoInitialisation()
     {
         base.DoInitialisation();
 
         SpecificLeafAreaMin = SLAmin.Value;
+        SpecificLeafAreaMax = SLAmax.Value;
         StructuralNConc = MinimumNConc;
         FunctionalNConc = (CritNC.Value - (MNC.Value * SF.Value)) * (1 / (1 - SF.Value));
         LuxaryNConc = (CNC.Value - CritNC.Value);
@@ -294,12 +297,10 @@ class SIRIUSLeafCohort : LeafCohort
         Live.NonStructuralN = 0;
         NReallocationFactor = NRF.Value;
         NRetranslocationFactor = NRR.Value;
-        //Fw = Stressfact.Value;
         CriticalCover = CritCover.Value;
         DMRetranslocationFactor = DMRF.Value;
         FracSenShade = ShadeSenRate.Value;
     }
-
     public override void DoPotentialGrowth(double TT)
     {
         if (IsInitialised)
@@ -344,6 +345,8 @@ class SIRIUSLeafCohort : LeafCohort
             NonStructuralNRetrasnlocated = 0;
             StructuralNAllocation = 0;
             MetabolicNAllocation = 0;
+            StructuralDMAllocation = 0;
+            MetabolicDMAllocation = 0;
         }
     }
     public override void DoActualGrowth(double TT)

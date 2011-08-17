@@ -533,22 +533,31 @@
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.5</KDead>
-        <MaxNodeNo>40</MaxNodeNo>
         <SIRIUSLeafCohort name="Leaves[1]">
            <Rank>1</Rank>
            <Area>200</Area>
            <Age>95</Age>
         </SIRIUSLeafCohort>
         <InitialiseStage>Emergence</InitialiseStage>
-        <InitialLeafPrimordia>4</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
           <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <LinearInterpolationFunction name="FrostFraction">
+        <FinalNodeNumber name = "FinalNodeNumber">
+		   <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
+		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">4</InitialLeafPrimordia>
+           <PhaseLookupValue name="NodeInitiationRate">
+             <Start>Emergence</Start>
+             <End>FloralInitiation</End>
+             <Constant name="Function">
+               <Value>95.0</Value>
+             </Constant>
+           </PhaseLookupValue>
+		   <TemperatureFunction shortcut="/Wheat2/Model/Plant/Leaf/ThermalTime" />
+        </FinalNodeNumber>
+		<LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0</XY>

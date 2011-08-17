@@ -32,10 +32,10 @@
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Cultivar name="Rex">
-	      <Construct type="text" description="Construct">Plant</Construct>
+      <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
-	<Cultivar name="Excel">
-	  <Construct type="text" description="Construct">Plant</Construct>
+    <Cultivar name="Excel">
+      <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Cultivar name="Kaspa">
       <Construct type="text" description="Construct">Plant</Construct>
@@ -481,16 +481,12 @@
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <SIRIUSLeafCohort name="Leaves[1]">
-           <Rank>1</Rank>
-           <Area>100</Area>
-           <Age>1</Age>
-        </SIRIUSLeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
-		<InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
-        <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">20</FinalNodeNoEstimate>
-        <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.</Memo>
+        <SIRIUSLeafCohort name="Leaves[1]">
+          <Rank>1</Rank>
+          <Area>100</Area>
+          <Age>50</Age>
+        </SIRIUSLeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -512,14 +508,19 @@
             <XY>40 0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <PhaseLookupValue name="NodeInitiationRate">
-          <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">StartPodGrowth</End>
-          <Constant name="Function">
-            <Value type="text" description="Value">20</Value>
-          </Constant>
-          <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
-        </PhaseLookupValue>
+        <FinalNodeNumber>
+          <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
+          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
+          <PhaseLookupValue name="NodeInitiationRate">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartPodGrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">20</Value>
+            </Constant>
+            <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+          </PhaseLookupValue>
+          <TemperatureFunction shortcut="/FieldPea2/Model/Plant/Leaf/ThermalTime" />
+        </FinalNodeNumber>
         <LinearInterpolationFunction name="NodeAppearanceRate">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
@@ -849,5 +850,5 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Grain.Dead</Property>
       </CompositeBiomass>
     </Plant>
-</Model>
+  </Model>
 </Type>
