@@ -49,6 +49,7 @@
 
 
       subroutine getDescription(InitScript, Description)
+      use ComponentInterfaceModule
       implicit none
       ml_external getDescription, getDescriptionInternal
 !STDCALL(getDescription)
@@ -57,6 +58,7 @@
       end subroutine
 
       subroutine getDescriptionLength(InitScript, Length)
+      use ComponentInterfaceModule
       implicit none
       ml_external getDescriptionLength, getDescriptionLengthInternal
 !STDCALL(getDescriptionLength)
