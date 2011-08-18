@@ -3,8 +3,6 @@
 #include "Plant.h"
 #include "Leaf.h"
 
-
-//#include "CanopyPhotosynthesis.h"
 using namespace Maize;
 //------------------------------------------------------------------------------------------------
 //------ Leaf Constructor
@@ -15,7 +13,6 @@ Leaf::Leaf(ScienceAPI2 &api, Plant *p) : PlantPart(api)
    name = "Leaf";
    partNo = 1;
 
-
    doRegistrations();
    initialize();
    }
@@ -24,10 +21,6 @@ Leaf::Leaf(ScienceAPI2 &api, Plant *p) : PlantPart(api)
 //------------------------------------------------------------------------------------------------
 Leaf::~Leaf()
    {
-   if(canPhoto)
-      {
-      delete canPhoto;
-      }
    }
 //--------------------------------------------------------------------------------------------------
 // Register variables for other modules
@@ -102,7 +95,7 @@ void Leaf::initialize(void)
    coverSen = 0.0;
    coverTot = 0.0;
 
-   canPhoto = NULL;
+   //canPhoto = NULL;
 
    PlantPart::initialize();
    }
@@ -126,12 +119,6 @@ void Leaf::readParams (void)
 
    // leaf area TPLA
    scienceAPI.read("initial_tpla"         ,"", false, initialTPLA);
-//   scienceAPI.read("tpla_inflection_ratio","", false, tplaInflectionRatio);
-//   scienceAPI.read("tpla_prod_coef"       ,"", false, tplaProductionCoef);
-//   scienceAPI.read("LeafTipAppRate"       ,"", false, tipAppRate);
-//   scienceAPI.read("tiller_coef"          ,"", false, tillerCoef);
-//   scienceAPI.read("main_stem_coef"       ,"", false, mainStemCoef);
-   // leaf area individual leaf
 
    // leaf area individual leaf
    //Birch, Hammer bell shaped curve parameters
@@ -153,11 +140,6 @@ void Leaf::readParams (void)
    // slai
    scienceAPI.read("leaf_no_dead_const"       , "", false, deadLeafConst);
    scienceAPI.read("leaf_no_dead_slope"       , "", false, deadLeafSlope);
-
-   // spla
-//   scienceAPI.read("spla_intercept"       , "", false, splaIntercept);
-//   scienceAPI.read("spla_slope"       , "", false, splaSlope);
-//   scienceAPI.read("spla_prod_coef"       , "", false, splaProdCoef);
 
    // nitrogen
    scienceAPI.read("initialLeafSLN", "", false, initialSLN);
@@ -187,13 +169,6 @@ void Leaf::readParams (void)
    extinction.read(scienceAPI,"x_row_spacing","y_extinct_coef");
    extinctionCoef = extinction.value(plant->getRowSpacing() / 1000.0);
 
-   //Leaf Angle
-   int useLeafAngles;
-   scienceAPI.read("UseLeafAngle", "", false, useLeafAngles);
-   //if(useLeafAngles == 1)
-   //   {
-//      canPhoto = new CanopyPhotosynthesis(scienceAPI, plant);
-   //   }
    }
 //------------------------------------------------------------------------------------------------
 //----------- update Leaf state variables at the end of the day
@@ -222,7 +197,6 @@ void Leaf::updateVars(void)
    nGreen += (dltNGreen +  dltNRetranslocate - dltNSenesced);
    dltNSenesced = 0.0;
 
-
    // leaf area
    lai += dltLAI;
 
@@ -248,11 +222,18 @@ void Leaf::updateVars(void)
    calcCover();
    }
 //------------------------------------------------------------------------------------------------
-void Leaf::process(void)
+void Leaf::potentialGrowth(void)
    {
+	calcLeafNo();
+   calcPotentialArea();
+   }
+//------------------------------------------------------------------------------------------------
+void Leaf::actualGrowth(void)
+	{
+	// actual dltLai C limited
    areaActual();
    senesceArea();
-   }
+	}
 //------------------------------------------------------------------------------------------------
 //------- react to a phenology event
 //------------------------------------------------------------------------------------------------
@@ -261,28 +242,28 @@ void Leaf::phenologyEvent(int iStage)
    ExternalMassFlowType EMF;
    switch (iStage)
       {
-      case emergence :
-         initLeafNo();
-         lai = initialTPLA * smm2sm * density;
-         tplaPot = initialTPLA;
-         dmGreen = initialDM * density;
-         SLN = initialSLN;
-         nGreen = SLN * lai;
-         pGreen = initialPConc * dmGreen;
-         EMF.PoolClass = "crop";
-         EMF.FlowType = "gain";
-         EMF.DM = 0.0;
-         EMF.N  = nGreen * gm2kg/sm2ha;
-         EMF.P  = pGreen * gm2kg/sm2ha;
-         EMF.C = 0.0; // ?????
-         EMF.SW = 0.0;
-         scienceAPI.publish("ExternalMassFlow", EMF);
-         break;
-      case flowering :
-         //set the minimum weight of leaf; used for translocation to grain and stem
-         float dmPlantLeaf = divide (dmGreen, density);
-         dmPlantMin = dmPlantLeaf * (1.0 - translocFrac);
-         break;
+   case emergence :
+      initLeafNo();
+      lai = initialTPLA * smm2sm * density;
+      tplaPot = initialTPLA;
+      dmGreen = initialDM * density;
+      SLN = initialSLN;
+      nGreen = SLN * lai;
+      pGreen = initialPConc * dmGreen;
+      EMF.PoolClass = "crop";
+      EMF.FlowType = "gain";
+      EMF.DM = 0.0;
+      EMF.N  = (float)(nGreen * gm2kg/sm2ha);
+      EMF.P  = (float)(pGreen * gm2kg/sm2ha);
+      EMF.C = 0.0; // ?????
+      EMF.SW = 0.0;
+      scienceAPI.publish("ExternalMassFlow", EMF);
+      break;
+   case flowering :
+      //set the minimum weight of leaf; used for translocation to grain and stem
+      double dmPlantLeaf = divide (dmGreen, density);
+      dmPlantMin = dmPlantLeaf * (1.0 - translocFrac);
+      break;
 
       }
    }
@@ -315,7 +296,7 @@ void Leaf::calcPotentialArea(void)
       {
       leafAreaPotBellShapeCurve();
       dltStressedLAI = calcStressedLeafArea();
-		}
+      }
    }
 //------------------------------------------------------------------------------------------------
 //-------  limit new leaf area by carbon
@@ -344,8 +325,7 @@ void Leaf::senesceArea(void)
 
    dltSlai = Max(dltSlai,dltSlaiAge);
 
-
-  // senesced leaf area due to light (crowding)
+   // senesced leaf area due to light (crowding)
    dltSlaiLight = calcLaiSenescenceLight();
 
    dltSlai = Max(dltSlai,dltSlaiLight);
@@ -363,40 +343,38 @@ void Leaf::senesceArea(void)
 
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcLaiSenescenceFrost(void)
+double Leaf::calcLaiSenescenceFrost(void)
    {
    //  calculate senecence due to frost
-   float dltSlaiFrost = 0.0;
+   double dltSlaiFrost = 0.0;
    if (plant->today.minT < frostKill)
       dltSlaiFrost = lai;
 
    return dltSlaiFrost;
    }
-   /* TODO : put in messages */
+/* TODO : put in messages */
 //------------------------------------------------------------------------------------------------
-float Leaf::calcLaiSenescenceWater(void)
+double Leaf::calcLaiSenescenceWater(void)
    {
-   /* TODO : Direct translation sort of. needs work */
-   
-   float dlt_dm_transp = plant->biomass->getDltDMPotTE();
+   double dlt_dm_transp = plant->biomass->getDltDMPotTE();
 
-   float effectiveRue = plant->biomass->getEffectiveRue();
+   double effectiveRue = plant->biomass->getEffectiveRue();
 
-   float radnCanopy = divide (plant->getRadnInt(), coverGreen, plant->today.radn);
+   double radnCanopy = divide (plant->getRadnInt(), coverGreen, plant->today.radn);
 
-   float sen_radn_crit = divide (dlt_dm_transp, effectiveRue, radnCanopy);
-   float intc_crit = divide (sen_radn_crit, radnCanopy, 1.0);
+   double sen_radn_crit = divide (dlt_dm_transp, effectiveRue, radnCanopy);
+   double intc_crit = divide (sen_radn_crit, radnCanopy, 1.0);
 
-//            ! needs rework for row spacing
-   float laiEquilibWaterToday;
+   //            ! needs rework for row spacing
+   double laiEquilibWaterToday;
    if (intc_crit < 1.0)
-         laiEquilibWaterToday = -log (1.0 - intc_crit) / extinctionCoef;
+      laiEquilibWaterToday = -log (1.0 - intc_crit) / extinctionCoef;
    else
       laiEquilibWaterToday = lai;
 
    laiEquilibWater.push_back(laiEquilibWaterToday);
 
-   float avLaiEquilibWater = 0.0;int nRecs = laiEquilibWater.size();
+   double avLaiEquilibWater = 0.0;int nRecs = laiEquilibWater.size();
    // average of the last 10 days of laiEquilibWater
    int start = ( nRecs > 10 ? nRecs - 9 : 1);
    for(int i = start;i <= nRecs;i++)
@@ -404,7 +382,7 @@ float Leaf::calcLaiSenescenceWater(void)
    avLaiEquilibWater /= Min(10,nRecs);
 
 
-   float dltSlaiWater = 0.0;
+   double dltSlaiWater = 0.0;
    if(plant->water->getSdRatio() < senThreshold)
       dltSlaiWater = Max(0.0,divide((lai - avLaiEquilibWater) , senWaterTimeConst,0.0));
 
@@ -415,13 +393,13 @@ float Leaf::calcLaiSenescenceWater(void)
 //------------------------------------------------------------------------------------------------
 //------- NITROGEN
 //------------------------------------------------------------------------------------------------
-float Leaf::calcNDemand(void)
+double Leaf::calcNDemand(void)
    {
    // LEAF N demand (g/m2) to keep SLN = targetLeafSLN before flag, or sustain SLN after flag.
 
-//   float laiToday = Max(0.0, lai + dltLAI - dltSlai);
-   float laiToday = calcLAI();
-   float nRequired;
+   //   double laiToday = Max(0.0, lai + dltLAI - dltSlai);
+   double laiToday = calcLAI();
+   double nRequired;
    if(stage < flag)
       nRequired = laiToday * targetSLN;
    else
@@ -431,46 +409,45 @@ float Leaf::calcNDemand(void)
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcNewLeafNDemand(void)
+double Leaf::calcNewLeafNDemand(void)
    {
    // New leaf demand is SLN = newLeafSLN (1.0)
    return dltLAI * newLeafSLN;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcLAI(void)
+double Leaf::calcLAI(void)
    {
-   float laiToday = Max(0.0, lai + dltLAI - dltSlai);
+   double laiToday = Max(0.0, lai + dltLAI - dltSlai);
    return laiToday;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcSLN(void)
+double Leaf::calcSLN(void)
    {
-   float laiToday = calcLAI();
-   float nGreenToday = nGreen + dltNGreen - dltNRetranslocate;
-   float slnToday = divide(nGreenToday,laiToday);
+   double laiToday = calcLAI();
+   double nGreenToday = nGreen + dltNGreen - dltNRetranslocate;
+   double slnToday = divide(nGreenToday,laiToday);
    return slnToday;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::provideN(float requiredN)
+double Leaf::provideN(double requiredN)
    {
    // calculate the N available for translocation to other plant parts
    // N could be required for structural Stem/Rachis N, new leaf N or grain N
    // Canopy N is made available by dilution until SLN = 1.0 then by
    // dilution, reducing delta lai and senescence
 
-
-   float laiToday = calcLAI();
-   float slnToday = calcSLN();
+   double laiToday = calcLAI();
+   double slnToday = calcSLN();
 
    // total N available by dilution
-   float dilutionN = plant->phenology->getDltTT()
+   double dilutionN = plant->phenology->getDltTT()
       * (dilnNSlope * slnToday + dilnNInt) * laiToday;
    dilutionN = Max(dilutionN,0.0);
 
    // pre anthesis, get N from dilution, reduction in dltLai and senesence
    if(stage <= flowering)
       {
-      float nProvided = Min(dilutionN,requiredN/2.0);
+      double nProvided = Min(dilutionN,requiredN/2.0);
       dltNRetranslocate -= nProvided;
       requiredN -= nProvided;
       if(requiredN <= 0.0001)
@@ -479,8 +456,8 @@ float Leaf::provideN(float requiredN)
       // not sufficient N from dilution - take from decreasing dltLai and senescence
       if(dltLAI > 0)
          {
-         float n = dltLAI * newLeafSLN;
-         float laiN = min(n,requiredN/2);
+         double n = dltLAI * newLeafSLN;
+         double laiN = min(n,requiredN/2);
          dltLAI = (n - laiN) / newLeafSLN;
          requiredN -= laiN;
          nProvided += laiN;
@@ -488,13 +465,13 @@ float Leaf::provideN(float requiredN)
       // recalc the SLN after this N has been removed
       laiToday = calcLAI();
       slnToday = calcSLN();
-      float maxN = plant->phenology->getDltTT()
-      * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+      double maxN = plant->phenology->getDltTT()
+         * (dilnNSlope * slnToday + dilnNInt) * laiToday;
       requiredN = Min(requiredN,maxN);
 
-      float senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
+      double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
-      float newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
+      double newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
       dltNRetranslocate -= newN;
       nProvided += newN;
       dltSlaiN += senescenceLAI;
@@ -509,7 +486,7 @@ float Leaf::provideN(float requiredN)
       // if sln > 1, dilution then senescence
       if(slnToday > 1.0)
          {
-         float nProvided = Min(dilutionN,requiredN);
+         double nProvided = Min(dilutionN,requiredN);
          dltNRetranslocate -= nProvided;
          requiredN -= nProvided;
          if(requiredN <= 0.0001)
@@ -519,13 +496,13 @@ float Leaf::provideN(float requiredN)
          // recalc the SLN after this N has been removed
          laiToday = calcLAI();
          slnToday = calcSLN();
-         float maxN = plant->phenology->getDltTT()
-                     * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+         double maxN = plant->phenology->getDltTT()
+            * (dilnNSlope * slnToday + dilnNInt) * laiToday;
          requiredN = Min(requiredN,maxN);
 
-         float senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
+         double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
-         float newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
+         double newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
          dltNRetranslocate -= newN;
          nProvided += newN;
          dltSlaiN += senescenceLAI;
@@ -539,7 +516,7 @@ float Leaf::provideN(float requiredN)
          {
          // half from dilution and half from senescence
          // dilution
-         float nProvided = Min(dilutionN,requiredN/2.0);
+         double nProvided = Min(dilutionN,requiredN/2.0);
          dltNRetranslocate -= nProvided;
          requiredN -= nProvided;
 
@@ -547,13 +524,13 @@ float Leaf::provideN(float requiredN)
          // recalc the SLN after this N has been removed
          laiToday = calcLAI();
          slnToday = calcSLN();
-         float maxN = plant->phenology->getDltTT()
-                  * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+         double maxN = plant->phenology->getDltTT()
+            * (dilnNSlope * slnToday + dilnNInt) * laiToday;
          requiredN = Min(requiredN,maxN);
 
-         float senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
+         double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
-         float newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
+         double newN = Max(senescenceLAI * (slnToday-senescedLeafSLN),0.0);
          dltNRetranslocate -= newN;
          nProvided += newN;
          dltSlaiN += senescenceLAI;
@@ -566,45 +543,33 @@ float Leaf::provideN(float requiredN)
       }
    }
 //------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------
 // Leaf Number / Leaf Size   / Appearance
 //------------------------------------------------------------------------------------------------
 void Leaf::initLeafNo(void)
    {
    nLeaves = noEmergence;
-//   nTips = noEmergence + 0.5;
-
-//   leafNo[emergence] = noEmergence;
-//   tipNo[emergence] = noEmergence + 0.5;
    }
 //------------------------------------------------------------------------------------------------
 // estimate the final leaf no from an approximated thermal time
 //  emergence to floral initiation.
+//------------------------------------------------------------------------------------------------
 void Leaf::calcFinalLeafNo(void)
    {
-   float ttFi = plant->phenology->sumTTtarget(emergence,fi);
-   //-----------------------------------------------------------
-   // The following line is commented out by Zhanshan, July 30, 2007
-   // It does not follow the comment for the function
-   // Greg, you might have your reason to do that. Please explain it.
-   //
-   // ttFi = plant->phenology->sumTTtarget(germination,fi);
-   //
-   //-----------------------------------------------------------
-   finalLeafNo = bound(divide(ttFi,initRate) + noSeed,minLeafNo,maxLeafNo);
+	double ttFi = plant->phenology->sumTTtarget(emergence,fi);
+	finalLeafNo = bound(divide(ttFi,initRate) + noSeed,minLeafNo,maxLeafNo);
    }
 //------------------------------------------------------------------------------------------------
 void Leaf::calcLeafAppearance(void)
    {
    dltLeafNo = 0.0;
-   float remainingLeaves = finalLeafNo - nLeaves;
+   double remainingLeaves = finalLeafNo - nLeaves;
    if(remainingLeaves <= 0.0)
       {
       return;
       }
    // Peter's 2 stage version used here, modified to apply to last few leaves before flag
    // i.e. c_leaf_no_rate_change is leaf number from the top down (e.g. 4)
-   float leafAppRate;
+   double leafAppRate;
    if (remainingLeaves <= noRateChange2)
       {
       leafAppRate = appearanceRate3;
@@ -620,26 +585,6 @@ void Leaf::calcLeafAppearance(void)
    dltLeafNo = bound(divide(plant->phenology->getDltTT(),leafAppRate),0.0,remainingLeaves);
    }
 //------------------------------------------------------------------------------------------------
-/*void Leaf::calcLeafSize(void)
-   {
-   // calculate a vector of individual leaf sizes using bell shaped curve
-
-   float largestLeaf = x0Const + (x0Slope * finalLeafNo);
-   float areaMax     = y0Const + (y0Slope * finalLeafNo);
-
-   float breadth  = aConst + divide (aSlope1, 1.0 + aSlope2 * finalLeafNo, 0.0);
-   float skewness = bConst + divide (bSlope1, 1.0 + bSlope2 * finalLeafNo, 0.0);
-
-   leafSize.clear();
-   for(int i=0;i < finalLeafNo;i++)
-      {
-      float area = areaMax * exp(breadth * pow((i+1 - largestLeaf), 2) +
-            skewness * pow((i+1 - largestLeaf),3));
-
-      leafSize.push_back(area);
-      }
-   }      */
-//------------------------------------------------------------------------------------------------
 void Leaf::calcLeafSize(void)
    {
    leafSize.clear();
@@ -652,14 +597,15 @@ double Leaf::calcIndividualLeafSize(double leafNo)
    {
    // use finalLeafNo to calculate the size of the individual leafs
    // Eqn 5 from Improved methods for predicting individual leaf area and leaf senescence in maize
-   //  (Zea mays) C.J. Birch, G.L. Hammer and K.G. Ricket. Aust. J Agric. Res., 1998, 49, 249-62
+   // (Zea mays) C.J. Birch, G.L. Hammer and K.G. Ricket. Aust. J Agric. Res., 1998, 49, 249-62
+	// TODO	externalise these variables
    double a0 = -0.009, a1 = -0.2;
    double b0 = 0.0006, b1 = -0.43;
 
    double a = a0 - exp(a1 * finalLeafNo);
    double b = b0 - exp(b1 * finalLeafNo);
 
-   double aMaxB = 0.4, aMaxC = 13.95; // refer to the PPT file documented all changes did during Graeme's visit in 2007
+   double aMaxB = 0.4, aMaxC = 13.95; 
    double aMax = aMaxA * (1 - exp(-aMaxB * (finalLeafNo - aMaxC)));  // maximum individual leaf area
    double x0 = aX0 * finalLeafNo;
 
@@ -670,81 +616,71 @@ double Leaf::calcIndividualLeafSize(double leafNo)
 void Leaf::leafAreaPotBellShapeCurve(void)
    {
    //once leaf no is calculated leaf area of largest expanding leaf is determined
-
-   //glh This should also be from sowing, as above? (changed from emerg (scc))
-   float leafNoEffective = Min(sumVector(leafNo) + leafNoCorrection, finalLeafNo);
+   double leafNoEffective = Min(sumVector(leafNo) + leafNoCorrection, finalLeafNo);
 
    dltPotentialLAI = dltLeafNo *
-               calcIndividualLeafSize(leafNoEffective) * smm2sm * density;
+      calcIndividualLeafSize(leafNoEffective) * smm2sm * density;
 
    return;
    }
 
 //------------------------------------------------------------------------------------------------
 
-float Leaf::calcStressedLeafArea()
+double Leaf::calcStressedLeafArea()
    {
    return dltPotentialLAI * Min(plant->water->getExpansionStress(),
-                                    plant->nitrogen->getExpansionStress());
+      plant->nitrogen->getExpansionStress());
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcMaxLaiPossible(void)
+double Leaf::calcMaxLaiPossible(void)
    {
    waterStressLaiLoss += (dltPotentialLAI - dltStressedLAI);
    return lai + sLai - waterStressLaiLoss;
    }
 //------------------------------------------------------------------------------------------------
 //  Return the lai that would senesce on the current day from natural ageing
-float Leaf::calcLaiSenescenceAge(void)
+//------------------------------------------------------------------------------------------------
+double Leaf::calcLaiSenescenceAge(void)
    {
    dltDeadLeaves = calcDltDeadLeaves();
-   float deadLeaves = nDeadLeaves + dltDeadLeaves;
-   float laiSenescenceAge = 0.0;
+   double deadLeaves = nDeadLeaves + dltDeadLeaves;
+   double laiSenescenceAge = 0.0;
    if(deadLeaves)
       {
       int leafDying = (int) ceil(deadLeaves);
-      float areaDying  = fmod(deadLeaves,(float)1.0) * leafSize[leafDying-1];
+      double areaDying  = fmod(deadLeaves,(double)1.0) * leafSize[leafDying-1];
       laiSenescenceAge = (sumVector(leafSize,leafDying - 1) + areaDying) * smm2sm * density;
       }
    return  Max(laiSenescenceAge - sLai,0.0);
-   /*
-   SLAI approach
-   float ttSinceEmergence = plant->phenology->sumTTtotal (emergence,harvest);
-   float splaInflection = splaIntercept + (splaSlope * finalLeafNo);
-
-   float sLaiToday = divide(maxLaiPossible,
-      (1.0 + exp(-1 * splaProdCoef * (ttSinceEmergence - splaInflection))));
-
-   return Max(sLaiToday - sLai,0.0);       */
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcDltDeadLeaves(void)
+double Leaf::calcDltDeadLeaves(void)
    {
-   float nDeadYesterday = nDeadLeaves;
-   float nDeadToday = finalLeafNo *
-         (deadLeafConst + deadLeafSlope * plant->phenology->sumTTtotal(emergence,maturity));
+   double nDeadYesterday = nDeadLeaves;
+   double nDeadToday = finalLeafNo *
+      (deadLeafConst + deadLeafSlope * plant->phenology->sumTTtotal(emergence,maturity));
    nDeadToday = bound(nDeadToday,nDeadYesterday,finalLeafNo);
    return nDeadToday - nDeadYesterday;
    }
 //------------------------------------------------------------------------------------------------
 //  Return the lai that would senesce on the current day from light (crowding)
-float Leaf::calcLaiSenescenceLight(void)
+double Leaf::calcLaiSenescenceLight(void)
    {
    //    senRadnCrit
-   float critTransmission = divide(senRadnCrit,plant->today.radn);
+   double critTransmission = divide(senRadnCrit,plant->today.radn);
    /* TODO : needs rework for row spacing */
 
-   float laiEqlbLightToday;
+   double laiEqlbLightToday;
    if (critTransmission > 0.0)laiEqlbLightToday = -log (critTransmission)/extinctionCoef;
    else laiEqlbLightToday = lai;
 
 
    // average of the last 10 days of laiEquilibLight
    laiEquilibLight.push_back(laiEqlbLightToday);
-   float avLaiEquilibLight = movingAvgVector(laiEquilibLight,10);
+   double avLaiEquilibLight = movingAvgVector(laiEquilibLight,10);
 
-   float radnTransmitted = plant->today.radn - plant->getRadnInt();
-   float dltSlaiLight = 0.0;
+   double radnTransmitted = plant->today.radn - plant->getRadnInt();
+   double dltSlaiLight = 0.0;
    if (radnTransmitted < senRadnCrit)
       dltSlaiLight = Max(0.0,divide (lai - avLaiEquilibLight, senLightTimeConst , 0.0));
    dltSlaiLight = Min(dltSlaiLight,lai);
@@ -753,27 +689,27 @@ float Leaf::calcLaiSenescenceLight(void)
 //------------------------------------------------------------------------------------------------
 void Leaf::calcCover()
    {
-   float skipRow = plant->getSkipRow();
+   double skipRow = plant->getSkipRow();
    coverGreen = divide(1.0 - exp(-extinctionCoef * lai * skipRow), skipRow,0.0);
    coverSen = divide(1.0 - exp(-extinctionCoef * sLai * skipRow), skipRow,0.0);
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcEmergFlagTT(void)
+double Leaf::calcEmergFlagTT(void)
    {
    // estimate emergence to flag using leaf appearance rates
-   float nLeavesAtChange1 = bound(finalLeafNo - noRateChange1,noEmergence,finalLeafNo);
-   float nLeavesAtChange2 = bound(finalLeafNo - noRateChange2,noEmergence,finalLeafNo);
+   double nLeavesAtChange1 = bound(finalLeafNo - noRateChange1,noEmergence,finalLeafNo);
+   double nLeavesAtChange2 = bound(finalLeafNo - noRateChange2,noEmergence,finalLeafNo);
    return (nLeavesAtChange1 - noEmergence) * appearanceRate1 +
       (nLeavesAtChange2 - nLeavesAtChange1) * appearanceRate2 +
-      (finalLeafNo - nLeavesAtChange2) * appearanceRate3; // appearanceRate2 ?? should be appearanceRate3 ? - changed by Zhanshan, Oct 17, 2007
+      (finalLeafNo - nLeavesAtChange2) * appearanceRate3; 
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::laiToday(void)const
+double Leaf::laiToday(void)const
    {
    return Max(0.0, lai + dltLAI - dltSlai);
    }
 //------------------------------------------------------------------------------------------------
-void Leaf::addDltSlai(float add)
+void Leaf::addDltSlai(double add)
    {
    dltSlai += add;
    dltSlai = Min(sLai, lai + dltLAI);
@@ -783,55 +719,54 @@ void Leaf::calcSenescence(void)
    {
    // Derives seneseced plant dry matter (g/m^2) for the day
    // calculate scenesced N
-   float laiToday = lai + dltLAI;
+   double laiToday = lai + dltLAI;
 
-   float dmGreenLeafToday = dmGreen + dltDmGreen + dmRetranslocate;               // -ve
-   float slaToday = divide(laiToday,dmGreenLeafToday);
+   double dmGreenLeafToday = dmGreen + dltDmGreen + dmRetranslocate;               // -ve
+   double slaToday = divide(laiToday,dmGreenLeafToday);
 
    dltDmSenesced = divide(dltSlai,slaToday);
 
-   float slnToday = divide(nGreen,laiToday);
+   double slnToday = divide(nGreen,laiToday);
    dltNSenesced  += dltSlai * Max((slnToday - senescedLeafSLN),0.0);
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::partitionDM(float dltDM)
+double Leaf::partitionDM(double dltDM)
    {
-   float dltDmLeafMax = divide (dltStressedLAI,slaMin.value(lai) * smm2sm);
+   double dltDmLeafMax = divide (dltStressedLAI,slaMin.value(lai) * smm2sm);
 
-   float leafPartitionCoef = 1.0 / (1.0 + leafPartitionRate * pow(nLeaves,(float)2.0));
+   double leafPartitionCoef = 1.0 / (1.0 + leafPartitionRate * pow(nLeaves,(double)2.0));
    // limit the delta leaf area to maximum  using sla
    dltDmGreen = Min(leafPartitionCoef * dltDM,dltDmLeafMax);
    return dltDmGreen;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::dmRetransAvailable(void)
+double Leaf::dmRetransAvailable(void)
    {
    // calculate dry matter available for translocation to grain
-   float leafWt = dmGreen + dltDmGreen;
-   float leafWtAvail = leafWt - dmPlantMin * density;
+   double leafWt = dmGreen + dltDmGreen;
+   double leafWtAvail = leafWt - dmPlantMin * density;
    return Max(leafWtAvail,0.0);
    }
 //------------------------------------------------------------------------------------------------
 //------- Calculate detachment of lai (based upon fractional decay rates)
 //------------------------------------------------------------------------------------------------
-void Leaf::laiDetachment(vector<float> senDetachFrac)
+void Leaf::laiDetachment(vector<double> senDetachFrac)
    {
    //These are change within the call but are not used anywhere
-   float sLaiDetachedDelta;
-   float dLaiDetachedDelta;
+   double sLaiDetachedDelta;
+   //double dLaiDetachedDelta;
 
    //Do Calculations
    calcPartFractionDelta (partNo, senDetachFrac, sLai, sLaiDetachedDelta);
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcPDemand(void)
+double Leaf::calcPDemand(void)
    {
    // Leaf P demand
+   double rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
+      plant->biomass->getAboveGroundBiomass(),0.0);
 
-   float rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
-         plant->biomass->getAboveGroundBiomass(),0.0);
-
-   float deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
+   double deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
 
    pDemand = Max(deficit,0.0);
    return pDemand;
@@ -841,47 +776,37 @@ void Leaf::Summary(void)
    {
    char msg[120];
    sprintf(msg,"Maximum LAI           = %.1f \t\t Number of leaves        = %.1f\n",
-            maxLai,nLeaves);
+      maxLai,nLeaves);
    scienceAPI.write(msg);
    }
+//------------------------------------------------------------------------------------------------
 void Leaf::calcTplaMax(void)
    {
-   tplaMax = (pow(plant->getFtn() + (float)1.0, tillerCoef) * pow(finalLeafNo,mainStemCoef)) * scm2smm;
+   tplaMax = (pow(plant->getFtn() + (double)1.0, tillerCoef) * pow(finalLeafNo,mainStemCoef)) * scm2smm;
    }
 //------------------------------------------------------------------------------------------------
-float Leaf::calcDltPotentialTPLA(void)
+double Leaf::calcDltPotentialTPLA(void)
    {
    // need to ramp the dltPotTPLA for the first 60Cd because the function evaluates to approx 2000
    // when ttElapsed = 0
-   float ttTPLAPhase = plant->phenology->sumTTtarget(emergence,flag);
-   float ttElapsed   = plant->phenology->sumTTtotal (emergence,flag);
-   float tplaInflection = ttTPLAPhase * tplaInflectionRatio;
-   float tplaToday;
+   double ttTPLAPhase = plant->phenology->sumTTtarget(emergence,flag);
+   double ttElapsed   = plant->phenology->sumTTtotal (emergence,flag);
+   double tplaInflection = ttTPLAPhase * tplaInflectionRatio;
+   double tplaToday;
 
    if(ttElapsed < 80)
       {
-      float exponent = tplaProductionCoef * (80 - tplaInflection);
-      float tpla80 = divide(tplaMax,1.0 + exp(-1 * exponent));
+      double exponent = tplaProductionCoef * (80 - tplaInflection);
+      double tpla80 = divide(tplaMax,1.0 + exp(-1 * exponent));
       tplaToday = divide(ttElapsed,80) * tpla80;
       }
    else
       {
-      float exponent = tplaProductionCoef * (ttElapsed - tplaInflection);
+      double exponent = tplaProductionCoef * (ttElapsed - tplaInflection);
       tplaToday = divide(tplaMax,1.0 + exp(-1 * exponent));
       }
    tplaToday = Max(tplaToday,tplaPot);
    return tplaToday - tplaPot;
    }
-//Leaf Angles
-//------------------------------------------------------------------------------------------------
-void Leaf::calcLayerVars(float *rueDay, float *radIntDay)
-   {
-   if(!useLeafAngles) return;
-
-//   canPhoto->calcVars(SLN, lai, plant->phenology->getLatitude(), plant->today.radn,
-  //    plant->today.doy,rueDay, radIntDay);
-
-   }
-
 //------------------------------------------------------------------------------------------------
 

@@ -7,70 +7,67 @@
 #include "PlantComponents.h"
 #include "Utilities.h"
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
 
-class Stem : public PlantPart
-   {
+   class Stem : public PlantPart
+      {
 
-// Parameters ----------------------------------------------------------
+      // Parameters ----------------------------------------------------------
 
-   float initialDM;
-   TableFn heightFn;
-   float translocFrac;
-   // nitrogen
-   float initialNConc;
-   TableFn targetNFn;
-   TableFn structNFn;
-   float dilnNSlope;
-   float dilnNInt;
-   float retransRate;           // rate that stem biomass can be retranslocated to grain
+      double initialDM;
+      TableFn heightFn;
+      double translocFrac;
+      // nitrogen
+      double initialNConc;
+      TableFn targetNFn;
+      TableFn structNFn;
+      double dilnNSlope;
+      double dilnNInt;
+      double retransRate;           // rate that stem biomass can be retranslocated to grain
 
-//  Variables  -----------------------------------------------------
+      //  Variables  -----------------------------------------------------
 
-   float density;
-   float canopyHeight;
-   float dltCanopyHeight;
+      double density;
+      double canopyHeight;
+      double dltCanopyHeight;
 
-   // biomass
-   float dmGreenStem;           // stem dry weight / plant
+      // biomass
+      double dmGreenStem;           // stem dry weight / plant
 
-   // nitrogen
-   float dltNConc;
+      // nitrogen
+      double dltNConc;
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
+      // Private Methods -------------------------------------------------------
+      void  doRegistrations(void);
+      void  initialize(void);
 
 
-// public Methods -------------------------------------------------------
-   public:
-   Stem(ScienceAPI2 &, Plant *p);
+      // public Methods -------------------------------------------------------
+      public:
+         Stem(ScienceAPI2 &, Plant *p);
 
-   // plant
-   void  calcCanopyHeight(void);
-   void  readParams (void);
-   void  updateVars(void);
-   void  process(void);
-   float getCanopyHeight(void)const{return canopyHeight;}
+         // plant
+         void  calcCanopyHeight(void);
+         void  readParams (void);
+         void  updateVars(void);
+         void  process(void);
+         double getCanopyHeight(void)const{return canopyHeight;}
 
-   // nitrogen
-   float calcNDemand(void);
-   float calcStructNDemand(void);
-   float provideN(float requiredN);
+         // nitrogen
+         double calcNDemand(void);
+         double calcStructNDemand(void);
+         double provideN(double requiredN);
 
-   // phosphorus
-   float calcPDemand(void);
+         // phosphorus
+         double calcPDemand(void);
 
-   // biomass
-   void  partitionDM(float dltDM){dltDmGreen = dltDM;}
-   float dmRetransAvailable(void);
-   void  dmRetrans(float dltDm){dmRetranslocate = dltDm;}
+         // biomass
+         void  partitionDM(double dltDM){dltDmGreen = dltDM;}
+         double dmRetransAvailable(void);
+         void  dmRetrans(double dltDm){dmRetranslocate = dltDm;}
 
-   // phenology
-   void  phenologyEvent(int);
-   };
-
-//---------------------------------------------------------------------------
-//-------------------------------------------------------------------------
-}
+         // phenology
+         void  phenologyEvent(int);
+      };
+   }
 #endif

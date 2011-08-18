@@ -20,170 +20,158 @@
 #include "Water.h"
 #include "Biomass.h"
 
-
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
 
 
-typedef enum {aFloat, aInt, aString} aType;
+   typedef enum {adouble, aInt, aString} aType;
 
-//------------------------------------------------------------------------------------------------
-//---------------- PLANT CLASS
+   //------------------------------------------------------------------------------------------------
+   //---------------- PLANT CLASS
 
-//   This class performs crop crop growth
-//     simulates root, leaf, head, stem and grain development. Water and
-//     nitrogen uptake, photosynhesis, and leaf and root senescense.
+   //   This class performs crop crop growth
+   //     simulates root, leaf, head, stem and grain development. Water and
+   //     nitrogen uptake, photosynhesis, and leaf and root senescense.
 
-class Plant
-   {
-   private:
-   ScienceAPI2& scienceAPI;
-   float stage;
+   class Plant
+      {
+      private:
+         ScienceAPI2& scienceAPI;
+         double stage;
 
-   public:
-   Plant(ScienceAPI2 &api);
-   ~Plant();
+      public:
+         Plant(ScienceAPI2 &api);
+         ~Plant();
 
-   // Plant sub-classes
-   Roots  *roots;
-   Leaf   *leaf;
-   Stem   *stem;
-   Rachis *rachis;
-   Grain  *grain;
+         // Plant sub-classes
+         Roots  *roots;
+         Leaf   *leaf;
+         Stem   *stem;
+         Rachis *rachis;
+         Grain  *grain;
 
-   Nitrogen   *nitrogen;
-   Phosphorus *phosphorus;
-   Water      *water;
-   Phenology  *phenology;
-   Biomass    *biomass;
+         Nitrogen   *nitrogen;
+         Phosphorus *phosphorus;
+         Water      *water;
+         Phenology  *phenology;
+         Biomass    *biomass;
 
-   vector<PlantComponent *> PlantComponents;
-   vector<PlantPart *>      PlantParts;
-   vector<PlantProcess *>   PlantProcesses;
+         vector<PlantComponent *> PlantComponents;
+         vector<PlantPart *>      PlantParts;
+         vector<PlantProcess *>   PlantProcesses;
 
-   Today  today;                      // holds day,year,rain,temp etc
-   int das;
+         Today  today;                      // holds day,year,rain,temp etc
+         int das;
 
+      private:
+         // Parameters ----------------------------------------------------------
+         string cultivar;
+         string cropClass;
 
-   private:
-// Parameters ----------------------------------------------------------
-   string cultivar;
-   string cropClass;
+         string defaultCropClass;
+         string cropType;
 
-   string defaultCropClass;
-   string cropType;
+         double rowSpacingDefault;
+         float rowSpacing;
+         double skipRow;
+         float sowingDepth;
+         float plantDensity;
+         double ftn;                   // fertile tiller number
+         double vpd;
 
-   float rowSpacingDefault;
-   float rowSpacing;
-   float skipRow;
-   float sowingDepth;
-   float plantDensity;
-   float ftn;                   // fertile tiller number
-   float vpd;
+         vector<double> rue;
+         double radnIntercepted;
+         double transpEff;
 
-   vector<float> rue;
-   float radnIntercepted;
-   float transpEff;
+         double tempStress;
 
-   float tempStress;
+         vector<double> transpEffCf;
+         double svpFract;
 
-   vector<float> transpEffCf;
-   float svpFract;
+         double ttEmergeLimit;
 
+         //Detachment Parameters
+         vector<double> senDetachFrac;
+         vector<double> deadDetachFrac;
 
-   float ttEmergeLimit;
+         double latitude;
 
-   //Detachment Parameters
-   vector<float> senDetachFrac;
-   vector<float> deadDetachFrac;
+         //  Variables  -----------------------------------------------------
+         Status plantStatus;               // plant status - out, dead, alive
+         string statusString;
+			bool initialized;
+         //   int das;
+         double dltPlants;
+         double frIntcRadn;
+         double eo;
 
-   float latitude;
+         double co2;
+         double coverGreen;
+         double dltDeadPlants;
+         TableFn tempStressTable;
 
+         double radnInt(void);
 
-//  Variables  -----------------------------------------------------
-   Status plantStatus;               // plant status - out, dead, alive
-   string statusString;
-//   int das;
-   float dltPlants;
-   float frIntcRadn;
-   float eo;
+         void  initialize(void);
+         void  endPlant (void);
+         double rue_co2_modifier(void);
+         TableFn co2_te_modifier;
 
-   float co2;
-   float coverGreen;
-   float dltDeadPlants;
-   TableFn tempStressTable;
+      public:
+         // ------------------------------------------------------
+         void setStatus(Status status);
 
-   float radnInt(void);
+         void plantInit1(void) ;
+         void plantInit2(void) ;
+         void readParams(void);
+         void prepare (void);               // do crop preparation
+         void process (void);               // do crop processes
 
-   void  initialize(void);
-   void  endPlant (void);
-   float rue_co2_modifier(void);
-   TableFn co2_te_modifier;
+         // Plant - System actions   - in PlantActions.cpp
+         void doRegistrations(void) ;
 
+         void onPrepare(void) ;
+         void onProcess(void) ;
+         void onTick(TimeType &) ;
+         void onNewMet(NewMetType &) ;
+         void onNewProfile(NewProfileType &v) ;
 
+         void onSowCrop(Variant &);
+         void onHarvest(void) ;
+         void onEndCrop(void) ;
+         void onEndRun(void) ;
+         void onKillCrop(void);
 
-   public:
-   // ------------------------------------------------------
-   void setStatus(Status status);
+         void getOtherVariables(void);
 
+         void updateVars(void);
+         void death(void);
+         void detachment(void);
 
-   void plantInit1(void) ;
-   void plantInit2(void) ;
-   void readParams(void);
-   void prepare (void);               // do crop preparation
-   void process (void);               // do crop processes
+         double transpEfficiency(void);
+         double svp(double temp);
 
-   // Plant - System actions   - in PlantActions.cpp
-   void doRegistrations(void) ;
+         double getTempStress(void)const{return tempStress;}
+         double getTranspEff(void)const{return (transpEff * co2_te_modifier.value(co2));}
+         double getSowingDepth(void)const{return sowingDepth;}
+         string getCropType(void)const{return cropType;}
 
-   void onPrepare(void) ;
-   void onProcess(void) ;
-   void onTick(TimeType &) ;
-   void onNewMet(NewMetType &) ;
-   void onNewProfile(NewProfileType &v) ;
+         double getRadnInt(void)const{return radnIntercepted;}
 
-   void onSowCrop(Variant &);
-   void onHarvest(void) ;
-   void onEndCrop(void) ;
-   void onEndRun(void) ;
-   void onKillCrop(void);
+         double getPlantDensity(void)const{return plantDensity;}
+         double getRowSpacing(void)const{return rowSpacing;}
+         double getSkipRow(void)const{return skipRow;}
+         double getFtn(void)const{return ftn;}
+         void  killCrop(void);
 
-   void getOtherVariables(void);
+         void getPlantStatus(string &);
+         void get_crop_type(string &);
+         void get_cover_green(float &);
+         void get_cover_tot(float &);
+         void get_height(float &);
 
-   void updateVars(void);
-   void death(void);
-   void detachment(void);
-   void cleanup(void);
-
-   float transpEfficiency(void);
-   float svp(float temp);
-
-   float getTempStress(void)const{return tempStress;}
-   float getTranspEff(void)const{return (transpEff * co2_te_modifier.value(co2));}
-   float getSowingDepth(void)const{return sowingDepth;}
-   string getCropType(void)const{return cropType;}
-
-   float getRadnInt(void)const{return radnIntercepted;}
-
-
-   float getPlantDensity(void)const{return plantDensity;}
-   float getRowSpacing(void)const{return rowSpacing;}
-   float getSkipRow(void)const{return skipRow;}
-   float getFtn(void)const{return ftn;}
-   void  killCrop(void);
-
-   void getPlantStatus(string &);
-   void get_crop_type(string &);
-   void get_cover_green(float &);
-   void get_cover_tot(float &);
-   void get_height(float &);
-
-   void   phenologyEvent(int stage);
-   };  // Plant
-
-//------------------------------------------------------------------------------------------------
-}
-
-
+         void   phenologyEvent(int stage);
+      };  // Plant
+   }
 #endif //PLANT_H_
 

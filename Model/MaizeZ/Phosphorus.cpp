@@ -18,7 +18,6 @@ Phosphorus::Phosphorus(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
 
    initialize();
    doRegistrations();
-
    }
 //------------------------------------------------------------------------------------------------
 //------ Phosphorus Destructor
@@ -31,7 +30,7 @@ Phosphorus::~Phosphorus()
 //--------------------------------------------------------------------------------------------------
 void Phosphorus::doRegistrations(void)
    {
-   float p_dead = 0.0;
+   double p_dead = 0.0;
    scienceAPI.expose("pfact_pheno",     "",     "Phosphorus stress factor for phenology",      false, phenoStress);
    scienceAPI.expose("pfact_expansion", "",     "Phosphorus stress factor for leaf expansion", false, expansionStress);
    scienceAPI.expose("pfact_photo",     "",     "Phosphorus stress factor for photosynthesis", false, photoStress);
@@ -43,17 +42,17 @@ void Phosphorus::doRegistrations(void)
    scienceAPI.expose("BiomassP",        "g/m2", "BiomassP",                                    false, pBiomass);
 
    scienceAPI.exposeFunction("GreenP", "g/m2", "P content of live plant parts",
-                     FloatFunction(&Phosphorus::getPGreen));
+      FloatFunction(&Phosphorus::getPGreen));
    scienceAPI.exposeFunction("SenescedP","g/m2", "P content of senesced plant parts",
-                     FloatFunction(&Phosphorus::getPSenesced));
+      FloatFunction(&Phosphorus::getPSenesced));
    scienceAPI.exposeFunction("p_demand", "kg/ha", "P demand of plant parts",
-                     FloatArrayFunction(&Phosphorus::getPDemand));
+      FloatArrayFunction(&Phosphorus::getPDemand));
    scienceAPI.exposeFunction("dlt_p_green", "g/m2", "Daily P increase in live plant parts",
-                     FloatArrayFunction(&Phosphorus::getDltPGreen));
+      FloatArrayFunction(&Phosphorus::getDltPGreen));
    scienceAPI.exposeFunction("dlt_p_retrans", "g/m2", "P retranslocated from plant parts to grain",
-                     FloatArrayFunction(&Phosphorus::getDltPRetrans));
+      FloatArrayFunction(&Phosphorus::getDltPRetrans));
    scienceAPI.exposeFunction("dlt_p_detached", "g/m2", "Actual P loss with detached plant",
-                     FloatArrayFunction(&Phosphorus::getDltPDetached));
+      FloatArrayFunction(&Phosphorus::getDltPDetached));
 
    }
 //------------------------------------------------------------------------------------------------
@@ -76,7 +75,7 @@ void Phosphorus::initialize(void)
    pUptakeTotal =  0.0;
    pGreenBiomass = 0.0;
 
-   currentLayer =  0.0;
+   currentLayer =  0;
 
    //Set up reporting vectors
    int nParts = plant->PlantParts.size();
@@ -88,14 +87,13 @@ void Phosphorus::initialize(void)
    dltPRetrans.assign (nParts,0.0);
    dltPDetached.assign(nParts,0.0);
    pDemand.assign     (nParts,0.0);
-
    }
 //------------------------------------------------------------------------------------------------
 //----------- read Phosphorus parameters
 //------------------------------------------------------------------------------------------------
 void Phosphorus::readParams (void)
    {
-   std::vector<float> values;
+   std::vector<double> values;
    if (scienceAPI.get("labile_p", "", 1, values, 0.0, 10000.0))
       {
       active = true;
@@ -106,7 +104,6 @@ void Phosphorus::readParams (void)
    scienceAPI.read("pfact_photo_slope"    ,"", 0, photoSlope);
    scienceAPI.read("pfact_expansion_slope","", 0, expansionSlope);
    scienceAPI.read("pfact_grain_slope"    ,"", 0, grainSlope);
-
    }
 //------------------------------------------------------------------------------------------------
 //-------- Get Phosphorus variables from other modules
@@ -132,7 +129,8 @@ void Phosphorus::prepare(void)
 //------------------------------------------------------------------------------------------------
 void Phosphorus::process(void)
    {
-//   supply();
+	if(!Active())return;
+   //   supply();
    uptake();
    partition();
    senescence();
@@ -143,7 +141,7 @@ void Phosphorus::process(void)
 //------------------------------------------------------------------------------------------------
 void Phosphorus::calcStress(void)
    {
-   float pfact = pStress();          // generic p stress factor
+   double pfact = pStress();          // generic p stress factor
 
    phenoStress = bound(pfact * phenoSlope,0.0,1.0);
    photoStress = bound(pfact * photoSlope,0.0,1.0);
@@ -151,24 +149,24 @@ void Phosphorus::calcStress(void)
    grainStress = bound(pfact * grainSlope,0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
-float Phosphorus::pStress(void)
+double Phosphorus::pStress(void)
    {
    // calculate a generic p stress factor by getting the max and min concentrations
    // and calculating where the actual concentration is
-   float wt = 0.0, max = 0.0, min = 0.0, act = 0.0;
-   float stress;
+   double wt = 0.0, max = 0.0, min = 0.0, act = 0.0;
+   double stress;
    for(unsigned i=0;i < StressParts.size();i++)
       {
-      float partWt = StressParts[i]->getDmGreen();
+      double partWt = StressParts[i]->getDmGreen();
       wt += partWt;
       max += StressParts[i]->pConcMax() * partWt;
       min += StressParts[i]->pConcMin() * partWt;
       act += StressParts[i]->getPGreen();
       }
 
-   float actConc = divide(act, wt, 1.0);
-   float maxConc = divide(max, wt, 1.0);
-   float minConc = divide(min, wt, 1.0);
+   double actConc = divide(act, wt, 1.0);
+   double maxConc = divide(max, wt, 1.0);
+   double minConc = divide(min, wt, 1.0);
 
    if ((wt < 1.0e-5) || (act < 1.0e-5)) stress = 1.0;
    else stress = divide(actConc - minConc, maxConc - minConc, 1.0);
@@ -223,7 +221,7 @@ void Phosphorus::demand(void)
 //     Get total P uptake
 void Phosphorus::uptake(void)
    {
-   vector<float> layeredUptake;
+   vector<double> layeredUptake;
 
    if (!scienceAPI.get("uptake_p_sorghum", "", 1, layeredUptake, 0.0f, 10000.0f))
       {
@@ -242,7 +240,7 @@ void Phosphorus::partition(void)
    for(unsigned i=0;i < plant->PlantParts.size();i++)
       {
       plant->PlantParts[i]->partitionP(pUptakeTotal * divide(plant->PlantParts[i]->getPDemand(),
-               totalDemand,0.0));
+         totalDemand,0.0));
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -276,21 +274,21 @@ void Phosphorus::retranslocate(void)
    {
    // dummy code to get this done - will change
    string plantParts = "ssssd";
-   vector<float> supply;
-   vector<float> demand;
+   vector<double> supply;
+   vector<double> demand;
 
    for( unsigned i=0;i < plantParts.size();i++)
       {
       if(plantParts[i] == 's')
          {
-         float minP = plant->PlantParts[i]->pConcMin() * plant->PlantParts[i]->getDmGreen();
+         double minP = plant->PlantParts[i]->pConcMin() * plant->PlantParts[i]->getDmGreen();
          supply.push_back(Max(plant->PlantParts[i]->getPGreen() - minP,0.0));
          demand.push_back(0.0);
          }
       else
          {
          supply.push_back(0.0);
-         float maxP = plant->PlantParts[i]->pConcMax() * plant->PlantParts[i]->getDmGreen();
+         double maxP = plant->PlantParts[i]->pConcMax() * plant->PlantParts[i]->getDmGreen();
          demand.push_back(Max(maxP - plant->PlantParts[i]->getPGreen(),0.0));
          }
       }
@@ -299,12 +297,12 @@ void Phosphorus::retranslocate(void)
    for(unsigned i=0;i < plant->PlantParts.size();i++)
       if(plantParts[i] == 's')
          {
-         float fraction = bound(divide(sumVector(demand),sumVector(supply),0.0),0.0,1.0);
+         double fraction = bound(divide(sumVector(demand),sumVector(supply),0.0),0.0,1.0);
          plant->PlantParts[i]->setPRetrans(-supply[i]*fraction);
          }
       else
          {
-         float fraction = bound(divide(sumVector(supply),sumVector(demand),0.0),0.0,1.0);
+         double fraction = bound(divide(sumVector(supply),sumVector(demand),0.0),0.0,1.0);
          plant->PlantParts[i]->setPRetrans(demand[i]*fraction);
          }
    }
@@ -312,77 +310,77 @@ void Phosphorus::retranslocate(void)
 //------------------------------------------------------------------------------------------------
 //------- Calculate plant Phosphorus detachment from senesced pool
 //------------------------------------------------------------------------------------------------
-void Phosphorus::detachment(vector<float> senDetachFrac)
+void Phosphorus::detachment(vector<double> senDetachFrac)
    {
    for(unsigned i = 0; i < plant->PlantParts.size(); i++)
       {
-//      plant->PlantParts[i]->NDetachment(senDetachFrac);
+      //      plant->PlantParts[i]->NDetachment(senDetachFrac);
       }
    }
 //------------------------------------------------------------------------------------------------
-float Phosphorus::layerProportion(void)
+double Phosphorus::layerProportion(void)
    {
    // calculates the proportion of the current root layer that is populated by roots
-   float layerTop    = sumVector(dLayer, currentLayer);
-   float layerBottom = sumVector(dLayer, currentLayer+1);
+   double layerTop    = sumVector(dLayer, currentLayer);
+   double layerBottom = sumVector(dLayer, currentLayer+1);
 
    return Min(divide(rootDepth - layerTop,layerBottom - layerTop),1.0);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getPGreen(float &result)
    {
-   result = sumVector(pGreen);
+   result = (float)sumVector(pGreen);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getPSenesced(float &result)
    {
-   result = sumVector(pSenesced);
+   result = (float)sumVector(pSenesced);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getPDemand(vector<float> &result)
    {
-   result = pDemand;
+   DVecToFVec(result, pDemand);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPGreen(vector<float> &result)
    {
-   result = dltPGreen;
+   DVecToFVec(result, dltPGreen);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPRetrans(vector<float> &result)
    {
-   result = dltPRetrans;
+   DVecToFVec(result, dltPRetrans);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPDetached(vector<float> &result)
    {
-   result = dltPDetached;
+   DVecToFVec(result, dltPDetached);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPDead(vector<float> &result)
    {
-   result= dltPDead;
+   DVecToFVec(result, dltPDead);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPDeadDetached(vector<float> &result)
    {
-   result = dltPDetachedDead;
+   DVecToFVec(result, dltPDetachedDead);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getPDead(float &result)
    {
-   result = sumVector(pDead);
+   result = (float)sumVector(pDead);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::Summary(void)
    {
    char msg[120];
    sprintf(msg, "Grain P percent    (%%)     =  %8.2f \t Grain P uptake     (kg/ha) = %8.2f\n",
-            plant->grain->getPConc() * 100,plant->grain->getPGreen() * 10.0); scienceAPI.write(msg);
+      plant->grain->getPConc() * 100,plant->grain->getPGreen() * 10.0); scienceAPI.write(msg);
    sprintf(msg, "Total P content    (kg/ha) =  %8.2f \t Senesced P content (kg/ha) = %8.2f\n",
-            pBiomass * 10.0,sumVector(pSenesced) * 10.0); scienceAPI.write(msg);
+      pBiomass * 10.0,sumVector(pSenesced) * 10.0); scienceAPI.write(msg);
    sprintf(msg, "Green P content    (kg/ha) =  %8.2f \n",
-            sumVector(pGreen) * 10.0 - plant->grain->getPGreen() * 10.0); scienceAPI.write(msg);
+      sumVector(pGreen) * 10.0 - plant->grain->getPGreen() * 10.0); scienceAPI.write(msg);
    }
 //------------------------------------------------------------------------------------------------
 //------- React to a newProfile message

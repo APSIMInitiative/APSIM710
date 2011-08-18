@@ -48,17 +48,22 @@ void Plant::onPrepare(void)
    {
    if (plantStatus == out)
       {
-      // reset variables
-      initialize();
-      for(unsigned i=0;i < PlantComponents.size();i++)
-         {
-         PlantComponents[i]->initialize ();
-         }
+		if(!initialized)
+			{
+			// reset variables
+			initialize();
+			for(unsigned i=0;i < PlantComponents.size();i++)
+				{
+				PlantComponents[i]->initialize ();
+				}
+			initialized = true;
+			}
       }
    else if (plantStatus == alive)
       {
       getOtherVariables ();       // sw etc..
       prepare ();                 // do crop preparation
+		initialized = false;
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -77,7 +82,7 @@ void Plant::onProcess(void)
 //------------------------------------------------------------------------------------------------
 void Plant::onTick(TimeType &tick)
    {
-   JulianToCalendar((float)tick.startday,today.day,today.month,today.year);
+   JulianToCalendar((double)tick.startday,today.day,today.month,today.year);
    today.doy = (int) (tick.startday - CalendarToJulian(1,1,today.year) + 1);
    }
 //------------------------------------------------------------------------------------------------
@@ -140,43 +145,43 @@ void Plant::onHarvest(void)     // Field a Harvest event
 
    sprintf(msg,"Average Stress Indices:                          Water Photo  Water Expan  N Photo\n"); scienceAPI.write(msg);
    sprintf(msg,"   Emergence           to End of juvenile           %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))),
-         Min(1.0,divide(water->sumExpanStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))));
+      Min(1.0,divide(water->sumPhotoStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))),
+      Min(1.0,divide(water->sumExpanStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(emergence,endJuv),phenology->sumDaysTotal(emergence,endJuv))));
    scienceAPI.write(msg);
    sprintf(msg,"   End of juvenile     to Floral initiation         %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))),
-         Min(1.0,divide(water->sumExpanStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))));
+      Min(1.0,divide(water->sumPhotoStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))),
+      Min(1.0,divide(water->sumExpanStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(endJuv,fi),phenology->sumDaysTotal(endJuv,fi))));
    scienceAPI.write(msg);
    sprintf(msg,"   Floral initiation   to Flag leaf                 %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))),
-         Min(1.0,divide(water->sumExpanStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))));
+      Min(1.0,divide(water->sumPhotoStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))),
+      Min(1.0,divide(water->sumExpanStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(fi,flag),phenology->sumDaysTotal(fi,flag))));
    scienceAPI.write(msg);
    sprintf(msg,"   Flag leaf           to Flowering                 %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))),
-         Min(1.0,divide(water->sumExpanStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))));
+      Min(1.0,divide(water->sumPhotoStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))),
+      Min(1.0,divide(water->sumExpanStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(flag,flowering),phenology->sumDaysTotal(flag,flowering))));
    scienceAPI.write(msg);
    sprintf(msg,"   Flowering           to Start grain fill          %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))),
-         Min(1.0,divide(water->sumExpanStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))));
+      Min(1.0,divide(water->sumPhotoStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))),
+      Min(1.0,divide(water->sumExpanStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(flowering,startGrainFill),phenology->sumDaysTotal(flowering,startGrainFill))));
    scienceAPI.write(msg);
    sprintf(msg,"   Start grain fill    to End grain fill            %3.1f          %3.1f        %3.1f\n",
-         Min(1.0,divide(water->sumPhotoStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))),
-         Min(1.0,divide(water->sumExpanStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))),
-         Min(1.0,divide(nitrogen->sumPhotoStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))));
+      Min(1.0,divide(water->sumPhotoStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))),
+      Min(1.0,divide(water->sumExpanStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))),
+      Min(1.0,divide(nitrogen->sumPhotoStressTotal(startGrainFill,endGrainFill),phenology->sumDaysTotal(startGrainFill,endGrainFill))));
    scienceAPI.write(msg);
 
    sprintf(msg,"\n"); scienceAPI.write(msg);
    sprintf(msg,"Crop harvested.\n"); scienceAPI.write(msg);
    sprintf(msg,"   Organic matter removed from system:-      From Tops\t\tFrom Roots\n"); scienceAPI.write(msg);
    sprintf(msg,"                    DM (kg/ha) =              %8.2f\t\t    0.00\n",
-                 grain->getDmGreen() * 10.0); scienceAPI.write(msg);
+      grain->getDmGreen() * 10.0); scienceAPI.write(msg);
    sprintf(msg,"                    N  (kg/ha) =              %8.2f\t\t    0.00\n",
-                 grain->getNGreen() * 10.0); scienceAPI.write(msg);
+      grain->getNGreen() * 10.0); scienceAPI.write(msg);
 
    scienceAPI.publish("harvesting");
 
@@ -190,7 +195,7 @@ void Plant::onHarvest(void)     // Field a Harvest event
 //------------------------------------------------------------------------------------------------
 void Plant::onEndRun(void)  // Field a end run event
    {
-  scienceAPI.write("End Run\n");
+   scienceAPI.write("End Run\n");
    }
 //------------------------------------------------------------------------------------------------
 //--------------------------  getOtherVariables   from other modules

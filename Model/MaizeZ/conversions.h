@@ -19,10 +19,10 @@
 
 // PRESSURE and related conversion
 #define g2mm   1.0e-3         // g water/m^2 to mm water
-                              // 1 g water 1,000 cubic mm and
-                              // 1 sq m 1,000,000 sq mm
+// 1 g water 1,000 cubic mm and
+// 1 sq m 1,000,000 sq mm
 #define mb2kpa 0.1            // pressure mbar to kpa
-                              // 1000 mbar 100 kpa
+// 1000 mbar 100 kpa
 
 // LENGTH conversion
 #define cm2mm 10.0            // cm to mm

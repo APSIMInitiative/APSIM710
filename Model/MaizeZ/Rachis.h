@@ -7,52 +7,46 @@
 #include "Utilities.h"
 
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
 
-class Rachis : public PlantPart
-   {
-   private:
+   class Rachis : public PlantPart
+      {
+      private:
 
-// Parameters ----------------------------------------------------------
+         // Parameters ----------------------------------------------------------
 
-   // nitrogen
-   float initialNConc;
-   float targetNConc;
-   float structRachisNConc;
-   float dilnNSlope;
-   float dilnNInt;
+         // nitrogen
+         double initialNConc;
+         double targetNConc;
+         double structRachisNConc;
+         double dilnNSlope;
+         double dilnNInt;
 
-//  Variables  ----------------------------------------------------------
+         // Private Methods -------------------------------------------------------
+         void  doRegistrations(void);
+         void  initialize(void);
 
+         // Public Methods -------------------------------------------------------
+      public:
+         Rachis(ScienceAPI2 &, Plant *p);
+         ~Rachis();
+         // plant
+         void  readParams (void);
+         void  updateVars(void);
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
+         // biomass
+         double partitionDM(double dltDM);
 
-// public Methods -------------------------------------------------------
-   public:
-   Rachis(ScienceAPI2 &, Plant *p);
-   ~Rachis();
-   // plant
-   void  readParams (void);
-   void  updateVars(void);
+         // nitrogen
+         double calcNDemand(void);
+         double calcStructNDemand(void);
+         double provideN(double requiredN);
 
-   // biomass
-   float partitionDM(float dltDM);
+         // phosphorus
+         double calcPDemand(void);
 
-   // nitrogen
-   float calcNDemand(void);
-   float calcStructNDemand(void);
-   float provideN(float requiredN);
-
-   // phosphorus
-   float calcPDemand(void);
-
-   // phenology
-   void  phenologyEvent(int);
-  };
-
-
-//---------------------------------------------------------------------------
-}
+         // phenology
+         void  phenologyEvent(int);
+      };
+   }
 #endif

@@ -28,7 +28,6 @@ Phenology::~Phenology()
 void Phenology::initialize(void)
    {
    dltTT = 0.0;
-   dltTTFM = 0.0;		// not  used in maize
    dltStage = 0.0;
 
    ttTotal.assign  (nStages,0.0);
@@ -42,8 +41,7 @@ void Phenology::initialize(void)
    floweringDOY = 0;
    maturityDAS  = 0;
    maturityDOY  = 0;
-	//photoPeriod = 0;
-
+   //photoPeriod = 0;
    }
 //------------------------------------------------------------------------------------------------
 //------ get the Phenology parameters
@@ -51,7 +49,7 @@ void Phenology::initialize(void)
 void Phenology::readParams (void)
    {
    // thermal time targets
-   float shootLag,shootRate;
+   double shootLag,shootRate;
    scienceAPI.read("shoot_lag", "", false, shootLag);
    scienceAPI.read("shoot_rate","", false, shootRate);
    ttTarget[germination] = shootLag + plant->getSowingDepth() * shootRate;
@@ -68,24 +66,23 @@ void Phenology::readParams (void)
 
 
    // photoperiod function
-   float photoperiod_crit1, photoperiod_crit2;
+   double photoperiod_crit1, photoperiod_crit2;
    scienceAPI.read("photoperiod_crit1", "", 0, photoperiod_crit1);
    scienceAPI.read("photoperiod_crit2", "", 0, photoperiod_crit2);
-   vector<float> xVec;
+   vector<double> xVec;
    xVec.push_back(photoperiod_crit1);
    xVec.push_back(photoperiod_crit2);
 
-   float slope;
+   double slope;
    scienceAPI.read("photoperiod_slope", "", 0, slope);
 
-   vector<float> yVec;
+   vector<double> yVec;
    yVec.push_back(ttEndJuvInit);
    yVec.push_back(ttEndJuvInit + (xVec[1]-xVec[0]) * slope);
    photoParams.load(xVec,yVec);
 
    // thermal time
    ttParams.read(  scienceAPI, "x_temp",   "y_tt");
-   ttFmParams.read(scienceAPI, "x_temp_fm","y_tt_fm");
 
    // germination
    scienceAPI.read("pesw_germ", "", 0, peswGerm);
@@ -106,7 +103,7 @@ void Phenology::readParams (void)
 //------------------------------------------------------------------------------------------------
 //------- update stage number and name
 //------------------------------------------------------------------------------------------------
-void Phenology::setStage(float stageNow)
+void Phenology::setStage(double stageNow)
    {
    stage = stageNow;
    stageName = stageNames[(int)stageNow];
@@ -124,18 +121,16 @@ void Phenology::doRegistrations(void)
    scienceAPI.expose("DeltaStage",   "",    "Change in stage number",      false, dltStage);
    scienceAPI.expose("FloweringDAS", "das", "Days to flowering",           false, floweringDAS);
    scienceAPI.expose("MaturityDAS",  "das", "Days to maturity",            false, maturityDAS);
-   scienceAPI.expose("DeltaTTfm",    "oCd",
-                  "Daily thermal time between flowering and maturity",     false, dltTTFM);
    scienceAPI.expose("StageTT",      "oCd",
-                  "The sum of growing degree days for the current stage",  false, ttCurrStage);
+      "The sum of growing degree days for the current stage",  false, ttCurrStage);
 
    scienceAPI.exposeFunction("TotalTT",  "oCd", "Growing degree days from sowing by stage",
-                    FloatArrayFunction(&Phenology::getTTTot));
+      FloatArrayFunction(&Phenology::getTTTot));
    scienceAPI.exposeFunction("PhaseTT", "oCd", "Cumulative growing degree days required for each stage",
-                    FloatArrayFunction(&Phenology::getPhaseTT));
+      FloatArrayFunction(&Phenology::getPhaseTT));
 
    scienceAPI.expose("PhotoPeriod",        "hrs",    "PhotoPeriod", false, photoPeriod);
-	
+
    }
 //------------------------------------------------------------------------------------------------
 //--------  Do the daily phenology development  - called from plant->process
@@ -143,7 +138,7 @@ void Phenology::doRegistrations(void)
 //------------------------------------------------------------------------------------------------
 void Phenology::development(void)
    {
-   float previousStage = stage;
+   double previousStage = stage;
    // update thermal time targets between germination and end Juvenile
    if(stage >= germination && stage <= endJuv)
       {
@@ -163,7 +158,6 @@ void Phenology::development(void)
 
    // accumulate thermal times
    accumulate (dltTT, ttTotal, previousStage, dltStage);
-   accumulate (dltTTFM, ttTotalFM, previousStage, dltStage);
    accumulate (1.0, daysTotal, previousStage, dltStage);
    stageName = stageNames[(int)stage];
 
@@ -179,14 +173,14 @@ void Phenology::development(void)
 
       for(unsigned i=0;i < plant->PlantParts.size();i++)
          {
-         plant->PlantParts[i]->phenologyEvent(stage);
+         plant->PlantParts[i]->phenologyEvent((int)stage);
          }
       for(unsigned i=0;i < plant->PlantProcesses.size();i++)
          {
-         plant->PlantProcesses[i]->phenologyEvent(stage);
+         plant->PlantProcesses[i]->phenologyEvent((int)stage);
          }
 
-      plant->phenologyEvent(stage);
+      plant->phenologyEvent((int)stage);
 
       //update report vars
       if((int)stage == flowering)
@@ -204,25 +198,25 @@ void Phenology::development(void)
 //------------------------------------------------------------------------------------------------
 void Phenology::updateVars(void)
    {
-   stageCode = float(int(stage));
+   stageCode = int(stage);
    }
 //------------------------------------------------------------------------------------------------
-float Phenology::sumTTtarget(int from, int to)
+double Phenology::sumTTtarget(int from, int to)
    {
    return sumVector(ttTarget,from,to);
    }
 //------------------------------------------------------------------------------------------------
-float Phenology::sumTTtotal(int from, int to)
+double Phenology::sumTTtotal(int from, int to)
    {
    return sumVector(ttTotal,from,to);
    }
 //------------------------------------------------------------------------------------------------
-float Phenology::sumTTtotalFM(int from, int to)
+double Phenology::sumTTtotalFM(int from, int to)
    {
    return sumVector(ttTotalFM,from,to);
    }
 //------------------------------------------------------------------------------------------------
-float Phenology::sumDaysTotal(int from, int to)
+double Phenology::sumDaysTotal(int from, int to)
    {
    return sumVector(daysTotal,from,to);
    }
@@ -231,10 +225,10 @@ void Phenology::checkTargets(void)
    {
    if(stage >= emergence && stage <= endJuv)
       {
-      photoPeriod = plant->today.getPhotoPeriod(latitude,twilight);
+      double photoPeriod = plant->today.getPhotoPeriod(latitude,twilight);
       ttTarget[endJuv] = photoParams.value(photoPeriod);
 
-      float ttEmergFlag = plant->leaf->calcEmergFlagTT();
+      double ttEmergFlag = plant->leaf->calcEmergFlagTT();
       ttTarget[fi] = ttEmergFlag - ttTarget[emergence] - ttTarget[endJuv];
       }
    }
@@ -244,7 +238,6 @@ void Phenology::checkTargets(void)
 void Phenology::calcThermalTimes(Today *today)
    {
    dltTT = calcDailyTT(today);
-   dltTTFM = calcDailyTTFM(today);
    }
 //-----------------------------------------------------------------------------------------------
 //   Growing degree day (thermal time) is calculated.
@@ -253,42 +246,35 @@ void Phenology::calcThermalTimes(Today *today)
 //   The eight three-hour estimates are then averaged to obtain the daily value of growing degree days.
 //
 //-----------------------------------------------------------------------------------------------
-float Phenology::calcDailyTT(Today *today)
+double Phenology::calcDailyTT(Today *today)
    {
-   float tot = 0.0;
+   double tot = 0.0;
    for(int period = 1; period <= 8; period++)
       {
       // get a three-hour air temperature
-      float tMean3Hour = temp3Hr (today->maxT,today->minT, period);
+      double tMean3Hour = temp3Hr (today->maxT,today->minT, period);
       tot += ttParams.value(tMean3Hour);
       }
    return (tot / 8.0);
    }
 //-----------------------------------------------------------------------------------------------
-float Phenology::calcDailyTTFM(Today *today)
-   {
-   // uses average temperature			// not used in maize - 0'd for checking
-   // return ttFmParams.value(today->avgT);
-		return 0.0;
-   }
-//-----------------------------------------------------------------------------------------------
 //      a 3 hourly estimate of air temperature
 //-----------------------------------------------------------------------------------------------
-float Phenology::temp3Hr (float tMax, float tMin, float period)
+double Phenology::temp3Hr (double tMax, double tMin, double period)
    {
-   float tRangeFract = 0.92105 + 0.1140 * period - 0.0703 * pow(period,2) +
-                                                         0.0053 * pow(period,3);
-   float diurnalRange = tMax - tMin;
-   float deviation = tRangeFract * diurnalRange;
+   double tRangeFract = 0.92105 + 0.1140 * period - 0.0703 * pow(period,2) +
+      0.0053 * pow(period,3);
+   double diurnalRange = tMax - tMin;
+   double deviation = tRangeFract * diurnalRange;
    return  (tMin + deviation);
 
    }
 //-----------------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------------
-float Phenology::calcStressesTT(void)
+double Phenology::calcStressesTT(void)
    {
-   float Stress = 0.0;
+   double Stress = 0.0;
    if(stage >= sowing && stage < flowering)
       {
       if(stage < endJuv)
@@ -313,11 +299,6 @@ void Phenology::calcPhaseDevelopment(void)
       {
       dltPhase = germinationPhase ();
       }
-   // if the stage is < flowering, use ttTotal else use ttTotalFM             NOT used in maize
-   /*else if(stage >= flowering && stage < maturity)
-      {
-      dltPhase = phaseFraction(stage, ttTotalFM, dltTTFM, ttTarget);
-      }*/
    else
       {
       dltPhase = phaseFraction(stage, ttTotal, dltTT, ttTarget);
@@ -326,9 +307,9 @@ void Phenology::calcPhaseDevelopment(void)
 //-----------------------------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------------------------
-float Phenology::germinationPhase (void)
+double Phenology::germinationPhase (void)
    {
-   float peswSeed = plant->water->calcPeswSeed();
+   double peswSeed = plant->water->calcPeswSeed();
    if (peswSeed < peswGerm)
       {
       return 0.0;
@@ -337,17 +318,17 @@ float Phenology::germinationPhase (void)
       {
       return 0.999;
       }
-   return 1.0 + fmod (stage, 1.0F);      /* TODO : what is this returning? */
+   return 1.0 + fmod(stage, 1.0);      /* TODO : what is this returning? */
    }
 
 //-----------------------------------------------------------------------------------------------
 // Return fraction of thermal time we are through the current phenological phase (0-1)
 //-----------------------------------------------------------------------------------------------
-float Phenology::phaseFraction(float stage, vector<float> ttTotal,float dltTT,vector<float> stageTT)
+double Phenology::phaseFraction(double stage, vector<double> ttTotal,double dltTT,vector<double> stageTT)
    {
    int phase = int (stage);
 
-   float phaseTT = divide (ttTotal[phase] + dltTT, stageTT[phase], 1.0);
+   double phaseTT = divide (ttTotal[phase] + dltTT, stageTT[phase], 1.0);
    //return phaseTT;
    return bound (phaseTT, 0.0, 1.999999);
    }
@@ -356,33 +337,33 @@ float Phenology::phaseFraction(float stage, vector<float> ttTotal,float dltTT,ve
 //-----------------------------------------------------------------------------------------------
 void Phenology::calcDevelopment(void)
    {
-   float newStage = floor(stage) + dltPhase;
+   double newStage = floor(stage) + dltPhase;
    dltStage = newStage - stage;
 
    if (dltPhase >= 1.0) stage = floor((stage) + 1.0);
    else stage = newStage;
 
-   stage = Min(stage,(float)harvest);
+   stage = Min(stage,(double)harvest);
    }
 //------------------------------------------------------------------------------------------------
 void Phenology::getTTTot(vector<float> &result)
    {
-   result = ttTotal;
+   DVecToFVec(result, ttTotal);
    }
 //------------------------------------------------------------------------------------------------
 void Phenology::getPhaseTT(vector<float> &result)
    {
-   result = ttTarget;
+   DVecToFVec(result, ttTarget);
    }
 //------------------------------------------------------------------------------------------------
 void Phenology::Summary(void)
    {
    char msg[120];
    sprintf(msg,"Flowering (DAS)       = %.0d \t\t Maturity (DAS)          = %.0d\n",
-                               floweringDAS, maturityDAS);
+      floweringDAS, maturityDAS);
    scienceAPI.write(msg);
    sprintf(msg,"Flowering day         = %.0d \t\t Maturity day            = %.0d\n",
-                              floweringDOY, maturityDOY);
+      floweringDOY, maturityDOY);
    scienceAPI.write(msg);
    }
 //------------------------------------------------------------------------------------------------

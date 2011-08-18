@@ -73,73 +73,70 @@ void Rachis::phenologyEvent(int iStage)
    {
    switch (iStage)
       {
-      case emergence :
-         dmGreen = 0.0;
-         nGreen = initialNConc * dmGreen;
-         pGreen = initialPConc * dmGreen;
-         break;
+   case emergence :
+      dmGreen = 0.0;
+      nGreen = initialNConc * dmGreen;
+      pGreen = initialPConc * dmGreen;
+      break;
       }
    }
 //------------------------------------------------------------------------------------------------
 //------- nitrogen
 //------------------------------------------------------------------------------------------------
-float Rachis::calcNDemand(void)
+double Rachis::calcNDemand(void)
    {
    nDemand = 0.0;
    if(stage >= startGrainFill)return nDemand;
 
    // RACHIS N demand (g/m2) to keep rachis [N] at targetRachisNConc
-   float nRequired = (dmGreen + dltDmGreen) * targetNConc;
+   double nRequired = (dmGreen + dltDmGreen) * targetNConc;
    nDemand = Max(nRequired - nGreen,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Rachis::calcStructNDemand(void)
+double Rachis::calcStructNDemand(void)
    {
    // calculate N required to maintain structural [N]
-   float structNDemand = 0.0;
+   double structNDemand = 0.0;
    if(stage >= startGrainFill)return structNDemand;
 
    // RACHIS demand to keep rachis [N] at levels of structRachisNConc
-   float nRequired = (dmGreen + dltDmGreen) * structRachisNConc;
+   double nRequired = (dmGreen + dltDmGreen) * structRachisNConc;
    structNDemand = Max(nRequired - nGreen,0.0);
    return structNDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Rachis::provideN(float requiredN)
+double Rachis::provideN(double requiredN)
    {
    // calculate the N available for translocation to other plant parts
    // N could be required for structural Stem/Rachis N, new leaf N or grain N
    // Rachis N is available at a rate which is a function of rachis [N]
    // dltRachisNconc per day (17dd) = 0.076*rachisNconcPct - 0.0199
-
-   
-   float rachisNConcPct = divide((nGreen + dltNGreen),(dmGreen + dltDmGreen)) * 100;
+   double rachisNConcPct = divide((nGreen + dltNGreen),(dmGreen + dltDmGreen)) * 100;
    if(rachisNConcPct < structRachisNConc * 100)return 0;
-   float NConcPctAvailable = (dilnNSlope * rachisNConcPct + dilnNInt)
-                           * plant->phenology->getDltTT();
-   float availableN = NConcPctAvailable / 100 * (dmGreen + dltDmGreen);
+   double NConcPctAvailable = (dilnNSlope * rachisNConcPct + dilnNInt)
+      * plant->phenology->getDltTT();
+   double availableN = NConcPctAvailable / 100 * (dmGreen + dltDmGreen);
    availableN = Max(availableN,0.0);
-   
-   float nProvided = Min(availableN,requiredN);
+
+   double nProvided = Min(availableN,requiredN);
    dltNRetranslocate -= nProvided;
    return nProvided;
    }
 //------------------------------------------------------------------------------------------------
-float Rachis::partitionDM(float dltDM)
+double Rachis::partitionDM(double dltDM)
    {
    dltDmGreen = dltDM;
    return dltDmGreen;
    }
 //------------------------------------------------------------------------------------------------
-float Rachis::calcPDemand(void)
+double Rachis::calcPDemand(void)
    {
    // Leaf P demand
+   double rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
+      plant->biomass->getAboveGroundBiomass(),0.0);
 
-   float rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
-         plant->biomass->getAboveGroundBiomass(),0.0);
-
-   float deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
+   double deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
 
    pDemand = Max(deficit,0.0);
    return pDemand;

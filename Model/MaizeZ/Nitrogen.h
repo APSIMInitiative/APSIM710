@@ -7,123 +7,120 @@
 #include "Utilities.h"
 
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
 
-class Nitrogen : public PlantProcess
-   {
-   private:
+   class Nitrogen : public PlantProcess
+      {
+      private:
 
-// Parameters ----------------------------------------------------------
+         // Parameters ----------------------------------------------------------
 
-   float diffnConstant;
-   int   nLayers;
-   vector<float> dLayer;
+         double diffnConstant;
+         int   nLayers;
+         vector<double> dLayer;
 
-//  Variables  ---------------------------------------------------------
-   float profileDepth;
+         //  Variables  ---------------------------------------------------------
+         double profileDepth;
 
-   // stress
-   float phenoStress;
-   float expansionStress;
-   float photoStress;
-   vector<float> photoStressTotal;
+         // stress
+         double phenoStress;
+         double expansionStress;
+         double photoStress;
+         vector<double> photoStressTotal;
 
-   float nBiomass;
-   float nStover;
-   float nGreenBiomass;
-   float nUptakeTotal;
-   float nPlant;
+         double nBiomass;
+         double nStover;
+         double nGreenBiomass;
+         double nUptakeTotal;
+         double nPlant;
 
-   // uptake
-   float maxUptakeRate;
-   float nUptakeCease;        // tt after flowering when uptake ceases
-   float nSupplyFrac;
+         // uptake
+         double maxUptakeRate;
+         double nUptakeCease;        // tt after flowering when uptake ceases
+         double nSupplyFrac;
 
-   // supply
-   vector<float> massFlowSupply;
-   vector<float> diffusionSupply;
-   vector<float> fixationSupply;
+         // supply
+         vector<double> massFlowSupply;
+         vector<double> diffusionSupply;
+         vector<double> fixationSupply;
 
-   vector<float> nGreen;
-   vector<float> dltNGreen;
-   vector<float> dltNRetrans;
-   vector<float> nSenesced;
-   vector<float> dltNDetached;
+         vector<double> nGreen;
+         vector<double> dltNGreen;
+         vector<double> dltNRetrans;
+         vector<double> nSenesced;
+         vector<double> dltNDetached;
 
-   float sumDiffSupply;            // debug
+         double sumDiffSupply;            // debug
+
+         double actualMassFlow;
+         double actualDiffusion;
+         double actualTotal;
+         double plantNDemand;    // plant demand - grain demand
+
+         // demand
+         double totalDemand;
+         double supplyDemandRatio;
+         double nSupply;
+
+         vector<double> no3;
+         vector<double> no3Min;
+         vector<double> dltNo3;
+
+         int   currentLayer;                   // number of the layer that the roots are in now (starts at 0)
+         double rootDepth;
 
 
-   float actualMassFlow;
-   float actualDiffusion;
-   float actualTotal;
-   float plantNDemand;    // plant demand - grain demand
+         // Private Methods -------------------------------------------------------
+         void  doRegistrations(void);
+         void  initialize(void);
+         void  calcMassFlow(void);
+         void  calcDiffusion(void);
+         void  calcFixation(void);
 
-   // demand
-   float totalDemand;
-   float supplyDemandRatio;
-   float nSupply;
+         void  setOtherVariables (void);
+         double layerProportion(void);
 
-   vector<float> no3;
-   vector<float> no3Min;
-   vector<float> dltNo3;
+         void  getOtherVariables (void);
+         // plant
+         void  supply(void);
+         void  demand(void);
+         void  uptake(void);
+         void  partition(void);
 
-   int   currentLayer;                   // number of the layer that the roots are in now (starts at 0)
-   float rootDepth;
+         // public Methods -------------------------------------------------------
+      public:
+         Nitrogen(ScienceAPI2 &, Plant *p);
+         ~Nitrogen();
 
+         // plant
+         void  readParams (void);
+         void  updateVars(void);
+         void  process(void);
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
-   void  calcMassFlow(void);
-   void  calcDiffusion(void);
-   void  calcFixation(void);
+         void  onNewProfile(NewProfileType &);
 
-   void  setOtherVariables (void);
-   float layerProportion(void);
+         // Leaf
+         double getExpansionStress(void){return expansionStress;}
+         double getPhotoStress(void){return photoStress;}
 
-   void  getOtherVariables (void);
-   // plant
-   void  supply(void);
-   void  demand(void);
-   void  uptake(void);
-   void  partition(void);
+         double sumPhotoStressTotal(int from, int to);
 
-// public Methods -------------------------------------------------------
-   public:
-   Nitrogen(ScienceAPI2 &, Plant *p);
-   ~Nitrogen();
+         // phenology
+         double getPhenoStress(void){return phenoStress;}
+         void  detachment(vector<double> senDetachFrac);
 
-   // plant
-   void  readParams (void);
-   void  updateVars(void);
-   void  process(void);
+         void  getNGreen(float &);
+         void  getDltNGreen(vector<float> &);
+         void  getDltNRetrans(vector<float> &);
+         void  getNSenesced(float &);
 
-   void  onNewProfile(NewProfileType &);
+         double getNStover(void){return nStover;}
+         void  Summary(void);
 
-   // Leaf
-   float getExpansionStress(void){return expansionStress;}
-   float getPhotoStress(void){return photoStress;}
+         // phenology
+         void  phenologyEvent(int);
+         void Update(void){updateVars();};
 
-   float sumPhotoStressTotal(int from, int to);
-
-   // phenology
-   float getPhenoStress(void){return phenoStress;}
-   void  detachment(vector<float> senDetachFrac);
-
-   void  getNGreen(float &);
-   void  getDltNGreen(vector<float> &);
-   void  getDltNRetrans(vector<float> &);
-   void  getNSenesced(float &);
-
-   float getNStover(void){return nStover;}
-   void  Summary(void);
-
-   // phenology
-   void  phenologyEvent(int);
-   void Update(void){updateVars();};
-
-   };  // Nitrogen
-
-//------------------------------------------------------------------------------------------------
-}
+      };  // Nitrogen
+   }
 #endif

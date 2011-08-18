@@ -7,131 +7,123 @@
 #include "Utilities.h"
 
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
+   class Phosphorus : public PlantProcess
+      {
+      private:
+         // Active - has the SoilP module been included?
+         bool active;
 
-class Phosphorus : public PlantProcess
-   {
-   private:
-   // Active - has the SoilP module been included?
-   bool active;
+         double stage;
+         vector<PlantPart *> StressParts;
 
-   float stage;
-   vector<PlantPart *> StressParts;
+         // Parameters ----------------------------------------------------------
 
+         //   double diffnConstant;
+         int nLayers;
+         vector<double> dLayer;
 
-// Parameters ----------------------------------------------------------
+         double phenoSlope;
+         double photoSlope;
+         double expansionSlope;
+         double grainSlope;
 
-//   float diffnConstant;
-   int nLayers;
-   vector<float> dLayer;
+         //  Variables  ---------------------------------------------------------
+         double profileDepth;
 
-   float phenoSlope;
-   float photoSlope;
-   float expansionSlope;
-   float grainSlope;
+         double phenoStress;
+         double expansionStress;
+         double photoStress;
+         double grainStress;
 
-   //  Variables  ---------------------------------------------------------
-   float profileDepth;
+         double pBiomass;
+         double pStover;
+         double pGreenBiomass;
+         double pUptakeTotal;
+         double pPlant;
 
-   float phenoStress;
-   float expansionStress;
-   float photoStress;
-   float grainStress;
+         // supply
 
-   float pBiomass;
-   float pStover;
-   float pGreenBiomass;
-   float pUptakeTotal;
-   float pPlant;
+         vector<double> pGreen;
+         vector<double> dltPGreen;
+         vector<double> dltPRetrans;
+         vector<double> pSenesced;
+         vector<double> pDead;
+         vector<double> dltPDead;
+         vector<double> dltPDetached;
+         vector<double> dltPDetachedDead;
+         vector<double> pDemand;
 
-   // supply
+         double plantPDemand;    // plant demand - grain demand
 
-   vector<float> pGreen;
-   vector<float> dltPGreen;
-   vector<float> dltPRetrans;
-   vector<float> pSenesced;
-   vector<float> pDead;
-   vector<float> dltPDead;
-   vector<float> dltPDetached;
-   vector<float> dltPDetachedDead;
-   vector<float> pDemand;
+         // demand
+         double totalDemand;
+         double supplyDemandRatio;
+         double pSupply;
 
-   float plantPDemand;    // plant demand - grain demand
+         int currentLayer;                   // number of the layer that the roots are in now (starts at 0)
+         double rootDepth;
 
-   // demand
-   float totalDemand;
-   float supplyDemandRatio;
-   float pSupply;
+         // Private Methods -------------------------------------------------------
+         void  doRegistrations(void);
+         void  initialize(void);
 
+         void  setOtherVariables (void);
+         double layerProportion(void);
 
-   int currentLayer;                   // number of the layer that the roots are in now (starts at 0)
-   float rootDepth;
+         void  calcStress(void);
+         double pStress(void);
 
+         // plant
+         void  getOtherVariables (void);
+         void  supply(void);
+         void  demand(void);
+         void  uptake(void);
+         void  partition(void);
+         void  senescence(void);
+         void  detachment(void);
+         void  updateP(void);
+         void  retranslocate(void);
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
+         // public Methods -------------------------------------------------------
+      public:
+         Phosphorus(ScienceAPI2 &, Plant *p);
+         ~Phosphorus();
 
-   void  setOtherVariables (void);
-   float layerProportion(void);
+         // plant
+         void  readParams (void);
+         void  updateVars(void);
 
-   void  calcStress(void);
-   float pStress(void);
+         void  prepare(void);
+         void  process(void);
+         void  onNewProfile(NewProfileType &p);
 
+         // Leaf
+         double getExpansionStress(void){return expansionStress;}
+         double getPhotoStress(void){return photoStress;}
 
-   // plant
-   void  getOtherVariables (void);
-   void  supply(void);
-   void  demand(void);
-   void  uptake(void);
-   void  partition(void);
-   void  senescence(void);
-   void  detachment(void);
-   void  updateP(void);
-   void  retranslocate(void);
+         // phenology
+         double getPhenoStress(void){return phenoStress;}
+         void  detachment(vector<double> senDetachFrac);
 
-// public Methods -------------------------------------------------------
-   public:
-   Phosphorus(ScienceAPI2 &, Plant *p);
-   ~Phosphorus();
+         void  getPGreen(float &);
+         void  getDltPGreen(vector<float> &);
+         void  getDltPRetrans(vector<float> &);
+         void  getPSenesced(float &);
+         void  getPDead(float &);
+         void  getDltPDetached(vector<float> &);
+         void  getDltPDead(vector<float> &);
+         void  getDltPDeadDetached(vector<float> &);
+         void  getPDemand(vector<float> &);
 
-    // plant
-   void  readParams (void);
-   void  updateVars(void);
+         bool  Active(void){return active;}
+         void  Summary(void);
+         double getPStover(void){return pStover;}
 
-
-   void  prepare(void);
-   void  process(void);
-   void  onNewProfile(NewProfileType &p);
-
-   // Leaf
-   float getExpansionStress(void){return expansionStress;}
-   float getPhotoStress(void){return photoStress;}
-
-   // phenology
-   float getPhenoStress(void){return phenoStress;}
-   void  detachment(vector<float> senDetachFrac);
-
-   void  getPGreen(float &);
-   void  getDltPGreen(vector<float> &);
-   void  getDltPRetrans(vector<float> &);
-   void  getPSenesced(float &);
-   void  getPDead(float &);
-   void  getDltPDetached(vector<float> &);
-   void  getDltPDead(vector<float> &);
-   void  getDltPDeadDetached(vector<float> &);
-   void  getPDemand(vector<float> &);
-
-   bool  Active(void){return active;}
-   void  Summary(void);
-   float getPStover(void){return pStover;}
-
-   // phenology
-   void  phenologyEvent(int){};
-   void Update(void){updateVars();};
-   };  // Phosphorus
-
-//------------------------------------------------------------------------------------------------
-}
+         // phenology
+         void  phenologyEvent(int){};
+         void Update(void){updateVars();};
+      };  // Phosphorus
+   }
 #endif
 

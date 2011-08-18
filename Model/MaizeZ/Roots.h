@@ -6,104 +6,100 @@
 #include "Utilities.h"
 namespace Maize {
 
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
 
-class Roots : public PlantPart
-   {
-   private:
+   class Roots : public PlantPart
+      {
+      private:
 
-// Parameters ----------------------------------------------------------
+         // Parameters ----------------------------------------------------------
 
-   float initialRootDepth;
-   float initialDM;
+         double initialRootDepth;
+         double initialDM;
 
-   vector<float> dLayer;
-   vector<float> xf;
-   float profileDepth;
-   int    nLayers;
+         vector<double> dLayer;
+         vector<double> xf;
+         double profileDepth;
+         int    nLayers;
 
-   TableFn swRoot;
-   TableFn rldFn;
+         TableFn swRoot;
+         TableFn rldFn;
 
-   vector<float> rootDepthRate;    // mm/day for each stage
-   float specificRootLength;
+         vector<double> rootDepthRate;    // mm/day for each stage
+         double specificRootLength;
 
-   // senescence
-   float dmRootSenFrac;
+         // senescence
+         double dmRootSenFrac;
 
-   // nitrogen
-   float initialNConc;
-   float targetNConc;
+         // nitrogen
+         double initialNConc;
+         double targetNConc;
 
+         //  Variables  -----------------------------------------------------
+         double rootDepth;
+         double rootFront;
+         double leftDist;                 // left distance of 2d soil square
+         double rightDist;                // right distance of 2d soil square
+         double dltRootDepth;             // daily increment
+         double dltRootFront;             // daily increment
+         int   currentLayer;              // number of the layer that the roots are in now (starts at 0)
+         double lastLayerPropn;           // proportion of the currentLayer occupied
 
-//  Variables  -----------------------------------------------------
-   float rootDepth;
-   float rootFront;
-   float leftDist;                 // left distance of 2d soil square
-   float rightDist;                // right distance of 2d soil square
-   float dltRootDepth;             // daily increment
-   float dltRootFront;             // daily increment
-   int   currentLayer;             // number of the layer that the roots are in now (starts at 0)
-   float lastLayerPropn;           // proportion of the currentLayer occupied
+         // length
+         vector<double> rootLength;
+         vector<double> dltRootLength;
+         vector<double> dltScenescedRootLength;
+         vector<double> rlvFactor;
 
-   // length
-   vector<float> rootLength;
-   vector<float> dltRootLength;
-   vector<float> dltScenescedRootLength;
-   vector<float> rlvFactor;
+         // Private Methods -------------------------------------------------------
+         void  doRegistrations(void);
+         void  doLayerRegistrations(void);
+         void  initialize(void);
+         void  calcInitialLength(void);
+         double calcDltRootDepth(double stage);
+         double calcDltRootFront(double stage);
+         double swAvailFactor(int layer);
+         double layerProportion(void);
+         double getRootArea(double top, double bottom, double rootLength, double dist);
 
+         double totalBiomass(void)const{return dmGreen + dmSenesced;}
+         double totalN(void)const{return nGreen + nSenesced;}
+         double totalP(void)const{return pGreen + pSenesced;}
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  doLayerRegistrations(void);
-   void  initialize(void);
-   void  calcInitialLength(void);
-   float calcDltRootDepth(float stage);
-   float calcDltRootFront(float stage);
-   float swAvailFactor(int layer);
-   float layerProportion(void);
-   float getRootArea(float top, float bottom, float rootLength, float dist);
+         void   calcSenLength(void);
+         void   calcRootDistribution(void);
 
-   float totalBiomass(void)const{return dmGreen + dmSenesced;}
-   float totalN(void)const{return nGreen + nSenesced;}
-   float totalP(void)const{return pGreen + pSenesced;}
+         // public Methods -------------------------------------------------------
+      public:
+         // plant
+         Roots(ScienceAPI2 &, Plant *p);
+         ~Roots();
 
+         void  readParams (void);
+         void  updateVars(void);
+         void  process(void);
+         void  onNewProfile(NewProfileType &);
 
-// public Methods -------------------------------------------------------
-   public:
-   // plant
-   void   calcSenLength(void);
-   void   calcRootDistribution(void);
-   Roots(ScienceAPI2 &, Plant *p);
-   ~Roots();
+         // biomass
+         void  calcSenescence(void);
+         void  partitionDM(double dltDM);
 
-   void  readParams (void);
-   void  updateVars(void);
-   void  process(void);
-   void  onNewProfile(NewProfileType &);
+         double getRootDepth(void)const{return rootDepth;}
+         double getRootFront(void)const{return rootFront;}
+         double RootProportionInLayer(int layer);
 
-   // biomass
-   void  calcSenescence(void);
-   void  partitionDM(float dltDM);
+         double calcNDemand(void);
+         double calcPDemand(void);
 
-   float getRootDepth(void)const{return rootDepth;}
-   float getRootFront(void)const{return rootFront;}
-   float RootProportionInLayer(int layer);
+         void incorporateResidue(void);
 
-   float calcNDemand(void);
-   float calcPDemand(void);
+         //Registration functions
+         void getRP(vector<float>&);
+         void getRootLength(vector<float>&);
+         void getRLV(vector<float>&);
 
-   void incorporateResidue(void);
-
-   //Registration functions
-   void getRP(vector<float>&);
-   void getRootLength(vector<float>&);
-   void getRLV(vector<float>&);
-
-   // phenology
-   void phenologyEvent(int);
-   };  // Roots
-
-//------------------------------------------------------------------------------------------------
-}
+         // phenology
+         void phenologyEvent(int);
+      };  // Roots
+   }
 #endif

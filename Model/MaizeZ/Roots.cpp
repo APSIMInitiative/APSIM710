@@ -39,7 +39,7 @@ void Roots::doRegistrations(void)
    scienceAPI.expose("RootSenescedN" ,"g/m^2" ,"Senesced root dry weight",    false, nSenesced);
    scienceAPI.expose("RootNDemand"   ,"g/m^2" ,"Today's N demand from roots", false, nDemand);
    scienceAPI.exposeFunction("RootProportion", "0-1", "Root proportion in layers",
-                    FloatArrayFunction(&Roots::getRP));
+      FloatArrayFunction(&Roots::getRP));
    scienceAPI.expose("RootGreenP"    ,"g/m^2" ,"P in live root",              false, pGreen);
    }
 //------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ void Roots::doRegistrations(void)
 //------------------------------------------------------------------------------------------------
 void Roots::onNewProfile(NewProfileType &v /* message */)
    {
-   dLayer = v.dlayer;
+   FVecToDVec(&dLayer, v.dlayer);
 
    // dlayer may be changed from its last setting due to erosion
    profileDepth = sumVector(dLayer);      // depth of soil profile (mm)
@@ -119,26 +119,26 @@ void Roots::phenologyEvent(int stage)
    {
    switch (stage)
       {
-      case germination :
-         calcInitialLength();
-         leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
-         rightDist = plant->getRowSpacing() * 0.5;
+   case germination :
+      calcInitialLength();
+      leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
+      rightDist = plant->getRowSpacing() * 0.5;
 
-         break;
-      case emergence :
-         dmGreen = initialDM * plant->getPlantDensity();
-         nGreen = initialNConc * dmGreen;
-         pGreen = initialPConc * dmGreen;
-         ExternalMassFlowType EMF;
-         EMF.PoolClass = "crop";
-         EMF.FlowType = "gain";
-         EMF.DM = 0.0;
-         EMF.N  = nGreen * gm2kg/sm2ha;
-         EMF.P  = pGreen * gm2kg/sm2ha;
-         EMF.C = 0.0; // ?????
-         EMF.SW = 0.0;
-         scienceAPI.publish("ExternalMassFlow", EMF);
-         break;
+      break;
+   case emergence :
+      dmGreen = initialDM * plant->getPlantDensity();
+      nGreen = initialNConc * dmGreen;
+      pGreen = initialPConc * dmGreen;
+      ExternalMassFlowType EMF;
+      EMF.PoolClass = "crop";
+      EMF.FlowType = "gain";
+      EMF.DM = 0.0;
+      EMF.N  = (float)(nGreen * gm2kg/sm2ha);
+      EMF.P  = (float)(pGreen * gm2kg/sm2ha);
+      EMF.C = 0.0; // ?????
+      EMF.SW = 0.0;
+      scienceAPI.publish("ExternalMassFlow", EMF);
+      break;
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -166,38 +166,38 @@ void Roots::updateVars(void)
 //------------------------------------------------------------------------------------------------
 //-------
 //------------------------------------------------------------------------------------------------
-float Roots::calcNDemand(void)
+double Roots::calcNDemand(void)
    {
    // ROOT demand to keep root [N] at targetRootNConc
-   float nRequired = (dmGreen + dltDmGreen) * targetNConc;   // g/m2
+   double nRequired = (dmGreen + dltDmGreen) * targetNConc;   // g/m2
    nDemand = Max(nRequired - nGreen,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
-float Roots::layerProportion(void)
+double Roots::layerProportion(void)
    {
    // calculates the proportion of the current root layer that is populated by roots
-   float layerTop    = sumVector(dLayer, currentLayer);
-   float layerBottom = sumVector(dLayer, currentLayer+1);
+   double layerTop    = sumVector(dLayer, currentLayer);
+   double layerBottom = sumVector(dLayer, currentLayer+1);
 
    return divide(rootDepth - layerTop,layerBottom - layerTop);
    }
 //------------------------------------------------------------------------------------------------
 void Roots::calcInitialLength(void)
    {
-    // initial root depth
-    dltRootDepth = initialRootDepth;
-    dltRootFront = initialRootDepth;
+   // initial root depth
+   dltRootDepth = initialRootDepth;
+   dltRootFront = initialRootDepth;
    }
 //------------------------------------------------------------------------------------------------
 void Roots::calcSenLength(void)
    {
-   float senescedLength = dltDmSenesced / sm2smm * specificRootLength;
-   float rootLengthSum = sumVector(rootLength);
+   double senescedLength = dltDmSenesced / sm2smm * specificRootLength;
+   double rootLengthSum = sumVector(rootLength);
    for(int i=0;i <= currentLayer;i++)
       {
       dltScenescedRootLength[i] = senescedLength *
-                                 divide(rootLength[i],rootLengthSum);
+         divide(rootLength[i],rootLengthSum);
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -206,43 +206,43 @@ void Roots::calcSenLength(void)
 // Calculate the increase in root length density in each rooted layer based upon soil hospitality,
 // moisture and fraction of layer explored by roots.
 //------------------------------------------------------------------------------------------------
+
 void Roots::calcRootDistribution(void)
    {
-   float rlvFactorTotal = 0.0;
+   double rlvFactorTotal = 0.0;
    for(int layer = 0; layer <= currentLayer; layer++)
       {
-      float rld = divide (rootLength[layer],dLayer[layer]);
-      float plantRld = divide (rld, plant->getPlantDensity());
-      float branchingFactor = rldFn.value(plantRld);
+      double rld = divide (rootLength[layer],dLayer[layer]);
+      double plantRld = divide (rld, plant->getPlantDensity());
+      double branchingFactor = rldFn.value(plantRld);
       rlvFactor[layer] = (swAvailFactor(layer) * branchingFactor * xf[layer] *
-                  divide(dLayer[layer],rootDepth * 10));
+         divide(dLayer[layer],rootDepth * 10));
       rlvFactor[layer] = Max(rlvFactor[layer],1e-6);
       rlvFactorTotal += rlvFactor[layer];
       }
-   float dltLengthTot = dltDmGreen / sm2smm * specificRootLength;
+   double dltLengthTot = dltDmGreen / sm2smm * specificRootLength;
    for(int layer = 0; layer <= currentLayer; layer++)
       {
       dltRootLength[layer] = dltLengthTot * divide(rlvFactor[layer],rlvFactorTotal);
-      /* ADTODO : is this right???*/
       rootLength[layer] += dltRootLength[layer];
       }
    }
 //------------------------------------------------------------------------------------------------
-float Roots::calcDltRootDepth(float stage)
+double Roots::calcDltRootDepth(double stage)
    {
    // sw available factor of root layer
-   float swFactor = swAvailFactor(currentLayer);
+   double swFactor = swAvailFactor(currentLayer);
    dltRootDepth  = rootDepthRate[int (stage)] * swFactor * xf[currentLayer];
-   //constrain it by the maximum depth that roots are allowed to grow
+   // constrain it by the maximum depth that roots are allowed to grow
    dltRootDepth = Min(dltRootDepth,profileDepth - rootDepth);
 
    return dltRootDepth;
    }
 //------------------------------------------------------------------------------------------------
-float Roots::calcDltRootFront(float stage)
+double Roots::calcDltRootFront(double stage)
    {
    // calculate the root front
-   float swFactor = swAvailFactor(currentLayer);
+   double swFactor = swAvailFactor(currentLayer);
    dltRootFront  = rootDepthRate[int (stage)] * swFactor * xf[currentLayer];
 
    double maxFront = sqrt(pow(rootDepth,2) + pow(leftDist,2));
@@ -250,15 +250,15 @@ float Roots::calcDltRootFront(float stage)
    return dltRootFront;
    }
 //------------------------------------------------------------------------------------------------
-float Roots::swAvailFactor(int layer)
+double Roots::swAvailFactor(int layer)
    {
    // get the soil water availability fraction of the current layer
-   float swAvailRatio = plant->water->swAvailRatio(layer);
+   double swAvailRatio = plant->water->swAvailRatio(layer);
    // use this value in the swRoot table function
    return swRoot.value(swAvailRatio);
    }
 //------------------------------------------------------------------------------------------------
-void Roots::partitionDM(float dltDM)
+void Roots::partitionDM(double dltDM)
    {
    dltDmGreen = dltDM;
    }
@@ -266,7 +266,7 @@ void Roots::partitionDM(float dltDM)
 void Roots::calcSenescence(void)
    {
    dltDmSenesced = dmGreen * dmRootSenFrac;
-   float senNConc = divide(nGreen,dmGreen);
+   double senNConc = divide(nGreen,dmGreen);
    dltNSenesced  = dltDmSenesced * senNConc;
    }
 //------------------------------------------------------------------------------------------------
@@ -274,30 +274,30 @@ void Roots::calcSenescence(void)
 //------------------------------------------------------------------------------------------------
 void Roots::getRootLength(vector<float> &result)
    {
-   result = rootLength;
+   DVecToFVec(result, rootLength);
    }
 //------------------------------------------------------------------------------------------------
 void Roots::getRLV(vector<float> &result)
    {
-   result = rlvFactor;
+   DVecToFVec(result, rlvFactor);
    }
 //------------------------------------------------------------------------------------------------
 void Roots::getRP(vector<float> &result)
    {
    for (int layer = 0; layer < nLayers; layer++)
       if (layer <= currentLayer)
-        result.push_back(RootProportionInLayer(layer));
+         result.push_back((float)RootProportionInLayer(layer));
       else
-        result.push_back(0.0);
+         result.push_back(0.0);
    }
 //------------------------------------------------------------------------------------------------
-float Roots::calcPDemand(void)
+double Roots::calcPDemand(void)
    {
    // ROOT P demand
-   float rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
-         plant->biomass->getAboveGroundBiomass(),0.0);
+   double rel_growth_rate = divide(plant->biomass->getDltDMPotRUE(),
+      plant->biomass->getAboveGroundBiomass(),0.0);
 
-   float deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
+   double deficit = pConcMax() * dmGreen * (1.0 + rel_growth_rate) - pGreen;
 
    pDemand = Max(deficit,0.0);
    return pDemand;
@@ -307,16 +307,16 @@ void Roots::incorporateResidue(void)
    {
    //Root residue incorporation    called from plantActions doEndCrop
 
-   if(!totalBiomass() > 0.0)return;
+   if(!(totalBiomass() > 0.0))return;
 
-   vector <float> dmIncorp;
-   vector <float> nIncorp;
-   vector <float> pIncorp;
-   float rootLengthSum = sumVector(rootLength);
+   vector <double> dmIncorp;
+   vector <double> nIncorp;
+   vector <double> pIncorp;
+   double rootLengthSum = sumVector(rootLength);
 
-   float carbon = totalBiomass() * gm2kg /sm2ha;
-   float n = totalN() * gm2kg /sm2ha;
-   float p = totalP() * gm2kg /sm2ha;
+   double carbon = totalBiomass() * gm2kg /sm2ha;
+   double n = totalN() * gm2kg /sm2ha;
+   double p = totalP() * gm2kg /sm2ha;
    for (unsigned layer = 0; layer < dLayer.size(); layer++)
       {
       dmIncorp.push_back(carbon * divide(rootLength[layer],rootLengthSum,0.0));
@@ -329,9 +329,9 @@ void Roots::incorporateResidue(void)
    for (unsigned i = 0; i != dmIncorp.size(); i++)
       {
       FOMLayerLayerType Layer;
-      Layer.FOM.amount = dmIncorp[i];
-      Layer.FOM.N = nIncorp[i];
-      Layer.FOM.P = pIncorp[i];
+      Layer.FOM.amount = (float)dmIncorp[i];
+      Layer.FOM.N = (float)nIncorp[i];
+      Layer.FOM.P = (float)pIncorp[i];
       Layer.CNR = 0;
       Layer.LabileP = 0;
       IncorpFOM.Layer.push_back(Layer);
@@ -339,26 +339,26 @@ void Roots::incorporateResidue(void)
    scienceAPI.publish("IncorpFOM", IncorpFOM);
    }
 //------------------------------------------------------------------------------------------------
-float Roots::RootProportionInLayer(int layer)
+double Roots::RootProportionInLayer(int layer)
    {
    /* Row Spacing and configuration (skip) are used to calculate semicircular root front to give
    proportion of the layer occupied by the roots. */
-   float top;
+   double top;
    if(layer == 0)top = 0;
    else top = sumVector(dLayer,layer);
-   float bottom = top + dLayer[layer];
+   double bottom = top + dLayer[layer];
 
-   float rootArea = getRootArea(top, bottom, rootFront, rightDist);    // Right side
-   rootArea += getRootArea(top, bottom, rootFront, leftDist);          // Left Side
-   float soilArea = (rightDist + leftDist) * (bottom - top);
+   double rootArea = getRootArea(top, bottom, rootFront, rightDist);    // Right side
+   rootArea += getRootArea(top, bottom, rootFront, leftDist);           // Left Side
+   double soilArea = (rightDist + leftDist) * (bottom - top);
 
    return divide(rootArea, soilArea);
    }
 //------------------------------------------------------------------------------------------------
-float Roots::getRootArea(float top, float bottom, float rootLength, float hDist)
+double Roots::getRootArea(double top, double bottom, double rootLength, double hDist)
    {
    // get the area occupied by roots in a semi-circular section between top and bottom
-   float SDepth, rootArea;
+   double SDepth, rootArea;
 
    // intersection of roots and Section
    if(rootLength <= hDist) SDepth = 0.0;
@@ -368,11 +368,11 @@ float Roots::getRootArea(float top, float bottom, float rootLength, float hDist)
    if(SDepth >= bottom) rootArea = (bottom - top) * hDist;
    else               // roots Past top
       {
-      float Theta = 2 * acos(divide(Max(top,SDepth),rootLength));
-      float topArea = (pow(rootLength,2) / 2.0 * (Theta - sin(Theta))) / 2.0;
+      double Theta = 2 * acos(divide(Max(top,SDepth),rootLength));
+      double topArea = (pow(rootLength,2) / 2.0 * (Theta - sin(Theta))) / 2.0;
 
       // bottom down
-      float bottomArea = 0;
+      double bottomArea = 0;
       if(rootLength > bottom)
          {
          Theta = 2 * acos(bottom/rootLength);

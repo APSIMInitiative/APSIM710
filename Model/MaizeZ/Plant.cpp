@@ -5,8 +5,6 @@
 #include <vector>
 #include <General/date_class.h>
 #include <ComponentInterface2/ScienceAPI2.h>
-//#include <ComponentInterface2/DataTypes.h>
-//#include <ComponentInterface2/Variant.h>
 
 #include "Plant.h"
 #include "PlantInterface.h"
@@ -31,6 +29,7 @@ void Plant::initialize(void)
    dltPlants =  0.0;
    frIntcRadn = 0.0;
    dltDeadPlants = 0.0;
+	initialized = false;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
@@ -38,7 +37,7 @@ void Plant::initialize(void)
 void Plant::readParams(void)
    {
    scienceAPI.write(string(" - reading constants for " +
-                           cropClass + "(" + cropType +") - " + cultivar + "\n"));
+      cropClass + "(" + cropType +") - " + cultivar + "\n"));
 
    tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
 
@@ -56,7 +55,6 @@ void Plant::readParams(void)
 
    // CO2 stuff
    co2_te_modifier.read(scienceAPI, "x_co2_te_modifier", "y_co2_te_modifier");
-
    }
 
 //------------------------------------------------------------------------------------------------
@@ -69,7 +67,7 @@ Plant::~Plant()
    delete stem;
    delete rachis;
    delete grain;
-   
+
    delete phenology;
    delete nitrogen;
    delete phosphorus;
@@ -80,7 +78,7 @@ Plant::~Plant()
 //------------- Initialise plant
 //------------------------------------------------------------------------------------------------
 void Plant::plantInit1(void)
-  {
+   {
    // parameters
    // initialise any variable that is needed before the crop is planted
    vector<string> sections;
@@ -91,7 +89,6 @@ void Plant::plantInit1(void)
    scienceAPI.read("default_crop_class",  "", false, defaultCropClass);
    scienceAPI.read("row_spacing_default", "", false, rowSpacingDefault);
 
-
    roots     = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
    leaf      = new Leaf(scienceAPI, this);    PlantComponents.push_back(leaf);  PlantParts.push_back(leaf);
    stem      = new Stem(scienceAPI, this);    PlantComponents.push_back(stem);  PlantParts.push_back(stem);
@@ -99,15 +96,15 @@ void Plant::plantInit1(void)
    grain     = new Grain(scienceAPI, this);   PlantComponents.push_back(grain); PlantParts.push_back(grain);
 
    phenology = new Phenology(scienceAPI, this); PlantComponents.push_back(phenology);
-                                      PlantProcesses.push_back(phenology);
+   PlantProcesses.push_back(phenology);
    nitrogen  = new Nitrogen(scienceAPI, this);  PlantComponents.push_back(nitrogen);
-                                      PlantProcesses.push_back(nitrogen);
+   PlantProcesses.push_back(nitrogen);
    phosphorus  = new Phosphorus(scienceAPI, this);  PlantComponents.push_back(phosphorus);
-                                      PlantProcesses.push_back(phosphorus);
+   PlantProcesses.push_back(phosphorus);
    water     = new Water(scienceAPI, this);     PlantComponents.push_back(water);
-                                      PlantProcesses.push_back(water);
+   PlantProcesses.push_back(water);
    biomass   = new Biomass(scienceAPI, this);   PlantComponents.push_back(biomass);
-                                      PlantProcesses.push_back(biomass);
+   PlantProcesses.push_back(biomass);
 
    doRegistrations();
 
@@ -116,11 +113,11 @@ void Plant::plantInit1(void)
    // Cruft for adding sowing/harvesting events to UI
    scienceAPI.notifyFutureEvent("sowing");
    scienceAPI.notifyFutureEvent("harvesting");
-  }
+   }
 //------------------------------------------------------------------------------------------------
 void Plant::plantInit2(void)
-  {
-  }
+   {
+   }
 //------------------------------------------------------------------------------------------------
 void Plant::setStatus(Status status)
    {
@@ -160,7 +157,7 @@ void Plant::onSowCrop(Variant &sowLine)
    checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
 
    if (sowLine.get("row_spacing", rowSpacing) == false)
-      rowSpacing = rowSpacingDefault;
+      rowSpacing = (float)rowSpacingDefault;
    // row spacing was originally in metres
    // for compatibility, is now in mm
    // if < 10, assume metres and convert
@@ -178,11 +175,10 @@ void Plant::onSowCrop(Variant &sowLine)
       else if (temp == "double")skipRow = 2.0;
       else if (temp == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+         throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
-
 
    phenology->setStage(sowing);
    setStatus(alive);
@@ -195,8 +191,8 @@ void Plant::onSowCrop(Variant &sowLine)
    scienceAPI.write("    -------------------------------------------------------\n");
 
    sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s%8.2f\n",
-               today.doy, sowingDepth, plantDensity, rowSpacing,
-               skipRow, cultivar.c_str());   scienceAPI.write(msg);
+      today.doy, sowingDepth, plantDensity, rowSpacing,
+      skipRow, cultivar.c_str());   scienceAPI.write(msg);
 
    scienceAPI.write("    -------------------------------------------------------\n");
    scienceAPI.write("\n");
@@ -210,7 +206,7 @@ void Plant::onSowCrop(Variant &sowLine)
    readParams(); 
 
    for(unsigned i=0;i < PlantComponents.size();i++) 
-     PlantComponents[i]->readParams ();
+      PlantComponents[i]->readParams ();
 
    scienceAPI.publish("sowing");
    }
@@ -219,101 +215,56 @@ void Plant::onSowCrop(Variant &sowLine)
 //------------------------------------------------------------------------------------------------
 void Plant::prepare (void)
    {
-   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
-       co2 = 350.0;
-
-
-   tempStress = tempStressTable.value(today.avgT);
-   radnIntercepted = radnInt();
-
-   float rueToday = rue[(int) stage] * rue_co2_modifier();
-
-   biomass->calcBiomassRUE(rueToday,radnIntercepted);
-   transpEff = transpEfficiency();
-   water->calcDemand();
-
-      // at beginning of day, reset the daily dlt variables
+	
+   // at beginning of day, reset the daily dlt variables
    for(unsigned i=0;i < PlantParts.size();i++)
       {
       PlantParts[i]->resetDailyVars();
       }
 
    if(phosphorus->Active())
-       phosphorus->prepare();
-
-
+      phosphorus->prepare();
    }
 //------------------------------------------------------------------------------------------------
 //------------------- Field a process event
 //------------------------------------------------------------------------------------------------
-void Plant::process (void)                 // do crop preparation
+void Plant::process (void)                 // do crop growth and development
    {
 
-   stage = phenology->currentStage();
+   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
+      co2 = 350.0;
 
-   water->getOtherVariables();
-   water->calcDailySupply();
-   water->calcStresses();
-   water->calcUptake();
-
-   stem->calcCanopyHeight();
-
-   leaf->calcLeafNo();
-
-   phenology->development();
-
-   leaf->calcPotentialArea();
-
-   biomass->calcBiomassTE();
-
-   biomass->calcDltBiomass();
-
+	// TODO this rue/transpiration code should be shifted to Leaf
+   tempStress = tempStressTable.value(today.avgT);
+   radnIntercepted = radnInt();
+	double rueToday = rue[(int) phenology->currentStage()] * rue_co2_modifier();
+	biomass->calcBiomassRUE(rueToday,radnIntercepted);
+   transpEff = transpEfficiency();
+	
+	water->process();
+	stem->calcCanopyHeight();
+	leaf->potentialGrowth();
+	phenology->development();
    grain->process();
-
-   // biomass partitioning
-   biomass->calcPartitioning();
-
-   // biomass retranslocation
-   if(stage >= startGrainFill && stage <= endGrainFill)
-      biomass->calcRetranslocation();
-
-   // root length
-   if(stage > germination)
-      {
-      roots->calcRootDistribution();
-      }
-   // actual dltLai C limited
-   leaf->areaActual();
-
-
-   // scenescence
-   leaf->senesceArea();
-   if(stage > germination)
-      {
-      roots->calcSenLength();
-      }
-
-   // nitrogen
+	biomass->process();
+	roots->process();
+	leaf->actualGrowth();
    nitrogen->process();
    biomass->dmScenescence();         // moved because nitrogen now causes senescence
+   phosphorus->process();
 
-   if(phosphorus->Active())
-       phosphorus->process();
 
-   death();
-
-   //Calculate detachment
+	// housekeeping
+	death();
+	//Calculate detachment
    detachment();
-   //Cleanup plant process
-   cleanup();
-
 
    // at end of day, update class state variables
    for(unsigned i=0;i < PlantComponents.size();i++)
       {
       PlantComponents[i]->updateVars();
       }
-//   phenology->development();
+   //   phenology->development();
    updateVars();
    }
 //------------------------------------------------------------------------------------------------
@@ -328,32 +279,30 @@ void Plant::updateVars(void)
       ExternalMassFlowType EMF;
       EMF.PoolClass = "crop";
       EMF.FlowType = "gain";
-      EMF.DM = biomass->getTotalBiomass() * gm2kg/sm2ha;
-      EMF.N  = 0.0;
-      EMF.P  = 0.0;
-      EMF.C = 0.0; // ?????
-      EMF.SW = 0.0;
+      EMF.DM = (float)(biomass->getTotalBiomass() * gm2kg/sm2ha);
+      EMF.N  = 0.0f;
+      EMF.P  = 0.0f;
+      EMF.C = 0.0f; // ?????
+      EMF.SW = 0.0f;
 
       scienceAPI.publish("ExternalMassFlow", EMF);
       }
-
    }
 //------------------------------------------------------------------------------------------------
 void Plant::death(void)
    {
    // Emergence
-   float ttEmergeLimit;
+   double ttEmergeLimit;
    scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
 
    if(stage < emergence)
       {
       if(phenology->sumTTtotal(germination,harvest) > ttEmergeLimit)
          {
-      scienceAPI.write(" ********** Crop failed emergence due to deep planting\n");
+         scienceAPI.write(" ********** Crop failed emergence due to deep planting\n");
          dltDeadPlants = -plantDensity;
          }
       }
-
 
    //If leaves are killed from frost, leaf->dltSlai is set to leaf->lai
    //need to kill plant if lai = 0
@@ -380,7 +329,7 @@ void Plant::death(void)
 //- Science --------------------------------------------------------------------------------------
 //----------  Radiation intercepted by leaves (mj/m^2)
 //------------------------------------------------------------------------------------------------
-float Plant::radnInt(void)
+double Plant::radnInt(void)
    {
    if (isEqual(frIntcRadn,0.0))return leaf->getCoverGreen() * today.radn;
    else
@@ -392,7 +341,7 @@ float Plant::radnInt(void)
 //---   Calculate today's transpiration efficiency from the transpiration efficiency coefficient
 //---   and vapour pressure deficit, which is calculated from min and max temperatures.
 //------------------------------------------------------------------------------------------------
-float Plant::transpEfficiency(void)
+double Plant::transpEfficiency(void)
    {
    // get vapour pressure deficit when net radiation is positive.
    vpd = Max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
@@ -402,7 +351,7 @@ float Plant::transpEfficiency(void)
 //------------------------------------------------------------------------------------------------
 //-------- function to get saturation vapour pressure for a given temperature in oC (kpa)
 //------------------------------------------------------------------------------------------------
-float Plant::svp(float temp)
+double Plant::svp(double temp)
    {
    return 6.1078 * exp(17.269 * temp / (237.3 + temp)) * mb2kpa;
    }
@@ -416,19 +365,11 @@ void Plant::detachment(void)
    nitrogen->detachment(senDetachFrac);
    }
 //------------------------------------------------------------------------------------------------
-//-------- Cleanup Plant process
-//------------------------------------------------------------------------------------------------
-void Plant::cleanup(void)
-   {
-   //Could not find a definition
-   }
-//------------------------------------------------------------------------------------------------
 //-------- Kill the crop
 //------------------------------------------------------------------------------------------------
-
 void Plant::killCrop(void)
    {
-   float AGBiomass;
+   //double AGBiomass;
    if (plantStatus == alive)
       {
       setStatus(dead);
@@ -437,7 +378,7 @@ void Plant::killCrop(void)
    //Report
    char msg[120];
    sprintf(msg, "Plant Death. Standing above-ground dm = %.2f (kg/ha)\n", 
-           biomass->getAboveGroundBiomass());
+      biomass->getAboveGroundBiomass());
    scienceAPI.write(msg);
    }
 //------------------------------------------------------------------------------------------------
@@ -456,28 +397,27 @@ void Plant::phenologyEvent(int iStage)
    // output the current stage
    string stage = phenology->returnStageName();
    scienceAPI.publish(stage);
-
    }
 //------------------------------------------------------------------------------------------------
 void Plant::get_cover_green(float &result)
-      {
-   result = leaf->getCoverGreen();
-      }
-//------------------------------------------------------------------------------------------------
-void Plant::get_cover_tot(float &result)
-      {
-   result = leaf->getCoverTot();
-      }
-//------------------------------------------------------------------------------------------------
-void Plant::get_height(float &result)
-      {
-   result = stem->getCanopyHeight();
+   {
+   result = (float)leaf->getCoverGreen();
    }
 //------------------------------------------------------------------------------------------------
-float Plant::rue_co2_modifier(void)                 //!CO2 level (ppm)
+void Plant::get_cover_tot(float &result)
+   {
+   result = (float)leaf->getCoverTot();
+   }
+//------------------------------------------------------------------------------------------------
+void Plant::get_height(float &result)
+   {
+   result = (float)stem->getCanopyHeight();
+   }
+//------------------------------------------------------------------------------------------------
+double Plant::rue_co2_modifier(void)                 //!CO2 level (ppm)
    {
    //  Purpose : Calculation of the CO2 modification on rue
-   const float scale = 1.0 / 350.0 * 0.05;
+   const double scale = 1.0 / 350.0 * 0.05;
    return (scale * this->co2 + 0.95); //Mark Howden, personal communication
    }
 //------------------------------------------------------------------------------------------------

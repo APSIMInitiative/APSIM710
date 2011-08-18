@@ -7,94 +7,86 @@
 #include "Utilities.h"
 
 namespace Maize {
-//------------------------------------------------------------------------------------------------
+   //------------------------------------------------------------------------------------------------
+   class Grain : public PlantPart
+      {
+      private:
 
-class Grain : public PlantPart
-   {
-   private:
+         // Parameters ----------------------------------------------------------
+         double waterContent;
 
-// Parameters ----------------------------------------------------------
-   float dmPerSeed;
-   float waterContent;
+         // nitrogen
+         double grainNFillRate;
+         double targetNConc;
 
-   // nitrogen
-   float grainFillRate;
-   float targetNConc;
+         // Variables ----------------------------------------------------------
 
-// Variables ----------------------------------------------------------
+         double grainNo;
+         double finalGrainNo;
+         double grainSize;
+         double yield;
+         double potGFRate;                 // potential grain filling rate in g/grain/oCd
 
-   float totDMGreenFI;          // total plant dm at FI
-   float grainNo;
-   float finalGrainNo;
-   float grainSize;
-   float yield;
-   float potGFRate;             // potential grain filling rate in g/grain/oCd
-   float maxGFRate;             // maximum grain filling rate in g/grain/oCd
+         double dltDMGrainDemand;
 
+         // parameters for grain number 
+         double PGRt0, PGRt1;              // period before and after anthesis to calculate PGR
+         int    GNmax;                        // maximum grain number
+         double PGRbase;                   // base PGR
+         double GNk;                       // k in the eqn Andrade et al. 1999
+         double plantDMt0, plantDMt1;      // plant dm at PGRt1 and t2
+         int nDays;
 
-   float dltDMStressMax;
-   float dltDMGrainDemand;
-   float addGrainWeight;        // used in source sink demand
+         // parameters for grain growth 
+         double pKGR;                      // potential kernel growth rate in mg/grain/oC
+         double potKernelWt;               // potential kernel weight in mg/grain
 
-   // parameters for grain number / ASI response to drought - Karine Chenu et al. 1/2007    KC2007
-   int UseGN;
-   float PGRt0, PGRt1;              // period before and after anthesis to calculate PGR
-   int GNmax;                       // maximum grain number
-   float PGRbase;                   // base PGR
-   float GNk;                       // k in the eqn Andrade et al. 1999
-   // variables for grain number / ASI response to drought - Karine Chenu et al. 1/2007    KC2007
-   float plantDMt0, plantDMt1;      // plant dm at PGRt1 and t2
-   int nDays;
-   float grainPGR;
-   double pKGR;                     // potential kernel growth rate in mg/grain/oC
-   float potKernelWt;               // potential kernel weight in mg/grain
+			// heat effects on grain number
+		   vector<double> grainTempWindow;
+			vector<double> grainTempOrdinals;
+			TableFn grainTempTable;
+			double tempFactor;
 
+         // Private Methods -------------------------------------------------------
+         void   doRegistrations(void);
+         void   initialize(void);
+         double calcGrainNumber(void);
+         void   calcBiomassDemand(void);
+			double Grain::calcTempFactor(void);
+   
 
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
-   float calcGrainNumber(void);
-   float yieldPartDemandStress(void);
-   float calcDMGrainSourceSink(void);
-   void  calcDemandStress(void);
-   void  calcBiomassDemand(void);
-   float calcDMGrainDemand(void);
+         // public Methods -------------------------------------------------------
+      public:
+         Grain(ScienceAPI2 &, Plant *p);
+         ~Grain();
 
-// public Methods -------------------------------------------------------
-   public:
-    Grain(ScienceAPI2 &, Plant *p);
-   ~Grain();
+         // plant
+         void  readParams (void);
+         void  updateVars(void);
+         void  process(void);
 
-   // plant
-   void  readParams (void);
-   void  updateVars(void);
-   void  process(void);
+         // nitrogen
+         double calcNDemand(void);
+         void  RetranslocateN(double N);
 
-   // nitrogen
-   float calcNDemand(void);
-   void  RetranslocateN(float N);
+         // biomass
+         double partitionDM(double dltDM);
+         double grainDMDifferential(void);
+         void   dmRetrans(double dltDm){dmRetranslocate = dltDm;}
+         void   Harvest(void);
 
-   // biomass
-   float partitionDM(float dltDM);
-   float grainDMDifferential(void);
-   void  dmRetrans(float dltDm){dmRetranslocate = dltDm;}
-   void  Harvest(void);
+         // nitrogen
+         double getNConc(void)const{return nConc;}
 
-   // nitrogen
-   float getNConc(void)const{return nConc;}
+         // phosphorus
+         double calcPDemand(void);
+         double calcPRetransDemand(void);
+         double getPConc(void)const{return pConc;}
 
-   // phosphorus
-   float calcPDemand(void);
-   float calcPRetransDemand(void);
-   float getPConc(void)const{return pConc;}
+         // phenology
+         void  phenologyEvent(int);
 
-   // phenology
-   void  phenologyEvent(int);
-
-   void  Summary(void);
-   };
-
-
-//---------------------------------------------------------------------------
-}
+         void  Summary(void);
+      };
+   }
 #endif

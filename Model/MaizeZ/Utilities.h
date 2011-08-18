@@ -22,103 +22,86 @@ class ScienceAPI2;
 //      crop status names
 typedef enum {out, dead, alive} Status;
 //typedef enum {warning, fatal} errSeverity;
-inline bool isEqual(float A, float B, float C) {return(fabs(A-B)<C);}
-inline bool isEqual(float A, float B) {return(fabs(A-B)<1.0E-6);}
+inline bool isEqual(double A, double B, double C) {return(fabs(A-B)<C);}
+inline bool isEqual(double A, double B) {return(fabs(A-B)<1.0E-6);}
 
 #define Max(a, b)  (((a) > (b)) ? (a) : (b))
 #define Min(a, b)  (((a) < (b)) ? (a) : (b))
 
 //------------------------------------------------------------------------------------------------
-void checkRange(ScienceAPI2 &api, float value, float lower, float upper, const std::string &msg);
+void checkRange(ScienceAPI2 &api, double value, double lower, double upper, const std::string &msg);
 
-int   findIndex(float value, std::vector<float> items);
-void  fillVector(vector<float> &temp,std::vector<float> &newVect);
-float layerProportion(std::vector<float> dLayer,float rootDepth,int rootLayer);
-float sumVector(vector<float> vec);
-double sumVector(vector<double> vec);
-float avgVector(vector<float> vec);
-float movingAvgVector(vector<float> &vec, int sz);
-float maxVector(vector<float> vec);
-double maxVector(vector<double> vec);
-float sumVector(vector<float> vec, int index);
-float sumVector(vector<float> vec, int from, int to);
-float divide (float dividend, float divisor, float default_value = 0.0);
-float bound(float value,float lower, float upper);
-float dayLength (int doy, float latitude, float twilight);
-
-void  accumulate (float value, std::vector<float> &array, float p_index, float dlt_index);
-void  calcPoolFractionDelta (int numParts, std::vector<float> fraction, std::vector<float> pool,
-        std::vector<float> &dltPool);
-
-void  calcPartFractionDelta (int partNo, std::vector<float> fraction, float part,
-      float &dltPart);
-
-
-void  JulianToCalendar(float jDay,int &day,int &month,int &year);
-int   CalendarToJulian(int day,int month,int year);
-
+int   findIndex(double, std::vector<double>);
+int   CalendarToJulian(int, int, int);
+double layerProportion(std::vector<double>,double,int);
+double sumVector(vector<double>);
+double avgVector(vector<double>);
+double movingAvgVector(vector<double>&, int);
+double maxVector(vector<double>);
+double sumVector(vector<double>, int);
+double sumVector(vector<double>, int, int);
+double divide (double, double, double default_value = 0.0);
+double bound(double, double, double);
+double dayLength (int, double, double);
+void  fillVector(vector<double>&,std::vector<double>&);
+void  accumulate (double, std::vector<double>&, double, double);
+void  calcPoolFractionDelta (int, std::vector<double>, std::vector<double>, std::vector<double>&);
+void  calcPartFractionDelta (int, std::vector<double>, double, double&);
+void  JulianToCalendar(double,int&,int&,int&);
 string convertName(string name);
-
-
 //------------------------------------------------------------------------------------------------
 class Today
    {
    public:
-   int   doy;                      // (Julian) day number of year
-   int   day, month, year;         // day of month etc..
-   float radn;                     // solar radiation (Mj/m^2/day)
-   float minT;                     // minimum air temperature (oC)
-   float maxT;                     // maximum air temperature (oC)
-   float avgT;                     // average air temperature (oC)
-   float rain;                     // rain in mm
-   float vp;                       // VP
-   float getPhotoPeriod(float latitude,float twilight){return dayLength (doy,latitude,twilight);}
+      int   doy;                      // (Julian) day number of year
+      int   day, month, year;         // day of month etc..
+      double radn;                     // solar radiation (Mj/m^2/day)
+      double minT;                     // minimum air temperature (oC)
+      double maxT;                     // maximum air temperature (oC)
+      double avgT;                     // average air temperature (oC)
+      double rain;                     // rain in mm
+      double vp;                       // VP
+      double getPhotoPeriod(double latitude,double twilight){return dayLength (doy,latitude,twilight);}
    };
 //------------------------------------------------------------------------------------------------
 // class to handle table functions
-
+//------------------------------------------------------------------------------------------------
 class TableFn
    {
    public:
-   std::string xName,yName;
-   std::vector<float> x;
-   std::vector<float> y;
+      std::string xName,yName;
+      std::vector<double> x;
+      std::vector<double> y;
 
-   TableFn(void){};
-   TableFn(ScienceAPI2 &api,  std::string xName, std::string yName);
-   TableFn(std::vector<float> xVec,std::vector<float> yVec);
-   void  read(ScienceAPI2 &api,  std::string xName, std::string yName);
-   void  load(std::vector<float> xVec,std::vector<float> yVec);
-   float value(float v) const;
+      TableFn(void){};
+      TableFn(ScienceAPI2&,  std::string, std::string);
+      TableFn(std::vector<double>, std::vector<double>);
+      void  read(ScienceAPI2 &api,  std::string xName, std::string);
+      void  load(std::vector<double>,std::vector<double>);
+      double value(double) const;
    };
 //------------------------------------------------------------------------------------------------
-// diurnal stuff
+// diurnal routines
+void HourlyTemperature(double, double, vector<double>, int, double, vector<double>&);
+void CalcRadiation( double, int, double, vector<double>&);
+void CalcSVP(vector<double>, vector<double>&);
+void CalcRH(double, double, vector<double>, double, double, vector <double>&);
+void CalcVPDair(vector<double>, vector<double>, vector<double>&);
+void CalcTDemand(vector<double>, double , double, double, vector<double>, double, vector<double>&);
+void CalcTSupply(double,vector<double>, vector <double>&);
+void CalcTLeaf(vector<double>, vector<double>, TableFn*, vector<double>&);
+void CalcVPDairLeaf(vector<double>, vector<double>, vector<double>, vector<double>&);
+void CalcVPDeq(vector<double>, vector<double>, vector<double>&);
+void CalcHLER(double, double, double, double, vector<double>, vector<double>, double, vector<double>&);
+double CalcSolarDeclination(int);
+double CalcDayLength(double, double);
+double CalcSolarRadn(double, double, double, double); // solar radiation
+double GlobalRadiation(double, double, double, double, double);
+double CalcSVP(double);
+double CalcPsi(double);
 
-void HourlyTemperature(float maxT, float minT, vector<double> TAirParam, int doy,
-                                 float LatR, vector<double> &Temperature);
-
-void CalcRadiation( float ApsimRad, int doy, double LatR, vector<double> &rad);
-float CalcSolarDeclination(int doy);
-float CalcDayLength(float LatR, float SolarDec);
-float CalcSolarRadn(float RATIO,float DayL,float LatR,float SolarDec); // solar radiation
-float GlobalRadiation(float oTime, float latitude, float SolarDec, float DayLH, float Solar);
-void CalcSVP(vector<double> TAir, vector<double> &SVP);
-float CalcSVP(float Tair);
-void CalcRH(double tMax, double tMin, vector<double> SVP, double RHMax,double RHMin,
-               vector <double> &RH);
-void CalcVPDair(vector<double> TAir, vector<double> RH, vector<double> &VPDair);
-void CalcTDemand(vector <double> hRadn, float cover, float RUE, float TEc, vector<double> VPDair,
-                float sw_demand, vector<double> &Td);
-void CalcTSupply(float dailySupply,vector <double> demand, vector <double> &supply);
-float CalcPsi(float ftsw);
-
-void CalcTLeaf(vector <float> supply, vector <float> demand, TableFn *LeafTemp,
-                                                               vector <float> &TLeaf);
-void CalcVPDairLeaf(vector <float> TAir, vector <float> TLeaf, vector <float> RH,
-         vector <float> &VPDairLeaf);
-void CalcVPDeq(vector <float> hRadn, vector <float> VPDairLeaf, vector <float> &VPDeq);
-void CalcHLER(float T0, float a, float b, float c, vector <float> TLeaf,
-         vector <float> VPDairLeaf, float psi, vector <float> &LER);
+void DVecToFVec(vector<float>&, vector<double>);
+void FVecToDVec(vector<double>*, vector<float>);
 
 //------------------------------------------------------------------------------------------------
 

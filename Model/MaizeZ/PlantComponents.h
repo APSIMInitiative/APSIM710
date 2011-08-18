@@ -13,142 +13,142 @@ class TableFn;
 class ScienceAPI2;
 
 namespace Maize {
-class Plant;
+   class Plant;
 
-//---------------------------------------------------------------------------
+   //---------------------------------------------------------------------------
 
-class PlantComponent
-   {
-   private:
-   protected:
-   public:
-   ScienceAPI2  &scienceAPI;
-   PlantComponent(ScienceAPI2 &api) : scienceAPI(api) {};
+   class PlantComponent
+      {
+      private:
+      protected:
+      public:
+         ScienceAPI2  &scienceAPI;
+         PlantComponent(ScienceAPI2 &api) : scienceAPI(api) {};
 
-   Plant *plant;
+         Plant *plant;
 
-   virtual void initialize(void) = 0;
-   virtual void readParams (void) = 0;
-   virtual void updateVars(void) = 0;
+         virtual void initialize(void) = 0;
+         virtual void readParams (void) = 0;
+         virtual void updateVars(void) = 0;
 
-   };
-//---------------------------------------------------------------------------
-class PlantPart : public PlantComponent
-   {
-   private:
+      };
+   //---------------------------------------------------------------------------
+   class PlantPart : public PlantComponent
+      {
+      private:
 
-   protected:
+      protected:
 
-   // variables
-   float stage;
-   int   partNo;
-   std::string name;
-
-
-   // Biomass
-   float dmGreen;
-   float dltDmGreen;
-
-   float dmSenesced;
-   float dltDmSenesced;
-   float dltDetDmSenesced;
-
-   float dmPlantMin;
-   float dmRetranslocate;
-   
-
-   // Nitrogen
-   float nGreen;
-   float dltNGreen;
-
-   float nDemand;
-   float dltNRetranslocate;
-
-   float nSenesced;
-   float dltNSenesced;
-   float dltDetNSenesced;
-
-   float nConc;
-
-   // Phosphorus
-   float pGreen;
-   float pSenesced;
-   float dltPGreen;
-   float dltPSenesced;
-   float dltPDetached;
-   float pDemand;
-   float dltPRetranslocate;
-   float pConc;
-
-   // phosphorus  parameters
-   TableFn pMaxTable;
-   TableFn pMinTable;
-   TableFn pSenTable;
-   float initialPConc;
+         // variables
+         double stage;
+         int   partNo;
+         std::string name;
 
 
-   public:
-   PlantPart(ScienceAPI2 &api) ;
-   void initialize(void);
-   virtual void  phenologyEvent(int) = 0;
-   virtual float calcNDemand(void) = 0;
-   virtual float calcPDemand(void) = 0;
+         // Biomass
+         double dmGreen;
+         double dltDmGreen;
 
-   //Detatchmenet Routines
-   virtual void dmDetachment(std::vector<float>);
-   virtual void NDetachment(std::vector<float>);
+         double dmSenesced;
+         double dltDmSenesced;
+         double dltDetDmSenesced;
 
-   //Getters
-   virtual float getNGreen(void){return nGreen;};
-   virtual float getNSenesced(void){return nSenesced;};
-
-   virtual float getDmGreen(void){return dmGreen;};
-   virtual float getDmSenesced(void){return dmSenesced;};
-
-   virtual float getDltNGreen(void){return dltNGreen;};
-   virtual float getDltDetNSenesced(void){return dltDetNSenesced;};
-
-   virtual float getDltDmGreen(void){return dltDmGreen;};
-   virtual float getDltDetDmSenesced(void){return dltDetDmSenesced;};
-
-   virtual float getNDemand(void){return nDemand;};
-   virtual float getDltDmRetranslocate(void){return dmRetranslocate;};
-   virtual float getDltNRetranslocate(void){return dltNRetranslocate;};
-
-   virtual void  resetDailyVars(void);
-
-   virtual float pConcMax(void){return pMaxTable.value(stage);}
-   virtual float pConcMin(void){return pMinTable.value(stage);}
-   virtual float pConcSen(void){return pSenTable.value(stage);}
-   virtual float getPGreen(void){return pGreen;};
-   virtual float getPSenesced(void){return pSenesced;};
-   virtual float getPDemand(void){return pDemand;};
-   virtual float getDltPGreen(void){return dltPGreen;};
-   virtual float getDltPRetrans(void){return dltPRetranslocate;};
+         double dmPlantMin;
+         double dmRetranslocate;
 
 
-   virtual void setPRetrans(float P){dltPRetranslocate = P;}
+         // Nitrogen
+         double nGreen;
+         double dltNGreen;
+
+         double nDemand;
+         double dltNRetranslocate;
+
+         double nSenesced;
+         double dltNSenesced;
+         double dltDetNSenesced;
+
+         double nConc;
+
+         // Phosphorus
+         double pGreen;
+         double pSenesced;
+         double dltPGreen;
+         double dltPSenesced;
+         double dltPDetached;
+         double pDemand;
+         double dltPRetranslocate;
+         double pConc;
+
+         // phosphorus  parameters
+         TableFn pMaxTable;
+         TableFn pMinTable;
+         TableFn pSenTable;
+         double initialPConc;
 
 
-   void partitionN(float N){dltNGreen += N;}
-   void partitionP(float P){dltPGreen += P;}
-   void calcDltPSenesced(void);
-   void calcDltPDetached(void);
-   void updateP(void);
+      public:
+         PlantPart(ScienceAPI2 &api) ;
+         void initialize(void);
+         virtual void  phenologyEvent(int) = 0;
+         virtual double calcNDemand(void) = 0;
+         virtual double calcPDemand(void) = 0;
 
-   std::string getName(void){return name;}
-   };
-//---------------------------------------------------------------------------
-class PlantProcess : public PlantComponent
-   {
-   private:
+         //Detatchmenet Routines
+         virtual void dmDetachment(std::vector<double>);
+         virtual void NDetachment(std::vector<double>);
 
-   public:
-   PlantProcess(ScienceAPI2 &api) : PlantComponent(api) {};
-   virtual void  phenologyEvent(int) = 0;
+         //Getters
+         virtual double getNGreen(void){return nGreen;};
+         virtual double getNSenesced(void){return nSenesced;};
 
-   // variables
-   };
-//---------------------------------------------------------------------------
-}
+         virtual double getDmGreen(void){return dmGreen;};
+         virtual double getDmSenesced(void){return dmSenesced;};
+
+         virtual double getDltNGreen(void){return dltNGreen;};
+         virtual double getDltDetNSenesced(void){return dltDetNSenesced;};
+
+         virtual double getDltDmGreen(void){return dltDmGreen;};
+         virtual double getDltDetDmSenesced(void){return dltDetDmSenesced;};
+
+         virtual double getNDemand(void){return nDemand;};
+         virtual double getDltDmRetranslocate(void){return dmRetranslocate;};
+         virtual double getDltNRetranslocate(void){return dltNRetranslocate;};
+
+         virtual void  resetDailyVars(void);
+
+         virtual double pConcMax(void){return pMaxTable.value(stage);}
+         virtual double pConcMin(void){return pMinTable.value(stage);}
+         virtual double pConcSen(void){return pSenTable.value(stage);}
+         virtual double getPGreen(void){return pGreen;};
+         virtual double getPSenesced(void){return pSenesced;};
+         virtual double getPDemand(void){return pDemand;};
+         virtual double getDltPGreen(void){return dltPGreen;};
+         virtual double getDltPRetrans(void){return dltPRetranslocate;};
+
+
+         virtual void setPRetrans(double P){dltPRetranslocate = P;}
+
+
+         void partitionN(double N){dltNGreen += N;}
+         void partitionP(double P){dltPGreen += P;}
+         void calcDltPSenesced(void);
+         void calcDltPDetached(void);
+         void updateP(void);
+
+         std::string getName(void){return name;}
+      };
+   //---------------------------------------------------------------------------
+   class PlantProcess : public PlantComponent
+      {
+      private:
+
+      public:
+         PlantProcess(ScienceAPI2 &api) : PlantComponent(api) {};
+         virtual void  phenologyEvent(int) = 0;
+
+         // variables
+      };
+   //---------------------------------------------------------------------------
+   }
 #endif

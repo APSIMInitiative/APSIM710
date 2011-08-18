@@ -7,135 +7,129 @@
 #include "Utilities.h"
 
 namespace Maize {
-//------------------------------------------------------------------------------------------------
-class Water : public PlantProcess
-   {
-   private:
+   //------------------------------------------------------------------------------------------------
+   class Water : public PlantProcess
+      {
+      private:
 
-// Parameters ----------------------------------------------------------
+         // Parameters ----------------------------------------------------------
 
-   TableFn swPhenoTable;
-   TableFn swExpansionTable;
+         TableFn swPhenoTable;
+         TableFn swExpansionTable;
 
-   vector<float> dLayer;
-   vector<float> dulDep;
-   vector<float> satDep;
-   vector<float> bd;
-   vector<float> eswCap;           // extractable soil water capacity
-   vector<float> ll;
-   vector<float> ll15Dep;
-   vector<float> kl;
-   vector<float> xf;
-   vector<float> llDep;
+         vector<double> dLayer;
+         vector<double> dulDep;
+         vector<double> satDep;
+         vector<double> bd;
+         vector<double> eswCap;           // extractable soil water capacity
+         vector<double> ll;
+         vector<double> ll15Dep;
+         vector<double> kl;
+         vector<double> xf;
+         vector<double> llDep;
 
-   float profileDepth;
-   int    nLayers;
+         double profileDepth;
+         int    nLayers;
 
-//  Variables  -----------------------------------------------------
+         //  Variables  -----------------------------------------------------
 
-   int   currentLayer;             // number of the layer that the roots are in now (starts at 0)
-   float lastLayerPropn;           // proportion of the currentLayer occupied
-   float totalAvail;
-   float totalAvailPot;
-   float totalSupply;
-   float AccTotalSupply;
-   float dltUptake;
-   float totalUptake;
-   float eswTot;
+         int   currentLayer;             // number of the layer that the roots are in now (starts at 0)
+         double lastLayerPropn;           // proportion of the currentLayer occupied
+         double totalAvail;
+         double totalAvailPot;
+         double totalSupply;
+         double AccTotalSupply;
+         double dltUptake;
+         double totalUptake;
+         double eswTot;
 
-   vector<float> available;
-   vector<float> availablePot;
-   vector<float> supply;
-   vector<float> swUptake;
-   vector<float> swDep;
-   vector<float> esw;              // extractable soil water  (swDep[i] - llDep[i])
-   vector<float> swDef;
-   float ep;
-   // uptake
-   vector<float> dltSwDep;
+         vector<double> available;
+         vector<double> availablePot;
+         vector<double> supply;
+         vector<double> swUptake;
+         vector<double> swDep;
+         vector<double> esw;              // extractable soil water  (swDep[i] - llDep[i])
+         vector<double> swDef;
+         double ep;
+         // uptake
+         vector<double> dltSwDep;
 
+         double swDemand;
+         double sdRatio;
+         // stresses
+         double photoStress;
+         double phenoStress;
+         double expansionStress;
 
-   float swDemand;
-   float sdRatio;
-   // stresses
-   float photoStress;
-   float phenoStress;
-   float expansionStress;
+         double rootDepth;
 
-   float rootDepth;
+         vector<double> photoStressTotal;
+         vector<double> phenoStressTotal;
+         vector<double> expanStressTotal;
 
-   vector<float> photoStressTotal;
-   vector<float> phenoStressTotal;
-   vector<float> expanStressTotal;
+         // Private Methods -------------------------------------------------------
+         void  doRegistrations(void);
+         void  initialize(void);
+         void  calcAvailable(void);
+         void  calcAvailablePot(void);
+         void  calcSupply(void);
+         void  setOtherVariables (void);
+         double calcSwDefPheno(void);
+         double calcSwDefPhoto(void);
+         double calcSwDefExpansion(void);
+         double layerProportion(void);
 
-   
-// Private Methods -------------------------------------------------------
-   void  doRegistrations(void);
-   void  initialize(void);
-   void  calcAvailable(void);
-   float layerProportion(void);
-   void  calcAvailablePot(void);
-   void  calcSupply(void);
-   float calcSwDefPheno(void);
-   float calcSwDefPhoto(void);
-   float calcSwDefExpansion(void);
-
-   void   setOtherVariables (void);
-
-// public Methods -------------------------------------------------------
-   public:
-   // plant
-   Water(ScienceAPI2 &, Plant *p);
-   ~Water();
-
-   // plant
-   void  calcDailySupply(void);
-   void  calcStresses(void);
-   void  calcUptake(void);
-   void  getOtherVariables (void);
-   void  readParams (void);
-   void  readLL(void);
-   void  updateVars(void);
-   void  process(void);
-   float calcDemand(void);
-
-   void  onNewProfile(NewProfileType &);
-
-   // Roots
-   float swAvailRatio(int currentLayer);
-
-   // Phenology
-   float calcPeswSeed(void);
-   float phenologyStress(void){return phenoStress;}
+			// process
+         void  calcDailySupply(void);
+         void  calcStresses(void);
+         void  calcUptake(void);
+         void  getOtherVariables (void);
 
 
-   float photosynthesisStress(void){return photoStress;}
-   float getExpansionStress(void){return expansionStress;}
-   float getTotalSupply(void)const{return totalSupply;}
-   float getSdRatio(void)const{return sdRatio;}
-   float swAvailFracLayer(int layer);
-   float swDepLayer(int layer){return swDep[layer];}
-   float dltSwDepLayer(int layer){return dltSwDep[layer];}
 
-   //Registration functions
-   void  getEswLayers(vector<float> &);
-   void  getSwDefLayers(vector<float> &);
-   void  getSwUptakeLayers(vector<float> &);
-   void  getEpLayers(vector<float> &);
-   void  getllDep(vector<float> &);
+         // public Methods -------------------------------------------------------
+      public:
+         // plant
+         Water(ScienceAPI2 &, Plant *p);
+         ~Water();
 
-   float getESW(void){return sumVector(esw);}
-   float getESWAvail(void)const{return totalAvail;}
-   float sumPhotoStressTotal(int from, int to);
-   float sumExpanStressTotal(int from, int to);
+         // plant
+         void  onNewProfile(NewProfileType &);
+         void  readParams (void);
+         void  readLL(void);
+         void  updateVars(void);
+         void  process(void);
+         double calcDemand(void);
 
-   // phenology
-   void  phenologyEvent(int){};
+         // Roots
+         double swAvailRatio(int currentLayer);
 
-	float getDemand(void)const{return swDemand;}
-   };
+         // Phenology
+         double calcPeswSeed(void);
+         double phenologyStress(void){return phenoStress;}
+         double photosynthesisStress(void){return photoStress;}
+         double getExpansionStress(void){return expansionStress;}
+         double getTotalSupply(void)const{return totalSupply;}
+         double getSdRatio(void)const{return sdRatio;}
+         double swAvailFracLayer(int layer);
+         double swDepLayer(int layer){return swDep[layer];}
+         double dltSwDepLayer(int layer){return dltSwDep[layer];}
 
+         //Registration functions
+         void  getEswLayers(vector<float>&);
+         void  getSwDefLayers(vector<float>&);
+         void  getSwUptakeLayers(vector<float>&);
+         void  getEpLayers(vector<float>&);
+         void  getllDep(vector<float>&);
+         double getESW(void){return sumVector(esw);}
+         double getESWAvail(void)const{return totalAvail;}
+         double sumPhotoStressTotal(int, int);
+         double sumExpanStressTotal(int, int);
 
-//------------------------------------------------------------------------------------------------
-}
+         // phenology
+         void  phenologyEvent(int){};
+         double getDemand(void)const{return swDemand;}
+      };
+   //------------------------------------------------------------------------------------------------
+   }
 #endif
