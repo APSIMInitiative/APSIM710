@@ -1606,9 +1606,9 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
      :                                , num_temp_tt)
 
 
-      min_temp = temp_min(current_stage)
-      opt_temp = temp_opt(current_stage)
-      max_temp = temp_max(current_stage)
+      min_temp = temp_min(INT(current_stage))
+      opt_temp = temp_opt(INT(current_stage))
+      max_temp = temp_max(INT(current_stage))
 
       !if above ground, use air temperature (for 3hour interpolation below)
       if (current_stage .ge. switch_stage) then

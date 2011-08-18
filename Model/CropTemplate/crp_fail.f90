@@ -1,4 +1,9 @@
       Module crp_failModule
+      use ComponentInterfaceModule
+      use ConstantsModule
+      use dataModule
+      use scienceModule
+      use errorModule
 
       contains
 
@@ -10,11 +15,6 @@
 !     ===========================================================
 
 !      dll_export crop_failure_germination
-      use ConstantsModule            ! new_line
-      use ComponentInterfaceModule
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -81,10 +81,6 @@
 !     ===========================================================
 
 !      dll_export crop_failure_emergence
-      use ConstantsModule            ! new_line
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -153,10 +149,6 @@
 !     ===========================================================
 
 !      dll_export crop_failure_leaf_senescence
-      use ConstantsModule
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -195,7 +187,7 @@
 
          dlt_plants = - g_plants
 
-         write (string, '(3a)')          &
+         write (string, '(a)')          &
                 ' crop failure because of total leaf senescence.'
          call write_string (string)
 
@@ -220,9 +212,6 @@
 !     ===========================================================
 
 !      dll_export crop_death_drought
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -303,9 +292,6 @@
                     , dlt_plants)
 !     ===========================================================
 
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -391,8 +377,6 @@
 
 !      dll_export soil_temp_weighted_3days
       use datemodule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -463,8 +447,6 @@
 !     ===========================================================
 
 !      dll_export crop_death_actual
-      use ConstantsModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
