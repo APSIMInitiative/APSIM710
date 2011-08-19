@@ -6,7 +6,7 @@ F95DEBUGFLAGS=-g
 
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-F95 =  /usr/bin/gfortran
+FC =  /usr/bin/gfortran
 
 # add suffix to all user libraries
 LIBS := -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) -ldl $(LDDEBUGFLAGS)
@@ -40,10 +40,10 @@ all: $(APSIM)/Model/$(PROJECT).a
 endif
 
 %.o: %.for
-	$(F95) -x f77-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(FC) -x f77-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o: %.f90
-	$(F95) -x f95-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+	$(FC) -x f95-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o:    %.cpp
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<

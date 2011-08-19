@@ -73,7 +73,7 @@ namespace ConToApsim
       /// </summary>
       private static void ConvertConToSims(string ConFileName)
          {
-         string Exe = Configuration.RemoveMacros("%apsim%\\Model\\ConToSim.exe");
+         string Exe = Configuration.RemoveMacros(Path.Combine("%apsim%", "Model", "ConToSim.exe"));
          Process ConToSim = Utility.RunProcess(Exe, Path.GetFileName(ConFileName), Path.GetDirectoryName(ConFileName));
          Utility.CheckProcessExitedProperly(ConToSim);
          }
