@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
+using System.Linq;
 
 public partial class SurfaceOrganicMatter : Instance
 {
     [Link]
     Paddock mypaddock;
-
-    [Link]
-    Irrigation irr_module;
 
     #region BensParams
 
@@ -163,6 +161,17 @@ public partial class SurfaceOrganicMatter : Instance
     [Units("")]
     string pond_active = null;
 
+    [Input(true)]
+    [Units("")]
+    float[] labile_p = null;
+
+    [Input(true)]
+    [Units("")]
+    float irrigation = float.NaN;
+
+    [Input]
+    DateTime Today;
+
     /*
     [Input(true)]
     [Units("")]
@@ -189,134 +198,58 @@ public partial class SurfaceOrganicMatter : Instance
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_wt
-    {
-        get
-        {
-            float temp = 0;
+    public float surfaceom_wt { get { return SumSurfOMStandingLying(g.SurfOM, x => x.amount); } }
 
-            //if (g.num_surfom > 0)
-                //Console.WriteLine("Success");
+    public float carbonbalance { get { return 0 - (surfaceom_c - g.DailyInitialC); } }
 
-            for (int i = 0; i < g.num_surfom; i++)
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp += g.SurfOM[i].Standing[j].amount + g.SurfOM[i].Lying[j].amount;
-            return temp;
-        }
-    }
+    public float nitrogenbalance { get { return 0 - (surfaceom_n - g.DailyInitialN); } }
 
     ///<summary>
     ///Total mass of all surface organic carbon
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_c
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp += g.SurfOM[i].Standing[j].C + g.SurfOM[i].Lying[j].C;
-            return temp;
-        }
-    }
+    public float surfaceom_c { get { return SumSurfOMStandingLying(g.SurfOM, x => x.C); } }
 
     ///<summary>
     ///Total mass of all surface organic nitrogen
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_n
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp += g.SurfOM[i].Standing[j].N + g.SurfOM[i].Lying[j].N;
-            return temp;
-        }
-    }
+    public float surfaceom_n { get { return SumSurfOMStandingLying(g.SurfOM, x => x.N); } }
 
     ///<summary>
     ///Total mass of all surface organic phosphor
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_p
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp += g.SurfOM[i].Standing[j].P + g.SurfOM[i].Lying[j].P;
-            return temp;
-        }
-    }
+    public float surfaceom_p { get { return SumSurfOMStandingLying(g.SurfOM, x => x.P); } }
 
     [Output]
     [Units("")]
-    public float surfaceom_ashalk
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp += g.SurfOM[i].Standing[j].AshAlk + g.SurfOM[i].Lying[j].AshAlk;
-            return temp;
-        }
-    }
+    public float surfaceom_ashalk { get { return SumSurfOMStandingLying(g.SurfOM, x => x.P); } }
 
     ///<summary>
     ///Total mass of nitrate
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_no3
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                temp += g.SurfOM[i].no3;
-            return temp;
-        }
-    }
+    public float surfaceom_no3 { get { return SumSurfOM(g.SurfOM, x => x.no3); } }
 
     ///<summary>
     ///Total mass of ammonium
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_nh4
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                temp += g.SurfOM[i].nh4;
-            return temp;
-        }
-    }
+    public float surfaceom_nh4 { get { return SumSurfOM(g.SurfOM, x => x.nh4); } }
+
 
     ///<summary>
     ///Total mass of labile phosphorus
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float surfaceom_labile_p
-    {
-        get
-        {
-            float temp = 0;
-            for (int i = 0; i < g.num_surfom; i++)
-                temp += g.SurfOM[i].po4;
-            return temp;
-        }
-    }
+    public float surfaceom_labile_p { get { return SumSurfOM(g.SurfOM, x => x.po4); } }
 
     ///<summary>
     ///Fraction of ground covered by all surface OMs
@@ -352,42 +285,14 @@ public partial class SurfaceOrganicMatter : Instance
     ///</summary>
     [Output]
     [Units("")]
-    public float surfaceom_wt_rice
-    {
-        get
-        {
-            float temp = 0;
-            int SOMNo = surfom_number("rice");
-            if (SOMNo > 0)
-                for (int i = 0; i < g.SurfOM[SOMNo].Standing.Length;i++ )
-                    temp += g.SurfOM[SOMNo].Standing[i].amount + g.SurfOM[SOMNo].Lying[i].amount;
-            else
-                throw new Exception("No organic matter called 'rice' present");
-
-            return temp;
-        }
-    }
+    public float surfaceom_wt_rice { get { return surfaceom_wt_("rice", x => x.amount); } }
 
     ///<summary>
     ///Mass of organic matter named algae
     ///</summary>
     [Output]
     [Units("")]
-    public float surfaceom_wt_algae     
-    {
-        get
-        {
-            float temp = 0;
-            int SOMNo = surfom_number("algae");
-            if (SOMNo > 0)
-                for (int i = 0; i < g.SurfOM[SOMNo].Standing.Length;i++ )
-                    temp += g.SurfOM[SOMNo].Standing[i].amount + g.SurfOM[SOMNo].Lying[i].amount;
-            else
-                throw new Exception("No organic matter called 'rice' present");
-
-            return temp;
-        }
-    }
+    public float surfaceom_wt_algae { get { return surfaceom_wt_("algae", x => x.amount); } }
 
     ///<summary>
     ///Mass of organic matter in all pools
@@ -398,15 +303,12 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-            {
-                temp[i] = 0;
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp[i] += g.SurfOM[i].Standing[j].amount + g.SurfOM[i].Lying[j].amount;
-            }
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>
+                (
+                x => 
+                    SumOMFractionType(x.Standing, y => y.amount) + 
+                    SumOMFractionType(x.Lying, y => y.amount)
+                ).ToArray<float>();
         }
     }
 
@@ -419,15 +321,12 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-            {
-                temp[i] = 0;
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp[i] += g.SurfOM[i].Standing[j].C + g.SurfOM[i].Lying[j].C;
-            }
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>
+                (
+                x =>
+                    SumOMFractionType(x.Standing, y => y.C) +
+                    SumOMFractionType(x.Lying, y => y.C)
+                ).ToArray<float>();
         }
     }
 
@@ -436,19 +335,16 @@ public partial class SurfaceOrganicMatter : Instance
     ///</summary>
     [Output]
     [Units("kg/ha")]
-    public float[] surfaceom_n_all     
+    public float[] surfaceom_n_all
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-            {
-                temp[i] = 0;
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp[i] += g.SurfOM[i].Standing[j].N + g.SurfOM[i].Lying[j].N;
-            }
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>
+                (
+                x =>
+                    SumOMFractionType(x.Standing, y => y.N) +
+                    SumOMFractionType(x.Lying, y => y.N)
+                ).ToArray<float>();
         }
     }
 
@@ -461,15 +357,12 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-            {
-                temp[i] = 0;
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp[i] += g.SurfOM[i].Standing[j].P + g.SurfOM[i].Lying[j].P;
-            }
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>
+                (
+                x =>
+                    SumOMFractionType(x.Standing, y => y.P) +
+                    SumOMFractionType(x.Lying, y => y.P)
+                ).ToArray<float>();
         }
     }
 
@@ -479,15 +372,12 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-            {
-                temp[i] = 0;
-                for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-                    temp[i] += g.SurfOM[i].Standing[j].AshAlk + g.SurfOM[i].Lying[j].AshAlk;
-            }
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>
+                (
+                x =>
+                    SumOMFractionType(x.Standing, y => y.AshAlk) +
+                    SumOMFractionType(x.Lying, y => y.AshAlk)
+                ).ToArray<float>();
         }
     }
 
@@ -500,11 +390,7 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                    temp[i] = g.SurfOM[i].no3;
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>(x => x.no3).ToArray<float>();
         }
     }
 
@@ -517,11 +403,7 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].nh4;
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>(x => x.nh4).ToArray<float>();
         }
     }
 
@@ -534,166 +416,11 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].po4;
-
-            return temp;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>(x => x.nh4).ToArray<float>();
         }
     }
 
-    ///<summary>
-    ///Mass of organic carbon in all pools in fpool1
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_c1_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[1].C + g.SurfOM[i].Lying[1].C;
 
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic carbon in all pools in fpool2
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_c2_all 
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[2].C + g.SurfOM[i].Lying[2].C;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic carbon in all pools in fpool3
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_c3_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[3].C + g.SurfOM[i].Lying[3].C;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic nitrogen in all pools in fpool1
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_n1_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[1].N + g.SurfOM[i].Lying[1].N;
-
-            return temp;
-        }
-    }
-    
-    ///<summary>
-    ///Mass of organic nitrogen in all pools in fpool2
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_n2_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[2].N + g.SurfOM[i].Lying[2].N;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic nitrogen in all pools in fpool3
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_n3_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[3].N + g.SurfOM[i].Lying[3].N;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic phosphorous in all pools in fpool1
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_p1_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[1].P + g.SurfOM[i].Lying[1].P;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic phosphorous in all pools in fpool2
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_p2_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[2].P + g.SurfOM[i].Lying[2].P;
-
-            return temp;
-        }
-    }
-
-    ///<summary>
-    ///Mass of organic phosphorous in all pools in fpool3
-    ///</summary>
-    [Output]
-    [Units("")]
-    public float[] surfaceom_p3_all
-    {
-        get
-        {
-            float[] temp = new float[g.num_surfom];
-            for (int i = 0; i < g.num_surfom; i++)
-                temp[i] = g.SurfOM[i].Standing[3].P + g.SurfOM[i].Lying[3].P;
-
-            return temp;
-        }
-    }
 
     ///<summary>
     ///Potential organic C decomposition in all pools
@@ -752,11 +479,7 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] result = new float[g.num_surfom];
-            for (int SOMNo = 0; SOMNo < g.num_surfom;SOMNo++ )
-                result[SOMNo] = divide(g.SurfOM[SOMNo].Standing[1].amount, (g.SurfOM[SOMNo].Standing[1].amount + g.SurfOM[SOMNo].Lying[1].amount), 0);
-
-            return result;
+            return g.SurfOM.Select<SurfOrganicMatterType, float>(x => divide(x.Standing[0].amount, x.Standing[0].amount + x.Lying[0].amount, 0)).ToArray<float>();
         }
     }
 
@@ -769,9 +492,9 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] result = new float[g.num_surfom];
-            for (int SOMNo = 0; SOMNo < g.num_surfom; SOMNo++)
-                result[SOMNo] = surfom_cover(SOMNo);
+            float[] result = new float[g.SurfOM.Count];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = surfom_cover(i);
 
             return result;
         }
@@ -786,9 +509,9 @@ public partial class SurfaceOrganicMatter : Instance
     {
         get
         {
-            float[] result = new float[g.num_surfom];
-            for (int SOMNo = 0; SOMNo < g.num_surfom; SOMNo++)
-                result[SOMNo] = surfom_cnrf(SOMNo);
+            float[] result = new float[g.SurfOM.Count];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = surfom_cnrf(i);
 
             return result;
         }

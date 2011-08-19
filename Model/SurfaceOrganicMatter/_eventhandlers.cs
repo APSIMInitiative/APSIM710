@@ -6,32 +6,19 @@ public partial class SurfaceOrganicMatter : Instance
 {
 
     [EventHandler]
-    public void OnTick()
-    {
-        g.DailyInitialC = 0;
-        g.DailyInitialN = 0;
-        for (int i = 0; i < g.num_surfom; i++)
-            for (int j = 0; j < g.SurfOM[i].Standing.Length; j++)
-            {
-                g.DailyInitialC += g.SurfOM[i].Standing[j].C + g.SurfOM[i].Lying[j].C;
-                g.DailyInitialN += g.SurfOM[i].Standing[j].N + g.SurfOM[i].Lying[j].N;
-            }
-    }
-    
-    [EventHandler]
-    public void OnTillage(TillageType data) 
-    {
-        surfom_tillage(data);
-    }
+    public void OnTick() { surfaceOM_ONtick(); }
 
     [EventHandler]
-    public void OnTillage_single(Tillage_singleType data) 
-    {
-        surfom_tillage_single(data);
-    }
+    public void OnTillage(TillageType data) { 
+        surfom_tillage(data); }
 
     [EventHandler]
-    public void OnAdd_surfaceom(Add_SurfaceOMType data) { surfom_add_surfom(data); }
+    public void OnTillage_single(Tillage_singleType data) {
+        surfom_tillage_single(data); }
+
+    [EventHandler]
+    public void OnAdd_surfaceom(Add_surfaceomType data) { 
+        surfom_add_surfom(data); }
     
     [EventHandler]
     public void OnInit1() { surfom_Reset(); }
@@ -45,85 +32,25 @@ public partial class SurfaceOrganicMatter : Instance
     [EventHandler]
     public void OnSum_report() { surfom_Sum_Report(); }
 
-    /// <summary>
-    /// Calculates surfom removal as a result of remove_surfom message
-    /// </summary>
-    /// <param name="variant"></param>
     [EventHandler]
-    public void OnRemove_surfaceOM(SurfaceOrganicMatterType SOM)
-    {
-        surfom_remove_surfom(SOM);
-    }
+    public void OnRemove_surfaceOM(SurfaceOrganicMatterType SOM) { surfom_remove_surfom(SOM); }
 
     [EventHandler]
-    public void OnNewmet(NewMetType newmetdata)
-    {
-        g.MetData = newmetdata;
-    }
+    public void OnNewmet(NewMetType newmetdata) { g.MetData = newmetdata; }
    
     [EventHandler]
     public void OnIrrigated() { surfom_ONirrigated(); }
-    
+
     [EventHandler]
-    public void OnCrop_chopped() { Console.WriteLine("Crop chopped"); surfom_ON_Crop_chopped(); }
+    public void OnCrop_chopped(Crop_ChoppedType data) { Console.WriteLine("Crop chopped"); Console.WriteLine(Today); }//surfom_ON_Crop_chopped(null); }
 
-    /// <summary>
-    /// Get information on surfom added from the crops
-    /// </summary>
-    /// <param name="variant"></param>
     [EventHandler]
-    public void OnBiomassRemoved(BiomassRemovedType BiomassRemoved)
-    {
-
-        float surfom_added;	//amount of residue added (kg/ha)
-        float surfom_N_added;	//amount of residue N added (kg/ha)
-        float surfom_P_added;	//amount of residue N added (kg/ha)
-
-        float sum_temp = 0;
-        for (int i = 0; i < BiomassRemoved.fraction_to_residue.Length; i++)
-            sum_temp += BiomassRemoved.fraction_to_residue[i];
-
-        if (sum_temp == 0)
-        {
-            //no surfom in this stuff;
-        }
-        else
-        {
-            //Find the amount of surfom to be added today;
-            surfom_added = 0;
-            for (int i = 0; i < BiomassRemoved.fraction_to_residue.Length; i++)
-                surfom_added += BiomassRemoved.dlt_crop_dm[i] * BiomassRemoved.fraction_to_residue[i];
-
-            if (surfom_added > 0.0)
-            {
-                //Find the amount of N & added in surfom today;
-
-                surfom_N_added = 0;
-                surfom_P_added = 0;
-
-                for (int i = 0; i < BiomassRemoved.dlt_dm_p.Length; i++)
-                {
-                    surfom_N_added += BiomassRemoved.dlt_dm_p[i] * BiomassRemoved.fraction_to_residue[i];
-                    surfom_N_added += BiomassRemoved.dlt_dm_n[i] * BiomassRemoved.fraction_to_residue[i];
-                }
-
-                AddSurfaceOM(surfom_added, surfom_N_added, surfom_P_added, BiomassRemoved.crop_type);
-
-            }
-            else
-            {
-                //nothing to add;
-            }
-
-        }
-
-    }
+    public void OnBiomassRemoved(BiomassRemovedType BiomassRemoved) { SurfOMOnBiomassRemoved(BiomassRemoved); }
     
     [EventHandler]
     public void OnProcess()
     {
         surfom_get_other_variables();
-
         surfom_Process();
         //catch (Exception e) { }
     }
@@ -132,17 +59,10 @@ public partial class SurfaceOrganicMatter : Instance
     public void OnPost() { }
 
     [EventHandler]
-    public void OnActualresiduedecompositioncalculated(SurfaceOrganicMatterDecompType SOMDecomp)
-    {
-        surfom_decompose_surfom(SOMDecomp);
-    }
-
+    public void OnActualresiduedecompositioncalculated(SurfaceOrganicMatterDecompType SOMDecomp) { surfom_decompose_surfom(SOMDecomp); }
 
     [EventHandler]
-    public void OnProp_up()
-    {
-        surfom_prop_up();
-    }
+    public void OnProp_up(Prop_upType data) { surfom_prop_up(data); }
 
    
 }

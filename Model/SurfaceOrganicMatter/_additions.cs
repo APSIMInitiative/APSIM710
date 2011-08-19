@@ -308,5 +308,34 @@ public partial class SurfaceOrganicMatter : Instance
 
         return result;
     }
+
+    float SumSurfOMStandingLying(List<SurfOrganicMatterType> var, Func<OMFractionType, float> func)
+    {
+        return var.Sum<SurfOrganicMatterType>(x => SumSurfOMStandingLying(x, func));
+    }
+
+    float SumSurfOMStandingLying(SurfOrganicMatterType var, Func<OMFractionType, float> func)
+    {
+        return var.Lying.Sum<OMFractionType>(func) + var.Standing.Sum<OMFractionType>(func);
+    }
+
+    float SumSurfOM(List<SurfOrganicMatterType> var, Func<SurfOrganicMatterType, float> func)
+    {
+        return var.Sum<SurfOrganicMatterType>(func);
+    }
+
+    float SumOMFractionType(OMFractionType[] var, Func<OMFractionType, float> func)
+    {
+        return var.Sum<OMFractionType>(func);
+    }
+
+    float surfaceom_wt_(string type, Func<OMFractionType, float> func)
+    {
+        int SOMNo = surfom_number(type);
+        if (SOMNo > 0)
+            return g.SurfOM.Sum<SurfOrganicMatterType>(x => x.Lying.Sum<OMFractionType>(func) + x.Standing.Sum<OMFractionType>(func));
+        else
+            throw new Exception("No organic matter called " + type + " present");
+    }
 }
 
