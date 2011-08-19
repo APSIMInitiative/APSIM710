@@ -1738,12 +1738,14 @@
      :                               , num_layers)
 
       elseif (variable_name .eq. 'root_weight_layer') then
+         num_layers = count_of_real_vals (p%tkl, max_layer)
          call respond2get_real_array (variable_name
      :                               , '(kg/ha)'
      :                               , g%root_weight_layer
      :                               , num_layers)
 
       elseif (variable_name .eq. 'root_length_layer') then
+         num_layers = count_of_real_vals (p%tkl, max_layer)
          call respond2get_real_array (variable_name
      :                               , '()'
      :                               , g%root_length_layer
