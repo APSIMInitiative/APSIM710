@@ -32,7 +32,7 @@ public class LeafDeathPhase2 : Phase
       //else
       //   return 0;
 
-      if (Leaf.DeadNodeNo >= Leaf.PrimordiaNo)
+      if (Leaf.DeadNodeNo >= Leaf.FinalLeafNo)
           return 0.00001;
       else
           return 0;
@@ -46,7 +46,7 @@ public class LeafDeathPhase2 : Phase
    {
        get
        {
-           double F = (Leaf.DeadNodeNo - DeadNodeNoAtStart) / (Leaf.PrimordiaNo - DeadNodeNoAtStart);
+           double F = (Leaf.DeadNodeNo - DeadNodeNoAtStart) / (Leaf.FinalLeafNo - DeadNodeNoAtStart);
            if (F < 0) F = 0;
            if (F > 1) F = 1;
            return F;

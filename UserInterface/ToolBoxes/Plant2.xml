@@ -956,13 +956,22 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
 		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
            <FinalNodeNoEstimate type="text" description="FinalNodeNoEstimate">40</FinalNodeNoEstimate>
 	</FinalNodeNumber>
-    <SIRIUSFinalLeafNumber>
+	<TerminateFinalNodeNumber name = "TerminateFinalNodeNumber">
 	  <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">0.4</PhotoperiodSensitivity>
       <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-      <Twilight type="text" description="Twilight">-6.0</Twilight>
-	</SIRIUSFinalLeafNumber>
-	<LeafPhaseLookupFunction>
-      <Phase1End>
+      <VernalisationType>0</VernalisationType>
+      <VernalisationIntercept>0.012</VernalisationIntercept>
+      <VernalisationSlope>0.001</VernalisationSlope>
+      <PhotoperiodFunction name="Photoperiod">
+        <Twilight type="text" description="Twilight">-6</Twilight>
+      </PhotoperiodFunction>
+	</TerminateFinalNodeNumber>
+	<LeafStagePhyllochronFunction>
+      <Start description="Start stage name">
+      </Start>
+      <End description="End stage name">
+      </End>
+	  <Phase1End>
       </Phase1End>
       <Phase1Multiplier>
       </Phase1Multiplier>
@@ -976,7 +985,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Value type="text">
         </Value>
       </Constant>
-    </LeafPhaseLookupFunction>
+    </LeafStagePhyllochronFunction>
     <PhaseBasedSwitch>
       <Start>
       </Start>

@@ -13,6 +13,7 @@ public class Leaf : BaseOrgan, AboveGround
     protected double EP = 0;
     [Param]
     public List<LeafCohort> Leaves;
+    protected double _FinalLeafNumber = 0;
     protected double _PrimordiaNo = 0;
     [Link]
     protected Plant Plant = null;
@@ -71,17 +72,17 @@ public class Leaf : BaseOrgan, AboveGround
     public double StemPopulation = 0;
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;
-    protected double MaxNodeNo = 0;
+    public double MaxNodeNo = 0;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
  #endregion
 
  #region Outputs
     [Output]
-    public double PrimordiaNo { get {return _PrimordiaNo; } }
-    //[Output]
-    //public double FinalNodeNo { get { return MaxNodeNo; } }
+    public double PrimordiaNo { get { return _PrimordiaNo; } }
     [Output]
-    public double RemainingNodeNo { get { return _PrimordiaNo - NodeNo; } }
+    public double FinalLeafNo { get {return _FinalLeafNumber; } }
+    [Output]
+    public double RemainingNodeNo { get { return _FinalLeafNumber - NodeNo; } }
     [Output]
     public double PotentialGrowth { get { return DMDemand; } }
     [Output]
@@ -427,9 +428,10 @@ public class Leaf : BaseOrgan, AboveGround
         //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
 
         _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
+        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
         if (NodeAppearanceRate.Value > 0)
             NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
-        NodeNo = Math.Min(NodeNo, _PrimordiaNo);
+        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
 
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
@@ -505,7 +507,7 @@ public class Leaf : BaseOrgan, AboveGround
     public virtual void ZeroLeaves()
     {
         NodeNo = 0;
-        _PrimordiaNo = 0;
+        _FinalLeafNumber = 0;
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -780,7 +782,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         NodeNo = 0;
-        _PrimordiaNo = 0;
+        _FinalLeafNumber = 0;
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();

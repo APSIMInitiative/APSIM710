@@ -215,13 +215,15 @@ public class SIRIUSLeaf : Leaf, AboveGround
         //if (NodeInitiationRate.Value > 0)
         //    _PrimordiaNo = _PrimordiaNo + ThermalTime.Value / NodeInitiationRate.Value;
         //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
-        
+
         _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
+        FinalNodeNumber.UpdateFinalNodeVariables();
+        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
         DeltaNodeNumber = 0;
         if (NodeAppearanceRate.Value > 0)
             DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
             NodeNo += DeltaNodeNumber;
-        NodeNo = Math.Min(NodeNo, _PrimordiaNo);
+        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
 
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)

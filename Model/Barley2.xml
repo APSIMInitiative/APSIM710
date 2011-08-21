@@ -398,12 +398,12 @@
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
-        <SIRIUSLeafCohort name="Leaves[1]">
-           <Rank>1</Rank>
-           <Area>500</Area>
-           <Age>50</Age>
-        </SIRIUSLeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <SIRIUSLeafCohort name="Leaves[1]">
+          <Rank>1</Rank>
+          <Area>500</Area>
+          <Age>50</Age>
+        </SIRIUSLeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -429,19 +429,37 @@
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-		<FinalNodeNumber name = "FinalNodeNumber">
-		   <MaxNodeNo type="text" description="MaximumNodeNo">50</MaxNodeNo>
-		   <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-           <PhaseLookupValue name="NodeInitiationRate">
-             <Start>Emergence</Start>
-             <End>FloralInitiation</End>
-             <Constant name="Function">
-               <Value>95.0</Value>
-             </Constant>
-           </PhaseLookupValue>
-		   <TemperatureFunction shortcut="/Barley2/Model/Plant/Leaf/ThermalTime" />
+        <FinalNodeNumber>
+          <MaxNodeNo type="text" description="MaximumNodeNo">24</MaxNodeNo>
+          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">2</InitialLeafPrimordia>
+          <PhaseLookupValue name="NodeInitiationRate">
+            <Start type="text" description="Start">Germination</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <DivideFunction name="NodeInitiationRateFunction">
+              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
+              <Variable name="Phyllochron">
+                <VariableName type="text" description="Variable Name">Leaf.NodeAppearanceRate.BasePhyllochron.Value</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                 </Memo>
+              </Variable>
+              <Constant name="PrimordiaPerMainstemNode">
+                <Value type="text" description="Value">2</Value>
+              </Constant>
+            </DivideFunction>
+          </PhaseLookupValue>
+          <TemperatureFunction shortcut="/Barley2/Model/Plant/Leaf/ThermalTime" />
+          <TerminateFinalNodeNumber>
+            <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">0.6</PhotoperiodSensitivity>
+            <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
+            <VernalisationType type="text" description="VernalisationType">1</VernalisationType>
+            <VernalisationIntercept type="text" description="VernalisationIntercept">0.012</VernalisationIntercept>
+            <VernalisationSlope type="text" description="VernalisationSlope">0.001</VernalisationSlope>
+            <PhotoperiodFunction name="Photoperiod">
+              <Twilight type="text" description="Twilight">-6</Twilight>
+            </PhotoperiodFunction>
+          </TerminateFinalNodeNumber>
         </FinalNodeNumber>
-		<RUEModel name="Photosynthesis">
+        <RUEModel name="Photosynthesis">
           <Constant name="RUE">
             <Value type="text" description="Value">1.65</Value>
           </Constant>
@@ -491,17 +509,18 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <PhaseLookupValue name="NodeAppearanceRate">
+        <LeafStagePhyllochronFunction name="NodeAppearanceRate">
           <Start>Emergence</Start>
-          <End>Maturity</End>
-          <LinearInterpolationFunction name="Function">
-            <XProperty>Leaf.NodeNo</XProperty>
-            <XYPairs>
-              <XY> 1 95</XY>
-              <XY>30 95</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </PhaseLookupValue>
+          <End>FlagLeaf</End>
+          <Phase1End>2.0</Phase1End>
+          <Phase1Multiplier>0.75</Phase1Multiplier>
+          <Phase2End>8.0</Phase2End>
+          <Phase2Multiplier>1.0</Phase2Multiplier>
+          <Phase3Multiplier>1.3</Phase3Multiplier>
+          <Constant name="BasePhyllochron">
+            <Value type="text" description="Value">90</Value>
+          </Constant>
+        </LeafStagePhyllochronFunction>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
