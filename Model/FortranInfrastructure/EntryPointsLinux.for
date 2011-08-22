@@ -36,6 +36,7 @@
       function getInstance()
       implicit none
       ml_external getInstance
+!STDCALL(getInstance)
       integer,pointer :: getInstance
 
       integer, target :: ID
@@ -46,15 +47,32 @@
 
 
       subroutine getDescription(InitScript, Description)
+      use ComponentInterfaceModule
       implicit none
       ml_external getDescription, getDescriptionInternal
+!STDCALL(getDescription)
       integer InitScript, Description
       call getDescriptionInternal(InitScript, Description)
       end subroutine
 
       subroutine getDescriptionLength(InitScript, Length)
+      use ComponentInterfaceModule
       implicit none
       ml_external getDescriptionLength, getDescriptionLengthInternal
+!STDCALL(getDescriptionLength)
       integer InitScript, Length
       call getDescriptionLengthInternal(InitScript, Length)
+      end subroutine
+
+      subroutine Dispatch (Action, Data)
+      implicit none
+      ml_external Main, Dispatch
+!STDCALL(Dispatch)
+*+  Sub-Program Arguments
+      character Action*(*)            ! Message action to perform
+      character Data*(*)              ! Message data
+  
+      call Main(Action, Data)  
+
+      return
       end subroutine
