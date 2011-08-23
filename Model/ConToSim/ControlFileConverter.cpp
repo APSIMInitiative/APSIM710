@@ -86,12 +86,13 @@ void ControlFileConverter::go(const string& fileName)
 bool ControlFileConverter::convert(const string& fileName,
                                    XMLNode script,
                                    bool writeToStdOut)
-   {   string savedDirectory = getCurrentDirectory();
+   {
+   string savedDirectory = getCurrentDirectory();
    string fullFileName = fileName;
    if (fullFileName.find_first_of("\\/") == string::npos)
       {
       // no directory supplied - add current working directory.
-      fullFileName = getCurrentDirectory() + "/" + fileName;
+      fullFileName = getCurrentDirectory() + Path::dirDelim() + fileName;
       }
    typedef map<string, vector<string> > Output;
    Output output;
@@ -240,7 +241,8 @@ bool ControlFileConverter::evaluate(const string& expression, string& value) con
 
    // look for a macro.
    if (value.find("%controlfilenamebase%") != string::npos)
-      {       Replace_all(value, "%controlfilenamebase%",
+      {
+       Replace_all(value, "%controlfilenamebase%",
                   fileRoot(fileTail(con->getFileName())).c_str());
       return true;
       }

@@ -57,10 +57,15 @@ bool unpackFromApsimVariant(MessageData& messageData, const string& variableName
    return found;
    }
 
+bool IsVarFieldName(const std::string& name)
+{
+	return ((name != "") &&	(name.substr(0,5) != "param" || name.substr(6,1) != "_"));
+}
+
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, bool& data, const std::string& name)
    {
    data = false;
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
       return unpackFromApsimVariant(messageData, name, data);
    else
       unpack(messageData, data);
@@ -69,7 +74,7 @@ bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, bool&
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, int& data, const std::string& name)
    {
    data = 0;
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
       return unpackFromApsimVariant(messageData, name, data);
    else
       unpack(messageData, data);
@@ -78,7 +83,7 @@ bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, int& 
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, float& data, const std::string& name)
    {
    data = 0.0;
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
       return unpackFromApsimVariant(messageData, name, data);
    else
       unpack(messageData, data);
@@ -87,7 +92,7 @@ bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, float
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, double& data, const std::string& name)
    {
    data = 0.0;
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
       return unpackFromApsimVariant(messageData, name, data);
    else
       unpack(messageData, data);
@@ -96,15 +101,15 @@ bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, doubl
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, std::string& data, const std::string& name)
    {
    data = "";
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
-      return unpackFromApsimVariant(messageData, name, data);
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
+     return unpackFromApsimVariant(messageData, name, data);
    else
       unpack(messageData, data);
    return true;
    }
 bool EXPORT unpackField(MessageData& messageData, const std::string& ddml, char* data, const std::string& name)
    {
-   if (ddml.find("name=\"param1_numbytes\"") != string::npos)
+   if (ddml.find("name=\"param1_numbytes\"") != string::npos && IsVarFieldName(name))
       {
       string wrapper;
       bool found = unpackFromApsimVariant(messageData, name, wrapper);

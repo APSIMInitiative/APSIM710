@@ -1052,7 +1052,7 @@ namespace CMPServices
                     aDriver = (TDriverInfo)driverList[(int)driverID];
                     if (!aDriver.checkCompatibility(providerID, sDDML))
                     {
-                        string errorMsg = string.Format("{0}: Type of value passed for driving variable {1} is incompatible.", FName, driverID);
+                        string errorMsg = string.Format("{0}: Type of value passed for driving variable {1} ({2}) is incompatible.", FName, driverID, aDriver.sDescr);
                         throw (new TypeMisMatchException(errorMsg));
                     }
 
@@ -1152,7 +1152,7 @@ namespace CMPServices
 
             if (!bValid)
             {                                           //if Simlation structure is invalid report the error
-                sMessage = new StringBuilder("driving property ");
+                sMessage = new StringBuilder("driving property '");
                 sMessage.Append(driverInfo.Name);
                 sMessage.Append("' ");
 
