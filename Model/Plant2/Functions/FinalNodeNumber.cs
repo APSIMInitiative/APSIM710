@@ -24,19 +24,6 @@ public class FinalNodeNumber : Instance
     //Class data members
     private double _PrimordiaNumber = 0;
 
-    [Output]
-    public double ApexThermaltime
-    {
-        get
-        {
-            return ThermalTime.Value;
-        }
-    }
-
-    //public override void Initialising()
-    //{
-    //    _PrimordiaNumber = InitialLeafPrimordia;
-    //}
     public void UpdateFinalNodeVariables()
     {
         if (TerminateFinalNodeNumber != null)

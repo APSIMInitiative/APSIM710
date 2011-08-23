@@ -74,29 +74,12 @@
         </Memo>
       </SIRIUSArbitrator>
       <Phenology>
-        <VernalisationCW name="Vernalisation">
-          <StartStageForEffects>Emergence</StartStageForEffects>
-          <EndStageForEffects>FloralInitiation</EndStageForEffects>
-          <StartStageForCumulativeVD>Germination</StartStageForCumulativeVD>
-          <EndStageForCumulativeVD>FloralInitiation</EndStageForCumulativeVD>
-          <VernSens>1.5</VernSens>
-          <PhotopSens>3.0</PhotopSens>
-          <TemperatureFunction name="VDModel">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>2 1</XY>
-              <XY>15 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
-          <PhotoperiodFunction name="Photoperiod">
-            <Twilight type="text" description="Twilight">-6</Twilight>
-          </PhotoperiodFunction>
-        </VernalisationCW>
         <TemperatureFunction name="ThermalTime">
+          <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>26 26</XY>
-            <XY>34 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
           </XYPairs>
         </TemperatureFunction>
         <GerminatingPhase name="Germinating">
@@ -108,71 +91,50 @@
           <End>Emergence</End>
           <ShootLag units="oCd" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
           <ShootRate units="oCd/mm" description="Growing deg day increase with depth for coleoptile">1.50</ShootRate>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
+            <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
             <XYPairs>
               <XY>0 0</XY>
-              <XY>26 26</XY>
-              <XY>34 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
+          </TemperatureFunction>
         </EmergingPhase>
-        <GenericPhase name="Inductive">
+        <ObligateVernalisationPhase name="Inductive">
           <Start>Emergence</Start>
           <End>FloralInitiation</End>
           <Constant name="Target">
-            <Value>401</Value>
+            <Value>1.0</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
-            <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <MinimumFunction name="Stress">
-            <Property>Phenology.Vernalisation.VernEff</Property>
-            <Property>Phenology.Vernalisation.PhotopEff</Property>
-          </MinimumFunction>
-        </GenericPhase>
-        <GenericPhase name="FloralInitiationToFlagLeaf">
+          <Variable name="VernalisationIndex">
+            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.VernalisationIndex</VariableName>
+          </Variable>
+        </ObligateVernalisationPhase>
+        <LeafAppearancePhase2 name="FloralInitiationToFlagLeaf">
           <Start>FloralInitiation</Start>
           <End>FlagLeaf</End>
-          <Constant name="Target">
-            <Value>222</Value>
-          </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
-          <MinimumFunction name="Stress">
-            <Property>Phenology.Vernalisation.VernEff</Property>
-            <Property>Phenology.Vernalisation.PhotopEff</Property>
-          </MinimumFunction>
-        </GenericPhase>
+          </TemperatureFunction>
+        </LeafAppearancePhase2>
         <GenericPhase name="FlagLeafToFlowering">
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
             <Value>333</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
-          <MinimumFunction name="Stress">
-            <Property>Phenology.Vernalisation.VernEff</Property>
-            <Property>Phenology.Vernalisation.PhotopEff</Property>
-          </MinimumFunction>
+          </TemperatureFunction>
         </GenericPhase>
         <GenericPhase name="FloweringToGrainFilling">
           <Start>Flowering</Start>
@@ -180,14 +142,13 @@
           <Constant name="Target">
             <Value>120</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
+          </TemperatureFunction>
         </GenericPhase>
         <GenericPhase name="GrainFilling">
           <Start>StartGrainFill</Start>
@@ -195,14 +156,13 @@
           <Constant name="Target">
             <Value>545</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
+          </TemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Maturing">
           <Start>EndGrainFill</Start>
@@ -210,14 +170,13 @@
           <Constant name="Target">
             <Value>36</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
+          </TemperatureFunction>
         </GenericPhase>
         <GenericPhase name="MaturityToHarvestRipe">
           <Start>Maturity</Start>
@@ -225,23 +184,22 @@
           <Constant name="Target">
             <Value>1</Value>
           </Constant>
-          <LinearInterpolationFunction name="ThermalTime">
-            <XProperty>Phenology.Vernalisation.CrownTemperature</XProperty>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
-              <XY>26 26</XY>
-              <XY>34 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
-          </LinearInterpolationFunction>
+          </TemperatureFunction>
         </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start>HarvestRipe</Start>
           <End>Unused</End>
-          <TemperatureFunction>
+          <TemperatureFunction name="ThermalTime">
             <XYPairs>
-              <XY> 0 0</XY>
-              <XY> 26  26</XY>
-              <XY> 34  0</XY>
+              <XY>0 0</XY>
+              <XY>30 30</XY>
+              <XY>40 0</XY>
             </XYPairs>
           </TemperatureFunction>
         </EndPhase>
@@ -304,10 +262,10 @@
             <End>Maturity</End>
             <TemperatureFunction name="Function">
               <XYPairs>
-                <XY>0 0.0</XY>
-                <XY>25 0.000055</XY>
-                <XY>30 0.000055</XY>
-                <XY>35 0.000055</XY>
+                <XY>0 0</XY>
+                <XY>25 5.5E-05</XY>
+                <XY>30 5.5E-05</XY>
+                <XY>35 5.5E-05</XY>
               </XYPairs>
             </TemperatureFunction>
           </PhaseLookupValue>
@@ -434,7 +392,7 @@
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">2</InitialLeafPrimordia>
           <PhaseLookupValue name="NodeInitiationRate">
             <Start type="text" description="Start">Germination</Start>
-            <End type="text" description="End">FloralInitiation</End>
+            <End type="text" description="End">FlagLeaf</End>
             <DivideFunction name="NodeInitiationRateFunction">
               <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
               <Variable name="Phyllochron">
@@ -554,8 +512,8 @@
         <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY> 1   95.0</XY>
-            <XY> 10 190.0</XY>
+            <XY>1 95</XY>
+            <XY>10 190</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="LagDuration">

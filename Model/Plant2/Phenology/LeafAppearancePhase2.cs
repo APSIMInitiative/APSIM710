@@ -56,7 +56,7 @@ public class LeafAppearancePhase2 : Phase
     {
         get
         {
-            double F = (Leaf.CohortNo - NodeNoAtStart) / (Leaf.FinalLeafNo - NodeNoAtStart);
+            double F = (Leaf.NodeNo - NodeNoAtStart) / (Leaf.FinalLeafNo - NodeNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
             return F;

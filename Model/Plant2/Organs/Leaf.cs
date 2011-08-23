@@ -410,11 +410,7 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
-
-        //if ((NodeInitiationRate.Value > 0) && (_PrimordiaNo == 0))
-        //    _PrimordiaNo = InitialLeafPrimordia;
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
@@ -422,10 +418,6 @@ public class Leaf : BaseOrgan, AboveGround
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
         }
-
-        //if (NodeInitiationRate.Value > 0)
-        //    _PrimordiaNo = _PrimordiaNo + ThermalTime.Value / NodeInitiationRate.Value;
-        //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
 
         _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
         _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();

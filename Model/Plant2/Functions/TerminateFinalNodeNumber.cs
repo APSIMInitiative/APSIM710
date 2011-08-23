@@ -36,7 +36,9 @@ public class TerminateFinalNodeNumber : Instance
     public double _PhotoperiodFinalNodeNumber = 0;
     public double _CommitPrimordia = 0;
     public double _TerminatedFinalNodeNumber = 0;
-    
+
+    [Output]
+    public double VernalisationIncrement { get { return _VernalisationIncrement; } }
     [Output]
     public double VernalisationIndex { get { return _VernalisationIndex; } }
     //VernalisationIndex is 0 if the crop is not vernalised, 1 if it is fully vernalised and somewhere inbetween if the vernalisation response is partially saturated
@@ -73,7 +75,7 @@ public class TerminateFinalNodeNumber : Instance
         MinT = NewMet.mint;
         MeanT = (MaxT + MinT) / 2;
         if (_VernalisationIndex < 1.0)
-            VernalisationIncrement();
+            IncrementVernalisation();
         CropIsernalised();
     }
 
@@ -85,11 +87,6 @@ public class TerminateFinalNodeNumber : Instance
         TerminatedFinalNodeNumberFunction();
     }
 
-    //Initialisation events
-    //public override void Initialising()
-    //{
-    //    _VernalisationIndex = VernalisationType;
-    //}
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
@@ -104,7 +101,7 @@ public class TerminateFinalNodeNumber : Instance
     /// Calculate progress toward vernalisation saturation today.
     /// This function calculates a vernalisation index which increases from 0 when the crop is unvernalised to 1 when vernalisation response is saturated
     /// </summary>
-    public void VernalisationIncrement()
+    public void IncrementVernalisation()
     {
         if ((MeanT > 0.0) && (MeanT <= 15.0))
             _VernalisationIncrement = VernalisationIntercept + VernalisationSlope * MeanT;
@@ -140,7 +137,7 @@ public class TerminateFinalNodeNumber : Instance
          }
      }
 
-    public void VernalisationFinalNodeNumberFunction()
+     public void VernalisationFinalNodeNumberFunction()
     {
         if ((Leaf.CohortNo >= 2.0) && (_CropIsVernalised == true))
         { } // do nothing

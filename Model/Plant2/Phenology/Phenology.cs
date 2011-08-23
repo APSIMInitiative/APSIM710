@@ -216,5 +216,16 @@ public class Phenology : Instance
             return true;
       return false;
       }
+
+   /// <summary>
+   /// A utility function to return true if a phenological phase is valid.
+   /// </summary>
+   public bool IsValidPhase2(String PhaseName)
+   {
+       foreach (Phase P in Phases)
+           if (P.Name == PhaseName)
+               return true;
+       return false;
+   }
    }
 

@@ -199,22 +199,14 @@ public class SIRIUSLeaf : Leaf, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
         Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
 
-        //if ((NodeInitiationRate.Value > 0) && (_PrimordiaNo == 0))
-        //    _PrimordiaNo = InitialLeafPrimordia;
-
-        if (Phenology.OnDayOf(InitialiseStage))
+       if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
         }
-
-        //if (NodeInitiationRate.Value > 0)
-        //    _PrimordiaNo = _PrimordiaNo + ThermalTime.Value / NodeInitiationRate.Value;
-        //_PrimordiaNo = Math.Min(_PrimordiaNo, MaxNodeNo);
 
         _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
         FinalNodeNumber.UpdateFinalNodeVariables();

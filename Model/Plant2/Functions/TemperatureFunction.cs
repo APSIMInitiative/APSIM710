@@ -15,13 +15,44 @@ public class TemperatureFunction : Function
     double MinT = 0;
     #endregion
 
+    [Link]
+    Phenology Phenology = null;
+
+    [Input(Optional = true)]
+    [Units("oC")]
+    private double maxt_soil_surface;
+    [Input(Optional = true)]
+    [Units("oC")]
+    private double mint_soil_surface;
+
+    [Param(Optional = true)]
+    string[] SoilTemperaturePhases = null;
+
     [Output]
     [Units("deg.day")]
     public override double Value
     {
         get
         {
-            return Linint3hrlyTemp(MaxT, MinT, XYPairs);
+            double Max = MaxT;
+            double Min = MinT;
+
+             if (SoilTemperaturePhases != null)
+             {
+                 Phase P = Phenology.CurrentPhase;
+                 for (int i = 0; i < SoilTemperaturePhases.Length; i++)
+                 {
+                     if (!Phenology.IsValidPhase2(SoilTemperaturePhases[i]))
+                         throw new Exception("Invalid stage name specified in StageLookup. Stage name = " + SoilTemperaturePhases[i]);
+
+                     if (Phenology.InPhase(SoilTemperaturePhases[i]))
+                     {
+                         Max = maxt_soil_surface;
+                         Min = mint_soil_surface;
+                     }
+                 }
+             }
+         return Linint3hrlyTemp(MaxT, MinT, XYPairs);
         }
     }
     static public double Linint3hrlyTemp(double tmax, double tmin, XYPairs ttFn)

@@ -166,7 +166,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
@@ -187,7 +187,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
@@ -208,7 +208,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
@@ -229,7 +229,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
@@ -250,7 +250,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
@@ -271,7 +271,7 @@
             <Al units="cmol+/kg" />
             <ParticleSizeSand units="%" />
             <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
+            <ParticleSizeClay units="%">30</ParticleSizeClay>
           </Layer>
         </Analysis>
         <InitWater name="Initial water">
@@ -782,6 +782,7 @@
             <variable name="RootNUptakeSupply" />
             <variable name="ArbitratorNDemand" />
             <variable name="LeafSpecificArea" />
+            <variable name="maxt_soil_surface" />
           </variables>
         </outputfile>
         <manager name="Diagnostic variables">
@@ -1148,6 +1149,11 @@ endif
           <variable name="LeafFinalNodeNumberTerminateFinalNodeNumberCommitPrimordia as Commit" />
           <variable name="LeafFinalNodeNumberTerminateFinalNodeNumberTerminatedFinalNodeNumber as TFNN" />
           <variable name="LeafFinalNodeNumberTerminateFinalNodeNumberTargetFinalNodeNumber as FLN" />
+          <variable name="MaxT" />
+          <variable name="MinT" />
+          <variable name="maxt_soil_surface" />
+          <variable name="mint_soil_surface" />
+          <variable name="LeafThermalTimeValue" />
         </variables>
         <Graph name="LeafNumbers">
           <Plot>
@@ -1178,7 +1184,33 @@ endif
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
+        <Graph name="ApexTemperature">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>Circle</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>maxt_soil_surface</Y>
+            <Y>mint_soil_surface</Y>
+            <Y>MaxT</Y>
+            <Y>MinT</Y>
+            <Y>LeafThermalTimeValue</Y>
+            <GDApsimFileReader name="ApsimFileReader" />
+          </Plot>
+        </Graph>
       </outputfile>
+      <SoilTemp2 name="Soil Temperature (.NET)">
+        <maxt_time_default type="text" description="hours">14</maxt_time_default>
+        <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
+        <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
+        <boundary_layer_conductance_iterations type="text" description="Number of iterations to calc boundary layer conductance (0-10)">1</boundary_layer_conductance_iterations>
+        <net_radn_source type="text" description="net radiation source (calc/eos)">calc</net_radn_source>
+        <default_wind_speed type="text" description="m/s">3</default_wind_speed>
+        <default_altitude type="text" description="default altitude (m) 275m (700 ft) is approx 980 hPa">18</default_altitude>
+        <default_instrum_height type="text" description="default instrument height for wind and temperature (m)">1.2</default_instrum_height>
+        <bare_soil_height type="text" description="height of bare soil (mm)">57</bare_soil_height>
+      </SoilTemp2>
     </area>
   </simulation>
   <simulation name="HighWaterLowNitrogen" shortcut="/Simulations/HighWaterHighNitrogen">
