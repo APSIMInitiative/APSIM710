@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
 using System.Linq;
+using CSGeneral;
 
 public partial class SurfaceOrganicMatter : Instance
 {
@@ -145,8 +146,7 @@ public partial class SurfaceOrganicMatter : Instance
     public float[] specific_area = new float[max_residues];	    //specific area of residue (ha/kg)
 
     #endregion
-
-
+    
     #region Inputs
 
     [Input]
@@ -170,6 +170,8 @@ public partial class SurfaceOrganicMatter : Instance
     float irrigation = float.NaN;
 
     [Input]
+    double today { set { Today = DateUtility.JulianDateToDateTime(value); } get { return DateUtility.dateTimeToJulianDate(Today); } }
+
     DateTime Today;
 
     /*
@@ -487,7 +489,7 @@ public partial class SurfaceOrganicMatter : Instance
     ///Fraction of ground covered by all pools
     ///</summary>
     [Output]
-    [Units("")]
+    [Units("m^2/m^2")]
     public float[] surfaceom_cover_all
     {
         get
@@ -517,17 +519,17 @@ public partial class SurfaceOrganicMatter : Instance
         }
     }
 
-    [Output]
-    [Units("")]
-    public float[] dlt_no3;// { get; private set; }
+    //[Output]
+    //[Units("")]
+    //public float[] dlt_no3;// { get; private set; }
 
-    [Output]
-    [Units("")]
-    public float[] dlt_nh4;// { get; private set; }
+    //[Output]
+    //[Units("")]
+    //public float[] dlt_nh4;// { get; private set; }
 
-    [Output]
-    [Units("")]
-    public float[] dlt_labile_p;// { get; private set; }
+    //[Output]
+    //[Units("")]
+    //public float[] dlt_labile_p;// { get; private set; }
 
 
     #endregion

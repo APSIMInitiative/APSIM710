@@ -436,6 +436,8 @@ public partial class SurfaceOrganicMatter : Instance
             throw new Exception("Number of residue names and weights do not match");
         }
 
+        p.standing_fraction = temp_standing_fraction;
+
         //ASSUMING that a value of 0 here means that no C:P ratio was set
         //ASSUMING that this will only be called with a single value in temp_residue_cpr (as was initially coded - the only reason we are using arrays is because that was how the FORTRAN did it)
         g.phosphorus_aware = temp_residue_cpr[0] > 0;
@@ -834,12 +836,18 @@ public partial class SurfaceOrganicMatter : Instance
         //If neccessary, Send the mineral N & P leached to the Soil N&P modules;
         if (no3_incorp[0] > 0.0 || nh4_incorp[0] > 0.0 || po4_incorp[0] > 0.0)
         {
+            Console.Write("Setting dlt_no3 - ");
+            foreach (float x in no3_incorp)
+                Console.Write("{0}\t", x);
+            Console.WriteLine();
+
+            ParentComponent().Set("dlt_no3", new SingleArrayType() { Value = no3_incorp });
+            ParentComponent().Set("dlt_nh4", new SingleArrayType() { Value = nh4_incorp });
             deepest_layer = count_of_real_vals(g.dlayer, max_layer);
-            dlt_no3 = no3_incorp;
-            dlt_nh4 = nh4_incorp;
 
             if (g.phosphorus_aware)
-                dlt_labile_p = po4_incorp;
+                ParentComponent().Set("dlt_labile_p", new SingleArrayType() { Value = po4_incorp });
+
         }
 
         for (int i = 0; i < g.num_surfom; i++)
@@ -1064,19 +1072,14 @@ public partial class SurfaceOrganicMatter : Instance
     /// <summary>
     /// Get irrigation information from an Irrigated event.
     /// </summary>
-    private void surfom_ONirrigated()
+    private void surfom_ONirrigated(IrrigationApplicationType data)
     {
-
-        float amount = 0;
-        int numvals = 0;
 
         //APSIM THING
         //collect_real_var (DATA_irrigate_amount,"(mm)",amount,numvals,0.0,1000.);
 
         //now increment internal irrigation log;
-        if (float.IsNaN(irrigation))
-            throw new Exception("Tried to get irrigation but no irrigation value was set");
-        g.irrig = g.irrig + irrigation;
+        g.irrig += data.Amount;
     }
 
     private void surfom_decompose_surfom(SurfaceOrganicMatterDecompType SOMDecomp)
@@ -1347,13 +1350,18 @@ public partial class SurfaceOrganicMatter : Instance
             //Pack up the incorporation info and send to SOILN2 and SOILP as part of a;
             //IncorpFOMPool Event;
 
-            for (int layer = 0; layer < deepest_Layer; layer++)
+            FPoolProfile.Layer = new FOMPoolLayerType[deepest_Layer + 1];
+
+            for (int layer = 0; layer <= deepest_Layer; layer++)
             {
-                FPoolProfile.Layer[layer].thickness = g.dlayer[layer];
-                FPoolProfile.Layer[layer].no3 = no3[layer];
-                FPoolProfile.Layer[layer].nh4 = nh4[layer];
-                FPoolProfile.Layer[layer].po4 = po4[layer];
-                FPoolProfile.Layer[layer].Pool = new FOMType[MaxFr];
+                FPoolProfile.Layer[layer] = new FOMPoolLayerType()
+                {
+                    thickness = g.dlayer[layer],
+                    no3 = no3[layer],
+                    nh4 = nh4[layer],
+                    po4 = po4[layer],
+                    Pool = new FOMType[MaxFr]
+                };
 
                 for (int i = 0; i < MaxFr; i++)
                     FPoolProfile.Layer[layer].Pool[i] = new FOMType()
@@ -1366,7 +1374,7 @@ public partial class SurfaceOrganicMatter : Instance
             }
 
             //APSIM THING
-            //publish_FOMPool(id.IncorpFOMPool, FPoolProfile);
+            publish_FOMPool(FPoolProfile);
 
             //dsg 160104  Keep this event for the time being - will be replaced by ResidueChanged;
 
@@ -1909,7 +1917,7 @@ public partial class SurfaceOrganicMatter : Instance
     /// <summary>
     /// Get information on surfom added from the crops
     /// </summary>
-    private void surfom_ON_Crop_chopped(Crop_ChoppedType data)
+    private void surfom_ON_Crop_chopped(CropChoppedType data)
     {
         //APSIM THING
 
@@ -1937,7 +1945,7 @@ public partial class SurfaceOrganicMatter : Instance
         if (data.fraction_to_residue.Sum() != 0)
         {
             for (int i = 0; i < data.dlt_crop_dm.Length; i++)
-                surfom_added += data.dlt_crop_dm[i] * fraction_to_Residue[i];
+                surfom_added += data.dlt_crop_dm[i] * data.fraction_to_residue[i];
 
             if (surfom_added > 0.0)
             {

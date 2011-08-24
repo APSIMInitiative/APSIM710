@@ -6,25 +6,36 @@ public partial class SurfaceOrganicMatter : Instance
 {
 
     [EventHandler]
-    public void OnTick() { surfaceOM_ONtick(); }
+    public void OnTick()
+    {
+        if (initialised)
+            surfaceOM_ONtick();
+    }
+    bool initialised = false;
 
     [EventHandler]
-    public void OnTillage(TillageType data) { 
-        surfom_tillage(data); }
+    public void OnTillage(TillageType data)
+    {
+        surfom_tillage(data);
+    }
 
     [EventHandler]
-    public void OnTillage_single(Tillage_singleType data) {
-        surfom_tillage_single(data); }
+    public void OnTillage_single(Tillage_singleType data)
+    {
+        surfom_tillage_single(data);
+    }
 
     [EventHandler]
-    public void OnAdd_surfaceom(Add_surfaceomType data) { 
-        surfom_add_surfom(data); }
+    public void OnAdd_surfaceom(Add_surfaceomType data)
+    {
+        surfom_add_surfom(data);
+    }
     
     [EventHandler]
-    public void OnInit1() { surfom_Reset(); }
+    public void OnInit2() { OnReset(); }
     
     [EventHandler]
-    public void OnReset() { surfom_Reset(); }
+    public void OnReset() { initialised = true; surfom_Reset(); }
     
     [EventHandler]
     public void OnCreate() { }
@@ -39,10 +50,10 @@ public partial class SurfaceOrganicMatter : Instance
     public void OnNewmet(NewMetType newmetdata) { g.MetData = newmetdata; }
    
     [EventHandler]
-    public void OnIrrigated() { surfom_ONirrigated(); }
+    public void OnIrrigated(IrrigationApplicationType data) { surfom_ONirrigated(data); }
 
     [EventHandler]
-    public void OnCrop_chopped(Crop_ChoppedType data) { Console.WriteLine("Crop chopped"); Console.WriteLine(Today); }//surfom_ON_Crop_chopped(null); }
+    public void OnCrop_chopped(CropChoppedType data) { surfom_ON_Crop_chopped(data); }
 
     [EventHandler]
     public void OnBiomassRemoved(BiomassRemovedType BiomassRemoved) { SurfOMOnBiomassRemoved(BiomassRemoved); }
@@ -53,6 +64,9 @@ public partial class SurfaceOrganicMatter : Instance
         surfom_get_other_variables();
         surfom_Process();
         //catch (Exception e) { }
+
+        if (Today.DayOfYear == 300)
+            return;
     }
    
     [EventHandler]

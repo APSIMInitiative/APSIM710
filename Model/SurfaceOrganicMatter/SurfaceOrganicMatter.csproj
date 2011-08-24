@@ -32,16 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CMPServices, Version=1.0.4250.33828, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CMPServices.dll</HintPath>
+    </Reference>
+    <Reference Include="CSDotNetComponentInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSDotNetComponentInterface.dll</HintPath>
+    </Reference>
     <Reference Include="CSGeneral">
       <HintPath>..\CSGeneral.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTNETComponentInterface, Version=3.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DOTNETComponentInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetProxies, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DotNetProxies.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,6 +54,7 @@
     <Compile Include="..\Build\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="EntryPoints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SurfaceOrganicMatter.cs" />
     <Compile Include="_additions.cs" />
@@ -75,12 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetComponentInterface\DOTNETComponentInterface.vcxproj">
-      <Project>{29628A0A-C648-4696-BB7A-04AAE8433305}</Project>
-      <Name>DOTNETComponentInterface</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
