@@ -79,17 +79,17 @@ public class SoilErosion : Instance
         set { _cover_extra = value; }
     }
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor")]
     [Units("t/ha/EI30")]
     private double k_factor = -1.0;
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for bed load")]
     [Units("t/ha/EI30")]
     private double k_factor_bed = -1.0;
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 1.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for suspended load")]
     [Units("t/ha/EI30")]
     private double k_factor_susp = -1.0;
@@ -99,32 +99,32 @@ public class SoilErosion : Instance
     [Units("")]
     private double p_factor = -1.0;
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 2.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface")]
     [Units("")]
     private double entrain_eff = -1.0;
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 2.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - bed load")]
     [Units("")]
     private double entrain_eff_bed = -1.0;
 
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 2.0)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - suspended load")]
     [Units("")]
     private double entrain_eff_susp = -1.0;
 
-    [Param(Optional = true, MinVal = 0.01, MaxVal = 0.2)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model")]
     [Units("")]
     private double eros_rose_b2 = -1.0;
 
-    [Param(Optional = true, MinVal = 0.01, MaxVal = 0.2)]
+    [Param(Optional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - bed load")]
     [Units("")]
     private double eros_rose_b2_bed = -1.0;
 
-    [Param(Optional = true, MinVal = 0.01, MaxVal = 0.2)]
+    [Param(Optional = true, MinVal =-1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - suspended load")]
     [Units("")]
     private double eros_rose_b2_susp = -1.0;
@@ -285,9 +285,10 @@ public class SoilErosion : Instance
     private void ZeroDailyVariables()
     {
         int nLayers = dlayer.Length;
-        dlayer = new double[nLayers];
+        // No need to zero these!
+        //dlayer = new double[nLayers];
+        //bd = new double[nLayers];
         dlt_dlayer = new double[nLayers];
-        bd = new double[nLayers];
         soil_loss_bed = 0.0;
         soil_loss_susp = 0.0;
     }
@@ -298,6 +299,13 @@ public class SoilErosion : Instance
         Console.WriteLine("     ");
         Console.WriteLine("        - Reading Parameters");
         Console.WriteLine("     ");
+
+        if (dlayer == null)
+        {
+            DoubleArrayType dlayer_array = new DoubleArrayType();
+            ParentComponent().Get("dlayer", dlayer_array, false);
+            dlayer = dlayer_array.Value;
+        }
 
         if (bed_depth < MathUtility.Sum(dlayer))
             throw new Exception("Depth to bedrock is less than profile depth");

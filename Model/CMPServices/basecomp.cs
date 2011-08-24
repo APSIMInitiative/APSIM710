@@ -303,7 +303,7 @@ namespace CMPServices
         /// <param name="sDDML">DDML type string.</param>
         /// <param name="value">The value of the property. (Can be more than just a scalar)</param>
         //============================================================================
-        protected void sendRequestSet(String sPropFQN, String sDDML, TTypedValue value)
+        public void sendRequestSet(String sPropFQN, String sDDML, TTypedValue value)
         {
             TMsgHeader msg;
             int newSetterID = 0;

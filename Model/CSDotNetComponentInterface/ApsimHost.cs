@@ -77,7 +77,8 @@ public class TAPSIMHost : TBaseComp
                 sSearchName = "*";   
                 if (parentComp.Contains("."))
                     sSearchName = parentComp.Substring(0, parentComp.LastIndexOf('.')) + ".*";  //search grandparent.*
-                sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
+                if (sSearchName != ".*")
+                  sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
             }
             Comp.handleEvent(ApsimComponent.INIT2INDEX, null);
         }   

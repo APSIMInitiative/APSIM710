@@ -448,8 +448,15 @@ namespace ModelFramework
         public void Set(String PropertyName, ApsimType Data)
         {
             ////NH - would be better to search through the list of registrations and not reregister
-            int RegistrationIndex = RegistrationsSet.Count;
-            RegistrationsSet.Add(RegistrationIndex, Data);
+            //int RegistrationIndex = RegistrationsSet.Count;
+            //RegistrationsSet.Add(RegistrationIndex, Data);
+            //// EZ - not sure that we need to maintain a list here, although it might 
+            //// be used to cache the DDMLValue and avoid re-parsing
+            TDDMLValue dataVal = new TDDMLValue(Data.DDML(), "");
+            byte[] msgData;
+            Data.pack(out msgData);
+            dataVal.setData(msgData, msgData.Length, 0);
+            Host.sendRequestSet(PropertyName, Data.DDML(), dataVal);
             ////       CISet(ComponentI, PropertyName, "", myCallback,
             ////             instanceNumber, RegistrationIndex, Data.DDML());
             // /////////        Registrations.RemoveAt(RegistrationIndex);
