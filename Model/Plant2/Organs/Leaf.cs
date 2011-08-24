@@ -21,7 +21,7 @@ public class Leaf : BaseOrgan, AboveGround
     protected Phenology Phenology = null;
     [Link]
     protected RUEModel Photosynthesis = null;
-    [Link]
+    [Link(IsOptional.Yes)]
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected TemperatureFunction ThermalTime = null;
@@ -419,11 +419,19 @@ public class Leaf : BaseOrgan, AboveGround
             InitialiseCohorts();
         }
 
-        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
-        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
-        if (NodeAppearanceRate.Value > 0)
-            NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
-        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
+        if (FinalNodeNumber != null)
+        {
+            _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
+            _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
+            if (NodeAppearanceRate.Value > 0)
+                NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
+            NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
+        }
+        else
+        {
+            if (NodeAppearanceRate.Value > 0)
+                NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
+        }
 
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
@@ -727,7 +735,8 @@ public class Leaf : BaseOrgan, AboveGround
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
         StemPopulation = Sow.Population * Sow.BudNumber;
-        MaxNodeNo = FinalNodeNumber.MaximumNodeNumber();
+        if (FinalNodeNumber != null)
+            MaxNodeNo = FinalNodeNumber.MaximumNodeNumber();
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)

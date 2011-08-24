@@ -208,15 +208,22 @@ public class SIRIUSLeaf : Leaf, AboveGround
             InitialiseCohorts();
         }
 
-        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
-        FinalNodeNumber.UpdateFinalNodeVariables();
-        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
-        DeltaNodeNumber = 0;
-        if (NodeAppearanceRate.Value > 0)
-            DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
-            NodeNo += DeltaNodeNumber;
-        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
-
+       if (FinalNodeNumber != null)
+       {
+           _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
+           FinalNodeNumber.UpdateFinalNodeVariables();
+           _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
+           DeltaNodeNumber = 0;
+           if (NodeAppearanceRate.Value > 0)
+               DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+           NodeNo += DeltaNodeNumber;
+           NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
+       }
+       else
+       {
+           if (NodeAppearanceRate.Value > 0)
+               DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+       }
         Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
