@@ -329,7 +329,7 @@ namespace ModelFramework
                 {
                     int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
                     RegistrationsProp.Add(RegistrationIndex, Property);
-                    Host.addProperty(Property.OutputName, RegistrationIndex, true, true, false, Property.DDML(), "", "");
+                    Host.addProperty(Property.OutputName, RegistrationIndex, !Property.WriteOnly, !Property.ReadOnly, false, Property.DDML(), "", "");
                 }
             }
         }

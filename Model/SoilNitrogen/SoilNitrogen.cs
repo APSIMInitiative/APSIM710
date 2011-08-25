@@ -938,16 +938,50 @@ public class SoilN : Instance
         }
     }
 
+    [Output]
+    [Description("Carbon balance")]
+    double carbonbalance
+    {
+        get
+        {
+            double deltaC = TotalC() - dailyInitialC; // Delta storage
+            double losses = 0.0;
+            int nLayers = dlayer.Length;
+            for (int layer = 0; layer < nLayers; layer++)
+                losses += _dlt_fom_c_atm[0][layer] +
+                          _dlt_fom_c_atm[1][layer] +
+                          _dlt_fom_c_atm[2][layer] +
+                          dlt_hum_c_atm[layer] +
+                          dlt_biom_c_atm[layer] +
+                          SumDoubleArray(_dlt_res_c_atm[layer]);
+            return -(losses + deltaC);
+        }
+    }
+
+    [Output]
+    [Description("Nitrogen balance")]
+    double nitrogenbalance
+    {
+        get
+        {
+            double deltaN = TotalN() - dailyInitialN; // Delta storage
+            double losses = 0.0;
+            int nLayers = dlayer.Length;
+            for (int layer = 0; layer < nLayers; layer++)
+                losses += dlt_no3_dnit[layer] +
+                          dlt_nh4_dnit[layer];
+            return -(losses + deltaN);
+        }
+    }
+
     // Settable variables
     // Even though these properties are settable, and not meant to be readable,
-    // it appears we still need to provide a "get" method for them, since they
-    // bear the "Output" attribute. 
+    // they still bear the "Output" attribute. 
     // Perhaps that bit of the infrastructure needs a re-think.
     [Output]
     [Units("kg/ha")]
     double[] dlt_no3
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -964,7 +998,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_nh4 
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -981,7 +1014,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_no3ppm
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -999,7 +1031,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_nh4ppm
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -1017,7 +1048,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_urea
     {
-        get { return null; }
         set
         {
             const double urea_min = 0.0;
@@ -1034,7 +1064,6 @@ public class SoilN : Instance
     [Output]
     string n_reduction
     {
-        get { return null; }
         set
         {
             p_n_reduction = value.StartsWith("on");
@@ -1045,7 +1074,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_org_n
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -1057,7 +1085,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_org_c_pool1 
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -1069,7 +1096,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_org_c_pool2
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -1081,7 +1107,6 @@ public class SoilN : Instance
     [Units("kg/ha")]
     double[] dlt_org_c_pool3
     {
-        get { return null; }
         set
         {
             for (int layer = 0; layer < value.Length; ++layer)
@@ -1089,6 +1114,8 @@ public class SoilN : Instance
         }
     }
 
+
+    // Both gettable and settable
     double[] _nitrification_inhibition;
     [Output]
     double[] nitrification_inhibition
@@ -1097,41 +1124,6 @@ public class SoilN : Instance
         set { _nitrification_inhibition = value; }
     }
 
-    [Output]
-    [Description("Carbon balance")]
-    double carbonbalance
-    {
-        get
-        {
-            double deltaC = TotalC() - dailyInitialC; // Delta storage
-            double losses = 0.0;
-            int nLayers = dlayer.Length;
-            for (int layer = 0; layer < nLayers; layer++)
-               losses += _dlt_fom_c_atm[0][layer] +
-                         _dlt_fom_c_atm[1][layer] +
-                         _dlt_fom_c_atm[2][layer] +
-                         dlt_hum_c_atm[layer] +
-                         dlt_biom_c_atm[layer] +
-                         SumDoubleArray(_dlt_res_c_atm[layer]);
-            return - (losses + deltaC);
-        }
-    }
-
-    [Output]
-    [Description("Nitrogen balance")]
-    double nitrogenbalance
-    {
-        get
-        {
-            double deltaN = TotalN() - dailyInitialN; // Delta storage
-            double losses = 0.0;
-            int nLayers = dlayer.Length;
-            for (int layer = 0; layer < nLayers; layer++)
-               losses += dlt_no3_dnit[layer] +
-                         dlt_nh4_dnit[layer];
-            return - (losses + deltaN);
-        }
-    }
 #endregion
 
 #region Drivers we obtain from other components

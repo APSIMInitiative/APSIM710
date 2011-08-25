@@ -20,6 +20,7 @@ public abstract class ReflectedType : NamedItem
 {
     public abstract Type Typ { get; }
     public abstract bool ReadOnly { get; }
+    public abstract bool WriteOnly { get; }
     public abstract Object Get { get; }
     public abstract Object[] MetaData { get; }
     public abstract void SetObject(Object Value);
@@ -115,6 +116,13 @@ public class ReflectedField : ReflectedType
             return true;
         }
     }
+    public override bool WriteOnly
+    {
+        get
+        {
+            return false;
+        }
+    }
     public override Object Get
     {
         get
@@ -166,7 +174,14 @@ public class ReflectedProperty : ReflectedType
     {
         get
         {
-            return !Member.CanWrite;
+            return Member.CanRead && !Member.CanWrite;
+        }
+    }
+    public override bool WriteOnly
+    {
+        get
+        {
+            return Member.CanWrite && !Member.CanRead;
         }
     }
     public override Object Get
@@ -212,6 +227,7 @@ public class FactoryProperty : Instance, ApsimType
     public bool IsInput;
     public bool IsOutput;
     public bool ReadOnly;
+    public bool WriteOnly;
     public bool HaveSet;
     public bool OptionalInput;
     public bool OptionalParam;
@@ -402,6 +418,7 @@ public class FactoryProperty : Instance, ApsimType
         IsOutput = false;
         HaveSet = false;
         ReadOnly = Property.ReadOnly;
+        WriteOnly = Property.WriteOnly;
         TypeName = Property.Typ.Name;
         Units = "";
         Description = "";
@@ -530,6 +547,8 @@ public class FactoryProperty : Instance, ApsimType
             Desc = "   <property name=\"" + OutputName + "\" access=\"";
             if (ReadOnly)
                 Desc += "read";
+            else if (WriteOnly)
+                Desc += "write";
             else
                 Desc += "both";
             Desc += "\"  init=\"F\">\r\n";
@@ -588,9 +607,8 @@ public class FactoryProperty : Instance, ApsimType
         }
         public override void unpack(byte[] messageData)
         {
-            T Data = (T)Property.Get;
             thisProperty.unpack(messageData);
-            Data = thisProperty.Value;
+            T Data = thisProperty.Value;
             Property.SetObject(Data);
         }
         public override uint memorySize()
