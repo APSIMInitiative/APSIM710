@@ -329,7 +329,7 @@ namespace ModelFramework
                 {
                     int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
                     RegistrationsProp.Add(RegistrationIndex, Property);
-                    Host.addProperty(Property.OutputName, RegistrationIndex, !Property.WriteOnly, !Property.ReadOnly, false, Property.DDML(), "", "");
+                    Host.addProperty(Property.OutputName, RegistrationIndex, true, true, false, Property.DDML(), "", "");
                 }
             }
         }
@@ -442,24 +442,18 @@ namespace ModelFramework
         /// <summary>
         /// Do a requestset
         /// </summary>
-        /// <param name="PropertyName"></param>
-        /// <param name="Data"></param>
+        /// <param name="PropertyName">Name of the property</param>
+        /// <param name="Data">The value data</param>
         // ----------------------------------------------
         public void Set(String PropertyName, ApsimType Data)
         {
-            ////NH - would be better to search through the list of registrations and not reregister
-            //int RegistrationIndex = RegistrationsSet.Count;
-            //RegistrationsSet.Add(RegistrationIndex, Data);
-            //// EZ - not sure that we need to maintain a list here, although it might 
-            //// be used to cache the DDMLValue and avoid re-parsing
+            //a list here might be used to cache the DDMLValue and avoid re-parsing.
+            //this would be useful to speed it up if Set() is used frequently
             TDDMLValue dataVal = new TDDMLValue(Data.DDML(), "");
             byte[] msgData;
             Data.pack(out msgData);
             dataVal.setData(msgData, msgData.Length, 0);
-            Host.sendRequestSet(PropertyName, Data.DDML(), dataVal);
-            ////       CISet(ComponentI, PropertyName, "", myCallback,
-            ////             instanceNumber, RegistrationIndex, Data.DDML());
-            // /////////        Registrations.RemoveAt(RegistrationIndex);
+            Host.sendRequestSet(PropertyName, Data.DDML(), dataVal);    //checks for previously registered setters
         }
         // ----------------------------------------------
         /// <summary>
