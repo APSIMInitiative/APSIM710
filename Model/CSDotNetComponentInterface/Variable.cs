@@ -147,7 +147,7 @@ namespace ModelFramework
     // Double etc). It then makes it look like an ApsimType with pack,
     // unpack methods etc.
     // --------------------------------------------------------------------
-    public class WrapBuiltInVariable<T> : ApsimType
+    public class WrapBuiltInVariable<T> : TypeInterpreter, ApsimType
     {
         /*This class is a quick way to wrap the TTypedValue into a generic class
             * that handles scalars and arrays of scalars - NH
@@ -155,19 +155,19 @@ namespace ModelFramework
             */
         protected Type tType;
         public T Value;
-        protected TDDMLValue DDMLValue;
+        //protected override TDDMLValue DDMLValue; */
         public WrapBuiltInVariable()
         {
             tType = typeof(T);
-            DDMLValue = new TDDMLValue(DDML(), "");
+            // DDMLValue = new TDDMLValue(DDML(), "");
         }
-        public void pack(out byte[] messageData)
+        public override void pack(out byte[] messageData)
         {
             setValue(Value);
             messageData = new byte[DDMLValue.sizeBytes()];
             DDMLValue.getData(ref messageData);
         }
-        public void unpack(byte[] messageData)
+        public override void unpack(byte[] messageData)
         {
             //::unpackWithConverter(messageData, Value);
             DDMLValue.setData(messageData, messageData.Length, 0);
@@ -175,7 +175,7 @@ namespace ModelFramework
             {
                 Value = (T)(Convert.ChangeType(DDMLValue.asBool(), typeof(T)));
             }
-            else if (tType == typeof(int))
+            else if (tType == typeof(Int32))
             {
                 Value = (T)(Convert.ChangeType(DDMLValue.asInt(), typeof(T)));
             }
@@ -195,7 +195,7 @@ namespace ModelFramework
             {
                 Value = (T)(Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(T)));
             }
-            else if (tType == typeof(int[]))
+            else if (tType == typeof(Int32[]))
             {
                 Value = (T)(Convert.ChangeType(DDMLValue.asIntArray(), typeof(T)));
             }
@@ -218,59 +218,60 @@ namespace ModelFramework
                 Value = (T)(Convert.ChangeType(jDate, typeof(T)));
             }
         }
-        public uint memorySize()
+        public override uint memorySize()
         {
             setValue(Value);    //ensure the DDMLValue is updated
             return DDMLValue.sizeBytes();
         }
-        public String DDML()
+        public override String DDML()
         {
             return DDML(Value);
         }
+
         public String DDML(T Value)
         {
             String result = "<type/>";
-            if (tType == typeof(Boolean))
+            if (typeof(T) == typeof(Boolean))
             {
                 result = "<type kind=\"boolean\"/>";
             }
-            else if (tType == typeof(int))
+            else if (typeof(T) == typeof(Int32))
             {
                 result = "<type kind=\"integer4\"/>";
             }
-            else if (tType == typeof(Single))
+            else if (typeof(T) == typeof(Single))
             {
                 result = "<type kind=\"single\"/>";
             }
-            else if (tType == typeof(double))
+            else if (typeof(T) == typeof(double))
             {
                 result = "<type kind=\"double\"/>";
             }
-            else if (tType == typeof(String))
+            else if (typeof(T) == typeof(String))
             {
                 result = "<type kind=\"string\"/>";
             }
-            else if (tType == typeof(Boolean[]))
+            else if (typeof(T) == typeof(Boolean[]))
             {
                 result = "<type kind=\"boolean\" array=\"T\"/>";
             }
-            else if (tType == typeof(int[]))
+            else if (typeof(T) == typeof(Int32[]))
             {
                 result = "<type kind=\"integer\" array=\"T\"/>";
             }
-            else if (tType == typeof(Single[]))
+            else if (typeof(T) == typeof(Single[]))
             {
                 result = "<type kind=\"single\" array=\"T\"/>";
             }
-            else if (tType == typeof(double[]))
+            else if (typeof(T) == typeof(double[]))
             {
                 result = "<type kind=\"double\" array=\"T\"/>";
             }
-            else if (tType == typeof(String[]))
+            else if (typeof(T) == typeof(String[]))
             {
                 result = "<type kind=\"string\" array=\"T\"/>";
             }
-            else if (tType == typeof(DateTime))
+            else if (typeof(T) == typeof(DateTime))
             {
                 result = "<type kind=\"double\"/>";
             }
@@ -282,7 +283,7 @@ namespace ModelFramework
             {
                 DDMLValue.setValue(Convert.ToBoolean(value));
             }
-            else if (tType == typeof(int))
+            else if (tType == typeof(Int32))
             {
                 DDMLValue.setValue(Convert.ToInt32(value));
             }
@@ -302,9 +303,9 @@ namespace ModelFramework
             {
                 DDMLValue.setValue((Boolean[])Convert.ChangeType(value, typeof(Boolean[])));
             }
-            else if (tType == typeof(int[]))
+            else if (tType == typeof(Int32[]))
             {
-                DDMLValue.setValue((int[])Convert.ChangeType(value, typeof(int[])));
+                DDMLValue.setValue((Int32[])Convert.ChangeType(value, typeof(Int32[])));
             }
             else if (tType == typeof(Single[]))
             {

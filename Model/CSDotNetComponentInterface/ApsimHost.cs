@@ -209,7 +209,7 @@ public class TAPSIMHost : TBaseComp
             {
                 TComp comp = compList[providerID];
                 comp.CompClass = aValue.asString();                 //store the class type
-                if (comp.CompClass.ToLower() == "paddock")
+                if (comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
                     comp.isSystem = true;
                 compList[providerID] = comp;
             }

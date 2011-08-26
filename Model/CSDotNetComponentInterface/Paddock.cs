@@ -35,7 +35,7 @@ public class Paddock : Component
     {
         get
         {
-            return base.ParentCompName; //name of the component (Paddock)
+            return base.Name(); //name of the component (Paddock)
         }
     }
     // --------------------------------------------------------------------
@@ -50,9 +50,11 @@ public class Paddock : Component
             TypedMultiList<Paddock> Children = new TypedMultiList<Paddock>();
             foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
             {
-                Paddock C = new Paddock(pair.Value.name, HostComponent);
-                if (C.IsOfType("paddock") || C.IsOfType("ProtocolManager"))
+                if (pair.Value.CompClass.ToLower() == "paddock" || pair.Value.CompClass.ToLower() == "protocolmanager")
+                {
+                    Paddock C = new Paddock(pair.Value.name, HostComponent);
                     Children.Add(C);
+                }
             }
             return Children;
         }

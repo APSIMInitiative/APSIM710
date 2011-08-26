@@ -20,6 +20,7 @@ class Coordinator : public protocol::Component
    public:
       Coordinator(void);
       ~Coordinator(void);
+      virtual std::string getType(void) {return "ProtocolManager";};
 
    private:
       typedef std::map<int, ComponentAlias*> Components;

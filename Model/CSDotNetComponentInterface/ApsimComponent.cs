@@ -275,7 +275,10 @@ namespace ModelFramework
                     {
                         EvntHandler Event = Fact.EventHandlers[i];
                         if (String.Compare(Event.EventName, "Init2") == 0)
+                        {
+                            GetAllInputs();
                             Event.Invoke(messageData);
+                        }
                     }
                 }
                 else if (RegistrationIndex == SOWINDEX)

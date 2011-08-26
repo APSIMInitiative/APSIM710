@@ -516,6 +516,10 @@ public class FactoryProperty : Instance, ApsimType
             return new WrapBuiltIn<String[]>(this);
         else if (typeName == "DateTime")
             return new WrapBuiltIn<DateTime>(this);
+        else if (typeName == "Boolean")
+            return new WrapBuiltIn<Boolean>(this);
+        else if (typeName == "Boolean[]")
+            return new WrapBuiltIn<Boolean[]>(this);
         else
             return new WrapApsimType(this);
     }
