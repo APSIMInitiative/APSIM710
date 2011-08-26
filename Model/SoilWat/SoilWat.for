@@ -4354,6 +4354,37 @@ c  dsg   070302  added runon
       end subroutine
 
 * ====================================================================
+      subroutine soilwat2_check_set_array(variable_name,
+     :      array_size)
+* ====================================================================
+* Checks the array lengths of variables being set in soilwat2_set_my_variable	
+      Use Infrastructure
+      implicit none
+      character variable_name*(*)
+      integer array_size, nlayers
+      character  string*300            ! output string
+	  
+         nlayers = count_of_real_vals (p%dlayer, max_layer)
+         if (array_size .gt. nlayers) then
+            write (string, '(3a,i3,a,i3,3a)')
+     :      'The number of values used to set "', variable_name,
+     :      '" (', array_size,
+     :      ') exceeds the number of soil layers (',
+     :      nlayers, ').', CHAR(10),
+     :      'The extra values will be ignored.'
+            call warning_error (err_user, string)
+         else if (array_size .lt. nlayers) then
+            write (string, '(3a,i3,a,i3,3a)')
+     :      'The number of values used to set "', variable_name,
+     :      '" (', array_size,
+     :      ') is smaller than the number of soil layers (',
+     :      nlayers, ').', CHAR(10),
+     :      'A value of 0.0 will be used for the unspecified values.'
+            call warning_error (err_user, string)
+         endif
+      end subroutine	 
+
+* ====================================================================
       subroutine soilwat2_set_my_variable (variable_name)
 * ====================================================================
       Use Infrastructure
@@ -4398,10 +4429,11 @@ c  dsg   070302  added runon
       real       dltSWDep
       real       oldSWDep(max_layer)       ! temporary array
       character  line*200              ! temp output record
-      character  string*300            ! output string
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
+
+      temp(:) = 0.0
 
       if (variable_name .eq. 'sw') then
          oldSWDep = g%sw_dep
@@ -4411,6 +4443,7 @@ c  dsg   070302  added runon
      :                               , temp, g%numvals_sw
      :                               , 0.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, g%numvals_sw)
 !jh         call soilwat2_set_default ()   ! this causes output to occur whenever a module changes "sw", such as nwheat!
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          dltSWDep = 0.0
@@ -4431,6 +4464,7 @@ c  dsg   070302  added runon
      :                               , temp, g%numvals_sw
      :                               , 0.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, g%numvals_sw)
 !jh         call soilwat2_set_default ()  this causes output to occur whenever a module changes "sw", such as nwheat!
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          dltSWDep = 0.0
@@ -4504,6 +4538,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , -1.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 3000 layer = 1,num_layers
             g%sw_dep(layer) = g%sw_dep(layer)
@@ -4516,6 +4551,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , -10000.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4000 layer = 1,num_layers
             g%sw_dep(layer) = g%sw_dep(layer) + temp(layer)
@@ -4536,6 +4572,7 @@ c  dsg   070302  added runon
      :                               , g%dul_dep, numvals
      :                               , 0.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4100 layer = 1,num_layers
             call soilwat2_check_profile (layer)
@@ -4546,6 +4583,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , 0.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4110 layer = 1,num_layers
             g%dul_dep(layer) = temp(layer)*p%dlayer(layer)
@@ -4557,6 +4595,7 @@ c  dsg   070302  added runon
      :                               , g%ll15_dep, numvals
      :                               , 0.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4200 layer = 1,num_layers
             call soilwat2_check_profile (layer)
@@ -4567,6 +4606,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , 0.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4210 layer = 1,num_layers
             g%ll15_dep(layer) = temp(layer)*p%dlayer(layer)
@@ -4578,6 +4618,7 @@ c  dsg   070302  added runon
      :                               , g%sat_dep, numvals
      :                               , 0.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4300 layer = 1,num_layers
             call soilwat2_check_profile (layer)
@@ -4588,6 +4629,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , 0.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4310 layer = 1,num_layers
             g%sat_dep(layer) = temp(layer)*p%dlayer(layer)
@@ -4599,6 +4641,7 @@ c  dsg   070302  added runon
      :                               , g%air_dry_dep, numvals
      :                               , 0.0, 10000.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4500 layer = 1,num_layers
             call soilwat2_check_profile (layer)
@@ -4609,6 +4652,7 @@ c  dsg   070302  added runon
      :                               , temp, numvals
      :                               , 0.0, 1.0)
 
+         call soilwat2_check_set_array(variable_name, numvals)
          num_layers = count_of_real_vals (p%dlayer, max_layer)
          do 4510 layer = 1,num_layers
             g%air_dry_dep(layer) = temp(layer)*p%dlayer(layer)
