@@ -126,7 +126,7 @@ class JobSchedulerApplyPatch
             else
             {
                 Console.WriteLine(SVNFileName + " add ", DirectoryName);
-                Process P = Utility.RunProcess(SVNFileName, "add " + DirectoryName, DirectoryName);
+                Process P = Utility.RunProcess(SVNFileName, "add " + StringManip.DQuote(DirectoryName), DirectoryName);
                 Console.WriteLine(Utility.CheckProcessExitedProperly(P));
             }
         }
