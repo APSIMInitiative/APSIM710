@@ -13,7 +13,7 @@ namespace CMPComp
     /// </summary>
     //=========================================================================
     [ComVisible(true)]
-    public class TComponentInstance : TAPSIMHost
+    internal class TComponentInstance : TAPSIMHost
     {
         private static String _STYPE = "manager2";
         private static String _SVERSION = "1.0";
@@ -39,7 +39,7 @@ namespace CMPComp
     //============================================================================
 
     [ComVisible(true)]
-    public class TGCComponent : TComponentInstance
+    internal class TGCComponent : TComponentInstance
     {
         //============================================================================
         /// <summary>

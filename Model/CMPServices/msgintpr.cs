@@ -138,10 +138,10 @@ namespace CMPServices
     /// and also interprets (splits message block) incoming messages.
     /// </summary>
     //=========================================================================
-    public class TMessageInterpreter 
+    public class TMessageInterpreter
     {
         // Specifications for the data types contained in the messages. -1 = empty
-        private TMsgSpec [] msgSpec = new TMsgSpec[32] {
+        private TMsgSpec[] msgSpec = new TMsgSpec[32] {
             new TMsgSpec(0, new int[Msgs.MAX_FLDS] { (int)TTypedValue.TBaseType.ITYPE_STR,  -1, -1, -1, -1, -1 }) ,  // MSG_ACTIVATE
             new TMsgSpec(0, new int[Msgs.MAX_FLDS] { (int)TTypedValue.TBaseType.ITYPE_STR,  -1, -1, -1, -1, -1 }) ,  // MSG_ADD
             new TMsgSpec(0, new int[Msgs.MAX_FLDS] { (int)TTypedValue.TBaseType.ITYPE_BOOL, (int)TTypedValue.TBaseType.ITYPE_STR, -1, -1, -1, -1 }) ,  // MSG_ERROR
@@ -179,8 +179,8 @@ namespace CMPServices
         private System.Text.ASCIIEncoding ascii;
         private uint ownerCompID;             //Owner of this interpreter
         private uint runningID;               //an ID number that is incremented every time a new message
-                                              //is created
-        private TMsgFld [] initArray;         //array of fields in the msg block
+        //is created
+        private TMsgFld[] initArray;         //array of fields in the msg block
         private int newMsgBlockSize;          //the expected size that the new message block is to be
 
         private TMsgHeader msg;             //the message header
@@ -244,7 +244,7 @@ namespace CMPServices
 
             // determine a unique id for this message
             // avoid using an ID of 0, since this is used else to flag empty buffers
-            if (++runningID == 0) 
+            if (++runningID == 0)
                 ++runningID;
             msg = new TMsgHeader();
             msg.version = 256;                      //protocol version
@@ -252,13 +252,13 @@ namespace CMPServices
             msg.from = ownerCompID;                 //id of this component
             msg.to = destAddress;                   //sending msg to a component
             msg.msgID = runningID;                  //unique id
-            msg.toAck = msgSpec[msgType-1].toAck;   //decide whether to acknowledge
+            msg.toAck = msgSpec[msgType - 1].toAck;   //decide whether to acknowledge
             msg.nDataBytes = (uint)newMsgBlockSize; //init field
             msg.dataPtr = new byte[msg.nDataBytes];
 
             //use all the memory that the initArray points to
             iFld = 1;
-            iFldType = msgSpec[msg.msgType-1].fld[iFld-1];
+            iFldType = msgSpec[msg.msgType - 1].fld[iFld - 1];
             byte[] buf;
             int i;
             while ((iFldType != -1) && (iFld <= Msgs.MAX_FLDS))
@@ -295,7 +295,7 @@ namespace CMPServices
                             Array.Copy(ascii.GetBytes(initArray[iFld - 1].strVal), 0, msg.dataPtr, ptr, asize);
                             ptr += asize;
                             //for (int i = 0; i < asize; i++)
-                              //  msg.dataPtr[ptr++] = initArray[iFld - 1].ptrVal[i]; 
+                            //  msg.dataPtr[ptr++] = initArray[iFld - 1].ptrVal[i]; 
                             initArray[iFld - 1].fieldType = TTypedValue.TBaseType.ITYPE_EMPTY;
                             initArray[iFld - 1].size = 0;
                         }
@@ -419,12 +419,12 @@ namespace CMPServices
 
             if (result)
             {
-                
+
                 int memFreed = freeInitArrayItem(iFld);                     //ensure this array item is cleaned up first
                 if (memFreed > 0)                                           //if bytes were freed then
                     newMsgBlockSize -= (int)TTypedValue.typeSize[(int)TTypedValue.TBaseType.ITYPE_INT4] + memFreed;   //adjust total calculation
                 //store the char[]
-//                initArray[iFld - 1].ptrVal = ascii.GetBytes(value);
+                //                initArray[iFld - 1].ptrVal = ascii.GetBytes(value);
                 initArray[iFld - 1].strVal = value;
                 initArray[iFld - 1].size = value.Length;
                 initArray[iFld - 1].fieldType = TTypedValue.TBaseType.ITYPE_STR;         //store the type of value                 
@@ -484,7 +484,7 @@ namespace CMPServices
                 TMsgFld afield = initArray[iFld - 1];
                 memFreed = afield.size;
                 afield.size = 0;
-                if ((afield.ptrVal != null) && (afield.fieldType == TTypedValue.TBaseType.ITYPE_DEF)) 
+                if ((afield.ptrVal != null) && (afield.fieldType == TTypedValue.TBaseType.ITYPE_DEF))
                 {
                     int len = afield.ptrVal.Length;
                     Array.Clear(afield.ptrVal, 0, len);
@@ -492,7 +492,7 @@ namespace CMPServices
                 afield.fieldType = TTypedValue.TBaseType.ITYPE_EMPTY;
                 initArray[iFld - 1] = afield;
             }
-            
+
             return memFreed;
         }
         //=========================================================================
@@ -513,22 +513,26 @@ namespace CMPServices
             uint offset = 0;  //ptr offset counter
             int strSize;
 
-            if ( (!msg.Equals(null)) && (msg.dataPtr.Length > 0) ) {        //check that a message and data block exist
+            if ((!msg.Equals(null)) && (msg.dataPtr.Length > 0))
+            {        //check that a message and data block exist
                 iFieldNo = fieldID % 1000;
 
-                for ( iFld = 1; iFld < iFieldNo; iFld++ ) {
-                    iFldType = msgSpec[msg.msgType-1].fld[iFld-1];
+                for (iFld = 1; iFld < iFieldNo; iFld++)
+                {
+                    iFldType = msgSpec[msg.msgType - 1].fld[iFld - 1];
                     if (iFldType == (int)TTypedValue.TBaseType.ITYPE_STR)
                     {
                         strSize = BitConverter.ToInt32(msg.dataPtr, (int)offset);    //get the size of the char string
                         offset += TTypedValue.typeSize[(int)TTypedValue.TBaseType.ITYPE_INT4] + (uint)strSize;  //add 4byte size DIM + length of string
                     }
-                    else {
+                    else
+                    {
                         offset += TTypedValue.typeSize[iFldType];
                     }
                 }
             }
-            if (msg.nDataBytes < offset) {
+            if (msg.nDataBytes < offset)
+            {
                 string errorMsg = string.Format("Error determining offset of field {0} from msg {1}", fieldID, msg.msgType);
                 throw (new ApplicationException(errorMsg));
             }
@@ -549,16 +553,18 @@ namespace CMPServices
             int byteIndex;
 
             msgType = fieldID / 1000;          //fieldID / 1000 gives the message id
-            iFld  = fieldID % 1000;
+            iFld = fieldID % 1000;
 
-            if (  (msgType == msg.msgType)                              // Check that the field corresponds to this msg
+            if ((msgType == msg.msgType)                              // Check that the field corresponds to this msg
               && (msgSpec[msgType - 1].fld[iFld - 1] == (int)TTypedValue.TBaseType.ITYPE_INT4) // Validate the type of this field within the message
-              && ( msg.dataPtr.Length > 0) ) {
-              //at this point we need to calc the total offset in the dataptr for this int
-              byteIndex = (int)calcOffset(fieldID);
-              iValue = BitConverter.ToInt32(msg.dataPtr, byteIndex);    //get the int at this position
+              && (msg.dataPtr.Length > 0))
+            {
+                //at this point we need to calc the total offset in the dataptr for this int
+                byteIndex = (int)calcOffset(fieldID);
+                iValue = BitConverter.ToInt32(msg.dataPtr, byteIndex);    //get the int at this position
             }
-            else {
+            else
+            {
                 string errorMsg = string.Format("Cannot retrieve integer field {0} from msg {1}", iFld, msg.msgType);
                 throw (new ApplicationException(errorMsg));
             }
@@ -579,15 +585,17 @@ namespace CMPServices
             int iFld;
 
             msgType = fieldID / 1000;          //fieldID / 1000 gives the message id
-            iFld  = fieldID % 1000;
-            if ( (msgType == msg.msgType)                           // Check that the field corresponds to this msg
+            iFld = fieldID % 1000;
+            if ((msgType == msg.msgType)                           // Check that the field corresponds to this msg
               && (msgSpec[msgType - 1].fld[iFld - 1] == (int)TTypedValue.TBaseType.ITYPE_BOOL)  // Validate the type of this field within the message
-              && ( msg.dataPtr.Length > 0) ) {
-              //at this point we need to calc the total offset in the dataptr for this char[]
-              byteIndex = (int)calcOffset(fieldID);
-              bValue = BitConverter.ToBoolean(msg.dataPtr, byteIndex);         //get the bool at this position
+              && (msg.dataPtr.Length > 0))
+            {
+                //at this point we need to calc the total offset in the dataptr for this char[]
+                byteIndex = (int)calcOffset(fieldID);
+                bValue = BitConverter.ToBoolean(msg.dataPtr, byteIndex);         //get the bool at this position
             }
-            else {
+            else
+            {
                 string errorMsg = string.Format("Cannot retrieve boolean field {0} from msg {1}", iFld, msg.msgType);
                 throw (new ApplicationException(errorMsg));
             }
@@ -608,17 +616,19 @@ namespace CMPServices
             string strField;
 
             msgType = fieldID / 1000;          //fieldID / 1000 gives the message id
-            iFld  = fieldID % 1000;
-            if (  (msgType == msg.msgType)                           // Check that the field corresponds to this msg
+            iFld = fieldID % 1000;
+            if ((msgType == msg.msgType)                           // Check that the field corresponds to this msg
               && (msgSpec[msgType - 1].fld[iFld - 1] == (int)TTypedValue.TBaseType.ITYPE_STR)   // Validate the type of this field within the message
-              && ( msg.dataPtr.Length > 0) ) {
+              && (msg.dataPtr.Length > 0))
+            {
                 //at this point we need to calc the total offset in the dataptr for this char[]
                 byteIndex = (int)calcOffset(fieldID);
                 int strSize = BitConverter.ToInt32(msg.dataPtr, byteIndex);                      //get the size of the char string
                 byteIndex += (int)TTypedValue.typeSize[(int)TTypedValue.TBaseType.ITYPE_INT4];                   //jump past the DIM=x 4 bytes
                 strField = ascii.GetString(msg.dataPtr, byteIndex, strSize);
             }
-            else {
+            else
+            {
                 string errorMsg = string.Format("Cannot retrieve string field {0} from msg {1}", iFld, msg.msgType);
                 throw (new ApplicationException(errorMsg));
             }
@@ -637,7 +647,7 @@ namespace CMPServices
             bool result;
 
             if (!inMsg.Equals(null))  //if there is a message header
-            {         
+            {
                 //need to do a cleanup in case the interpreter has any existing msg's
                 for (iFld = 1; (iFld <= Msgs.MAX_FLDS) && (initArray[iFld - 1].fieldType != TTypedValue.TBaseType.ITYPE_EMPTY); iFld++)
                     if (initArray[iFld - 1].size > 0)
@@ -649,7 +659,7 @@ namespace CMPServices
             else
                 result = false;
 
-            return result;   
+            return result;
         }
         //=========================================================================
         /// <summary>
@@ -678,17 +688,19 @@ namespace CMPServices
             uint cursor;
 
             msgType = fieldID / 1000;                                 // fieldID/1000 gives the message ID
-            iFld  = fieldID % 1000;
-            if (  (msgType == msg.msgType)                           // Check that the field corresponds to this msg
+            iFld = fieldID % 1000;
+            if ((msgType == msg.msgType)                           // Check that the field corresponds to this msg
               && (msgSpec[msgType - 1].fld[iFld - 1] == (int)TTypedValue.TBaseType.ITYPE_DEF)   // Validate the type of this field within the message
-              && ( msg.dataPtr.Length > 0) ) {
+              && (msg.dataPtr.Length > 0))
+            {
                 //at this point we need to calc the total offset in the dataptr for this variant
                 cursor = calcOffset(fieldID);
                 variantSize = msg.nDataBytes - cursor;   //always assume the variant is the last field!!!
                 data = new byte[variantSize];             //allocate memory. 
-                Array.Copy(msg.dataPtr, cursor, data, 0, variantSize);  
+                Array.Copy(msg.dataPtr, cursor, data, 0, variantSize);
             }
-            else {
+            else
+            {
                 string errorMsg = string.Format("Cannot retrieve variant field {0} from msg {1}", iFld, msg.msgType);
                 throw (new ApplicationException(errorMsg));
             }
@@ -727,5 +739,19 @@ namespace CMPServices
             return msgPtr;
         }
 
+        //=========================================================================
+        /// <summary>
+        /// Casts an unsigned integer to an IntPtr
+        /// Shouldn't be necessary, but the Mono VB compiler doesn't handle this
+        /// as it should.
+        /// Currently assumes 32-bit pointers
+        /// </summary>
+        /// <param name="ptrVal">The unsigned value to be treated as a pointer.</param>
+        /// <returns>The value cast to as IntPtr.</returns>
+        //=========================================================================
+        public static IntPtr PtrCast(uint ptrVal)
+        {
+            return (IntPtr)ptrVal;
+        }
     }
 }
