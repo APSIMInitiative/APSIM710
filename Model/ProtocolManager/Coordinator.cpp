@@ -664,7 +664,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        parentID,                        //ID of the owning component
                                        child,                           //id of the child component
                                        childName.c_str(),
-                                       "",                              //no ddml required
+                                       registry.getComponentType(child).c_str(), //return component type
                                        queryInfo.kind));                //type of query
                         
 		              }
@@ -684,7 +684,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        childID,
                                        childID,
                                        fqn.c_str(),
-                                       " ",
+                                       registry.getComponentType(childID).c_str(), //return component type
                                        queryInfo.kind));
          }
    }

@@ -248,7 +248,7 @@ Partial Public Class MicroMet
     Private ReadOnly Property gsmax_array As KeyValueArrayType
         Get
             Dim _gsmax_array As New KeyValueArrayType
-            Array.Resize(_gsmax_array.pair_list, ComponentData.Length)
+            Array.Resize(Of KeyValueArraypair_listType)(_gsmax_array.pair_list, ComponentData.Length)
             For j As Integer = 0 To ComponentData.Length - 1
                 _gsmax_array.pair_list(j) = New KeyValueArraypair_listType
                 _gsmax_array.pair_list(j).key = ComponentData(j).Name
@@ -380,7 +380,7 @@ Partial Public Class MicroMet
 
         ' If sender is unknown, add it to the list
         If senderIdx < 0 Then
-            Array.Resize(ComponentData, ComponentData.Length + 1)
+            Array.Resize(Of ComponentDataStruct)(ComponentData, ComponentData.Length + 1)
             senderIdx = ComponentData.Length - 1
             ComponentData(senderIdx).Name = newCrop.sender.ToLower()
             ComponentData(senderIdx).layerLAI = New Double(-1) {}
@@ -695,28 +695,28 @@ Partial Public Class MicroMet
                 numNodes = numNodes + 1
             End If
         Next
-        Array.Resize(nodes, numNodes)
+        Array.Resize(Of Double)(nodes, numNodes)
         Array.Sort(nodes)
         numLayers = numNodes - 1
         If DeltaZ.Length <> numLayers Then
             ' Number of layers has changed; adjust array lengths
-            Array.Resize(DeltaZ, numLayers)
-            Array.Resize(layerKtot, numLayers)
-            Array.Resize(layerLAIsum, numLayers)
+            Array.Resize(Of Double)(DeltaZ, numLayers)
+            Array.Resize(Of Double)(layerKtot, numLayers)
+            Array.Resize(Of Double)(layerLAIsum, numLayers)
 
             For j As Integer = 0 To ComponentData.Length - 1
-                Array.Resize(ComponentData(j).Ftot, numLayers)
-                Array.Resize(ComponentData(j).Fgreen, numLayers)
-                Array.Resize(ComponentData(j).Rs, numLayers)
-                Array.Resize(ComponentData(j).Rl, numLayers)
-                Array.Resize(ComponentData(j).Rsoil, numLayers)
-                Array.Resize(ComponentData(j).Gc, numLayers)
-                Array.Resize(ComponentData(j).Ga, numLayers)
-                Array.Resize(ComponentData(j).PET, numLayers)
-                Array.Resize(ComponentData(j).PETr, numLayers)
-                Array.Resize(ComponentData(j).PETa, numLayers)
-                Array.Resize(ComponentData(j).Omega, numLayers)
-                Array.Resize(ComponentData(j).interception, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Ftot, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Fgreen, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Rs, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Rl, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Rsoil, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Gc, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Ga, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).PET, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).PETr, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).PETa, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).Omega, numLayers)
+                Array.Resize(Of Double)(ComponentData(j).interception, numLayers)
             Next
         End If
         For i As Integer = 0 To numNodes - 2
@@ -946,12 +946,12 @@ Partial Public Class MicroMet
     ''' </summary>
     Private Sub SendEnergyBalanceEvent()
         Dim lightProfile As New CanopyEnergyBalanceType()
-        Array.Resize(lightProfile.Interception, ComponentData.Length)
+        Array.Resize(Of CanopyEnergyBalanceInterceptionType)(lightProfile.Interception, ComponentData.Length)
         For j As Integer = 0 To ComponentData.Length - 1
             lightProfile.Interception(j) = New CanopyEnergyBalanceInterceptionType()
             lightProfile.Interception(j).name = ComponentData(j).Name
             lightProfile.Interception(j).CropType = ComponentData(j).Type
-            Array.Resize(lightProfile.Interception(j).layer, numLayers)
+            Array.Resize(Of CanopyEnergyBalanceInterceptionlayerType)(lightProfile.Interception(j).layer, numLayers)
             For i As Integer = 0 To numLayers - 1
                 lightProfile.Interception(j).layer(i) = New CanopyEnergyBalanceInterceptionlayerType()
                 lightProfile.Interception(j).layer(i).thickness = CSng(DeltaZ(i))
@@ -967,7 +967,7 @@ Partial Public Class MicroMet
     ''' </summary>
     Private Sub SendWaterBalanceEvent()
         Dim waterBalance As New CanopyWaterBalanceType()
-        Array.Resize(waterBalance.Canopy, ComponentData.Length)
+        Array.Resize(Of CanopyWaterBalanceCanopyType)(waterBalance.Canopy, ComponentData.Length)
         Dim totalInterception As Double = 0.0
         For j As Integer = 0 To ComponentData.Length - 1
             waterBalance.Canopy(j) = New CanopyWaterBalanceCanopyType()
