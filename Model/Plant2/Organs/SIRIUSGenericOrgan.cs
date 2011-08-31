@@ -82,6 +82,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         {
            //Function StructuralFraction = Children["StructuralFraction"] as Function;
            double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1/_StructuralFraction;
+           MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartStructuralWt - StartNonStructuralWt);
         }
     }
