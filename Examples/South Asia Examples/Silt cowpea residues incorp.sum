@@ -1,0 +1,226 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Silt cowpea residues incorp
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component        "Tillage on fixed date" = %apsim%\Model\Manager.dll
+   Component                   "Silt Water" = %apsim%\Model\SoilWat.dll
+   Component                       "cowpea" = %apsim%\Model\SurfaceOM.dll
+   Component                "Silt Nitrogen" = %apsim%\Model\SoilN.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/06/2001
+     Simulation end date   = 31/12/2001
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Bhola.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        biom_n() as biom_n_Tot
+        fom_n() as fom_n_Tot
+        no3() as NO3_Tot
+
+     Output file = Silt cowpea residues incorp.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Tillage on fixed date Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('15-jun') then
+     if (' tine' = 'user_defined') then
+         'cowpea' tillage type =  tine, f_incorp = 1.0 (), tillage_depth = 100
+     else
+         'cowpea' tillage type =  tine
+     endif
+     ready_to_till_pre_sow = 0
+     till_day_pre_sow = 0
+              endif
+     END of rules
+     
+
+------- Silt Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.118  0.235  0.386  0.436  0.311  1.416  0.762  0.300
+          150.-  300.  0.195  0.243  0.387  0.437  0.315  1.414  0.190  0.300
+          300.-  600.  0.282  0.282  0.410  0.460  0.346  1.351  0.048  0.300
+          600.-  900.  0.282  0.282  0.422  0.472  0.352  1.320  0.000  0.300
+          900.- 1200.  0.282  0.282  0.422  0.472  0.352  1.320  0.000  0.300
+         1200.- 1500.  0.282  0.282  0.422  0.492  0.352  1.320  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      35.25      11.40      22.65       7.50
+          150.-  300.      36.45      10.80      21.60       7.50
+          300.-  600.      84.60      19.20      38.40      15.00
+          600.-  900.      84.60      21.00      42.00      15.00
+          900.- 1200.      84.60      21.00      42.00      15.00
+         1200.- 1500.      84.60      21.00      42.00      21.00
+          ---------------------------------------------------------
+               Totals     410.10     104.40     208.65      81.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.14       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              94.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        4.00 (mm)
+                                  Winter        3.50 (mm)
+            Stage 2       (CONA): Summer        3.00 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Apr
+                                  Winter        1-Dec
+            Eo from priestly-taylor
+
+------- cowpea Initialisation -------------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          cowpea    cowpea        2000.0   800.0    40.0     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Silt Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Silt
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.95   27.01    3.00    0.00
+             2     7.00  1.56   10.95    1.08    0.00
+             3     7.40  0.98    5.61    0.24    0.00
+             4     8.10  0.49    5.48    0.23    0.00
+             5     8.30  0.30    5.48    0.23    0.00
+             6     8.50  0.19    5.48    0.23    0.00
+          ------------------------------------------------
+           Totals               60.01    5.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      40462.2  3237.0   955.8   119.5   234.4     5.9
+             2      32828.1  2626.2   259.5    32.4   173.6     4.3
+             3      39361.8  3148.9   155.0    19.4    95.3     2.4
+             4      19524.0  1561.9    38.4     4.8    52.3     1.3
+             5      11840.4   947.2     0.0     0.0    28.7     0.7
+             6       7722.0   617.8     0.0     0.0    15.8     0.4
+          ---------------------------------------------------------
+           Totals  151738.5 12139.1  1408.6   176.1   600.0    15.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+15 June 2001(Day of year=166), Tillage on fixed date: 
+     Manager sending message :- cowpea tillage  type = tine
+15 June 2001(Day of year=166), cowpea: 
+     
+         - Reading residue tillage info
+     Residue removed using tine
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =   100.00
+     Manager creating a new local real variable : ready_to_till_pre_sow = 0.00000
+     Manager creating a new local real variable : till_day_pre_sow = 0.00000
+31 December 2001(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

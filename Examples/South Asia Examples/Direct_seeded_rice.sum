@@ -10,17 +10,19 @@
              Copyright(c) APSRU               
 
 Version                = 7.4
-Title                  = Rice
+Title                  = Direct_seeded_rice
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
-   Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
+   Component          "Rice-Direct seeding" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
-   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
-   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "Silt Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Silt Nitrogen" = %apsim%\Model\SoilN.dll
    Component                         "rice" = %apsim%\Model\Oryza.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -33,58 +35,33 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/10/1990
-     Simulation end date   = 28/03/1991
+     Simulation start date =  1/01/2001
+     Simulation end date   = 31/12/2001
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\bhola.met
+     INPUT File name: %apsim%\Examples\MetFiles\Bhola.met
 
 ------- Outputfile Initialisation ---------------------------------------------
      Output frequency:
-        post
+        end_day
      Output variables:
         dd/mm/yyyy as Date
-        ancr
-        anlv
-        anso
-        cover_green
-        cover_tot
-        crop_type
-        cropsta
+        year
+        day
+        esw
+        no3() as no3_Tot
+        cropsta as crop_stage
         dae
-        dtga
-        dvr
-        dvs
-        eff
-        etae
-        etd
-        etrd
-        fnlv
-        gcr
-        height
-        hu
-        ldstrs
-        lestrs
-        lrstrs
-        nacr
-        nflv
-        pcew
-        plant_status
-        rlai
-        rnstrs
-        ssga
-        tnsoil
-        trc
-        wagt
-        wlvd
-        wlvg
-        wso
-        wst
-        zrt
+        wagt as total_biomass
+        wso as storage_organs
+        wrr as rice_yield
+        rain
+        dul(1)
+        sw(1)
 
-     Output file = Rice.out
+     Output file = Direct_seeded_rice.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -96,28 +73,36 @@ Paddock:
         - Reading Parameters
                       Irrigation parameters
           -----------------------------------------------
-           Automatic Irrigation Application (Enabled)
+           Automatic Irrigation Application (Disabled)
            critical fraction of available soil water =  0.50
            depth for calculating available soil water =     600.00
            Irrigation Allocation Budget (Disabled)
           -----------------------------------------------
 
-------- Rice sowing rule Initialisation ---------------------------------------
+------- Rice-Direct seeding Initialisation ------------------------------------
      Manager rules:
      
-     SECTION:- init
-     
      SECTION:- start_of_day
-     if (day = 288) then
-       rice sow cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
-     endif
+       if (paddock_is_fallow() = 1  and date_within('1-jul, 1-jul') = 1) then
+             if (rain[3] >= 20 and esw >= 20) or
+       ('yes' = 'yes' and today = date('1-jul')))    then
+          rice sow cultivar = local, establishment = direct-seed, nplds = 180
+          fertiliser apply amount = 0, type=urea
+          top_dress = 0
+          tot_irrig = 0
+              endif
+        endif
+        if rice.plant_status = 'dead' then
+              rice  end_crop
+        endif
      
-     SECTION:- end_of_day
-     if (rice.plant_status = 'dead') then
-       rice end_crop
-     endif
+     SECTION:- init
+     top_dress = 0
+     tot_irrig = 0
      END of rules
      
+     Manager creating a new local real variable : top_dress = 0.00000
+     Manager creating a new local real variable : tot_irrig = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -126,7 +111,7 @@ Paddock:
      
         - Reading Parameters
 
-------- Soil Water Initialisation ---------------------------------------------
+------- Silt Water Initialisation ---------------------------------------------
      
          - Reading constants
      
@@ -142,17 +127,12 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.145  0.290  0.540  0.590  0.540  1.020  0.762  0.300
-          150.-  300.  0.232  0.290  0.530  0.580  0.530  1.030  0.190  0.300
-          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
-          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
-          900.- 1200.  0.290  0.290  0.520  0.570  0.520  1.060  0.000  0.300
-         1200.- 1500.  0.290  0.290  0.500  0.550  0.500  1.110  0.000  0.300
-         1500.- 1800.  0.290  0.290  0.500  0.550  0.500  1.120  0.000  0.300
-         1800.- 2100.  0.290  0.290  0.480  0.530  0.480  1.150  0.000  0.300
-         2100.- 2400.  0.290  0.290  0.470  0.520  0.470  1.180  0.000  0.300
-         2400.- 2700.  0.290  0.290  0.460  0.510  0.460  1.200  0.000  0.300
-         2700.- 3000.  0.290  0.290  0.440  0.490  0.440  1.250  0.000  0.300
+            0.-  150.  0.118  0.235  0.386  0.436  0.386  1.416  0.762  0.300
+          150.-  300.  0.195  0.243  0.387  0.437  0.387  1.414  0.190  0.300
+          300.-  600.  0.282  0.282  0.410  0.460  0.410  1.351  0.048  0.300
+          600.-  900.  0.282  0.282  0.422  0.472  0.422  1.320  0.000  0.300
+          900.- 1200.  0.282  0.282  0.422  0.472  0.422  1.320  0.000  0.300
+         1200.- 1500.  0.282  0.282  0.422  0.492  0.422  1.320  0.000  0.300
         ---------------------------------------------------------------------
      
      
@@ -163,19 +143,14 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      43.50      37.50      37.50       7.50
-          150.-  300.      43.50      36.00      36.00       7.50
-          300.-  600.      87.00      75.00      75.00      15.00
-          600.-  900.      87.00      75.00      75.00      12.00
-          900.- 1200.      87.00      69.00      69.00      15.00
-         1200.- 1500.      87.00      63.00      63.00      15.00
-         1500.- 1800.      87.00      63.00      63.00      15.00
-         1800.- 2100.      87.00      57.00      57.00      15.00
-         2100.- 2400.      87.00      54.00      54.00      15.00
-         2400.- 2700.      87.00      51.00      51.00      15.00
-         2700.- 3000.      87.00      45.00      45.00      15.00
+            0.-  150.      35.25      22.65      22.65       7.50
+          150.-  300.      36.45      21.60      21.60       7.50
+          300.-  600.      84.60      38.40      38.40      15.00
+          600.-  900.      84.60      42.00      42.00      15.00
+          900.- 1200.      84.60      42.00      42.00      15.00
+         1200.- 1500.      84.60      42.00      42.00      21.00
           ---------------------------------------------------------
-               Totals     870.00     625.50     625.50     147.00
+               Totals     410.10     208.65     208.65      81.00
           ---------------------------------------------------------
      
      
@@ -187,7 +162,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.12       40.00       16.00
+                   0.00        0.14       40.00       16.00
           ---------------------------------------------------------
      
      
@@ -196,26 +171,45 @@ Paddock:
                 Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
                                            mm
           ---------------------------------------------------------
-              73.00   20.00    0.80  450.00
+              94.00   20.00    0.80  450.00
           ---------------------------------------------------------
      
      
      
            Using Ritchie evaporation model
-            Stage 1 Duration (U): Summer        6.00 (mm)
-                                  Winter        4.00 (mm)
-            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+            Stage 1 Duration (U): Summer        4.00 (mm)
+                                  Winter        3.50 (mm)
+            Stage 2       (CONA): Summer        3.00 (mm^0.5)
                                   Winter        2.50 (mm^0.5)
-            Critical Dates:       Summer        1-Nov
-                                  Winter        1-apr
+            Critical Dates:       Summer        1-Apr
+                                  Winter        1-Dec
             Eo from priestly-taylor
 
-------- Soil Nitrogen Initialisation ------------------------------------------
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          rice_stubbrice             0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Silt Nitrogen Initialisation ------------------------------------------
      
         - Reading Parameters
      
         - Reading Constants
-     Using standard soil mineralisation for soil type Black Vertosol
+     Using standard soil mineralisation for soil type Silt
      
      
      
@@ -228,19 +222,14 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     8.40  1.04    9.95    0.92    0.00
-             2     8.80  0.89    3.25    0.15    0.00
-             3     9.00  0.89    6.43    0.31    0.00
-             4     9.20  0.89    5.21    0.31    0.00
-             5     9.20  0.77    5.41    0.32    0.00
-             6     9.10  0.45    5.66    0.33    0.00
-             7     9.00  0.27    5.72    0.34    0.00
-             8     9.00  0.22    5.87    0.35    0.00
-             9     8.90  0.16    6.02    0.35    0.00
-            10     8.90  0.13    6.12    0.36    0.00
-            11     8.90  0.12    6.38    0.38    0.00
+             1     6.50  1.95    4.50    3.00    0.00
+             2     7.00  1.56    1.82    1.08    0.00
+             3     7.40  0.98    0.94    0.24    0.00
+             4     8.10  0.49    0.91    0.23    0.00
+             5     8.30  0.30    0.91    0.23    0.00
+             6     8.50  0.19    0.91    0.23    0.00
           ------------------------------------------------
-           Totals               66.01    4.10    0.00
+           Totals               10.01    5.00    0.00
           ------------------------------------------------
      
      
@@ -253,37 +242,34 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      15544.8  1295.4   367.2    45.9    96.3     2.4
-             2      13642.7  1136.9   107.8    13.5    82.8     2.1
-             3      27127.2  2260.6   106.8    13.3    61.4     1.5
-             4      27234.0  2269.5     0.0     0.0    45.5     1.1
-             5      24486.0  2040.5     0.0     0.0    33.7     0.8
-             6      14985.0  1248.8     0.0     0.0    25.0     0.6
-             7       9072.0   756.0     0.0     0.0    18.5     0.5
-             8       7590.0   632.5     0.0     0.0    13.7     0.3
-             9       5664.0   472.0     0.0     0.0    10.1     0.3
-            10       4680.0   390.0     0.0     0.0     7.5     0.2
-            11       4500.0   375.0     0.0     0.0     5.6     0.1
+             1      40462.2  3237.0   955.8   119.5   234.4     5.9
+             2      32828.1  2626.2   259.5    32.4   173.6     4.3
+             3      39361.8  3148.9   155.0    19.4    95.3     2.4
+             4      19524.0  1561.9    38.4     4.8    52.3     1.3
+             5      11840.4   947.2     0.0     0.0    28.7     0.7
+             6       7722.0   617.8     0.0     0.0    15.8     0.4
           ---------------------------------------------------------
-           Totals  154525.7 12877.1   581.8    72.7   400.0    10.0
+           Totals  151738.5 12139.1  1408.6   176.1   600.0    15.0
           ---------------------------------------------------------
 
 ------- rice Initialisation ---------------------------------------------------
         - Initialising
 ------- Start of simulation  --------------------------------------------------
-15 October 1990(Day of year=288), Rice sowing rule: 
-     Manager sending message :- rice sow  cultivar = experimental, establishment = direct-seed, nplds = 180 (p/m2)
-15 October 1990(Day of year=288), rice: 
+1 July 2001(Day of year=182), Rice-Direct seeding: 
+     Manager sending message :- rice sow  cultivar = local, establishment = direct-seed, nplds = 180
+1 July 2001(Day of year=182), rice: 
         - Reading Parameters
-        - Reading experimental Cultivar Parameters
-20 January 1991(Day of year=20), rice: 
+        - Reading local Cultivar Parameters
+     Manager sending message :- fertiliser apply  amount = 0, type = urea
+1 October 2001(Day of year=274), rice: 
      Maturity
-20 January 1991(Day of year=20), Rice sowing rule: 
+2 October 2001(Day of year=275), Rice-Direct seeding: 
      Manager sending message :- rice end_crop
-         Crop ended. Rough Rice Yield (dw) =  2270.6 (kg/ha)
-                             straw residue =  1582.3 (kg/ha)
-                             straw N       =     4.9 (kg/ha)
-                             root residue  =   404.2 (kg/ha)
-                             root N        =     1.4 (kg/ha)
-28 March 1991(Day of year=87), clock: 
+2 October 2001(Day of year=275), rice: 
+         Crop ended. Rough Rice Yield (dw) =  5123.1 (kg/ha)
+                             straw residue =  4539.0 (kg/ha)
+                             straw N       =    35.3 (kg/ha)
+                             root residue  =  1068.6 (kg/ha)
+                             root N        =     7.9 (kg/ha)
+31 December 2001(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.

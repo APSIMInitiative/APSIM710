@@ -1,0 +1,850 @@
+<folder version="27" name="Simulations">
+  <simulation name="Wheat-350ppm">
+    <metfile name="met">
+      <filename name="filename">%apsim%\Examples\MetFiles\Dinajpur.met</filename>
+    </metfile>
+    <manager name="ClimateControl">
+      <ui>
+        <category type="category" description="Climate Control Window" />
+        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+        <category type="category" description="Climate Change Parameters" />
+        <MaxtChange type="text" description="Change in maximum temperature (oC):">0</MaxtChange>
+        <MintChange type="text" description="Change in minimum temperature (oC):">0</MintChange>
+        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">350</CO2>
+      </ui>
+      <script>
+        <text>
+!  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
+! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
+
+if (date_within('[date1], [date2]') = 1) then
+   maxt = maxt + [MaxtChange]
+   mint = mint + [MintChange]
+   rain = rain + rain * [RainChange] / 100
+   radn = radn + radn * [RadnChange] / 100
+   co2 = [CO2]
+ endif
+</text>
+        <event>prenewmet</event>
+      </script>
+      <script>
+        <text>co2 = [CO2]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">01/01/1959</start_date>
+      <end_date type="date" description="Select the end date of the simulation">31/12/2009</end_date>
+    </clock>
+    <summaryfile>
+      <filename name="filename">Blank Simulation.sum</filename>
+    </summaryfile>
+    <area name="paddock">
+      <soil name="Silt">
+        <Country>Bangladesh</Country>
+        <Site>North Joynags</Site>
+        <Region>Bhola</Region>
+        <LocalName />
+        <SoilType description="Classification">Silt</SoilType>
+        <NearestTown description="Nearest town">Bhola</NearestTown>
+        <NaturalVegetation description="Natural vegetation">
+        </NaturalVegetation>
+        <State>Southern Bangladesh</State>
+        <ApsoilNumber description="Apsoil number">673</ApsoilNumber>
+        <Latitude description="Latitude (WGS84)">22.585</Latitude>
+        <Longitude description="Longitude (WGS84)">90.666</Longitude>
+        <LocationAccuracy description="Location accuracy"> +/- 50m (NB: northern hemisphere site)</LocationAccuracy>
+        <DataSource type="multiedit" description="Data source">Collected as part of ACIAR project 'Expanding Rabi season cropping in southern Bangladesh'</DataSource>
+        <Comments type="multiedit" description="Comments">2006/07 field measured DUL using wettest profile from Anthesis measurements, estimated CLL (due to the difficulty of in-field CLL measurement it is likely that CLL% is lower than this estimate)</Comments>
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <KS units="mm/day">24</KS>
+            <BD units="g/cc" code="FM">1.416</BD>
+            <Airdry units="mm/mm" code="E">0.118</Airdry>
+            <LL15 units="mm/mm" code="E">0.235</LL15>
+            <DUL units="mm/mm" code="FM">0.386</DUL>
+            <SAT units="mm/mm" code="c-bd">0.436</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <BD code="FM">1.414</BD>
+            <SAT code="c-bd">0.437</SAT>
+            <DUL code="FM">0.387</DUL>
+            <LL15 code="E">0.243</LL15>
+            <Airdry code="E">0.195</Airdry>
+            <KS>24</KS>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD code="FM">1.351</BD>
+            <SAT code="c-bd">0.46</SAT>
+            <DUL code="FM">0.41</DUL>
+            <LL15 code="E">0.282</LL15>
+            <Airdry code="E">0.282</Airdry>
+            <KS>24</KS>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD code="E">1.32</BD>
+            <SAT code="c-bd">0.472</SAT>
+            <DUL code="FM">0.422</DUL>
+            <LL15 code="E">0.282</LL15>
+            <Airdry code="E">0.282</Airdry>
+            <KS>24</KS>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD code="E">1.32</BD>
+            <SAT code="c-bd">0.472</SAT>
+            <DUL code="FM">0.422</DUL>
+            <LL15 code="E">0.282</LL15>
+            <Airdry code="E">0.282</Airdry>
+            <KS>24</KS>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <BD code="E">1.32</BD>
+            <SAT code="c-bd">0.492</SAT>
+            <DUL code="FM">0.422</DUL>
+            <LL15 code="E">0.282</LL15>
+            <Airdry code="E">0.282</Airdry>
+            <KS>1</KS>
+          </Layer>
+          <SoilCrop name="wheat">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <ll units="mm/mm" code="E">0.235</ll>
+              <kl units="/day">0.06</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <ll code="E">0.243</ll>
+              <kl>0.06</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="E">0.282</ll>
+              <kl>0.04</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="E">0.32</ll>
+              <kl>0.04</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="E">0.36</ll>
+              <kl>0.03</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="E">0.4</ll>
+              <kl>0.02</kl>
+              <xf>1</xf>
+            </Layer>
+          </SoilCrop>
+        </Water>
+        <SoilWat>
+          <SummerCona>3</SummerCona>
+          <SummerU>4</SummerU>
+          <SummerDate>1-Apr</SummerDate>
+          <WinterCona>2.5</WinterCona>
+          <WinterU>3.5</WinterU>
+          <WinterDate>1-Dec</WinterDate>
+          <DiffusConst>40</DiffusConst>
+          <DiffusSlope>16</DiffusSlope>
+          <Salb>0.14</Salb>
+          <Cn2Bare>94</Cn2Bare>
+          <CnRed>20</CnRed>
+          <CnCov>0.8</CnCov>
+          <Slope />
+          <DischargeWidth />
+          <CatchmentArea />
+          <MaxPond />
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.3</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON />
+            <KLAT />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON />
+            <KLAT />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON />
+            <KLAT />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON />
+            <KLAT />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.3</SWCON>
+            <MWCON />
+            <KLAT />
+          </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCn type="text" description="RootCn">40</RootCn>
+          <RootWt type="text" description="RootWt">1500</RootWt>
+          <SoilCn type="text" description="SoilCn">12.5</SoilCn>
+          <EnrACoeff type="text" description="EnrACoeff">7.4</EnrACoeff>
+          <EnrBCoeff type="text" description="EnrBCoeff">0.2</EnrBCoeff>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Walkley Black %" code="E">1.5</OC>
+            <FBIOM units="0-1">0.04</FBIOM>
+            <FINERT units="0-1">0.4</FINERT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <FBIOM>0.02</FBIOM>
+            <FINERT>0.6</FINERT>
+            <OC code="E">1.2</OC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <FBIOM>0.02</FBIOM>
+            <FINERT>0.8</FINERT>
+            <OC code="E">0.75</OC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <FBIOM>0.02</FBIOM>
+            <FINERT>0.9</FINERT>
+            <OC code="E">0.38</OC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <FBIOM>0.01</FBIOM>
+            <FINERT>1</FINERT>
+            <OC code="E">0.23</OC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <FBIOM>0.01</FBIOM>
+            <FINERT>1</FINERT>
+            <OC code="E">0.15</OC>
+          </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture code="E">Silt</Texture>
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water" code="E">6.5</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <MunsellColour />
+            <Rocks />
+            <Texture code="E">Silt</Texture>
+            <EC />
+            <PH code="E">7</PH>
+            <CL />
+            <Boron />
+            <CEC />
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand />
+            <ParticleSizeSilt />
+            <ParticleSizeClay />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <MunsellColour />
+            <Rocks />
+            <Texture code="E">Silt</Texture>
+            <EC />
+            <PH code="E">7.4</PH>
+            <CL />
+            <Boron />
+            <CEC />
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand />
+            <ParticleSizeSilt />
+            <ParticleSizeClay />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <MunsellColour />
+            <Rocks />
+            <Texture code="E">Silt</Texture>
+            <EC />
+            <PH code="E">8.1</PH>
+            <CL />
+            <Boron />
+            <CEC />
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand />
+            <ParticleSizeSilt />
+            <ParticleSizeClay />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <MunsellColour />
+            <Rocks />
+            <Texture code="E">Silt</Texture>
+            <EC />
+            <PH code="E">8.3</PH>
+            <CL />
+            <Boron />
+            <CEC />
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand />
+            <ParticleSizeSilt />
+            <ParticleSizeClay />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <MunsellColour />
+            <Rocks />
+            <Texture code="E">Silt</Texture>
+            <EC />
+            <PH code="E">8.5</PH>
+            <CL />
+            <Boron />
+            <CEC />
+            <Ca />
+            <Mg />
+            <Na />
+            <K />
+            <ESP />
+            <Mn />
+            <Al />
+            <ParticleSizeSand />
+            <ParticleSizeSilt />
+            <ParticleSizeClay />
+          </Layer>
+        </Analysis>
+        <InitWater>
+          <PercentMethod>
+            <Percent>1</Percent>
+            <Distributed>Evenly distributed</Distributed>
+          </PercentMethod>
+          <RelativeTo>ll15</RelativeTo>
+        </InitWater>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <no3 units="kg/ha">6</no3>
+            <nh4 units="kg/ha">4</nh4>
+          </Layer>
+          <Layer>
+            <Thickness>1800</Thickness>
+            <no3 units="kg/ha">4</no3>
+            <nh4 units="kg/ha">1</nh4>
+          </Layer>
+        </Sample>
+      </soil>
+      <folder name="Manager folder">
+        <manager name="Sow using a variable rule">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">8-dec</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">8-dec</date2>
+            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
+            <category type="category" description="Sowing parameters" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">prodip</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+          </ui>
+          <script>
+            <text>
+      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
+         if (date_within('[date1], [date2]') = 1) then
+            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
+                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
+               ChooseNextCrop = 'yes'   ! for rotations
+               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            endif
+            if today = date('[date2]') then
+               ChooseNextCrop = 'yes'
+            endif
+         endif
+      endif
+            </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
+          </ui>
+          <script>
+            <text>
+           if ('[crop]' = 'cotton') then
+              if ([crop].ozcot_status &gt; 0) then
+                  [crop] harvest
+              endif
+           elseif ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">wheat</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">40</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Fertilise and Irrigate Rabi crop">
+          <ui>
+            <croptype type="crop" description="Crop type">wheat</croptype>
+            <cropdas type="text" description="DAS to apply fertiliser and irrigation">20</cropdas>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">30</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+            <category type="category" description="Irrigation application details" />
+            <irrig_amount type="text" description="Amount of irrigation to apply">60</irrig_amount>
+          </ui>
+          <script>
+            <text>
+   if [croptype].daysaftersowing = [cropdas] then        
+         [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] (mm)
+         irrigation apply amount = [irrig_amount] (mm) 
+         tot_irrig = 0              
+    endif
+
+    tot_irrig = tot_irrig + irrig_amount
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise and Irrigate Rabi crop1">
+          <ui>
+            <croptype type="crop" description="Crop type">wheat</croptype>
+            <cropdas type="text" description="DAS to apply fertiliser and irrigation">40</cropdas>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">30</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Fertiliser type : ">urea_N</fert_type>
+            <category type="category" description="Irrigation application details" />
+            <irrig_amount type="text" description="Amount of irrigation to apply">60</irrig_amount>
+          </ui>
+          <script>
+            <text>
+   if [croptype].daysaftersowing = [cropdas] then        
+         [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] (mm)
+         irrigation apply amount = [irrig_amount] (mm) 
+         tot_irrig = 0              
+    endif
+
+    tot_irrig = tot_irrig + irrig_amount
+</text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Irrigate at sowing">
+          <ui>
+            <category type="category" description="When should irrigation be applied" />
+            <modulename type="modulename" description="The module the event come from : ">wheat</modulename>
+            <eventname type="text" description="Which event should irrigation be applied : ">sowing</eventname>
+            <category type="category" description="Irrigation application details" />
+            <irrigatemodule type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigatemodule>
+            <irrig_amount_evt type="text" description="Amount of irrigation to apply (mm) : ">60</irrig_amount_evt>
+          </ui>
+          <script>
+            <text>
+         if ([irrig_amount_evt] &gt; 0) then
+            '[irrigatemodule]' apply amount = [irrig_amount_evt] (mm)
+         endif
+   </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Rabi residue">
+          <ui>
+            <category type="category" description="When should tillage be performed" />
+            <modulename type="modulename" description="The module the event come from : ">wheat</modulename>
+            <eventname type="text" description="On which event should tillage be done : ">harvesting</eventname>
+            <category type="category" description="Tillage details" />
+            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">Surface Organic Matter</surfaceommodule>
+            <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+            <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
+            <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">.8</tillage_f_incorp>
+          </ui>
+          <script>
+            <text>
+            '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
+      </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <tracker>
+          <variable name="sum of rain on start_of_day from sowing to now as RainSinceSowing" />
+          <variable name="sum of ep on end_of_day from sowing to now as Transp" />
+          <variable name="sum of es on end_of_day from sowing to now as SoilEvap" />
+        </tracker>
+        <manager name="Reset water, nitrogen and surfaceOM on sowing">
+          <ui>
+            <category type="category" description="When should a reset be done" />
+            <modulename type="modulename" description="The module the event is to come from : ">wheat</modulename>
+            <eventname type="text" description="On which event should a reset be done : ">sowing</eventname>
+            <category type="category" description="Reset details" />
+            <soilmodule type="modulename" description="Name of your soil module : ">Silt</soilmodule>
+            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">Surface Organic Matter</surfaceommodule>
+            <resetWater type="yesno" description="Reset soil water?">yes</resetWater>
+            <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
+            <resetSurfaceOM type="yesno" description="Reset surface organic matter?">yes</resetSurfaceOM>
+          </ui>
+          <script>
+            <text>
+            resetWater = '[resetWater]'
+            resetNitrogen  = '[resetNitrogen]'
+            resetSurfaceOM = '[resetSurfaceOM]'
+            if (resetWater = 'yes') then
+                '[soilmodule] Water' reset
+            endif
+            if (resetNitrogen = 'yes') then
+                '[soilmodule] Nitrogen' reset
+            endif
+            if (resetSurfaceOM = 'yes') then
+                '[surfaceommodule]' reset
+            endif
+            if (resetWater = 'yes' or resetNitrogen = 'yes' or resetSurfaceOM = 'yes') then
+               act_mods reseting
+            endif
+      </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+      </folder>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">off</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
+      <rice />
+      <wheat />
+      <surfaceom name="Surface Organic Matter">
+        <PoolName type="text" description="Organic Matter pool name">rice_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat" description="Organic Matter type">rice</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80.0</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)" />
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <pond>
+        <algae_present type="text" description="is there algae present in this pond (0 or 1)">0</algae_present>
+        <CEC type="text" description="surface soil cation exchange capacity">30.0</CEC>
+      </pond>
+      <outputfile name="Outputfile">
+        <variables name="Variables">
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="year" />
+          <variable name="day" />
+          <variable name="wheat.yield as wheat_yield" />
+          <variable name="wheat.biomass as wheat_biom" />
+          <variable name="esw" />
+          <variable name="no3()" />
+          <variable name="RainSinceSowing" />
+          <variable name="Transp" />
+          <variable name="SoilEvap" />
+        </variables>
+        <events name="Reporting Frequency">
+          <event name="harvesting" />
+        </events>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Wheat-450ppm" shortcut="/Simulations/Wheat-350ppm">
+    <metfile name="met" shortcut="/Simulations/Wheat-350ppm/met" />
+    <manager name="ClimateControl">
+      <ui>
+        <category type="category" description="Climate Control Window" />
+        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+        <category type="category" description="Climate Change Parameters" />
+        <MaxtChange type="text" description="Change in maximum temperature (oC):">0</MaxtChange>
+        <MintChange type="text" description="Change in minimum temperature (oC):">0</MintChange>
+        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">450</CO2>
+      </ui>
+      <script>
+        <text>
+!  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
+! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
+
+if (date_within('[date1], [date2]') = 1) then
+   maxt = maxt + [MaxtChange]
+   mint = mint + [MintChange]
+   rain = rain + rain * [RainChange] / 100
+   radn = radn + radn * [RadnChange] / 100
+   co2 = [CO2]
+ endif
+</text>
+        <event>prenewmet</event>
+      </script>
+      <script>
+        <text>co2 = [CO2]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <clock shortcut="/Simulations/Wheat-350ppm/clock" />
+    <summaryfile shortcut="/Simulations/Wheat-350ppm/summaryfile" />
+    <area name="paddock" shortcut="/Simulations/Wheat-350ppm/paddock">
+      <soil name="Silt" shortcut="/Simulations/Wheat-350ppm/paddock/Silt">
+        <Water shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Water">
+          <SoilCrop name="wheat" shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Water/wheat" />
+        </Water>
+        <SoilWat shortcut="/Simulations/Wheat-350ppm/paddock/Silt/SoilWat" />
+        <SoilOrganicMatter shortcut="/Simulations/Wheat-350ppm/paddock/Silt/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Analysis" />
+        <InitWater shortcut="/Simulations/Wheat-350ppm/paddock/Silt/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Initial nitrogen" />
+      </soil>
+      <folder name="Manager folder" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder">
+        <manager name="Sow using a variable rule" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Sow using a variable rule" />
+        <manager name="Harvesting rule" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise at sowing" />
+        <manager name="Fertilise and Irrigate Rabi crop" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop" />
+        <manager name="Fertilise and Irrigate Rabi crop1" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop1" />
+        <manager name="Irrigate at sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Irrigate at sowing" />
+        <manager name="Rabi residue" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Rabi residue" />
+        <tracker shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/tracker" />
+        <manager name="Reset water, nitrogen and surfaceOM on sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Reset water, nitrogen and surfaceOM on sowing" />
+      </folder>
+      <irrigation name="Irrigation" shortcut="/Simulations/Wheat-350ppm/paddock/Irrigation" />
+      <rice shortcut="/Simulations/Wheat-350ppm/paddock/rice" />
+      <wheat shortcut="/Simulations/Wheat-350ppm/paddock/wheat" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Wheat-350ppm/paddock/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Wheat-350ppm/paddock/Fertiliser" />
+      <pond shortcut="/Simulations/Wheat-350ppm/paddock/pond" />
+      <outputfile name="Outputfile" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile/Reporting Frequency" />
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Wheat-350ppm+2degC" shortcut="/Simulations/Wheat-350ppm">
+    <metfile name="met" shortcut="/Simulations/Wheat-350ppm/met" />
+    <manager name="ClimateControl">
+      <ui>
+        <category type="category" description="Climate Control Window" />
+        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+        <category type="category" description="Climate Change Parameters" />
+        <MaxtChange type="text" description="Change in maximum temperature (oC):">0</MaxtChange>
+        <MintChange type="text" description="Change in minimum temperature (oC):">2</MintChange>
+        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">350</CO2>
+      </ui>
+      <script>
+        <text>
+!  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
+! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
+
+if (date_within('[date1], [date2]') = 1) then
+   maxt = maxt + [MaxtChange]
+   mint = mint + [MintChange]
+   rain = rain + rain * [RainChange] / 100
+   radn = radn + radn * [RadnChange] / 100
+   co2 = [CO2]
+ endif
+</text>
+        <event>prenewmet</event>
+      </script>
+      <script>
+        <text>co2 = [CO2]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <clock shortcut="/Simulations/Wheat-350ppm/clock" />
+    <summaryfile shortcut="/Simulations/Wheat-350ppm/summaryfile" />
+    <area name="paddock" shortcut="/Simulations/Wheat-350ppm/paddock">
+      <soil name="Silt" shortcut="/Simulations/Wheat-350ppm/paddock/Silt">
+        <Water shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Water">
+          <SoilCrop name="wheat" shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Water/wheat" />
+        </Water>
+        <SoilWat shortcut="/Simulations/Wheat-350ppm/paddock/Silt/SoilWat" />
+        <SoilOrganicMatter shortcut="/Simulations/Wheat-350ppm/paddock/Silt/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Analysis" />
+        <InitWater shortcut="/Simulations/Wheat-350ppm/paddock/Silt/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Wheat-350ppm/paddock/Silt/Initial nitrogen" />
+      </soil>
+      <folder name="Manager folder" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder">
+        <manager name="Sow using a variable rule" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Sow using a variable rule" />
+        <manager name="Harvesting rule" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise at sowing" />
+        <manager name="Fertilise and Irrigate Rabi crop" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop" />
+        <manager name="Fertilise and Irrigate Rabi crop1" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop1" />
+        <manager name="Irrigate at sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Irrigate at sowing" />
+        <manager name="Rabi residue" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Rabi residue" />
+        <tracker shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/tracker" />
+        <manager name="Reset water, nitrogen and surfaceOM on sowing" shortcut="/Simulations/Wheat-350ppm/paddock/Manager folder/Reset water, nitrogen and surfaceOM on sowing" />
+      </folder>
+      <irrigation name="Irrigation" shortcut="/Simulations/Wheat-350ppm/paddock/Irrigation" />
+      <rice shortcut="/Simulations/Wheat-350ppm/paddock/rice" />
+      <wheat shortcut="/Simulations/Wheat-350ppm/paddock/wheat" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Wheat-350ppm/paddock/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Wheat-350ppm/paddock/Fertiliser" />
+      <pond shortcut="/Simulations/Wheat-350ppm/paddock/pond" />
+      <outputfile name="Outputfile" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Wheat-350ppm/paddock/Outputfile/Reporting Frequency" />
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Wheat-450ppm+2degC" shortcut="/Simulations/Wheat-450ppm">
+    <metfile name="met" shortcut="/Simulations/Wheat-450ppm/met" />
+    <manager name="ClimateControl">
+      <ui>
+        <category type="category" description="Climate Control Window" />
+        <date1 type="ddmmmdate" description="Enter window START date (dd-mmm) : ">1-jan</date1>
+        <date2 type="ddmmmdate" description="Enter window END date (dd-mmm) : ">31-dec</date2>
+        <category type="category" description="Climate Change Parameters" />
+        <MaxtChange type="text" description="Change in maximum temperature (oC):">0</MaxtChange>
+        <MintChange type="text" description="Change in minimum temperature (oC):">2</MintChange>
+        <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+        <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+        <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">450</CO2>
+      </ui>
+      <script>
+        <text>
+!  Adjust daily temperatures, rainfall and radiation up or down according to user-defined amounts
+! To apply different levels of climate control to different times of year add multiple copies of this logic into your simulation and change the window.
+
+if (date_within('[date1], [date2]') = 1) then
+   maxt = maxt + [MaxtChange]
+   mint = mint + [MintChange]
+   rain = rain + rain * [RainChange] / 100
+   radn = radn + radn * [RadnChange] / 100
+   co2 = [CO2]
+ endif
+</text>
+        <event>prenewmet</event>
+      </script>
+      <script>
+        <text>co2 = [CO2]</text>
+        <event>Init</event>
+      </script>
+    </manager>
+    <clock shortcut="/Simulations/Wheat-450ppm/clock" />
+    <summaryfile shortcut="/Simulations/Wheat-450ppm/summaryfile" />
+    <area name="paddock" shortcut="/Simulations/Wheat-450ppm/paddock">
+      <soil name="Silt" shortcut="/Simulations/Wheat-450ppm/paddock/Silt">
+        <Water shortcut="/Simulations/Wheat-450ppm/paddock/Silt/Water">
+          <SoilCrop name="wheat" shortcut="/Simulations/Wheat-450ppm/paddock/Silt/Water/wheat" />
+        </Water>
+        <SoilWat shortcut="/Simulations/Wheat-450ppm/paddock/Silt/SoilWat" />
+        <SoilOrganicMatter shortcut="/Simulations/Wheat-450ppm/paddock/Silt/SoilOrganicMatter" />
+        <Analysis shortcut="/Simulations/Wheat-450ppm/paddock/Silt/Analysis" />
+        <InitWater shortcut="/Simulations/Wheat-450ppm/paddock/Silt/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/Simulations/Wheat-450ppm/paddock/Silt/Initial nitrogen" />
+      </soil>
+      <folder name="Manager folder" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder">
+        <manager name="Sow using a variable rule" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Sow using a variable rule" />
+        <manager name="Harvesting rule" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Fertilise at sowing" />
+        <manager name="Fertilise and Irrigate Rabi crop" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop" />
+        <manager name="Fertilise and Irrigate Rabi crop1" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Fertilise and Irrigate Rabi crop1" />
+        <manager name="Irrigate at sowing" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Irrigate at sowing" />
+        <manager name="Rabi residue" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Rabi residue" />
+        <tracker shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/tracker" />
+        <manager name="Reset water, nitrogen and surfaceOM on sowing" shortcut="/Simulations/Wheat-450ppm/paddock/Manager folder/Reset water, nitrogen and surfaceOM on sowing" />
+      </folder>
+      <irrigation name="Irrigation" shortcut="/Simulations/Wheat-450ppm/paddock/Irrigation" />
+      <rice shortcut="/Simulations/Wheat-450ppm/paddock/rice" />
+      <wheat shortcut="/Simulations/Wheat-450ppm/paddock/wheat" />
+      <surfaceom name="Surface Organic Matter" shortcut="/Simulations/Wheat-450ppm/paddock/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/Simulations/Wheat-450ppm/paddock/Fertiliser" />
+      <pond shortcut="/Simulations/Wheat-450ppm/paddock/pond" />
+      <outputfile name="Outputfile" shortcut="/Simulations/Wheat-450ppm/paddock/Outputfile">
+        <variables name="Variables" shortcut="/Simulations/Wheat-450ppm/paddock/Outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/Simulations/Wheat-450ppm/paddock/Outputfile/Reporting Frequency" />
+      </outputfile>
+    </area>
+  </simulation>
+</folder>
