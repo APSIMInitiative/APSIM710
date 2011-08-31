@@ -1138,12 +1138,16 @@ namespace CMPServices
         //======================================================================
         /// <summary>
         /// Assignment from a TTypedValue that need not be of identical type, but must   
-        /// be type-compatible                                                           
+        /// be type-compatible.
+        /// When converting from a scalar string to a numeric an exception will be thrown
+        /// if the source string is not a valid numeric.
         /// </summary>
         /// <param name="srcValue">The source typed value.</param>
+        /// <returns>True is the value can be set.</returns>
         //======================================================================
-        public void setValue(TTypedValue srcValue)
+        public Boolean setValue(TTypedValue srcValue)
         {
+            bool result = false;
             bool bCompatible;
 
             if (srcValue != null)
@@ -1152,43 +1156,53 @@ namespace CMPServices
                 if (baseType() == TBaseType.ITYPE_DEF)
                 {
                     bCompatible = (bCompatible && (srcValue.baseType() == TBaseType.ITYPE_DEF));
-                }      //TODO: add an else for check scalar conversion compatiblity            
+                }      
                 if (!bCompatible)
                 {
-                    throw (new TypeMisMatchException("Incompatible assignment from " + Name + " to " + srcValue.Name));
+                    String error = String.Format("Incompatible assignment from {0} to {1}\nCannot convert {2} to {3}", Name, srcValue.Name, srcValue.baseType(),ToString(), baseType().ToString());
+                    throw (new TypeMisMatchException(error));
                 }
                 if (isScalar())
                 {
-                    switch (baseType())
+                    try
                     {
-                        case TBaseType.ITYPE_INT1:
-                        case TBaseType.ITYPE_INT2:
-                        case TBaseType.ITYPE_INT4:
-                        case TBaseType.ITYPE_INT8:
-                            {
-                                setValue(srcValue.asInt());
+                        switch (baseType())
+                        {
+                            case TBaseType.ITYPE_INT1:
+                            case TBaseType.ITYPE_INT2:
+                            case TBaseType.ITYPE_INT4:
+                                {
+                                    result = setValue(srcValue.asInt());
+                                    break;
+                                }
+                            case TBaseType.ITYPE_INT8:
+                                result = setValue(Convert.ToInt64(srcValue.asDouble()));
                                 break;
-                            }
-                        case TBaseType.ITYPE_DOUBLE:
-                            {
-                                setValue(srcValue.asDouble());
-                                break;
-                            }
-                        case TBaseType.ITYPE_SINGLE:
-                            {
-                                setValue(srcValue.asSingle());
-                                break;
-                            }
-                        case TBaseType.ITYPE_BOOL:
-                            {
-                                setValue(srcValue.asBool());
-                                break;
-                            }
-                        default:
-                            {
-                                setValue(srcValue.asStr());
-                                break;
-                            }
+                            case TBaseType.ITYPE_DOUBLE:
+                                {
+                                    result = setValue(srcValue.asDouble());
+                                    break;
+                                }
+                            case TBaseType.ITYPE_SINGLE:
+                                {
+                                    result = setValue(srcValue.asSingle());
+                                    break;
+                                }
+                            case TBaseType.ITYPE_BOOL:
+                                {
+                                    result = setValue(srcValue.asBool());
+                                    break;
+                                }
+                            default:
+                                {
+                                    result = setValue(srcValue.asStr());
+                                    break;
+                                }
+                        }
+                    }
+                    catch
+                    {
+                        throw (new Exception("setValue() cannot convert " + srcValue.asStr() + " to " + baseType().ToString())); 
                     }
                 }
                 else
@@ -1199,10 +1213,11 @@ namespace CMPServices
                     }
                     for (uint Idx = 1; Idx <= count(); Idx++)
                     {
-                        item(Idx).setValue(srcValue.item(Idx));
+                        result = item(Idx).setValue(srcValue.item(Idx));
                     }
                 }
             }
+            return result;
         }
         //======================================================================
         /// <summary>
@@ -1972,72 +1987,69 @@ namespace CMPServices
         /// <para>1. Type compatibility is not a transitive relationship.</para>
         /// <para>2. Unit compatibility needs further implementation.</para>
         /// </summary>
-        /// <param name="typedVal">The TTypedValue to compare with.</param>
+        /// <param name="srcValue">The TTypedValue to compare with.</param>
         /// <returns>Returns: 0 - exact match, 1 - compatible, -1 - cannot match</returns>
         //============================================================================
-        public int isSameType(TTypedValue typedVal)
+        public int canAssignFrom(TTypedValue srcValue)
         {
             int result = ctBAD;
             uint Idx;
 
-            if (isScalar())
+            if (srcValue.isScalar())
             {
-                if (!typedVal.isScalar())
+                if (!isScalar())
                     result = ctBAD;
-                else if (baseType() == typedVal.baseType())
+                else if (srcValue.baseType() == baseType())
                     result = ctSAME;
-                else if ((baseType() <= TBaseType.ITYPE_INT8) && (baseType() >= TBaseType.ITYPE_INT1) &&
-                         (typedVal.baseType() <= TBaseType.ITYPE_INT8) && (typedVal.baseType() >= TBaseType.ITYPE_INT1))
+                else if ((srcValue.baseType() <= TBaseType.ITYPE_INT8) && (srcValue.baseType() >= TBaseType.ITYPE_INT1) &&
+                         (baseType() <= TBaseType.ITYPE_INT8) && (baseType() >= TBaseType.ITYPE_INT1))
                     result = ctCOMP;  //both integers
                 else if ((baseType() >= TBaseType.ITYPE_SINGLE) && (baseType() <= TBaseType.ITYPE_DOUBLE) &&           //These conditions are not transitive                        
-                         (typedVal.baseType() >= TBaseType.ITYPE_INT1) && (typedVal.baseType() <= TBaseType.ITYPE_DOUBLE))
+                         (srcValue.baseType() >= TBaseType.ITYPE_INT1) && (srcValue.baseType() <= TBaseType.ITYPE_DOUBLE))
                     result = ctCOMP;  //can match an int/single source to single/double destination
-                else if ((baseType() >= TBaseType.ITYPE_DOUBLE) &&
-                    (typedVal.baseType() >= TBaseType.ITYPE_INT1) && (typedVal.baseType() <= TBaseType.ITYPE_DOUBLE))
-                    result = ctCOMP;  //can match an int/single/double source to double destination
-                else if ((baseType() == TBaseType.ITYPE_CHAR) &&
-                    ((typedVal.baseType() == TBaseType.ITYPE_WCHAR) ||
-                    (typedVal.baseType() == TBaseType.ITYPE_STR) ||
-                    (typedVal.baseType() == TBaseType.ITYPE_WSTR)))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_CHAR) &&
+                    ((baseType() == TBaseType.ITYPE_WCHAR) ||
+                    (baseType() == TBaseType.ITYPE_STR) ||
+                    (baseType() == TBaseType.ITYPE_WSTR)))
                     result = ctCOMP;
-                else if ((baseType() == TBaseType.ITYPE_WCHAR) && (typedVal.baseType() == TBaseType.ITYPE_WSTR))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_WCHAR) && (baseType() == TBaseType.ITYPE_WSTR))
                     result = ctCOMP;
-                else if ((baseType() == TBaseType.ITYPE_STR) && (typedVal.baseType() == TBaseType.ITYPE_WSTR))
+                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) && (baseType() == TBaseType.ITYPE_WSTR))
                     result = ctCOMP;
                 else
                     result = ctBAD;
 
                 if ((baseType() >= TBaseType.ITYPE_INT1) && (baseType() <= TBaseType.ITYPE_DOUBLE) &&
-                      (!unitsMatch(units(), typedVal.units())))
+                      (!unitsMatch(units(), srcValue.units())))
                     result = ctBAD;
             }
-            else if (FIsArray)
+            else if (srcValue.isArray())
             {   //an array
-                if (!typedVal.isArray())
+                if (!isArray())
                     result = ctBAD;
                 else
                 {
                     if (count() == 0)
                         setElementCount(1);  //addElement();
-                    if (typedVal.count() == 0)
-                        typedVal.setElementCount(1); //addElement();
-                    result = member(1).isSameType(typedVal.member(1));
+                    if (srcValue.count() == 0)
+                        srcValue.setElementCount(1); //addElement();
+                    result = member(1).canAssignFrom(srcValue.member(1));
                 }
             }
             else
             {   //a record
-                if (!typedVal.isRecord())
+                if (!isRecord())
                     result = ctBAD;
                 else
                 {
                     result = ctCOMP;                                                        // First, test for identity
-                    if (count() == typedVal.count())
+                    if (count() == srcValue.count())
                     {
                         result = ctSAME;
                         for (Idx = 1; Idx <= count(); Idx++)
                         {
-                            if ((member(Idx).Name.ToLower() != typedVal.member(Idx).Name.ToLower()) ||
-                                  (member(Idx).isSameType(typedVal.member(Idx)) != ctSAME))
+                            if ((member(Idx).Name.ToLower() != srcValue.member(Idx).Name.ToLower()) ||
+                                  (member(Idx).canAssignFrom(srcValue.member(Idx)) != ctSAME))
                                 result = ctCOMP;
                         }
                     }
@@ -2046,11 +2058,11 @@ namespace CMPServices
                     if (result == ctCOMP)
                     {                                                //If not same, test for compatibility
                         String elemName;
-                        for (Idx = 1; Idx <= count(); Idx++)
+                        for (Idx = 1; Idx <= srcValue.count(); Idx++)
                         {
-                            elemName = member(Idx).Name;                 //field name
-                            if (!typedVal.hasField(elemName) ||
-                                  (member(Idx).isSameType(typedVal.member(elemName)) == ctBAD))
+                            elemName = srcValue.member(Idx).Name;                 //field name
+                            if (!hasField(elemName) ||
+                                  (member(elemName).canAssignFrom(srcValue.member(Idx)) == ctBAD))
                                 result = ctBAD;
                         }
                     }

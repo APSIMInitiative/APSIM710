@@ -66,14 +66,14 @@ public class Paddock : Component
     //=========================================================================
     public Component ComponentByType(String TypeToFind)
     {
+        Component C = null;
         TypedList<Component> Children = new TypedList<Component>();
         foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
         {
-            Component C = new Component(pair.Value.name, HostComponent); //??
-            if (C.IsOfType(TypeToFind))
-                return C;
+            if (pair.Value.CompClass.ToLower() == TypeToFind.ToLower())
+               C = new Component(pair.Value.name, HostComponent);
         }
-        return null;
+        return C;
     }
     //=========================================================================
     /// <summary>

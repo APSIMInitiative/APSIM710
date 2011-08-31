@@ -542,7 +542,7 @@ namespace CMPServices
                 {
                     valueA = new TDDMLValue(sTypeA, TTypedValue.TBaseType.ITYPE_DEF);
                     valueB = new TDDMLValue(sTypeB, TTypedValue.TBaseType.ITYPE_DEF);
-                    int check1 = valueA.isSameType(valueB);
+                    int check1 = valueA.canAssignFrom(valueB);
                     if (check1 == TTypedValue.ctSAME)
                     {
                         result = 3;
@@ -553,7 +553,7 @@ namespace CMPServices
                         {
                             result = 1;
                         }
-                        if (valueB.isSameType(valueA) != TTypedValue.ctBAD)
+                        if (valueB.canAssignFrom(valueA) != TTypedValue.ctBAD)
                         {
                             result |= 2;
                         }

@@ -84,7 +84,7 @@ namespace CMPServices
                 }
                 TSourcedInfo source = new TSourcedInfo(sPassedDDML, "");
 
-                switch (isSameType(source))
+                switch (canAssignFrom(source))
                 {
                     case TTypedValue.ctCOMP:         //Parameter order is important! ctCOMP
                         {                             //means "sourceValue is compatible with this"

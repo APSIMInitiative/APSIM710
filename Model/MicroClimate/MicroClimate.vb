@@ -913,10 +913,10 @@ Partial Public Class MicroMet
 
         For i As Integer = 0 To numLayers - 1
             For j As Integer = 0 To ComponentData.Length - 1
-                netRadiation = ((1.0 - albedo) * ComponentData(j).Rs(i) + _
+                netRadiation = 1000000.0 * ((1.0 - albedo) * ComponentData(j).Rs(i) + _
                                                  ComponentData(j).Rl(i) + _
-                                                 ComponentData(j).Rsoil(i)) *
-                                                 1000000.0 ' MJ/J
+                                                 ComponentData(j).Rsoil(i))
+                                                 ' MJ/J
                 netRadiation = Math.Max(0.0, netRadiation)
 
                 ComponentData(j).PETr(i) = CalcPETr(netRadiation * dryleaffraction, mint, maxt, air_pressure, _

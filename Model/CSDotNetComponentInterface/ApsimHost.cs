@@ -20,7 +20,7 @@ public class TAPSIMHost : TBaseComp
 {
     private int tickID;
     const int smEXECUTE = 1;
-    private int drvCOMPCLASS = 1;
+    private int drvCOMPCLASS = -1;
 
     protected ApsimComponent Comp;
 
@@ -135,7 +135,15 @@ public class TAPSIMHost : TBaseComp
                             compList[entityID] = comp;
                         }
                     }
-                    else                                                    //else do a GetValue to find it's type 
+                    else if (sDDML != "" && compList.ContainsKey(entityID))
+                    {
+                        TComp comp = compList[entityID];
+                        comp.CompClass = sDDML;                 //store the class type
+                        if (comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
+                            comp.isSystem = true;
+                        compList[entityID] = comp;
+                    }
+                    else                                     //else do a GetValue to find it's type 
                     {
                         //now do a getvalue to find the class type of the component
                         drvCOMPCLASS = driverCount();

@@ -1432,7 +1432,7 @@ namespace CMPServices
                     else
                     {                                                     //   compatible, not identical
                         resetValue = new TDDMLValue(sDDML, "");
-                        if (ownedValue.isSameType(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
+                        if (ownedValue.canAssignFrom(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
                         {
                             string errorMsg = string.Format("{0}: Attempt to write value of wrong type to property \" {1} \" in doResetProperty()", FName, ownedValue.Name);
                             throw (new TypeMisMatchException(errorMsg));
