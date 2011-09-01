@@ -3,7 +3,6 @@ using System.Data;
 using System.Collections.Specialized;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Excel;
-using CSGeneral;
 using System.IO;
 
 namespace ExcelUtility

@@ -81,7 +81,7 @@ Public Class SoilActions
       StatusBar.Visible = True
 
       Dim Dialog As New OpenFileDialog()
-      Dialog.Filter = "Spreadsheet files (*.xls)|*.xls|All files (*.*)|*.*"
+      Dialog.Filter = "Spreadsheet files (*.xls;*.xlsx)|*.xls;*.xlsx|All files (*.*)|*.*"
       Dialog.Title = "Select a spreadsheet to open"
       Dialog.RestoreDirectory = True
       If Dialog.ShowDialog() = DialogResult.OK Then

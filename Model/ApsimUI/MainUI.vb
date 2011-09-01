@@ -184,10 +184,10 @@ Public Class MainUI
       Me.ToolboxButtonClose = New System.Windows.Forms.Button()
       Me.ToolBoxPanelToolBar = New System.Windows.Forms.ToolBar()
       Me.SimulationContainer = New System.Windows.Forms.ToolStripContainer()
+      Me.ToolBoxesToolStrip = New System.Windows.Forms.ToolStrip()
       Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
       Me.ProgressBar = New System.Windows.Forms.ToolStripProgressBar()
       Me.ProgressLabel = New System.Windows.Forms.ToolStripStatusLabel()
-      Me.ToolBoxesToolStrip = New System.Windows.Forms.ToolStrip()
       Me.SimulationExplorer = New Controllers.ExplorerUI()
       Me.ToolboxSplitter = New System.Windows.Forms.Splitter()
       Me.SimulationToolStrip = New System.Windows.Forms.ToolStrip()
@@ -320,8 +320,19 @@ Public Class MainUI
       'SimulationContainer.TopToolStripPanel
       '
       Me.SimulationContainer.TopToolStripPanel.BackColor = System.Drawing.SystemColors.ControlLight
-      Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.RunToolStrip)
       Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.SimulationToolStrip)
+      Me.SimulationContainer.TopToolStripPanel.Controls.Add(Me.RunToolStrip)
+      '
+      'ToolBoxesToolStrip
+      '
+      Me.ToolBoxesToolStrip.Dock = System.Windows.Forms.DockStyle.None
+      Me.ToolBoxesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
+      Me.ToolBoxesToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
+      Me.ToolBoxesToolStrip.Location = New System.Drawing.Point(3, 0)
+      Me.ToolBoxesToolStrip.Name = "ToolBoxesToolStrip"
+      Me.ToolBoxesToolStrip.ShowItemToolTips = False
+      Me.ToolBoxesToolStrip.Size = New System.Drawing.Size(102, 25)
+      Me.ToolBoxesToolStrip.TabIndex = 2
       '
       'StatusStrip1
       '
@@ -342,17 +353,6 @@ Public Class MainUI
       '
       Me.ProgressLabel.Name = "ProgressLabel"
       Me.ProgressLabel.Size = New System.Drawing.Size(0, 17)
-      '
-      'ToolBoxesToolStrip
-      '
-      Me.ToolBoxesToolStrip.Dock = System.Windows.Forms.DockStyle.None
-      Me.ToolBoxesToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden
-      Me.ToolBoxesToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
-      Me.ToolBoxesToolStrip.Location = New System.Drawing.Point(3, 0)
-      Me.ToolBoxesToolStrip.Name = "ToolBoxesToolStrip"
-      Me.ToolBoxesToolStrip.ShowItemToolTips = False
-      Me.ToolBoxesToolStrip.Size = New System.Drawing.Size(102, 25)
-      Me.ToolBoxesToolStrip.TabIndex = 2
       '
       'SimulationExplorer
       '
@@ -387,7 +387,7 @@ Public Class MainUI
       Me.RunToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.RunButton, Me.StopButton, Me.RunProgress, Me.PercentLabel, Me.ToolStripButton1, Me.ErrorsButton})
       Me.RunToolStrip.Location = New System.Drawing.Point(105, 0)
       Me.RunToolStrip.Name = "RunToolStrip"
-      Me.RunToolStrip.Size = New System.Drawing.Size(358, 46)
+      Me.RunToolStrip.Size = New System.Drawing.Size(251, 46)
       Me.RunToolStrip.TabIndex = 2
       '
       'RunButton
