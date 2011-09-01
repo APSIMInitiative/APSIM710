@@ -821,7 +821,7 @@ namespace ApsimFile
             {
             Var = GetCalculated(SoilNode, VariableName);
             }
-         catch (Exception err)
+         catch (Exception)
             { }
          if (Var == null)
             {
@@ -897,13 +897,11 @@ namespace ApsimFile
          List<XmlNode> ParentNodes = new List<XmlNode>();
          foreach (XmlNode Node in AllNodes)
             {
-            string ParentName = "";
             if (Node.ParentNode != null)
                {
                if (Node.ParentNode.Name == "Layer")
                   {
                   // Its a profile node - add to our list if it isn't alreay added
-                  ParentName = XmlHelper.Name(Node.ParentNode.ParentNode);
                   if (ParentNodes.IndexOf(Node.ParentNode.ParentNode) == -1)
                      ParentNodes.Add(Node.ParentNode.ParentNode);
                   }
@@ -988,7 +986,7 @@ namespace ApsimFile
                 !VariableNames[i].Contains("Depth"))
                {
                string Name = VariableNames[i];
-               string Units = StringManip.SplitOffBracketedValue(ref Name, '(', ')');
+               /*string Units = */ StringManip.SplitOffBracketedValue(ref Name, '(', ')');
 
                Soil.Variable Var = Soil.Get(SoilNode, Name);
                if (Var.ThicknessMM != null && Var.Value == null)
@@ -1060,7 +1058,7 @@ namespace ApsimFile
                 !VariableNames[i].Contains("Depth"))
                {
                string Name = VariableNames[i];
-               string Units = StringManip.SplitOffBracketedValue(ref Name, '(', ')');
+               //string Units = StringManip.SplitOffBracketedValue(ref Name, '(', ')');
 
                Soil.Variable Var = new Soil.Variable(ProfileNode, Name); 
                if (Var.ThicknessMM != null && Var.Value == null)
@@ -1826,7 +1824,7 @@ namespace ApsimFile
          string ErrorMessages = "";
          try
             {
-            string NewApsimToSim = ReplaceSoilMacros(SoilNode, ApsimToSim);
+            ReplaceSoilMacros(SoilNode, ApsimToSim);
             }
          catch (Exception err)
             {

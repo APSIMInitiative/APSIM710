@@ -63,7 +63,8 @@ class EXPORT SimCreator
       // the specified module instance and output it
       // to the specified output stream.
       // -------------------------------------------
-      void ConvertConModule(ApsimControlFile::ModuleInstance& moduleInstance,
+      void ConvertConModule(std::string Title,
+	                        ApsimControlFile::ModuleInstance& moduleInstance,
                             std::ostream& out);
 
 

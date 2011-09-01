@@ -27,13 +27,13 @@ Public Class BaseActions
             End If
         End If
     End Sub
-    Public Shared Sub FileSave(ByVal Controller As BaseController)
+    Public Shared Function FileSave(ByVal Controller As BaseController)
         If Controller.ApsimData.FileName = "Untitled" Then
-            BaseActions.FileSaveAs(Controller)
+            Return BaseActions.FileSaveAs(Controller)
         Else
-            Controller.ApsimData.Save()
+            Return Controller.ApsimData.Save()
         End If
-    End Sub
+    End Function
     Public Shared Function FileSaveAs(ByVal Controller As BaseController) As Boolean
         Dim result As Boolean = False
         Dim Dialog As New SaveFileDialog
@@ -136,22 +136,22 @@ Public Class BaseActions
     Private Shared ComponentsToPrint As New List(Of String)
     Private Shared ComponentsToPrintIndex As Integer
     Private Shared Contr As BaseController
-    Private Shared PrintForm As TMGDevelopment.Windows.Forms.PrintForm = Nothing
+    'Private Shared PrintForm As TMGDevelopment.Windows.Forms.PrintForm = Nothing
     Private Shared PrintSettings As Printing.PrinterSettings = Nothing
 
     Public Shared Sub Print(ByVal Controller As BaseController)
-        PrintForm = New TMGDevelopment.Windows.Forms.PrintForm(Nothing)
-        If PrintSettings Is Nothing Then
-            PrintSettings = PrintForm.PrinterSettings
-        Else
-            PrintForm.PrinterSettings = PrintSettings
-        End If
-        PrintForm.BodyContainer = Controller.Explorer.CurrentView
+        'PrintForm = New TMGDevelopment.Windows.Forms.PrintForm(Nothing)
+        'If PrintSettings Is Nothing Then
+        'PrintSettings = PrintForm.PrinterSettings
+        'Else
+        'PrintForm.PrinterSettings = PrintSettings
+        'End If
+        'PrintForm.BodyContainer = Controller.Explorer.CurrentView
         Dim PreviewDialog As New UIBits.PrintPreviewDialog()
-        PreviewDialog.Document = PrintForm
+        'PreviewDialog.Document = PrintForm
 
-        AddHandler PrintForm.PreDraw, AddressOf OnPreDraw
-        AddHandler PrintForm.PrintPage, AddressOf OnPrintPage
+        'AddHandler PrintForm.PreDraw, AddressOf OnPreDraw
+        'AddHandler PrintForm.PrintPage, AddressOf OnPrintPage
 
         ComponentsToPrint.Clear()
         GetListOfComponentsToPrint(Controller, Controller.Selection)
@@ -263,11 +263,11 @@ Public Class BaseActions
 
         ' change the controller to the standard one so that we don't get a 'printing page...' dialog.
         ' PrintController OldController = PrintForm.PrintController;
-        Dim PF As New PrintForm()
-        PF.PrintController = New System.Drawing.Printing.StandardPrintController()
-        PF.BodyContainer = CurrentView
-        AddHandler PF.PreDraw, AddressOf OnExportPreDraw
-        PF.PrintControl(g, r, CurrentView, 1.0F)
+        'Dim PF As New PrintForm()
+        'PF.PrintController = New System.Drawing.Printing.StandardPrintController()
+        'PF.BodyContainer = CurrentView
+        'AddHandler PF.PreDraw, AddressOf OnExportPreDraw
+        'PF.PrintControl(g, r, CurrentView, 1.0F)
 
         g.Dispose()
         Dim NewFileName As String = ExportDirectory + "\\" _

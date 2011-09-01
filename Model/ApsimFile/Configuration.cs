@@ -135,16 +135,18 @@ namespace ApsimFile
                              Path.Combine("Apsim", Instance.ApsimVersion()));
          }
 
+       public enum architecture { unix, win32 };
+
       // from http://stackoverflow.com/questions/692410/hello-os-with-c-mono
-      public static bool amRunningOnUnix ()
+       public static architecture getArchitecture()
          {
          // can also use "bool runningOnMono = Type.GetType ("Mono.Runtime") != null;" but mono can be run on windows too.
          int p = (int) Environment.OSVersion.Platform;
          if ((p == 4) || (p == 6) || (p == 128)) 
             {
-            return true; // Running on Unix
+                return architecture.unix; // Running on Unix
             }
-         return false; // Something else
+         return architecture.win32; // Something else
          }
 
        // When we look up the AusFarm directory, we cache the result so we don't need
@@ -153,7 +155,7 @@ namespace ApsimFile
 
       public static string AusFarmDirectory()
       {
-          if (! amRunningOnUnix() && AusFarmDir == "" )
+          if (getArchitecture() == architecture.win32 && AusFarmDir == "")
           {
               RegistryKey rk = Registry.LocalMachine.OpenSubKey("SOFTWARE");
               if (rk != null)
@@ -294,7 +296,7 @@ namespace ApsimFile
             int i = 0;
             foreach (KeyValuePair<string, bool> Value in Values)
                {
-               string FileName = Configuration.AddMacros(Value.Key);
+               Configuration.AddMacros(Value.Key);
                Nodes[i].InnerText = Value.Key;
                if (Value.Value)
                   XmlHelper.SetAttribute(Nodes[i], "enabled", "yes");

@@ -36,7 +36,7 @@ namespace ApsimFile
             return FactorComponent.ChildNodes.Count; 
         }
 
-        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
+        public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -58,12 +58,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount(), arch);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount(), arch);
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace ApsimFile
            }
         }
 
-      public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount)
+        public void CreateJobFromSimulation(List<SimFactorItem> SimFiles, Component Simulation, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
       {
          string sInitialName = Simulation.Name;
          if (Builder.SaveExtraInfoInFilename)
@@ -106,58 +106,59 @@ namespace ApsimFile
          AddOutputFilesToList(Simulation, outputfiles);
          foreach (Component comp in outputfiles)
          {
-            Component varComp = comp.Find("Variables");
-            if (varComp != null)
+            // Ensure the output name is correct for this simulation
+            XmlNode compNode = comp.ContentsAsXML;
+            XmlNode fileNode = compNode.SelectSingleNode("//filename");
+            if (fileNode != null)
+                fileNode.InnerText = ComponentUtility.CalcFileName(comp);
+            else
+                throw new Exception("Cant find an outputfile filename node!");
+
+            if (Builder.TitleIsSingleLine)
             {
-               //add/update constants details
-               XmlNode variablesNode = varComp.ContentsAsXML;
-               XmlNode constantsNode = variablesNode.SelectSingleNode("//Constants");
-               if (constantsNode == null)
-               {
-                  constantsNode = variablesNode.AppendChild(variablesNode.OwnerDocument.CreateElement("Constants"));
-               }
-               if (Builder.TitleIsSingleLine)
-               {
-                  //find existing node and replace - if it doesn't exist, create
-                  XmlNode titleNode = constantsNode.SelectSingleNode("//Title");
-                  if (titleNode == null)
-                  {
-                     titleNode = constantsNode.OwnerDocument.CreateElement("Title");
-                     constantsNode.PrependChild(titleNode);
-                  }
-                  else
-                  {
-                     titleNode.RemoveAll();
-                  }
-                  titleNode.InnerText = factorsList;//will overwrite any existing values
-               }
-               else
-               {
-                  //add a node for each factor
-                  constantsNode.RemoveAll();
-                  string[] factors = factorsList.Split(',');
-                  foreach (string factor in factors)
-                  {
-                     XmlNode xNode = constantsNode.OwnerDocument.CreateElement("line");
-                     constantsNode.AppendChild(xNode);
-                     xNode.InnerText = factor;
-                  }
-               }
-               varComp.Contents = variablesNode.OuterXml;
+                XmlNode titleNode = compNode.SelectSingleNode("//title");
+                if (titleNode != null)
+                    titleNode.InnerText = factorsList;
+                else
+                    throw new Exception("Cant find an outputfile title node!");
             }
+            else
+            {
+                Component constantsComponent = null;  // Fixme: we really need a Component.FindByType()!!
+                foreach (Component c in comp.ChildNodes)
+                    if (c.Type == "variables")
+                        constantsComponent = c;
+                if (constantsComponent == null) throw new Exception("No variables in outputfile!");
+
+                XmlNode constantsNode = constantsComponent.ContentsAsXML;
+                List<string> factors = new List<string>(factorsList.Split(','));
+
+                foreach (string factor in factors)
+                  {
+                  List<string> nameValue = new List<string>(factor.Split('='));
+                  XmlNode factorNode = constantsNode.SelectSingleNode("//" + nameValue[0]);
+                  if (factorNode == null)
+                      {
+                          factorNode = constantsNode.OwnerDocument.CreateElement(nameValue[0]);
+                          constantsNode.AppendChild(factorNode);
+                      }
+                  factorNode.InnerText = nameValue[1];
+                  }
+            }
+            comp.Contents = compNode.OuterXml;
          }
          string SimFileName;
-         SimFileName = ApsimToSim.WriteSimFile(Simulation);
+         SimFileName = ApsimToSim.WriteSimFile(Simulation, arch);
          SimFactorItem itm = new SimFactorItem(Simulation.Name, SimFileName);
          SimFiles.Add(itm);    
           //return simulation name to it's original
           Simulation.Name = sInitialName;
       }
-      public void AddOutputFilesToList(Component parent, List<Component> outputfiles)
+      public void AddOutputFilesToList(Component node, List<Component> outputfiles)
       {
-         if (parent.Type == "outputfile")
-            outputfiles.Add(parent);
-         foreach (Component comp in parent.ChildNodes)
+         if (node.Type == "outputfile")
+            outputfiles.Add(node);
+         foreach (Component comp in node.ChildNodes)
          {
             AddOutputFilesToList(comp, outputfiles);
          }
@@ -191,7 +192,7 @@ namespace ApsimFile
             return Parameters.Count;
         }
 
-        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount)
+        public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
         {
             if (factorsList != "")
                 factorsList += ";";
@@ -225,12 +226,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount(), arch);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount());
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount(), arch);
                 }
             }
         }
@@ -348,5 +349,35 @@ namespace ApsimFile
                 }
             }
         }
+    }
+    public class Factor
+    {
+        public static void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile copiedFile, Component FactorComponent, string SimulationPath)
+        {
+            if (FactorComponent == null)
+                throw new Exception("Error initialising Factorials");
+
+            if (FactorComponent.ChildNodes.Count > 0)
+            {
+                Component Simulation = copiedFile.Find(SimulationPath);
+                try
+                {
+                    FactorBuilder builder = new FactorBuilder();
+                    List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
+                    foreach (FactorItem item in items)
+                    {
+                        int counter = 0;
+                        string factorsList = "";
+
+                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, 1, Configuration.getArchitecture());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error encountered creating Factorials\n" + ex.Message);
+                }
+            }
+        }
+
     }
 }

@@ -187,8 +187,16 @@ Public Class FileUI
         If XmlHelper.Type(Data) = "outputfile" Or XmlHelper.Type(Data) = "summaryfile" Then
             FileName = ApsimFile.ComponentUtility.CalcFileName(Controller.ApsimData.Find(NodePath))
             FileContentsBox.ReadOnly = True
+            If XmlHelper.Type(Data) = "outputfile" Then
+                XmlHelper.SetValue(Data, "filename", FileName)
+                Dim fileNameNode As Xml.XmlNode = XmlHelper.Find(Data, "filename")
+                XmlHelper.SetAttribute(fileNameNode, "output", "yes")
+
+            End If
         Else
-            FileName = XmlHelper.Value(Data, "filename")
+            Dim fileNameNode As Xml.XmlNode = XmlHelper.Find(Data, "filename")
+            FileName = fileNameNode.InnerText
+            XmlHelper.SetAttribute(fileNameNode, "input", "yes")
             FileContentsBox.ReadOnly = False
         End If
 

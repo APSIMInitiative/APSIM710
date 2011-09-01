@@ -67,9 +67,11 @@ class ApsimToSimExe
       ApsimFile.ApsimFile Apsim = new ApsimFile.ApsimFile();
       Apsim.OpenFile(ApsimFileName);
 
+     // FIXME WRONG!!!
       // In case the file is now dirty due to .apsim file converter then save it
       if (Apsim.IsDirty)
          Apsim.Save();
+      // FIXME WRONG!!!
 
       return FindSimsAndConvert(Apsim.RootComponent, SimNames);
       }
@@ -85,7 +87,7 @@ class ApsimToSimExe
             {
             string SimName = Child.Name;
             string SimPath = Child.FullPath;
-            bool convertSim = (SimPaths.Length == 0 || Array.IndexOf(SimPaths, SimPath) != -1);
+            bool convertSim = (SimPaths.Length == 0 || Array.IndexOf(SimPaths, SimName) != -1);
             if (convertSim)
                {
                try

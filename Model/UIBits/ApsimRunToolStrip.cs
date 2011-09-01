@@ -162,35 +162,9 @@ public class ApsimRunToolStrip
        ApsimFile.ApsimFile tmpFile = CreateCopy(_F);
        foreach (string SimulationPath in SimsToRun)
        {
-           ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
+           Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
        }
        return SimFiles;
-   }
-   public void ProcessSimulationFactorials(List<SimFactorItem> SimFiles, ApsimFile.ApsimFile copiedFile, Component FactorComponent, string SimulationPath)
-   {
-       if (FactorComponent == null)
-           throw new Exception("Error initialising Factorials");
-
-       if (FactorComponent.ChildNodes.Count > 0)
-       {
-           Component Simulation = copiedFile.Find(SimulationPath);
-           try
-           {
-               FactorBuilder builder = new FactorBuilder();
-               List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
-               foreach (FactorItem item in items)
-               {
-                   int counter = 0;
-                   string factorsList = "";
-
-                   item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, 1);
-               }
-           }
-           catch (Exception ex)
-           {
-               throw new Exception("Error encountered creating Factorials\n" + ex.Message);
-           }
-       }
    }
    public void RunFactorialSimulations(List<SimFactorItem> SimFiles)
    {

@@ -13,20 +13,20 @@ namespace ApsimFile
    // ------------------------------------------
    public class APSIMChangeTool
       {
-      public static int CurrentVersion = 27;
+      public static int CurrentVersion = 28;
       private delegate void UpgraderDelegate(XmlNode Data);
 
-      public static bool Upgrade(XmlNode Data)
+      public static void Upgrade(XmlNode Data)
          {
          // ------------------------------------------
          // Upgrade the specified data
          // to the 'current' version. Returns true
          // if something was upgraded.
          // ------------------------------------------
-         return UpgradeToVersion(Data, CurrentVersion);
+         UpgradeToVersion(Data, CurrentVersion);
          }
 
-      public static bool UpgradeToVersion(XmlNode Data, int ToVersion)
+      public static void UpgradeToVersion(XmlNode Data, int ToVersion)
          {
          // ------------------------------------------
          // Upgrade the specified data
@@ -60,7 +60,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion24),
                                           new UpgraderDelegate(ToVersion25),
                                           new UpgraderDelegate(ToVersion26),
-                                          new UpgraderDelegate(ToVersion27)
+                                          new UpgraderDelegate(ToVersion27),
+                                          new UpgraderDelegate(ToVersion28)
                                        };
          if (Data != null)
             {
@@ -77,10 +78,7 @@ namespace ApsimFile
 
             // All finished upgrading - write version number out.
             XmlHelper.SetAttribute(Data, "version", ToVersion.ToString());
-            return (DataVersion != CurrentVersion);
             }
-         else
-            return false;
          }
 
       private static void Upgrade(XmlNode Data, UpgraderDelegate Upgrader)
@@ -1717,9 +1715,65 @@ namespace ApsimFile
                CnCanopyFactNode.ParentNode.RemoveChild(CnCanopyFactNode);            
             }
          }
+      private static void ToVersion28(XmlNode Node)
+         {
+         // Ensure that each report component has an filename tag that
+         // matches the .apsim file's paddock/file structure. From code in 
+         // ComponentUtility.CalcFileName()
+         if (Node.Name.ToLower() == "outputfile")
+             {
+             string simulationName = null;
+             string paddockName = null;
+             XmlNode d = Node;
+             while (d.ParentNode != null)
+                {
+                 d = d.ParentNode;
+                 if (d.Name.ToLower() == "area")
+                     paddockName = XmlHelper.Attribute(d, "name");
+                 else if (d.Name.ToLower() == "simulation")
+                     simulationName = XmlHelper.Attribute(d, "name");
+                }
+             string fqname = XmlHelper.FullPath(Node);
+             string fileName = simulationName;
+             if ((paddockName != null) && paddockName.ToLower() != "paddock")
+                 fileName = fileName + " " + paddockName;
 
+             if (XmlHelper.Attribute(Node, "name") != "" && 
+                 XmlHelper.Attribute(Node, "name").ToLower() != "outputfile")
+                 fileName = fileName + " " + XmlHelper.Attribute(Node, "name");
 
+             XmlHelper.SetValue(Node, "filename", fileName + ".out");
+             XmlNode fileNameNode = XmlHelper.Find(Node, "filename");
+             XmlHelper.SetAttribute(fileNameNode, "output", "yes");
 
-
+             // move title from /outputfile/variables/constants to /outputfile
+             MoveSoilNode(Node, "variables/constants/title", Node);
+             if ((XmlHelper.Find(Node, "title")) == null)
+                 XmlHelper.SetValue(Node, "title", fileName);
+             }
+         else  if (Node.Name.ToLower() == "metfile")
+             {
+             XmlNode fileNameNode;
+             if ((fileNameNode = XmlHelper.Find(Node, "filename")) != null)
+                 XmlHelper.SetAttribute(fileNameNode, "input", "yes");
+             else
+                 {
+                 // Must be a shortcut. Create a linked filename object
+                 string ShortCut = XmlHelper.Attribute(Node, "shortcut");
+                 if (ShortCut != null)
+                     {
+                     fileNameNode = XmlHelper.EnsureNodeExists(Node, "filename");
+                     XmlHelper.SetAttribute(fileNameNode, "shortcut", ShortCut + "/filename");
+                     XmlHelper.SetAttribute(fileNameNode, "input", "yes");
+                     }
+                 }
+             }
+         else if (Node.Name.ToLower() == "summaryfile")
+             {
+             XmlNode fileNameNode;
+             if ((fileNameNode = XmlHelper.Find(Node, "filename")) != null)
+                 Node.RemoveChild(fileNameNode);
+             }
+         }
       }
    }

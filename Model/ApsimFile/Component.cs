@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -113,8 +112,9 @@ namespace ApsimFile
          // Now that reading is fully done we can go and resolve
          // any shortcuts that we found during reading. Do
          // this recursively for all children.
+         //  Some "compound" objects shouldnt be resolved - eg. outputfile, area, but their children should be
          // ------------------------------------------------------
-         if (TempShortCutName != "")
+         if (Type != "outputfile" && TempShortCutName != "") // FIXME - could do this better. 
             {
             MyShortCutTo = MyFile.Find(TempShortCutName);
             TempShortCutName = "";

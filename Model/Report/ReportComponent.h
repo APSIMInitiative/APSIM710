@@ -78,7 +78,6 @@ class ReportComponent
       void onDoEndDayOutput();
       void onFrequency();
 
-      std::string calcFileName();
       void writeHeadings(void);
       void writeLineOfOutput(void);
    };

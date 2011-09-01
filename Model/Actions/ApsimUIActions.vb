@@ -31,14 +31,18 @@ Public Class ApsimUIActions
       End If
    End Sub
 
-   Public Shared Sub HelpDocumentation(ByVal Controller As BaseController)
-      Dim HelpURL As String = Configuration.Instance.Setting("docfile")
-      Process.Start(HelpURL)
-   End Sub
-   Public Shared Sub ApsimSearchEngine(ByVal Controller As BaseController)
-      Dim url As String = Configuration.Instance.Setting("ApsimSearchEngine")
-      Process.Start(url)
-   End Sub
+    Public Shared Sub HelpDocumentation(ByVal Controller As BaseController)
+        Dim HelpURL As String = Configuration.Instance.Setting("docfile")
+        Process.Start(HelpURL)
+    End Sub
+    Public Shared Sub ClusterHelpDocumentation(ByVal Controller As BaseController)
+        Dim HelpURL As String = Configuration.Instance.Setting("ClusterHelpPage")
+        Process.Start(HelpURL)
+    End Sub
+    Public Shared Sub ApsimSearchEngine(ByVal Controller As BaseController)
+        Dim url As String = Configuration.Instance.Setting("ApsimSearchEngine")
+        Process.Start(url)
+    End Sub
    Public Shared Sub ApsimInternetGroup(ByVal Controller As BaseController)
       Dim url As String = Configuration.Instance.Setting("ApsimInternetGroup")
       Process.Start(url)
@@ -57,24 +61,26 @@ Public Class ApsimUIActions
          PlugIns.LoadAll()
       End If
 
-      BaseActions.FileSave(Controller)
-      Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
-      If RunPanels.Length = 1 Then
-         ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), Controller) '_
-         'Controller.ApsimData, _
-         'Controller.SelectedPaths)
-      End If
-   End Sub
+        If (BaseActions.FileSave(Controller)) Then
+            Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+            If RunPanels.Length = 1 Then
+                ApsimRunToolStrip.Instance.RunApsim(RunPanels(0), Controller) '_
+                'Controller.ApsimData, _
+                'Controller.SelectedPaths)
+            End If
+        End If
+    End Sub
    Public Shared Sub CreateSIM(ByVal Controller As BaseController)
       ' ------------------------------------------------
       ' Create a .sim file.
       ' ------------------------------------------------
-      BaseActions.FileSave(Controller)
-      Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
-      If RunPanels.Length = 1 Then
-         ApsimRunToolStrip.Instance.CreateSIM(RunPanels(0), Controller)
-      End If
-   End Sub
+        If (BaseActions.FileSave(Controller)) Then
+            Dim RunPanels As Control() = Controller.MainForm.Controls.Find("RunToolStrip", True)
+            If RunPanels.Length = 1 Then
+                ApsimRunToolStrip.Instance.CreateSIM(RunPanels(0), Controller)
+            End If
+        End If
+    End Sub
 
    Public Shared Sub Enable(ByVal Controller As BaseController)
       For Each NodePath As String In Controller.SelectedPaths
@@ -93,41 +99,38 @@ Public Class ApsimUIActions
    Private Shared ProgressBar As ToolStripProgressBar
    Private Shared ProgressLabel As ToolStripStatusLabel
    Public Shared Sub RunOnCluster(ByVal Controller As BaseController)
-      BaseActions.FileSave(Controller)
+        If (Not (BaseActions.FileSave(Controller))) Then Return
 
-      Dim StatusBar As StatusStrip = Controller.MainForm.Controls.Find("StatusStrip1", True)(0)
-      ProgressBar = StatusBar.Items(0)
-      ProgressLabel = StatusBar.Items(1)
-      StatusBar.Visible = True
+        Dim StatusBar As StatusStrip = Controller.MainForm.Controls.Find("StatusStrip1", True)(0)
+        ProgressBar = StatusBar.Items(0)
+        ProgressLabel = StatusBar.Items(1)
+        StatusBar.Visible = True
 
-      Try
-         ' Get a list of simulation paths.
-         Dim SimulationPaths As New List(Of String)
-         For Each SelectedPath As String In Controller.SelectedPaths
-            ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.Find(SelectedPath), SimulationPaths)
-         Next
-
-         Dim F As New UIBits.ClusterForm
-         If F.ShowDialog = DialogResult.OK Then
-            Cursor.Current = Cursors.WaitCursor
-            If F.FolderOfFiles = "" Then
-               Dim FilesToRun As New List(Of String)
-               FilesToRun.Add(Controller.ApsimData.FileName)
-               ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.ZipCheckBox.Checked, F.ConvertToSimCheckBox.Checked, F.Version, AddressOf UpdateProgress)
-               MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Else
-               Dim FilesToRun As New List(Of String)
-               Utility.FindFiles(F.FolderOfFiles, "*.apsim", FilesToRun, False)
-               ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.ZipCheckBox.Checked, F.ConvertToSimCheckBox.Checked, F.Version, AddressOf UpdateProgress)
-               MessageBox.Show("Files were successfully submitted to the cluster.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Try
+            Dim F As New UIBits.ClusterForm
+            If F.ShowDialog = DialogResult.OK Then
+                Cursor.Current = Cursors.WaitCursor
+                Configuration.Instance.SetSetting("dropboxFolder", F.DropFolder)
+                Configuration.Instance.SetSetting("dropboxApsimVersion", F.Version)
+                Dim FilesToRun As New List(Of String)
+                If F.FolderOfFiles = "" Then
+                    If (Controller.ApsimData.FileName <> "") Then
+                        FilesToRun.Add(Controller.ApsimData.FileName)
+                    End If
+                Else
+                    Utility.FindFiles(F.FolderOfFiles, "*.apsim", FilesToRun, False)
+                End If
+                If (FilesToRun.Count > 0) Then
+                    ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, AddressOf UpdateProgress)
+                    MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                End If
             End If
-         End If
-      Catch ex As Exception
-         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-      End Try
-      Cursor.Current = Cursors.Default
-      StatusBar.Visible = False
-   End Sub
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        Cursor.Current = Cursors.Default
+        StatusBar.Visible = False
+    End Sub
 
    Private Shared Sub UpdateProgress(ByVal Percent As Integer, ByVal Msg As String)
       ProgressBar.Value = Percent
@@ -185,7 +188,7 @@ Public Class ApsimUIActions
       If MessageBox.Show("Are you sure you want to save and checkpoint your simulation and outputfiles, overwriting any previous checkpoints?", _
                          "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.Yes Then
          ' Save first
-         BaseActions.FileSave(Controller)
+            If (Not (BaseActions.FileSave(Controller))) Then Return
 
          ' empty the checkpoint sub folder.
          Dim CheckPointFolder As String = Path.GetDirectoryName(Controller.ApsimData.FileName) + "\CheckPoint"
@@ -238,7 +241,7 @@ Public Class ApsimUIActions
 #End Region
 
    Public Shared Sub ImportConFile(ByVal Controller As BaseController)
-      BaseActions.FileSave(Controller)
+        If (Not (BaseActions.FileSave(Controller))) Then Return
       Dim F As New OpenFileDialog
       F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*"
       F.Title = "Select a .con file to import"
@@ -251,8 +254,8 @@ Public Class ApsimUIActions
    End Sub
 
    Public Shared Sub Plant2Documentation(ByVal Controller As BaseController)
-      BaseActions.FileSave(Controller)
-      Dim XmlFileName As String = Controller.ApsimData.FileName
+        If (Not (BaseActions.FileSave(Controller))) Then Return
+        Dim XmlFileName As String = Controller.ApsimData.FileName
       'Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html" //removed from temp dir as Firefox can't handle abs dirs. JF
       Dim HtmlFileName As String = "..\Documentation\Plant2Docs\" + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
       Dim Arguments As String = StringManip.DQuote(XmlFileName) + " " + StringManip.DQuote(HtmlFileName)
@@ -264,8 +267,8 @@ Public Class ApsimUIActions
    End Sub
 
    Public Shared Sub ProbeDLL(ByVal Controller As BaseController)
-      BaseActions.FileSave(Controller)
-      Dim XmlFileName As String = Controller.ApsimData.FileName
+        If (Not (BaseActions.FileSave(Controller))) Then Return
+        Dim XmlFileName As String = Controller.ApsimData.FileName
 
       'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
       Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\ProbeDLL.exe", XmlFileName, Path.GetDirectoryName(XmlFileName))

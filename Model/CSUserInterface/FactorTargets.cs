@@ -60,7 +60,6 @@ namespace CSUserInterface
             if (e.Data.GetDataPresent(typeof(string)))
             {
                 StringCollection sPaths = Controller.SelectedPaths;
-                string paths = "";
                 string FullXML = (string)e.Data.GetData(DataFormats.Text);
                 foreach (string path in sPaths)
                     TargetList.Items.Add(path);

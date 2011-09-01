@@ -320,12 +320,17 @@ void ReportComponent::onInit2(void)
 	   cout.fill(' ');
    }
 
-   // work out a filename.
+   // find a filename.
+   // Workaround. A readParameter call will strip out any titles with () in them - it thinks they
+   // are units strings to be discarded. Read the raw string..
+   std::vector<string> scratch; 
    string fileName;
-   if (!scienceAPI.read("outputfile", "", true, fileName))
-      fileName = calcFileName();
-   else
-      scienceAPI.get("title", "", true, title);
+   scienceAPI.readFiltered("outputfile",  scratch);
+   if (scratch.size() > 0) fileName = scratch[0]; else throw runtime_error("No output file specified");
+
+   scratch.clear();
+   scienceAPI.readFiltered("title",  scratch);
+   if (scratch.size() > 0) title = scratch[0];
 
    file.open(fileName.c_str());
    if (!file)
@@ -446,42 +451,6 @@ void ReportComponent::createVariable(const string& name)
    }
 
 // ------------------------------------------------------------------
-// Calculate a file name based on simulation title and PM name.
-// ------------------------------------------------------------------
-string ReportComponent::calcFileName()
-   {
-   string FQName;
-
-   scienceAPI.get("title", "", true, title);
-   string fileName = title;
-
-   FQName = scienceAPI.FQName();   // eg. ".masterpm.paddock.outputfile"
-   string parent = FQName.substr(0,FQName.rfind('.'));
-   parent = parent.substr(1+parent.rfind('.'));
-
-   if (!Str_i_Eq(parent, "paddock") && !Str_i_Eq(parent, "masterpm"))
-      {
-      if (fileName != "")
-         fileName += " ";
-      fileName += parent;
-      }
-
-   if (!Str_i_Eq(scienceAPI.name(), "outputfile"))
-      {
-      if (fileName != "")
-         fileName += " ";
-      fileName += scienceAPI.name();
-      }
-   fileName += ".out";
-
-   title =  fileTail(fileName);
-   size_t pos = title.rfind(".");
-   if (pos != string::npos)
-      title.erase(pos);
-   return fileName;
-   }
-
-// ------------------------------------------------------------------
 // Handle the report event.
 // ------------------------------------------------------------------
 void ReportComponent::onReport()
@@ -583,6 +552,7 @@ void ReportComponent::writeHeadings(void)
    for (unsigned i = 0; i != names.size(); i++)
       {
       if (!Str_i_Eq(names[i], "variable") &&
+		  !Str_i_Eq(names[i], "title") &&
           !Str_i_Eq(names[i], "outputfrequency") &&
           !Str_i_Eq(names[i], "outputfile") &&
           !Str_i_Eq(names[i], "nastring") &&
@@ -594,11 +564,7 @@ void ReportComponent::writeHeadings(void)
          }
       }
 
-   // output title if no other constants found.
-   if (!ConstantsFound)
-      {
-      file << "Title = " << title << endl;
-      }
+   file << "Title = " << title << endl;
 
    // output headings and units
    file << headingLine.str() << endl;

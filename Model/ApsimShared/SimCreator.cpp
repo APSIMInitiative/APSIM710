@@ -139,7 +139,7 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
       stable_sort(moduleInstances.begin(), moduleInstances.end(), ComponentOrder());
 
       for (unsigned m = 0; m != moduleInstances.size(); m++)
-         ConvertConModule(moduleInstances[m], out);
+         ConvertConModule(Title, moduleInstances[m], out);
 
       out << "</simulation>\n";
       cout << "Written " << simFileName.c_str() << endl;
@@ -151,8 +151,9 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
 // the specified module instance and output it
 // to the specified output stream.
 // -------------------------------------------
-void SimCreator::ConvertConModule(ApsimControlFile::ModuleInstance& moduleInstance,
-                                   ostream& out)
+void SimCreator::ConvertConModule(std::string RunTitle,
+                                  ApsimControlFile::ModuleInstance& moduleInstance,
+                                  ostream& out)
    {
    out << "   <component name=\"" << moduleInstance.instanceName << "\"";
    out << " executable = \"" << moduleInstance.dllFileName << "\">\n";
@@ -173,7 +174,7 @@ void SimCreator::ConvertConModule(ApsimControlFile::ModuleInstance& moduleInstan
          {
          string fileName = moduleInstance.ParFiles[0].first;
          ApsimSettings::addMacro(fileName);
-         out << "         <filename>" << fileName << "</filename>\n";
+         out << "         <filename input=\"yes\">" << fileName << "</filename>\n";
          }
       else
          {
@@ -184,6 +185,10 @@ void SimCreator::ConvertConModule(ApsimControlFile::ModuleInstance& moduleInstan
       }
    else
       {
+      if (Str_i_Eq(moduleInstance.moduleName, "report")) 
+	     {
+		 out << "         <title>" << RunTitle << "</title>\n";
+	     }
       std::vector<SimCreatorSection*> sectionsToOutput;
       for (unsigned p = 0; p != moduleInstance.ParFiles.size(); p++)
          {

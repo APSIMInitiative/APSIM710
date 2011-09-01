@@ -171,9 +171,9 @@ namespace ApsimFile
          Doc.Load(FileName);
          Open(Doc.DocumentElement);
          }
-      public bool Open(XmlNode Node)
+      public void Open(XmlNode Node)
          {
-         bool UpgradeOccurred = APSIMChangeTool.Upgrade(Node);
+         APSIMChangeTool.Upgrade(Node);
          this.ReadOnly = false;
 
          DisabledEventCount++;
@@ -192,25 +192,23 @@ namespace ApsimFile
          DisabledEventCount--;
          PublishComponentChanged(MyRootNode);
          SetFileName("Untitled");
-         return UpgradeOccurred;
          }
       public void OpenFile(string FileName)
          {
          if (Path.GetDirectoryName(FileName) == "")
             FileName = Path.Combine(Directory.GetCurrentDirectory(), FileName);
-
          DisabledEventCount++;
          XmlDocument doc = new XmlDocument();
          doc.Load(FileName);
-         if (Open(doc.DocumentElement))
-            doc.Save(FileName);
+         Open(doc.DocumentElement);
          List<string> ReadOnlyFileNamesList = Configuration.Instance.Settings("ReadOnlyFiles");
          string[] ReadOnlyFileNames = new string[ReadOnlyFileNamesList.Count];
          ReadOnlyFileNamesList.CopyTo(ReadOnlyFileNames);
          ReadOnly = (CSGeneral.StringManip.IndexOfCaseInsensitive(ReadOnlyFileNames, Path.GetFileName(FileName)) != -1);
          DisabledEventCount--;
          PublishComponentChanged(MyRootNode);
-         SetDirty(false);
+         //FIXME - need to sort out whether the upgrader has changed this file since we opened it?? 
+         SetDirty(false);  
          if (!ReadOnly)
             SetFileName(FileName);
          }

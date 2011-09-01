@@ -15,14 +15,28 @@ public class ApsimToSim
    /// 
     public static string WriteSimFile(Component Child)
     {
-        return WriteSimFile(Child, Directory.GetCurrentDirectory());
+        return WriteSimFile(Child, Directory.GetCurrentDirectory(), Configuration.getArchitecture ());
+    }
+	
+    public static string WriteSimFile(Component Child, Configuration.architecture arch)
+    {
+        return WriteSimFile(Child, Directory.GetCurrentDirectory(), arch);
     }
 
+    public static string GetSimText(Component Child, Configuration.architecture arch)
+    {
+      StringBuilder result = new StringBuilder();
+	  StringWriter fp = new StringWriter(result);
+	  GetSimDoc(Child, arch).Save(fp);
+	  fp.Close();
+      return result.ToString();
+    }
+	
    /// <summary>
    /// Writes a sim file for the specified component. Will throw on error.
    /// </summary>
    /// 
-   public static string WriteSimFile(Component Child, string FolderName)
+    public static XmlDocument GetSimDoc(Component Child, Configuration.architecture arch)
       {
       // See if there is an overriding plugins component within scope of the Child passed in.
       // If so then tell PlugIns to load the plugins.
@@ -31,19 +45,28 @@ public class ApsimToSim
          PlugIns.LoadAllFromComponent(PluginsOverride);
 
       TestUniqueNamesUnderPaddock(Child);           //test to see if the .apsim file was valid before writing sim file.
-      string SimFileName = Path.Combine(FolderName, Child.Name + ".sim");
       XmlDocument SimXML = new XmlDocument();
-      SimXML.LoadXml(WriteSimScript(Child));
+	  string simText = 	WriteSimScript(Child, arch);
+      SimXML.LoadXml(simText);
       SortSimContents(SimXML.DocumentElement);
-      SimXML.Save(SimFileName);
 
       // Reinstate the original plugins if we overrode them at the start of this method.
       if (PluginsOverride != null)
          PlugIns.LoadAll();
 
+      return SimXML;
+      }
+
+    private static string WriteSimFile(Component Child, string FolderName, Configuration.architecture arch)
+      {
+	  string SimFileName = FolderName + Path.DirectorySeparatorChar + Child.Name + ".sim";
+	  StreamWriter fp = new StreamWriter(SimFileName);
+	  GetSimDoc(Child, arch).Save(fp);
+	  fp.Close();
       return Path.GetFullPath(SimFileName);
       }
-   private static string WriteSimScript(Component Child)
+
+    private static string WriteSimScript(Component Child, Configuration.architecture arch)
       {
       // Write and return the .sim file contents for the specified 
       // Child component.
@@ -64,8 +87,8 @@ public class ApsimToSim
             ApsimToSimContents = ReplaceSoilMacros(ApsimToSimContents, Child);
             ApsimToSimContents = ReplaceModelMacro(ApsimToSimContents, Child);
             ApsimToSimContents = ReplaceDllMacro(ApsimToSimContents, Child);
-            ApsimToSimContents = ReplaceDllExtMacro(ApsimToSimContents, Child);
-            ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child);
+            ApsimToSimContents = ReplaceDllExtMacro(ApsimToSimContents, Child, arch);
+            ApsimToSimContents = ReplaceChildrenMacro(ApsimToSimContents, Child, arch);
 
             // Any other macros in the <ApsimToSim> will be removed by using the 
             // APSIM macro language.
@@ -101,10 +124,10 @@ public class ApsimToSim
       return ApsimToSimContents.Replace("[dll]", Dll);
       }
 
-   private static string ReplaceDllExtMacro(string ApsimToSimContents, Component ApsimComponent)
+   private static string ReplaceDllExtMacro(string ApsimToSimContents, Component ApsimComponent, Configuration.architecture arch)
       {
       // Replace all occurrences of %dllext%
-      if (ApsimFile.Configuration.amRunningOnUnix()) 
+      if (arch == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
          return(ApsimToSimContents.Replace("%dllext%", "so"));
             
       return (ApsimToSimContents.Replace("%dllext%", "dll"));
@@ -200,7 +223,7 @@ public class ApsimToSim
          }
       return ApsimToSimContents;
       }
-   private static string ReplaceChildrenMacro(string ApsimToSimContents, Component ApsimComponent)
+   private static string ReplaceChildrenMacro(string ApsimToSimContents, Component ApsimComponent, Configuration.architecture arch)
       {
       // Replace the [Children] macro with child sim script.
 
@@ -220,7 +243,7 @@ public class ApsimToSim
             foreach (Component Child in ApsimComponent.ChildNodes)
                {
                if (ChildType == "" || Child.Type.ToLower() == ChildType.ToLower())
-                  ChildSimContents += WriteSimScript(Child);
+                  ChildSimContents += WriteSimScript(Child, arch);
                }
             ApsimToSimContents = ApsimToSimContents.Remove(PosStartMacro, PosEndMacro - PosStartMacro + 1);
             ApsimToSimContents = ApsimToSimContents.Insert(PosStartMacro, ChildSimContents);
@@ -232,7 +255,7 @@ public class ApsimToSim
 
          string ChildSimContents = "";
          foreach (Component Child in ApsimComponent.ChildNodes)
-            ChildSimContents += WriteSimScript(Child);
+            ChildSimContents += WriteSimScript(Child, arch);
          if (ChildSimContents == "")
             ApsimToSimContents = ApsimToSimContents.Replace("[HasChildren]", "");
          else

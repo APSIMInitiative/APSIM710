@@ -387,11 +387,11 @@ Public Class OutputFileDescUI
 
       ' Fill data table.
       For Each Variable As XmlNode In XmlHelper.ChildNodes(Data, "")
-         If Variable.Name <> "Constants" Then
-            Dim NewRow As DataRow = Table.NewRow()
-            NewRow(0) = XmlHelper.Name(Variable)
-            Table.Rows.Add(NewRow)
-         End If
+            If Variable.Name <> "constants" Then
+                Dim NewRow As DataRow = Table.NewRow()
+                NewRow(0) = XmlHelper.Name(Variable)
+                Table.Rows.Add(NewRow)
+            End If
       Next
 
       ' Give data table to grid.
@@ -442,17 +442,20 @@ Public Class OutputFileDescUI
         'Clear out all the old stuff because these UI's are reused by other nodes of the same type.
         ConstantsBox.Clear()
         'Fill it in with the new stuff from this node.
+        Dim Lines As List(Of String) = New List(Of String)
+        Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
+
+        Dim TitleNode As XmlNode = XmlHelper.Find(outputfileComponent.ContentsAsXML(), "title")
+        Lines.Add("Title = " + TitleNode.InnerText)
+        Dim Index As Integer = 1
         Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
         If Not IsNothing(ConstantsNode) Then
-            Dim NumConstants As Integer = XmlHelper.ChildNodes(ConstantsNode, "").Count
-            Dim Lines(NumConstants) As String
-            Dim Index As Integer = 0
             For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
-                Lines(Index) = Constant.Name + " = " + Constant.InnerText
+                Lines.Add(Constant.Name + " = " + Constant.InnerText)
                 Index = Index + 1
             Next
-            ConstantsBox.Lines = Lines
         End If
+        ConstantsBox.Lines = Lines.ToArray()
     End Sub
    Private Sub PopulateVariableListView()
       ' ----------------------------------------------
@@ -533,7 +536,7 @@ Public Class OutputFileDescUI
          End If
       Next
 
-      Dim Constants As XmlNode = XmlHelper.Find(Data, "Constants")
+        Dim Constants As XmlNode = XmlHelper.Find(Data, "constants")
       If Not IsNothing(Constants) Then
          Data.RemoveChild(Constants)
       End If
@@ -541,10 +544,15 @@ Public Class OutputFileDescUI
          Dim PosEquals As Integer = Line.IndexOf("=")
          If PosEquals <> -1 Then
             Dim ConstantName As String = Trim(Line.Substring(0, PosEquals))
-            Dim ConstantValue As String = Trim(Line.Substring(PosEquals + 1))
-            XmlHelper.SetValue(Data, "Constants/" + ConstantName, ConstantValue)
-         End If
-      Next
+                Dim ConstantValue As String = Trim(Line.Substring(PosEquals + 1))
+                If (ConstantName = "Title") Then
+                    Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
+                    XmlHelper.SetValue(outputfileComponent.ContentsAsXML, "title", ConstantValue)
+                Else
+                    XmlHelper.SetValue(Data, "constants/" + ConstantName, ConstantValue)
+                End If
+            End If
+        Next
    End Sub
 
 
