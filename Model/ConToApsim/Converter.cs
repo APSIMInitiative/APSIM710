@@ -103,12 +103,19 @@ namespace ConToApsim
             if (ModuleName == "clock")
                {
                XmlNode NewClockNode = CreateChildNode(NewSimNode, ModuleName, "");
-               TransferParameter(Child, "InitData/start_date", NewClockNode, "start_date");
-               TransferParameter(Child, "InitData/end_date", NewClockNode, "end_date");
+			   if (XmlHelper.Value(Child, "InitData/start_date") != "") 
+                  TransferParameter(Child, "InitData/start_date", NewClockNode, "start_date");
+			   if (XmlHelper.Value(Child, "InitData/end_date") != "") 
+                  TransferParameter(Child, "InitData/end_date", NewClockNode, "end_date");
 
                // add in a summary file.
                CreateChildNode(NewSimNode, "summaryfile", "");
                }
+            else if (ModuleName == "canopy")
+               {
+               XmlNode NewCanopyNode = CreateChildNode(NewPaddockNode, ModuleName, XmlHelper.Name(Child));
+               TransferParameter(Child, "InitData/intercrop", NewCanopyNode, "intercrop");
+			   }
             else if (ModuleName == "report")
                {
                XmlNode NewReportNode = CreateChildNode(NewPaddockNode, "outputfile", XmlHelper.Name(Child));
