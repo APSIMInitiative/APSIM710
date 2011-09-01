@@ -5206,7 +5206,8 @@
 
 *+  Local Variables
       integer numvals                  ! number of values returned
-!      integer num_layers
+      real    scratch
+	  
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
@@ -5289,6 +5290,91 @@
      :               ,numvals              ! number of elements returned
      :               ,0.0                  ! lower limit for bound check
      :               ,0.3)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wst') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,scratch              ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+	     g%wsts = scratch * divide(g%wsts, g%wst, 0.0)
+	     g%wstr = scratch * divide(g%wstr, g%wst, 0.0)
+	     g%wst = g%wstr + g%wsts
+
+       elseif (Variable_name .eq. 'wsts') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wsts     ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wstr') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wsts               ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wlvg') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wlvg               ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wlvd') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wlvd               ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wso') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wso                ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'wrt') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%wrt                ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+
+       elseif (Variable_name .eq. 'fnlv') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,scratch               ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
+        g%anlv = scratch * g%wlvg
+		
+       elseif (Variable_name .eq. 'dvs') then
+         call collect_real_var (
+     :                variable_name        ! variable name
+     :               ,'()'                 ! units
+     :               ,g%dvs               ! variable
+     :               ,numvals              ! number of elements returned
+     :               ,0.0                  ! lower limit for bound check
+     :               ,10000.0)                 ! upper limit for bound check
 
       else
          ! Don't know this variable name
