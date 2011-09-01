@@ -1,0 +1,444 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = m814v33 - ICRISAT 1981, vertisol (BW-3), Irrigated
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "pigeonpea" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 12/10/1981
+     Simulation end date   = 21/03/1982
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: pat74-99.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        year
+        day
+        pigeonpea.stagename
+        pigeonpea.plant_status
+        pigeonpea.daysaftersowing
+        pigeonpea.ttaftersowing
+        pigeonpea.yield
+        pigeonpea.biomass
+        pigeonpea.plants
+        pigeonpea.dlt_dm
+        pigeonpea.rootgreenwt
+        pigeonpea.leafgreenwt
+        pigeonpea.stemgreenwt
+        pigeonpea.podgreenwt
+        pigeonpea.grain_wt
+        pigeonpea.stage
+        pigeonpea.height
+        pigeonpea.lai
+        pigeonpea.tlai
+        pigeonpea.slai
+        pigeonpea.node_no as node_no
+        pigeonpea.leaf_no as leaf_no
+        pigeonpea.leaf_no_dead
+        pigeonpea.root_depth
+        pigeonpea.oxdef_photo
+        pigeonpea.swdef_photo
+        pigeonpea.swdef_expan
+        pigeonpea.nfact_photo
+        pigeonpea.n_uptake
+        pigeonpea.ep
+        es
+        sw_dep() as tot_sw
+        runoff
+        rain
+        manager.anth_date
+        manager.mat_date
+        maxt
+        mint
+        radn
+        pigeonpea.green_biomass
+
+     Output file = m814v33 - ICRISAT 1981, vertisol (BW-3), Irrigated.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     14/10/1981  Prepare      'soil water' set sw = 0.300 0.280 0.287 0.386 0.387 0.406 0.400
+     14/10/1981  Prepare      pigeonpea sow plants = 33.3 (plants/m^2), sowing_depth = 30. , cultivar = medium_duration, row_spacing = 450
+     14/10/1981  Prepare      fertiliser apply amount = 0 (kg/ha) , depth = 50 ,type = nh4no3
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- manager Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+          dateset = 0
+          emer_date = 0
+          endjuv_date = 0
+          anth_date = 0
+          mat_date = 0
+     
+     SECTION:- end_of_day
+          if pigeonpea.stage = 3 and dateset = 0 then
+             emer_date = daysaftersowing
+             dateset = 1
+          endif
+          if pigeonpea.stage = 4 and dateset = 1 then
+             endjuv_date = daysaftersowing
+             dateset = 2
+          endif
+          if pigeonpea.stage = 6 and dateset = 2 then
+             anth_date = daysaftersowing
+             dateset = 3
+          endif
+          if pigeonpea.stage = 9 and dateset = 3 then
+             mat_date = daysaftersowing
+             dateset = 4
+          endif
+     if (pigeonpea.stagename = 'maturity' or pigeonpea.plant_status = 'dead') then
+        outputfile do_output
+        pigeonpea harvest
+        pigeonpea kill_crop
+        pigeonpea end_crop
+        dateset = 0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : dateset = 0.00000
+     Manager creating a new local real variable : emer_date = 0.00000
+     Manager creating a new local real variable : endjuv_date = 0.00000
+     Manager creating a new local real variable : anth_date = 0.00000
+     Manager creating a new local real variable : mat_date = 0.00000
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.224  0.390  0.440  0.241  1.200  0.762  0.100
+          150.-  300.  0.200  0.245  0.417  0.467  0.262  1.200  0.190  0.100
+          300.-  600.  0.246  0.246  0.417  0.467  0.263  1.200  0.048  0.100
+          600.-  900.  0.246  0.246  0.401  0.451  0.262  1.200  0.000  0.100
+          900.- 1200.  0.247  0.247  0.403  0.453  0.263  1.200  0.000  0.100
+         1200.- 1500.  0.256  0.256  0.430  0.480  0.273  1.200  0.000  0.100
+         1500.- 1800.  0.256  0.256  0.430  0.480  0.273  1.200  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      33.60       2.55      24.90       7.50
+          150.-  300.      36.75       2.55      25.80       7.50
+          300.-  600.      73.80       5.10      51.30      15.00
+          600.-  900.      73.80       4.80      46.50      15.00
+          900.- 1200.      74.10       4.80      46.80      15.00
+         1200.- 1500.      76.80       5.10      52.20      15.00
+         1500.- 1800.      76.80       5.10      52.20      15.00
+          ---------------------------------------------------------
+               Totals     445.65      30.00     299.70      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.05       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          sorghum   sorghum          0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  0.96    9.00    4.50    0.00
+             2     8.00  0.87    5.40    4.50    0.00
+             3     8.00  0.69    7.20    5.40    0.00
+             4     8.00  0.63    3.60    3.60    0.00
+             5     8.00  0.60    3.60    1.80    0.00
+             6     8.00  0.53    3.60    1.80    0.00
+             7     8.00  0.30    1.80    1.80    0.00
+          ------------------------------------------------
+           Totals               34.20   23.40    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      16874.6  1163.8   405.4    50.7   138.9     3.1
+             2      15497.3  1068.8   162.7    20.3   108.1     2.4
+             3      24663.8  1701.0   176.2    22.0    65.6     1.5
+             4      22594.7  1558.3    85.3    10.7    39.8     0.9
+             5      21544.4  1485.8    55.6     7.0    24.1     0.5
+             6      19047.9  1313.6    32.1     4.0    14.6     0.3
+             7      10792.5   744.3     7.5     0.9     8.9     0.2
+          ---------------------------------------------------------
+           Totals  131015.1  9035.5   924.9   115.6   400.0     8.9
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+14 October 1981(Day of year=287), Operations: 
+      Sending set message to soil water
+      Sending sow message to pigeonpea
+14 October 1981(Day of year=287), pigeonpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = medium_duration
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      18 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     272     272 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    11.4    13.2    13.3 (h)
+              y_tt_end_of_juvenile       =       1    1650  100000 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     203     203 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     150     150 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     496     496 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      34 (dd)
+           maturity
+              tt_maturity                =      36 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0040     0.0040
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.20       0.20
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.116          0.224       1.000
+         150.0     0.083          0.245       1.000
+         300.0     0.049          0.246       1.000
+         300.0     0.049          0.246       1.000
+         300.0     0.049          0.247       1.000
+         300.0     0.049          0.256       1.000
+         300.0     0.049          0.256       1.000
+         -----------------------------------------------
+         Extractable SW:   300mm in  1800mm total depth ( 17%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            287   30.0   33.3  450.0   0.0   0.0 medium_duration
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+15 October 1981(Day of year=288), pigeonpea: 
+      stage 2.0 germination
+19 October 1981(Day of year=292), pigeonpea: 
+      stage 3.0 emergence
+                     biomass =           2.16 (g/m^2)   lai          =   0.043 (m^2/m^2)
+                     stover N conc =     4.77 (%)    extractable sw =    9.77 (mm)
+13 November 1981(Day of year=317), pigeonpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =          38.54 (g/m^2)   lai          =   0.372 (m^2/m^2)
+                     stover N conc =     3.46 (%)    extractable sw =   16.71 (mm)
+23 December 1981(Day of year=357), pigeonpea: 
+      stage 5.0 floral_initiation
+                     biomass =         124.27 (g/m^2)   lai          =   1.526 (m^2/m^2)
+                     stover N conc =     3.10 (%)    extractable sw =   33.03 (mm)
+12 January 1982(Day of year=12), pigeonpea: 
+      stage 6.0 flowering
+                     biomass =         208.95 (g/m^2)   lai          =   2.442 (m^2/m^2)
+                     stover N conc =     2.34 (%)    extractable sw =   50.66 (mm)
+23 January 1982(Day of year=23), pigeonpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         258.83 (g/m^2)   lai          =   1.959 (m^2/m^2)
+                     stover N conc =     1.94 (%)    extractable sw =   34.29 (mm)
+27 February 1982(Day of year=58), pigeonpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         339.16 (g/m^2)   lai          =   0.569 (m^2/m^2)
+                     stover N conc =     0.88 (%)    extractable sw =    7.86 (mm)
+1 March 1982(Day of year=60), pigeonpea: 
+      stage 9.0 maturity
+                     biomass =         340.19 (g/m^2)   lai          =   0.519 (m^2/m^2)
+                     stover N conc =     0.85 (%)    extractable sw =    7.28 (mm)
+1 March 1982(Day of year=60), manager: 
+     Manager sending message :- pigeonpea harvest
+     
+      flowering day          =   12                           stover (kg/ha)         =     2898.9
+      maturity day           =   60                           grain yield (kg/ha)    =      503.0
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=      571.6
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.475
+      total above ground biomass (kg/ha)    =     3401.9
+      live above ground biomass (kg/ha)     =     3401.9
+      green above ground biomass (kg/ha)    =     2543.1
+      senesced above ground biomass (kg/ha) =      858.8
+      number of leaves       =    149.5
+      DM Root:Shoot ratio    =     0.21                       Harvest Index          =       0.15
+      Stover C:N ratio       =    33.52                       Root C:N ratio         =      20.16
+      grain N percent        =     3.98                       total N content (kg/ha)=      54.61
+      grain N uptake (kg/ha) =    20.01                       senesced N content (kg/ha)=   17.16
+      green N content (kg/ha)=    17.44
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.018        0.034        0.087        0.207
+         end_of_juvenile      to floral_initiation       0.145        0.195        0.046        0.107
+         floral_initiation    to flowering               0.167        0.224        0.036        0.083
+         flowering            to start_grain_fill        0.208        0.270        0.032        0.074
+         start_grain_fill     to end_grain_fill          0.341        0.412        0.024        0.055
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2885.6                     0.0
+                          N  (kg/ha) =                  33.80                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 503.0                     0.0
+                          N  (kg/ha) =                  20.01                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           1.33 (g/m^2)   lai          =   0.043 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    7.28 (mm)
+     Manager sending message :- pigeonpea kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- pigeonpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                  13.3                   721.4
+                          N  (kg/ha) =                   0.80                   14.31
+     
+21 March 1982(Day of year=80), clock: 
+     Simulation is terminating due to end criteria being met.
