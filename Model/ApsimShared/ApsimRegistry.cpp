@@ -332,12 +332,14 @@ ApsimRegistration *ApsimRegistry::find(EventTypeCode type,
 void ApsimRegistry::addComponent(int parentID,
 								 int componentID,
 								 const std::string &name,
-								 const std::string &type)
+								 const std::string &type,
+								 const bool isSystem)
    {
    Component c;
    c.ID = componentID;
    c.Name = name;
    c.Type = type;
+   c.IsSystem = isSystem;
    components.push_back(c);
 
    PTree<Component> *p = new PTree<Component>();
@@ -494,6 +496,13 @@ std::string ApsimRegistry::getComponentType(int componentID)
    PTree<Component>* node = findComponent(componentID);
    if (node == NULL) {throw std::runtime_error("NULL node in getComponentType!");}
    return node->item.Type; 	
+	 }
+
+bool ApsimRegistry::componentIsSystem(int componentID)
+	 {
+   PTree<Component>* node = findComponent(componentID);
+   if (node == NULL) {throw std::runtime_error("NULL node in componentIsSystem!");}
+   return node->item.IsSystem; 	
 	 }
 
 std::string ApsimRegistry::componentByID(int id)

@@ -60,7 +60,8 @@ class EXPORT ApsimRegistry
       // Add a component to the system
       void addComponent(int parentID, int componentID,
                         const std::string &name,
-                        const std::string &type);
+                        const std::string &type,
+						const bool isSystem);
 
       int componentByName(const std::string &);
       std::string componentByID(int);
@@ -71,6 +72,7 @@ class EXPORT ApsimRegistry
       void getSiblingsAndParents(int componentID, vector<int> &siblings);
       void getChildren(int componentID, vector<int> &children);
       std::string getComponentType(int componentID);
+	  bool componentIsSystem(int componentID);
 
       // Discriminate between "native" and "foreign" components
       void setForeignTaint(int);
@@ -116,6 +118,7 @@ class EXPORT ApsimRegistry
 		 int ID;
 		 std::string Name;
 		 std::string Type;
+		 bool IsSystem;
 	  } Component;
 	  vector<Component> components;
 

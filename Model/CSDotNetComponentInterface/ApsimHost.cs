@@ -99,7 +99,7 @@ public class TAPSIMHost : TBaseComp
         base.processEntityInfo(sReqName, sReturnName, ownerID, entityID, iKind, sDDML);
         
         //queryInfo's have been sent for sibling component names
-        if (iKind == TypeSpec.KIND_COMPONENT)
+        if (iKind == TypeSpec.KIND_COMPONENT || iKind == TypeSpec.KIND_SYSTEM)
         {
             //find the number of '.'
             string buf = sReturnName; 
@@ -135,20 +135,23 @@ public class TAPSIMHost : TBaseComp
                             compList[entityID] = comp;
                         }
                     }
-                    else if (sDDML != "" && compList.ContainsKey(entityID))
+                    else if (compList.ContainsKey(entityID))
                     {
-                        TComp comp = compList[entityID];
-                        comp.CompClass = sDDML;                 //store the class type
-                        if (comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
-                            comp.isSystem = true;
-                        compList[entityID] = comp;
-                    }
-                    else                                     //else do a GetValue to find it's type 
-                    {
-                        //now do a getvalue to find the class type of the component
-                        drvCOMPCLASS = driverCount();
-                        registerDriver(sReturnName + ".type", drvCOMPCLASS, 1, 1, "-", false, "<type kind=\"string\"></type>", "", "", 0);
-                        sendDriverRequest(drvCOMPCLASS, 0);
+                        if (sDDML != "")
+                        {
+                            TComp comp = compList[entityID];
+                            comp.CompClass = sDDML;                 //store the class type
+                            if (iKind == TypeSpec.KIND_SYSTEM || comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
+                                comp.isSystem = true;
+                            compList[entityID] = comp;
+                        }
+                        else  // if type information was absent, do a GetValue to find it's type 
+                        {
+                            //now do a getvalue to find the class type of the component
+                            drvCOMPCLASS = driverCount();
+                            registerDriver(sReturnName + ".type", drvCOMPCLASS, 1, 1, "-", false, "<type kind=\"string\"></type>", "", "", 0);
+                            sendDriverRequest(drvCOMPCLASS, 0);
+                        }
                     }
                 }
             }

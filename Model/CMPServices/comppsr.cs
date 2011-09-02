@@ -99,16 +99,7 @@ namespace CMPServices
             anode = topElement;  //the top element is expected to be a component
             if (anode != null)
             {
-                //check if this is a system by determining if it has any children that are components or systems
-                childNode = firstElementChild(anode, componentElement);
-                if (childNode != null)
-                    FIsSystem = true;
-                else
-                {
-                    childNode = firstElementChild(anode, systemElement);
-                    if (childNode != null)
-                        FIsSystem = true;
-                }
+                FIsSystem = isElement(anode, systemElement) || isElement(anode, simulationElement);
                 if (isElement(anode, systemElement) || isElement(anode, componentElement) || isElement(anode, simulationElement))
                 {
                     FName = getAttrValue(anode, "name");

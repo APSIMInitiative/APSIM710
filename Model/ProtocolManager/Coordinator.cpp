@@ -279,7 +279,7 @@ void Coordinator::addComponent(const string& compName,
       string componentType = compExecutable;
       replaceAll(componentType, "/", "\\");
       componentType = fileTail(fileRoot(componentType));
-      registry.addComponent(componentID, childComponentID, fqn, componentType);
+      registry.addComponent(componentID, childComponentID, fqn, componentType, componentAlias->isSystem());
       registry.setForeignTaint(childComponentID);
 
       // send component an init1 message.
@@ -654,8 +654,9 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
 				   {
 				   int child = *it;
 				   std::string childName = registry.componentByID(child);
+				   bool isSystem = registry.componentIsSystem(child);
 		           if ( ((searchName == "*") || (searchName == unQualifiedName(childName.c_str()) ) )  //if '*' then match any child
-			            && ((queryInfo.kind == protocol::componentInfo) /*|| child->isSystem*/) )  // If kind is KIND_SYSTEM, match only systems
+			            && ((queryInfo.kind == protocol::componentInfo) || isSystem) )  // If kind is KIND_SYSTEM, match only systems
                       {  
                        sendMessage(protocol::newReturnInfoMessage(
                                        componentID,
@@ -665,7 +666,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        child,                           //id of the child component
                                        childName.c_str(),
                                        registry.getComponentType(child).c_str(), //return component type
-                                       queryInfo.kind));                //type of query
+                                       isSystem ? protocol::systemInfo : protocol::componentInfo));   //component or system
                         
 		              }
                    }
@@ -685,7 +686,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        childID,
                                        fqn.c_str(),
                                        registry.getComponentType(childID).c_str(), //return component type
-                                       queryInfo.kind));
+                                       registry.componentIsSystem(childID) ? protocol::systemInfo : protocol::componentInfo));   //component or system
          }
    }
 

@@ -1166,7 +1166,7 @@ namespace CMPServices
                             uint regID = findCompID(child.name, true);
                             if (regID == UInt32.MaxValue)
                                 regID = 0;
-                            infoList.add(FMyID, regID, child.name, kind, " ", true); //add FQN and other details to the list
+                            infoList.add(FMyID, regID, child.name, child.isSystem ? TypeSpec.KIND_SYSTEM : TypeSpec.KIND_COMPONENT, " ", true); //add FQN and other details to the list
                         }
                     }
                 }

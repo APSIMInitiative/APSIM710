@@ -12,6 +12,7 @@
 #include <General/stl_functions.h>
 #include <General/TreeNodeIterator.h>
 #include <General/xml.h>
+#include <General/path.h>
 #include <General/platform.h>
 
 #include <ApsimShared/ApsimComponentData.h>
@@ -186,7 +187,7 @@ class EXPORT Component
       Component(void);
       virtual ~Component(void);
 
-      virtual std::string getType(void) {return name;};
+      virtual std::string getType(void) {return fileTailNoExtension(dllName);};
       std::string getName(void) {return name;};
       std::string getFQName(void) {return (pathName + "." + name);};
       std::string getFQContainerName(void) {return (pathName);};

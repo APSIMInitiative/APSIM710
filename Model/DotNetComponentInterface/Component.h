@@ -8,15 +8,6 @@ using namespace System::Collections::Specialized;
 using namespace System::Runtime::InteropServices;
 using namespace CSGeneral;
 
-[DllImport("ApsimShared.dll", EntryPoint = "getChildren", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-void getChildren(String^ ComponentName, System::Text::StringBuilder^ Children);
-
-[DllImport("ApsimShared.dll", EntryPoint = "findVariable", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-bool findVariable(String^ OwnerComponentName, String^ VariableName);
-
-[DllImport("ApsimShared.dll", EntryPoint = "isPaddock", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
-bool isPaddock(String^ ComponentName);  
-
 [DllImport("ApsimShared.dll", EntryPoint = "getComponentType", CharSet=CharSet::Ansi, CallingConvention=CallingConvention::StdCall)]
 void getComponentType(String^ ComponentName, System::Text::StringBuilder^ ComponentType); 
 
