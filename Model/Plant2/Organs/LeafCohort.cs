@@ -45,34 +45,34 @@ public class LeafCohort : Instance
     public Leaf Leaf = null;
 
     [Link("Population")]
-    public Population Popn = null;
+    public Population PopulationFunction = null;
 
     [Link("MaxArea")]
-    public Function ma;
+    public Function MaxAreaFunction;
     
     [Link("GrowthDuration")]
-    public Function gd;
+    public Function GrowthDurationFunction;
     
     [Link("LagDuration")]
-    public Function ld;
+    public Function LagDurationFunction;
     
     [Link("SenescenceDuration")]
-    public Function sd;
+    public Function SenescenceDurationFunction;
 
     [Link("SpecificLeafAreaMax")]
-    public Function sla;
+    public Function SpecificLeafAreaMaxFunction;
 
     [Link("MaximumNConc")]
-    public Function CNC;
+    public Function MaximumNConcFunction;
     
     [Link("MinimumNConc")]
-    public Function MNC;
+    public Function MinimumNConcFunction;
     
     [Link("StructuralNConc", IsOptional.Yes)]
-    public Function SNC;
+    public Function StructuralNConcFunction;
 
     [Link("InitialNConc", IsOptional.Yes)]
-    public Function INC;
+    public Function InitialNConcFunction;
 
     [Link]
     public Paddock Paddock;
@@ -247,7 +247,6 @@ public class LeafCohort : Instance
         double alpha = -Math.Log((1 / 0.99 - 1) / (MaxArea / (MaxArea * 0.01) - 1)) / GrowthDuration;
         double leafsize = MaxArea / (1 + (MaxArea / (MaxArea * 0.01) - 1) * Math.Exp(-alpha * TT));
         return leafsize;
-
     }
  #endregion
 
@@ -269,28 +268,28 @@ public class LeafCohort : Instance
         NewLeaf.Dead = new Biomass();
         return NewLeaf;
     }
-
-
+    
     virtual public void DoInitialisation()
     {
         // _Population will equal 0 when the APSIM infrastructure creates this object.
         // It will already be set if PLANT creates this object and population is passed
         // in as an argument in the constructor below. Confusing isn't it?
         if (_Population == 0)
-            _Population = Popn.Value * Leaf.PrimaryBudNo;
-        MaxArea = ma.Value;
-        GrowthDuration = gd.Value;
-        LagDuration = ld.Value;
-        SenescenceDuration = sd.Value;
-        SpecificLeafAreaMax = sla.Value;
-        MaximumNConc = CNC.Value;
-        MinimumNConc = MNC.Value;
-        if (SNC != null)
-            StructuralNConc = SNC.Value;
+            _Population = PopulationFunction.Value * Leaf.PrimaryBudNo;
+        MaxArea = MaxAreaFunction.Value; 
+        GrowthDuration = GrowthDurationFunction.Value;
+        LagDuration = LagDurationFunction.Value;
+        SenescenceDuration = SenescenceDurationFunction.Value;
+        SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
+        MaximumNConc = MaximumNConcFunction.Value;
+        MinimumNConc = MinimumNConcFunction.Value;
+        if (StructuralNConcFunction != null)
+            StructuralNConc = StructuralNConcFunction.Value;
 
-        if (INC != null)
-            InitialNConc = INC.Value;
+        if (InitialNConcFunction != null)
+            InitialNConc = InitialNConcFunction.Value;
 
+        Age = Area / MaxArea * GrowthDuration;
         LiveArea = Area * _Population;
         Live.StructuralWt = LiveArea / SpecificLeafAreaMax;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
@@ -302,10 +301,9 @@ public class LeafCohort : Instance
         Paddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
     }
 
-
-    virtual public void DoStartSet(double TT)
-    {
-    }
+   // virtual public void DoStartSet(double TT)
+   // {
+   // }
     virtual public void DoPotentialGrowth(double TT)
     {
         if (IsInitialised)
