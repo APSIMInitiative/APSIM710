@@ -35,21 +35,22 @@ ApsimSettings::ApsimSettings(void)
   original = new XMLDocument(originalPath);
 
   // 2. look for local customisations
+  string VersionNumber = getApsimVersion();
+  replaceAll(VersionNumber, ".", "");
   string localPath;
-  string versionNumber;
-  this->read("version|apsim", versionNumber);
+  string DirectoryName = "Apsim" + VersionNumber +"-" + getApsimBuildNumber();
 #ifdef __WIN32__
   char szPath[MAX_PATH];
   if (SHGetFolderPath( NULL, CSIDL_APPDATA, NULL, 0, szPath ) != S_OK)
       return;
 
-  localPath  = string(szPath) + "/Apsim/" + versionNumber + "/Apsim.xml";
+  localPath  = string(szPath) + "/Apsim/" + DirectoryName + "/Apsim.xml";
 #else 
   char *home = getenv("HOME");
   if (home == NULL) 
       return;
 
-  localPath  = string(home) + "/.Apsim/" + versionNumber + "/Apsim.xml";
+  localPath  = string(home) + "/.Apsim/" + DirectoryName + "/Apsim.xml";
 #endif
 
   if (fileExists(localPath))  
