@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("UrinePatch")> 
+<Assembly: AssemblyTitle("FarmSimGraze")> 
 <Assembly: AssemblyDescription("")> 
 <Assembly: AssemblyCompany("AgResearch")> 
-<Assembly: AssemblyProduct("UrinePatch")> 
+<Assembly: AssemblyProduct("FarmSimGraze")> 
 <Assembly: AssemblyCopyright("Copyright © AgResearch 2010")> 
 <Assembly: AssemblyTrademark("")> 
 

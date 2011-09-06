@@ -12,7 +12,7 @@ Public Class FarmSimGraze
 
    <Link()> Public MyPaddock As Paddock
 
-   <Input()> Private UI_FarmType As String
+   <Input()> Private UI_FarmType As String = ""
    <Input()> Private UI_BeefPercentage As Single   ' beef percentage on a per head basis
    Private SUBeefPercentage As Single
 
