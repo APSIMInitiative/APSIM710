@@ -1,11 +1,11 @@
 <folder version="27" name="simulations">
   <simulation name="ReleasedMaize">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
+      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">01/11/2008</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">25/10/2009</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/04/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">30/06/1941</end_date>
     </clock>
     <summaryfile>
       <filename name="filename">Continuous Wheat Simulation.sum</filename>
@@ -1229,11 +1229,11 @@
             <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">Pioneer_3527</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">dekalb_xl82</cultivar>
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
-          <script>
+          <script name="start_of_day">
             <text>
         if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
@@ -1247,7 +1247,7 @@
             <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
           </ui>
-          <script>
+          <script name="end_of_day">
             <text>
            if ([crop].stage = 11) then
               [crop]  harvest
@@ -1258,41 +1258,20 @@
             <event>end_of_day</event>
           </script>
         </manager>
-        <manager name="AnalysisVariables">
-          <script>
-            <text>RadIntTot = 0 ! Total radiation interception (MJ/m2/day)
-AboveGroundWt = 0 ! Convert "biomass" (kg/ha) to AboveGroundWt (g/m2) to compare to Plant2
-dlt_DM_grams = 0 ! transforming  kg/ha into g/m2 
-</text>
-            <event>init</event>
-          </script>
-          <script>
-            <text>RadIntTot = cover_green * Radn
-AboveGroundWt = biomass / 10
-dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
-            <event>start_of_day</event>
-          </script>
-          <script>
-            <text>
-            </text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
       </folder>
       <outputfile>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="stage" />
-          <variable name="stagename" />
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="stage" array="No" description="Plant stage" />
+          <variable name="stagename" array="No" description="Plant stage name" />
           <variable name="leaf_no_final" />
-          <variable name="node_no" />
-          <variable name="leaf_no_dead()" />
-          <variable name="AboveGroundWt" />
+          <variable name="node_no" array="No" />
+          <variable name="leaf_no_dead()" array="Yes" />
+          <variable name="tt_tot()" />
+          <variable name="tt_tot" />
+          <variable name="phase_tt" />
           <variable name="lai" />
           <variable name="root_depth" />
-          <variable name="leaf_no" />
-          <variable name="dlt_dm" />
-          <variable name="RadIntTot" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -1384,7 +1363,6 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
           <SoilCrop name="Sorghum" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Sorghum" />
           <SoilCrop name="Wheat" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Wheat" />
           <SoilCrop name="wheat2" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/wheat2" />
-          <SoilCrop name="Maize" shortcut="/simulations/ReleasedMaize/paddock/Soil/Water/Maize" />
         </Water>
         <SoilWat shortcut="/simulations/ReleasedMaize/paddock/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/simulations/ReleasedMaize/paddock/Soil/SoilOrganicMatter" />
@@ -1402,11 +1380,11 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
             <crop type="crop" description="Enter name of crop to sow : ">maize2</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">ShortHybrid</cultivar>
+            <cultivar type="cultivars" description="Enter cultivar : ">dekalb_xl82</cultivar>
             <class type="classes" description="Enter crop growth class : " />
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
-          <script>
+          <script name="start_of_day">
             <text>
         if (today = date('[date]') then
               [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
@@ -1420,7 +1398,7 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
             <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize2</crop>
           </ui>
-          <script>
+          <script name="end_of_day">
             <text>
            if (today = date('1-oct')) then
               [crop]  harvest
@@ -1428,28 +1406,6 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
 
             </text>
             <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise incrop on critical NO3 level- top up">
-          <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="In which crop is fertiliser being applied : ">Maize2</modulename>
-            <fert_criteria type="text" description="Maximum Amount of NO3 required in top 3 layers (kg/ha) : ">200</fert_criteria>
-            <fert_critical type="text" description="Critical Amount of NO3 in top 3 layers (kg/ha) : ">100</fert_critical>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">NO3_N</fert_type>
-          </ui>
-          <script>
-            <text>
-         if ([modulename].plant_status = 'alive') then
-            NO3_available = no3(1) + no3(2) + no3(3)
-            if (NO3_available &lt;= [fert_critical]) then
-               N_deficit = [fert_criteria] - NO3_available
-               '[fertmodule]' apply amount = N_deficit (kg/ha), depth = 50 (mm), type = [fert_type] ()
-            endif
-         endif </text>
-            <event>start_of_day</event>
           </script>
         </manager>
       </folder>
@@ -1460,24 +1416,21 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
       </maize2>
       <outputfile shortcut="/simulations/ReleasedMaize/paddock/outputfile">
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="PhenologyCurrentPhaseName" />
+          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="StageCodeValue" array="No" description="Plant stage" />
+          <variable name="PhenologyCurrentPhaseName" array="No" description="Plant stage name" />
           <variable name="LeafFinalNodeNo" />
-          <variable name="LeafNodeNo" />
-          <variable name="LeafDeadNodeNo" />
+          <variable name="LeafNodeNo" array="No" />
+          <variable name="LeafDeadNodeNo" array="No" />
           <variable name="LeafTotalNo" />
-          <variable name="LeafFullyExpandedNodeNo" />
-          <variable name="LeafLAI" />
+          <variable name="LeafFullyExpandedNodeNo" array="No" />
+          <variable name="PhenologyThermalTimeValue" array="No" />
+          <variable name="PhenologyEmergingCumulativeTT" />
+          <variable name="PhenologyEmergenceToEndJuvenileCumulativeTT" />
+          <variable name="PhenologyEndJuvenileToInitiationCumulativeTT" />
+          <variable name="PhenologyEndJuvenileToInitiationTargetValue" />
+          <variable name="LeafLai" />
           <variable name="RootDepth" />
-          <variable name="AboveGroundWt" />
-          <variable name="LeafLAIDead" />
-          <variable name="LeafSize" />
-          <variable name="RueAct" />
-          <variable name="Radn as SolarRadiation" />
-          <variable name="Cover_green" />
-          <variable name="RadIntTot" />
-          <variable name="dlt_DM" />
-          <variable name="ShootDM" />
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedMaize/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1490,6 +1443,21 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
       </micromet>
     </area>
   </simulation>
+  <Graph name="Leaf number">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Date</X>
+      <Y>leaf_no</Y>
+      <Y>LeafNodeNo</Y>
+      <Y>LeafFullyExpandedNodeNo</Y>
+      <Y>leaf_no_dead()</Y>
+      <Y>LeafDeadNodeNo</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
   <Graph name="Thermal Time">
     <Plot>
       <SeriesType>Solid line</SeriesType>
@@ -1502,30 +1470,6 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
-  <Graph name="Phenology">
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>stage</Y>
-      <Y>StageCodeValue</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
-  <Graph name="LeafNumber">
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>leaf_no</Y>
-      <Y>LeafNodeNo</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
   <Graph name="LAI">
     <Plot>
       <SeriesType>Solid line</SeriesType>
@@ -1535,81 +1479,18 @@ dlt_DM_grams = dlt_DM * 10 ! transforming g/m2 into kg/ha </text>
       <X>Date</X>
       <Y>lai</Y>
       <Y>LeafLai</Y>
-      <Y>LeafLAIDead</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>
-  <Graph name="LeafSize">
+  <Graph name="RootDepth">
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
       <colour>
       </colour>
       <X>Date</X>
-      <Y>LeafSize(1)</Y>
-      <Y>LeafSize(2)</Y>
-      <Y>LeafSize(3)</Y>
-      <Y>LeafSize(4)</Y>
-      <Y>LeafSize(5)</Y>
-      <Y>LeafSize(6)</Y>
-      <Y>LeafSize(7)</Y>
-      <Y>LeafSize(8)</Y>
-      <Y>LeafSize(9)</Y>
-      <Y>LeafSize(10)</Y>
-      <Y>LeafSize(11)</Y>
-      <Y>LeafSize(12)</Y>
-      <Y>LeafSize(13)</Y>
-      <Y>LeafSize(14)</Y>
-      <Y>LeafSize(15)</Y>
-      <Y>LeafSize(16)</Y>
-      <Y>LeafSize(17)</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
-  <Graph name="RUE Actual">
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>RueAct</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
-  <Graph name="Intercepted Radiation">
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>SolarRadiation</Y>
-      <Y>RadIntTot</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
-  <Graph name="DailyBiomass">
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>dlt_dm</Y>
-      <GDApsimFileReader name="ApsimFileReader" />
-    </Plot>
-  </Graph>
-  <Graph name="Shoot biomass">
-    <Format>AAEAAAD/////AQAAAAAAAAAMAgAAAFJUZWVDaGFydCwgVmVyc2lvbj0yLjAuMjMwNi4yNjIzMiwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj05YzgxMjYyNzZjNzdiZGI3DAMAAABXU3lzdGVtLldpbmRvd3MuRm9ybXMsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5DAQAAABRU3lzdGVtLkRyYXdpbmcsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iMDNmNWY3ZjExZDUwYTNhBQEAAAAVU3RlZW1hLlRlZUNoYXJ0LkNoYXJ06AAAAAYuV2lkdGgHLkhlaWdodA4uWm9vbS5BbmltYXRlZBMuWm9vbS5BbmltYXRlZFN0ZXBzDC5ab29tLlpvb21lZBQuUGFubmluZy5Nb3VzZUJ1dHRvbhcuUGFuZWwuSW1hZ2VCZXZlbC5XaWR0aBIuUGFuZWwuQmV2ZWwuT3V0ZXIVLlBhbmVsLlNoYWRvdy5WaXNpYmxlEi5QYW5lbC5CcnVzaC5Db2xvchIuTGVnZW5kLkNoZWNrQm94ZXMRLkxlZ2VuZC5BbGlnbm1lbnQXLkxlZ2VuZC5UaXRsZS5Gb250LkJvbGQhLkxlZ2VuZC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlHC5MZWdlbmQuVGl0bGUuU2hhZG93LlZpc2libGUZLkxlZ2VuZC5UaXRsZS5QZW4uVmlzaWJsZRsuTGVnZW5kLkZvbnQuU2hhZG93LlZpc2libGUWLkxlZ2VuZC5TaGFkb3cuVmlzaWJsZRMuTGVnZW5kLlRyYW5zcGFyZW50DS5IZWFkZXIuTGluZXMRLkhlYWRlci5Gb250Lk5hbWURLkhlYWRlci5Gb250LlNpemUbLkhlYWRlci5Gb250LlNoYWRvdy5WaXNpYmxlFi5IZWFkZXIuU2hhZG93LlZpc2libGUeLlN1YkhlYWRlci5Gb250LlNoYWRvdy5WaXNpYmxlGS5TdWJIZWFkZXIuU2hhZG93LlZpc2libGUbLkZvb3Rlci5Gb250LlNoYWRvdy5WaXNpYmxlFi5Gb290ZXIuU2hhZG93LlZpc2libGUeLlN1YkZvb3Rlci5Gb250LlNoYWRvdy5WaXNpYmxlGS5TdWJGb290ZXIuU2hhZG93LlZpc2libGUVLkFzcGVjdC5Sb3RhdGlvbkZsb2F0Fi5Bc3BlY3QuRWxldmF0aW9uRmxvYXQZLkFzcGVjdC5Db2xvclBhbGV0dGVJbmRleA4uQXNwZWN0LlZpZXczRBUuR3JhcGhpY3MzRC5QZW4uQ29sb3IVLkdyYXBoaWNzM0QuUGVuLldpZHRoFy5HcmFwaGljczNELkJydXNoLkNvbG9yGS5HcmFwaGljczNELkJydXNoLlZpc2libGUfLkdyYXBoaWNzM0QuRm9udC5TaGFkb3cuVmlzaWJsZRMuR3JhcGhpY3MzRC5YQ2VudGVyEy5HcmFwaGljczNELllDZW50ZXIZLkdyYXBoaWNzM0QuU21vb3RoaW5nTW9kZR0uR3JhcGhpY3MzRC5UZXh0UmVuZGVyaW5nSGludBouR3JhcGhpY3MzRC5TdXBwb3J0czNEVGV4dBUuR3JhcGhpY3MzRC5CYWNrQ29sb3IVLkdyYXBoaWNzM0QuVXNlQnVmZmVyHC5HcmFwaGljczNELlJvdGF0aW9uQ2VudGVyLlgcLkdyYXBoaWNzM0QuUm90YXRpb25DZW50ZXIuWRwuR3JhcGhpY3MzRC5Sb3RhdGlvbkNlbnRlci5aCFNlcmllcy4wFS5TZXJpZXMuMC5CcnVzaC5Db2xvchcuU2VyaWVzLjAuUG9pbnRlci5TdHlsZR0uU2VyaWVzLjAuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjAuTGluZVBlbi5Db2xvchcuU2VyaWVzLjAuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjAuVGl0bGUeLlNlcmllcy4wLk1hcmtzLkNhbGxvdXQuTGVuZ3RoIS5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkFycm93SGVhZCUuU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWRTaXplIC5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkRpc3RhbmNlHi5TZXJpZXMuMC5NYXJrcy5DYWxsb3V0LkRyYXczRB0uU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5TdHlsZSMuU2VyaWVzLjAuTWFya3MuQ2FsbG91dC5CcnVzaC5Db2xvch4uU2VyaWVzLjAuTWFya3MuSXRlbXMuQ2FwYWNpdHkjLlNlcmllcy4wLk1hcmtzLkZvbnQuU2hhZG93LlZpc2libGUIU2VyaWVzLjEVLlNlcmllcy4xLkJydXNoLkNvbG9yFy5TZXJpZXMuMS5Qb2ludGVyLlN0eWxlHS5TZXJpZXMuMS5Qb2ludGVyLkJydXNoLkNvbG9yFy5TZXJpZXMuMS5MaW5lUGVuLkNvbG9yFy5TZXJpZXMuMS5MaW5lUGVuLldpZHRoDy5TZXJpZXMuMS5UaXRsZRYuU2VyaWVzLjEuU2hvd0luTGVnZW5kHi5TZXJpZXMuMS5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjEuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy4xLk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy4xLk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuMS5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlCFNlcmllcy4yFS5TZXJpZXMuMi5CcnVzaC5Db2xvchcuU2VyaWVzLjIuUG9pbnRlci5TdHlsZR0uU2VyaWVzLjIuUG9pbnRlci5CcnVzaC5Db2xvchcuU2VyaWVzLjIuTGluZVBlbi5Db2xvchcuU2VyaWVzLjIuTGluZVBlbi5XaWR0aA8uU2VyaWVzLjIuVGl0bGUWLlNlcmllcy4yLlNob3dJbkxlZ2VuZB4uU2VyaWVzLjIuTWFya3MuQ2FsbG91dC5MZW5ndGghLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkJS5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LkFycm93SGVhZFNpemUgLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuRGlzdGFuY2UeLlNlcmllcy4yLk1hcmtzLkNhbGxvdXQuRHJhdzNEHS5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LlN0eWxlIy5TZXJpZXMuMi5NYXJrcy5DYWxsb3V0LkJydXNoLkNvbG9yHi5TZXJpZXMuMi5NYXJrcy5JdGVtcy5DYXBhY2l0eSMuU2VyaWVzLjIuTWFya3MuRm9udC5TaGFkb3cuVmlzaWJsZQhTZXJpZXMuMxUuU2VyaWVzLjMuQnJ1c2guQ29sb3IXLlNlcmllcy4zLlBvaW50ZXIuU3R5bGUdLlNlcmllcy4zLlBvaW50ZXIuQnJ1c2guQ29sb3IXLlNlcmllcy4zLkxpbmVQZW4uQ29sb3IXLlNlcmllcy4zLkxpbmVQZW4uV2lkdGgPLlNlcmllcy4zLlRpdGxlHi5TZXJpZXMuMy5NYXJrcy5DYWxsb3V0Lkxlbmd0aCEuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5BcnJvd0hlYWQlLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuQXJyb3dIZWFkU2l6ZSAuU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5EaXN0YW5jZR4uU2VyaWVzLjMuTWFya3MuQ2FsbG91dC5EcmF3M0QdLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuU3R5bGUjLlNlcmllcy4zLk1hcmtzLkNhbGxvdXQuQnJ1c2guQ29sb3IeLlNlcmllcy4zLk1hcmtzLkl0ZW1zLkNhcGFjaXR5Iy5TZXJpZXMuMy5NYXJrcy5Gb250LlNoYWRvdy5WaXNpYmxlFC5XYWxscy5MZWZ0LkF1dG9IaWRlGi5XYWxscy5MZWZ0LlNoYWRvdy5WaXNpYmxlFS5XYWxscy5SaWdodC5BdXRvSGlkZRsuV2FsbHMuUmlnaHQuU2hhZG93LlZpc2libGUULldhbGxzLkJhY2suQXV0b0hpZGUaLldhbGxzLkJhY2suU2hhZG93LlZpc2libGUWLldhbGxzLkJvdHRvbS5BdXRvSGlkZRwuV2FsbHMuQm90dG9tLlNoYWRvdy5WaXNpYmxlDi5XYWxscy5WaXNpYmxlHC5BeGVzLkxlZnQuTGFiZWxzLlNlcGFyYXRpb24dLkF4ZXMuTGVmdC5MYWJlbHMuVmFsdWVGb3JtYXQbLkF4ZXMuTGVmdC5MYWJlbHMuRm9udC5OYW1lGy5BeGVzLkxlZnQuTGFiZWxzLkZvbnQuU2l6ZSUuQXhlcy5MZWZ0LkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkxlZnQuTGFiZWxzLlNoYWRvdy5WaXNpYmxlFC5BeGVzLkxlZnQuQXV0b21hdGljGC5BeGVzLkxlZnQuQXhpc1Blbi5XaWR0aBkuQXhlcy5MZWZ0LkF4aXNQZW4uRW5kQ2FwFS5BeGVzLkxlZnQuR3JpZC5TdHlsZRkuQXhlcy5MZWZ0LkdyaWQuWlBvc2l0aW9uFy5BeGVzLkxlZnQuR3JpZC5WaXNpYmxlGC5BeGVzLkxlZnQuTWF4aW11bU9mZnNldB0uQXhlcy5MZWZ0Lk1pbm9yVGlja3MuVmlzaWJsZRYuQXhlcy5MZWZ0LlRpY2tzLkNvbG9yFi5BeGVzLkxlZnQuVGl0bGUuTGluZXMaLkF4ZXMuTGVmdC5UaXRsZS5Gb250Lk5hbWUaLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNpemUoLkF4ZXMuTGVmdC5UaXRsZS5Gb250LlNoYWRvdy5CcnVzaC5Db2xvciQuQXhlcy5MZWZ0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUhLkF4ZXMuTGVmdC5UaXRsZS5Gb250LkJydXNoLkNvbG9yHy5BeGVzLkxlZnQuVGl0bGUuU2hhZG93LlZpc2libGUbLkF4ZXMuVG9wLkxhYmVscy5TZXBhcmF0aW9uHC5BeGVzLlRvcC5MYWJlbHMuVmFsdWVGb3JtYXQaLkF4ZXMuVG9wLkxhYmVscy5Gb250Lk5hbWUaLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNpemUkLkF4ZXMuVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlHy5BeGVzLlRvcC5MYWJlbHMuU2hhZG93LlZpc2libGUaLkF4ZXMuVG9wLkF1dG9tYXRpY01heGltdW0aLkF4ZXMuVG9wLkF1dG9tYXRpY01pbmltdW0XLkF4ZXMuVG9wLkF4aXNQZW4uV2lkdGgYLkF4ZXMuVG9wLkF4aXNQZW4uRW5kQ2FwFC5BeGVzLlRvcC5HcmlkLlN0eWxlGC5BeGVzLlRvcC5HcmlkLlpQb3NpdGlvbhYuQXhlcy5Ub3AuR3JpZC5WaXNpYmxlES5BeGVzLlRvcC5NYXhpbXVtES5BeGVzLlRvcC5NaW5pbXVtHC5BeGVzLlRvcC5NaW5vclRpY2tzLlZpc2libGUVLkF4ZXMuVG9wLlRpY2tzLkNvbG9yGS5BeGVzLlRvcC5UaXRsZS5Gb250Lk5hbWUZLkF4ZXMuVG9wLlRpdGxlLkZvbnQuU2l6ZSMuQXhlcy5Ub3AuVGl0bGUuRm9udC5TaGFkb3cuVmlzaWJsZSAuQXhlcy5Ub3AuVGl0bGUuRm9udC5CcnVzaC5Db2xvch4uQXhlcy5Ub3AuVGl0bGUuU2hhZG93LlZpc2libGURLkF4ZXMuVG9wLlZpc2libGUdLkF4ZXMuUmlnaHQuTGFiZWxzLlNlcGFyYXRpb24eLkF4ZXMuUmlnaHQuTGFiZWxzLlZhbHVlRm9ybWF0HC5BeGVzLlJpZ2h0LkxhYmVscy5Gb250Lk5hbWUcLkF4ZXMuUmlnaHQuTGFiZWxzLkZvbnQuU2l6ZSYuQXhlcy5SaWdodC5MYWJlbHMuRm9udC5TaGFkb3cuVmlzaWJsZSEuQXhlcy5SaWdodC5MYWJlbHMuU2hhZG93LlZpc2libGUcLkF4ZXMuUmlnaHQuQXV0b21hdGljTWF4aW11bRwuQXhlcy5SaWdodC5BdXRvbWF0aWNNaW5pbXVtGS5BeGVzLlJpZ2h0LkF4aXNQZW4uV2lkdGgaLkF4ZXMuUmlnaHQuQXhpc1Blbi5FbmRDYXAWLkF4ZXMuUmlnaHQuR3JpZC5TdHlsZRouQXhlcy5SaWdodC5HcmlkLlpQb3NpdGlvbhguQXhlcy5SaWdodC5HcmlkLlZpc2libGUTLkF4ZXMuUmlnaHQuTWF4aW11bRMuQXhlcy5SaWdodC5NaW5pbXVtHi5BeGVzLlJpZ2h0Lk1pbm9yVGlja3MuVmlzaWJsZRcuQXhlcy5SaWdodC5UaWNrcy5Db2xvchsuQXhlcy5SaWdodC5UaXRsZS5Gb250Lk5hbWUbLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5TaXplJS5BeGVzLlJpZ2h0LlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUiLkF4ZXMuUmlnaHQuVGl0bGUuRm9udC5CcnVzaC5Db2xvciAuQXhlcy5SaWdodC5UaXRsZS5TaGFkb3cuVmlzaWJsZRMuQXhlcy5SaWdodC5WaXNpYmxlHi5BeGVzLkJvdHRvbS5MYWJlbHMuU2VwYXJhdGlvbiIuQXhlcy5Cb3R0b20uTGFiZWxzLkRhdGVUaW1lRm9ybWF0Hy5BeGVzLkJvdHRvbS5MYWJlbHMuVmFsdWVGb3JtYXQdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250Lk5hbWUdLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNpemUnLkF4ZXMuQm90dG9tLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIi5BeGVzLkJvdHRvbS5MYWJlbHMuU2hhZG93LlZpc2libGUdLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01heGltdW0dLkF4ZXMuQm90dG9tLkF1dG9tYXRpY01pbmltdW0aLkF4ZXMuQm90dG9tLkF4aXNQZW4uV2lkdGgbLkF4ZXMuQm90dG9tLkF4aXNQZW4uRW5kQ2FwFy5BeGVzLkJvdHRvbS5HcmlkLlN0eWxlGy5BeGVzLkJvdHRvbS5HcmlkLlpQb3NpdGlvbhkuQXhlcy5Cb3R0b20uR3JpZC5WaXNpYmxlGi5BeGVzLkJvdHRvbS5NYXhpbXVtT2Zmc2V0FC5BeGVzLkJvdHRvbS5NYXhpbXVtFC5BeGVzLkJvdHRvbS5NaW5pbXVtGi5BeGVzLkJvdHRvbS5NaW5pbXVtT2Zmc2V0Hy5BeGVzLkJvdHRvbS5NaW5vclRpY2tzLlZpc2libGUYLkF4ZXMuQm90dG9tLlRpY2tzLkNvbG9yGC5BeGVzLkJvdHRvbS5UaXRsZS5MaW5lcxwuQXhlcy5Cb3R0b20uVGl0bGUuRm9udC5OYW1lHC5BeGVzLkJvdHRvbS5UaXRsZS5Gb250LlNpemUmLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuU2hhZG93LlZpc2libGUjLkF4ZXMuQm90dG9tLlRpdGxlLkZvbnQuQnJ1c2guQ29sb3IhLkF4ZXMuQm90dG9tLlRpdGxlLlNoYWRvdy5WaXNpYmxlKS5BeGVzLkRlcHRoVG9wLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlJC5BeGVzLkRlcHRoVG9wLkxhYmVscy5TaGFkb3cuVmlzaWJsZRguQXhlcy5EZXB0aFRvcC5BdXRvbWF0aWMZLkF4ZXMuRGVwdGhUb3AuR3JpZC5TdHlsZR0uQXhlcy5EZXB0aFRvcC5HcmlkLlpQb3NpdGlvbiguQXhlcy5EZXB0aFRvcC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIy5BeGVzLkRlcHRoVG9wLlRpdGxlLlNoYWRvdy5WaXNpYmxlJi5BeGVzLkRlcHRoLkxhYmVscy5Gb250LlNoYWRvdy5WaXNpYmxlIS5BeGVzLkRlcHRoLkxhYmVscy5TaGFkb3cuVmlzaWJsZRUuQXhlcy5EZXB0aC5BdXRvbWF0aWMWLkF4ZXMuRGVwdGguR3JpZC5TdHlsZRouQXhlcy5EZXB0aC5HcmlkLlpQb3NpdGlvbiUuQXhlcy5EZXB0aC5UaXRsZS5Gb250LlNoYWRvdy5WaXNpYmxlIC5BeGVzLkRlcHRoLlRpdGxlLlNoYWRvdy5WaXNpYmxlAAAAAAAEAAQABAAEAAAAAAAAAAYBAAAAAAAAAAAAAAAAAAQABAAAAAAEBAAEAAAAAAEEBAQEAAEABAAAAAQEAAABBAQEBAABAAAEAAAABAQAAAEEBAQEAAEAAAQAAAAEBAAAAQQEBAQAAQAEAAAABAQAAAAAAAAAAAAAAAABAQAAAAAABAQAAAAABAYBAAQABAAAAQEAAAAAAAAEBAAAAAAABAEAAAQAAAABAQAAAAAAAAQEAAAAAAAEAQAABAAAAAEBAQAAAAAAAAQEAAAAAAAAAAQGAQAABAAAAAAEAAAAAAAABAAAAAgIAQgBIVN5c3RlbS5XaW5kb3dzLkZvcm1zLk1vdXNlQnV0dG9ucwMAAAAII1N0ZWVtYS5UZWVDaGFydC5EcmF3aW5nLkJldmVsU3R5bGVzAgAAAAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAASBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwIAAAABAQEBAQEBCAEBAQEBAQEBBgYIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBCAgmU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELlNtb290aGluZ01vZGUEAAAAJVN5c3RlbS5EcmF3aW5nLlRleHQuVGV4dFJlbmRlcmluZ0hpbnQEAAAAARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABCAgIFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAICCZTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkFycm93SGVhZFN0eWxlcwIAAAAICAEkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAkU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAgAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAACRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAABRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIAQgmU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5BcnJvd0hlYWRTdHlsZXMCAAAACAgBJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAJFN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuUG9pbnRlclN0eWxlcwIAAAAUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgIJlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAgAAAAgIASRTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLlBvaW50ZXJTdHlsZXMCAAAAFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBAQEBAQEBAQEBCAgBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBCAEUU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAACBRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEICAEBAQEIIFN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5MaW5lQ2FwBAAAACJTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuRGFzaFN0eWxlBAAAAAYBBgYBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAgBFFN5c3RlbS5EcmF3aW5nLkNvbG9yBAAAAAEBCAgBAQEBCCBTeXN0ZW0uRHJhd2luZy5EcmF3aW5nMkQuTGluZUNhcAQAAAAiU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQQAAAAGAQYGARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQgIAQEBAQggU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXAEAAAAIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEIBgYIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAAIARRTeXN0ZW0uRHJhd2luZy5Db2xvcgQAAAABAQEBIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEBAQEBIlN5c3RlbS5EcmF3aW5nLkRyYXdpbmcyRC5EYXNoU3R5bGUEAAAABgEBAgAAAKoFAACMAgAAAQQAAAABBfv///8hU3lzdGVtLldpbmRvd3MuRm9ybXMuTW91c2VCdXR0b25zAQAAAAd2YWx1ZV9fAAgDAAAAAABAAAEAAAAF+v///yNTdGVlbWEuVGVlQ2hhcnQuRHJhd2luZy5CZXZlbFN0eWxlcwEAAAAHdmFsdWVfXwAIAgAAAAAAAAAABfn///8UU3lzdGVtLkRyYXdpbmcuQ29sb3IEAAAABG5hbWUFdmFsdWUKa25vd25Db2xvcgVzdGF0ZQEAAAAJBwcEAAAACv////8AAAAAAAACAAEF+P///yBTdGVlbWEuVGVlQ2hhcnQuTGVnZW5kQWxpZ25tZW50cwEAAAAHdmFsdWVfXwAIAgAAAAMAAAABAAAAAAABCQkAAAAGCgAAAAZUYWhvbWEMAAAAAAAAAAAAAAAAAAAAAJB1QAAAAAAAkHVAAwAAAAAB9f////n///8KAAAAAAAAAAB/AAEAAgAAAAH0////+f///woAAAAAAAAAAH8AAQAAAOoCAAAyAQAABfP///8mU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELlNtb290aGluZ01vZGUBAAAAB3ZhbHVlX18ACAQAAAABAAAABfL///8lU3lzdGVtLkRyYXdpbmcuVGV4dC5UZXh0UmVuZGVyaW5nSGludAEAAAAHdmFsdWVfXwAIBAAAAAAAAAAAAfH////5////CgAAAAAAAAAAfwABAAEAAAAAAAAAAAAAAAAGEAAAABtTdGVlbWEuVGVlQ2hhcnQuU3R5bGVzLkxpbmUB7/////n///8KAAAAAAAAAAAlAAEABe7///8kU3RlZW1hLlRlZUNoYXJ0LlN0eWxlcy5Qb2ludGVyU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAACQAAAAHt////+f///woAAAAAAAAAACUAAQAB7P////n///8KmQAA/wAAAAAAAAIAAgAAAAYVAAAAFyBiaW9tYXNzLCBSZWxlYXNlZE1haXplCgAAAAXq////JlN0ZWVtYS5UZWVDaGFydC5TdHlsZXMuQXJyb3dIZWFkU3R5bGVzAQAAAAd2YWx1ZV9fAAgCAAAAAAAAAAgAAAAAAAAAAAHp////7v///wAAAAAB6P////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAHm////+f///woAAAAAAAAAAI0AAQAB5f///+7///8JAAAAAeT////5////CgAAAAAAAAAAjQABAAHj////+f///woAAJn/AAAAAAAAAgACAAAABh4AAAAQIGJpb21hc3MsIE1haXplMgAKAAAAAeH////q////AAAAAAgAAAAAAAAAAAHg////7v///wAAAAAB3/////n///8KAAAAAAAAAAAjAAEAAAAAAAAJEAAAAAHd////+f///woAAAAAAAAAAE8AAQAB3P///+7///8JAAAAAdv////5////CgAAAAAAAAAATwABAAHa////+f///woATQD/AAAAAAAAAgACAAAABicAAAAdIEFib3ZlR3JvdW5kV3QsIFJlbGVhc2VkTWFpemUACgAAAAHY////6v///wAAAAAIAAAAAAAAAAAB1////+7///8AAAAAAdb////5////CgAAAAAAAAAAIwABAAAAAAAACRAAAAAB1P////n///8KAAAAAAAAAAB/AAEAAdP////u////CQAAAAHS////+f///woAAAAAAAAAAH8AAQAB0f////n///8KAGOZ/wAAAAAAAAIAAgAAAAYwAAAAFiBBYm92ZUdyb3VuZFd0LCBNYWl6ZTIKAAAAAc/////q////AAAAAAgAAAAAAAAAAAHO////7v///wAAAAABzf////n///8KAAAAAAAAAAAjAAEAAAAAAAAAAAAAAAAAAABQAAAABjQAAAAIIyMjMC4jIyMJCgAAAAkAAAAAAAEBAAAABcr///8gU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkxpbmVDYXABAAAAB3ZhbHVlX18ACAQAAAACAAAABcn///8iU3lzdGVtLkRyYXdpbmcuRHJhd2luZzJELkRhc2hTdHlsZQEAAAAHdmFsdWVfXwAIBAAAAAEAAAAAAAAAAAAAAAAKAAAAAAHI////+f///woAAAD/AAAAAAAAAgAJOQAAAAkKAAAACwAAAAHF////+f///wrAAAD/AAAAAAAAAgAAAcT////5////Cv8AAP8AAAAAAAACAABQAAAACTQAAAAJCgAAAAkAAAAAAAAAAQAAAAHB////yv///wIAAAABwP///8n///8BAAAAAAAAAAAAAAAAu73X2d982z0AAAAAAAAAAAABv/////n///8KAAAA/wAAAAAAAAIACQoAAAALAAAAAAG+////+f///wr/AAD/AAAAAAAAAgAAAFAAAAAJNAAAAAkKAAAACQAAAAAAAAABAAAAAbv////K////AgAAAAG6////yf///wEAAAAAAAAAAAAAAAC7vdfZ33zbPQAAAAAAAAAAAAG5////+f///woAAAD/AAAAAAAAAgAJCgAAAAsAAAAAAbj////5////Cv8AAP8AAAAAAAACAAAAUAAAAAZJAAAACWQvTU0veXl5eQk0AAAACQoAAAAJAAAAAAAAAAEAAAABtP///8r///8CAAAAAbP////J////AQAAAAAAAAAAAAAAAAoAAAAAAAAAwJbjQAAAAAAgaeNACgAAAAABsv////n///8KAAAA/wAAAAAAAAIACU8AAAAJCgAAAAsAAAAAAa/////5////Cv8AAP8AAAAAAAACAAAAAAEBrv///8n///8BAAAAAAAAAAAAAAAAAAAAAQGt////yf///wEAAAAAAAAAAAAAAAAAEQkAAAABAAAABlQAAAAAETkAAAABAAAACVQAAAARTwAAAAEAAAAJVAAAAAs=</Format>
-    <Plot>
-      <SeriesType>Solid line</SeriesType>
-      <PointType>None</PointType>
-      <colour>
-      </colour>
-      <X>Date</X>
-      <Y>biomass</Y>
-      <Y>AboveGroundWt</Y>
+      <Y>tt_tot()</Y>
+      <Y>Cumulative PhenologyThermalTimeValue</Y>
       <GDApsimFileReader name="ApsimFileReader" />
     </Plot>
   </Graph>

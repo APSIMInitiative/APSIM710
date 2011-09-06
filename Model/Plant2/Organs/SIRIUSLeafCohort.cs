@@ -60,34 +60,34 @@ class SIRIUSLeafCohort : LeafCohort
     public SIRIUSLeaf SIRIUSLeaf;
 
     [Link("StructuralFraction")]
-    public Function StructuralFractionFunction;
+    public Function SF;
     
     [Link("NReallocationFactor")]
-    public Function NReallocationFactorFunction;
+    public Function NRF;
     
     [Link("NRetranslocationFactor")]
-    public Function NRetranslocationFactorFunction;
+    public Function NRR;
     
     [Link("ExpansionStress")]
-    public Function ExpansionStressFunction;
+    public Function Stressfact;
     
     [Link("SpecificLeafAreaMin")]
-    public Function SpecificLeafAreaMinFunction;
+    public Function SLAmin;
 
-    //[Link("SpecificLeafAreaMax")]
-    //public Function SLAmax;
+    [Link("SpecificLeafAreaMax")]
+    public Function SLAmax;
     
     [Link("CriticalNConc")]
-    public Function CriticalNConcFunction;
+    public Function CritNC;
     
     [Link("SenescenceInducingCover")]
-    public Function SenescenceInducingCoverFunction;
+    public Function CritCover;
     
     [Link("DMRetranslocationFactor")]
-    public Function DMRetranslocationFactorFunction;
+    public Function DMRF;
     
     [Link("ShadeInducedSenRate")]
-    public Function ShadeInducedSenRateFunction;
+    public Function ShadeSenRate;
 
  #endregion
     
@@ -99,7 +99,7 @@ class SIRIUSLeafCohort : LeafCohort
         {
             if (IsGrowing)
             {
-                StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
+                StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax;  //Work out how much DM would be needed to grow to potantial size
                 MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
             }
@@ -283,23 +283,23 @@ class SIRIUSLeafCohort : LeafCohort
     public override void DoInitialisation()
     {
         base.DoInitialisation();
-        
-        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
-        SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
+
+        SpecificLeafAreaMin = SLAmin.Value;
+        SpecificLeafAreaMax = SLAmax.Value;
         StructuralNConc = MinimumNConc;
-        FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFractionFunction.Value)) * (1 / (1 - StructuralFractionFunction.Value));
-        LuxaryNConc = (MaximumNConcFunction.Value - CriticalNConcFunction.Value);
-        StructuralFraction = StructuralFractionFunction.Value;
-        Live.MetabolicWt = (Live.StructuralWt / StructuralFractionFunction.Value) * (1 - StructuralFractionFunction.Value);
+        FunctionalNConc = (CritNC.Value - (MNC.Value * SF.Value)) * (1 / (1 - SF.Value));
+        LuxaryNConc = (CNC.Value - CritNC.Value);
+        StructuralFraction = SF.Value;
+        Live.MetabolicWt = (Live.StructuralWt / SF.Value) * (1 - SF.Value);
         Live.NonStructuralWt = 0;
         Live.StructuralN = Live.StructuralWt * StructuralNConc;
         Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;
         Live.NonStructuralN = 0;
-        NReallocationFactor = NReallocationFactorFunction.Value;
-        NRetranslocationFactor = NRetranslocationFactorFunction.Value;
-        CriticalCover = SenescenceInducingCoverFunction.Value;
-        DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
-        FracSenShade = ShadeInducedSenRateFunction.Value;
+        NReallocationFactor = NRF.Value;
+        NRetranslocationFactor = NRR.Value;
+        CriticalCover = CritCover.Value;
+        DMRetranslocationFactor = DMRF.Value;
+        FracSenShade = ShadeSenRate.Value;
     }
     public override void DoPotentialGrowth(double TT)
     {

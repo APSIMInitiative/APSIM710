@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="HighWaterHighNitrogen">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">20/10/2003</start_date>
       <end_date type="date" description="Enter the end date of the simulation">23/05/2004</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <fertiliser />
       <surfaceom name="surface organic matter">
@@ -642,6 +640,8 @@
       </micromet>
       <folder name="Barley2 Analysis">
         <outputfile name="Plant2">
+          <filename output="yes">HighWaterHighNitrogen Plant2.out</filename>
+          <title>HighWaterHighNitrogen Plant2</title>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
@@ -1124,6 +1124,8 @@ endif
         </Graph>
       </folder>
       <outputfile name="SIRIUS phenology analysis">
+        <filename output="yes">HighWaterHighNitrogen SIRIUS phenology analysis.out</filename>
+        <title>HighWaterHighNitrogen SIRIUS phenology analysis</title>
         <events name="Reporting Frequency">
           <event name="Daily" />
         </events>
@@ -1214,7 +1216,9 @@ endif
     </area>
   </simulation>
   <simulation name="HighWaterLowNitrogen" shortcut="/Simulations/HighWaterHighNitrogen">
-    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met" />
+    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met">
+      <filename shortcut="/Simulations/HighWaterHighNitrogen/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/HighWaterHighNitrogen/clock" />
     <summaryfile shortcut="/Simulations/HighWaterHighNitrogen/summaryfile" />
     <area name="paddock" shortcut="/Simulations/HighWaterHighNitrogen/paddock">
@@ -1332,6 +1336,8 @@ endif
       <barley2 shortcut="/Simulations/HighWaterHighNitrogen/paddock/barley2" />
       <folder name="Barley2 Analysis">
         <outputfile name="Plant2">
+          <filename output="yes">HighWaterLowNitrogen Plant2.out</filename>
+          <title>HighWaterLowNitrogen Plant2</title>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
@@ -1812,6 +1818,8 @@ endif
         </Graph>
       </folder>
       <outputfile name="Leaf Cohort Analysis">
+        <filename output="yes">HighWaterLowNitrogen Leaf Cohort Analysis.out</filename>
+        <title>HighWaterLowNitrogen Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="LeafCohortLiveStructuralWt" />
@@ -2560,7 +2568,9 @@ endif
     </area>
   </simulation>
   <simulation name="HighWaterLowRadn" shortcut="/Simulations/HighWaterHighNitrogen">
-    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met" />
+    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met">
+      <filename shortcut="/Simulations/HighWaterHighNitrogen/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/HighWaterHighNitrogen/clock" />
     <summaryfile shortcut="/Simulations/HighWaterHighNitrogen/summaryfile" />
     <area name="paddock" shortcut="/Simulations/HighWaterHighNitrogen/paddock">
@@ -2622,7 +2632,9 @@ if (date_within('[date1], [date2]') = 1) then
         <ini shortcut="/Simulations/HighWaterHighNitrogen/paddock/Micromet/ini" />
       </micromet>
       <folder name="Barley2 Analysis" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis">
-        <outputfile name="Plant2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2">
+        <outputfile name="Plant2">
+          <filename output="yes">HighWaterLowRadn Plant2.out</filename>
+          <title>HighWaterLowRadn Plant2</title>
           <events name="Reporting Frequency" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Variables" />
         </outputfile>
@@ -2701,6 +2713,8 @@ if (date_within('[date1], [date2]') = 1) then
         </Graph>
       </folder>
       <outputfile name="Leaf Cohort Analysis">
+        <filename output="yes">HighWaterLowRadn Leaf Cohort Analysis.out</filename>
+        <title>HighWaterLowRadn Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="LeafTotalNo" />
@@ -3441,7 +3455,9 @@ if (date_within('[date1], [date2]') = 1) then
     </area>
   </simulation>
   <simulation name="HighWaterHighCO2" shortcut="/Simulations/HighWaterHighNitrogen">
-    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met" />
+    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met">
+      <filename shortcut="/Simulations/HighWaterHighNitrogen/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/HighWaterHighNitrogen/clock" />
     <summaryfile shortcut="/Simulations/HighWaterHighNitrogen/summaryfile" />
     <area name="paddock" shortcut="/Simulations/HighWaterHighNitrogen/paddock">
@@ -3503,7 +3519,9 @@ if (date_within('[date1], [date2]') = 1) then
         <ini shortcut="/Simulations/HighWaterHighNitrogen/paddock/Micromet/ini" />
       </micromet>
       <folder name="Barley2 Analysis" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis">
-        <outputfile name="Plant2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2">
+        <outputfile name="Plant2">
+          <filename output="yes">HighWaterHighCO2 Plant2.out</filename>
+          <title>HighWaterHighCO2 Plant2</title>
           <events name="Reporting Frequency" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Variables" />
         </outputfile>
@@ -3582,6 +3600,8 @@ if (date_within('[date1], [date2]') = 1) then
         </Graph>
       </folder>
       <outputfile name="Leaf Cohort Analysis">
+        <filename output="yes">HighWaterHighCO2 Leaf Cohort Analysis.out</filename>
+        <title>HighWaterHighCO2 Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="LeafTotalNo" />
@@ -4322,7 +4342,9 @@ if (date_within('[date1], [date2]') = 1) then
     </area>
   </simulation>
   <simulation name="LowWaterHighNitrogen" shortcut="/Simulations/HighWaterHighNitrogen">
-    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met" />
+    <metfile name="met" shortcut="/Simulations/HighWaterHighNitrogen/met">
+      <filename shortcut="/Simulations/HighWaterHighNitrogen/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/Simulations/HighWaterHighNitrogen/clock" />
     <summaryfile shortcut="/Simulations/HighWaterHighNitrogen/summaryfile" />
     <area name="paddock" shortcut="/Simulations/HighWaterHighNitrogen/paddock">
@@ -4397,7 +4419,9 @@ if (date_within('[date1], [date2]') = 1) then
         <ini shortcut="/Simulations/HighWaterHighNitrogen/paddock/Micromet/ini" />
       </micromet>
       <folder name="Barley2 Analysis" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis">
-        <outputfile name="Plant2" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2">
+        <outputfile name="Plant2">
+          <filename output="yes">LowWaterHighNitrogen Plant2.out</filename>
+          <title>LowWaterHighNitrogen Plant2</title>
           <events name="Reporting Frequency" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Reporting Frequency" />
           <variables name="Variables" shortcut="/Simulations/HighWaterHighNitrogen/paddock/Barley2 Analysis/Plant2/Variables" />
         </outputfile>
@@ -4476,6 +4500,8 @@ if (date_within('[date1], [date2]') = 1) then
         </Graph>
       </folder>
       <outputfile name="Leaf Cohort Analysis">
+        <filename output="yes">LowWaterHighNitrogen Leaf Cohort Analysis.out</filename>
+        <title>LowWaterHighNitrogen Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="LeafTotalNo" />

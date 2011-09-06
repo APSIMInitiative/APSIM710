@@ -75,7 +75,7 @@ public class Plant : Instance
             if (Demand > 0)
                 WaterSupplyDemandRatio = Supply / Demand;
             else
-                WaterSupplyDemandRatio = 1;
+                WaterSupplyDemandRatio = 0;
 
             double fraction = 1;
             if (Demand > 0)
@@ -109,7 +109,7 @@ public class Plant : Instance
             if (Demand > 0)
                 WaterSupplyDemandRatio = Supply / Demand;
             else
-                WaterSupplyDemandRatio = 1;
+                WaterSupplyDemandRatio = 0;
 
             double fraction = 1;
             if (Demand > 0)
