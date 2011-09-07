@@ -181,7 +181,7 @@ void grazComponent::eat(void)
 //   const float MIN_ALW = 10.0;
    green_pool = green_leaf + green_stem;
    dead_pool = dead_leaf + dead_stem;
-   tsdm = green_pool + dead_pool;
+   tsdm = max(green_pool + dead_pool, 0.0);
 
    green_prop = divide (green_pool, tsdm, 0.0);
    green_prop_leaf = divide (green_leaf, green_pool, 0.0);
@@ -214,7 +214,8 @@ void grazComponent::eat(void)
 
    // This is the animal lwg model. calculate intake per head
    anim_intake = intake_restr * (graz_pot_lwg () + 1.058) / 0.304;
-
+   anim_intake = max(anim_intake, 0.0);
+   
    // Restrict intake such that the herd cannot eat more than is
    //     in sward, then adjust individual animal intake accordingly
    stock_equiv = graz_stock_equiv ();
@@ -244,24 +245,24 @@ void grazComponent::eat(void)
 
    green_leaf_eaten = green_eaten *
           graz_comp_curve(green_prop_leaf, curve_factor);
-   green_leaf_eaten = min(green_leaf, green_leaf_eaten);
+   green_leaf_eaten = max(min(green_leaf, green_leaf_eaten), 0.0);
 
    dead_leaf_eaten = dead_eaten *
           graz_comp_curve(dead_prop_leaf, curve_factor);
-   dead_leaf_eaten = min(dead_leaf, dead_leaf_eaten);
+   dead_leaf_eaten = max(min(dead_leaf, dead_leaf_eaten), 0.0);
 
    green_stem_eaten = green_eaten - green_leaf_eaten;
-   green_stem_eaten = min(green_stem, green_stem_eaten);
+   green_stem_eaten = max(min(green_stem, green_stem_eaten), 0.0);
 
    dead_stem_eaten = dead_eaten - dead_leaf_eaten ;
-   dead_stem_eaten = min(dead_stem, dead_stem_eaten);
+   dead_stem_eaten = max(min(dead_stem, dead_stem_eaten), 0.0);
 
-   //  Trampling
+   // Trampling
    trampled = tsdm_eaten * ( divide(1.0, prop_can_eat, 0.0) - 1.0);
 
-   //  Apportion to leaf and stem
-   trampled_leaf = trampled * graz_comp_curve(dead_prop_leaf, curve_factor);
-   trampled_stem = trampled - trampled_leaf;
+   // Apportion to leaf and stem
+   trampled_leaf = max(trampled * graz_comp_curve(dead_prop_leaf, curve_factor), 0.0);
+   trampled_stem = max(trampled - trampled_leaf, 0.0);
 
    // Limit the trampling so that we don't trample more than is
    //  actually there.
