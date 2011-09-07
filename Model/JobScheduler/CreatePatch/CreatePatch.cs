@@ -10,6 +10,7 @@ using System.Diagnostics;
 using CSGeneral;
 using System.IO;
 using UIUtility;
+using System.Collections;
 
 public partial class MainForm : Form
 {
@@ -63,7 +64,15 @@ public partial class MainForm : Form
                     // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
                     // directory in SVN. The stat command above will report the directory name.
                     if (!Directory.Exists(FileName))
-                        ListView.Items.Add(FileName);
+                    {
+                        if (File.Exists(FileName))
+                        {
+                            ListViewItem item1 = new ListViewItem(FileName);
+                            item1.SubItems.Add(Path.GetDirectoryName(FileName));
+                            item1.SubItems.Add(Path.GetExtension(FileName));
+                            ListView.Items.Add(item1);
+                        }
+                    }
                 }
             }
         }
@@ -126,5 +135,70 @@ public partial class MainForm : Form
         }
     }
 
+    private void ListView_ColumnClick(object sender, ColumnClickEventArgs e)
+    {
+        ListViewSorter Sorter = new ListViewSorter();
+        ListView.ListViewItemSorter = Sorter;
+        if (!(ListView.ListViewItemSorter is ListViewSorter))
+            return;
+        Sorter = (ListViewSorter)ListView.ListViewItemSorter;
 
+        if (Sorter.LastSort == e.Column)
+        {
+            if (ListView.Sorting == SortOrder.Ascending)
+                ListView.Sorting = SortOrder.Descending;
+            else
+                ListView.Sorting = SortOrder.Ascending;
+        }
+        else
+        {
+            ListView.Sorting = SortOrder.Descending;
+        }
+        Sorter.ByColumn = e.Column;
+
+        ListView.Sort();
+    }
+
+
+}
+
+public class ListViewSorter : System.Collections.IComparer
+{
+    public int Compare(object o1, object o2)
+    {
+        if (!(o1 is ListViewItem))
+            return (0);
+        if (!(o2 is ListViewItem))
+            return (0);
+
+        ListViewItem lvi1 = (ListViewItem)o2;
+        string str1 = lvi1.SubItems[ByColumn].Text;
+        ListViewItem lvi2 = (ListViewItem)o1;
+        string str2 = lvi2.SubItems[ByColumn].Text;
+
+        int result;
+        if (lvi1.ListView.Sorting == SortOrder.Ascending)
+            result = String.Compare(str1, str2);
+        else
+            result = String.Compare(str2, str1);
+
+        LastSort = ByColumn;
+
+        return (result);
+    }
+
+
+    public int ByColumn
+    {
+        get { return Column; }
+        set { Column = value; }
+    }
+    int Column = 0;
+
+    public int LastSort
+    {
+        get { return LastColumn; }
+        set { LastColumn = value; }
+    }
+    int LastColumn = 0;
 }
