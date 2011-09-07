@@ -12,7 +12,7 @@ rem Force a rebuild by deleting the .exe
 cd %APSIM%\Model\JobScheduler
 del ..\JobScheduler.exe
 set PATHSAVED=%PATH%
-call ..\Build\RunMake.bat APSIM=%APSIM%
+call ..\Build\RunMake.bat
 set PATH=%PATHSAVED%
 set LIBPATH=
 set INCLUDE=

@@ -3,20 +3,12 @@ cd %APSIM%\Model\Build
 
 if EXIST VersionInfo.bat call VersionInfo
 
-echo ----------------------------------------------------- >> Build.out
-echo Compiling  %1 >> Build.out
-echo ----------------------------------------------------- >> Build.out
-
 pushd %APSIM%\Model\%1
 
 if EXIST makefile (
-   call %APSIM%\Model\Build\RunMake >> %APSIM%\Model\Build\Build.out
+   call %APSIM%\Model\Build\RunMake %2 %3 %4 %5 
 )
 
 popd
-if ERRORLEVEL 1 echo ERRORS FOUND >> Build.out
-if ERRORLEVEL 1 echo ERRORS FOUND in %1 >> Build.log
-echo. >> Build.out
-echo. >> Build.out
 
 

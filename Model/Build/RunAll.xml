@@ -2,16 +2,19 @@
 <?xml-stylesheet type="text/xsl" href="Build.xsl"?>
 <Folder name="RunAll">
 	<Job name="FindExamples">
-		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsim" "%JobPath%/../Examples"</CommandLineUnix>
 	</Job>
 	<Job name="FindTests" wait="yes">
-		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsim" "%JobPath%/../Tests"</CommandLineUnix>
 	</Job>      
 	<Job name="FindControlFiles" wait="yes">
-		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-		<CommandLine>JobSchedulerFindJobs.exe "%Apsim%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
+		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
+		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.con" "%JobPath%/../Tests"</CommandLineUnix>
 	</Job>      
 	<Folder name="Examples" wait="yes" />
 	<Folder name="Tests" />
@@ -21,7 +24,7 @@
 	-->	
 	
 	<Job name="Unit tests" wait="yes" IgnoreErrors="yes">
-		<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
+		<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
 		<CommandLine>RunAllUnitTests.bat</CommandLine>
 	</Job>     
 
@@ -30,8 +33,8 @@
 	-->	
 	
 	<Job name="Find post simulation jobs" IgnoreErrors="yes">
-		<WorkingDirectory>%Apsim%</WorkingDirectory>
-		<CommandLine>%Apsim%\Model\JobSchedulerFindJobs.exe "%Apsim%\Tests\PostRunAll.bat" "%JobPath%/../Jobs"</CommandLine>
+		<WorkingDirectory>%APSIM%</WorkingDirectory>
+		<CommandLine>%APSIM%\Model\JobSchedulerFindJobs.exe "%APSIM%\Tests\PostRunAll.bat" "%JobPath%/../Jobs"</CommandLine>
 	</Job>
 	<Folder name="Jobs" wait="yes" IgnoreErrors="yes" />
 </Folder>

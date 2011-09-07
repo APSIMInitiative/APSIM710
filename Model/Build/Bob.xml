@@ -36,7 +36,7 @@
 		</Job>
 		<Job name="Copy RunTime DLL's into model directory" wait="yes">
 			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
-			<CommandLine>..\Build\RunMake.bat APSIM=%Apsim%</CommandLine>
+			<CommandLine>..\Build\RunMake.bat</CommandLine>
 		</Job>
 		<Job name="Apply patch"  wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
@@ -52,7 +52,7 @@
 		</Job>
 		<Job name="Write potential revision number into Apsim.xml" wait="yes">
 			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
-			<CommandLine>%Apsim%\..\BuildLibraries\Tcl\ASTcl\bin\tclsh.exe VersionStamper.tcl Increment</CommandLine>
+			<CommandLine>%Apsim%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl Increment</CommandLine>
 		</Job>
 
 		<!--
