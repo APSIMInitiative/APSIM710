@@ -133,3 +133,16 @@ public ref class Link : public System::Attribute
       Link(String^ Path, IsOptional isOptional) {_Path = Path; _IsOptional = isOptional;}
 	};	
 
+// This attribute is used in DotNetProxies.cs to provide a map between the 
+// proxy class and the component type.
+// Usage: [ComponentType("Plant2")]
+[AttributeUsage(AttributeTargets::Class, AllowMultiple = false)]
+public ref class ComponentTypeAttribute : public System::Attribute
+{
+public:
+    String^ ComponentClass;
+    ComponentTypeAttribute(String^ CompClass)
+    {
+        ComponentClass = CompClass;
+    }
+};

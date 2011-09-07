@@ -129,6 +129,22 @@ public class Link : Attribute
     public Link(IsOptional isOptional) { _Path = null; _IsOptional = isOptional; }
     public Link(String Path) { _Path = Path; _IsOptional = IsOptional.No; }
     public Link(String Path, IsOptional isOptional) { _Path = Path; _IsOptional = isOptional; }
-}	
+}
 
+
+/// <summary>
+/// This attribute is used in DotNetProxies.cs to provide a map between the 
+/// proxy class and the component type.
+/// Usage: [ComponentType("Plant2")]
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class ComponentTypeAttribute : Attribute
+{
+    public String ComponentClass;
+    public ComponentTypeAttribute(String CompClass)
+    {
+        ComponentClass = CompClass;
+    }
+
+}
 

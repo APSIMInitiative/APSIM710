@@ -125,11 +125,18 @@ class DLLProber
 
         if (DescriptionXML != "")
         {
-            string ClassCode;
+            string ClassCode = "";
             XmlDocument Doc = new XmlDocument();
             Doc.LoadXml(DescriptionXML);
 
-            ClassCode = "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
+            String compClass = "";
+            XmlNode classNode = XmlHelper.Find(Doc.DocumentElement, "class");
+            if (classNode != null)
+                compClass = classNode.InnerText;
+
+            if (compClass.Length > 0)
+                ClassCode = "[ComponentType(\"" + compClass + "\")]\r\n";
+            ClassCode += "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
                          "   {\r\n" +
                          "   public $CLASSNAME$(string _FullName, ModelFramework.ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
 
@@ -380,10 +387,15 @@ class DLLProber
             int PosStartClass = Contents.IndexOf("public class " + ClassName + " ");
             if (PosStartClass != -1)
             {
+                int PosStartAttribute = Contents.IndexOf("[ComponentType", PosStartClass - 35);
                 int PosOpenBracket = Contents.IndexOf("{", PosStartClass);
                 int PosEndClass = StringManip.FindMatchingClosingBracket(Contents, PosStartClass, '{', '}');
                 if (PosEndClass != -1)
+                {
+                    if (PosStartAttribute != -1)
+                        PosStartClass = PosStartAttribute;
                     Contents = Contents.Remove(PosStartClass, PosEndClass - PosStartClass + 5); // also removes 2 x \r\n
+                }
             }
 
             // Remove the last curly bracket - namespace bracket. We'll add it in later.
