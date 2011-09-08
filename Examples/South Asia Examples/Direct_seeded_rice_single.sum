@@ -1,0 +1,276 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Direct_seeded_rice_single
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Rice-Direct seeding" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                   "Silt Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Silt Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "rice" = %apsim%\Model\Oryza.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2001
+     Simulation end date   = 31/12/2001
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Bhola.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        year
+        day
+        esw
+        no3() as no3_Tot
+        cropsta as crop_stage
+        dae
+        wagt as total_biomass
+        wso as storage_organs
+        wrr as rice_yield
+        rain
+        dul(1)
+        sw(1)
+        sat(1)
+
+     Output file = Direct_seeded_rice_single.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Rice-Direct seeding Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+       if (paddock_is_fallow() = 1  and date_within('1-jul, 1-jul') = 1) then
+             if (rain[3] >= 20 and esw >= 20) or
+       ('yes' = 'yes' and today = date('1-jul')))    then
+          rice sow cultivar = local, establishment = direct-seed, nplds = 180
+          fertiliser apply amount = 0, type=urea
+          top_dress = 0
+          tot_irrig = 0
+              endif
+        endif
+        if rice.plant_status = 'dead' then
+              rice  end_crop
+        endif
+     
+     SECTION:- init
+     top_dress = 0
+     tot_irrig = 0
+     END of rules
+     
+     Manager creating a new local real variable : top_dress = 0.00000
+     Manager creating a new local real variable : tot_irrig = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Silt Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.118  0.235  0.386  0.436  0.386  1.416  0.762  0.300
+          150.-  300.  0.195  0.243  0.387  0.437  0.387  1.414  0.190  0.300
+          300.-  600.  0.282  0.282  0.410  0.460  0.410  1.351  0.048  0.300
+          600.-  900.  0.282  0.282  0.422  0.472  0.422  1.320  0.000  0.300
+          900.- 1200.  0.282  0.282  0.422  0.472  0.422  1.320  0.000  0.300
+         1200.- 1500.  0.282  0.282  0.422  0.492  0.422  1.320  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      35.25      22.65      22.65       7.50
+          150.-  300.      36.45      21.60      21.60       7.50
+          300.-  600.      84.60      38.40      38.40      15.00
+          600.-  900.      84.60      42.00      42.00      15.00
+          900.- 1200.      84.60      42.00      42.00      15.00
+         1200.- 1500.      84.60      42.00      42.00      21.00
+          ---------------------------------------------------------
+               Totals     410.10     208.65     208.65      81.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.14       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              94.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        4.00 (mm)
+                                  Winter        3.50 (mm)
+            Stage 2       (CONA): Summer        3.00 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Apr
+                                  Winter        1-Dec
+            Eo from priestly-taylor
+
+------- Surface Organic Matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          rice_stubbrice             0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Silt Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Silt
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.95    4.50    3.00    0.00
+             2     7.00  1.56    1.82    1.08    0.00
+             3     7.40  0.98    0.94    0.24    0.00
+             4     8.10  0.49    0.91    0.23    0.00
+             5     8.30  0.30    0.91    0.23    0.00
+             6     8.50  0.19    0.91    0.23    0.00
+          ------------------------------------------------
+           Totals               10.01    5.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      40462.2  3237.0   955.8   119.5   234.4     5.9
+             2      32828.1  2626.2   259.5    32.4   173.6     4.3
+             3      39361.8  3148.9   155.0    19.4    95.3     2.4
+             4      19524.0  1561.9    38.4     4.8    52.3     1.3
+             5      11840.4   947.2     0.0     0.0    28.7     0.7
+             6       7722.0   617.8     0.0     0.0    15.8     0.4
+          ---------------------------------------------------------
+           Totals  151738.5 12139.1  1408.6   176.1   600.0    15.0
+          ---------------------------------------------------------
+
+------- rice Initialisation ---------------------------------------------------
+        - Initialising
+------- Start of simulation  --------------------------------------------------
+1 July 2001(Day of year=182), Rice-Direct seeding: 
+     Manager sending message :- rice sow  cultivar = local, establishment = direct-seed, nplds = 180
+1 July 2001(Day of year=182), rice: 
+        - Reading Parameters
+        - Reading local Cultivar Parameters
+     Manager sending message :- fertiliser apply  amount = 0, type = urea
+1 October 2001(Day of year=274), rice: 
+     Maturity
+2 October 2001(Day of year=275), Rice-Direct seeding: 
+     Manager sending message :- rice end_crop
+2 October 2001(Day of year=275), rice: 
+         Crop ended. Rough Rice Yield (dw) =  5123.1 (kg/ha)
+                             straw residue =  4539.0 (kg/ha)
+                             straw N       =    35.3 (kg/ha)
+                             root residue  =  1068.6 (kg/ha)
+                             root N        =     7.9 (kg/ha)
+31 December 2001(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
