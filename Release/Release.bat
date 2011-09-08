@@ -80,14 +80,14 @@ copy  ..\Model\*.dll %dest%\Model
 copy  ..\Model\*.exe %dest%\Model
 mkdir %dest%\Model\TclLink
 copy  ..\Model\TclLink\CIDataTypes.tcl %dest%\Model\TclLink
-xcopy /r ..\Model\TclLink\lib %dest%\Model\TclLink
+xcopy /s ..\Model\TclLink\bin %dest%\Model\TclLink\bin
+xcopy /s ..\Model\TclLink\lib %dest%\Model\TclLink\lib
 mkdir %dest%\UserInterface
 copy ..\UserInterface\*.xml %dest%\UserInterface
 mkdir %dest%\UserInterface\ToolBoxes
 copy ..\UserInterface\ToolBoxes\*.xml %dest%\UserInterface\ToolBoxes
 
 "c:\Program Files\7-Zip\7z.exe" a -sfx -mx=9 -mmt=on %dest%.binaries.Win32.exe %dest%
-
 
 rmdir /s /q %dest%
 
