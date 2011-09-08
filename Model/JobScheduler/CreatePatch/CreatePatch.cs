@@ -59,6 +59,8 @@ public partial class MainForm : Form
             {
                 if (Line.Length >= 9)
                 {
+                    string Status = Line.Substring(0, 5).Trim();
+                    Status = FriendlyStatusName(Status);
                     string FileName = Line.Substring(8);
 
                     // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
@@ -70,6 +72,7 @@ public partial class MainForm : Form
                             ListViewItem item1 = new ListViewItem(FileName);
                             item1.SubItems.Add(Path.GetDirectoryName(FileName));
                             item1.SubItems.Add(Path.GetExtension(FileName));
+                            item1.SubItems.Add(Status);
                             ListView.Items.Add(item1);
                         }
                     }
@@ -82,6 +85,21 @@ public partial class MainForm : Form
             MessageBox.Show(err.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         Cursor.Current = Cursors.Default;
+    }
+
+    /// <summary>
+    ///  Convert the short SVN status into a friendly name.
+    /// </summary>
+    private string FriendlyStatusName(string Status)
+    {
+        if (Status == "M") return "Modified";
+        if (Status == "C") return "Conflict";
+        if (Status == "X") return "External";
+        if (Status == "I") return "Ignored";
+        if (Status == "?") return "Non-versioned";
+        if (Status == "!") return "Deleted";
+        if (Status == "~") return "Directory";
+        return Status;
     }
 
     /// <summary>
