@@ -100,7 +100,7 @@ class SIRIUSLeafCohort : LeafCohort
             if (IsGrowing)
             {
                 StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax;  //Work out how much DM would be needed to grow to potantial size
-                MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
+                MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
             }
             else
@@ -280,6 +280,9 @@ class SIRIUSLeafCohort : LeafCohort
     public SIRIUSLeafCohort()
     {
     }
+    /// <summary>
+    /// Retrieves parameters from user interface mostly
+    /// </summary>
     public override void DoInitialisation()
     {
         base.DoInitialisation();
@@ -305,13 +308,19 @@ class SIRIUSLeafCohort : LeafCohort
     {
         if (IsInitialised)
         {
+
             //Leaf area growth parameters
             _ExpansionStress = SIRIUSLeaf.ExpansionStress;  //Get daily expansion stress value
             DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
             DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
-            CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort
+
+            CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             SenescedFrac = FractionSenescing(TT);
+
+            // Doing leaf mass growth in the cohort
+            
             SLA = 0;
+          
             if (Live.Wt > 0)
                 SLA = LiveArea / Live.Wt;
             //Set initial leaf status values
@@ -347,17 +356,26 @@ class SIRIUSLeafCohort : LeafCohort
             MetabolicNAllocation = 0;
             StructuralDMAllocation = 0;
             MetabolicDMAllocation = 0;
-        }
+}
     }
+    /// <summary>
+    /// Actual daily leaf area expansion ??? (units??? FIXME-EIT)
+    /// </summary>
+    /// <param name="TT">thermal-time from ??? FIXME-EIT</param>
     public override void DoActualGrowth(double TT)
     {
         if (IsInitialised)
         {
-            //Grow leaf area after DM allocated
-            double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax);
-            LiveArea += DeltaActualArea;
+            # region Growing leaf area after DM allocated
 
-            //Seness leaf area and reduce biomass components
+            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
+            double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); // FIXME-EIT - Choice between carbon limited LAI expansion done here (Forcing to C unsconstrained to test it)
+            LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
+  
+            #endregion
+            
+            # region Senessing leaf area
+
             double AreaSenescing = LiveArea * SenescedFrac;
             double AreaSenescingN = 0;
             if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
@@ -366,6 +384,10 @@ class SIRIUSLeafCohort : LeafCohort
             double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
+
+            #endregion
+
+            # region Update area and biomass of leaves
 
             double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
             double StructuralNSenescing = SenescedFrac * Live.StructuralN;
@@ -376,7 +398,7 @@ class SIRIUSLeafCohort : LeafCohort
 
 
             DeadArea = DeadArea + LeafAreaLoss;
-            LiveArea = LiveArea - LeafAreaLoss;
+            LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
 
             Live.StructuralWt -= StructuralWtSenescing;
             Dead.StructuralWt += StructuralWtSenescing;
@@ -395,6 +417,8 @@ class SIRIUSLeafCohort : LeafCohort
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
+
+            # endregion
 
             Age = Age + TT;
         }

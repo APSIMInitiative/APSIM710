@@ -235,13 +235,24 @@ public class LeafCohort : Instance
                 return 0;
         }
     }
-    virtual public double PotentialAreaGrowthFunction(double TT) // Potential delta LAI
-    {
-        //return MaxArea*Population * Math.Min(TT, Math.Max(0, GrowthDuration - Age)) / GrowthDuration;
 
-        double growth = Population * (SizeFunction(Age + TT) - SizeFunction(Age));
-        return growth;
+    /// <summary>
+    /// Potential delta LAI
+    /// </summary>
+    /// <param name="TT">thermal-time</param>
+    /// <returns>(mm2 leaf/cohort position/m2 soil/day)</returns>
+    virtual public double PotentialAreaGrowthFunction(double TT) 
+    {
+        double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age);// mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
+        double growth = Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
+        return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
     }
+
+    /// <summary>
+    /// Potential average leaf size for today per cohort (no stress)
+    /// </summary>
+    /// <param name="TT">Thermal-time accumulation since cohort initiation</param>
+    /// <returns>Average leaf size (mm2/leaf)</returns>
     protected double SizeFunction(double TT)
     {
         double alpha = -Math.Log((1 / 0.99 - 1) / (MaxArea / (MaxArea * 0.01) - 1)) / GrowthDuration;

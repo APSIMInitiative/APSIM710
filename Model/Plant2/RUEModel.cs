@@ -40,19 +40,37 @@ public class RUEModel : Instance
    {
        MetData = NewMetData;
    }
-   
-   // Function predicting daily growth increment from RUE and modifying factors 
+
+   /// <summary>
+   /// Total plant "actual" radiation use efficiency (for the day) corrected by reducing factors (g biomass/MJ global solar radiation) CHCK-EIT 
+   /// </summary>
+   [Output("RueAct")]
+   [Units("gDM/MJ")]
+   private double RueAct
+   {
+       get
+       {
+           Function RUE = (Function)Children["RUE"];
+           Function Fco2 = (Function)Children["Fco2"];
+           Function Fn = (Function)Children["Fn"];
+           Function Ft = (Function)Children["Ft"];
+           Function Fw = (Function)Children["Fw"];
+           Function Fvpd = (Function)Children["Fvpd"];
+
+           double RueReductionFactor = Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value)) * Fw.Value * Fco2.Value;
+           return RUE.Value * RueReductionFactor;
+       }
+   } 
+    /// <summary>
+    /// Daily growth increment of total plant biomass
+    /// </summary>
+    /// <param name="RadnInt">intercepted radiation</param>
+    /// <returns>g dry matter/m2 soil/day</returns>
    public double Growth(double RadnInt)
       {
-      Function RUE = (Function)Children["RUE"];
-      Function Fco2 = (Function)Children["Fco2"];
-      Function Fn = (Function)Children["Fn"];
-      Function Ft = (Function)Children["Ft"];
-      Function Fw = (Function)Children["Fw"];
-      Function Fvpd = (Function)Children["Fvpd"];
-
-      return RadnInt * RUE.Value * Math.Min(Ft.Value, Math.Min(Fn.Value, Fvpd.Value)) * Fw.Value * Fco2.Value;
+       return RadnInt * RueAct;
       }
+
    private void PublishNewPotentialGrowth()
    {
        // Send out a NewPotentialGrowthEvent.

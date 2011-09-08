@@ -15,6 +15,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return Size;
         }
     }
+    /// <summary>
+    /// CHCK-EIT Atributing each "green" area to cohort positions???? units??? 
+    /// </summary>
     [Output]
     double[] CohortArea
     {
@@ -228,7 +231,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo + 0.01 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort
+        if (NodeNo + 0.01 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
         {
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
 
@@ -247,12 +250,15 @@ public class SIRIUSLeaf : Leaf, AboveGround
             NewLeaf.DoInitialisation();
             Leaves.Add(NewLeaf);
         }
+
+
         foreach (LeafCohort L in Leaves)
         {
             L.DoPotentialGrowth(ThermalTime.Value);
         }
 
     }
+
     public override void DoActualGrowth()
     {
         //base.DoActualGrowth();
@@ -280,16 +286,23 @@ public class SIRIUSLeaf : Leaf, AboveGround
         }
     }
 
+    /// <summary>
+    /// Fractional interception "above" a given node position 
+    /// </summary>
+    /// <param name="cohortno">cohort position</param>
+    /// <returns>fractional interception (0-1)</returns>
     public double CoverAboveCohort(double cohortno)
     {
+        int MM2ToM2 = 1000000; // Conversion of mm2 to m2
         double LAIabove = 0;
         for (int i = Leaves.Count - 1; i > cohortno-1; i--)
         {
-            LAIabove += Leaves[i].LiveArea/1000000;
+            LAIabove += Leaves[i].LiveArea / MM2ToM2;
         }
             Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
+
  #endregion
 
  #region Arbitrator methods

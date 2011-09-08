@@ -1,4 +1,4 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <memo>Simulations numbered as per Table 2. "Datasets used for model development" in:
 
 Keating, B.A., Robertson, M.J., Muchow, R.C. and Huth, N.I. (1999). Modelling sugarcane production systems I. Development and performance of the sugarcane module.
@@ -6,15 +6,13 @@ Field Crops Research, 61: 253-271.
 </memo>
   <simulation name="Old" enabled="no">
     <metfile name="met">
-      <filename name="filename">Ingham.met</filename>
+      <filename name="filename" input="yes">Ingham.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">23/07/1992</start_date>
       <end_date type="date" description="Enter the end date of the simulation">21/10/1993</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -669,6 +667,8 @@ Field Crops Research, 61: 253-271.
         </operation>
       </operations>
       <outputfile name="Outputfile">
+        <filename output="yes">Old.out</filename>
+        <title>Old</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as date" />
           <variable name="tt_tot()" />
@@ -714,11 +714,11 @@ Field Crops Research, 61: 253-271.
     </area>
   </simulation>
   <simulation name="Sugar2">
-    <metfile name="met" shortcut="/simulations/Old/met" />
+    <metfile name="met" shortcut="/simulations/Old/met">
+      <filename shortcut="/simulations/Old/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/Old/clock" />
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock" shortcut="/simulations/Old/paddock">
       <soil name="Soil" shortcut="/simulations/Old/paddock/Soil">
         <InitWater name="Initial water" shortcut="/simulations/Old/paddock/Soil/Initial water" />
@@ -922,6 +922,8 @@ endif
         </operation>
       </operations>
       <outputfile name="Outputfile">
+        <filename output="yes">Sugar2.out</filename>
+        <title>Sugar2</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as date" />
           <variable name="PhenologyThermalTimeValue" />

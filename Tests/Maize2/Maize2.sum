@@ -19,6 +19,7 @@ Paddock:
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -35,33 +36,39 @@ Paddock:
         do_stock
         post
         end_step
-     Simulation start date =  1/04/1940
-     Simulation end date   = 30/06/1941
+     Simulation start date =  1/11/2008
+     Simulation end date   = 25/10/2009
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: %apsim%\Examples\MetFiles\goond.met
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
         post
      Output variables:
         dd/mm/yyyy as Date
-        StageCodeValue
         PhenologyCurrentPhaseName
-        LeafFinalNodeNo
+        LeafFinalNodeNumberValue
         LeafNodeNo
         LeafDeadNodeNo
         LeafTotalNo
         LeafFullyExpandedNodeNo
-        PhenologyThermalTimeValue
-        PhenologyEmergingCumulativeTT
-        PhenologyEmergenceToEndJuvenileCumulativeTT
-        PhenologyEndJuvenileToInitiationCumulativeTT
-        PhenologyEndJuvenileToInitiationTargetValue
-        LeafLai
+        LeafLAI
         RootDepth
+        AboveGroundWt
+        LeafLAIDead
+        LeafSize
+        RueAct
+        Radn as SolarRadiation
+        Cover_green
+        RadIntTot
+        dlt_DM
+        ShootDM
+        PhenologyThermalTimeValue
+        StageCodeValue
+        LeafDMSupply
 
      Output file = Maize2.out
      Format = normal
@@ -74,7 +81,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('1-nov') then
-       maize2 sow population =10, depth = 30, cultivar = dekalb_xl82, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
+       maize2 sow population =10, depth = 30, cultivar = shorthybrid, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
               endif
      END of rules
      
@@ -86,6 +93,20 @@ Paddock:
                 if (today = date('1-oct')) then
        maize2  harvest
                 endif
+     END of rules
+     
+
+------- Fertilise incrop on critical NO3 level- top up Initialisation ---------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (maize2.plant_status = 'alive') then
+     no3_available = no3(1) + no3(2) + no3(3)
+     if (no3_available <= 100) then
+        n_deficit = 200 - no3_available
+        'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
+     endif
+              endif
      END of rules
      
 
@@ -253,41 +274,32 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-1 October 1940(Day of year=275), Harvesting rule: 
+     Manager sending message :- maize2 sow  population = 10, depth = 30, cultivar = shorthybrid, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
+2/11/2008 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+9/11/2008 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+22/01/2009 - FlagLeaf
+                            LAI = 0.27 (m^2/m^2)
+           Above Ground Biomass = 261.95 (g/m^2)
+25/01/2009 - Flowering
+                            LAI = 0.22 (m^2/m^2)
+           Above Ground Biomass = 273.79 (g/m^2)
+2/02/2009 - StartGrainFill
+                            LAI = 0.12 (m^2/m^2)
+           Above Ground Biomass = 288.72 (g/m^2)
+20/08/2009 - EndGrainFill
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 312.76 (g/m^2)
+28/08/2009 - Maturity
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 312.76 (g/m^2)
+28/08/2009 - HarvestRipe
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 312.76 (g/m^2)
+1 October 2009(Day of year=274), Harvesting rule: 
      Manager sending message :- maize2 harvest
-1 November 1940(Day of year=306), Sow on a fixed date: 
-     Manager sending message :- maize2 sow  population = 10, depth = 30, cultivar = dekalb_xl82, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
-2/11/1940 - Germination
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
-5/11/1940 - Emergence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 0.00 (g/m^2)
-18/11/1940 - EndJuvenile
-                            LAI = 0.11 (m^2/m^2)
-           Above Ground Biomass = 5.72 (g/m^2)
-23/11/1940 - FloralInitiation
-                            LAI = 0.49 (m^2/m^2)
-           Above Ground Biomass = 23.18 (g/m^2)
-2/01/1941 - FlagLeaf
-                            LAI = 1.51 (m^2/m^2)
-           Above Ground Biomass = 498.41 (g/m^2)
-9/01/1941 - 50%Anthesis
-                            LAI = 0.88 (m^2/m^2)
-           Above Ground Biomass = 536.84 (g/m^2)
-19/01/1941 - StartGrainFill
-                            LAI = 0.03 (m^2/m^2)
-           Above Ground Biomass = 562.51 (g/m^2)
-Removing Leaves from plant
-9/03/1941 - EndGrainFill
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 154.45 (g/m^2)
-10/03/1941 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 154.45 (g/m^2)
-10/03/1941 - HarvestRipe
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 154.45 (g/m^2)
-Removing Leaves from plant
-30 June 1941(Day of year=181), clock: 
+25 October 2009(Day of year=298), clock: 
      Simulation is terminating due to end criteria being met.

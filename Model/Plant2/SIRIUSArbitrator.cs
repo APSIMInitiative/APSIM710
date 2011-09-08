@@ -118,6 +118,7 @@ public class SIRIUSArbitrator : Arbitrator
         //  Allocate to meet Organs demands
         double TotalWtAllocated = 0;
         double TotalWtNotAllocatedSinkLimitation = 0;
+        //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
         for (int i = 0; i < Organs.Count; i++)
         {
             double proportion = 0.0;
@@ -307,7 +308,7 @@ public class SIRIUSArbitrator : Arbitrator
                 if (NRetranslocationSupply[i] > 0.00000000001)
                 {
                     double RelativeSupply = NRetranslocationSupply[i] / TotalNRetranslocationSupply;
-                    NRetranslocation[i] += NRetranslocationAllocated * RelativeSupply;
+                    NRetranslocation[i] += NRetranslocationAllocated * RelativeSupply; //FIXME-EIT 
                 }
             }
         }

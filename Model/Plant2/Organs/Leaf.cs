@@ -260,7 +260,7 @@ public class Leaf : BaseOrgan, AboveGround
         get
         {
             if (Live.Wt > 0)
-                return LAI / Live.Wt * 10000;
+                return LAI / Live.Wt * 10000; // CHCK-EIT Why are these 2 properties with different coeficients? (SLAcheck and SpecificLeafArea)
             else
                 return 0;
         }
@@ -348,15 +348,19 @@ public class Leaf : BaseOrgan, AboveGround
             return F;
         }
     }
+    /// <summary>
+    /// Leaf area index (m2 leaf/m2 soil)
+    /// </summary>
     [Output]
     [Units("m^2/m^2")]
     public virtual double LAI
     {
         get
         {
+            int MM2ToM2 = 1000000; // Conversion of mm2 to m2
             double value = 0;
             foreach (LeafCohort L in Leaves)
-                value = value + L.LiveArea / 1000000;
+                value = value + L.LiveArea / MM2ToM2;
             return value;
         }
     }
@@ -372,7 +376,10 @@ public class Leaf : BaseOrgan, AboveGround
             return value;
         }
     }
-    [Output("Cover_green")] 
+    /// <summary>
+    /// Fractional solar radiation interception for whole canopy
+    /// </summary>
+    [Output("Cover_green")]
     public double CoverGreen
     {
         get
@@ -397,6 +404,18 @@ public class Leaf : BaseOrgan, AboveGround
         get
         {
             return Live.NConc;
+        }
+    }
+    /// <summary>
+    /// Solar radiation intercepted by the crop (MJ/m2/day)
+    /// </summary>
+    [Output("RadIntTot")]
+    [Units("MJ/m2/day")]
+    public double RadIntTot
+    {
+        get
+        {
+            return CoverGreen * Radn;
         }
     }
  #endregion
@@ -545,12 +564,16 @@ public class Leaf : BaseOrgan, AboveGround
             return Demand;
         }
     }
+    /// <summary>
+    /// Daily photosynthetic "net" supply of dry matter for the whole plant (g DM/m2/day)
+    /// </summary>
     [Output]
+    [Units("g/m^2")]
     public override double DMSupply
     {
         get
         {
-            return Photosynthesis.Growth(Radn * CoverGreen);
+            return Photosynthesis.Growth(RadIntTot);
         }
     }
     public override double DMSinkCapacity
@@ -675,7 +698,7 @@ public class Leaf : BaseOrgan, AboveGround
         set
         {
             double NSupply = NRetranslocationSupply;
-            if (value > NSupply)
+            if (value > NSupply) // FIXME-EIT This is being triggered - bug to be found 
                 throw new Exception(Name + " cannot supply that amount for N retranslocation");
             if (value > 0)
             {
