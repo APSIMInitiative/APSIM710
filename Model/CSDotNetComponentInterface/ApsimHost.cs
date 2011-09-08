@@ -23,6 +23,8 @@ public class TAPSIMHost : TBaseComp
     private int drvCOMPCLASS = -1;
 
     protected ApsimComponent Comp;
+    protected Dictionary<String, List<TIDSpec>> entityInfoList; //<searchstring, entityinfo list>
+    protected Dictionary<String, List<TComp>> compInfoList;
 
     //=========================================================================
     /// <summary>
@@ -43,6 +45,9 @@ public class TAPSIMHost : TBaseComp
         Comp.CompClass = _STYPE;
         Comp.createInstance(Assemb.Location, compID, parentCompID);
         FModuleName = getModulePath();
+
+        entityInfoList = new Dictionary<string, List<TIDSpec>>();
+        compInfoList = new Dictionary<string, List<TComp>>();
     }
     //=========================================================================
     /// <summary>
@@ -64,24 +69,47 @@ public class TAPSIMHost : TBaseComp
             addEvent("tick", tickID, TypeSpec.KIND_SUBSCRIBEDEVENT, TTimeStep.typeTIMESTEP, "", "", 0);  //subscribe "tick" event
             DefineSimpleTranistions(tickID);
 
-            //now search for all the sibling components and siblings of the parent
-            //of the parent component. Two lists are populated.
-            String sSearchName = "*";                                               //default to find all
-            if (FName.Contains("."))                                                //if this component has a parent then
-                sSearchName = FName.Substring(0, FName.LastIndexOf('.')) + ".*";    //search parent.*
-            sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
-            if (FName.Contains("."))                                                //if this component has a parent then
-            {
-                //query from the parent's parent to find senior components
-                String parentComp = FName.Substring(0, FName.LastIndexOf('.'));
-                sSearchName = "*";   
-                if (parentComp.Contains("."))
-                    sSearchName = parentComp.Substring(0, parentComp.LastIndexOf('.')) + ".*";  //search grandparent.*
-                if (sSearchName != ".*")
-                  sendQueryInfo(sSearchName, TypeSpec.KIND_COMPONENT, TypeSpec.KIND_COMPONENT);
-            }
             Comp.handleEvent(ApsimComponent.INIT2INDEX, null);
         }   
+    }
+    public void queryEntityInfo(String searchPattern, uint findKind, ref List<TIDSpec> entityList)
+    {
+        entityInfoList.Add(searchPattern, entityList);  //keep track of the entity list
+        sendQueryInfo(searchPattern, findKind, 0);
+    }
+    public void queryCompInfo(String searchPattern, uint findKind, ref List<TComp> componentList)
+    {
+        compInfoList.Add(searchPattern, componentList);    //keep track of the component list
+        sendQueryInfo(searchPattern, findKind, 0);
+    }
+    //=========================================================================
+    /// <summary>
+    /// Override the doComplete so that the list of queried entity lists can be cleaned up.
+    /// See queryEntityInfo().
+    /// </summary>
+    /// <param name="msgFrom">Source of the Complete.</param>
+    /// <param name="origMsgID">ID of the original message that this Complete is sent for.</param>
+    //=========================================================================
+    protected override void doComplete(uint msgFrom, uint origMsgID)
+    {
+        //Remove the dictionary items from previously sent queryInfo messages in queryEntityInfo()
+        for (int i = 0; i < queryList.Count; i++)
+        {
+            TQueryStore query = queryList[i];
+            if (query.iSentMsgID == origMsgID)
+            {
+                if (compInfoList.ContainsKey(query.sName))
+                {
+                    compInfoList.Remove(query.sName);
+                }
+                else if (entityInfoList.ContainsKey(query.sName))
+                {
+                    entityInfoList.Remove(query.sName);
+                }
+                break;
+            }
+        }
+        base.doComplete(msgFrom, origMsgID);    //execute default behaviour
     }
     //=========================================================================
     /// <summary>
@@ -99,61 +127,36 @@ public class TAPSIMHost : TBaseComp
         base.processEntityInfo(sReqName, sReturnName, ownerID, entityID, iKind, sDDML);
         
         //queryInfo's have been sent for sibling component names
-        if (iKind == TypeSpec.KIND_COMPONENT || iKind == TypeSpec.KIND_SYSTEM)
+        if ( (iKind == TypeSpec.KIND_COMPONENT) || (iKind == TypeSpec.KIND_SYSTEM) )
         {
-            //find the number of '.'
-            string buf = sReturnName; 
-            int numOfOccurence = sReturnName.Length - buf.Replace(".", "").Length;
-            buf = sReqName; 
-            int numOfOccurReq = sReqName.Length - buf.Replace(".", "").Length;
-
-            if (numOfOccurence == numOfOccurReq)       //ensure sibling of the request string
+            if (compInfoList.ContainsKey(sReqName))
             {
-                TComp foundComp = new TComp();
-                foundComp.compID = entityID;
-                foundComp.name = sReturnName;
-                foundComp.isSystem = false;
-                foundComp.CompClass = "";
-                buf = FName;
-                //determine if the returned item is a sibling or senior component of this component
-                Dictionary<uint, TComp> compList = null;
-                if (numOfOccurence == (FName.Length - buf.Replace(".", "").Length))
-                     compList = Comp.SiblingComponents;
-                else
-                    if (numOfOccurence == (FName.Length - buf.Replace(".", "").Length - 1))
-                        compList = Comp.SeniorComponents;
-
-                if (compList != null)
+                List<TComp> comps;
+                if (compInfoList.TryGetValue(sReqName, out comps))
                 {
-                    compList.Add(entityID, foundComp);        //add all names including itself
+                    TComp foundComp = new TComp();
+                    foundComp.compID = entityID;
+                    foundComp.name = sReturnName;
                     if (entityID == Comp.ComponentID)                       //if it is this component then take a shortcut
                     {
-                        if (compList.ContainsKey(entityID))
-                        {
-                            TComp comp = compList[entityID];
-                            comp.CompClass = FType;                         //use the local value  
-                            compList[entityID] = comp;
-                        }
+                        foundComp.CompClass = FType;                         //use the local value  
                     }
-                    else if (compList.ContainsKey(entityID))
+                    else
+                        foundComp.CompClass = sDDML;
+                    foundComp.isSystem = (iKind == TypeSpec.KIND_SYSTEM || foundComp.CompClass.ToLower() == "paddock" || foundComp.CompClass.ToLower() == "protocolmanager");
+                    comps.Add(foundComp);
+
+                    if (foundComp.CompClass.Length <= 1)    // if type information was absent, do a GetValue to find it's type 
                     {
-                        if (sDDML != "")
-                        {
-                            TComp comp = compList[entityID];
-                            comp.CompClass = sDDML;                 //store the class type
-                            if (iKind == TypeSpec.KIND_SYSTEM || comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
-                                comp.isSystem = true;
-                            compList[entityID] = comp;
-                        }
-                        else  // if type information was absent, do a GetValue to find it's type 
-                        {
-                            //now do a getvalue to find the class type of the component
-                            drvCOMPCLASS = driverCount();
-                            registerDriver(sReturnName + ".type", drvCOMPCLASS, 1, 1, "-", false, "<type kind=\"string\"></type>", "", "", 0);
-                            sendDriverRequest(drvCOMPCLASS, 0);
-                        }
+                        //now do a getvalue to find the class type of the component
+                        drvCOMPCLASS = driverCount();
+                        registerDriver(sReturnName + ".type", drvCOMPCLASS, 1, 1, "-", false, "<type kind=\"string\"></type>", "", "", 0);
+                        sendDriverRequest(drvCOMPCLASS, 0);
                     }
                 }
+            }
+            else
+            { 
             }
         }
     }
@@ -206,23 +209,25 @@ public class TAPSIMHost : TBaseComp
     {
         if (driverID == drvCOMPCLASS)   //if this driver was a comp.type 
         {
-            //store info about siblings or senior components
-            Dictionary<uint, TComp> compList = null;
-            if (Comp.SiblingComponents.ContainsKey(providerID))
+            if (compInfoList.Count == 1)
             {
-                compList = Comp.SiblingComponents;
+                foreach (KeyValuePair<String, List<TComp>> pair in compInfoList)
+                {
+                    List<TComp> comps = pair.Value;
+                    for (int i = 0; i < comps.Count; i++)
+                    {
+                        TComp comp = comps[i];
+                        if (comp.compID == providerID)
+                        {
+                            comp.CompClass = aValue.asString();                 //store the class type
+                            comps[i] = comp;
+                        }
+                    }
+                }
             }
-            else if (Comp.SeniorComponents.ContainsKey(providerID))
+            else
             {
-                compList = Comp.SeniorComponents;
-            }
-            if (compList != null)
-            {
-                TComp comp = compList[providerID];
-                comp.CompClass = aValue.asString();                 //store the class type
-                if (comp.CompClass.ToLower() == "paddock" || comp.CompClass.ToLower() == "protocolmanager")
-                    comp.isSystem = true;
-                compList[providerID] = comp;
+                throw new Exception("More requests using compInfoList<> than expected in assignDriver()");
             }
         }
         else
@@ -449,6 +454,12 @@ public class TAPSIMHost : TBaseComp
             }
         }
         return eventID;
+    }
+    public String CompClass {
+        set
+        {
+            FType = value;
+        }
     }
 }
 

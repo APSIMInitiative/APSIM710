@@ -14,11 +14,15 @@ namespace ModelFramework
     /// </summary>
     public class Component : TypedItem
     {
-        public String TypeName;
         protected ApsimComponent HostComponent;
-
+        protected String FTypeName;
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
+
+        public String TypeName
+        {
+            get { return FTypeName; }
+        }
         // --------------------------------------------------------------------
         /// <summary>
         /// 
@@ -29,22 +33,6 @@ namespace ModelFramework
         public override bool IsOfType(String TypeNameToMatch)
         {
             return TypeName.ToLower() == TypeNameToMatch.ToLower();
-        }
-        /// <summary>
-        /// Turn the fully qualified name (e.g. .MasterPM.Paddock1.wheat) into a
-        /// crop name (e.g. wheat)
-        /// </summary>
-        /// <returns>True if this is a crop type component.</returns>
-        public bool IsCrop()
-        {
-            String CropName = FQN;
-            int PosLastPeriod = CropName.LastIndexOf('.');
-            if (PosLastPeriod != -1)
-                CropName = CropName.Substring(PosLastPeriod + 1);
-            if (Types.Instance.IsCrop(CropName))
-                return true;
-            else
-                return Types.Instance.IsCrop(TypeName);
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -61,7 +49,7 @@ namespace ModelFramework
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
             //get the name of the host component for the calling object
             HostComponent = In.ParentComponent();   //e.g. Plant2
-            TypeName = HostComponent.CompClass;     //type of Plant2
+            FTypeName = HostComponent.CompClass;     //type of Plant2
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -77,7 +65,14 @@ namespace ModelFramework
             if (FQN.LastIndexOf('.') > -1)
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.'));
             HostComponent = component;
-            TypeName = HostComponent.CompClass;
+            //get the type for this component
+            List<TComp> comps = new List<TComp>();
+            if (_FullName != ".MasterPM") 
+                component.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
+            if (comps.Count > 0)
+                FTypeName = comps[0].CompClass;
+            else
+                FTypeName = this.GetType().Name;
         }
         // --------------------------------------------------------------------
         /// <summary>

@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CSIRO")]
-[assembly: AssemblyProduct("CSDotNetComponentInterface")]
+[assembly: AssemblyProduct("Manager2")]
 [assembly: AssemblyCopyright("Copyright © CSIRO 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("eba2e44b-cac7-4bf6-be85-a07f7acae1d5")]

@@ -8,16 +8,19 @@ using CMPServices;
 
 public class Paddock : Component
 {
+    public Dictionary<uint, TComp> ChildComponents;  
     // --------------------------------------------------------------------
     /// <summary>
     /// Encapsulates an APSIM paddock in a simulation.
     /// </summary>
-    /// <param name="Nam">Name of the hosting component (a member of a paddock e.g. Plant2) </param>
-    /// <param name="component">The component itself</param>
+    /// <param name="Nam">Name of the paddock or system</param>
+    /// <param name="component">The hosting component</param>
     // --------------------------------------------------------------------
     public Paddock(String Nam, ApsimComponent component)
         : base(Nam, component)
     {
+        ChildComponents = new Dictionary<uint, TComp>();
+        queryChildComponents(Nam);
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -40,6 +43,27 @@ public class Paddock : Component
     }
     // --------------------------------------------------------------------
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="FQN"></param>
+    /// <returns></returns>
+    // --------------------------------------------------------------------
+    protected int queryChildComponents(String FQN)
+    {
+        String sSearchName = FQN + ".*";    //search comp.*
+
+        List<TComp> comps = new List<TComp>();
+        HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+        ChildComponents.Clear();
+        for (int i = 0; i < comps.Count; i++)
+        {
+            ChildComponents.Add(comps[i].compID, comps[i]);
+        }
+        return ChildComponents.Count;
+    }
+
+    // --------------------------------------------------------------------
+    /// <summary>
     /// Return a list of all child paddock components to caller.
     /// </summary>
     // --------------------------------------------------------------------
@@ -48,7 +72,7 @@ public class Paddock : Component
         get
         {
             TypedMultiList<Paddock> Children = new TypedMultiList<Paddock>();
-            foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
+            foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
             {
                 if (pair.Value.CompClass.ToLower() == "paddock" || pair.Value.CompClass.ToLower() == "protocolmanager")
                 {
@@ -68,7 +92,7 @@ public class Paddock : Component
     {
         Component C = null;
         TypedList<Component> Children = new TypedList<Component>();
-        foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
+        foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
         {
             if (pair.Value.CompClass.ToLower() == TypeToFind.ToLower())
                C = new Component(pair.Value.name, HostComponent);
@@ -77,19 +101,20 @@ public class Paddock : Component
     }
     //=========================================================================
     /// <summary>
-    /// Return a child component of the paddock by name.
+    /// Return a child component of the paddock by unqualified name.
     /// </summary>
-    /// <param name="NameToFind"></param>
+    /// <param name="NameToFind">Unqualified name</param>
     /// <returns></returns>
     //=========================================================================
     public Component ComponentByName(String NameToFind)
     {
         Component C = null;
-        foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
+        foreach (KeyValuePair<uint, TComp> pair in ChildComponents) 
         {
-            if (pair.Value.name.ToLower() == NameToFind.ToLower())
+            if (TRegistrar.unQualifiedName(pair.Value.name).ToLower() == NameToFind.ToLower())
             {
-                C = new Component(pair.Value.name, HostComponent);   //??
+                C = new Component(pair.Value.name, HostComponent);
+                return C;
             }
         }
         return C;
@@ -144,10 +169,10 @@ public class Paddock : Component
         get
         {
             List<Component> Children = new List<Component>();
-            foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
+            foreach (KeyValuePair<uint, TComp> pair in ChildComponents) 
             {
                 Component ChildComponent = new Component(pair.Value.name, HostComponent);
-                if (ChildComponent.IsCrop() || ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2"))
+                if (ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2"))
                     Children.Add(ChildComponent);
             }
             return Children;

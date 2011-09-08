@@ -16,11 +16,11 @@ using CSGeneral;
 /// they can be links to Instance objects (which are by default matched using type ane name).
 /// e.g. 
 ///    APSIM linkages:
-///    [Link] Paddock MyPaddock;                      // links to the current paddock.
+///    [Link] Paddock MyPaddock;                      // links to the current paddock (owner).
 ///    [Link] Component MyComponent;                  // links to the current component.
 ///    [Link] SoilWat MySoil;                         // links to the component in scope that has the type 'SoilWat'
 ///    [Link("wheat2")] Wheat W;                      // links to the sibling component named 'wheat2'
-/// !!!!!!!!!   [Link(".simulation.paddock1.wheat2")] Wheat W; // links to a specific component with the full path '.simulation.paddock1.wheat2'
+/// !!!!to be tested!!!!!   [Link(".simulation.paddock1.wheat2")] Wheat W; // links to a specific component with the full path '.simulation.paddock1.wheat2'
 /// e.g. 
 ///    Instance linkages (cannot specify a link path for instance linkages):
 ///    [Link] Function ThermalTime;        // links to an object with type Function and name ThermalTime
@@ -165,6 +165,8 @@ public class LinkField
     /// Go find an Apsim component IN SCOPE that matches the specified name and type.
     /// IN SCOPE means a component that is a sibling or in the system above.
     /// </summary>
+    /// <param name="NameToFind">Name of the component.</param>
+    /// <param name="TypeToFind">The DotNetProxy type name.</param>
     //----------------------------------------------------------------------
     protected Object FindApsimComponent(String NameToFind, String TypeToFind)
     {
@@ -176,32 +178,35 @@ public class LinkField
         if (TypeToFind == "Component" && NameToFind == null)
             return CreateDotNetProxy(TypeToFind, OurName);
 
+        // The TypeToFind passed in is a DotNetProxy type name. We need to convert this to a Component Type
+        // e.g. TypeToFind = Outputfile, Component Type (or class) = Report
+        // Query DotNetProxies for metadata about the TypeToFind class. Find [ComponentType()] attribute 
+        String compClass = "";
+        Type ProxyType;
+        ProxyType = Types.GetProbeInfoAssembly().GetType("ModelFramework." + TypeToFind);
+        if (ProxyType != null)
+        {
+            Attribute[] attribs = Attribute.GetCustomAttributes(ProxyType);
+            foreach (Attribute attrib in attribs)
+            {
+                if (attrib.GetType() == typeof(ComponentTypeAttribute))
+                    compClass = ((ComponentTypeAttribute)attrib).ComponentClass;
+            }
+        }
+                
+        //using sibling components find the one to create.
         String SiblingShortName = "";
+        if (Comp.SiblingComponents.Count == 0)
+            Comp.querySiblingComponents(Comp.Name);
         //for each sibling of this component
         foreach (KeyValuePair<uint, TComp> pair in Comp.SiblingComponents)
         {
             String SiblingType = pair.Value.CompClass;
-            if (SiblingType.ToLower() == TypeToFind.ToLower())
+            if (SiblingType.ToLower() == compClass.ToLower())
             {
                 SiblingShortName = pair.Value.name.Substring(pair.Value.name.LastIndexOf('.') + 1).ToLower();
                 if (NameToFind == null || NameToFind.ToLower() == SiblingShortName)
                     return CreateDotNetProxy(TypeToFind, pair.Value.name);
-            }
-        }
-        
-        //look through parent components
-        if (OurName.Contains("."))
-        {
-            String PaddockName = OurName.Substring(0, OurName.LastIndexOf('.'));
-            foreach (KeyValuePair<uint, TComp> pair in Comp.SeniorComponents)
-            {
-                String SeniorType = pair.Value.CompClass;
-                if (SeniorType.ToLower() == TypeToFind.ToLower())
-                {
-                    String SeniorShortName = pair.Value.name.Substring(pair.Value.name.LastIndexOf('.') + 1).ToLower();
-                    if (NameToFind == null || NameToFind.ToLower() == SeniorShortName)
-                        return CreateDotNetProxy(TypeToFind, pair.Value.name);
-                }
             }
         }
         // If we get this far then we didn't find the APSIM component.

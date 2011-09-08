@@ -581,11 +581,11 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    std::vector<ApsimRegistration *> matches;
-
+   
    int queryComponentID;
    string queryName;
    registry.unCrackPath(fromID, asString(queryInfo.name), queryComponentID, queryName);
-
+   
    if (queryInfo.kind == protocol::respondToGetInfo)
       {
       NativeRegistration reg(::get,
@@ -638,17 +638,20 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
 
 		 searchName = queryName;
    		 ownerName = qualifiedOwnerName(asString(queryInfo.name).c_str(), buf);
-   
          std::string myname = protocol::Component::getFQName();
-		 //check if no owner OR I am the owner OR wildcard as owner
-		 if ( (ownerName.length() == 0) || (ownerName == myname) || (ownerName == "*") || ownerName == ".MasterPM") 
+   
+		 //check if no owner OR I am the owner OR wildcard as owner OR comp.*
+		 if ( (ownerName.length() == 0) || (ownerName == myname) || (ownerName == "*") || (ownerName == ".MasterPM") || (searchName == "*")) 
 		    {
 				vector<int> children;
                 int parentID = getId();
-                if (ownerName == ".MasterPM")
+                if ((ownerName.length() > 0) && (ownerName == ".MasterPM"))
                     parentID = 1;
+                else
+                    if (searchName == "*")  //expecting comp.*
+                        componentNameToID(ownerName, parentID);
 				registry.getChildren(parentID, children);
-
+                
 				//match searchName against Unqualified Names of the children
 				for (vector<int>::iterator it = children.begin(); it != children.end(); it++ ) 
 				   {

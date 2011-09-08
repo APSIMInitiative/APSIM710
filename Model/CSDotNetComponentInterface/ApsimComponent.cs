@@ -39,14 +39,13 @@ namespace ModelFramework
         private Dictionary<int, ApsimType> RegistrationsEvent;
         private Dictionary<int, ApsimType> RegistrationsSet;
         public Dictionary<uint, TComp> SiblingComponents;  //includes itself
-        public Dictionary<uint, TComp> SeniorComponents;   //parent and parent's siblings
         public String CompClass;
         private XmlNode InitData;
         private bool EndCropToday;
 
         protected Boolean haveWrittenToStdOutToday;
         protected TimeType tick;
-        protected TAPSIMHost Host;
+        public TAPSIMHost Host;
 
         //Event id's for events that are handled in this class
         public const int INIT2INDEX = 9999999;
@@ -80,7 +79,6 @@ namespace ModelFramework
             RegistrationsEvent = new Dictionary<int, ApsimType>();
             RegistrationsSet = new Dictionary<int, ApsimType>();
             SiblingComponents = new Dictionary<uint, TComp>();  //id, comp
-            SeniorComponents = new Dictionary<uint, TComp>();  //id, comp
             Fact = new Factory();
             Host = host;
             IsScript = false;
@@ -259,6 +257,7 @@ namespace ModelFramework
             {
                 if (RegistrationIndex == INIT2INDEX)
                 {
+                    querySiblingComponents(Name);
                     if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
                         Fact.Initialise();
                     Init2Received = true;
@@ -784,6 +783,35 @@ namespace ModelFramework
         }
         // -----------------------------------------------------------------------
         /// <summary>
+        /// Use queryInfo message to find all the sibling components for the one
+        /// specified by FQN. Populate the SiblingComponents list.
+        /// </summary>
+        /// <param name="FQN"></param>
+        /// <returns></returns>
+        // -----------------------------------------------------------------------
+        public int querySiblingComponents(String FQN)
+        {
+            String sSearchName = "*";
+            if (FQN.Contains("."))                                                //if this component has a parent then
+                sSearchName = FQN.Substring(0, FQN.LastIndexOf('.')) + ".*";    //search parent.*
+
+            List<TComp> comps = new List<TComp>();
+            Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+            SiblingComponents.Clear();
+            for (int i = 0; i < comps.Count; i++)
+            {
+                string sReturnName = comps[i].name;
+                String buf = sReturnName;
+                int numOfOccurence = sReturnName.Length - buf.Replace(".", "").Length;
+                buf = FQN;
+                int numOfOccurReq = FQN.Length - buf.Replace(".", "").Length;
+                if (numOfOccurence == numOfOccurReq)       //ensure sibling of the request string
+                    SiblingComponents.Add(comps[i].compID, comps[i]);
+            }
+            return SiblingComponents.Count;
+        }
+        // -----------------------------------------------------------------------
+        /// <summary>
         /// Compile the script. Can be VB or C#
         /// </summary>
         /// <param name="Node"></param>
@@ -860,10 +888,26 @@ namespace ModelFramework
                 DllFileName = XmlHelper.Attribute(InitData.ParentNode, "executable");
             StringBuilder Desc = new StringBuilder("<describecomp>\r\n");
 
+            String company = "unknown";
+            String product = Name;
+            String version = "1.0";
+            Assembly assembly = Assembly.LoadFrom(DllFileName);
+            if (assembly != null)
+            {
+                object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+                if (attributes.Length > 0)
+                    company = (attributes[0] as AssemblyCompanyAttribute).Company;
+                attributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                if (attributes.Length > 0)
+                    product = (attributes[0] as AssemblyProductAttribute).Product;
+                attributes = assembly.GetCustomAttributes(typeof(AssemblyVersionAttribute), false);
+                if (attributes.Length > 0)
+                    version = (attributes[0] as AssemblyVersionAttribute).Version;
+            }
             Desc.Append("   <executable>" + DllFileName + "</executable>\r\n");
-            Desc.Append("   <class>" + Name + "</class>\r\n");
-            Desc.Append("   <version>1.0</version>\r\n");
-            Desc.Append("   <author>APSRU</author>\r\n");
+            Desc.Append("   <class>" + product + "</class>\r\n");
+            Desc.Append("   <version>" + version + "</version>\r\n");
+            Desc.Append("   <author>" + company + "</author>\r\n");
 
             XmlNode ModelDescription = null;
             XmlNode CultivarNode = XmlHelper.FindByType(InitData, "Cultivar");
