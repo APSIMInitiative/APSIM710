@@ -11,7 +11,6 @@
 
 using namespace std;
 
-string componentType = "APSRU";
 string version = "2.0";
 string author = "APSRU";
 int active = 1;
@@ -845,9 +844,9 @@ std::string CMPComponentInterface::getDescription(const std::string& dllName)
       returnString = "<describecomp>\n";
 
       returnString += string("<executable>") + dllName + "</executable>\n";
-      returnString += string("<class>") + name + "</class>\n";
-	  returnString += "<version>1.0</version>\n";
-      returnString += "<author>APSRU</author>\n";
+      returnString += string("<class>") + fileTailNoExtension(dllName) + "</class>\n";
+	  returnString += "<version>" + version + "</version>\n";
+      returnString += "<author>" + author + "</author>\n";
 
 	  for (NameToRegMap::iterator reg = regNames.begin();
 								  reg != regNames.end();
