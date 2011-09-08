@@ -673,7 +673,7 @@ void CMPComponentInterface::onInit1(const Message& message)
       pathName = init1.fqn.substr(0, posPeriod);
       }
    expose("name", "", "", false, new CMPBuiltIn<string&>(name));
-   expose("type", "", "", false, new CMPBuiltIn<string&>(componentType));
+   expose("type", "", "", false, new CMPBuiltIn<string&>(fileTailNoExtension(dllName)));
    expose("version", "", "", false, new CMPBuiltIn<string&>(version));
    expose("author", "", "", false, new CMPBuiltIn<string&>(author));
    expose("active", "", "", false, new CMPBuiltIn<int&>(active));
