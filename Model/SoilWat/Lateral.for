@@ -68,7 +68,7 @@
 
       ! Parameters
       ! ==========
-
+         g%num_layers = 0
          g%slope = 0.0
          g%discharge_width = 0.0
          g%catchment_area = 0.0
