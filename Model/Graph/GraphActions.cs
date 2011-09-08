@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using CSGeneral;
 using System.IO;
 using System.Drawing;
-using TMGDevelopment.Windows.Forms;
 
 namespace Graph
    {

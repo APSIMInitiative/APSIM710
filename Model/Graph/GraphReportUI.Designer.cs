@@ -28,32 +28,29 @@ namespace Graph
       /// </summary>
       private void InitializeComponent()
          {
-         this.components = new System.ComponentModel.Container();
-         this.PrintForm = new TMGDevelopment.Windows.Forms.PrintForm(this.components);
-         this.Panel = new System.Windows.Forms.Panel();
-         this.SuspendLayout();
-         // 
-         // Panel
-         // 
-         this.Panel.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.Panel.Location = new System.Drawing.Point(0, 16);
-         this.Panel.Name = "Panel";
-         this.Panel.Size = new System.Drawing.Size(655, 525);
-         this.Panel.TabIndex = 2;
-         // 
-         // GraphReportUI
-         // 
-         this.Controls.Add(this.Panel);
-         this.Name = "GraphReportUI";
-         this.Controls.SetChildIndex(this.MyHelpLabel, 0);
-         this.Controls.SetChildIndex(this.Panel, 0);
-         this.ResumeLayout(false);
+             this.Panel = new System.Windows.Forms.Panel();
+             this.SuspendLayout();
+             // 
+             // Panel
+             // 
+             this.Panel.Dock = System.Windows.Forms.DockStyle.Fill;
+             this.Panel.Location = new System.Drawing.Point(0, 16);
+             this.Panel.Name = "Panel";
+             this.Panel.Size = new System.Drawing.Size(655, 525);
+             this.Panel.TabIndex = 2;
+             // 
+             // GraphReportUI
+             // 
+             this.Controls.Add(this.Panel);
+             this.Name = "GraphReportUI";
+             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
+             this.Controls.SetChildIndex(this.Panel, 0);
+             this.ResumeLayout(false);
 
          }
 
       #endregion
 
-      private TMGDevelopment.Windows.Forms.PrintForm PrintForm;
       protected System.Windows.Forms.Panel Panel;
 
       }

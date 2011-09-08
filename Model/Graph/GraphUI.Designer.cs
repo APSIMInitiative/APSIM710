@@ -36,7 +36,6 @@ namespace Graph
          this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
          this.EditGraphMenu = new System.Windows.Forms.ToolStripMenuItem();
          this.RemoveAllFormattingMenu = new System.Windows.Forms.ToolStripMenuItem();
-         this.PrintForm = new TMGDevelopment.Windows.Forms.PrintForm(this.components);
          this.PopupMenu.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -603,11 +602,6 @@ namespace Graph
          this.RemoveAllFormattingMenu.Text = "Remove all formatting";
          this.RemoveAllFormattingMenu.Click += new System.EventHandler(this.OnRemoveAllFormattingMenu);
          // 
-         // PrintForm
-         // 
-         this.PrintForm.BodyContainer = this;
-         this.PrintForm.IgnoreVisibilityErrors = true;
-         // 
          // GraphUI
          // 
          this.Controls.Add(this.Chart);
@@ -624,7 +618,6 @@ namespace Graph
       public Steema.TeeChart.TChart Chart;
       private System.Windows.Forms.ContextMenuStrip PopupMenu;
       private System.Windows.Forms.ToolStripMenuItem EditGraphMenu;
-      private TMGDevelopment.Windows.Forms.PrintForm PrintForm;
       private System.Windows.Forms.ToolStripMenuItem CopyToClipboardMenu;
       private System.Windows.Forms.ToolStripMenuItem RemoveAllFormattingMenu;
       private System.Windows.Forms.ToolStripMenuItem CopyDataMenu;
