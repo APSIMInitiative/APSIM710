@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="ReleasedChickpea">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/06/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1940</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -1261,6 +1259,8 @@
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">ReleasedChickpea.out</filename>
+        <title>ReleasedChickpea</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="stage" array="No" description="Plant stage" />
@@ -1304,7 +1304,9 @@
     </area>
   </simulation>
   <simulation name="Chickpea2" shortcut="/simulations/ReleasedChickpea">
-    <metfile name="met" shortcut="/simulations/ReleasedChickpea/met" />
+    <metfile name="met" shortcut="/simulations/ReleasedChickpea/met">
+      <filename shortcut="/simulations/ReleasedChickpea/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/ReleasedChickpea/clock" />
     <summaryfile shortcut="/simulations/ReleasedChickpea/summaryfile" />
     <area name="paddock" shortcut="/simulations/ReleasedChickpea/paddock">
@@ -1369,7 +1371,9 @@
           </script>
         </manager>
       </folder>
-      <outputfile shortcut="/simulations/ReleasedChickpea/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Chickpea2.out</filename>
+        <title>Chickpea2</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="PhenologyCurrentPhaseName" />

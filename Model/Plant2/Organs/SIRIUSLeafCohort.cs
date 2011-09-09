@@ -60,37 +60,38 @@ class SIRIUSLeafCohort : LeafCohort
     public SIRIUSLeaf SIRIUSLeaf;
 
     [Link("StructuralFraction")]
-    public Function SF;
+    public Function StructuralFractionFunction;
     
     [Link("NReallocationFactor")]
-    public Function NRF;
+    public Function NReallocationFactorFunction;
     
     [Link("NRetranslocationFactor")]
-    public Function NRR;
+    public Function NRetranslocationFactorFunction;
     
     [Link("ExpansionStress")]
-    public Function Stressfact;
+    public Function ExpansionStressFunction;
     
     [Link("SpecificLeafAreaMin")]
-    public Function SLAmin;
+    public Function SpecificLeafAreaMinFunction;
 
-    [Link("SpecificLeafAreaMax")]
-    public Function SLAmax;
+    //[Link("SpecificLeafAreaMax")]
+    //public Function SLAmax;
     
     [Link("CriticalNConc")]
-    public Function CritNC;
+    public Function CriticalNConcFunction;
     
     [Link("SenescenceInducingCover")]
-    public Function CritCover;
+    public Function SenescenceInducingCoverFunction;
     
     [Link("DMRetranslocationFactor")]
-    public Function DMRF;
+    public Function DMRetranslocationFactorFunction;
     
     [Link("ShadeInducedSenRate")]
-    public Function ShadeSenRate;
+    public Function ShadeInducedSenRateFunction;
 
  #endregion
     
+
  #region Arbitrator method calls
     //Get Methods to provide Cohort Status
     public override double DMDemand
@@ -99,7 +100,7 @@ class SIRIUSLeafCohort : LeafCohort
         {
             if (IsGrowing)
             {
-                StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax;  //Work out how much DM would be needed to grow to potantial size
+                StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
                 MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
             }
@@ -286,23 +287,23 @@ class SIRIUSLeafCohort : LeafCohort
     public override void DoInitialisation()
     {
         base.DoInitialisation();
-
-        SpecificLeafAreaMin = SLAmin.Value;
-        SpecificLeafAreaMax = SLAmax.Value;
+        
+        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
+        SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         StructuralNConc = MinimumNConc;
-        FunctionalNConc = (CritNC.Value - (MNC.Value * SF.Value)) * (1 / (1 - SF.Value));
-        LuxaryNConc = (CNC.Value - CritNC.Value);
-        StructuralFraction = SF.Value;
-        Live.MetabolicWt = (Live.StructuralWt / SF.Value) * (1 - SF.Value);
+        FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFractionFunction.Value)) * (1 / (1 - StructuralFractionFunction.Value));
+        LuxaryNConc = (MaximumNConcFunction.Value - CriticalNConcFunction.Value);
+        StructuralFraction = StructuralFractionFunction.Value;
+        Live.MetabolicWt = (Live.StructuralWt / StructuralFractionFunction.Value) * (1 - StructuralFractionFunction.Value);
         Live.NonStructuralWt = 0;
         Live.StructuralN = Live.StructuralWt * StructuralNConc;
         Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;
         Live.NonStructuralN = 0;
-        NReallocationFactor = NRF.Value;
-        NRetranslocationFactor = NRR.Value;
-        CriticalCover = CritCover.Value;
-        DMRetranslocationFactor = DMRF.Value;
-        FracSenShade = ShadeSenRate.Value;
+        NReallocationFactor = NReallocationFactorFunction.Value;
+        NRetranslocationFactor = NRetranslocationFactorFunction.Value;
+        CriticalCover = SenescenceInducingCoverFunction.Value;
+        DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
+        FracSenShade = ShadeInducedSenRateFunction.Value;
     }
     public override void DoPotentialGrowth(double TT)
     {

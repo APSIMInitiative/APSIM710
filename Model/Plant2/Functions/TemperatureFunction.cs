@@ -18,12 +18,13 @@ public class TemperatureFunction : Function
     [Link]
     Phenology Phenology = null;
 
+
     [Input(Optional = true)]
     [Units("oC")]
-    private double maxt_soil_surface;
+    private double maxt_soil_surface = -99.0;
     [Input(Optional = true)]
     [Units("oC")]
-    private double mint_soil_surface;
+    private double mint_soil_surface = -99.0;
 
     [Param(Optional = true)]
     string[] SoilTemperaturePhases = null;
@@ -47,6 +48,8 @@ public class TemperatureFunction : Function
 
                      if (Phenology.InPhase(SoilTemperaturePhases[i]))
                      {
+                         if ((maxt_soil_surface == -99.0) || (mint_soil_surface == -99))
+                             throw new Exception("Thermal time calculations could not find soil temperature values.  If use of soil temperature was not intended remove all phase names from the SoilTemperaturePhases paraamater box on the temperature function in the IDE.  If use of soil temperature was intended the simulation needs to have a SoilTemp (.NET) module to produce the necessary temperature data");
                          Max = maxt_soil_surface;
                          Min = mint_soil_surface;
                      }

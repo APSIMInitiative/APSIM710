@@ -95,6 +95,7 @@ public class TerminateFinalNodeNumber : Instance
 
  #endregion
 
+
  #region vernalisation functions
 
     /// <summary>
@@ -139,7 +140,7 @@ public class TerminateFinalNodeNumber : Instance
 
      public void VernalisationFinalNodeNumberFunction()
     {
-        if ((Leaf.CohortNo >= 2.0) && (_CropIsVernalised == true))
+        if ((Leaf.CohortNo >= 3.0) && (_CropIsVernalised == true))
         { } // do nothing
         else
         _VernalisationFinalNodeNumber = Leaf.PrimordiaNo;
