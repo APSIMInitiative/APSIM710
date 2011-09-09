@@ -71,7 +71,7 @@ copy ApsimSetupForRelease.exe C:\inetpub\wwwroot\Files\%1.ApsimSetupForRelease.e
 
 
 rem Now a self extracting "binaries only" for cluster runs
-set dest=Apsim-%1
+set dest=Temp
 mkdir %dest%
 copy  ..\Apsim.xml %dest%\Apsim.xml
 mkdir %dest%\Model
@@ -87,8 +87,8 @@ copy ..\UserInterface\*.xml %dest%\UserInterface
 mkdir %dest%\UserInterface\ToolBoxes
 copy ..\UserInterface\ToolBoxes\*.xml %dest%\UserInterface\ToolBoxes
 
-"c:\Program Files\7-Zip\7z.exe" a -sfx -mx=9 -mmt=on %dest%.binaries.Win32.exe %dest%
+"c:\Program Files\7-Zip\7z.exe" a -sfx -mx=9 -mmt=on %1.binaries.Win32.exe %dest%
 
 rmdir /s /q %dest%
 
-copy %dest%.binaries.Win32.exe C:\inetpub\wwwroot\Files\%dest%.binaries.Win32.exe
+copy %1.binaries.Win32.exe C:\inetpub\wwwroot\Files\%1.binaries.Win32.exe
