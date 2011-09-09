@@ -67,14 +67,11 @@ public partial class MainForm : Form
                     // directory in SVN. The stat command above will report the directory name.
                     if (!Directory.Exists(FileName))
                     {
-                        if (File.Exists(FileName))
-                        {
-                            ListViewItem item1 = new ListViewItem(FileName);
-                            item1.SubItems.Add(Path.GetDirectoryName(FileName));
-                            item1.SubItems.Add(Path.GetExtension(FileName));
-                            item1.SubItems.Add(Status);
-                            ListView.Items.Add(item1);
-                        }
+                        ListViewItem item1 = new ListViewItem(FileName);
+                        item1.SubItems.Add(Path.GetDirectoryName(FileName));
+                        item1.SubItems.Add(Path.GetExtension(FileName));
+                        item1.SubItems.Add(Status);
+                        ListView.Items.Add(item1);
                     }
                 }
             }
