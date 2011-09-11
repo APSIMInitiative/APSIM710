@@ -243,7 +243,7 @@ public class LeafCohort : Instance
     /// <returns>(mm2 leaf/cohort position/m2 soil/day)</returns>
     virtual public double PotentialAreaGrowthFunction(double TT) 
     {
-        double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age);// mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
+        double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
         double growth = Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
     }

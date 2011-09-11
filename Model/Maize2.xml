@@ -169,9 +169,9 @@
           <PhotopSens type="text" description="PhotopSens">3.0</PhotopSens>
           <TemperatureFunction name="VDModel">
             <XYPairs>
-              <XY>0 0</XY>
+              <XY>0 1</XY>
               <XY>2 1</XY>
-              <XY>15 0</XY>
+              <XY>15 1</XY>
             </XYPairs>
           </TemperatureFunction>
           <PhotoperiodFunction name="Photoperiod">
@@ -475,7 +475,7 @@
         </LinearInterpolationFunction>
         <BellCurveFunction name="MaxArea">
           <LinearInterpolationFunction name="LargestLeafPosition">
-            <XProperty type="text" description="XProperty">Leaf.FinalNodeNoEstimate</XProperty>
+            <XProperty type="text" description="XProperty">Leaf.MaxNodeNo</XProperty>
             <XYPairs>
               <XY>5 3.4</XY>
               <XY>10 6.7</XY>
@@ -483,10 +483,12 @@
               <XY>20 13.4</XY>
               <XY>25 16.8</XY>
             </XYPairs>
-            <Memo>0.67*Leaf.FinalNodeNoEstimate</Memo>
+            <Memo>0.67*Leaf.FinalNodeNoEstimate (old nomenclature)
+
+0.67*Leaf.MaxNodeNo</Memo>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="AreaMax">
-            <XProperty type="text" description="XProperty">Leaf.FinalNodeNoEstimate</XProperty>
+            <XProperty type="text" description="XProperty">Leaf.MaxNodeNo</XProperty>
             <XYPairs>
               <XY>5 39259</XY>
               <XY>10 49659</XY>
@@ -497,7 +499,7 @@
             <Memo>1000*exp(-1.17+0.047*FinalNodeNoEstimate) * 100 Fletcher</Memo>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="Breadth">
-            <XProperty type="text" description="XProperty">Leaf.FinalNodeNoEstimate</XProperty>
+            <XProperty type="text" description="XProperty">Leaf.MaxNodeNo</XProperty>
             <XYPairs>
               <XY>5 -0.377</XY>
               <XY>10 -0.144</XY>
@@ -508,12 +510,15 @@
             <Memo>-0.009-EXP(-0.2*FinalNodeNoEstimate) Fletch refs</Memo>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="Skewness">
-            <XProperty type="text" description="XProperty">Leaf.FinalNodeNoEstimate</XProperty>
+            <XProperty type="text" description="XProperty">Leaf.MaxNodeNo</XProperty>
             <XYPairs>
               <XY>0 0.00025</XY>
               <XY>10 0.00025</XY>
             </XYPairs>
           </LinearInterpolationFunction>
+          <Constant name="LargestLeafPositionX">
+            <Value type="text" description="Value">8</Value>
+          </Constant>
         </BellCurveFunction>
         <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
@@ -570,13 +575,16 @@
           <Value type="text" description="Value">.01</Value>
         </Constant>
         <Constant name="SpecificLeafAreaMax">
-          <Value type="text" description="Value">7500000</Value>
+          <Value type="text" description="Value">75000</Value>
           <Memo>Using values from CERES Lizazo et al 2011 (can check with our own data I think)
 Setting to huge value just to avoid Carbon limitation</Memo>
         </Constant>
         <Constant name="SpecificLeafAreaMin">
-          <Value type="text" description="Value">27000</Value>
+          <Value type="text" description="Value">25000</Value>
           <Memo>Using values from CERES Lizazo et al 2011 (can check with our own data I think)</Memo>
+        </Constant>
+        <Constant name="PartitionFraction">
+          <Value type="text" description="Value">1.0</Value>
         </Constant>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Rachis">
@@ -588,10 +596,6 @@ Setting to huge value just to avoid Carbon limitation</Memo>
         <Constant name="NRetranslocationRate">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FlagLeaf FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
         <Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
@@ -611,6 +615,9 @@ Setting to huge value just to avoid Carbon limitation</Memo>
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
         </Constant>
+        <Constant name="PartitionFraction">
+          <Value>0.25</Value>
+        </Constant>
       </SIRIUSGenericOrgan>
       <SIRIUSGenericOrgan name="Stem">
         <Biomass name="Live" />
@@ -621,10 +628,6 @@ Setting to huge value just to avoid Carbon limitation</Memo>
         <Constant name="NRetranslocationRate">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FlagLeaf FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">
             <Start>Emergence</Start>
@@ -669,6 +672,9 @@ Setting to huge value just to avoid Carbon limitation</Memo>
         </Constant>
         <Constant name="XXXStructuralFraction">
           <Value type="text" description="Value">1</Value>
+        </Constant>
+        <Constant name="PartitionFraction">
+          <Value>0.25</Value>
         </Constant>
       </SIRIUSGenericOrgan>
       <Summary />

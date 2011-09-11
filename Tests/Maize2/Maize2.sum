@@ -15,11 +15,13 @@ Title                  = Maize2
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -73,6 +75,99 @@ Paddock:
      Output file = Maize2.out
      Format = normal
 
+------- Plant2 diagnostic variables Initialisation ----------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy as Date
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        LeafDeadWt
+        LeafLiveWt
+        StemDeadWt2
+        StemLiveWt
+        TuberDeadWt
+        TuberLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLIveWt
+        GrainDeadWt
+        FloretLIveWt
+        FloretDeadWt
+        RootLiveN
+        RootDeadN
+        LeafDeadN2
+        LeafLiveN2
+        StemDeadN
+        StemLiveN
+        TuberDeadN
+        TuberLiveN
+        GrainLiveN
+        GrainDeadN
+        FloretLiveN
+        FloretDeadN
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafFrgr
+        LeafPhotosynthesisFt
+        LeafPhotosynthesisFvpd
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+
+     Output file = Maize2 Plant2 diagnostic variables.out
+     Format = normal
+
 ------- accum Initialisation --------------------------------------------------
      Initialising
 
@@ -109,6 +204,80 @@ Paddock:
               endif
      END of rules
      
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  (0 - potato2.leafliven2 - potato2.leafdeadn2 - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - potato2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
@@ -275,6 +444,30 @@ Paddock:
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
      Manager sending message :- maize2 sow  population = 10, depth = 30, cultivar = shorthybrid, maxcover = 1.0, budnumber = 1, row_spacing = 500, crop_class =
+     Manager creating a new local real variable : initialsoilomn = 12432.34860
+     Manager creating a new local real variable : initialsurfaceomn = 5.00000
+     Manager creating a new local real variable : initialmineraln = 70.11493
+1 November 2008(Day of year=306): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "accumoutflowlat".
+     Variables should have a value before they are used in an expression.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "irrigation".
+     Variables should have a value before they are used in an expression.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : irrigation = 0.00000
 2/11/2008 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -282,23 +475,23 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 22/01/2009 - FlagLeaf
-                            LAI = 0.48 (m^2/m^2)
-           Above Ground Biomass = 350.31 (g/m^2)
+                            LAI = 1.08 (m^2/m^2)
+           Above Ground Biomass = 243.69 (g/m^2)
 25/01/2009 - Flowering
-                            LAI = 0.41 (m^2/m^2)
-           Above Ground Biomass = 367.23 (g/m^2)
+                            LAI = 1.07 (m^2/m^2)
+           Above Ground Biomass = 277.94 (g/m^2)
 2/02/2009 - StartGrainFill
-                            LAI = 0.25 (m^2/m^2)
-           Above Ground Biomass = 380.42 (g/m^2)
+                            LAI = 1.04 (m^2/m^2)
+           Above Ground Biomass = 309.51 (g/m^2)
 20/08/2009 - EndGrainFill
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 417.36 (g/m^2)
+           Above Ground Biomass = 505.12 (g/m^2)
 28/08/2009 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 417.36 (g/m^2)
+           Above Ground Biomass = 505.12 (g/m^2)
 28/08/2009 - HarvestRipe
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 417.36 (g/m^2)
+           Above Ground Biomass = 505.12 (g/m^2)
 1 October 2009(Day of year=274), Harvesting rule: 
      Manager sending message :- maize2 harvest
 25 October 2009(Day of year=298), clock: 
