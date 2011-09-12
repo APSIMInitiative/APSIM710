@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using CMPServices;
+using System.Xml;
+using System.Reflection;
 
 namespace ModelFramework
 {
@@ -170,6 +172,17 @@ namespace ModelFramework
                 return FQN;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fqn"></param>
+        /// <returns></returns>
+        public void BuildObjects(XmlNode ScriptNode, Assembly A)
+        {
+            HostComponent.BuildObjects(ScriptNode, A);
+        }
+ 
     }
 
 }

@@ -178,7 +178,7 @@ namespace ModelFramework
                             }
                         }
                         // Build all necessary objects
-                        BuildObjects(ScriptNode);
+                        BuildObjects(ScriptNode, modelAssembly);
                     }
                     else if (IsPlant)
                     {
@@ -204,7 +204,7 @@ namespace ModelFramework
                                 InsertParameterIntoModel(Parameter, InitData.ChildNodes[0]);
                             }
                         }
-                        BuildObjects(InitData.ChildNodes[0]);
+                        BuildObjects(InitData.ChildNodes[0], modelAssembly);
                     }
                 }
             }
@@ -544,7 +544,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="XML"></param>
         // ----------------------------------------------
-        public void BuildObjects(XmlNode XML)
+        public void BuildObjects(XmlNode XML, Assembly modelAssembly)
         {
             Fact.Clear();   //clear this so it can be reinitialised
             Fact.Create(XML.OuterXml, modelAssembly, this);
@@ -639,7 +639,7 @@ namespace ModelFramework
                 }
             }
 
-            BuildObjects(ModelDescription);
+            BuildObjects(ModelDescription, modelAssembly);
             GetAllInputs();
             CallEventHandlers("Sow", Sow);  //call multiple Sow events
         }
