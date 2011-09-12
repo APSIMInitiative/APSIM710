@@ -2714,7 +2714,7 @@ cgd   Eriks modifications for Leaf Area
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day_of_year,
+      call jday_to_day_of_year(tick%startday, g%day_of_year,
      .                         g%year)
 
       call pop_routine (myname)

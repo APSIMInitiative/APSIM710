@@ -5819,7 +5819,7 @@
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%idoy, junk)
+      call jday_to_day_of_year(tick%startday, g%idoy, junk)
 
       call pop_routine (myname)
       return

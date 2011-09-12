@@ -96,8 +96,8 @@ void PatchInputComponent::doInit1(const protocol::Init1Data& initData)
    unpatchedMinTID = addRegistration(::respondToGet, 0, "unpatched_mint", protocol::DDML(newmet.mint).c_str());
    unpatchedRadnID = addRegistration(::respondToGet, 0, "unpatched_radn", protocol::DDML(newmet.radn).c_str());
    unpatchedRainID = addRegistration(::respondToGet, 0, "unpatched_rain", protocol::DDML(newmet.rain).c_str());
-   startDateID = addRegistration(::get, 0, "simulation_start_date", "<type kind=\"double\"/>");
-   endDateID = addRegistration(::get, 0, "simulation_end_date", "<type kind=\"double\"/>");
+   startDateID = addRegistration(::get, 0, "simulation_start_date", "<type kind=\"integer4\"/>");
+   endDateID = addRegistration(::get, 0, "simulation_end_date", "<type kind=\"integer4\"/>");
    }
 // ------------------------------------------------------------------
 // Read all patch dates.
@@ -152,8 +152,8 @@ void PatchInputComponent::getDataFromInput(unsigned int fromID)
 
    if (patchVariablesLongTerm.size() > 0)
       {
-      double startDate = 0;
-      double endDate = 0;
+      int startDate = 0;
+      int endDate = 0;
       getVariable(startDateID, startDate, 0, 10000000, true);
       getVariable(endDateID, endDate, 0, 10000000, true);
 

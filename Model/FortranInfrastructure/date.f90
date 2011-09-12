@@ -403,7 +403,7 @@ module DateModule
 
 
    ! ====================================================================
-       DOUBLE PRECISION function Date_to_jday (Dayz, Monthz, Yearz)
+       INTEGER function Date_to_jday (Dayz, Monthz, Yearz)
    ! ====================================================================
       implicit none
 
@@ -433,31 +433,23 @@ module DateModule
    !       270295  jngh changed real to dble intrinsic function.
 
    !+ Local Variables
-       double precision Day            ! Day
-       double precision Month          ! Month
-       double precision Quotnt         ! Quotient used in Fliegel calculations
-       double precision Year           ! Year
+       integer Quotnt         ! Quotient used in Fliegel calculations
 
    !- Implementation Section ----------------------------------
 
 
       if (Yearz.gt.1582 .and. Check_date (Dayz, Monthz, Yearz)) then
 
-         Day = dble (Dayz)
-         Month = dble (Monthz)
-         Year = dble (Yearz)
+         Quotnt = (Monthz - 14) / 12
 
-         Quotnt = aint ((Month - 14.0d0)/12.0d0)
-
-         Date_to_jday = dble (                                           &
-           Day - 32075.0d0                                               &
-         + dint(1461.0d0* (Year + 4800.0d0 + Quotnt) /4.0d0)             &
-         + dint(367.0d0* (Month - 2.0d0 - Quotnt*12.0d0) /12.0d0)        &
-         - dint(3.0d0*dint((Year + 4900.0d0 + Quotnt) /100.0d0) /4.0d0)  &
-         )
+         Date_to_jday =                                         &
+           Dayz - 32075                                         &
+         + 1461 * (Yearz + 4800 + Quotnt) / 4                   &
+         + 367 * (Monthz - 2 - Quotnt * 12) / 12                &
+         - 3 * ((Yearz + 4900 + Quotnt) / 100) / 4
 
       else
-         Date_to_jday = 0.0D0
+         Date_to_jday = 0
       endif
 
       return
@@ -487,7 +479,7 @@ module DateModule
 
    !+ Local Variables
       integer Date(3)                  ! day, month, year
-      double precision Julian_day      ! julian day number
+      integer Julian_day               ! julian day number
 
    !- Implementation Section ----------------------------------
 
@@ -694,7 +686,7 @@ module DateModule
       implicit none
 
    !+ Sub-Program Arguments
-      double precision julday          ! (INPUT) day, month, year
+      integer    julday                ! (INPUT) day, month, year
       integer    year                  ! (OUTPUT) year
       integer    dyoyr                 ! (OUTPUT) day of year
 
@@ -733,7 +725,7 @@ module DateModule
 
    !+ Sub-Program Arguments
       integer    dayz                  ! (OUTPUT) day
-      double precision julday          ! (INPUT) julian day number
+      integer    julday                ! (INPUT) julian day number
       integer    monthz                ! (OUTPUT) month
       integer    yearz                 ! (OUTPUT) year
 
@@ -753,38 +745,34 @@ module DateModule
    !+ Calls
 
    !+ Local Variables
-      double precision day             ! day
-      double precision mm              ! temp. variable
-      double precision month           ! month
-      double precision work            ! temp. variable
-      double precision work0           ! temp. variable
-      double precision year            ! year
-      double precision yy              ! temp `variable
+      integer day             ! day
+      integer mm              ! temp. variable
+      integer month           ! month
+      integer work            ! temp. variable
+      integer work0           ! temp. variable
+      integer year            ! year
+      integer yy              ! temp `variable
 
    !- Implementation Section ----------------------------------
 
           ! check julian date and option are legal
 
-      if (julday.gt.0.0) then
+      if (julday.gt.0) then
 
           ! fliegel and van flanden algorithm:
 
-         work = julday + 68569.0d0
-         work0 = aint(4.0d0*work/146097.0d0)
-         work = work - aint((146097.0d0*work0 + 3.0d0) /4.0d0)
-         yy = aint(4000.0d0* (work + 1.0d0) /1461001.0d0)
+         work = julday + 68569
+         work0 = 4 * work / 146097
+         work = work - (146097 * work0 + 3) /4
+         yy = 4000 * (work + 1) / 1461001
 
-         work = work - aint(1461.0d0*yy/4.0d0) + 31.0d0
-         mm = aint(80.0d0*work/2447.0d0)
-         day = work - aint(2447.0d0*mm/80.0d0)
+         work = work - 1461 * yy / 4 + 31
+         mm = 80 * work / 2447
+         dayz = work - 2447 * mm / 80
 
-         work = aint(mm/11.0d0)
-         month = mm + 2.0d0 - 12.0d0*work
-         year = 100.0d0* (work0 - 49.0d0) + yy + work
-
-         dayz = nint(day)
-         monthz = nint(month)
-         yearz = nint(year)
+         work = mm / 11
+         monthz = mm + 2 - 12 * work
+         yearz = 100 * (work0 - 49) + yy + work
 
       else
          dayz = 0
@@ -862,9 +850,9 @@ module DateModule
 
    !+ Sub-Program Arguments
       character Date_string*(*)        ! (INPUT) date string to convert
-      double precision JDay            ! (OUTPUT)convert date.
+      integer JDay                     ! (OUTPUT)convert date.
       integer Numvals                  ! (OUTPUT) number of dates converted.
-      double precision Today           ! (INPUT) Todays date.
+      integer Today                    ! (INPUT) Todays date.
 
    !+ Purpose
    !     This routine tries to convert the date string to a valid julian date.  It
@@ -1006,7 +994,7 @@ module DateModule
 
          JDay = Date_to_jday (Day, Month, Year)
       endif
-      Invalid = (JDay .eq. 0.0d0)
+      Invalid = (JDay .eq. 0)
 
       if (Invalid) then
          Numvals = 0
@@ -1068,7 +1056,7 @@ module DateModule
 
 
    !     ===========================================================
-      function String_to_jday_with_error(Date_string, Today)
+      integer function String_to_jday_with_error(Date_string, Today)
    !     ===========================================================
       use ConstantsModule
       use ErrorModule
@@ -1076,8 +1064,7 @@ module DateModule
 
    !+ Sub-Program Arguments
       character Date_string*(*)        ! (INPUT) date string to convert
-      double precision Today           ! (INPUT) today's date.
-      double precision String_to_jday_with_error
+      integer Today                    ! (INPUT) today's date.
 
    !+ Purpose
    !     This routine tries to convert the date string to a valid julian date.
@@ -1110,7 +1097,7 @@ module DateModule
    !+ Local Variables
       character msg*200                ! error message
       integer Numvals                  ! number of integers converted.
-      double precision Return_value    ! value to return to caller
+      integer Return_value             ! value to return to caller
 
    !- Implementation Section ----------------------------------
 
@@ -1141,7 +1128,7 @@ module DateModule
    !+ Sub-Program Arguments
       character Date_string1*(*)       ! (INPUT) first date string
       character Date_string2*(*)       ! (INPUT) second date string
-      double precision Today           ! (INPUT) today's date.
+      integer Today                    ! (INPUT) today's date.
 
    !+ Purpose
    !     This routine returns true if todays date is between the
@@ -1167,8 +1154,8 @@ module DateModule
 !      double precision String_to_jday_with_error            ! function
 
    !+ Local Variables
-      double precision Date1           ! first date
-      double precision Date2           ! second date
+      integer Date1           ! first date
+      integer Date2           ! second date
 
    !- Implementation Section ----------------------------------
 
@@ -1223,7 +1210,7 @@ module DateModule
 
    !+ Local Variables
       integer    day                   ! day of month
-      double precision days            ! julian day number of new date
+      integer    days                  ! julian day number of new date
       integer    month                 ! month number of year
       integer    year                  ! year
 
@@ -1231,12 +1218,12 @@ module DateModule
 
 
 
-      days = date_to_jday(1, 1, iyr) - 1.0d0 + real(doy) + real(ndays)
+      days = date_to_jday(1, 1, iyr) - 1 + doy + ndays
       call jday_to_date (day, month, year, days)
 
           ! now get the day of year number
 
-      offset_day_of_year = nint(days - date_to_jday(1, 1, year) + 1.0d0)
+      offset_day_of_year = days - date_to_jday(1, 1, year) + 1
 
 
       return
@@ -1246,7 +1233,7 @@ module DateModule
 
 
 !     ===========================================================
-      double precision function Date (Date_string, Today)
+      integer function Date (Date_string, Today)
 !     ===========================================================
       Use ConstantsModule
       use ErrorModule
@@ -1254,10 +1241,10 @@ module DateModule
 
 !+ Sub-Program Arguments
       character Date_string*(*)        ! (INPUT) date string to convert
-      double precision Today           ! (INPUT) today's date.
+      integer Today                    ! (INPUT) today's date.
 
 !+ Purpose
-!     This routine tries to convert the date string to a valid julian date.
+!     This routine tries to convert the date string to a valid julian day number.
 !     It issues a fatal error if cannot convert.
 
 !+ Notes
@@ -1287,7 +1274,7 @@ module DateModule
 !+ Local Variables
       character msg*200                ! error message
       integer Numvals                  ! number of integers converted.
-      double precision Return_value    ! value to return to caller
+      integer Return_value             ! value to return to caller
 
 !- Implementation Section ----------------------------------
 
@@ -1299,7 +1286,7 @@ module DateModule
             new_line,                                            &
             'Date string = ', Date_string(:100)
          call Fatal_error (ERR_user, msg)
-         Date = 0.0d0
+         Date = 0
 
       else
          Date = Return_value
@@ -1316,7 +1303,7 @@ module DateModule
    !     Adds the specified number of months to the specified julian day.
 
    !+ Sub-Program Arguments
-   double precision julday           ! (INPUT & OUTPUT) julian date to change
+   integer julday                    ! (INPUT & OUTPUT) julian date to change
    integer NumMonths                 ! (INPUT) number of months to change julian day by.
 
    integer day, month, year

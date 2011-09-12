@@ -400,7 +400,7 @@ c     include   'fertiliz.inc'
       integer   temp2
       type(timeType) :: tick
 
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
       g%fert_applied = 0.0
 
       return

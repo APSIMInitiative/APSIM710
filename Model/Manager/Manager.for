@@ -992,7 +992,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
       character Str*300                ! Dummy value returned by APSIM
       character Params(2)*(50)         ! params from function call
       double precision d_var_val       ! double precision of variable_value
-      double precision today           ! todays date.
+	  integer i_var_val
+      integer today                    ! todays date.
       character todayStr*(50)
       integer modNameID                ! ID for module.
       integer regID
@@ -1022,25 +1023,25 @@ C     Last change:  P    25 Oct 2000    9:26 am
          call Manager_get_params (variable_name, Params)
          call Get_char_var (Unknown_module, 'today', blank, Todaystr,
      .                        numvals)
-         call string_to_double_var (Todaystr, Today, numvals)
+         call string_to_integer_var (Todaystr, Today, numvals)
          numvals = 0
          if (Params(1) .eq. ' ') then
             valueIsReal = .true.
             variable_value = '0'
          else
-            call String_to_jday (Params(1), d_var_val, numvals, Today)
+            call String_to_jday (Params(1), i_var_val, numvals, Today)
             if (numvals .eq. 0) then
                call Parse_get_variable(Params(1), Str, IsReal)
                if (.not. IsReal) then
-                  call Double_var_to_string (Date(Str, Today),
+                  call Integer_var_to_string (Date(Str, Today),
      .                                       Variable_value)
                else
                   ! This will give a fatal_error
-                  call Double_var_to_string (Date(Params(1), Today),
+                  call Integer_var_to_string (Date(Params(1), Today),
      .                                       Variable_value)
                endif
             else
-               call Double_var_to_string (Date(Params(1), Today),
+               call integer_var_to_string (Date(Params(1), Today),
      .                                   Variable_value)
             endif
             valueIsReal = .false.
@@ -1056,7 +1057,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .           'Bad 1st argument type for function '
      .           // 'month(date)')
          else
-            call jday_to_date (day, month, year, d_var_val)
+            call jday_to_date (day, month, year, int(d_var_val))
             call integer_var_to_string (month, variable_value)
          end if
          valueIsReal = .true.
@@ -1069,7 +1070,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
          call Get_char_var (Unknown_module, 'today', blank, Todaystr,
      .                        numvals)
-         call string_to_double_var (Todaystr, Today, numvals)
+         call string_to_integer_var (Todaystr, Today, numvals)
 
          if (Date_within(Params(1), Params(2), Today)) then
             Variable_value = '1'
@@ -1122,7 +1123,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          call Manager_get_params (variable_name, Params)
          call parse_get_variable(params(1), variable_value, 
      .           valueIsReal)
-         call string_to_double_var(variable_value, d_var_val, numvals)
+         call string_to_integer_var(variable_value, i_var_val, numvals)
          if (numvals .ne. 1) then
             call fatal_error(ERR_user,
      .           'Bad 1st argument type for function '
@@ -1141,8 +1142,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
      .           'Bad 2nd argument type for function '
      .           // 'add_months(date, NumMonths)')
             else
-               call add_months(d_var_val, numMonths);
-               call double_var_to_string (d_var_val, variable_value)
+               call add_months(i_var_val, numMonths);
+               call integer_var_to_string (i_var_val, variable_value)
             endif
          end if
          valueIsReal = .true.

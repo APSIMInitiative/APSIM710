@@ -175,10 +175,91 @@ namespace CSGeneral
             //                    jday_to_date arguments.
             //       010494  jngh put year in argument
             int result, year;
-            double days = dateTimeToJulianDate(iyr, 1, 1, 0, 0, 0.0) - 1.0 + doy + ndays;
-            JulianDateToDayOfYear(days, out result, out year);
+            int days = dateToJulianDayNumber(iyr, 1, 1) - 1 + doy + ndays;
+            JulianDayNumberToDayOfYear(days, out result, out year);
             return result;
         
         }
+        //============================================================================
+        /// <summary>
+        /// Converts a y/m/d to a Julian day number.
+        /// </summary>
+        /// <param name="y">Year (1 A.D. =1; 1 B.C. = 0)</param>
+        /// <param name="m">Month (1-12)</param>
+        /// <param name="d">Day (1-31)</param>
+        /// <returns>Julian date</returns>
+        //============================================================================
+        static public int dateToJulianDayNumber(int year, uint month, uint day)
+        {
+            uint a = (14 - month) / 12;
+            int y = year + 4800 - (int)a;
+            uint m = month + 12 * a - 3;
+            return (int)(day + (153 * m + 2) / 5 + 365 * y + y/4 - y/100 + y/400 - 32045);
+        }
+        //============================================================================
+        /// <summary>
+        /// Converts a date time to Julian Day Number
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns>Julian day number</returns>
+        //============================================================================
+        static public int dateTimeToJulianDayNumber(DateTime dt)
+        {
+            return dateToJulianDayNumber(dt.Year, (uint)dt.Month, (uint)dt.Day);
+        }
+        //============================================================================
+        /// <summary>
+        /// Converts a Julian Day Number to date values
+        /// </summary>
+        /// <param name="yr">year (out)</param>
+        /// <param name="mon">month (out)</param>
+        /// <param name="day">day (out)</param>
+        /// <param name="JDN">Julian Day number to convert</param>
+        //============================================================================
+        static public void JulianDayNumberToDate(out int yr, out uint mon, out uint day, int JDN)
+        {
+            int L = JDN + 68569;
+            int N = 4 * L / 146097;
+            L -= (146097 * N + 3) / 4;
+            int I = 4000 * (L + 1) / 1461001;
+            L -= 1461 * I / 4 - 31;
+            int J = 80 * L / 2447;
+            day = (uint)(L - 2447 * J / 80);
+            L = J / 11;
+            mon = (uint)(J + 2 - 12 * L);
+            yr = 100 * (N - 49) + I + L;
+            return;
+        }
+        //=======================================================================
+        /// <summary>
+        /// Converts a Julian Day Number to DateTime (.net) values. 
+        /// </summary>
+        /// <param name="JDN"> Julian day number.</param>
+        /// <returns>Date time value.</returns>
+        //=======================================================================
+        static public DateTime JulianDayNumberToDateTime(int JDN)
+        {
+            int yr = 0;
+            uint mon = 0, day = 0;
+
+            JulianDayNumberToDate(out yr, out mon, out day, JDN);
+            return new DateTime(yr, (int)mon, (int)day);
+        }
+
+        //=======================================================================
+        /// <summary>
+        /// Converts a Julian Day Number to Day of year. 
+        /// </summary>
+        /// <param name="JDN"> Julian day number.</param>
+        /// <returns>Date time value.</returns>
+        //=======================================================================
+        static public void JulianDayNumberToDayOfYear(int JDN, out int dyoyr, out int year)
+        {
+            uint day;
+            uint month;
+            JulianDayNumberToDate(out year, out month, out day, JDN);
+            dyoyr = JDN - dateToJulianDayNumber(year, 1, 1) + 1;
+        }
+
     }
 }

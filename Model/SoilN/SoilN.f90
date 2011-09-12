@@ -4730,7 +4730,7 @@ subroutine soiln2_ONtick (variant)
    call push_routine (myname)
 
    call unpack_time(variant, tick)
-   call jday_to_day_of_year(dble(tick%startday), g%day_of_year,g%year)
+   call jday_to_day_of_year(tick%startday, g%day_of_year,g%year)
 
    ! Reset Potential Decomposition Register
    g%num_residues = 0

@@ -1367,7 +1367,7 @@
       ! and so dummy variables are used in their place.
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
 
       g%irrigation_applied = 0.0
       g%irrigation_tot = 0.0

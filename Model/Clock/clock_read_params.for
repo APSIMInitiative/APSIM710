@@ -33,7 +33,7 @@
      .                    date_st,
      .                    numvals)
       if (numvals .eq. 1) then
-         call String_to_jday (date_st, g%start_date, numvals, 0.0d0)
+         call String_to_jday (date_st, g%start_date, numvals, 0)
 
          if (numvals.eq.0) then
             call fatal_error (ERR_User
@@ -50,7 +50,7 @@
      .                       date_st,
      .                       numvals)
       if (numvals.eq.1) then
-         call String_to_jday (date_st, g%end_date, numvals, 0.0d0)
+         call String_to_jday (date_st, g%end_date, numvals, 0)
          if (numvals.eq.0) then
             call fatal_error (ERR_User
      .                       ,'Cannot convert the date:'

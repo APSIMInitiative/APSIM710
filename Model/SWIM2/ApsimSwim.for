@@ -4717,24 +4717,24 @@ c      eqr0  = 0.d0
       parameter (myname = 'apswim_time')
 
 *+  Local Variables
-      double precision begin_start_year
-      double precision begin_year
-      double precision julian_date
-      double precision julian_start_date
+      integer begin_start_year
+      integer begin_year
+      integer julian_date
+      integer julian_start_date
       double precision time
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
       ! first we must calculate the julian date for the starting date.
       ! We will calculate time relative to this date.
-      begin_Start_year = date_to_jday(1,1,g%start_year) - 1.d0
-      julian_start_date = begin_start_year + dble(g%start_day) - 1.d0
+      begin_Start_year = date_to_jday(1,1,g%start_year) - 1
+      julian_start_date = begin_start_year + g%start_day - 1
 *                                                              /
 *                    all times are relative to beginning of the g%day
 *
 
-      begin_year = date_to_jday(1,1,yy) - 1.d0
-      julian_date = begin_year + dble(dd) - 1.d0
+      begin_year = date_to_jday(1,1,yy) - 1
+      julian_date = begin_year + dd - 1
 
       Time = (julian_date - julian_start_date)*days_to_hours +
      :                    dble(tt)/60.d0
@@ -9919,7 +9919,7 @@ cRC            Changes by RCichota, 30/Jan/2010
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
 
       ! dph - need to setup g%apsim_time and g%apsim_timestep
       !call handler_ONtick(g%day, g%year, g%apsim_time ,intTimestep)

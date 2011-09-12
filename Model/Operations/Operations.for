@@ -35,7 +35,7 @@
 
       type OperatnsGlobals
          sequence
-         double precision   today
+         integer   today
          character    op_date(max_ops)*15
          integer    op_phase(max_ops)
          character  op_text(max_ops)*(record_length)
@@ -234,8 +234,8 @@
 *- Implementation Section ----------------------------------
       call push_routine (my_name)
 
-      call get_double_var(unknown_module, 'today', '(day)',
-     .                     g%today, numvals, 0.0d0, 3660000000.0d0)
+      call get_integer_var(unknown_module, 'today', '(day)',
+     .                     g%today, numvals, 0, 366000000)
 
       call pop_routine (my_name)
       return
@@ -418,7 +418,7 @@
       integer  day
       character daystring*10
       character monthstring*10
-      double precision jday
+      integer  jday
       integer          numvals
 
 *- Implementation Section ----------------------------------
@@ -489,7 +489,7 @@
       integer    modNameID
       character  msg*500
       integer regID
-      double precision jday
+      integer    jday
       integer          numvals
       integer          counter
 

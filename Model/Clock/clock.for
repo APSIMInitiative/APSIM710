@@ -10,11 +10,11 @@ C     Last change:  E     5 Dec 2000    8:52 am
          integer day                   ! current day for simulation
          integer year                  ! current year for simulation
          integer timestep              ! length of timestep (min)
-         double precision start_date   ! start date of simulation
-         double precision end_date     ! end date of simulation
-         double precision demo_start   ! DEMO start date of simulation
-         double precision demo_end     ! DEMO end date of simulation
-         double precision current_date ! current date of simulation
+         integer start_date            ! start date of simulation
+         integer end_date              ! end date of simulation
+         integer demo_start            ! DEMO start date of simulation
+         integer demo_end              ! DEMO end date of simulation
+         integer current_date          ! current date of simulation
          double precision current_time ! current time of simulation (mins)
          logical pause_current_run     ! pause the current run.
          logical end_current_run       ! end the current run.
@@ -77,14 +77,14 @@ C     Last change:  E     5 Dec 2000    8:52 am
       g%end_current_run = .false.
       g%pause_current_run = .false.
       g%PercentDone = 0
-      g%start_date = 0.0
-      g%end_date = 0.0
+      g%start_date = 0
+      g%end_date = 0
 
       ! read in all parameters for clock module.
       call clock_read_timesteps ()
       call clock_read_params ()
 
-      if (g%start_date .eq. 0.0) then
+      if (g%start_date .eq. 0) then
          call get_integer_var(unknown_module, 'met_start_date'
      :                        , '()'
      :                        , start_julian_days, startdate_numvals
@@ -98,7 +98,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .         'Using start date from the met file.')
          endif
       endif
-      if (g%end_date .eq. 0.0) then
+      if (g%end_date .eq. 0) then
          call get_integer_var(unknown_module, 'met_end_date'
      :                        , '()'
      :                        , end_julian_days, enddate_numvals
@@ -286,8 +286,8 @@ C     Last change:  E     5 Dec 2000    8:52 am
             g%end_current_run = .true.
          else
             ! See if we need to output a % done to standard error stream.
-            TodayPercentDone = (g%current_date - g%start_date) /
-     :                         (g%end_date - g%start_date) * 100
+            TodayPercentDone = dble(g%current_date - g%start_date) /
+     :                         dble(g%end_date - g%start_date) * 100
             TodayPercentDone = TodayPercentDone / 5 * 5
             if (g%PercentDone .ne. TodayPercentDone .and.
      :          TodayPercentDone .lt. 100 ) then
@@ -441,13 +441,13 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .                                 year)
 
       else if (variable_name .eq. 'simulation_start_date') then
-         call respond2get_double_var(Variable_name, '()', g%start_date)
+         call respond2get_integer_var(Variable_name, '()', g%start_date)
 
       else if (variable_name .eq. 'simulation_end_date') then
-         call respond2get_double_var(Variable_name, '()', g%end_date)
+         call respond2get_integer_var(Variable_name, '()', g%end_date)
 
       else if (variable_name .eq. 'today') then
-         call Respond2get_double_var
+         call Respond2get_integer_var
      .        (variable_name, '()',
      .         Date_to_jday(thisdate(1), thisdate(2), thisdate(3)))
 
@@ -460,16 +460,12 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .        (variable_name, '()', Get_month_string(thisdate(2)))
 
       else if (variable_name .eq. 'start_simulation') then
-         Logical_to_return = 
-     .     reals_are_equal(real(g%current_date), 
-     .                     real(g%start_date))
+         Logical_to_return = g%current_date .eq. g%start_date
          call respond2get_logical_var(Variable_name, '()', 
      .     Logical_to_return )
 
       else if (variable_name .eq. 'end_simulation') then
-         Logical_to_return = 
-     .     reals_are_equal(real(g%current_date), 
-     .                     real(g%end_date))
+         Logical_to_return = g%current_date .eq. g%end_date
          call respond2get_logical_var(Variable_name, '()', 
      .     Logical_to_return )
 

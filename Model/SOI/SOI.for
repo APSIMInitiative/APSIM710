@@ -28,7 +28,7 @@
          integer   LU_SOI                        ! Unit number for SOI file
          real   SOI_phase
          real   SOI_array(SOI_min:SOI_max,12) ! SOI phases array
-         double precision SOI_jday               ! System jday
+         integer   SOI_jday               ! System jday
       end type SOIGlobals
 
 ! ========================================================================
@@ -256,13 +256,13 @@
 
       ! get date from system
 
-      call get_double_var (Unknown_module,
+      call get_integer_var (Unknown_module,
      .                      'today',
      .                      '()',
      .                      g%SOI_jday,
      .                      numvals,
-     .                      0.0d0,
-     .                      3660000000.0d0)
+     .                      0,
+     .                      366000000)
 
 
       call jday_to_date (SOI_Day, SOI_Month, SOI_Year, g%SOI_jday)
@@ -331,7 +331,7 @@
       integer    SOI_error             ! string to int error code
       integer    SOI_day               ! SOI day
       integer    SOI_year
-      double precision SOI_jday
+      integer    SOI_jday
       character  remainder*100         ! rest of string
       character  unit_plus*100         ! unit + rest string
       character  units*10              ! units string

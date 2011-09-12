@@ -6873,7 +6873,7 @@ cnh      end if
 *- Implementation Section ----------------------------------
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
 
       ! dph - need to setup g%apsim_time and g%apsim_timestep
       !call handler_ONtick(g%day, g%year, g%apsim_time ,intTimestep)

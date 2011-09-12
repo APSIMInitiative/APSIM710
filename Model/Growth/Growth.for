@@ -6753,7 +6753,7 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
 
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day_of_year,
+      call jday_to_day_of_year(tick%startday, g%day_of_year,
      ,                         g%year)
 
       call pop_routine (myname)

@@ -7322,7 +7322,7 @@ C        IF(DEF.LT.2.5) THEN                          ! waterlogging
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%jdate, g%imyr)
+      call jday_to_day_of_year(tick%startday, g%jdate, g%imyr)
 
       call pop_routine (myname)
       return

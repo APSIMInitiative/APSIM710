@@ -2567,7 +2567,7 @@ c+!!!!!! fix problem with deltas in update when change from alive to dead ?zero
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
 
       call pop_routine (myname)
       return

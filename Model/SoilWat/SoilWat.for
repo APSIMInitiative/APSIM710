@@ -102,7 +102,7 @@
          integer num_crops                            ! number of crops ()
          integer year                                 ! year
          integer day                                  ! day of year
-         double precision today                       ! today's julian date
+         integer today                                ! today's julian day number
          real    sumes1                               ! cumulative soil evaporation in stage 1 (mm)
          real    sumes2                               ! cumulative soil evaporation in stage 2 (mm)
          real    t                                    ! time after 2nd-stage soil evaporation
@@ -6968,7 +6968,7 @@ c dsg 070302 added runon
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day, g%year)
+      call jday_to_day_of_year(tick%startday, g%day, g%year)
       g%today = tick%startday
 
       call pop_routine (myname)

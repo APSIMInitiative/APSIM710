@@ -4925,7 +4925,7 @@ cnh      c%crop_type = ' '
       call push_routine (myname)
 
       call unpack_time(variant, tick)
-      call jday_to_day_of_year(dble(tick%startday), g%day_of_year,
+      call jday_to_day_of_year(tick%startday, g%day_of_year,
      .                         g%year)
 
       call sugar_zero_daily_variables ()
