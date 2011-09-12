@@ -473,7 +473,9 @@ namespace ModelFramework
                 RegistrationsEvent.Add(RegistrationIndex, (ApsimType)Data);
                 Host.registerEvent(EventName, Data.DDML(), RegistrationIndex, TypeSpec.KIND_PUBLISHEDEVENT, 0, 0);
             }
-            Host.sendPublishEvent(RegistrationIndex, false);
+            byte[] msgData;
+            Data.pack(out msgData);
+            Host.sendPublishEvent(RegistrationIndex, msgData, false);
         }
         // ------------------------------------------------------------------------
         /// <summary>
