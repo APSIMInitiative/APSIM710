@@ -32,7 +32,7 @@ void unpackWithConverter(char* messageData, Boolean% Data);
 unsigned memorySize(bool Data);
 inline String^ DDML(Boolean Data)
 	{
-	return "<type kind=\"bool\"/>";
+	return "<type kind=\"boolean\"/>";
 	}
 
 

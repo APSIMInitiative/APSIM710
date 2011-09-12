@@ -157,6 +157,8 @@ ApsimType^ FactoryProperty::GetFieldWrapper()
       return gcnew WrapBuiltIn<Int32>(this);
    else if (TypeName == "String")
       return gcnew WrapBuiltIn<String^>(this);
+   else if (TypeName == "Boolean")
+      return gcnew WrapBuiltIn<Boolean>(this);
    else if (TypeName == "Single[]")
       return gcnew WrapBuiltIn<array<Single>^>(this);
    else if (TypeName == "Double[]")
@@ -165,6 +167,8 @@ ApsimType^ FactoryProperty::GetFieldWrapper()
       return gcnew WrapBuiltIn<array<Int32>^>(this);
    else if (TypeName == "String[]")
       return gcnew WrapBuiltIn<array<String^>^>(this);
+   else if (TypeName == "Boolean[]")
+      return gcnew WrapBuiltIn<array<Boolean>^>(this);
    else if (TypeName == "DateTime")
       return gcnew WrapBuiltIn<DateTime>(this);
 	else
