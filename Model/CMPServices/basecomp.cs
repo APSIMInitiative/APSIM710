@@ -616,7 +616,7 @@ namespace CMPServices
                             }
                             else
                             {
-                                string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
+                                string errorMsg = string.Format("{0}: Type of value passed for event {1} ({2}) parameter is incompatible.", FName, eventID, eventInfo.sDescr);
                                 throw (new TypeMisMatchException(errorMsg));
                             }
                         }

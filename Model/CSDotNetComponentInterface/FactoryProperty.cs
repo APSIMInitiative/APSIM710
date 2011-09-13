@@ -664,6 +664,10 @@ public class FactoryProperty : Instance, ApsimType
             {
                 result = "<type kind=\"string\" array=\"T\"/>";
             }
+            else if (typeof(T) == typeof(DateTime))
+            {
+                result = "<type kind=\"double\"/>";
+            }
             return result;
         }
 

@@ -902,9 +902,7 @@ namespace ModelFramework
                 attributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 if (attributes.Length > 0)
                     product = (attributes[0] as AssemblyProductAttribute).Product;
-                attributes = assembly.GetCustomAttributes(typeof(AssemblyVersionAttribute), false);
-                if (attributes.Length > 0)
-                    version = (attributes[0] as AssemblyVersionAttribute).Version;
+                version = assembly.GetName().Version.Major.ToString() + "." + assembly.GetName().Version.Minor.ToString();
             }
             Desc.Append("   <executable>" + DllFileName + "</executable>\r\n");
             Desc.Append("   <class>" + product + "</class>\r\n");

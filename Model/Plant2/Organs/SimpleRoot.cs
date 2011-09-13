@@ -27,7 +27,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
    public override double WaterDemand { get { return 0; } }
 
    [Link] Paddock MyPaddock;
-   [Link(IsOptional.Yes)] SoilWat SoilWat;
+   [Link(IsOptional.Yes)] SoilWat SoilWater;
 
 
    [Output]  [Units("mm")] public double WaterUptake
@@ -51,7 +51,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
       {
       get
          {
-         if (SoilWat != null)
+         if (SoilWater != null)
             {
             Component RootComp = MyPaddock.ComponentByName(Plant.Name + "root");
             double[] SWSupply = RootComp.Variable("SWSupply").ToDoubleArray();
@@ -77,7 +77,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
    public override void DoWaterUptake(double Amount)
       {
       Uptake = Amount;
-      if (SoilWat != null)
+      if (SoilWater != null)
          {
          Component RootComp = MyPaddock.ComponentByName(Plant.Name + "root");
          RootComp.Variable("SWUptake").Set(Amount);

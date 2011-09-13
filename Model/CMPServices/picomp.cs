@@ -1281,7 +1281,7 @@ namespace CMPServices
                             }
                             else
                             {
-                                string errorMsg = string.Format("{0}: Type of value passed for event ({1}) parameter is incompatible.", FName, eventID);
+                                string errorMsg = string.Format("{0}: Type of value passed for event {1} ({2}) parameter is incompatible.", FName, eventID, eventInfo.sDescr);
                                 throw (new TypeMisMatchException(errorMsg));
                             }
                         }
@@ -1331,7 +1331,7 @@ namespace CMPServices
                     aDriver = (TDriverInfo)driverList[(int)driverID];
                     if (!aDriver.checkCompatibility(providerID, sDDML))
                     {
-                        string errorMsg = string.Format("{0}: Type of value passed for driving variable {1} is incompatible.\n {2} <- {3}", FName, driverID, aDriver.sDDML, sDDML);
+                        string errorMsg = string.Format("{0}: Type of value passed for driving variable {1} ({2}) is incompatible.\n {3} <- {4}", FName, driverID, aDriver.sDescr, aDriver.sDDML, sDDML);
                         throw (new TypeMisMatchException(errorMsg));
                     }
 
