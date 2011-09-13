@@ -1217,7 +1217,7 @@ Public Class DDRules
             Return "MilkCurve"
         End Get
         Set(ByVal value As String)
-            Dim strValues As String() = value.Split(",")
+            Dim strValues As String() = value.Split(New [Char]() {","c})
             Dim values(11) As Double
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
@@ -1250,7 +1250,7 @@ Public Class DDRules
             Return result
         End Get
         Set(ByVal value As String)
-            Dim strValues As String() = value.Split(",")
+            Dim strValues As String() = value.Split(New [Char]() {","c})
             ReDim strEffluentPaddocks(strValues.Length - 1)
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
@@ -1281,7 +1281,7 @@ Public Class DDRules
             Return result
         End Get
         Set(ByVal value As String)
-            Dim strValues As String() = value.Split(",")
+            Dim strValues As String() = value.Split(New [Char]() {","c})
             ReDim strLanewayPaddocks(strValues.Length - 1)
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
@@ -1301,7 +1301,7 @@ Public Class DDRules
             Return "LWtCurve"
         End Get
         Set(ByVal value As String)
-            Dim strValues As String() = value.Split(",")
+            Dim strValues As String() = value.Split(New [Char]() {","c})
             Dim values(12) As Double
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then

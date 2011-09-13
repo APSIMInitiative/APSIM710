@@ -8,4 +8,4 @@
 #include "ApsimVersion.h"
 #include "ApsimSettings.h"
 
-#include <Build\VersionInfo.cpp>
+#include <Build/VersionInfo.cpp>

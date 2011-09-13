@@ -383,7 +383,7 @@ Public Class LocalPaddockType
             urine.InfiltrationShapeType = ""
             UrinePatchComponent.Publish("ApplyUrine", urine)
         Else    ' use simple fertiliser and irrigation events
-            Dim FertiliserA As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
+            Dim FertiliserA As Fertiliser = CType(ApSim_SubPaddock.ComponentByType("Fertiliser"), Fertiliser)
             Dim FertData As New FertiliserApplicationType()
             FertData.Amount = kgN_ha
             FertData.Type = "urea_N"
@@ -391,7 +391,7 @@ Public Class LocalPaddockType
             FertiliserA.Apply(FertData)
 
             'Console.WriteLine("1 : Getting Irrigation Component")
-            Dim IrrigationA As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
+            Dim IrrigationA As Irrigation = CType(ApSim_SubPaddock.ComponentByType("Irrigation"), Irrigation)
             Dim IrrData As New IrrigationApplicationType
             IrrData.Amount = vol_ha / 10000 ' 20107003 - converting litres/ha to mm/ha
             IrrData.source = New String() {} 'NB. can't be nothing
@@ -577,7 +577,7 @@ Public Class LocalPaddockType
     End Function
 
     Sub Irrigate(ByVal data As IrrigationApplicationType)
-        Dim myIrrigation As Irrigation = ApSim_SubPaddock.ComponentByType("Irrigation")
+        Dim myIrrigation As Irrigation = CType(ApSim_SubPaddock.ComponentByType("Irrigation"), Irrigation)
         'myIrrigation.irrigation_efficiency = myIrrigation_efficiency 'don't know how to do this!
         data.Crop_Area = Area
         'Console.WriteLine("Irrigation " + Name)
@@ -587,7 +587,7 @@ Public Class LocalPaddockType
     End Sub
 
     Sub Apply(ByVal data As FertiliserApplicationType)
-        Dim myFertiliser As Fertiliser = ApSim_SubPaddock.ComponentByType("Fertiliser")
+        Dim myFertiliser As Fertiliser = CType(ApSim_SubPaddock.ComponentByType("Fertiliser"), Fertiliser)
         'Console.WriteLine("Fertiliser " + Name)
         'Console.WriteLine("   kg/ha = " + data.Amount.ToString())
         'Console.WriteLine("   mm    = " + data.Depth.ToString())
@@ -597,7 +597,7 @@ Public Class LocalPaddockType
 
     Public Function PlantAvalibleWater(ByVal atDepth As Single) As Single
         Dim SoilWater As ModelFramework.SoilWat
-        SoilWater = ApSim_SubPaddock.ComponentByType("SoilWat")
+        SoilWater = CType(ApSim_SubPaddock.ComponentByType("SoilWat"), ModelFramework.SoilWat)
         'Dim esw As Single = SoilWater.esw '  ApSim_SubPaddock.Variable("esw").ToDoubleArray()
         Dim sw_dep As Single() = SoilWater.sw_dep ' ApSim_SubPaddock.Variable("sw_dep").ToDoubleArray()
         Dim dul_dep As Single() = SoilWater.dul_dep ' ApSim_SubPaddock.Variable("ll15_dep").ToDoubleA
