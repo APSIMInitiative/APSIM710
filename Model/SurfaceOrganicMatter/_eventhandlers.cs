@@ -6,7 +6,7 @@ public partial class SurfaceOrganicMatter : Instance
 {
 
     [EventHandler]
-    public void OnTick()
+    public void OnTick(TimeType tick)
     {
         if (initialised)
             surfaceOM_ONtick();

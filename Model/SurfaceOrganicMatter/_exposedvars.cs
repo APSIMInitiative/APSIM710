@@ -170,9 +170,9 @@ public partial class SurfaceOrganicMatter : Instance
     float irrigation = float.NaN;
 
     [Input]
-    double today { set { Today = DateUtility.JulianDateToDateTime(value); } get { return DateUtility.dateTimeToJulianDate(Today); } }
-
+    int today { set { Today = DateUtility.JulianDayNumberToDateTime(value); } get { return DateUtility.dateTimeToJulianDayNumber(Today); } }
     DateTime Today;
+
 
     /*
     [Input(true)]

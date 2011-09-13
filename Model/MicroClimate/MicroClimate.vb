@@ -326,7 +326,7 @@ Partial Public Class MicroMet
     <EventHandler()> _
     Public Sub OnTick(time As TimeType)
         todayHeaderWritten = False
-        DateUtility.JulianDateToDayOfYear(time.startday, day, year)
+        DateUtility.JulianDayNumberToDayOfYear(time.startday, day, year)
     End Sub
 
     <EventHandler()> _
