@@ -18,9 +18,7 @@ set releaseNumber [lindex [split $releaseNumber " r"] 1]
 # Explanation: Because Bob does a commit at the end of
 # a build (causing the revision number to increment by 1), Bob writes the revision number + 1
 # to the apsim.xml file in anticipation of the pending commit.
-puts $argv
 if {$argv == "Increment"} {
-    puts "in"
     incr releaseNumber
 }
 

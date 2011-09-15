@@ -32,7 +32,7 @@
          this.NumberControl = new System.Windows.Forms.NumericUpDown();
          this.LinkedCheckBox = new System.Windows.Forms.CheckBox();
          this.OkButton = new System.Windows.Forms.Button();
-         this.CancelButton = new System.Windows.Forms.Button();
+         this.CanclButton = new System.Windows.Forms.Button();
          ((System.ComponentModel.ISupportInitialize)(this.NumberControl)).BeginInit();
          this.SuspendLayout();
          // 
@@ -87,21 +87,21 @@
          // 
          // CancelButton
          // 
-         this.CancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-         this.CancelButton.Location = new System.Drawing.Point(308, 42);
-         this.CancelButton.Name = "CancelButton";
-         this.CancelButton.Size = new System.Drawing.Size(75, 23);
-         this.CancelButton.TabIndex = 4;
-         this.CancelButton.Text = "Cancel";
-         this.CancelButton.UseVisualStyleBackColor = true;
-         this.CancelButton.Click += new System.EventHandler(this.CancelButtonClick);
+         this.CanclButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.CanclButton.Location = new System.Drawing.Point(308, 42);
+         this.CanclButton.Name = "CancelButton";
+         this.CanclButton.Size = new System.Drawing.Size(75, 23);
+         this.CanclButton.TabIndex = 4;
+         this.CanclButton.Text = "Cancel";
+         this.CanclButton.UseVisualStyleBackColor = true;
+         this.CanclButton.Click += new System.EventHandler(this.CancelButtonClick);
          // 
          // DuplicateForm
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.ClientSize = new System.Drawing.Size(395, 91);
-         this.Controls.Add(this.CancelButton);
+         this.Controls.Add(this.CanclButton);
          this.Controls.Add(this.OkButton);
          this.Controls.Add(this.LinkedCheckBox);
          this.Controls.Add(this.NumberControl);
@@ -120,6 +120,6 @@
       private System.Windows.Forms.NumericUpDown NumberControl;
       private System.Windows.Forms.CheckBox LinkedCheckBox;
       private System.Windows.Forms.Button OkButton;
-      private System.Windows.Forms.Button CancelButton;
+      private System.Windows.Forms.Button CanclButton;
       }
    }

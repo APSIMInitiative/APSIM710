@@ -92,12 +92,8 @@ namespace Graph
             tabControl1.SelectTab(PageName);
             GalleryPanel Gallery = (GalleryPanel)tabControl1.SelectedTab.Controls[0];
 
-            // Simulate a mouse click on the appropriate chart. There seems to be no other
-            // way to tell the gallery to select a chart.
-            Point p = Gallery.Charts[SeriesIndex].Location;
-            int MousePos = p.Y * 65536 + p.X;
-            PostMessage(Gallery.Charts[SeriesIndex].Handle, WM_LBUTTONDOWN, 1, MousePos);
-            PostMessage(Gallery.Charts[SeriesIndex].Handle, WM_LBUTTONUP, 0, MousePos);
+            // Tell the gallery to select a chart.
+            Gallery.Charts[SeriesIndex].Select();
 
             X.Items.Clear();
             X.Items.Add(XmlHelper.Value(PlotNode, "X"));
@@ -144,7 +140,7 @@ namespace Graph
                {
                Series S = Gallery.SelectedChart.Series[0];
                if (Y != Y1.Items[0].ToString())
-                  S = Gallery.SelectedChart.Series[0].Clone();
+                  S = (Series) Gallery.SelectedChart.Series[0].Clone();
                S.Title = Y;
                
                XmlDocument Doc = new XmlDocument();
@@ -173,7 +169,7 @@ namespace Graph
                {
                Series S = Gallery.SelectedChart.Series[0];
                if (XName != X.Items[0].ToString())
-                  S = Gallery.SelectedChart.Series[0].Clone();
+                  S = (Series) Gallery.SelectedChart.Series[0].Clone();
 
                S.Title = XName;
                XmlDocument Doc = new XmlDocument();

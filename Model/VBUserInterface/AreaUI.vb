@@ -107,47 +107,36 @@ Public Class AreaUI
 
 #End Region
 
-    Protected Overrides Sub OnLoad()
-        ' ---------------------------------------------------
-        ' Set ourselves up.
-        ' ---------------------------------------------------
+   ' ----------------------------------
+   ' Refresh the listview
+   ' ----------------------------------
+   Public Overrides Sub OnRefresh()
+      ListView.Clear()
+      ListView.LargeImageList = Controller.ImageList("LargeIcon")
 
-        AddHandler Controller.ApsimData.ComponentChangedEvent, AddressOf OnRefresh
-    End Sub
-
-    Public Overrides Sub OnClose()
-        RemoveHandler Controller.ApsimData.ComponentChangedEvent, AddressOf OnRefresh
-    End Sub
-    ' ----------------------------------
-    ' Refresh the listview
-    ' ----------------------------------
-    Public Overrides Sub OnRefresh()
-        ListView.Clear()
-        ListView.LargeImageList = Controller.ImageList("LargeIcon")
-
-        ' Add an item for all children of this system.
-        Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
-        If Not IsNothing(Comp) Then
-            For Each Child As ApsimFile.Component In Comp.ChildNodes
-                If Child.Type <> "factorial" Then
-                    'create new item
-                    Dim item As New ListViewItem(Child.Name, 0)
-                    item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
-                    ListView.Items.Add(item)
-                End If
-            Next
-
-
-            ' Put up a background bitmap on listview.
-            Dim BitmapNode As XmlNode = XmlHelper.Find(Data, "bitmap")
-            If Not IsNothing(BitmapNode) Then
-                Dim TempFileName As String = Path.GetTempPath() + "\\apsimui.jpg"
-                Dim b As Bitmap = CSGeneral.BitmapUtility.DecodeStringToBitmap(BitmapNode.Value)
-                b.Save(TempFileName)
-                UIUtility.ListViewAPI.SetListViewImage(ListView, TempFileName, UIUtility.ImagePosition.TopLeft)
+      ' Add an item for all children of this system.
+      Dim Comp As ApsimFile.Component = Controller.ApsimData.Find(NodePath)
+      If Not IsNothing(Comp) Then
+         For Each Child As ApsimFile.Component In Comp.ChildNodes
+            If Child.Type <> "factorial" Then
+               'create new item
+               Dim item As New ListViewItem(Child.Name, 0)
+               item.ImageIndex = Controller.ImageIndex(Child.Type, "LargeIcon")
+               ListView.Items.Add(item)
             End If
-        End If
-    End Sub
+         Next
+
+
+         ' Put up a background bitmap on listview.
+         Dim BitmapNode As XmlNode = XmlHelper.Find(Data, "bitmap")
+         If Not IsNothing(BitmapNode) Then
+            Dim TempFileName As String = Path.GetTempPath() + "\\apsimui.jpg"
+            Dim b As Bitmap = CSGeneral.BitmapUtility.DecodeStringToBitmap(BitmapNode.Value)
+            b.Save(TempFileName)
+            UIUtility.ListViewAPI.SetListViewImage(ListView, TempFileName, UIUtility.ImagePosition.TopLeft)
+         End If
+      End If
+   End Sub
 
     ' ---------------------------------------------------------
     ' User has double clicked an item - show user interface

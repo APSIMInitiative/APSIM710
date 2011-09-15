@@ -9,7 +9,6 @@ Imports ApsimFile
 Imports Controllers
 Imports CSGeneral
 Imports UIBits              'InputDialog
-Imports TMGDevelopment.Windows.Forms
 Imports System.Drawing.Printing
 
 
@@ -154,10 +153,6 @@ Public Class BaseActions
       PreviewDialog.ShowDialog()
    End Sub
 
-   Private Shared Sub OnPreDraw(ByVal sender As System.Object, ByVal e As TMGDevelopment.Windows.Forms.PreDrawEventArgs)
-      e.OwnerDrawn = True
-   End Sub
-
    Private Shared Sub OnPrintPage(ByVal sender As System.Object, ByVal e As System.Drawing.Printing.PrintPageEventArgs)
       ComponentsToPrintIndex = ComponentsToPrintIndex + 1
       If ComponentsToPrintIndex < ComponentsToPrint.Count Then
@@ -275,11 +270,6 @@ Public Class BaseActions
          Throw New Exception("Invalid format for exporting: " + NewFileName)
          img.Dispose()
       End If
-   End Sub
-
-   Private Shared Sub OnExportPreDraw(ByVal sender As Object, ByVal e As PreDrawEventArgs)
-      Contr.Explorer.CurrentView.PrintPage(e.Bounds, e.Graphics)
-      e.OwnerDrawn = True
    End Sub
 
 #End Region

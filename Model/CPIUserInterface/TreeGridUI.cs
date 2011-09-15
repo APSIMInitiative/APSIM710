@@ -604,7 +604,7 @@ namespace CPIUserInterface
                         fpEditComponentSDML = (PEditCompSDML)Marshal.GetDelegateForFunctionPointer(procAddr, typeof(PEditCompSDML));
                         result = fpEditComponentSDML(sInitSDML, IntPtr.Zero, ref len, sim);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         MessageBox.Show("Could not open editor.", "Error");
                     }

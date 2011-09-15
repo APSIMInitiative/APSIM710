@@ -293,7 +293,6 @@
 
         #endregion
 
-        private FarPoint.Win.Spread.FpSpread fpSpread1;
         private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.TreeView treeSims;

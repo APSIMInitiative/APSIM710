@@ -321,7 +321,7 @@ namespace UIBits
       /// </summary>
       void OnCellValidating(object sender, DataGridViewCellValidatingEventArgs e)
          {
-         if (!InRefresh && e.FormattedValue != "" && 
+         if (!InRefresh && e.FormattedValue.ToString() != "" && 
              DataSourceTable != null && DataSourceTable.Columns[e.ColumnIndex].DataType == typeof(double))
             {
             double Value;

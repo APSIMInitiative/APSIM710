@@ -352,7 +352,7 @@ namespace CSUserInterface
                     {
                         return (int)Convert.ToSingle(sReturn);
                     }
-                    catch (Exception ex) 
+                    catch (Exception ) 
                     {}
                 }
             }
@@ -366,7 +366,7 @@ namespace CSUserInterface
                 try
                 {
                     return (int)Convert.ToSingle(sReturn);
-                }catch(Exception ex){}
+                }catch(Exception ){}
             }
             return 0;
         }

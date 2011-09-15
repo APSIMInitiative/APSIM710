@@ -187,10 +187,7 @@ namespace ApsimFile
         }
         private string GetFilePath()
         {
-            Assembly assem = System.Reflection.Assembly.GetEntryAssembly();
-            if (assem == null)
-                assem = System.Reflection.Assembly.GetCallingAssembly();
-            return assem.Location;
+            return System.Reflection.Assembly.GetExecutingAssembly().Location;
         }
 
 

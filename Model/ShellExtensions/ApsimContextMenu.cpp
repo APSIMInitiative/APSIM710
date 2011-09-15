@@ -15,57 +15,7 @@ HINSTANCE hInstance;
 extern ULONG g_DllRefCount;
 using namespace std;
 
-// ---------------------------------------------
-// DPH: I've added some simple XML reading routines
-// so that we don't need to link against LibXML2.
-// We changed LibXML2 versions before APSIM 7.1 and
-// this causes problems with the Windows Explorer
-// context menu hiding earlier APSIM versions of 
-// the menu.
-// ----------------------------------------------
-string getXMLValue(const string& NodeName)
-   {
-   string apsimdir = getApsimDirectory();
-   string apsimXMLFileName = apsimdir + "\\apsim.xml";
-   ifstream in(apsimXMLFileName.c_str());
-   string line;
-   getline(in, line);
-
-   string st = "<" + NodeName + ">";
-      
-   while (in && strstr(line.c_str(), st.c_str()) == NULL)
-      getline(in, line);
-   
-   if (stristr(line.c_str(), st.c_str()) == NULL)
-      {
-      ::MessageBox(NULL, "Cannot find APSIM version number in ShellExtensions", "Error", 0);
-      return "";
-      }
-    
-   // Get rid of element open tag e.g <apsim>
-   replaceAll(line, st, "");
-   
-   // Get rid of element close tag e.g. </apsim>
-   st = "</" + NodeName + ">";
-   replaceAll(line, st, "");
-
-   // remove any unnecessary spaces.
-   replaceAll(line, " ", "");
-
-   // What's left should be the node value e.g. 5.2
-   return line;
-   }   
-string getApsimVersion()
-   {
-   return getXMLValue("apsim");
-   }
-string getApsimBuildNumber()
-   {
-   return getXMLValue("buildnumber");
-   }
-   
-
-
+#include <Build/VersionInfo.cpp>
 //---------------------------------------------------------------------------
 // generated with CoCreateGuid()
 //---------------------------------------------------------------------------

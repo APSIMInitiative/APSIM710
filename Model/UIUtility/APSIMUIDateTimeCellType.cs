@@ -49,7 +49,7 @@ public class CalendarCell : DataGridViewTextBoxCell
       CalendarEditingControl ctl = DataGridView.EditingControl as CalendarEditingControl;
 
       // Use the default row value when Value property is null.
-      if (this.Value == null || this.Value == "")
+      if (this.Value == null || this.Value.ToString() == "")
          {
          ctl.Value = (DateTime)this.DefaultNewRowValue;
          }

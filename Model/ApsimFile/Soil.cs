@@ -915,7 +915,7 @@ namespace ApsimFile
             {
                 Var = GetCalculated(SoilNode, VariableName);
             }
-            catch (Exception err)
+            catch (Exception )
             { }
             if (Var == null)
             {

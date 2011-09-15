@@ -32,7 +32,7 @@
              this.label4 = new System.Windows.Forms.Label();
              this.DropBoxFolder = new System.Windows.Forms.TextBox();
              this.OkButton = new System.Windows.Forms.Button();
-             this.CancelButton = new System.Windows.Forms.Button();
+             this.CanclButton = new System.Windows.Forms.Button();
              this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
              this.groupBox1 = new System.Windows.Forms.GroupBox();
              this.arch_win32 = new System.Windows.Forms.CheckBox();
@@ -50,7 +50,7 @@
              this.BootlegSelector = new System.Windows.Forms.Button();
              this.label1 = new System.Windows.Forms.Label();
              this.simsPerJob = new System.Windows.Forms.NumericUpDown();
-             this.HelpButton = new System.Windows.Forms.Button();
+             this.HlpButton = new System.Windows.Forms.Button();
              this.groupBox1.SuspendLayout();
              ((System.ComponentModel.ISupportInitialize)(this.simsPerJob)).BeginInit();
              this.SuspendLayout();
@@ -83,17 +83,17 @@
              // 
              // CancelButton
              // 
-             this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-             this.CancelButton.Location = new System.Drawing.Point(510, 334);
-             this.CancelButton.Name = "CancelButton";
-             this.CancelButton.Size = new System.Drawing.Size(75, 23);
-             this.CancelButton.TabIndex = 10;
-             this.CancelButton.Text = "Cancel";
-             this.CancelButton.UseVisualStyleBackColor = true;
+             this.CanclButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+             this.CanclButton.Location = new System.Drawing.Point(510, 334);
+             this.CanclButton.Name = "CancelButton";
+             this.CanclButton.Size = new System.Drawing.Size(75, 23);
+             this.CanclButton.TabIndex = 10;
+             this.CanclButton.Text = "Cancel";
+             this.CanclButton.UseVisualStyleBackColor = true;
              // 
              // groupBox1
              // 
-             this.groupBox1.Controls.Add(this.HelpButton);
+             this.groupBox1.Controls.Add(this.HlpButton);
              this.groupBox1.Controls.Add(this.simsPerJob);
              this.groupBox1.Controls.Add(this.label1);
              this.groupBox1.Controls.Add(this.BootlegSelector);
@@ -260,13 +260,13 @@
              // 
              // HelpButton
              // 
-             this.HelpButton.Image = ((System.Drawing.Image)(resources.GetObject("HelpButton.Image")));
-             this.HelpButton.Location = new System.Drawing.Point(534, 217);
-             this.HelpButton.Name = "HelpButton";
-             this.HelpButton.Size = new System.Drawing.Size(39, 30);
-             this.HelpButton.TabIndex = 31;
-             this.HelpButton.UseVisualStyleBackColor = true;
-             this.HelpButton.Click += new System.EventHandler(this.ClusterHelpDocumentation);
+             this.HlpButton.Image = ((System.Drawing.Image)(resources.GetObject("HelpButton.Image")));
+             this.HlpButton.Location = new System.Drawing.Point(534, 217);
+             this.HlpButton.Name = "HelpButton";
+             this.HlpButton.Size = new System.Drawing.Size(39, 30);
+             this.HlpButton.TabIndex = 31;
+             this.HlpButton.UseVisualStyleBackColor = true;
+             this.HlpButton.Click += new System.EventHandler(this.ClusterHelpDocumentation);
              // 
              // ClusterForm
              // 
@@ -275,7 +275,7 @@
              this.ClientSize = new System.Drawing.Size(614, 369);
              this.Controls.Add(this.BrowseButton2);
              this.Controls.Add(this.groupBox1);
-             this.Controls.Add(this.CancelButton);
+             this.Controls.Add(this.CanclButton);
              this.Controls.Add(this.OkButton);
              this.Controls.Add(this.label4);
              this.Controls.Add(this.DropBoxFolder);
@@ -295,7 +295,7 @@
       private System.Windows.Forms.Label label4;
       private System.Windows.Forms.TextBox DropBoxFolder;
       private System.Windows.Forms.Button OkButton;
-      private System.Windows.Forms.Button CancelButton;
+      private System.Windows.Forms.Button CanclButton;
       private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
       private System.Windows.Forms.GroupBox groupBox1;
       private System.Windows.Forms.TextBox VersionBox;
@@ -313,6 +313,6 @@
       private System.Windows.Forms.Button BootlegSelector;
       private System.Windows.Forms.Label label1;
       private System.Windows.Forms.NumericUpDown simsPerJob;
-      public System.Windows.Forms.Button HelpButton;
+      public System.Windows.Forms.Button HlpButton;
       }
    }

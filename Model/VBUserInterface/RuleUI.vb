@@ -5,8 +5,6 @@ Imports System.Collections.Generic
 Imports System.IO
 Imports System.Xml
 
-Imports FarPoint.Win.Spread
-
 Imports Controllers
 Imports CSGeneral
 Imports UIBits      'InputDialog

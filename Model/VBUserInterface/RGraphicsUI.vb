@@ -6,8 +6,6 @@ Imports System.IO
 Imports System.Xml
 Imports Microsoft.Win32
 
-Imports FarPoint.Win.Spread
-
 Imports Controllers
 Imports CSGeneral
 Imports CSGeneral.Utility
@@ -25,7 +23,7 @@ Public Class RGraphicsUI
 
     ' An editable script 
     Friend WithEvents ScriptPage As System.Windows.Forms.TabPage
-    Private ScriptBox As QWhale.Editor.SyntaxEdit
+   Private ScriptBox As QWhale.Editor.SyntaxEdit
 
     ' Text output from running R
     Friend WithEvents Console As System.Windows.Forms.TabPage

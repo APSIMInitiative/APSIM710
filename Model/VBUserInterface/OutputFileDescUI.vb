@@ -59,7 +59,6 @@ Public Class OutputFileDescUI
    'Do not modify it using the code editor.
    Friend WithEvents OpenFileDialog As System.Windows.Forms.OpenFileDialog
    Friend WithEvents GridPanel As System.Windows.Forms.Panel
-   Friend WithEvents FpSpread1 As FarPoint.Win.Spread.FpSpread
    Friend WithEvents GridContextMenu As System.Windows.Forms.ContextMenuStrip
    Friend WithEvents MoveUpMenuItem As System.Windows.Forms.ToolStripMenuItem
    Friend WithEvents MoveDownMenuItem As System.Windows.Forms.ToolStripMenuItem
