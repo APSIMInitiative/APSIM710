@@ -1,0 +1,406 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = W0R60
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component    "Buckby (Roseworthy) Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component "Buckby (Roseworthy) Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component        "raphanus_raphanistrum" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/04/2003
+     Simulation end date   = 31/12/2003
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Roseworthy.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        day
+        year
+        dd/mm/yyyy as date
+        height as R_height
+        lai as R_lai
+        leaf_no as R_leaf_no
+        leaf_no_sen as R_leaf_no_sen
+        biomass as R_biomass
+        leafgreenwt as R_leafgreenwt
+        stemgreenwt as R_stemgreenwt
+        grain_wt as R_grain_wt
+        yield as R_yield
+
+     Output file = W0R60.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Schedule Initialisation ------------------------------------
+     Operations Schedule
+     ===================
+     10/06/2003  Prepare      Raphanus_raphanistrum sow plants =60, sowing_depth = 10, cultivar = PacN145, row_spacing = 120, crop_class = plant
+     10/06/2003  Prepare      fertiliser apply amount = 123 (kg/ha), depth = 50 (mm), type = urea()
+     10/06/2003  Prepare      fertiliser apply amount = 19 (kg/ha), depth = 50 (mm), type = nh4_n()
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if raphanus_raphanistrum.stagename = 'harvest_ripe' or raphanus_raphanistrum.plant_status = 'dead' then
+       raphanus_raphanistrum  harvest
+       raphanus_raphanistrum  end_crop
+                endif
+     END of rules
+     
+
+------- Buckby (Roseworthy) Water Initialisation ------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.050  0.104  0.300  0.350  0.300  1.330  0.856  0.200
+          200.-  400.  0.050  0.104  0.300  0.350  0.300  1.220  0.135  0.200
+          400.-  600.  0.090  0.115  0.300  0.350  0.300  1.330  0.009  0.200
+          600.-  800.  0.110  0.146  0.300  0.350  0.300  1.380  0.000  0.200
+          800.- 1000.  0.120  0.178  0.300  0.350  0.300  1.440  0.000  0.200
+         1000.- 1200.  0.130  0.202  0.336  0.380  0.336  1.530  0.000  0.200
+         1200.- 1400.  0.140  0.257  0.358  0.410  0.358  1.470  0.000  0.200
+         1400.- 1600.  0.150  0.318  0.387  0.410  0.387  1.490  0.000  0.200
+         1600.- 1800.  0.160  0.354  0.400  0.410  0.400  1.520  0.000  0.200
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      20.80      39.20      39.20      10.00
+          200.-  400.      20.80      39.20      39.20      10.00
+          400.-  600.      23.00      37.00      37.00      10.00
+          600.-  800.      29.20      30.80      30.80      10.00
+          800.- 1000.      35.60      24.40      24.40      10.00
+         1000.- 1200.      40.40      26.80      26.80       8.80
+         1200.- 1400.      51.40      20.20      20.20      10.40
+         1400.- 1600.      63.60      13.80      13.80       4.60
+         1600.- 1800.      70.80       9.20       9.20       2.00
+          ---------------------------------------------------------
+               Totals     355.60     240.60     240.60      75.80
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Buckby (Roseworthy) Nitrogen Initialisation ---------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Red Brown Earth
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.59  1.85   50.54   90.44    0.00
+             2     8.70  0.86   29.28   25.62    0.00
+             3     9.03  0.47   21.28    7.98    0.00
+             4     9.31  0.38    6.90    5.52    0.00
+             5     9.42  0.34    7.20    4.32    0.00
+             6     9.58  0.27   15.30    3.06    0.00
+             7     9.58  0.16   17.64    2.94    0.00
+             8     9.36  0.13   23.84    2.98    0.00
+             9     8.70  0.09   27.36    3.04    0.00
+          ------------------------------------------------
+           Totals              199.34  145.90    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      47941.2  1940.9  1162.4   145.3   119.3     6.0
+             2      20679.9   837.2   255.3    31.9    85.5     4.3
+             3      12375.2   501.0    73.6     9.2    61.3     3.1
+             4      10379.4   420.2    25.8     3.2    43.9     2.2
+             5       9724.8   393.7     9.6     1.2    31.5     1.6
+             6       8353.0   338.2     0.8     0.1    22.5     1.1
+             7       4585.9   185.7     0.5     0.1    16.1     0.8
+             8       3873.6   156.8     0.4     0.0    11.6     0.6
+             9       2766.1   112.0     0.3     0.0     8.3     0.4
+          ---------------------------------------------------------
+           Totals  120679.2  4885.8  1528.6   191.1   400.0    20.0
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+10 June 2003(Day of year=161), Operations Schedule: 
+      Sending sow message to raphanus_raphanistrum
+10 June 2003(Day of year=161), raphanus_raphanistrum: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = pacn145
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       9 (dd/mm)
+           emergence
+              cumvd_emergence            =       0      25 (vd)
+              tt_emergence               =     320     100 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.5      14 (h)
+              y_tt_end_of_juvenile       =     600     130 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =     260     260 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     200     200 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     700     700 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =       0 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0030     0.0030
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.05       0.05
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         200.0     0.060          0.104       1.000
+         200.0     0.060          0.128       1.000
+         200.0     0.060          0.180       1.000
+         200.0     0.060          0.220       1.000
+         200.0     0.060          0.262       1.000
+         200.0     0.060          0.336       1.000
+         200.0     0.040          0.358       1.000
+         200.0     0.040          0.387       1.000
+         200.0     0.040          0.400       1.000
+         -----------------------------------------------
+         Extractable SW:   121mm in  1800mm total depth (  7%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            161   10.0   60.0  120.0   0.0   0.0 pacn145
+         ------------------------------------------------
+     
+      Sending apply message to fertiliser
+10 June 2003(Day of year=161), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       123.00 of Urea ferilizer (urea)
+                                         added at depth   50.00 (layer   1)
+      Sending apply message to fertiliser
+     
+   - Reading Fertiliser Type Parameters
+        19.00 of N as ammonium (nh4_n)
+                                         added at depth   50.00 (layer   1)
+11 June 2003(Day of year=162), raphanus_raphanistrum: 
+      stage 2.0 germination
+20 June 2003(Day of year=171), raphanus_raphanistrum: 
+      stage 3.0 emergence
+                     biomass =           1.80 (g/m^2)   lai          =   0.048 (m^2/m^2)
+                     stover N conc =     6.50 (%)    extractable sw =   37.63 (mm)
+11 July 2003(Day of year=192), raphanus_raphanistrum: 
+      stage 4.0 end_of_juvenile
+                     biomass =          20.12 (g/m^2)   lai          =   0.297 (m^2/m^2)
+                     stover N conc =     5.78 (%)    extractable sw =  120.94 (mm)
+21 August 2003(Day of year=233), raphanus_raphanistrum: 
+      stage 5.0 floral_initiation
+                     biomass =         290.46 (g/m^2)   lai          =   3.915 (m^2/m^2)
+                     stover N conc =     5.20 (%)    extractable sw =  131.02 (mm)
+14 September 2003(Day of year=257), raphanus_raphanistrum: 
+      stage 6.0 flowering
+                     biomass =         701.22 (g/m^2)   lai          =   8.007 (m^2/m^2)
+                     stover N conc =     3.84 (%)    extractable sw =  103.65 (mm)
+1 October 2003(Day of year=274), raphanus_raphanistrum: 
+      stage 7.0 start_grain_fill
+                     biomass =         968.28 (g/m^2)   lai          =   5.669 (m^2/m^2)
+                     stover N conc =     2.88 (%)    extractable sw =   70.42 (mm)
+28 November 2003(Day of year=332), raphanus_raphanistrum: 
+      stage 8.0 end_grain_fill
+                     biomass =        1299.17 (g/m^2)   lai          =   0.114 (m^2/m^2)
+                     stover N conc =     1.96 (%)    extractable sw =    5.25 (mm)
+29 November 2003(Day of year=333), raphanus_raphanistrum: 
+      stage 9.0 maturity
+                     biomass =        1299.68 (g/m^2)   lai          =   0.105 (m^2/m^2)
+                     stover N conc =     1.96 (%)    extractable sw =    5.09 (mm)
+30 November 2003(Day of year=334), raphanus_raphanistrum: 
+      stage 10.0 harvest_ripe
+                     biomass =        1300.27 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.96 (%)    extractable sw =    4.94 (mm)
+30 November 2003(Day of year=334), Harvesting rule: 
+     Manager sending message :- raphanus_raphanistrum harvest
+     
+      flowering day          =  257                           stover (kg/ha)         =    12353.1
+      maturity day           =  333                           grain yield (kg/ha)    =      649.6
+      grain % water content  =    8.5                         grain yield wet (kg/ha)=      709.9
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      8.126
+      total above ground biomass (kg/ha)    =    13002.7
+      live above ground biomass (kg/ha)     =    13002.7
+      green above ground biomass (kg/ha)    =     8456.1
+      senesced above ground biomass (kg/ha) =     4546.6
+      number of leaves       =     53.7
+      DM Root:Shoot ratio    =     0.39                       Harvest Index          =       0.05
+      Stover C:N ratio       =    22.34                       Root C:N ratio         =      46.10
+      grain N percent        =     4.50                       total N content (kg/ha)=     250.40
+      grain N uptake (kg/ha) =    29.23                       senesced N content (kg/ha)=   68.20
+      green N content (kg/ha)=   152.97
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.182
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.187
+         floral_initiation    to flowering               0.000        0.001        0.000        0.152
+         flowering            to start_grain_fill        0.024        0.032        0.000        0.131
+         start_grain_fill     to end_grain_fill          0.231        0.265        0.000        0.087
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =               12353.1                     0.0
+                          N  (kg/ha) =                 221.17                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                 649.6                     0.0
+                          N  (kg/ha) =                  29.23                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.048 (m^2/m^2)
+                     stover N conc =     2.61 (%)    extractable sw =    4.94 (mm)
+     Manager sending message :- raphanus_raphanistrum end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  5070.5
+                          N  (kg/ha) =                   0.00                   43.99
+     
+31 December 2003(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
