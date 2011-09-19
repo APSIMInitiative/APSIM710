@@ -11,9 +11,12 @@ using CSGeneral;
 using System.IO;
 using UIUtility;
 using System.Collections;
+using System.Reflection;
 
 public partial class MainForm : Form
 {
+    private String ConfigFileName;      //selected filenames stored
+    private Boolean Sorting = false;    //flag when sorting
     [STAThread]
     static void Main(string[] Args)
     {
@@ -29,6 +32,7 @@ public partial class MainForm : Form
     /// </summary>
     public MainForm()
     {
+        ConfigFileName = Path.ChangeExtension(Assembly.GetExecutingAssembly().Location, "cfg");
         InitializeComponent();
     }
 
@@ -75,6 +79,19 @@ public partial class MainForm : Form
                     }
                 }
             }
+            //read the last used settings and tick off any files that match
+            if (File.Exists(ConfigFileName))
+            {
+                StreamReader reader = new StreamReader(ConfigFileName);
+                String filePath;
+                while ((filePath = reader.ReadLine()) != null)
+                {
+                    ListViewItem item = ListView.FindItemWithText(filePath);
+                    if (item != null)
+                        item.Checked = true;
+                }
+                reader.Close();
+            }
         }
         catch (Exception err)
         {
@@ -107,12 +124,26 @@ public partial class MainForm : Form
         foreach (ListViewItem Item in ListView.Items)
             Item.Checked = SelectCheckBox.Checked;
     }
-
+    /// <summary>
+    /// Store the selected filenames
+    /// </summary>
+    private void saveSelections()
+    {
+        StreamWriter writer = new StreamWriter(ConfigFileName);
+        foreach (ListViewItem item in ListView.Items)
+        {
+            if (item.Checked == true)
+                writer.WriteLine(item.Text);
+        }
+        writer.Close();
+    }
     /// <summary>
     /// User has clicked cancel - close form.
     /// </summary>
     private void OnCancelButtonClick(object sender, EventArgs e)
     {
+        if (MessageBox.Show("Do you want to remember your selected files?", "Save changes", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            saveSelections();
         Close();
     }
 
@@ -135,7 +166,7 @@ public partial class MainForm : Form
                         FileNames.Add(Item.Text);
                     }
                 }
-
+                saveSelections();
                 // Zip all files.
                 Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
 
@@ -152,6 +183,7 @@ public partial class MainForm : Form
 
     private void ListView_ColumnClick(object sender, ColumnClickEventArgs e)
     {
+        Sorting = true;
         ListViewSorter Sorter = new ListViewSorter();
         ListView.ListViewItemSorter = Sorter;
         if (!(ListView.ListViewItemSorter is ListViewSorter))
@@ -172,9 +204,21 @@ public partial class MainForm : Form
         Sorter.ByColumn = e.Column;
 
         ListView.Sort();
+        Sorting = false;
     }
-
-
+    /// <summary>
+    /// Report the number of items checked
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+    {
+        if (!Sorting)
+        {
+            if (ListView.CheckedItems != null)
+                labelChecked.Text = ListView.CheckedItems.Count.ToString() + " items selected";
+        }
+    }
 }
 
 public class ListViewSorter : System.Collections.IComparer
