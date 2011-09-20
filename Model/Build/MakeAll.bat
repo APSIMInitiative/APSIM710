@@ -2,12 +2,14 @@
 rem -------------------------------------------------------------
 rem This batch file compiles everything
 rem -------------------------------------------------------------
-pushd ..\..
+
+rem ----- Set the %APSIM% variable based on the directory where this batch file is located
+pushd %~dp0..\..
 set APSIM=%CD%
 popd
 
-call MakeProject RunTime
-call MakeProject JobScheduler
+call RunMake %APSIM%\Model\RunTime
+call RunMake %APSIM%\Model\JobScheduler
 
 rem Now go and do full build and run.
 ..\JobScheduler.exe BuildAll.xml

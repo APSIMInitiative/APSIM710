@@ -3,7 +3,7 @@
 ###########################################
 
 ifdef windir
- ifdef VSINSTALLDIR
+ ifdef VS100COMNTOOLS
    PLATFORM=WIN32VS
    DLL=dll
    ECHO=echo

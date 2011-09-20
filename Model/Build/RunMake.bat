@@ -1,16 +1,24 @@
 @echo off
+rem ----- Usage: RunMake Directory
+rem -----    e.g. RunMake %APSIM%\Model\CSGeneral
 
-if "%LIBPATH%" == "" (
-   if "%ProgramFiles(x86)%" == "" (
-      set Path=C:\Progra~1\gfortran\libexec\gcc\i586-pc-mingw32\4.5.0;C:\Progra~1\gfortran\bin;C:\Progra~1\LF9556\Bin;c:\Windows\System32
-      call "c:\Program Files\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
-   ) else (
-      set Path=C:\Progra~2\gfortran\libexec\gcc\i586-pc-mingw32\4.5.0;C:\Progra~2\gfortran\bin;C:\Progra~2\LF9556\Bin;c:\Windows\System32
-      call "c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat"
-   )
-   
-)
 
-if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\VersionInfo.bat"
+rem ----- Set the %APSIM% variable based on the directory where this batch file is located
+pushd %~dp0..\..
+set APSIM=%CD%
+popd
 
-%APSIM%\Model\Build\make %1 %2 %3 %4
+rem ----- Change the working directory to that specified by %1
+pushd %1
+
+rem ----- Setup the Visual Studio 2010 compiler tools
+if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
+
+rem ----- Set the APSIM versioning info
+if EXIST VersionInfo.bat call "%APSIM%\Model\Build\VersionInfo.bat"
+
+rem ----- Run MAKE
+%APSIM%\Model\Build\make %2 %3 %4
+
+rem ----- Restore the original directory.
+popd

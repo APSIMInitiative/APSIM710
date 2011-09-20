@@ -49,8 +49,13 @@ class Program
                     string PatchFileName = Details["PatchFileName"].ToString();
 
                     // Let the jobscheduler have a new variable called PatchFileName and JobID.
-                    TalkToJobScheduler("AddVariable~PatchFileName~" + Path.GetFileNameWithoutExtension(PatchFileName));
-                    TalkToJobScheduler("AddVariable~JobID~" + JobID.ToString());
+
+                    System.Environment.SetEnvironmentVariable("PatchFileName", 
+                                                              Path.GetFileNameWithoutExtension(PatchFileName),
+                                                              EnvironmentVariableTarget.User);
+                    System.Environment.SetEnvironmentVariable("JobID",
+                                                              JobID.ToString(),
+                                                              EnvironmentVariableTarget.User);
 
                     // NB *******************
                     // Increments the TipRevisionNumber
@@ -63,6 +68,15 @@ class Program
                     BuildsDB.UpdateStatus(JobID, "Running");
                     BuildsDB.UpdateStartDateToNow(JobID);
                     BuildsDB.UpdateRevisionNumber(JobID, TipRevisionNumber);
+
+                    // Check the previous job to see if it has stalled. If so then set it's 
+                    // status accordingly. Otherwise we get multiple "Running" status'.
+                    if (JobID > 0)
+                    {
+                        Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
+                        if (PreviousJob["Status"].ToString() == "Running")
+                            BuildsDB.UpdateStatus(JobID - 1, "Aborted");
+                    }
                 }
                 else
                     Thread.Sleep(3 * 60 * 1000); // 3 minutes

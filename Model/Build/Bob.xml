@@ -2,14 +2,10 @@
 <?xml-stylesheet type="text/xsl" href="Build.xsl"?>
 
 <!--
-    This is the Job Scheduler file that Bob uses. It cleans the %apsim% directory, loads
+    This is the Job Scheduler file that Bob uses. It loads
 	Build.xml to perform the build and run and then compresses the %apsim% directory, creates a 
 	binary zip file and sends an email.
 	
-	NB: If you run this on your computer, it will clean out all unversioned files from your %apsim%
-	    directory and revert all changes to SVN.
-		i.e. YOU MAY LOSE YOUR WORK !!!!!!!!
-
 -->
 <Folder name="Bob" LoopForever="no">
 
@@ -18,29 +14,9 @@
     Get the APSIM directory up to date and clean.
 	-->
 
-		<Job name="JobSchedulerWaitForPatch">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerWaitForPatch.exe C:\Upload</CommandLine>
-		</Job>
-		<Job name="SVN Revert"  wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>svn.exe revert -R %Apsim%</CommandLine>
-		</Job>
-		<Job name="SVN Update"  wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>svn.exe update %Apsim%</CommandLine>
-		</Job>	
-		<Job name="Remove unversioned files"  wait="yes">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerRemoveUnwantedFiles.exe %Apsim%</CommandLine>
-		</Job>
 		<Job name="Copy RunTime DLL's into model directory" wait="yes">
 			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
-			<CommandLine>..\Build\RunMake.bat</CommandLine>
-		</Job>
-		<Job name="Apply patch"  wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.zip"</CommandLine>
+			<CommandLine>..\Build\RunMake.bat %Apsim%/Model/RunTime</CommandLine>
 		</Job>
 		<Job name="Remove all .out and .sum files" wait="yes">
 			<WorkingDirectory>%Apsim%</WorkingDirectory>
