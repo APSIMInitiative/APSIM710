@@ -91,6 +91,7 @@ class FortranWrapper : public protocol::Component
                                              destID,
                                              asString(variableName),
                                              asString(dataTypeString));
+		 regItem->setName(asString(variableName));
          numvals = 0;
          protocol::Variant *variant = NULL;
          if (getVariable((unsigned int)regItem, &variant, isOptional))

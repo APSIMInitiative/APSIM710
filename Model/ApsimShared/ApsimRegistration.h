@@ -25,20 +25,7 @@ class EXPORT  ApsimRegistration
               componentID(_componentID),
               destinationID(_destinationID)
         {
-        unsigned int pos = registrationName.find('(');
-        if (pos != std::string::npos)
-           {
-           arraySpecifier = registrationName.substr(pos);
-//           registrationName = registrationName.substr(0, pos);
-           }
-
-        pos = (unsigned)registrationName.rfind('(');
-        if (pos != std::string::npos)
-           {
-           registrationNameWithoutBrackets = registrationName.substr(0, pos);
-           }
-        else
-           registrationNameWithoutBrackets = registrationName;
+			setName(registrationName);
         };
 
       virtual ~ApsimRegistration(void) {};
@@ -74,6 +61,23 @@ class EXPORT  ApsimRegistration
 	  const std::string& getDDML(void) const {return ddml;};
 	  int getComponentID(void) const {return componentID;};
       int getDestinationID(void) const {return destinationID;};
+	  void setName(const std::string& name) { 
+		registrationName = ToLower(name);
+        unsigned int pos = registrationName.find('(');
+        if (pos != std::string::npos)
+           {
+           arraySpecifier = registrationName.substr(pos);
+//           registrationName = registrationName.substr(0, pos);
+           }
+
+        pos = (unsigned)registrationName.rfind('(');
+        if (pos != std::string::npos)
+           {
+           registrationNameWithoutBrackets = registrationName.substr(0, pos);
+           }
+        else
+           registrationNameWithoutBrackets = registrationName;
+	  };
 
       virtual unsigned int getRegID(void) const = 0;
 

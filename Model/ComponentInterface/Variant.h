@@ -5,6 +5,8 @@
 #include "Type.h"
 #include "ArraySpecifier.h"
 
+using namespace std;
+
 namespace protocol {
 // ------------------------------------------------------------------
 //  Short description:
@@ -128,8 +130,9 @@ class Variant
 
 	  void copyFrom(const Variant& from)
 		 {
-		 newDataPtr = new char[from.messageData.totalBytes()+1];
-		 messageData = MessageData(newDataPtr, from.messageData.totalBytes());
+	     unsigned nBytes = max(sizeof(double), from.messageData.totalBytes());
+		 newDataPtr = new char[nBytes+1];
+		 messageData = MessageData(newDataPtr, nBytes);
 		 messageData.copyFrom(from.messageData.start(), from.messageData.totalBytes());
 		 messageData.reset();
 // We need to make a copy of the type information, not just take a reference
