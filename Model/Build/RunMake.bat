@@ -4,12 +4,12 @@ rem -----    e.g. RunMake %APSIM%\Model\CSGeneral
 
 
 rem ----- Set the %APSIM% variable based on the directory where this batch file is located
-pushd %~dp0..\..
+set PATHSAVED=%CD%
+cd %~dp0..\..
 set APSIM=%CD%
-popd
 
 rem ----- Change the working directory to that specified by %1
-pushd %1
+cd %1
 
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
@@ -21,4 +21,5 @@ rem ----- Run MAKE
 %APSIM%\Model\Build\make %2 %3 %4
 
 rem ----- Restore the original directory.
-popd
+cd %PATHSAVED%
+set PATHSAVED=
