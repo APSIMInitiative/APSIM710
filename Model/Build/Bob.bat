@@ -3,6 +3,7 @@
 rem ----- Endless loop to continually restart the JobScheduler.
 :Start
 
+cd \Apsim
 call BobMain.bat
 
 rem ----- Go back to start if JobScheduler returns code 0

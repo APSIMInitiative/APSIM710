@@ -744,7 +744,7 @@ public class JobScheduler
             else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
             {
                 if (Macros.ContainsKey(CommandBits[1]))
-                    return Macros[CommandBits[1]];
+                    return ReplaceEnvironmentVariables("%" + Macros[CommandBits[1]] + "%");
                 else if (CommandBits[1] == "SomeJobsHaveFailed")
                 {
                     if (SomeJobsHaveFailed)
