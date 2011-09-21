@@ -9,6 +9,11 @@
 -->
 <Folder name="Bob" LoopForever="no">
 
+	<Job name="Load in Bootstrap.xml">
+		<WorkingDirectory>%apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Load in Bootstrap.xml~%apsim%\Model\Build\Bootstrap.xml"</CommandLine>
+	</Job>
+		
 	<Folder name="BuildAndRun" wait="yes">
 		<!--
     Get the APSIM directory up to date and clean.

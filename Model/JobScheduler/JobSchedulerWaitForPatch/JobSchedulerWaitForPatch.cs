@@ -52,10 +52,10 @@ class Program
 
                     System.Environment.SetEnvironmentVariable("PatchFileName", 
                                                               Path.GetFileNameWithoutExtension(PatchFileName),
-                                                              EnvironmentVariableTarget.User);
+                                                              EnvironmentVariableTarget.Machine);
                     System.Environment.SetEnvironmentVariable("JobID",
                                                               JobID.ToString(),
-                                                              EnvironmentVariableTarget.User);
+                                                              EnvironmentVariableTarget.Machine);
 
                     // NB *******************
                     // Increments the TipRevisionNumber
@@ -94,29 +94,5 @@ class Program
         return ReturnCode;
     }
 
-
-
-    /// <summary>
-    /// Talk to parent socket and add a job to run APSIM for the specified file.
-    /// </summary>
-    private static void TalkToJobScheduler(string Data)
-    {
-        // Open a socket connection to JobScheduler.
-        int PortNumber = 13000;  // Some arbitary number.
-        IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-        IPEndPoint ipe = new IPEndPoint(localAddr, PortNumber);
-        Socket S = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-        S.Connect(ipe);
-        if (!S.Connected)
-            throw new Exception("Cannot connect to JobScheduler via socket");
-
-        // Send our XML to JobScheduler.
-        Byte[] bytes = Encoding.ASCII.GetBytes(Data);
-        S.Send(bytes);
-
-        // Now wait for a response.
-        S.Receive(bytes);
-        S.Close();
-    }
 
 }

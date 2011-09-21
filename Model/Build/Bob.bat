@@ -9,46 +9,62 @@ set APSIM=%CD%
 popd
 cd %APSIM%
 
+rem ----- Setup the bootstrap.xml
+echo ^<StdOut^>^<StdOut^>                                                           > %TEMP%\Bootstrap.xml
 
-echo ----- SVN revert -----                                                            > %APSIM%\Model\Build\Bootstrap.txt
-svn.exe revert -R %APSIM%                                                             >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- SVN revert -----                                                        >> %TEMP%\Bootstrap.xml
+svn.exe revert -R %APSIM%                                                          >> %TEMP%\Bootstrap.xml
 
-echo ----- SVN update -----                                                           >> %APSIM%\Model\Build\Bootstrap.txt
-svn.exe update %APSIM%                                                                >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- SVN update -----                                                        >> %TEMP%\Bootstrap.xml
+svn.exe update %APSIM%                                                             >> %TEMP%\Bootstrap.xml
 
-echo ----- Remove unwanted files -----                                                >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- Remove unwanted files -----                                             >> %TEMP%\Bootstrap.xml
 cd %APSIM%\Model
-RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                     >> %APSIM%\Model\Build\Bootstrap.txt
+RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                  >> %TEMP%\Bootstrap.xml
 
 rem ------------------------------------------------------------------------
 rem At this point the development tree will be clean
 rem ------------------------------------------------------------------------
 
-echo ----- Compile the JobScheduler -----                                             >> %APSIM%\Model\Build\Bootstrap.txt
-copy %APSIM%\Model\RunTime\ICSharpCode.SharpZipLib.dll %APSIM%\Model
-call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                       >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- Copy the Bootstrap.xml file to the build directory                      >> %TEMP%\Bootstrap.xml
+copy %TEMP%\Bootstrap.xml %APSIM%\Model\Build
 
-echo ----- JobSchedulerWaitForPatch -----                                             >> %APSIM%\Model\Build\Bootstrap.txt
-%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload                                  >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- Compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
+copy %APSIM%\Model\RunTime\ICSharpCode.SharpZipLib.dll %APSIM%\Model               >> %APSIM%\Model\Build\Bootstrap.xml
+call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
-echo ----- JobSchedulerApplyPatch -----                                               >> %APSIM%\Model\Build\Bootstrap.txt
-%Apsim%\Model\JobSchedulerApplyPatch.exe %Apsim% "C:\Upload\%PatchFileName%.zip"      >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- JobSchedulerWaitForPatch -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
+%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload                               >> %APSIM%\Model\Build\Bootstrap.xml
+if ERRORLEVEL 1 goto CleanUp
 
-echo ----- Re-compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.txt
-call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                       >> %APSIM%\Model\Build\Bootstrap.txt
+echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml
+%APSIM%\Model\JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip"   >> %APSIM%\Model\Build\Bootstrap.xml
+if ERRORLEVEL 1 goto CleanUp
 
-echo ----- Run the JobScheduler -----                                                 >> %APSIM%\Model\Build\Bootstrap.txt
-..\JobScheduler Bob.xml
+echo ----- Re-compile the JobScheduler -----                                       >> %APSIM%\Model\Build\Bootstrap.xml
+call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
-echo ----- Reset the environment -----                                                >> %APSIM%\Model\Build\Bootstrap.txt
+rem ----- Run the JobScheduler -----
+echo ^</StdOut^>^</StdOut^>                                                        >> %APSIM%\Model\Build\Bootstrap.xml
+%APSIM%\Model\JobScheduler %APSIM%\Model\Build\Bob.xml                             
+
+rem ------------------------------------------------------------------------
+rem ----- Build and run has finished - clean up.
+rem ------------------------------------------------------------------------
+:CleanUp
+
+rem ----- Reset the environment -----
 set APSIM=
-set PATH=%PATHSAVED%
 set LIBPATH=
 set INCLUDE=
 set LIB=
+set PatchFileName=
+set JobID=
 
 rem ----- Go back to start if JobScheduler returns code 0
 if ERRORLEVEL 1 goto End
 if ERRORLEVEL 0 goto Start
 
 :End
+rem Stop at end so that we can see screen.
+pause
