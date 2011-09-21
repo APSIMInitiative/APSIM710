@@ -21,6 +21,7 @@ svn.exe update %APSIM%                                                          
 echo ----- Remove unwanted files -----                                             >> %TEMP%\Bootstrap.xml
 cd %APSIM%\Model
 RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                  >> %TEMP%\Bootstrap.xml
+if ERRORLEVEL 1 goto CleanUp
 
 rem ------------------------------------------------------------------------
 rem At this point the development tree will be clean
