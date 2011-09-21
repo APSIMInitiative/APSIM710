@@ -29,8 +29,16 @@ echo ----- Compile the JobScheduler -----                                       
 copy %APSIM%\Model\RunTime\ICSharpCode.SharpZipLib.dll %APSIM%\Model               >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
+rem ------------------------------------------------------------------------
+rem Go wait for a patch. JobSchedulerWaitForPatch needs to
+rem return 2 variables (PatchFileName and JobID) to this batch file. It 
+rem can't use environment variables because a child process cannot alter
+rem a parent's environment. Instead, it has writen the values to stdout.
+rem The for loop below reads the values from stdout
+rem and creates environment variables.
+rem ------------------------------------------------------------------------
 echo ----- JobSchedulerWaitForPatch -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
-%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload                               >> %APSIM%\Model\Build\Bootstrap.xml
+for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload') do set %%i=%%j
 if ERRORLEVEL 1 goto CleanUp
 
 echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml

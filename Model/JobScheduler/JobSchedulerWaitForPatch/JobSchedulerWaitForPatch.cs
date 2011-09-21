@@ -49,13 +49,8 @@ class Program
                     string PatchFileName = Details["PatchFileName"].ToString();
 
                     // Let the jobscheduler have a new variable called PatchFileName and JobID.
-
-                    System.Environment.SetEnvironmentVariable("PatchFileName", 
-                                                              Path.GetFileNameWithoutExtension(PatchFileName),
-                                                              EnvironmentVariableTarget.Machine);
-                    System.Environment.SetEnvironmentVariable("JobID",
-                                                              JobID.ToString(),
-                                                              EnvironmentVariableTarget.Machine);
+                    Console.WriteLine("PatchFileName " + Path.GetFileNameWithoutExtension(PatchFileName));
+                    Console.WriteLine("JobID " + JobID.ToString());
 
                     // NB *******************
                     // Increments the TipRevisionNumber
