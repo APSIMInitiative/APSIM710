@@ -74,7 +74,7 @@ class Program
                     if (JobID > 0)
                     {
                         Dictionary<string, object> PreviousJob = BuildsDB.GetDetails(JobID-1);
-                        if (PreviousJob["Status"].ToString() == "Running")
+                        if (PreviousJob != null && PreviousJob["Status"].ToString() == "Running")
                             BuildsDB.UpdateStatus(JobID - 1, "Aborted");
                     }
                 }
