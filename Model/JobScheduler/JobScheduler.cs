@@ -63,9 +63,11 @@ public class JobScheduler
     {
         try
         {
+    
             if (args.Length >= 1)
             {
                 JobScheduler Scheduler = new JobScheduler();
+                Scheduler.InterpretSocketData("GetVariable~JobID", null);
                 Scheduler.StoreMacros(args);
                 Scheduler.StoreOptions(args);
 
@@ -743,8 +745,10 @@ public class JobScheduler
             }
             else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
             {
-                if (Macros.ContainsKey(CommandBits[1]))
-                    return ReplaceEnvironmentVariables("%" + Macros[CommandBits[1]] + "%");
+                // try and look for an environment variable first.
+                string Value = ReplaceEnvironmentVariables("%" + CommandBits[1] + "%");
+                if (Value != "%" + CommandBits[1] + "%")
+                    return Value;
                 else if (CommandBits[1] == "SomeJobsHaveFailed")
                 {
                     if (SomeJobsHaveFailed)
