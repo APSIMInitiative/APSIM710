@@ -1,4 +1,4 @@
-<Type version="27" name="FieldPea2">
+<Type version="28" name="FieldPea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -521,10 +521,9 @@
           </PhaseLookupValue>
           <TemperatureFunction shortcut="/FieldPea2/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
-        <LinearInterpolationFunction name="NodeAppearanceRate">
+        <LinearInterpolationFunction name="xNodeAppearanceRate">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
-            <XY>1 50</XY>
             <XY>2 50</XY>
             <XY>3 40</XY>
             <XY>4 30</XY>
@@ -535,6 +534,24 @@
           </XYPairs>
           <Memo>Determines how quickly nodes appear</Memo>
         </LinearInterpolationFunction>
+        <PhaseLookupValue name="NodeAppearanceRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndGrainFill</End>
+          <Memo>Determines how quickly nodes appear</Memo>
+          <LinearInterpolationFunction name="Phyllochron">
+            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>2 50</XY>
+              <XY>3 40</XY>
+              <XY>4 30</XY>
+              <XY>5 30</XY>
+              <XY>5.5 25</XY>
+              <XY>6 100</XY>
+              <XY>7 1000</XY>
+            </XYPairs>
+            <Memo>Determines how quickly nodes appear</Memo>
+          </LinearInterpolationFunction>
+        </PhaseLookupValue>
         <MultiplyFunction name="BranchingRate">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="Potential_Branching_Rate">
@@ -786,21 +803,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <PhaseLookup name="StructuralFraction">
-          <PhaseLookupValue name="Early">
-            <Start>Emergence</Start>
-            <End>StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.8</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.8</Value>
-            </Constant>
-          </PhaseLookupValue>
+        <PhaseLookup name="xStructuralFraction">
           <Memo>Sets the proporiton of DM allocation that is partitioned to the organ the is put into the structural pool         </Memo>
         </PhaseLookup>
         <Constant name="MaximumNConc">
@@ -819,6 +822,9 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">0.7</Value>
+        </Constant>
       </SIRIUSGenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Germination     Emergence      EndJuvenile     FloralInitiation   Flowering    StartPodGrowth      EndGrainFill      Maturity       HarvestRipe</Stages>

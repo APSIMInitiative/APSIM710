@@ -74,6 +74,7 @@ public class Leaf : BaseOrgan, AboveGround
     public double FractionDied = 0;
     public double MaxNodeNo = 0;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
+    protected bool CohortsInitialised = false;
  #endregion
 
  #region Outputs
@@ -436,6 +437,7 @@ public class Leaf : BaseOrgan, AboveGround
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
+            CohortsInitialised = true;
         }
 
         if (FinalNodeNumber != null)
@@ -458,6 +460,9 @@ public class Leaf : BaseOrgan, AboveGround
 
         if (NodeNo > Leaves.Count + 1)
         {
+            if (CohortsInitialised == false)
+                throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
+            
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
 
             Function BranchingRate = (Function)Children["BranchingRate"];

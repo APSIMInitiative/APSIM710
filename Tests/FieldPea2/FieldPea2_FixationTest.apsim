@@ -1,7 +1,7 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="0N">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
     <micromet name="Micromet">
       <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
@@ -14,9 +14,7 @@
       <start_date type="date" description="Enter the start date of the simulation">16/12/1997</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/03/1998</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Wakanui">
         <Country />
@@ -2141,6 +2139,8 @@
       <FieldPea2 />
       <folder name="Plant2 diagnostics">
         <outputfile name="Plant2 diagnostic variables">
+          <filename output="yes">0N Plant2 diagnostic variables.out</filename>
+          <title>0N Plant2 diagnostic variables</title>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
@@ -2659,6 +2659,8 @@ endif
         </Graph>
       </folder>
       <outputfile name="Outputfile">
+        <filename output="yes">0N.out</filename>
+        <title>0N</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="LeafCohortLiveStructuralNconc" />
@@ -2850,7 +2852,9 @@ endif
     </area>
   </simulation>
   <simulation name="100kg" shortcut="/Simulations/0N">
-    <metfile name="met" shortcut="/Simulations/0N/met" />
+    <metfile name="met" shortcut="/Simulations/0N/met">
+      <filename shortcut="/Simulations/0N/met/filename" input="yes" />
+    </metfile>
     <micromet name="Micromet" shortcut="/Simulations/0N/Micromet" />
     <clock shortcut="/Simulations/0N/clock" />
     <summaryfile shortcut="/Simulations/0N/summaryfile" />
@@ -2903,6 +2907,8 @@ endif
       <FieldPea2 shortcut="/Simulations/0N/paddock/FieldPea2" />
       <folder name="Plant2 diagnostics">
         <outputfile name="Plant2 diagnostic variables">
+          <filename output="yes">100kg Plant2 diagnostic variables.out</filename>
+          <title>100kg Plant2 diagnostic variables</title>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
@@ -3410,7 +3416,9 @@ endif
     </area>
   </simulation>
   <simulation name="300kg" shortcut="/Simulations/0N">
-    <metfile name="met" shortcut="/Simulations/0N/met" />
+    <metfile name="met" shortcut="/Simulations/0N/met">
+      <filename shortcut="/Simulations/0N/met/filename" input="yes" />
+    </metfile>
     <micromet name="Micromet" shortcut="/Simulations/0N/Micromet" />
     <clock shortcut="/Simulations/0N/clock" />
     <summaryfile shortcut="/Simulations/0N/summaryfile" />
@@ -3463,6 +3471,8 @@ endif
       <FieldPea2 shortcut="/Simulations/0N/paddock/FieldPea2" />
       <folder name="Plant2 diagnostics">
         <outputfile name="Plant2 diagnostic variables">
+          <filename output="yes">300kg Plant2 diagnostic variables.out</filename>
+          <title>300kg Plant2 diagnostic variables</title>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
