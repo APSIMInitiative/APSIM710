@@ -75,7 +75,23 @@ public class ApsimToSim
          XmlNode ApsimToSim = Types.Instance.ApsimToSim(Child.Type);
          if (ApsimToSim != null)
             {
-            string ApsimToSimContents = ApsimToSim.InnerXml;
+                if (ApsimToSim.FirstChild.Name == "component" && XmlHelper.Attribute(ApsimToSim.FirstChild, "class") == "")
+                {
+                    string dllName = Path.GetFileNameWithoutExtension(Types.Instance.MetaData(Child.Type, "dll"));
+                    string className = Types.Instance.ProxyClassName(Child.Type, dllName);
+                    if (className.ToLower() != dllName.ToLower())
+                    {
+                        if (className == "")
+                            className = dllName;
+                        else if (dllName != "")
+                            className = dllName + "." + className;
+                    }
+                    if (className != "")             
+                        XmlHelper.SetAttribute(ApsimToSim.FirstChild, "class", className);
+                }
+                else if (ApsimToSim.FirstChild.Name == "system" && Child.Type == "area" && XmlHelper.Attribute(ApsimToSim.FirstChild, "class") == "")
+                    XmlHelper.SetAttribute(ApsimToSim.FirstChild, "class", "ProtocolManager");
+                string ApsimToSimContents = ApsimToSim.InnerXml;
 
             // Replace any occurrences of our macros with appropriate text.
             // e.g. [Soil.] is replaced by the appropriate soil value.
@@ -135,46 +151,78 @@ public class ApsimToSim
    private static string ReplaceModelMacro(string ApsimToSimContents, Component ApsimComponent)
       {
       // Replace all occurrences of [Model] with the contents of the model configuration.
-      while (ApsimToSimContents.Contains("[Model"))
-         {
-         // If the user has an ini child under
-         string ModelContents = "";
-         foreach (Component Child in ApsimComponent.ChildNodes)
-            {
-            if (Child.Type == "ini")
-               {
-               // Get the name of the model file.
-               XmlDocument IniComponent = new XmlDocument();
-               IniComponent.LoadXml(Child.Contents);
-               string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
-
-               if (Path.GetExtension(ModelFileName) == ".xml")
+          while (ApsimToSimContents.Contains("[Model"))
+          {
+              // If the user has an ini child under
+              string ModelContents = "";
+              foreach (Component Child in ApsimComponent.ChildNodes)
+              {
+                  if (Child.Type == "ini")
                   {
-                  // Find the <Model> node in the model file.
-                  XmlDocument ModelFile = new XmlDocument();
-                  ModelFile.Load(ModelFileName);
-                  ModelContents += FindModelContents(ModelFile.DocumentElement, ApsimComponent.Type);
-                  }
-               else
-                  ModelContents += "<include>" + ModelFileName + "</include>";
-               }
-            }
+                      // Get the name of the model file.
+                      XmlDocument IniComponent = new XmlDocument();
+                      IniComponent.LoadXml(Child.Contents);
+                      string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
 
-         // See if there is something after [Model e.g. [Model SoilWat]. SoilWat is the ModelType
-         int PosModel = ApsimToSimContents.IndexOf("[Model");
-         int PosEndModel = ApsimToSimContents.IndexOf(']', PosModel);
-         if (ModelContents == "")
-            {
-            int PosStartModelType = PosModel + "[Model".Length;
-            string ModelType = ApsimToSimContents.Substring(PosStartModelType, PosEndModel - PosStartModelType).Trim();
-            if (ModelType == "")
-               ModelContents = Types.Instance.ModelContents(ApsimComponent.Type);
-            else
-               ModelContents = Types.Instance.ModelContents(ApsimComponent.Type, ModelType);
-            }
-         ApsimToSimContents = ApsimToSimContents.Remove(PosModel, PosEndModel - PosModel + 1);
-         ApsimToSimContents = ApsimToSimContents.Insert(PosModel, ModelContents);
-         }
+                      if (Path.GetExtension(ModelFileName) == ".xml")
+                      {
+                          // Find the <Model> node in the model file.
+                          XmlDocument ModelFile = new XmlDocument();
+                          ModelFile.Load(ModelFileName);
+                          ModelContents += FindModelContents(ModelFile.DocumentElement, ApsimComponent.Type);
+                      }
+                      else
+                          ModelContents += "<include>" + ModelFileName + "</include>";
+                  }
+              }
+
+              // See if there is something after [Model e.g. [Model SoilWat]. SoilWat is the ModelType
+              int PosModel = ApsimToSimContents.IndexOf("[Model");
+              int PosEndModel = ApsimToSimContents.IndexOf(']', PosModel);
+              string ModelType = "";
+              if (ModelContents == "")
+              {
+                  int PosStartModelType = PosModel + "[Model".Length;
+                  ModelType = ApsimToSimContents.Substring(PosStartModelType, PosEndModel - PosStartModelType).Trim();
+                  if (ModelType == "")
+                      ModelContents = Types.Instance.ModelContents(ApsimComponent.Type);
+                  else
+                      ModelContents = Types.Instance.ModelContents(ApsimComponent.Type, ModelType);
+
+              }
+              ApsimToSimContents = ApsimToSimContents.Remove(PosModel, PosEndModel - PosModel + 1);
+              ApsimToSimContents = ApsimToSimContents.Insert(PosModel, ModelContents);
+              if (ModelType != "")
+              {
+                  PosEndModel = PosModel + ModelContents.Length;
+                  int compPos = ApsimToSimContents.LastIndexOf("<component ", PosModel);
+                  int prevCompEnd = ApsimToSimContents.LastIndexOf("</component>", PosModel);
+                  int compEnd = ApsimToSimContents.IndexOf("</component>", PosEndModel);
+                  // Was the [Model macro embedded inside a "component" element? If so, add a class attribute to that element
+                  if (prevCompEnd < compPos && compEnd > 0)
+                  {
+                      XmlDocument bodyDoc = new XmlDocument();
+                      bodyDoc.LoadXml(ApsimToSimContents.Substring(compPos, compEnd - compPos + 12));
+                      if (bodyDoc.FirstChild.Name == "component" && XmlHelper.Attribute(bodyDoc.FirstChild, "class") == "")
+                      {
+                          string dllName = Path.GetFileNameWithoutExtension(Types.Instance.MetaData(ModelType, "dll"));
+                          string className = Types.Instance.ProxyClassName(ModelType, dllName);
+                          if (className.ToLower() != dllName.ToLower())
+                          {
+                              if (className == "")
+                                  className = dllName;
+                              else if (dllName != "")
+                                  className = dllName + "." + className;
+                          }
+                          if (className != "")
+                              XmlHelper.SetAttribute(bodyDoc.FirstChild, "class", className);
+                      }
+                      string newText = bodyDoc.OuterXml;
+                      ApsimToSimContents = ApsimToSimContents.Remove(compPos, compEnd - compPos + 12);
+                      ApsimToSimContents = ApsimToSimContents.Insert(compPos, newText);
+                  }
+              }
+          }
       return ApsimToSimContents;
       }
    private static string FindModelContents(XmlNode Node, string TypeName)

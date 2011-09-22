@@ -349,12 +349,20 @@ public class Types
         }
         DLLProber.CompileProxyDLL();
     }
-    private string ProxyClassName(string TypeName, string DLLFileName)
+    public string ProxyClassName(string TypeName, string DLLFileName)
     {
         if (Dlls(TypeName).Count > 1)
             return StringManip.CamelCase(Path.GetFileNameWithoutExtension(DLLFileName));
         else
-            return StringManip.CamelCase(TypeName);
+        {
+            // Try to return the name with the same case lettering as we store internally
+            foreach (string aName in XmlHelper.ChildNames(TypesDoc.DocumentElement, "type"))
+            {
+                if (aName.ToLower() == TypeName.ToLower())
+                    return StringManip.CamelCase(aName);
+            }
+        }
+        return StringManip.CamelCase(TypeName);
     }
 
     public void RefreshProbeInfoForAll()
