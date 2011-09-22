@@ -19,7 +19,7 @@ for /D %%d in (*) do (
          )
       )
    if EXIST Makefile (
-      call %APSIM%\Model\Build\RunMake -B
+      call %APSIM%\Model\Build\RunMake %APSIM%\Tests\UnitTests\%%d -B 
       if ERRORLEVEL 0 %APSIM%\Model\Test.exe > UnitTest.tmp
       del /Q %APSIM%\Model\Test.* 2>nul
       )
