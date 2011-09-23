@@ -12,6 +12,7 @@ using System.IO;
 using UIUtility;
 using System.Collections;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 public partial class MainForm : Form
 {
@@ -54,28 +55,60 @@ public partial class MainForm : Form
             string DirectoryName = Directory.GetCurrentDirectory();
 
             // Run an SVN stat command
-            Process P = Utility.RunProcess(SVNFileName, "-q stat", DirectoryName);
+            Process P = Utility.RunProcess(SVNFileName, "-u stat", DirectoryName);
             string StdOut = Utility.CheckProcessExitedProperly(P);
             string[] Lines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
             // Get a list of all files.
+            Regex R = new Regex("\\S+");
             foreach (string Line in Lines)
             {
                 if (Line.Length >= 9)
                 {
-                    string Status = Line.Substring(0, 5).Trim();
+                    string Status;
+                    Status = Line[0].ToString();
+                    if (Status == "")
+                        Status = Line[1].ToString();
                     Status = FriendlyStatusName(Status);
-                    string FileName = Line.Substring(8);
 
-                    // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
-                    // directory in SVN. The stat command above will report the directory name.
-                    if (!Directory.Exists(FileName))
+
+                    if (Status != "Not-versioned")
                     {
-                        ListViewItem item1 = new ListViewItem(FileName);
-                        item1.SubItems.Add(Path.GetDirectoryName(FileName));
-                        item1.SubItems.Add(Path.GetExtension(FileName));
-                        item1.SubItems.Add(Status);
-                        ListView.Items.Add(item1);
+                        MatchCollection Matches = R.Matches(Line.Substring(10));
+
+                        if (Matches.Count > 1)
+                        {
+                            string Revision = Matches[0].Value;
+                            string FileName = "";
+                            for (int i = 1; i < Matches.Count; i++)
+                            {
+                                FileName += Matches[i].Value + " ";
+                            }
+                            FileName = FileName.Trim();
+
+                            if (Status == "Added" || Status == "Deleted" || Status == "Modified" ||
+                                Status == "Conflicted")
+                            {
+                                if (Line[8] == '*')
+                                    Status = "OutOfDate";
+
+                                // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
+                                // directory in SVN. The stat command above will report the directory name.
+                                if (!Directory.Exists(FileName))
+                                {
+                                    ListViewItem item1 = new ListViewItem(FileName);
+                                    item1.SubItems.Add(Path.GetDirectoryName(FileName));
+                                    item1.SubItems.Add(Path.GetExtension(FileName));
+                                    item1.SubItems.Add(Status);
+                                    item1.SubItems.Add(Revision);
+                                    if (Status == "OutOfDate")
+                                        item1.ForeColor = Color.Red;
+                                    ListView.Items.Add(item1);
+                                }
+                            }
+                        
+                        }
+                       
                     }
                 }
             }
@@ -106,11 +139,13 @@ public partial class MainForm : Form
     /// </summary>
     private string FriendlyStatusName(string Status)
     {
+        if (Status == "A") return "Added";
+        if (Status == "D") return "Deleted";
         if (Status == "M") return "Modified";
-        if (Status == "C") return "Conflict";
-        if (Status == "X") return "External";
+        if (Status == "C") return "Conflicted";
+        if (Status == "X") return "Not-versioned";
         if (Status == "I") return "Ignored";
-        if (Status == "?") return "Non-versioned";
+        if (Status == "?") return "Not-versioned";
         if (Status == "!") return "Deleted";
         if (Status == "~") return "Directory";
         return Status;
@@ -157,22 +192,39 @@ public partial class MainForm : Form
             try
             {
                 string DirectoryName = Directory.GetCurrentDirectory();
+                
+                bool SomeAreOutOfDate = false;
+                string RevisionsFileName = Path.Combine(Directory.GetCurrentDirectory(), "patch.revisions");
+                StreamWriter Revisions = new StreamWriter(RevisionsFileName);
 
                 List<string> FileNames = new List<string>();
+                FileNames.Add(Path.GetFileName(RevisionsFileName));
                 foreach (ListViewItem Item in ListView.Items)
                 {
                     if (Item.Checked)
                     {
                         FileNames.Add(Item.Text);
+                        Revisions.WriteLine(StringManip.DQuote(Item.Text) + " " + Item.SubItems[3].Text + " " + Item.SubItems[4].Text);
+                        if (Item.SubItems[3].Text == "OutOfDate")
+                            SomeAreOutOfDate = true;
                     }
                 }
-                saveSelections();
-                // Zip all files.
-                Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
 
-                if (MessageBox.Show("Patch file successfully created. Upload to Bob?", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                    Process.Start("http://bob.apsim.info/BobWeb/Upload.aspx");
-                Close();
+                Revisions.Close();              
+
+                saveSelections();
+                if (SomeAreOutOfDate)
+                    MessageBox.Show("Some of the selected files are out of date. You need to do an SVN update before submitting a patch to Bob.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                {
+                    // Zip all files.
+                    Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
+
+                    if (MessageBox.Show("Patch file successfully created. Upload to Bob?", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        Process.Start("http://bob.apsim.info/BobWeb/Upload.aspx");
+                    Close();
+                }
             }
             catch (Exception err)
             {
