@@ -18,6 +18,7 @@ namespace ApsimFile
         private static Configuration Singleton = null;
         protected XmlNode SettingsNode;
         private string SectionName = "ApsimUI";
+        private string SettingsFile;
 
         protected Configuration()
         {
@@ -34,10 +35,10 @@ namespace ApsimFile
             string LocalDirectoryName = "Apsim" + ApsimVersion().Replace(".", "") + "-" + ApsimBuildNumber();
 
             // 2. Update from local data
-            string SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                               "Apsim",
-                                               LocalDirectoryName, 
-                                               "Apsim.xml");
+            SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                                        "Apsim",
+                                        LocalDirectoryName, 
+                                        "Apsim.xml");
             if (!File.Exists(SettingsFile))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsFile));
@@ -67,10 +68,6 @@ namespace ApsimFile
         }
         private void Save()
         {
-            // The settings in the installation dir are read only. Save in a local (ie writeable) path.
-            string SettingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                  Path.Combine("Apsim", Path.Combine(ApsimVersion(), "Apsim.xml")));
-
             // The first time this runs on a machine, none of these dirs will exist.
             makePathExist(Path.GetDirectoryName(SettingsFile));
             SettingsNode.OwnerDocument.Save(SettingsFile);
