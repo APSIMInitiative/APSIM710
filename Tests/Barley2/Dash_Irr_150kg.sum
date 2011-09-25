@@ -31,3 +31,704 @@ Paddock:
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component           "Templeton Nitrogen" = %apsim%\Model\SoilN.dll
    Component                      "barley2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/10/2009
+     Simulation end date   = 31/03/2010
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        AccumTtemerg
+        StageCodeValue
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNUptakeSupply
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundWt
+        BelowGroundWt
+        TotalWt
+        LeafDeadWt
+        LeafLiveWt
+        StemDeadWt
+        StemLiveWt
+        RootDeadWt
+        RootLiveWt
+        GrainLiveWt
+        GrainDeadWt
+        FloretLiveWt
+        HeadLiveWt
+        AboveGroundN
+        BelowGroundN
+        TotalN
+        TotalLiveN
+        TotalDeadN
+        LeafDeadN
+        LeafLiveN
+        StemDeadN
+        StemLiveN
+        RootLiveN
+        RootDeadN
+        GrainLiveN
+        GrainDeadN
+        FloretLiveN
+        FloretDeadN
+        LeafLiveNConc
+        LeafDeadNConc
+        StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
+        GrainLiveNConc
+        FloretLiveNConc
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
+        sw
+        no3
+        LeafPartitionFractionValue
+        StemPartitionFractionValue
+        TuberPartitionFractionValue
+        GrainPartitionFractionValue
+        FloretPartitionFractionValue
+        RootPartitionFractionValue
+        GrainMinimumNConcValue
+        FloretMinimumNConcValue
+        LeafMinimumNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
+        RootMinimumNConcValue
+        GrainMaximumNConcValue
+        FloretMaximumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        StemLiveNonStructuralN
+        StemLiveStructuralN
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafLiveNonStructuralN
+        LeafLiveNonStructuralWt
+        LeafLiveStructuralN
+        LeafLiveStructuralWt
+        LeafTotalStructuralN
+        LeafTotalNonStructuralN
+        LeafTotalStructuralWt
+        LeafTotalNonStructuralWt
+        LeafLiveMetabolicWt
+        RootNUptakeSupply
+        sw(1)
+        sw(2)
+        sw(3)
+        sw(4)
+        sw(5)
+        sw(6)
+        sw(7)
+        sw(8)
+        MinN_0_20
+        MinN_20_40
+        MinN_40_60
+        MinN_60_90
+        MinN_90_120
+        MinN_120_150
+        LeafSpecificArea
+        ArbitratorNDemand
+
+     Output file = Dash_Irr_150kg Outputs.out
+     Format = normal
+
+------- Leaf Cohort Analysis Initialisation -----------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafCohortLiveStructuralWt
+        LeafCohortLiveNonStructuralWt
+        LeafCohortLiveMetabolicWt
+        LeafCohortLiveStructuralN
+        LeafCohortLiveMetabolicN
+        LeafCohortLiveNonStructuralN
+        LeafCohortStructuralFrac
+        LeafStructuralFractionValue
+        LeafCohortLiveStructuralNConc
+        LeafCohortLiveMetabolicNconc
+        LeafCohortLiveNconc
+        LeafMaximumNConcValue
+        LeafMinimumNConcValue
+        LeafCohortSLA
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafCohortSize
+        LeafCohortArea
+
+     Output file = Dash_Irr_150kg Leaf Cohort Analysis.out
+     Format = normal
+
+------- SIRIUS phenology analysis Initialisation ------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
+        LeafPrimordiaNo
+        LeafFinalNodeNo
+        LeafPhotoPeriodValue
+        StageCodeValue
+        PhenologyVernalisationIndexValue
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationIndex as VernalisationIndex
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationFinalNodeNumber as VFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberPhotoperiodFinalNodeNumber as PPFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberCommitPrimordia as Commit
+        LeafFinalNodeNumberTerminateFinalNodeNumberTerminatedFinalNodeNumber as TFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberTargetFinalNodeNumber as FLN
+        MaxT
+        MinT
+        maxt_soil_surface
+        mint_soil_surface
+        LeafThermalTimeValue
+
+     Output file = Dash_Irr_150kg SIRIUS phenology analysis.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     11/11/2009  Prepare      irrigation apply amount= 20 (mm)
+     19/11/2009  Prepare      irrigation apply amount= 25 (mm)
+     22/11/2009  Prepare      fertiliser apply amount= 326 (kg/ha), type= urea (), depth= 10 (mm)
+     23/11/2009  Prepare      irrigation apply amount= 5(mm)
+     27/11/2009  Prepare      irrigation apply amount= 25 (mm)
+     11/12/2009  Prepare      irrigation apply amount= 20 (mm)
+     21/12/2009  Prepare      irrigation apply amount= 35 (mm)
+     29/12/2009  Prepare      irrigation apply amount= 40 (mm)
+      5/01/2010  Prepare      irrigation apply amount= 35 (mm)
+     13/01/2010  Prepare      irrigation apply amount= 30 (mm)
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- BarleyHarvesting Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if   (wheat.stage >= 8)  or (barley.stage >= 8) or (fieldpea.stage >= 8) or (grassseed.stage >= 8) then
+            head_drying_flag = 1
+     else   head_drying_flag = 0
+     endif
+     if head_drying_flag = 1 then
+         if rain = 0 then
+           head_wetting = 0
+         elseif rain * head_rainfall_interception + head_moisture < head_moisture_retention then
+           head_wetting = rain * head_rainfall_interception
+         else
+           head_wetting = head_moisture_retention - head_moisture
+         endif
+         if eo * head_drying_coefficient >= head_moisture + head_wetting then
+           head_drying = head_moisture + head_wetting
+         else head_drying = eo * head_drying_coefficient
+         endif
+       head_moisture = head_moisture - head_drying + head_wetting
+     elseif head_drying_flag = 0 then
+       head_moisture = head_moisture_retention
+     endif
+                if (barley.stagename = 'harvest_ripe') and (head_moisture = 0)  then
+       barley  harvest
+       barley  end_crop
+                endif
+     
+     SECTION:- init
+     head_drying_flag = 0
+     head_moisture = 5
+     head_wetting = 0
+     head_drying = 0
+     head_drying_coefficient = 0.3
+     head_rainfall_interception = 0.3
+     head_moisture_retention = 35
+     END of rules
+     
+     Manager creating a new local real variable : head_drying_flag = 0.00000
+     Manager creating a new local real variable : head_moisture = 5.00000
+     Manager creating a new local real variable : head_wetting = 0.00000
+     Manager creating a new local real variable : head_drying = 0.00000
+     Manager creating a new local real variable : head_drying_coefficient = 0.30000
+     Manager creating a new local real variable : head_rainfall_interception = 0.30000
+     Manager creating a new local real variable : head_moisture_retention = 35.00000
+
+------- CalcConcentrations Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     no3_100cm = 0.0
+     no3_150cm=0.0
+     no3_0_20=0.0
+     no3_20_40=0.0
+     no3_40_60=0.0
+     no3_60_90=0.0
+     no3_90_120=0.0
+     no3_120_150=0.0
+     nh4_0_20=0.0
+     nh4_20_40=0.0
+     nh4_40_60=0.0
+     nh4_60_90=0.0
+     nh4_90_120=0.0
+     nh4_120_150=0.0
+     minn_0_20=0.0
+     minn_20_40=0.0
+     minn_40_60=0.0
+     minn_60_90=0.0
+     minn_90_120=0.0
+     minn_120_150=0.0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     no3_100cm =no3(1) + no3(2) + no3(3) + no3(4) + no3(5) + no3(6)
+     no3_150cm=  no3(7) + no3(8)
+     no3_0_20=no3(1)
+     no3_20_40=no3(2)
+     no3_40_60=no3(3)
+     no3_60_90=no3(4)+(no3(5)/2)
+     no3_90_120=no3(6)+(no3(5)/2)
+     no3_120_150=no3(7)+(no3(8)/2)
+     nh4_0_20=nh4(1)
+     nh4_20_40=nh4(2)
+     nh4_40_60=nh4(3)
+     nh4_60_90=nh4(4)+(nh4(5)/2)
+     nh4_90_120=nh4(6)+(nh4(5)/2)
+     nh4_120_150=nh4(7)+(nh4(8)/2)
+     minn_0_20=no3_0_20+nh4_0_20
+     minn_20_40=no3_20_40+nh4_20_40
+     minn_40_60=no3_40_60+nh4_40_60
+     minn_60_90=no3_60_90+nh4_60_90
+     minn_90_120=no3_90_120+nh4_90_120
+     minn_120_150=no3_120_150+nh4_120_150
+     END of rules
+     
+     Manager creating a new local real variable : no3_100cm = 0.00000
+     Manager creating a new local real variable : no3_150cm = 0.00000
+     Manager creating a new local real variable : no3_0_20 = 0.00000
+     Manager creating a new local real variable : no3_20_40 = 0.00000
+     Manager creating a new local real variable : no3_40_60 = 0.00000
+     Manager creating a new local real variable : no3_60_90 = 0.00000
+     Manager creating a new local real variable : no3_90_120 = 0.00000
+     Manager creating a new local real variable : no3_120_150 = 0.00000
+     Manager creating a new local real variable : nh4_0_20 = 0.00000
+     Manager creating a new local real variable : nh4_20_40 = 0.00000
+     Manager creating a new local real variable : nh4_40_60 = 0.00000
+     Manager creating a new local real variable : nh4_60_90 = 0.00000
+     Manager creating a new local real variable : nh4_90_120 = 0.00000
+     Manager creating a new local real variable : nh4_120_150 = 0.00000
+     Manager creating a new local real variable : minn_0_20 = 0.00000
+     Manager creating a new local real variable : minn_20_40 = 0.00000
+     Manager creating a new local real variable : minn_40_60 = 0.00000
+     Manager creating a new local real variable : minn_60_90 = 0.00000
+     Manager creating a new local real variable : minn_90_120 = 0.00000
+     Manager creating a new local real variable : minn_120_150 = 0.00000
+
+------- Barley Sowing Rule Initialisation -------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('01/10/2009') then
+        barley2 sow population = 300, depth = 30, cultivar = dash, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+      endif
+     
+     SECTION:- init
+     plant_population = 0
+     END of rules
+     
+     Manager creating a new local real variable : plant_population = 0.00000
+
+------- Diagnostic variables Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  accumplantn - barley2.rootnuptake
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     accumep = accumep - barley2.leaftranspiration
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if barley2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton Water Initialisation ----------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  200.  0.075  0.075  0.250  0.501  0.250  1.000  0.856  0.550
+          200.-  400.  0.100  0.100  0.280  0.493  0.280  1.000  0.135  0.550
+          400.-  600.  0.075  0.075  0.260  0.443  0.260  1.000  0.009  0.550
+          600.-  800.  0.100  0.100  0.290  0.480  0.290  1.000  0.000  0.550
+          800.- 1000.  0.100  0.100  0.290  0.447  0.290  1.000  0.000  0.550
+         1000.- 1200.  0.100  0.100  0.280  0.456  0.280  1.000  0.000  0.550
+         1200.- 1400.  0.100  0.100  0.240  0.431  0.240  1.000  0.000  0.550
+         1400.- 1600.  0.100  0.100  0.230  0.431  0.230  1.000  0.000  0.275
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      15.00      35.00      35.00      50.20
+          200.-  400.      20.00      36.00      36.00      42.60
+          400.-  600.      15.00      37.00      37.00      36.60
+          600.-  800.      20.00      38.00      38.00      38.00
+          800.- 1000.      20.00      38.00      38.00      31.40
+         1000.- 1200.      20.00      36.00      36.00      35.20
+         1200.- 1400.      20.00      28.00      28.00      38.20
+         1400.- 1600.      20.00      26.00      26.00      40.20
+          ---------------------------------------------------------
+               Totals     150.00     274.00     274.00     312.40
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.18       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     4.40 ()
+            Eo from priestly-taylor
+
+------- Soil Temperature Initialisation ---------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          barley    barley           0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Templeton Nitrogen Initialisation -------------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     13.12500
+             exceeds upper limit of    10.00000
+     Component name: Templeton Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.30  ****   30.65    3.80    0.00
+             2     5.70  1.20   24.60    3.40    0.00
+             3     5.50  1.03   13.60    3.00    0.00
+             4     5.50  0.47   15.20    2.60    0.00
+             5     5.50  0.47   17.80    2.60    0.00
+             6     5.50  0.47   20.40    2.60    0.00
+             7     5.50  0.47   22.40    1.80    0.00
+             8     5.50  0.47   11.70    1.05    0.00
+          ------------------------------------------------
+           Totals              156.35   20.85    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1     257378.0 17750.2  5122.0   640.2   197.5     3.9
+             2      23911.3  1649.1    88.7    11.1   135.7     2.7
+             3      20579.6  1419.3    20.4     2.5    93.3     1.9
+             4       9396.3   648.0     3.7     0.5    64.1     1.3
+             5       9396.3   648.0     3.7     0.5    44.1     0.9
+             6       9396.3   648.0     3.7     0.5    30.3     0.6
+             7       9396.3   648.0     3.7     0.5    20.8     0.4
+             8       9375.7   646.6    24.3     3.0    14.3     0.3
+          ---------------------------------------------------------
+           Totals  348829.8 24057.2  5270.2   658.8   600.0    12.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- barley2 sow  population = 300, depth = 30, cultivar = dash, maxcover = 1.0, budnumber = 1, row_spacing = 150, crop_class = plant
+     Manager creating a new local real variable : initialsoilomn = 24728.00590
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 177.20000
+2/10/2009 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+13/10/2009 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+14/10/2009 - FloralInitiation
+                            LAI = 0.24 (m^2/m^2)
+           Above Ground Biomass = 7.87 (g/m^2)
+11 November 2009(Day of year=315), operations: 
+      Sending apply message to irrigation
+19 November 2009(Day of year=323), operations: 
+      Sending apply message to irrigation
+22 November 2009(Day of year=326), operations: 
+      Sending apply message to fertiliser
+22 November 2009(Day of year=326), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       326.00 of Urea ferilizer (urea)
+                                         added at depth   10.00 (layer   1)
+23 November 2009(Day of year=327), operations: 
+      Sending apply message to irrigation
+26/11/2009 - FlagLeaf
+                            LAI = 5.57 (m^2/m^2)
+           Above Ground Biomass = 573.13 (g/m^2)
+27 November 2009(Day of year=331), operations: 
+      Sending apply message to irrigation
+11 December 2009(Day of year=345), operations: 
+      Sending apply message to irrigation
+21 December 2009(Day of year=355), operations: 
+      Sending apply message to irrigation
+21/12/2009 - Flowering
+                            LAI = 5.20 (m^2/m^2)
+           Above Ground Biomass = 1134.50 (g/m^2)
+28/12/2009 - StartGrainFill
+                            LAI = 4.99 (m^2/m^2)
+           Above Ground Biomass = 1341.69 (g/m^2)
+29 December 2009(Day of year=363), operations: 
+      Sending apply message to irrigation
+5 January 2010(Day of year=5), operations: 
+      Sending apply message to irrigation
+13 January 2010(Day of year=13), operations: 
+      Sending apply message to irrigation
+2/02/2010 - EndGrainFill
+                            LAI = 0.44 (m^2/m^2)
+           Above Ground Biomass = 2009.40 (g/m^2)
+4/02/2010 - Maturity
+                            LAI = 0.04 (m^2/m^2)
+           Above Ground Biomass = 2017.93 (g/m^2)
+4/02/2010 - HarvestRipe
+                            LAI = 0.04 (m^2/m^2)
+           Above Ground Biomass = 2017.93 (g/m^2)
+31 March 2010(Day of year=90), clock: 
+     Simulation is terminating due to end criteria being met.
