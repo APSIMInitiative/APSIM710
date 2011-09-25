@@ -40,10 +40,10 @@ rem ------------------------------------------------------------------------
 echo ----- JobSchedulerWaitForPatch -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
 for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Upload') do set %%i=%%j
 if ERRORLEVEL 1 goto CleanUp
+echo Patch file: %PatchFileName%
 
 echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml
 %APSIM%\Model\JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip"   >> %APSIM%\Model\Build\Bootstrap.xml
-if ERRORLEVEL 1 goto CleanUp
 
 echo ----- Re-compile the JobScheduler -----                                       >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml

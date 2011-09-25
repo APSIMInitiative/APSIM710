@@ -97,28 +97,31 @@ class JobSchedulerApplyPatch
         foreach (PatchDetail FileDetail in FileDetails)
         {
             string FullFileName = Path.Combine(ApsimDirectoryName, FileDetail.FileName);
-            string Arguments = null;
-
-            if (!SVNFileNames.ContainsKey(FileDetail.FileName))
-                throw new Exception("Cannot find SVN info for patched file: " + FileDetail.FileName);
-            string TipRevision = SVNFileNames[FileDetail.FileName];
-
-            if (TipRevision != FileDetail.Revision)
-                OutOfDateFileNames +=  "\r\n" + FileDetail.FileName;
-            else
+            if (Path.GetFileName(FullFileName) != "patch.revisions")
             {
+                string Arguments = null;
 
-                if (FileDetail.Status == "Deleted")
-                    Arguments += "delete --force " + StringManip.DQuote(FullFileName);
-                else if (FileDetail.Status == "Added")
-                    Arguments += "add --force " + StringManip.DQuote(FullFileName);
+                if (!SVNFileNames.ContainsKey(FileDetail.FileName))
+                    throw new Exception("Cannot find SVN info for patched file: " + FileDetail.FileName);
+                string TipRevision = SVNFileNames[FileDetail.FileName];
 
-                if (Arguments != null)
+                if (TipRevision != FileDetail.Revision)
+                    OutOfDateFileNames += "\r\n" + FileDetail.FileName;
+                else
                 {
-                    EnsureDirectoryIsUnderSVN(Path.GetDirectoryName(FullFileName), SVNFileName);
-                    Console.WriteLine(SVNFileName + " " + Arguments);
-                    Process P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectoryName);
-                    Console.WriteLine(Utility.CheckProcessExitedProperly(P));
+
+                    if (FileDetail.Status == "Deleted")
+                        Arguments += "delete --force " + StringManip.DQuote(FullFileName);
+                    else if (FileDetail.Status == "Added")
+                        Arguments += "add --force " + StringManip.DQuote(FullFileName);
+
+                    if (Arguments != null)
+                    {
+                        EnsureDirectoryIsUnderSVN(Path.GetDirectoryName(FullFileName), SVNFileName);
+                        Console.WriteLine(SVNFileName + " " + Arguments);
+                        Process P = Utility.RunProcess(SVNFileName, Arguments, ApsimDirectoryName);
+                        Console.WriteLine(Utility.CheckProcessExitedProperly(P));
+                    }
                 }
             }
         }
