@@ -4,7 +4,6 @@ rem -----    e.g. RunMake %APSIM%\Model\CSGeneral
 
 
 rem ----- Set the %APSIM% variable based on the directory where this batch file is located
-set PATHSAVED=%CD%
 cd %~dp0..\..
 set APSIM=%CD%
 
@@ -19,7 +18,3 @@ if EXIST VersionInfo.bat call "%APSIM%\Model\Build\VersionInfo.bat"
 
 rem ----- Run MAKE
 %APSIM%\Model\Build\make %2 %3 %4
-
-rem ----- Restore the original directory.
-cd %PATHSAVED%
-set PATHSAVED=
