@@ -15,15 +15,16 @@
 		<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Load in Bootstrap.xml~%apsim%\Model\Build\Bootstrap.xml"</CommandLine>
 	</Job>
 
-	<Job name="Apply patch">
-		<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-		<CommandLine>JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip" </CommandLine>
-	</Job>
 	<Folder name="BuildAndRun" wait="yes">
 		<!--
     Get the APSIM directory up to date and clean.
 	-->
 
+		<Job name="Apply patch">
+			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip" </CommandLine>
+		</Job>
+	
 		<Job name="Copy RunTime DLL's into model directory" wait="yes">
 			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
 			<CommandLine>..\Build\RunMake.bat %Apsim%/Model/RunTime</CommandLine>
