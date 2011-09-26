@@ -55,7 +55,7 @@ public partial class MainForm : Form
             string DirectoryName = Directory.GetCurrentDirectory();
 
             // Run an SVN stat command
-            Process P = Utility.RunProcess(SVNFileName, "-u stat", DirectoryName);
+            Process P = Utility.RunProcess(SVNFileName, "-v stat", DirectoryName);
             string StdOut = Utility.CheckProcessExitedProperly(P);
             string[] Lines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
@@ -63,7 +63,7 @@ public partial class MainForm : Form
             Regex R = new Regex("\\S+");
             foreach (string Line in Lines)
             {
-                if (Line.Length >= 9)
+                if (Line.Length >= 9 && Line.Substring(0, 9).Trim() != "")
                 {
                     string Status;
                     Status = Line[0].ToString();
@@ -76,11 +76,11 @@ public partial class MainForm : Form
                     {
                         MatchCollection Matches = R.Matches(Line.Substring(10));
 
-                        if (Matches.Count > 1)
+                        if (Matches.Count > 3)
                         {
-                            string Revision = Matches[0].Value;
+                            string Revision = Matches[1].Value;
                             string FileName = "";
-                            for (int i = 1; i < Matches.Count; i++)
+                            for (int i = 3; i < Matches.Count; i++)
                             {
                                 FileName += Matches[i].Value + " ";
                             }

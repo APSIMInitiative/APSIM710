@@ -66,22 +66,22 @@ class JobSchedulerApplyPatch
             throw new Exception("Cannot find svn.exe on PATH");
 
         // Get a list of files currently known to SVN and their tip revision numbers.
-        Process SVN = Utility.RunProcess(SVNFileName, "-u stat", ApsimDirectoryName);
+        Process SVN = Utility.RunProcess(SVNFileName, "-v stat", ApsimDirectoryName);
         string SVNStdOut = Utility.CheckProcessExitedProperly(SVN);
         string[] Lines = SVNStdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         Dictionary<string, string> SVNFileNames = new Dictionary<string, string>();
         Regex R = new Regex("\\S+");
         foreach (string Line in Lines)
         {
-            if (Line.Length >= 9 && Line[0] != '?')
+            if (Line.Length >= 9 && Line[0] != '?' && Line.Substring(0, 9).Trim() != "")
             {
                 // Get the tip revision and the filename from the SVN line.
                 MatchCollection Matches = R.Matches(Line.Substring(10));
-                if (Matches.Count > 1)
+                if (Matches.Count > 3)
                 {
-                    string TipRevision = Matches[0].Value;
+                    string TipRevision = Matches[1].Value;
                     string FileName = "";
-                    for (int i = 1; i < Matches.Count; i++)
+                    for (int i = 3; i < Matches.Count; i++)
                     {
                         FileName += Matches[i].Value + " ";
                     }
