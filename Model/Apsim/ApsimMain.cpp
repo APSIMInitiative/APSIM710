@@ -17,6 +17,9 @@
 #include <ComponentInterface/Interfaces.h>
 
 #include "Simulation.h"
+#ifdef __WIN32__
+#include <windows.h>
+#endif
 
 using namespace std;
 using namespace protocol;
@@ -40,9 +43,17 @@ int main(int argc, char **argv) {
                                "             Copyright(c) APSRU               \n\n";
          cout << Banner;
 
-         Path simFile(argv[1]);
+#ifdef __WIN32__
+          char Full_path[MAX_PATH];
+          char *Ptr_to_name;
+          GetFullPathName(argv[1], sizeof Full_path, Full_path, &Ptr_to_name);
+          std::string simPath = Full_path;
+#else
+		 std::string simPath = argv[1];
+#endif
+         Path simFile(simPath);
          simFile.Change_directory();
-         simulation.go(argv[1]);
+		 simulation.go(simPath);
          cerr << "100%" << endl;
          }
       else
