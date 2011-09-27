@@ -21,6 +21,7 @@ class DLLProber
     /// </summary>
     static private string ProbeDLLForDescriptionXML(string TypeName, string DllFileName)
     {
+        String descr = "";
         DllFileName = Configuration.RemoveMacros(DllFileName).Replace("%dllext%", "dll");
         if (File.Exists(DllFileName))
         {
@@ -39,81 +40,87 @@ class DLLProber
             Utility.CompilationMode typeOfAssembly = Utility.isManaged(DllFileName);
             if (typeOfAssembly == Utility.CompilationMode.CLR)
             {
-               // Is this a CPI type fully-managed assembly?
-               Assembly modelAssembly = Assembly.LoadFrom(DllFileName);
-               Type[] assemblyTypes = modelAssembly.GetTypes();
-               Type modelType = null;
-               foreach (Type typeInfo in assemblyTypes)
-               {
-                  if (typeInfo.FullName == "CMPComp.TGCComponent")
-                  {
-                      modelType = typeInfo;
-                      break;
-                  }
-              }
+                // Is this a CPI type fully-managed assembly?
+                Assembly modelAssembly = Assembly.LoadFrom(DllFileName);
+                Type[] assemblyTypes = modelAssembly.GetTypes();
+                Type modelType = null;
+                foreach (Type typeInfo in assemblyTypes)
+                {
+                    if (typeInfo.FullName == "CMPComp.TGCComponent")
+                    {
+                        modelType = typeInfo;
+                        break;
+                    }
+                }
 
-              if (modelType != null)
-              {
-                  MethodInfo miGetDescription = modelType.GetMethod("description");
-                  if (miGetDescription != null)
-                  {
-                      try
-                      {
-                          Object[] argArray = new Object[3];
-                          argArray[0] = (uint)0;
-                          argArray[1] = (uint)0;
-                          argArray[2] = (uint)0;
-                          //argArray[2] = (MessageFromLogic)null;
-                          //call the constructor
-                          Object modelObj = Activator.CreateInstance(modelType, argArray);
-                          if (modelObj != null)
-                          {
-                              Object[] args = new Object[1];
-                              args[0] = initScript;
-                              return (string)miGetDescription.Invoke(modelObj, args);
-                          }
-                      }
-                      catch (MissingMethodException e)
-                      {
-                          Console.WriteLine(e.Message);
-                      }
-                  }
-              }
-              else
-                // IF this is a .net component then redirect request to the wrapper DLL.
-                DllFileName = Path.Combine(Configuration.ApsimBinDirectory(), "DotNetComponentInterface.dll");
-              if (!File.Exists(DllFileName))
-                  throw new Exception("Cannot find DLL: " + DllFileName);
+                if (modelType != null)
+                {
+                    MethodInfo miGetDescription = modelType.GetMethod("description");
+                    if (miGetDescription != null)
+                    {
+                        try
+                        {
+                            Object[] argArray = new Object[3];
+                            argArray[0] = (uint)0;
+                            argArray[1] = (uint)0;
+                            argArray[2] = (uint)0;
+                            //argArray[2] = (MessageFromLogic)null;
+                            //call the constructor
+                            Object modelObj = Activator.CreateInstance(modelType, argArray);
+                            if (modelObj != null)
+                            {
+                                Object[] args = new Object[1];
+                                args[0] = initScript;
+                                descr = (String)miGetDescription.Invoke(modelObj, args);
+                            }
+                        }
+                        catch (MissingMethodException e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                    }
+                }
+                else
+                {
+                    // IF this is a mixed-mode .net component then redirect request to the wrapper DLL.
+                    DllFileName = Path.Combine(Configuration.ApsimBinDirectory(), "DotNetComponentInterface.dll");
+                    typeOfAssembly = Utility.isManaged(DllFileName);
+                }
+                if (!File.Exists(DllFileName))
+                    throw new Exception("Cannot find DLL: " + DllFileName);
             }
-            StringBuilder Description = new StringBuilder(500000);
 
-            // Dynamically create a method for the entry point we're going to call.
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            AssemblyName myAssemblyName = new AssemblyName();
-            myAssemblyName.Name = ModuleName + "Assembly";
-            AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
-            ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
-            MethodBuilder method;
-            method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
-                                               MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
-                                             CallingConventions.Standard,
-                                             typeof(void),
-                                             new Type[] { typeof(string), typeof(StringBuilder) },
-                                             CallingConvention.StdCall,
-                                             CharSet.Ansi);
-            method.SetImplementationFlags(MethodImplAttributes.PreserveSig |
-            method.GetMethodImplementationFlags());
-            moduleBuilder.CreateGlobalFunctions();
-            MethodInfo mi = moduleBuilder.GetMethod("getDescription");
+            if (typeOfAssembly == Utility.CompilationMode.Native || typeOfAssembly == Utility.CompilationMode.Mixed)
+            {
+                StringBuilder Description = new StringBuilder(500000);
 
-            // Call the DLL
-            object[] Parameters = new object[] { initScript, Description };
-            mi.Invoke(null, Parameters);
+                // Dynamically create a method for the entry point we're going to call.
+                AppDomain currentDomain = AppDomain.CurrentDomain;
+                AssemblyName myAssemblyName = new AssemblyName();
+                myAssemblyName.Name = ModuleName + "Assembly";
+                AssemblyBuilder myAssemblyBuilder = currentDomain.DefineDynamicAssembly(myAssemblyName, AssemblyBuilderAccess.Run);
+                ModuleBuilder moduleBuilder = myAssemblyBuilder.DefineDynamicModule(ModuleName + "Module");
+                MethodBuilder method;
+                method = moduleBuilder.DefinePInvokeMethod("getDescription", DllFileName,
+                                                   MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.PinvokeImpl,
+                                                 CallingConventions.Standard,
+                                                 typeof(void),
+                                                 new Type[] { typeof(string), typeof(StringBuilder) },
+                                                 CallingConvention.StdCall,
+                                                 CharSet.Ansi);
+                method.SetImplementationFlags(MethodImplAttributes.PreserveSig |
+                method.GetMethodImplementationFlags());
+                moduleBuilder.CreateGlobalFunctions();
+                MethodInfo mi = moduleBuilder.GetMethod("getDescription");
 
-            return Description.ToString();
+                // Call the DLL
+                object[] Parameters = new object[] { initScript, Description };
+                mi.Invoke(null, Parameters);
+
+                descr = Description.ToString();
+            }
         }
-        else
-            return "";
+        return descr;
     }
 
     /// <summary>
@@ -132,8 +139,14 @@ class DLLProber
             String compClass = "";
             XmlNode classNode = XmlHelper.Find(Doc.DocumentElement, "class");
             if (classNode != null)
-                compClass = classNode.InnerText;
-
+            {
+                String typeName = classNode.InnerText;
+                int firstPeriod = typeName.IndexOf('.');
+                compClass = firstPeriod == -1 ? typeName : typeName.Substring(0, firstPeriod);
+            }
+            if (compClass == "")
+                compClass = Path.GetFileNameWithoutExtension(DLLFileName);
+                
             if (compClass.Length > 0)
                 ClassCode = "[ComponentType(\"" + compClass + "\")]\r\n";
             ClassCode += "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
@@ -192,11 +205,11 @@ class DLLProber
             {
                 string EventName = XmlHelper.Name(Node);
                 string EventCode = "";
+                bool NullType = (XmlHelper.ChildNodes(Node, "field").Count == 0);
                 if (XmlHelper.Attribute(Node, "kind") == "subscribed")
                 {
                     if (XmlHelper.Find(Node, "param1_name") == null)  // make sure its not an Apsim Variant.
                     {
-                        bool NullType = (XmlHelper.ChildNodes(Node, "field").Count == 0);
                         if (!NullType)
                         {
                             // Create a method that takes a structure for an argument.
@@ -258,7 +271,23 @@ class DLLProber
                 else
                 {
                     // published event.
-                    EventCode += "   [Event] public event NullTypeDelegate $EVENTNAME$;\r\n";
+                    if (NullType || EventName.ToLower() == "error")
+                        EventCode += "   [Event] public event NullTypeDelegate $EVENTNAME$;\r\n";
+                    else
+                    {
+                        // Create a method that takes a structure for an argument.
+                        string CamelName = StringManip.CamelCase(EventName) + "Delegate"; ;
+                        if (XmlHelper.Attribute(Node, "typename") != "")
+                            CamelName = StringManip.CamelCase(XmlHelper.Attribute(Node, "typename") + "Delegate");
+                        else
+                        {
+                            XmlNode TypeNode = XmlHelper.Find(Node, "type");
+                            if (TypeNode != null && XmlHelper.Attribute(TypeNode, "typename") != "")
+                                CamelName = StringManip.CamelCase(XmlHelper.Attribute(TypeNode, "typename") + "Delegate");
+                        }
+                        EventCode += "   [Event] public event $CAMELDELEGATENAME$ $EVENTNAME$;\r\n";
+                        EventCode = EventCode.Replace("$CAMELDELEGATENAME$", CamelName);
+                    }
                 }
                 EventCode = EventCode.Replace("$EVENTNAME$", EventName);
                 ClassCode += EventCode;
