@@ -108,6 +108,7 @@
          REAL DVR                  ! Development rate of crop   !°Cd-1
          REAL DAYL                 ! Astronomic daylength (base = 0 degrees)   !h
          REAL TS                   ! Temperature sum for phenological development  !°Cd
+         REAL TSTR		 
          REAL TSHCKD               ! Transplanting shock for phenological development   !°Cd
          REAL LRSTRS               ! Drought stress factor causing leaf rolling  !-
          REAL LAIROL               ! Rolled leaf area index caused by drought  !ha leaf ha-1 soil
@@ -1027,6 +1028,7 @@
       g%DVR    = 0.0
       g%dayl   = 24.0
       g%TS     = 0.0
+      g%TSTR   = 0.0
       g%TSHCKD = 0.0
       g%LAIROL = 0.0
       g%ARLAI  = 0.0
@@ -3051,7 +3053,7 @@
 !-----Formal parameters
 
 !-----Local parameters
-      REAL    DL, TSTR, PPFAC
+      REAL    DL, PPFAC
 
       IF (g%DVS.GE.0..AND.g%DVS.LT.0.40) g%DVR = p%DVRJ*g%HU
       IF (g%DVS.GE.0.40.AND.g%DVS.LT.0.65) THEN
@@ -3068,10 +3070,10 @@
       IF (g%DVS.GE.1.00)                   g%DVR = p%DVRR*g%HU
 
       IF (g%CROPSTA .EQ. 3)then
-         TSTR = g%TS
-         g%TSHCKD = p%SHCKD*TSTR
+         g%TSTR = g%TS
+         g%TSHCKD = p%SHCKD*g%TSTR
       ENDIF
-      IF (g%CROPSTA .GT. 3 .AND.g%TS.LT.(TSTR+g%TSHCKD)) g%DVR = 0.
+      IF (g%CROPSTA .GT. 3 .AND.g%TS.LT.(g%TSTR+g%TSHCKD)) g%DVR = 0.
 
       RETURN
       END Subroutine
@@ -4060,17 +4062,17 @@
         CBCHK = 2.0*divide(g%CKCIN-g%CKCFL,
      :                     g%CKCIN+g%CKCFL+1.E-10,
      :                     0.0)
-      Endif
 
-      IF (ABS(CBCHK).GT.0.001) THEN
-         WRITE (string,'(A,3(A,A,F8.4))')
+        IF (ABS(CBCHK).GT.0.001) THEN
+          WRITE (string,'(A,3(A,A,F8.4))')
      :           '* * * Error in Carbon Balance, please check * * *',
      :      new_line, ' CBCHK=',CBCHK,
      :      new_line, ' CKCIN=',g%CKCIN,
      :      new_line, ' CKCFL=',g%CKCFL
 
 !         call fatal_error(err_user, string)
-      END IF
+        END IF
+      Endif
 
       RETURN
       END Subroutine
