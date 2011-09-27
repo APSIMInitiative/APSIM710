@@ -252,14 +252,10 @@ class Program
         // files from the list that were sent in the patch.
         string SaveDirectory = Path.Combine(Path.GetTempPath(), "SavedPatchFiles");
         string[] PatchFileNames;
-        if (Path.GetExtension(PatchFileName) == ".zip")
-        {
-            PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
-            for (int i = 0; i < PatchFileNames.Length; i++)
-                PatchFileNames[i] = Path.Combine(ApsimDirectoryName, PatchFileNames[i]);
-        }
-        else
-            PatchFileNames = Patch.FilesInPatch(PatchFileName, ApsimDirectoryName);
+        PatchFileNames = Zip.FileNamesInZip(PatchFileName, "");
+
+        for (int i = 0; i < PatchFileNames.Length; i++)
+            PatchFileNames[i] = Path.Combine(ApsimDirectoryName, PatchFileNames[i]);
 
         foreach (string FileNameInPatch in PatchFileNames)
         {
@@ -269,8 +265,8 @@ class Program
                 string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
                 Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
 
-                AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);                  
-                
+                AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);
+
             }
             else
             {
@@ -291,7 +287,7 @@ class Program
             }
             else
             {
-                if (I == -1)
+                if (I == -1 && Path.GetFileName(FileNameInPatch) != "patch.revisions")
                     ModifiedFiles.Add(FileNameInPatch);
             }
         }
@@ -308,12 +304,15 @@ class Program
             Db.UpdateStatus(JobID, "Pass");
         else
         {
+            Console.WriteLine("Files that are different:");
+            foreach (string FileName in ModifiedFiles)
+                Console.WriteLine(FileName);
             Db.UpdateStatus(JobID, "Fail");
             string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
             Db.UpdateDiffFileName(JobID, DiffsFileName);
-        }        
+        }
 
-        Db.Close();        
+        Db.Close();
 
     }
 
@@ -325,11 +324,11 @@ class Program
         // If user has put a deleted file into the patch then always signal true.
         if (FileFromPatch.Length == 0)
             return true;
-        
+
         // If Bob doesn't have the file on disk then this is a diff - signal false.
         if (!File.Exists(FileName))
             return false;
-        
+
         // If we get this far then do a binary comparison.
         FileFromPatch.Seek(0, SeekOrigin.Begin);
         BinaryReader File1 = new BinaryReader(FileFromPatch);
@@ -351,7 +350,7 @@ class Program
             return true;
         else if (!File.Exists(FileName1) || !File.Exists(FileName2))
             return false;
-        
+
         BinaryReader File1 = new BinaryReader(File.Open(FileName1, FileMode.Open));
         BinaryReader File2 = new BinaryReader(File.Open(FileName2, FileMode.Open));
 
@@ -396,4 +395,4 @@ class Program
 
 
 }
-   
+

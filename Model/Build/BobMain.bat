@@ -46,6 +46,7 @@ echo ----- JobSchedulerApplyPatch -----                                         
 %APSIM%\Model\JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip"   >> %APSIM%\Model\Build\Bootstrap.xml
 
 echo ----- Re-compile the JobScheduler -----                                       >> %APSIM%\Model\Build\Bootstrap.xml
+del /Q %APSIM%\Model\*.exe
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
 rem ----- Run the JobScheduler -----
