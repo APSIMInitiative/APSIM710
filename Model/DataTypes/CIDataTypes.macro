@@ -326,6 +326,7 @@ extern "C" void EXPORT STDCALL publish_[type.name](unsigned* id, const protocol:
    }
 extern "C" void EXPORT STDCALL unpack_[type.name](protocol::Variant* variant, protocol::F[type.name]Type* data)
    {
+   memset(data, 0, sizeof(*data));
    if (variant->isApsimVariant())
       {
       protocol::ApsimVariant ApsimVar(*variant);
