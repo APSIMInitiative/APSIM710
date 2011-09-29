@@ -426,8 +426,8 @@
          ! now check that we have mass balance
 
       mass_balance = sum_real_array (dm_retranslocate, max_part)
-      call bound_check_real_var (mass_balance, 0.0, 0.0          &
-                         , 'dm_retranslocate mass balance')
+      call bound_check_real_var (mass_balance, -epsilon(mass_balance),      &
+               epsilon(mass_balance), 'dm_retranslocate mass balance')
 
       call pop_routine (my_name)
       return
