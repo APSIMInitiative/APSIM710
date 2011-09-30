@@ -37,6 +37,7 @@
       public Lateral_Process
       public Lateral_Send_My_Variable
       public LateralData
+      public Lateral_zero_variables
 
       contains
 

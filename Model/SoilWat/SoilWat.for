@@ -7300,6 +7300,7 @@ c
       call soilwat2_zero_variables ()
       call soilwat2_zero_data_links ()
       call soilwat2_zero_event_data ()
+      call lateral_zero_variables (lateral)
 
 
       call pop_routine (myname)
