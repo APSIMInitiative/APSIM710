@@ -149,8 +149,9 @@ subroutine surfom_zero_all_globals ()
    ! NIH - there must be a lot of things missing here
 
          ! Globals
-   g%MetData%rain         = 0.0
+   g%num_surfom           = 0
    g%irrig                = 0.0
+   g%MetData%rain         = 0.0
    g%MetData%maxt         = 0.0
    g%MetData%mint         = 0.0
    g%init_resid_cnr       = 0.0
@@ -158,16 +159,18 @@ subroutine surfom_zero_all_globals ()
    g%eos                  = 0.0
    g%cumeos               = 0.0
    g%dlayer (:)           = 0.0
-   g%phosphorus_aware    = .false.
-   c%fom_types(:)        = blank
-   c%num_fom_types       = 0
-   g%pond_active         = 'no'
+   g%phosphorus_aware     = .false.
+   c%fom_types(:)         = blank
+   c%num_fom_types        = 0
+   g%pond_active          = 'no'
 
    g%oldSOMstate%amount = 0.0
    g%oldSOMstate%C  = 0.0
    g%oldSOMstate%N  = 0.0
    g%oldSOMstate%P  = 0.0
    g%oldSOMstate%AshAlk  = 0.0
+   g%SurfOM(:)%name = blank
+   g%SurfOM(:)%PotDecompRate = 0.0
    g%SurfOM(:)%no3 = 0.0
    g%SurfOM(:)%nh4 = 0.0
    g%SurfOM(:)%po4 = 0.0
@@ -190,6 +193,7 @@ subroutine surfom_zero_all_globals ()
       ! Parameters
    p%report_additions    = blank
    p%report_removals    = blank
+   p%standing_fraction(:) = 0.0
 
       ! Constants
 
