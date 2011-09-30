@@ -60,7 +60,7 @@ class Program
                 string FullSourceFileName = Path.Combine(DirectoryName, FileName);
                 string FullDestFileName = Path.Combine(TempDirectory, FileName);
 
-                if (!Directory.Exists(FullSourceFileName))
+                if (!Directory.Exists(FullSourceFileName) && Path.GetFileName(FullSourceFileName) != "DotNetProxies.cs")
                     ModifiedFiles.Add(FullSourceFileName);
             }
         }
@@ -260,23 +260,11 @@ class Program
         foreach (string FileNameInPatch in PatchFileNames)
         {
             bool AreEqual;
-            if (Path.GetExtension(PatchFileName) == ".zip")
-            {
-                string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
-                Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
+            string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
+            Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
 
-                AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);
+            AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);
 
-            }
-            else
-            {
-                // Work out the name of the saved file i.e. the file that came out of the patch.
-                string DestFileName = FileNameInPatch.ToLower();
-                DestFileName = DestFileName.Replace(ApsimDirectoryName.ToLower(), SaveDirectory);
-
-                // Compare the working copy of the file to the file that came from the patch.
-                AreEqual = FilesAreIdentical(FileNameInPatch, DestFileName);
-            }
             // If the files are identical then remove it from the list of ModifiedFiles,
             // otherwise make sure it is in the list.
             int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileNameInPatch);
