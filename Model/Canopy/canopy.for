@@ -48,7 +48,12 @@
                                                                     ! intercropping
          integer  crop_module(max_crops)        ! list of modules replying
          logical   before_commence          ! Whether initialisation has completed properly
-      end type CanopyGlobals
+
+C VOS
+         character*3   DoLight                 !VOS to stop the module doing the light interception
+		 
+
+		 end type CanopyGlobals
 ! ====================================================================
       ! instance variables.
       common /InstancePointers/ ID,g,p,c
@@ -86,6 +91,9 @@
       character  line*200              ! message
       integer    i                     ! loop counter
 
+      integer    numvals           ! VOS for if DoLIght is yes
+
+	  
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -96,7 +104,22 @@
 
             ! now get intercropping swap list from control file
 
-      call read_char_array_optional (section_name
+C VOS 
+      call read_char_var_optional (section_name
+     :                   , 'dolight', '()'
+     :                   , g%DoLight, numvals)
+      if (numvals .eq. 0) then
+	     g%DoLight = "yes"
+      elseif (g%DoLight .eq. "No") then
+	     g%DoLight = "no"
+      elseif (g%DoLight .eq. "no") then
+	     g%DoLight = "no"
+      else
+	     g%DoLight = "yes"
+      endif
+C VOS 
+
+       call read_char_array_optional (section_name
      :                   , 'intercrop', max_crops, '()'
      :                   , g%intercrop_list, num_modules)
 
@@ -455,7 +478,11 @@ c      integer    canopy_crop_number    ! function
 
       temp_variable_name = variable_name
 
-      if (temp_variable_name .eq. fr_intc_radn_name) then
+      if (g%DoLight .eq. "no") then
+            ! VOS don't report anything to anyone
+         call Message_unused ()
+
+      elseif (temp_variable_name .eq. fr_intc_radn_name) then
          module_string = Variable_name(fr_intc_radn_name_length+1:)
          found = component_name_to_ID(module_string,moduleID)
 
