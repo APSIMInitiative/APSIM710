@@ -791,11 +791,13 @@ public class AgPasture : Instance
                 //        SP[s].gfwater = p_gfwater;
 
                 double accum_gfwater = 0;
+                p_greenLAI = 0;     //update p_greenLAI before using it.
                 for (int s = 0; s < Nsp; s++)
                 {
                     SP[s].gfwater = 1 - SP[s].soilSatFactor * (SW - FC) / (Sat - FC);
                     accum_gfwater += SP[s].gfwater * SP[s].greenLAI;   //weighted by greenLAI 
-                }
+                    p_greenLAI += SP[s].greenLAI;                      //FLi 19 Sept 2011 for avoiding error of an unupdated  
+                }                                                      //p_greenLAI when usinf SWIM for waterUptake    
                 if (p_greenLAI > 0)
                     p_gfwater = accum_gfwater / p_greenLAI;
                 else
@@ -1631,6 +1633,10 @@ public class AgPasture : Instance
         else
         {
             // N uptake calculated by other modules (e.g., SWIM)  
+            String msg = "\nInforamtion: AgPasture calculates N uptake. No other approach is available now.";
+                   msg +="\n             Please specify N uptake source as default \"calc\".";
+            Console.WriteLine(msg);
+
         }
 
         return soilNremoved;
@@ -2161,7 +2167,7 @@ public class AgPasture : Instance
     [Units("kg/ha")]
     public float[] NitrogenSupplyLayers //n_supply_layer
     {
-        get { return SWSupply; }
+        get { return SNSupply; }
     }
 
     [Output]
@@ -2175,7 +2181,7 @@ public class AgPasture : Instance
     [Units("kg/ha")]
     public float[] NitrogenUptakeLayers //n_uptake_layer
     {
-        get { return SWUptake; }
+        get { return SNUptake; }
     }
 
     [Output]
@@ -2492,9 +2498,29 @@ public class AgPasture : Instance
             return ftArray;
         }
     }
+    [Output][Units("kgDM/ha")]
+    public float[] SpeciesHarvestWt  //species N 
+    {
+        get
+        {
+            for (int s = 0; s < Nsp; s++)
+                ftArray[s] = (float)SP[s].dmdefoliated;
+            return ftArray;
+        }
+    }
 
-    [Output]
-    [Units("0-1")]      //Calculate growth factor of nitrogen deficit
+    [Output][Units("kgN/ha")]
+    public float[] SpeciesHarvestN  //species N 
+    {
+        get
+        {
+            for (int s = 0; s < Nsp; s++)             
+               ftArray[s] = (float)SP[s].Ndefoliated;
+            return ftArray;
+        }
+    }
+
+    [Output][Units("0-1")]      //Calculate growth factor of nitrogen deficit
     public float[] spGFN
     {
         get
@@ -2937,7 +2963,7 @@ public class Species
 
     public double growthTmin;   //Minimum temperature (grtmin) - originally 0
     public double growthTmax;   //Maximum temperature (grtmax) - originally 30
-    public double growthTopt;   //Optimum temperature (grtopt) - originally 12
+    public double growthTopt;   //Optimum temperature (grtopt) - originally 20
     public double growthTq;	    //Temperature n (grtemn) --fyl: q curvature coefficient, 1.5 for c3 & 2 for c4 in IJ
 
     public double heatOnsetT;	        //onset tempeature for heat effects
@@ -3067,6 +3093,7 @@ public class Species
     public double dmstem;
     public double dmleaf_green;
     public double dmstem_green;
+    public double dmstol_green;
     public double dmstol;
     public double dmshoot;
 
@@ -3170,6 +3197,19 @@ public class Species
             return 0;
 
         dmdefoliated = amt;
+      
+        // Mar2011: If removing the specified 'amt' would result in a 'dmgreen' less than specified 'dmgreenmin',
+        // then less green tissue (pool1-3 of leaf+stem) and more standing dead (pool4), will be removed 
+        // This is especially necessaery for semi-arid grassland
+        double pRest_green = pRest;
+        double pRest_dead = pRest;
+        if (pRest * (dmleaf_green + dmstem_green) + dmstol_green < dmgreenmin)
+        {
+            pRest_green = (dmgreenmin - dmstol_green)/(dmleaf_green + dmstem_green);
+            double amt_dead_remove = amt - (1 - pRest_green) * (dmleaf_green + dmstem_green);
+            pRest_dead = (dmstem4 + dmleaf4 - amt_dead_remove) / (dmstem4 + dmleaf4);
+            if (pRest_dead < 0.0) pRest_dead = 0.0;   //this is impossible
+        }    
 
         //double standingDead =dmleaf4 + dmstem4;
         //double deadFrac = standingDead /(dmleaf+dmstem);
@@ -3225,87 +3265,87 @@ public class Species
         Nstem4 -= rm_dmstem4 * Ncstem4;
         */
 
-        /*
-                //2) Remove more standing dead and scenescent dm
-                //   will result in a slight higher yield and less litter, but 
-                //   affact little on the differnce of litter formation between different rotational periods  
-                double pRemove = 1 - pRest;
-                double dm1 = dmleaf1 + dmstem1;
-                double dm2 = dmleaf2 + dmstem2;
-                double dm3 = dmleaf3 + dmstem3;        
-                double dm4 = dmleaf4 + dmstem4;
+/*
+        //2) Remove more standing dead and scenescent dm
+        //   will result in a slight higher yield and less litter, but 
+        //   affact little on the differnce of litter formation between different rotational periods  
+        double pRemove = 1 - pRest;
+        double dm1 = dmleaf1 + dmstem1;
+        double dm2 = dmleaf2 + dmstem2;
+        double dm3 = dmleaf3 + dmstem3;        
+        double dm4 = dmleaf4 + dmstem4;
 
-                double dm1Remove = dm1 * pRemove;  //in proportion
-                double dm2Remove = dm2 * pRemove;
-                double dm3Remove = dm3 * pRemove;
-                double dm4Remove = dm4 * pRemove;
+        double dm1Remove = dm1 * pRemove;  //in proportion
+        double dm2Remove = dm2 * pRemove;
+        double dm3Remove = dm3 * pRemove;
+        double dm4Remove = dm4 * pRemove;
 
-                double dm4MoreR = 0.5 * (dm4 - dm4Remove);
-                double dm3MoreR = 0.25 * (dm3 - dm3Remove);
-                double dm2MoreR = 0;
-                double dm1MoreR = 0;
-                if (dm3MoreR + dm4MoreR  < dm1 - dm1Remove + dm2 - dm2Remove )  
-                {
-                    dm2MoreR = - (dm3MoreR+ dm4MoreR) * (dm2/(dm1+dm2));
-                    dm1MoreR = - (dm3MoreR+ dm4MoreR) * (dm1/(dm1+dm2));
+        double dm4MoreR = 0.5 * (dm4 - dm4Remove);
+        double dm3MoreR = 0.25 * (dm3 - dm3Remove);
+        double dm2MoreR = 0;
+        double dm1MoreR = 0;
+        if (dm3MoreR + dm4MoreR  < dm1 - dm1Remove + dm2 - dm2Remove )  
+        {
+            dm2MoreR = - (dm3MoreR+ dm4MoreR) * (dm2/(dm1+dm2));
+            dm1MoreR = - (dm3MoreR+ dm4MoreR) * (dm1/(dm1+dm2));
 
-                    dm1Remove += dm1MoreR;  //in proportion
-                    dm2Remove += dm2MoreR;
-                    dm3Remove += dm3MoreR;
-                    dm4Remove += dm4MoreR;
-                }
+            dm1Remove += dm1MoreR;  //in proportion
+            dm2Remove += dm2MoreR;
+            dm3Remove += dm3MoreR;
+            dm4Remove += dm4MoreR;
+        }
 
-                double pRest1 = 0;
-                double pRest2 = 0;
-                double pRest3 = 0;
-                double pRest4 = 0;
-                if (dm1 > 0) pRest1 = (dm1 - dm1Remove) / dm1; 
-                if (dm2 > 0) pRest2 = (dm2 - dm2Remove) / dm2;
-                if (dm3 > 0) pRest3 = (dm3 - dm3Remove) / dm3;
-                if (dm4 > 0) pRest4 = (dm4 - dm4Remove) / dm4;
+        double pRest1 = 0;
+        double pRest2 = 0;
+        double pRest3 = 0;
+        double pRest4 = 0;
+        if (dm1 > 0) pRest1 = (dm1 - dm1Remove) / dm1; 
+        if (dm2 > 0) pRest2 = (dm2 - dm2Remove) / dm2;
+        if (dm3 > 0) pRest3 = (dm3 - dm3Remove) / dm3;
+        if (dm4 > 0) pRest4 = (dm4 - dm4Remove) / dm4;
         
-                dmleaf1 = pRest1 * dmleaf1;
-                dmleaf2 = pRest2 * dmleaf2;
-                dmleaf3 = pRest3 * dmleaf3;
-                dmleaf4 = pRest4 * dmleaf4;
-                dmstem1 = pRest1 * dmstem1;
-                dmstem2 = pRest2 * dmstem2;
-                dmstem3 = pRest3 * dmstem3;
-                dmstem4 = pRest4 * dmstem4;
+        dmleaf1 = pRest1 * dmleaf1;
+        dmleaf2 = pRest2 * dmleaf2;
+        dmleaf3 = pRest3 * dmleaf3;
+        dmleaf4 = pRest4 * dmleaf4;
+        dmstem1 = pRest1 * dmstem1;
+        dmstem2 = pRest2 * dmstem2;
+        dmstem3 = pRest3 * dmstem3;
+        dmstem4 = pRest4 * dmstem4;
 
-                double preNshoot = Nshoot; //before remove
-                //N remove 
-                Nleaf1 = pRest1 * Nleaf1;
-                Nleaf2 = pRest2 * Nleaf2;
-                Nleaf3 = pRest3 * Nleaf3;
-                Nleaf4 = pRest4 * Nleaf4;
-                Nstem1 = pRest1 * Nstem1;
-                Nstem2 = pRest2 * Nstem2;
-                Nstem3 = pRest3 * Nstem3;
-                Nstem4 = pRest4 * Nstem4;
-        */
+        double preNshoot = Nshoot; //before remove
+        //N remove 
+        Nleaf1 = pRest1 * Nleaf1;
+        Nleaf2 = pRest2 * Nleaf2;
+        Nleaf3 = pRest3 * Nleaf3;
+        Nleaf4 = pRest4 * Nleaf4;
+        Nstem1 = pRest1 * Nstem1;
+        Nstem2 = pRest2 * Nstem2;
+        Nstem3 = pRest3 * Nstem3;
+        Nstem4 = pRest4 * Nstem4;
+*/
 
-        // 1)Removing without preference        
-        dmleaf1 = pRest * dmleaf1;
-        dmleaf2 = pRest * dmleaf2;
-        dmleaf3 = pRest * dmleaf3;
-        dmleaf4 = pRest * dmleaf4;
-        dmstem1 = pRest * dmstem1;
-        dmstem2 = pRest * dmstem2;
-        dmstem3 = pRest * dmstem3;
-        dmstem4 = pRest * dmstem4;
+        // 1)Removing without preference   Mar2011: using different pRest for maintain a 'dmgreenmin'      
+        dmleaf1 = pRest_green * dmleaf1;        
+        dmleaf2 = pRest_green * dmleaf2;
+        dmleaf3 = pRest_green * dmleaf3;
+        dmleaf4 = pRest_dead * dmleaf4;
+        dmstem1 = pRest_green * dmstem1;
+        dmstem2 = pRest_green * dmstem2;
+        dmstem3 = pRest_green * dmstem3;
+        dmstem4 = pRest_dead * dmstem4;        
         //No stolon remove
 
         double preNshoot = Nshoot; //before remove
         //N remove 
-        Nleaf1 = pRest * Nleaf1;
-        Nleaf2 = pRest * Nleaf2;
-        Nleaf3 = pRest * Nleaf3;
-        Nleaf4 = pRest * Nleaf4;
-        Nstem1 = pRest * Nstem1;
-        Nstem2 = pRest * Nstem2;
-        Nstem3 = pRest * Nstem3;
-        Nstem4 = pRest * Nstem4;
+        Nleaf1 = pRest_green * Nleaf1;
+        Nleaf2 = pRest_green * Nleaf2;
+        Nleaf3 = pRest_green * Nleaf3;
+        Nleaf4 = pRest_dead * Nleaf4;
+        Nstem1 = pRest_green * Nstem1;
+        Nstem2 = pRest_green * Nstem2;
+        Nstem3 = pRest_green * Nstem3;
+        Nstem4 = pRest_dead * Nstem4;
 
         //Nremob also been emoved proportionally (not sensiive?)
         double preNremob = Nremob;
@@ -3370,6 +3410,7 @@ public class Species
 
         dmleaf_green = dmleaf1 + dmleaf2 + dmleaf3;
         dmstem_green = dmstem1 + dmstem2 + dmstem3;
+        dmstol_green = dmstol1 + dmstol2 + dmstol3;
 
         dmgreen = dmleaf1 + dmleaf2 + dmleaf3
                 + dmstem1 + dmstem2 + dmstem3
@@ -3834,8 +3875,8 @@ public class Species
             return 1;
 
         double Kp = CO2PmaxScale; //700; for C3 plants & 150 for C4
-        //if (photoPath == 4)     //C4 plants
-        //    Kp = 150;
+        if (photoPath == 4)     //C4 plants
+            Kp = 150;
 
         double Fp = (CO2 / (Kp + CO2)) * ((CO2ambient + Kp) / CO2ambient);
         return Fp;
@@ -4613,9 +4654,10 @@ public class Species
         pS.dmroot = dmroot;
         pS.dmleaf_green = dmleaf_green;
         pS.dmstem_green = dmstem_green;
-        pS.dmleaf = dmleaf;
-        pS.dmstem = dmstem;
-        pS.dmstol = dmstol;
+        pS.dmstol_green = dmstol_green;
+        pS.dmleaf  = dmleaf;
+        pS.dmstem  = dmstem;
+        pS.dmstol  = dmstol;
         pS.dmshoot = dmshoot;
         pS.dmgreen = dmgreen;
         pS.dmdead = dmdead;
@@ -4653,6 +4695,7 @@ public class DMPools
     public double dmstem;
     public double dmleaf_green;
     public double dmstem_green;
+    public double dmstol_green;
     public double dmstol;
     public double dmshoot;
     public double dmgreen;
