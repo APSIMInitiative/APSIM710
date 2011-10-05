@@ -41,6 +41,7 @@
          character  op_text(max_ops)*(record_length)
          character phase_name(3)*10
          integer last_record
+         integer rule
 
       end type OperatnsGlobals
 
@@ -343,17 +344,22 @@
 
       ! loop through all rules looking for ones that match our section
       do Rule_Index = 1, Num_rules
-         call apsimcomponentdata_loadrule(get_componentData(),
-     .                                    Rule_names(Rule_index))
+         call apsimcomponentdata_loadrule(g%rule,
+     .                                    get_componentData(),
+     .                                    Rule_names(Rule_index),
+     .                                    condition)
          if (index(Rule_names(Rule_index),
      .             section) .ne. 0) then
-            call apsimcomponentdata_loadrule(get_componentData(),
-     .                                       Rule_names(Rule_index))
+            call apsimcomponentdata_loadrule(g%rule,
+     .                                       get_componentData(),
+     .                                       Rule_names(Rule_index),
+     .                                       condition)
 
-            num_lines = apsimcomponentdata_getnumrulelines()
+            num_lines = apsimcomponentdata_getnumrulelines(g%rule)
 
             do 100 Line_number = 0, num_lines-1
-               call apsimcomponentdata_getruleline(Line_number,
+               call apsimcomponentdata_getruleline(g%rule,
+     .                                             Line_number,
      .                                             Line)
 
                ! remove any comments
@@ -586,7 +592,9 @@
       if (doAllocate) then
          allocate(g)
          allocate(id)
+         call apsimcomponentdata_allocaterules(g%rule)
       else
+         call apsimcomponentdata_deallocaterules(g%rule)
          deallocate(g)
          deallocate(id)
       end if

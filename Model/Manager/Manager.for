@@ -520,11 +520,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
       ! Go tokenize each rule.
       do rule = 1, g%num_rules
 
-         call apsimcomponentdata_loadrule(get_componentData(),
-     .                                    Rule_names(rule))
-
          rule_type = blank
-         call apsimcomponentdata_getrulecondition(rule_type)
+         call apsimcomponentdata_loadrule(g%rule,
+     .                                    get_componentData(),
+     .                                    Rule_names(rule),
+     .                                    rule_type)
          rule_type = Lower_case(rule_type)
 
          call write_string (new_line
@@ -550,7 +550,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
             g%start_token = g%last_token
          end if
          g%line_number = 0
-         g%num_lines = apsimcomponentdata_getnumrulelines()
+         g%num_lines = apsimcomponentdata_getnumrulelines(g%rule)
          call Tokenize ()
       end do
 
@@ -725,7 +725,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
          EOF_flag = 1
 
       else
-         call apsimcomponentdata_getruleline(g%line_number,
+         call apsimcomponentdata_getruleline(g%rule,
+     .                                       g%line_number,
      .                                       Line)
          Line = lower_case(Line)
 
@@ -3761,7 +3762,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
       if (doAllocate) then
          allocate(g)
          allocate(id)
+         call apsimcomponentdata_allocaterules(g%rule)
       else
+         call apsimcomponentdata_deallocaterules(g%rule)
          deallocate(g)
          deallocate(id)
       end if

@@ -26,6 +26,7 @@ class EXPORT ApsimComponentData
       ApsimComponentData& operator=(const ApsimComponentData& rhs);
 
       std::string getName(void) const;
+      std::string getClass(void) const;
       std::string getExecutableFileName(void) const;
       std::string getComponentInterfaceFileName(void) const;
 

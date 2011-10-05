@@ -84,6 +84,13 @@ string ApsimComponentData::getName(void) const
    return node.getAttribute("name");
    }
 // ------------------------------------------------------------------
+// Return class of component to caller.
+// ------------------------------------------------------------------
+string ApsimComponentData::getClass(void) const
+   {
+   return node.getAttribute("class");
+   }
+// ------------------------------------------------------------------
 // Return name of component to caller.
 // ------------------------------------------------------------------
 string ApsimComponentData::getExecutableFileName(void) const
@@ -497,35 +504,48 @@ extern "C" void EXPORT STDCALL ApsimComponentData_getRuleNames
    FStrings(names, namesLength, *maxNumNames, 0) = ruleNames;
    *numNames = ruleNames.size();
    }
-vector<string> ruleLines;
-string ruleCondition;
+
+typedef vector<string> *stringVector;
+
+// DANGER - assumes 32-bit pointers (more precisely, that a pointer
+// can be safely stored as 4-byte Fortran integer)
+extern "C" void EXPORT STDCALL ApsimComponentData_allocateRules(unsigned* handle)
+{
+	*handle = unsigned(new vector<string>);
+}
+
+extern "C" void EXPORT STDCALL ApsimComponentData_deallocateRules(unsigned* handle)
+{
+	delete (stringVector)*handle;
+}
+
 extern "C" void EXPORT STDCALL ApsimComponentData_loadRule
-   (ApsimComponentData** componentData,
+   (unsigned* handle,
+    ApsimComponentData** componentData,
     const char* name,
-    unsigned nameLength)
+	char* condition,
+    unsigned nameLength,
+	unsigned conditionLength)
    {
    string contents;
+   string ruleCondition;
    (*componentData)->getRule(asString(FString(name, nameLength, FORString)),
                              ruleCondition,
                              contents);
-   Split_string(contents, "\n", ruleLines);
+   FString(condition, conditionLength, EmptyString) = ruleCondition.c_str();
+   Split_string(contents, "\n", *(stringVector(*handle)));
    }
 extern "C" unsigned EXPORT STDCALL ApsimComponentData_getNumRuleLines
-   (void)
+   (unsigned* handle)
    {
-   return ruleLines.size();
+   return stringVector(*handle)->size();
    }
 extern "C" void EXPORT STDCALL ApsimComponentData_getRuleLine
-   (unsigned* lineNumber,
+   (unsigned* handle,
+    unsigned* lineNumber,
     char* line,
     unsigned lineLength)
    {
-   FString(line, lineLength, EmptyString) = ruleLines[*lineNumber].c_str();
-   }
-extern "C" void EXPORT STDCALL ApsimComponentData_getRuleCondition
-   (char* condition,
-    unsigned conditionLength)
-   {
-   FString(condition, conditionLength, EmptyString) = ruleCondition.c_str();
+   FString(line, lineLength, EmptyString) = (*stringVector(*handle))[*lineNumber].c_str();
    }
 
