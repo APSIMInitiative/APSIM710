@@ -4469,7 +4469,6 @@ cnh NOTE - intensity is not part of the official design !!!!?
       do counter = 1, g%num_crops
          CropName = g%crop_owners(counter)
 
-         call NullTermString(CropName)                         ! YUK - need to fix this.
          Water%Uptakes(counter)%Name = CropName
          Water%Uptakes(counter)%Num_amount = p%n+1
 
