@@ -103,7 +103,7 @@ public class SoilN : Instance
                 for (int layer = 0; layer < value.Length; ++layer)
                 {
                     double convFact = SoilN2Fac(layer);
-                    if (value[layer] < no3ppm_min)
+                    if (value[layer] < no3ppm_min - epsilon)
                         Console.WriteLine("no3ppm[layer] = " + value[layer].ToString() +
                                 " less than lower limit of " + no3ppm_min);
                     _no3[layer] = MathUtility.Divide(value[layer], convFact, 0.0);
@@ -139,7 +139,7 @@ public class SoilN : Instance
                 for (int layer = 0; layer < value.Length; ++layer)
                 {
                     double convFact = SoilN2Fac(layer);
-                    if (value[layer] < nh4ppm_min)
+                    if (value[layer] < nh4ppm_min - epsilon)
                         Console.WriteLine("nh4ppm[layer] = " + value[layer].ToString() +
                                 " less than lower limit of " + nh4ppm_min);
                     _nh4[layer] = MathUtility.Divide(value[layer], convFact, 0.0);
@@ -344,7 +344,7 @@ public class SoilN : Instance
                 {
 
                     _no3[layer] = value[layer];
-                    if (_no3[layer] < no3_min[layer])
+                    if (_no3[layer] < no3_min[layer] - epsilon)
                         Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
                                 " less than lower limit of " + no3_min[layer]);
                 }
@@ -383,7 +383,7 @@ public class SoilN : Instance
                 else
                 {
                     _nh4[layer] = value[layer];
-                    if (_nh4[layer] < nh4_min[layer])
+                    if (_nh4[layer] < nh4_min[layer] - epsilon)
                         Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
                                 " less than lower limit of " + nh4_min[layer]);
                 }
@@ -987,7 +987,7 @@ public class SoilN : Instance
             for (int layer = 0; layer < value.Length; ++layer)
             {
                 _no3[layer] += value[layer];
-                if (_no3[layer] < no3_min[layer])
+                if (_no3[layer] < no3_min[layer] - epsilon)
                     Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
                             " less than lower limit of " + no3_min[layer]);
             }
@@ -1003,7 +1003,7 @@ public class SoilN : Instance
             for (int layer = 0; layer < value.Length; ++layer)
             {
                 _nh4[layer] += value[layer];
-                if (_nh4[layer] < nh4_min[layer])
+                if (_nh4[layer] < nh4_min[layer] - epsilon)
                     Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
                             " less than lower limit of " + nh4_min[layer]);
             }
@@ -1020,7 +1020,7 @@ public class SoilN : Instance
             {
                 double convFact = SoilN2Fac(layer);
                 _no3[layer] += MathUtility.Divide(value[layer], convFact, 0.0);
-                if (_no3[layer] < no3_min[layer])
+                if (_no3[layer] < no3_min[layer] - epsilon)
                     Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
                             " less than lower limit of " + no3_min[layer]);
             }
@@ -1037,7 +1037,7 @@ public class SoilN : Instance
             {
                 double convFact = SoilN2Fac(layer);
                 _nh4[layer] += MathUtility.Divide(value[layer], convFact, 0.0);
-                if (_nh4[layer] < nh4_min[layer])
+                if (_nh4[layer] < nh4_min[layer] - epsilon)
                     Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
                             " less than lower limit of " + nh4_min[layer]);
             }
@@ -1054,7 +1054,7 @@ public class SoilN : Instance
             for (int layer = 0; layer < value.Length; ++layer)
             {
                 _urea[layer] += value[layer];
-                if (_urea[layer] < urea_min)
+                if (_urea[layer] < urea_min - epsilon)
                     Console.WriteLine("urea[layer] = " + _urea[layer].ToString() +
                             " less than lower limit of " + urea_min);
             }
@@ -1286,7 +1286,7 @@ public class SoilN : Instance
     [EventHandler]
     public void OnTick(TimeType time) 
     {
-        DateUtility.JulianDateToDayOfYear(time.startday, out day_of_year, out year);
+        DateUtility.JulianDayNumberToDayOfYear(time.startday, out day_of_year, out year);
         
         // Reset Potential Decomposition Register
         num_residues = 0;
@@ -1382,6 +1382,8 @@ public class SoilN : Instance
         for (int layer = 0; layer < NitrogenChanged.DeltaNO3.Length; ++layer)
         {
             _no3[layer] += NitrogenChanged.DeltaNO3[layer];
+            if (Math.Abs(_no3[layer]) < epsilon)
+                _no3[layer] = 0.0;
             if (_no3[layer] < no3_min[layer])
                 Console.WriteLine("no3[layer] = " + _no3[layer].ToString() +
                         " less than lower limit of " + no3_min[layer]);
@@ -1389,6 +1391,8 @@ public class SoilN : Instance
         for (int layer = 0; layer < NitrogenChanged.DeltaNH4.Length; ++layer)
         {
             _nh4[layer] += NitrogenChanged.DeltaNH4[layer];
+            if (Math.Abs(_nh4[layer]) < epsilon)
+                _nh4[layer] = 0.0;
             if (_nh4[layer] < nh4_min[layer])
                 Console.WriteLine("nh4[layer] = " + _nh4[layer].ToString() +
                         " less than lower limit of " + nh4_min[layer]);
@@ -1440,12 +1444,17 @@ public class SoilN : Instance
     private const double pcnt2fract = 1.0 / 100.0;    // convert percent to fraction
     private const double fract2pcnt = 100.0;  // convert fraction to percent
     private const double t2kg = 1000.0; // tonnes to kilograms
+
+    // An "epsilon" value for single-precision floating point
+    // We use this since other components are likely to use single-precision math
+    private double epsilon = Math.Pow(2, -24);
+           
 #endregion
 
     public override void Initialised()
     {
         base.Initialised();
-        soiltypeOverridden = Override(typeof(SoilType), soiltype);
+        soiltypeOverridden = Override(typeof(SoilTypeDefinition), soiltype);
     }
 
     private void ReadParam()  // Could do checking of the parameters here....
@@ -1930,11 +1939,17 @@ public class SoilN : Instance
             _no3[layer] += effective_nitrification[layer];
             _nh4[layer] -= dltRntrf;
 
-            if (_no3[layer] < no3_min[layer] || no3[layer] > 9000.0)
+            if (Math.Abs(_no3[layer]) < epsilon)
+                _no3[layer] = 0.0;
+            if (Math.Abs(_nh4[layer]) < epsilon)
+                _nh4[layer] = 0.0;
+            if (Math.Abs(_urea[layer]) < epsilon)
+                _urea[layer] = 0.0;
+            if (_no3[layer] < no3_min[layer] || _no3[layer] > 9000.0)
                 throw new Exception("Value for NO3(layer) is out of range");
-            if (_nh4[layer] < nh4_min[layer] || nh4[layer] > 9000.0)
+            if (_nh4[layer] < nh4_min[layer] || _nh4[layer] > 9000.0)
                 throw new Exception("Value for NH4(layer) is out of range");
-            if (_urea[layer] < 0.0 || urea[layer] > 9000.0)
+            if (_urea[layer] < 0.0 || _urea[layer] > 9000.0)
                 throw new Exception("Value for urea(layer) is out of range");
 
             nh4_transform_net[layer] = dlt_res_nh4_min[layer] + dlt_fom_n_min[layer] + dlt_biom_n_min[layer] + dlt_hum_n_min[layer] - dltRntrf + dltUreaHydrol + nh4_excess;
@@ -3158,6 +3173,8 @@ public class SoilN : Instance
     private void SendExternalMassFlow(double dltN)
     {
         ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
+        if (Math.Abs(dltN) <= epsilon)
+            dltN = 0.0;
         massBalanceChange.FlowType = dltN >= 0 ? "gain" : "loss";
         massBalanceChange.PoolClass = "soil";
         massBalanceChange.N = (float)Math.Abs(dltN);
@@ -3167,6 +3184,8 @@ public class SoilN : Instance
     private void SendExternalMassFlowC(double dltC)
     {
         ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
+        if (Math.Abs(dltC) <= epsilon)
+            dltC = 0.0;
         massBalanceChange.FlowType = dltC >= 0 ? "gain" : "loss";
         massBalanceChange.PoolClass = "soil";
         massBalanceChange.N = (float)Math.Abs(dltC);
@@ -3218,6 +3237,10 @@ public class SoilN : Instance
 
                 // dsg 131103   The 'amount' value will not be used by SurfaceOrganicMatter, so send zero as default
                 SOMDecomp.Pool[residue].FOM.amount = 0.0F;
+                if (Math.Abs(c_summed) < epsilon)
+                    c_summed = 0.0;
+                if (Math.Abs(n_summed) < epsilon)
+                    n_summed = 0.0;
                 SOMDecomp.Pool[residue].FOM.C = (float)c_summed;
                 SOMDecomp.Pool[residue].FOM.N = (float)n_summed;
 
@@ -3318,6 +3341,6 @@ public class SoilN : Instance
     }
 }
 
-public class SoilType : DerivedInstance
+public class SoilTypeDefinition : DerivedInstance
 {
 }

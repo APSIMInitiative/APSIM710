@@ -59,8 +59,7 @@
                <solute><a>[Swim.SwimSoluteParameters.a]</a><dthc>[Swim.SwimSoluteParameters.dthc]</dthc><dthp>[Swim.SwimSoluteParameters.dthp]</dthp><dis> [Swim.SwimSoluteParameters.dis]</dis><disp>[Swim.SwimSoluteParameters.disp]</disp><NO3Exco>[soil.NO3Exco]</NO3Exco><NO3FIP>[soil.NO3FIP]</NO3FIP><NH4Exco>[soil.NH4Exco]</NH4Exco><NH4FIP>[soil.NH4FIP]</NH4FIP><UreaExco>[soil.UreaExco]</UreaExco><UreaFIP>[soil.UreaFIP]</UreaFIP><ClExco>[soil.ClExco]</ClExco><ClFIP>[soil.ClFIP]</ClFIP><WaterTableNO3>[Swim.SwimSoluteParameters.WaterTableNO3]</WaterTableNO3><WaterTableNH4>[Swim.SwimSoluteParameters.WaterTableNH4]</WaterTableNH4><WaterTableUrea>[Swim.SwimSoluteParameters.WaterTableUrea]</WaterTableUrea><WaterTableCl>[Swim.SwimSoluteParameters.WaterTableCl]</WaterTableCl></solute></initdata></component>
       [endfor]
       <component name="[soil.Name] Nitrogen" executable="%apsim%/Model/SoilNitrogen.%dllext%">
-<!--         <componentinterface>%apsim%/Model/dotnetcomponentinterface.dll</componentinterface> -->
-         <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" />
+         <!-- <executable name="%apsim%/Model/SoilNitrogen.%dllext%" version="1.0" /> -->
             <initdata>
                [Model SoilNitrogen]
                [if "[soil.SoilType]"]
@@ -271,18 +270,18 @@
       <dnit_n2o_factor description="WFPS factor for n2o fraction of denitrification">0.0   1.18 </dnit_n2o_factor>      
       <dnit_nitrf_loss description="Fraction of nitrification lost as denitrifcation">0.0 </dnit_nitrf_loss>      
 
-	   <SoilType name="standard">
-	   </SoilType>
+	   <SoilTypeDefinition name="standard">
+	   </SoilTypeDefinition>
 	   
-      <SoilType name="sand">
+      <SoilTypeDefinition name="sand">
          <Override>
              <rd_biom description="potential rate of soil biomass">0.0324  0.015   </rd_biom>
              <wfmin_index description="index specifying water content for water factor for nitrification">0.0 0.5 1.0 2.0  </wfmin_index>
              <wfmin_values description="value of water factor function">0.05 1.0 1.0 0.5  </wfmin_values>
          </Override>
-      </SoilType>
+      </SoilTypeDefinition>
 	  
-      <SoilType name="rothc">	  
+      <SoilTypeDefinition name="rothc">	  
          <Override>
              <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
              <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
@@ -317,9 +316,9 @@
              <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
              <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
          </Override>
-      </SoilType>
+      </SoilTypeDefinition>
 		
-      <SoilType name="rothc">
+      <SoilTypeDefinition name="rothc">
          <Override>
              <cnrf_optcn description="C:N above which decomposition rate of FOM declines">500.0   </cnrf_optcn>
              <ef_biom description="fraction of biomass C mineralized retained in system (0-1)">0.24       </ef_biom>
@@ -354,9 +353,9 @@
              <pHf_nit_pH description="pH for specifying factor for nitrification">4.5 6.0 8.0 9.0 </pHf_nit_pH>
              <pHf_nit_values description="value of pH factor for nitrification">0.0 1.0 1.0 0.0 </pHf_nit_values>
          </Override>
-      </SoilType>
+      </SoilTypeDefinition>
 	  
-      <SoilType name="soiln3">
+      <SoilTypeDefinition name="soiln3">
          <Override>
              <fract_carb description="carbohydrate fraction of FOM (0-1)">0.2      0.3     0.54        0.57    0.45   0.05 </fract_carb>
              <fract_cell description="cellulose fraction of FOM (0-1)">   0.7      0.3     0.37        0.37    0.47   0.05  </fract_cell>
@@ -365,7 +364,7 @@
              <rd_lign description="maximum rate constant for  decomposition of FPool3 (0-1)">0.0005    0.00025 </rd_lign>
              <profile_reduction>on</profile_reduction>
          </Override>
-      </SoilType>
+      </SoilTypeDefinition>
       <soiltype>standard</soiltype>
       <root_cn>40</root_cn>
       <root_wt>200</root_wt>
