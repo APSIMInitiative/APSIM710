@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using System.Linq.Expressions;
 using ModelFramework;
 using System.Xml;
 using System.Xml.Schema;
@@ -249,6 +251,13 @@ public class AgPasture : Instance
     public String WaterUptakeSource = "calc";
     [Param]
     public String NUptakeSource = "calc";
+
+    [Param(true)]
+    private string alt_N_uptake = "no";
+    [Param(true)]
+    private double NUtilFac = 1;//0.95;
+    [Input]
+    DateTime Today;
 
     [Input]
     public float[] dlayer;   //Soil Layer Thickness (mm)
@@ -687,9 +696,6 @@ public class AgPasture : Instance
         SWUptake = new float[dlayer.Length];
         SNSupply = new float[dlayer.Length];
         SNUptake = new float[dlayer.Length];
-
-
-
     }
 
     //---------------------------------------------------------------------------
@@ -1017,6 +1023,11 @@ public class AgPasture : Instance
         DoNewCropEvent();            // Tell other modules that I exist
         DoNewCanopyEvent();          // Tell other modules about my canopy
         DoNewPotentialGrowthEvent(); // Tell other modules about my current growth status
+
+        alt_N_uptake = alt_N_uptake.ToLower();
+        if (alt_N_uptake == "yes")
+            if (Nsp > 1)
+                throw new Exception("When working with multiple species, 'ValsMode' must ALWAYS be 'none'");
     }
 
 
@@ -2681,13 +2692,102 @@ public class AgPasture : Instance
         }
 
         double n_uptake = 0;
-        for (int layer = 0; layer < p_bottomRootLayer; layer++)
-        {   //N are taken up only in top layers that root can reach (including buffer Zone).                               
-            n_uptake += (no3[layer] + nh4[layer]) * Fraction;
-            SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
 
-            NUptake.DeltaNO3[layer] = -no3[layer] * Fraction;
-            NUptake.DeltaNH4[layer] = -nh4[layer] * Fraction;
+        if (alt_N_uptake == "yes")
+        {
+            double
+                uptake_multiplier = double.MaxValue,
+                totSWUptake = SWUptake.Sum();
+
+            double[]
+                availableNH4_bylayer = new double[dlayer.Length],
+                availableNO3_bylayer = new double[dlayer.Length],
+                diffNH4_bylayer = new double[dlayer.Length],
+                diffNO3_bylayer = new double[dlayer.Length];
+
+            for (int sLayer = 0; sLayer < dlayer.Length; sLayer++)
+            {
+                double
+                    totN = nh4[sLayer] + no3[sLayer],
+                    fracH2O = SWUptake[sLayer] / totSWUptake;
+
+                if (totN > 0)
+                {
+                    availableNH4_bylayer[sLayer] = fracH2O * nh4[sLayer] / totN;
+                    availableNO3_bylayer[sLayer] = fracH2O * no3[sLayer] / totN;
+
+                    //if we have no3 and nh4 in this layer then calculate our uptake multiplier, otherwise set it to 0
+                    //the idea behind the multiplier is that it allows us to calculate the max amount of N we can extract
+                    //without forcing any of the layers below 0 AND STILL MAINTAINING THE RATIO as calculated with fracH2O
+                    //NOTE: it doesn't matter whether we use nh4 or no3 for this calculation, we will get the same answer regardless
+                    uptake_multiplier = nh4[sLayer] * no3[sLayer] > 0 ? Math.Min(uptake_multiplier, nh4[sLayer] / availableNH4_bylayer[sLayer]) : 0;
+                }
+                else
+                {
+                    availableNH4_bylayer[sLayer] = 0;
+                    availableNO3_bylayer[sLayer] = 0;
+                }
+            }
+
+            //adjust availability values with the multiplier we just calculated
+            availableNH4_bylayer = availableNH4_bylayer.Select(x => x * uptake_multiplier).ToArray();
+            availableNO3_bylayer = availableNO3_bylayer.Select(x => x * uptake_multiplier).ToArray();
+
+            //calculate how much no3/nh4 will be left in the soil layers (diff_nxx[layer] = nxx[layer] - availableNH4_bylayer[layer])
+            diffNH4_bylayer = nh4.Select((x, sLayer) => Math.Max(0, x - availableNH4_bylayer[sLayer])).ToArray();
+            diffNO3_bylayer = no3.Select((x, sLayer) => Math.Max(0, x - availableNO3_bylayer[sLayer])).ToArray();
+
+            //adjust this by the sum of all leftover so we get a ratio we can use later
+            double sum_diff = diffNH4_bylayer.Sum() + diffNO3_bylayer.Sum();
+            diffNH4_bylayer = diffNH4_bylayer.Select(x => x / sum_diff).ToArray();
+            diffNO3_bylayer = diffNO3_bylayer.Select(x => x / sum_diff).ToArray();
+
+            double
+                //available N from our 'withwater' calcs (still some left in the 'diff' arrays if this isn't enough)
+                avail_withwater = availableNH4_bylayer.Sum() + availableNO3_bylayer.Sum(),
+                //if not enough N was available via the 'withwater' calcs this will be positive and will require more from the 'diffs' we calculated
+                shortfall_withwater = p_soilNuptake - avail_withwater;
+
+            if (shortfall_withwater > 0)
+            {
+                //this cap should not be needed because shortfall is already capped via the math.min in the scaled_demand calcs (leave it here though)
+                double scaled_diff = Math.Min(shortfall_withwater / avail_withwater, 1);
+
+                availableNH4_bylayer = availableNH4_bylayer.Select((x, sLayer) => x + shortfall_withwater * diffNH4_bylayer[sLayer]).ToArray();
+                availableNO3_bylayer = availableNO3_bylayer.Select((x, sLayer) => x + shortfall_withwater * diffNO3_bylayer[sLayer]).ToArray();
+            }
+
+            NUptake.DeltaNH4 = availableNH4_bylayer.Select(x => x * -1).ToArray();
+            NUptake.DeltaNO3 = availableNO3_bylayer.Select(x => x * -1).ToArray();
+
+            for (int layer = 0; layer < p_bottomRootLayer; layer++)
+                n_uptake += SNUptake[layer] = (float)(NUptake.DeltaNH4[layer] + NUptake.DeltaNO3[layer]) * -1;
+
+            double[] diffs = NUptake.DeltaNO3.Select((x, i) => Math.Max(no3[i] + x + 0.00000001, 0)).ToArray();
+            if (diffs.Any(x => x == 0))
+                throw new Exception();
+
+        }
+
+        /*if (ValsMode == "withwater")
+        {
+            NUptake.DeltaNO3 = SP[0].availableNO3_bylayer.Select(x => x * -1).ToArray();
+            NUptake.DeltaNH4 = SP[0].availableNH4_bylayer.Select(x => x * -1).ToArray();
+
+            for (int layer = 0; layer < p_bottomRootLayer; layer++)
+                SNUptake[layer] = (float)(SP[0].availableNO3_bylayer[layer] + SP[0].availableNH4_bylayer[layer]);
+            n_uptake = SNUptake.Sum();
+        }*/
+        else
+        {
+            for (int layer = 0; layer < p_bottomRootLayer; layer++)
+            {   //N are taken up only in top layers that root can reach (including buffer Zone).                               
+                n_uptake += (no3[layer] + nh4[layer]) * Fraction;
+                SNUptake[layer] = (no3[layer] + nh4[layer]) * Fraction;
+
+                NUptake.DeltaNO3[layer] = -no3[layer] * Fraction;
+                NUptake.DeltaNH4[layer] = -nh4[layer] * Fraction;
+            }
         }
 
         if (NitrogenChanged != null)
