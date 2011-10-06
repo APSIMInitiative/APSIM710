@@ -9,7 +9,7 @@ class Leaf : public SimplePart {
   public:
    Leaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name);
 
-   virtual ~Leaf() {};
+   virtual ~Leaf() {delete Photosynthesis;};
 
    virtual void onHarvest(float height, float remove_fr,
                           vector<string> &dm_type,

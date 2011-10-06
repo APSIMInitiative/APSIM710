@@ -120,7 +120,14 @@ fruitPodPart::fruitPodPart(ScienceAPI& scienceAPI, plantInterface *p, const stri
    , pod(scienceAPI, p, name)
    {
     co2Modifier = new Co2Modifier(scienceAPI, *plant);
+	fracPod = NULL;
    }
+
+fruitPodPart::~fruitPodPart()
+{
+	delete fracPod;
+	delete co2Modifier;
+}
 
 void fruitPodPart::onInit1(protocol::Component *system)
 //=======================================================================================
@@ -237,6 +244,7 @@ void fruitPodPart::readSpeciesParameters(protocol::Component *system, vector<str
 
    if (partition_option == "1")
       {
+      delete fracPod;
       fracPod = new lookupFunction();
       fracPod->read(scienceAPI, "stage_code", "-", 0.0, 100.0
                               , "frac_pod", "-", 0.0, 2.0);
@@ -244,6 +252,7 @@ void fruitPodPart::readSpeciesParameters(protocol::Component *system, vector<str
       }
    else if (partition_option == "2" || partition_option == "allometric" || partition_option == "wholeplantgenericxy")
       {
+      delete fracPod;
       fracPod = new interpolationFunction();
       fracPod->read(scienceAPI, "x_stage_no_partition", "-", 0.0, 20.0
                              , "y_frac_pod", "-", 0.0, 2.0);

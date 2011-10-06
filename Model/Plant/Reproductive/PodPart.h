@@ -51,7 +51,7 @@ class PlantPartArea {
 class fruitPodPart : public SimplePart {
   public:
    fruitPodPart(ScienceAPI& scienceAPI, plantInterface *p, const string &name) ;
-   ~fruitPodPart() {};
+   ~fruitPodPart();
    void onInit1(protocol::Component *);
    void prepare(void);
    void update(void);

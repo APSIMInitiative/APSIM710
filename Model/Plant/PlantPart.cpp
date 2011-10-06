@@ -60,6 +60,16 @@ plantPart::plantPart(ScienceAPI& api, plantInterface *p, const string &name,
    Initialise(false);
    }
 
+plantPart::~plantPart()
+{
+	delete &Green;
+	delete &Senesced;
+	delete &Growth;
+	delete &Senescing;
+	delete &Detaching;
+	delete &Retranslocation;
+}
+
 void plantPart::Initialise(bool isVegetative)
    {
    // setup summary pools

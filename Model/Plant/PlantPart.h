@@ -41,7 +41,7 @@ class plantPart : public plantThing
 public:
 
    plantPart(ScienceAPI& scienceAPI, plantInterface *p, const string &name);
-   virtual ~plantPart() {};
+   virtual ~plantPart();
 
    // deltas
    Delta& Senescing;
