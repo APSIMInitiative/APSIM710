@@ -121,7 +121,8 @@ namespace CMPServices
                         {   //no more expected
                             resolveManualConnections();                         // resolve manual connections
                             sendComplete(init2MsgHdr.from, init2MsgHdr.msgID);    //send a Complete(init1) to ourself
-                            sendCommence();                                     //send commence to the sequencer (required here for asynchronous)
+                            if (!mustTerminate)
+                              sendCommence();                                     //send commence to the sequencer (required here for asynchronous)
                         }
                     }
                     break;

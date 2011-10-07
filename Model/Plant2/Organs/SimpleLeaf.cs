@@ -101,7 +101,7 @@ class SimpleLeaf : BaseOrgan
             double VPDmaxt = VBMet.Humidity.svp(maxt) - vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
-            double VPD = SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
+            double VPD = SVPfrac * VPDmaxt + (1.0 - SVPfrac) * VPDmint;
 
             return FVPD.ValueIndexed(VPD);
         }

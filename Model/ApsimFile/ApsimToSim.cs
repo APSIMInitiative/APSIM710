@@ -77,7 +77,12 @@ public class ApsimToSim
             {
                 if (ApsimToSim.FirstChild.Name == "component" && XmlHelper.Attribute(ApsimToSim.FirstChild, "class") == "")
                 {
-                    string dllName = Path.GetFileNameWithoutExtension(Types.Instance.MetaData(Child.Type, "dll"));
+                    string dllName = Types.Instance.MetaData(Child.Type, "dll");
+                    // Make sure we're using the correct path separators for our current platform
+                    // before making use of GetFileNameWithoutExtension to extract the name
+                    dllName = dllName.Replace('/', Path.DirectorySeparatorChar);
+                    dllName = dllName.Replace('\\', Path.DirectorySeparatorChar);
+                    dllName = Path.GetFileNameWithoutExtension(dllName);
                     string className = Types.Instance.ProxyClassName(Child.Type, dllName);
                     if (className.ToLower() != dllName.ToLower())
                     {
