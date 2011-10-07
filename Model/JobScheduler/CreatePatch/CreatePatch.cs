@@ -58,7 +58,7 @@ public partial class MainForm : Form
             Process P = Utility.RunProcess(SVNFileName, "-v stat", DirectoryName);
             string StdOut = Utility.CheckProcessExitedProperly(P);
             string[] Lines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-
+            Sorting = true; //turn off the check monitor
             // Get a list of all files.
             Regex R = new Regex("\\S+");
             foreach (string Line in Lines)
@@ -115,16 +115,27 @@ public partial class MainForm : Form
             //read the last used settings and tick off any files that match
             if (File.Exists(ConfigFileName))
             {
+                Sorting = false;
                 StreamReader reader = new StreamReader(ConfigFileName);
                 String filePath;
+                ListViewItem item;
                 while ((filePath = reader.ReadLine()) != null)
                 {
-                    ListViewItem item = ListView.FindItemWithText(filePath);
-                    if (item != null)
-                        item.Checked = true;
+                    item = null;
+                    int i = 0;
+                    while ((item == null) && (i < ListView.Items.Count))
+                    {
+                        if (filePath.ToLower() == ListView.Items[i].Text.ToLower())
+                        {
+                            item = ListView.Items[i];
+                            item.Checked = true;
+                        }
+                        i++;
+                    }
                 }
                 reader.Close();
             }
+            Sorting = false;
         }
         catch (Exception err)
         {
@@ -256,7 +267,7 @@ public partial class MainForm : Form
         Sorter.ByColumn = e.Column;
 
         ListView.Sort();
-        Sorting = false;
+        Sorting = false; 
     }
     /// <summary>
     /// Report the number of items checked
@@ -275,6 +286,8 @@ public partial class MainForm : Form
 
 public class ListViewSorter : System.Collections.IComparer
 {
+    int Column = 0;
+
     public int Compare(object o1, object o2)
     {
         if (!(o1 is ListViewItem))
@@ -304,7 +317,6 @@ public class ListViewSorter : System.Collections.IComparer
         get { return Column; }
         set { Column = value; }
     }
-    int Column = 0;
 
     public int LastSort
     {
