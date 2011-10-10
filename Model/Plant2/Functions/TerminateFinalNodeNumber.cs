@@ -104,10 +104,10 @@ public class TerminateFinalNodeNumber : Instance
     /// </summary>
     public void IncrementVernalisation()
     {
-        if ((MeanT > 0.0) && (MeanT <= 15.0))
+        if ((MeanT > 0.0) && (MeanT <= 11.0))
             _VernalisationIncrement = VernalisationIntercept + VernalisationSlope * MeanT;
-        else if ((MeanT > 15.0) && (MeanT <= 18.0))
-            _VernalisationIncrement = (MeanT - 15.0) * (VernalisationIntercept + VernalisationSlope * 15.0);
+        else if ((MeanT > 11.0) && (MeanT <= 15.0))
+            _VernalisationIncrement = (1 - (MeanT - 11.0)/(15.0 - 11.0)) * (VernalisationIntercept + VernalisationSlope * 11.0);
         else
             _VernalisationIncrement = 0.0;
 

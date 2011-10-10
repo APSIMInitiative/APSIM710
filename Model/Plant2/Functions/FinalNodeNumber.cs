@@ -12,7 +12,9 @@ public class FinalNodeNumber : Instance
     protected TemperatureFunction ThermalTime = null;
     [Link(IsOptional.Yes)]
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
-    
+    [Link(IsOptional.Yes)]
+    protected Function NodeInitiationRate = null;
+
     //Class Parameters
     [Param]
     [Description("Maximum Final Leaf Number ")]
@@ -47,13 +49,18 @@ public class FinalNodeNumber : Instance
 
     public double PrimordiaNumber()
     {
-        if (_PrimordiaNumber == 0.0)
-            _PrimordiaNumber = InitialLeafPrimordia;
-        double DeltaPrimordiaNo = 0;
-        Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
-        if (NodeInitiationRate.Value > 0.0)
-            DeltaPrimordiaNo = ThermalTime.Value / NodeInitiationRate.Value;
-        _PrimordiaNumber = _PrimordiaNumber + DeltaPrimordiaNo;
+
+        if (NodeInitiationRate != null)
+        {
+            if (_PrimordiaNumber == 0.0)
+                _PrimordiaNumber = InitialLeafPrimordia;
+            double DeltaPrimordiaNo = 0;
+            //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
+            if (NodeInitiationRate.Value > 0.0)
+                DeltaPrimordiaNo = ThermalTime.Value / NodeInitiationRate.Value;
+            _PrimordiaNumber = _PrimordiaNumber + DeltaPrimordiaNo;
+        }
+        else _PrimordiaNumber = MaxNodeNo;
 
         return _PrimordiaNumber;
     }

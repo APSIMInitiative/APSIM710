@@ -1,0 +1,325 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Sep2004
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component                "Empty manager" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component      "Templeton deep 1  Water" = %apsim%\Model\SoilWat.dll
+   Component    "Soil Temperature (dotNET)" = %apsim%\Model\SoilTemp2.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component   "Templeton deep 1  Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "Oat2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  6/09/2004
+     Simulation end date   =  1/04/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        StageCodeValue
+        FlagLeaf_doy
+        Flowering_doy
+        FinalLeafNumber
+        FlagLeaf_Flag
+        Flowering_Flag
+        Sowing_doy
+
+     Output file = Sep2004.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Sow on a fixed date Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if today = date('6/09/2004') then
+        oat2 sow population = 262, depth = 20, cultivar = hokonui, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     endif
+     sowing_doy = 249
+     END of rules
+     
+
+------- Empty manager Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     flowering_doy = 0
+     flowering_flag = 0
+     flagleaf_doy = 0
+     flagleaf_flag = 0
+     finalleafnumber = 0
+     
+     SECTION:- start_of_day
+     if flagleaf_flag = 1 then
+        flagleaf_flag = 2
+     endif
+     if flowering_flag = 1 then
+        flowering_flag = 2
+     endif
+     if (stagecodevalue > 6.0) and (flowering_flag = 0) then
+        flowering_doy = today
+        flowering_flag = 1
+     endif
+     if (stagecodevalue > 5.0) and (flagleaf_flag = 0) then
+        flagleaf_doy = today
+        flagleaf_flag = 1
+     endif
+     finalleafnumber = leaffullyexpandednodeno
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : flowering_doy = 0.00000
+     Manager creating a new local real variable : flowering_flag = 0.00000
+     Manager creating a new local real variable : flagleaf_doy = 0.00000
+     Manager creating a new local real variable : flagleaf_flag = 0.00000
+     Manager creating a new local real variable : finalleafnumber = 0.00000
+
+------- Micromet Initialisation -----------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Templeton deep 1  Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     4832.039
+             exceeds upper limit of    1000.000
+     Component name: Templeton deep 1  Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  200.  0.050  0.100  0.320  0.419  0.320  1.311  0.856  0.900*******
+          200.-  400.  0.050  0.100  0.300  0.405  0.300  1.524  0.135  0.500389.229
+          400.-  600.  0.149  0.149  0.280  0.342  0.280  1.650  0.009  0.600 16.362
+          600.-  800.  0.129  0.129  0.255  0.322  0.255  1.601  0.000  0.400 97.995
+          800.- 1000.  0.155  0.155  0.288  0.348  0.288  1.601  0.000  0.400 97.995
+         1000.- 1200.  0.149  0.149  0.280  0.342  0.280  1.601  0.000  0.900 97.995
+         1200.- 1400.  0.053  0.053  0.107  0.307  0.107  1.601  0.000  0.900 97.995
+         1400.- 1600.  0.061  0.061  0.122  0.309  0.122  1.601  0.000  0.900 97.995
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  200.      20.00      44.00      44.00      19.80
+          200.-  400.      20.00      40.00      40.00      21.00
+          400.-  600.      29.80      26.20      26.20      12.40
+          600.-  800.      25.80      25.20      25.20      13.40
+          800.- 1000.      31.00      26.60      26.60      12.00
+         1000.- 1200.      29.80      26.20      26.20      12.40
+         1200.- 1400.      10.60      10.80      10.80      40.00
+         1400.- 1600.      12.20      12.20      12.20      37.40
+          ---------------------------------------------------------
+               Totals     179.20     211.20     211.20     168.40
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        1.50 (mm^0.5)
+            Critical Dates:       Summer        1-sep
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Soil Temperature (dotNET) Initialisation ------------------------------
+
+------- soiltemp Initialisation -----------------------------------------------
+     Initialising :
+
+------- surface organic matter Initialisation ---------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Templeton deep 1  Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_sedementary
+     
+     
+     
+           Soil temperature supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  2.49  130.05    3.00    0.00
+             2     6.00  0.92   15.00    2.00    0.00
+             3     6.00  0.32   15.00    1.00    0.00
+             4     6.00  0.28   10.00    1.00    0.00
+             5     6.00  0.21    5.00    1.00    0.00
+             6     6.00  0.20    5.00    1.00    0.00
+             7     6.00  0.20    5.00    1.00    0.00
+             8     6.00  0.20    5.00    1.00    0.00
+          ------------------------------------------------
+           Totals              190.05   11.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      64115.2  5828.7  1093.9   136.7   131.6     3.3
+             2      27950.1  2540.9   122.0    15.3    90.5     2.3
+             3      10409.5   946.3    18.5     2.3    62.2     1.6
+             4       8890.2   808.2    11.3     1.4    42.7     1.1
+             5       6656.5   605.1     3.6     0.5    29.4     0.7
+             6       6402.9   582.1     1.1     0.1    20.2     0.5
+             7       6402.9   582.1     1.1     0.1    13.9     0.3
+             8       6387.8   580.7    16.2     2.0     9.5     0.2
+          ---------------------------------------------------------
+           Totals  137215.2 12474.1  1267.8   158.5   400.0    10.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager sending message :- oat2 sow  population = 262, depth = 20, cultivar = hokonui, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     Manager creating a new local real variable : sowing_doy = 249.00000
+7/09/2004 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+13/09/2004 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+11/11/2004 - FloralInitiation
+                            LAI = 5.84 (m^2/m^2)
+           Above Ground Biomass = 638.26 (g/m^2)
+27/11/2004 - FlagLeaf
+                            LAI = 5.88 (m^2/m^2)
+           Above Ground Biomass = 890.63 (g/m^2)
+23/12/2004 - Flowering
+                            LAI = 4.02 (m^2/m^2)
+           Above Ground Biomass = 1372.18 (g/m^2)
+31/12/2004 - StartGrainFill
+                            LAI = 2.74 (m^2/m^2)
+           Above Ground Biomass = 1515.81 (g/m^2)
+2/02/2005 - EndGrainFill
+                            LAI = 0.16 (m^2/m^2)
+           Above Ground Biomass = 1785.48 (g/m^2)
+4/02/2005 - Maturity
+                            LAI = 0.01 (m^2/m^2)
+           Above Ground Biomass = 1788.76 (g/m^2)
+4/02/2005 - HarvestRipe
+                            LAI = 0.01 (m^2/m^2)
+           Above Ground Biomass = 1788.76 (g/m^2)
+1 April 2006(Day of year=91), clock: 
+     Simulation is terminating due to end criteria being met.
