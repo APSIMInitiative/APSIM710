@@ -19,7 +19,7 @@ Public Class SimpleCow
     Dim Total_DM_Eaten, Total_Pasutre_Eaten, Total_Supplement_Eaten As BioMass
 
     Public TodaysEnergyRequirement As Double = 0
-    Private RFD As Single = 0
+    Private RFD As Double = 0
     Public Shared DoInterpolate As Boolean = True
 
     Public N_to_feaces, DM_to_feaces, N_to_urine, N_to_Milk, N_to_BC As Double

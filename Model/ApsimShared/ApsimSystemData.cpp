@@ -24,6 +24,13 @@ string ApsimSystemData::getName(void) const
    return node.getAttribute("name");
    }
 // ------------------------------------------------------------------
+// Return the type (class) of the simulation
+// ------------------------------------------------------------------
+string ApsimSystemData::getClass(void) const
+   {
+   return node.getAttribute("class");
+   }
+// ------------------------------------------------------------------
 // Return the executable filename
 // ------------------------------------------------------------------
 string ApsimSystemData::getExecutableFileName(void) const

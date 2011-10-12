@@ -15,8 +15,8 @@ Public Class UrinePatch
 
    <Input()> Private UI_FarmType As String
    '<Input()> Private UI_IrrigSeason As String
-   <Input()> Private UI_StockRate As String
-   <Input()> Public UI_BeefPercentage As String
+    '<Input()> Private UI_StockRate As String
+    <Input()> Public UI_BeefPercentage As Double
    Private SUBeefPercentatage As Double
 
    <Output()> Public Stack_Rain As Double() = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
@@ -28,9 +28,9 @@ Public Class UrinePatch
    <Input()> Private month As Integer
    <Input()> Private day As Integer
    <Input()> Private annual_average_rainfall As Single
-   <Input()> Private Rain As Integer
-   <Input()> Private Mint As Integer
-   <Input()> Private Maxt As Integer
+    <Input()> Private Rain As Double
+    <Input()> Private Mint As Double
+    <Input()> Private Maxt As Double
 
    <Output()> Public UrineN_PropLeached As Double = 0.0
    <Output()> Public UrineN_Retained As Double = 0.0
@@ -186,41 +186,41 @@ Public Class UrinePatch
 
    End Sub
 
-   <EventHandler()> Public Sub OnNewMet()
+    <EventHandler()> Public Sub OnNewMet(ByVal NewMet As NewMetType)
 
-      If day = 1 Then
-         UP_AnimalType = "None"
+        If day = 1 Then
+            UP_AnimalType = "None"
 
-      End If
+        End If
 
-      UrineN_FromAnimal = 0.0
-      UrineN_PropLeached = 0.0
-      UrineN_Retained = 0.0
-      UrineN_Leached = 0.0
-      UrineN_Leached_Patch = 0.0
-      UrineConcentration = 0.0
-      Day_fac = 0.0
-      Amount_fac = 0.0
-      DrainPost2wk_fac = 0.0
-      UP_AnimalType = "None"
+        UrineN_FromAnimal = 0.0
+        UrineN_PropLeached = 0.0
+        UrineN_Retained = 0.0
+        UrineN_Leached = 0.0
+        UrineN_Leached_Patch = 0.0
+        UrineConcentration = 0.0
+        Day_fac = 0.0
+        Amount_fac = 0.0
+        DrainPost2wk_fac = 0.0
+        UP_AnimalType = "None"
 
-      LoadByPAW_fac = 0.0
-      Temp2wk_fac = 0.0
-      Rain2wk_fac = 0.0
-      Temp2wk = 0.0
-      Rain2wk = 0.0
+        LoadByPAW_fac = 0.0
+        Temp2wk_fac = 0.0
+        Rain2wk_fac = 0.0
+        Temp2wk = 0.0
+        Rain2wk = 0.0
 
-      For i As Integer = 14 To 1 Step -1
-         Stack_Rain(i) = Stack_Rain(i - 1)
-         Stack_AveTemp(i) = Stack_AveTemp(i - 1)
-         Stack_UrineN_FromAnimal(i) = Stack_UrineN_FromAnimal(i - 1)
-         Stack_Effective_StockDensity(i) = Stack_Effective_StockDensity(i - 1)
-         Stack_AnimalType(i) = Stack_AnimalType(i - 1)
-      Next
-      Stack_Rain(1) = Rain
-      Stack_AveTemp(1) = (Mint + Maxt) / 2.0
+        For i As Integer = 14 To 1 Step -1
+            Stack_Rain(i) = Stack_Rain(i - 1)
+            Stack_AveTemp(i) = Stack_AveTemp(i - 1)
+            Stack_UrineN_FromAnimal(i) = Stack_UrineN_FromAnimal(i - 1)
+            Stack_Effective_StockDensity(i) = Stack_Effective_StockDensity(i - 1)
+            Stack_AnimalType(i) = Stack_AnimalType(i - 1)
+        Next
+        Stack_Rain(1) = Rain
+        Stack_AveTemp(1) = (Mint + Maxt) / 2.0
 
-   End Sub
+    End Sub
 
 
    <EventHandler()> Public Sub OnApplyUrine(ByVal UrineData As ApplyUrineType)   '(ByVal Amount As Double, ByVal StockDensity As Double, ByVal StockType As String)

@@ -427,7 +427,7 @@ Public Class LocalPaddockType
         dung.dlt_dm_p = New Single() {kgDM_ha * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
         dung.fraction_to_residue = New Single() {1.0}
 
-        Dim SOM As Component = ApSim_SubPaddock.ComponentByType("surfaceom")
+        Dim SOM As Component = ApSim_SubPaddock.ComponentByType("SurfaceOM")
         SOM.Publish("BiomassRemoved", dung)
     End Sub
 #End Region

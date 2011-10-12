@@ -189,7 +189,7 @@ Public Class SoilTempdotNET
 
 #Region "[Output]s"
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property final_soil_temp() As Double()     ' Temperature at end of last time-step within a day - midnight
         Get
             Dim result(gNumLayers - 1) As Double
@@ -199,7 +199,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property final_soil_temp_surface() As Double   ' Temperature at end of last time-step within a day - midnight
         Get
             Return gT_zb(SURFACEnode)
@@ -207,7 +207,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property ave_soil_temp() As Double()   ' Temperature averaged over all time-steps within a day
         Get
             'if called during init1 this will return an array of length 100 will all elements as '0'
@@ -218,7 +218,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property ave_soil_temp_surface() As Double     ' Temperature averaged over all time-steps within a day
         Get
             Return gAveTsoil(SURFACEnode)
@@ -226,7 +226,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property mint_soil() As Double()
         Get
             Dim result(gNumLayers - 1) As Double
@@ -236,7 +236,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property mint_soil_surface() As Double
         Get
             Return gMinTsoil(SURFACEnode)
@@ -244,7 +244,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property maxt_soil() As Double()
         Get
             Dim result(gNumLayers - 1) As Double
@@ -254,7 +254,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property maxt_soil_surface() As Double
         Get
             Return gMaxTsoil(SURFACEnode)
@@ -262,14 +262,14 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(J/sec/m/K)")> _
+    <Units("J/sec/m/K")> _
     Private ReadOnly Property boundary_layer_conductance() As Double
         Get
             Return gBoundaryLayerConductance
         End Get
     End Property
     <Output()> _
-    <Units("(J/sec/m/K)")> _
+    <Units("J/sec/m/K")> _
     Private ReadOnly Property therm_cond() As Double()
         Get
             Dim result(gNz - 1) As Double
@@ -279,7 +279,7 @@ Public Class SoilTempdotNET
     End Property
 
     <Output()> _
-    <Units("(J/m3/K/s)")> _
+    <Units("J/m3/K/s")> _
     Private ReadOnly Property heat_capacity() As Double()
         Get
             Dim result(gNz - 1) As Double
@@ -288,7 +288,7 @@ Public Class SoilTempdotNET
         End Get
     End Property
     <Output()> _
-    <Units("(J/m3/K/s)")> _
+    <Units("J/m3/K/s")> _
     Private ReadOnly Property heat_store() As Double()
         Get
             Dim result(gNz - 1) As Double
@@ -297,7 +297,7 @@ Public Class SoilTempdotNET
         End Get
     End Property
     <Output()> _
-    <Units("(oC)")> _
+    <Units("oC")> _
     Private ReadOnly Property Thr_profile() As Double()
         Get
             Dim result(gNz + 1) As Double
@@ -340,7 +340,7 @@ Public Class SoilTempdotNET
 
         GetOtherVariables()       ' FIXME - note: Need to set yesterday's MaxTg and MinTg to today's at initialisation
 
-        If doInit1Stuff Then        ' FIXME - need here until variable passing on init2 enabled
+        If doInit1Stuff Then      'set during init2()  ' FIXME - need here until variable passing on init2 enabled
             'set t and tnew values to TAve. soil_temp is currently not used
             soiln2_soil_temp(gT_zb)
             gT_zb(AIRnode) = (gMaxT + gMinT) * 0.5
@@ -378,6 +378,7 @@ Public Class SoilTempdotNET
         Console.WriteLine("     Initialising :")
         getIniVariables()
         readParam()
+        doInit1Stuff = True
     End Sub 'OnInit2
     ''' <summary>
     ''' initialise global variables to initial values

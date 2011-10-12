@@ -138,10 +138,10 @@ Public Class BioMass
         Dim result As New BiomassRemovedType
         result.crop_type = "grass"
         result.dm_type = New String() {"grass"}
-        result.dlt_crop_dm = New Single() {DM_Total()}  'convert this to g/m^2?
-        result.dlt_dm_n = New Single() {N_Total()}      'convert this to g/m^2?
+        result.dlt_crop_dm = New Single() {Convert.ToSingle(DM_Total())}  'convert this to g/m^2?
+        result.dlt_dm_n = New Single() {Convert.ToSingle(N_Total())}      'convert this to g/m^2?
         result.dlt_dm_p = New Single() {0} ' I don't know what to do about P
-        result.fraction_to_residue = New Single() {fraction_to_residue}
+        result.fraction_to_residue = New Single() {Convert.ToSingle(fraction_to_residue)}
         Return result
     End Function
 

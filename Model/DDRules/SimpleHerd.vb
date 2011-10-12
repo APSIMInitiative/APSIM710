@@ -305,25 +305,25 @@
 
     'Return all nutrients evenly to the paddocks in the list
     ' Todo: distribute nutrients by amount of drymatter removal (if grazed)
-    Public Sub doNutrientReturns(ByVal myPaddocks As List(Of LocalPaddockType))
+    Public Sub doNutrientReturns(ByVal myGrazedPaddocks As List(Of LocalPaddockType))
         Dim urineN As Double = N_to_urine
         Dim dungN As Double = N_to_feaces
         Dim dungDM As Double = DM_to_feaces
 
         Dim totalMERemoved As Double = 0
-        For Each pdk As LocalPaddockType In myPaddocks
+        For Each pdk As LocalPaddockType In myGrazedPaddocks
             totalMERemoved += pdk.ME_Eaten
         Next
 
-        If (TotalCows > 0 And myPaddocks.Count > 0) Then
+        If (TotalCows > 0 And myGrazedPaddocks.Count > 0) Then
             If totalMERemoved <= 0 Then 'if no grazing then distribute evenly over all paddocks (should be only grazable)
-                Dim delta As Double = 1 / myPaddocks.Count
+                Dim delta As Double = 1 / myGrazedPaddocks.Count
                 Dim density As Double = delta * TotalCows
-                For Each pdk As LocalPaddockType In myPaddocks
+                For Each pdk As LocalPaddockType In myGrazedPaddocks
                     ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)
                 Next
             Else 'if grazed then distribute over paddocks by amount of ME removed
-                For Each pdk As LocalPaddockType In myPaddocks
+                For Each pdk As LocalPaddockType In myGrazedPaddocks
                     Dim delta As Double = pdk.ME_Eaten / totalMERemoved
                     Dim density As Double = delta * TotalCows
                     ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)

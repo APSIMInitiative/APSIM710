@@ -35,9 +35,6 @@ public class LinkField
     ApsimComponent Comp;
     static Assembly ProbeInfo;
 
-    #region private
-    private static StringBuilder Data = new StringBuilder(10000);
-    #endregion
     #region public
     //----------------------------------------------------------------------
     /// <summary>
@@ -64,7 +61,8 @@ public class LinkField
             Object ReferencedObject = null;
 
             // Load in the probe info assembly.
-            ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "CSDotNetProxies.dll"));
+            //ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "CSDotNetProxies.dll"));
+            ProbeInfo = Assembly.LoadFile(Path.Combine(Configuration.ApsimDirectory(), "Model", "DotNetProxies.dll"));
 
             String TypeToFind = Field.FieldType.Name;
             String NameToFind;
@@ -97,10 +95,16 @@ public class LinkField
         }
 
     }
-
+    //-------------------------------------------------------------------------
     /// <summary>
     /// Return a object that matches the specified type and name.
+    /// <param name="TypeToFind">The type to find. [Type.]ProxyClass. Would be the paddock type when
+    /// when the NameToFind is expected to be a child of the paddock.</param>
+    /// <param name="NameToFind">Name of the component. Can be null. </param>
+    /// <param name="SystemName"></param>
+    /// <param name="Comp"></param>
     /// </summary>
+    //-------------------------------------------------------------------------
     public static Object FindApsimObject(String TypeToFind, String NameToFind, string SystemName, ApsimComponent Comp)
     {
         Object ReferencedObject;
@@ -115,6 +119,8 @@ public class LinkField
     /// <summary>
     /// Search for an Instance object in scope that has the specified name and type.
     /// Returns null if not found.
+    /// <param name="NameToFind"></param>
+    /// <param name="TypeToFind">The type to find. [Type.]ProxyClass.</param>
     /// </summary>
     //----------------------------------------------------------------------
     private Object FindInstanceObject(String NameToFind, String TypeToFind)
@@ -146,6 +152,7 @@ public class LinkField
     //----------------------------------------------------------------------
     /// <summary>
     /// Returns true if the specified typename is an APSIM type.
+    /// <param name="TypeToFind">The type to find. [Type.]ProxyClass.</param>
     /// </summary>
     //----------------------------------------------------------------------
     protected bool IsAPSIMType(String TypeToFind)
@@ -153,11 +160,14 @@ public class LinkField
         if (TypeToFind == "Paddock" || TypeToFind == "Component")
             return true;
         else
-            return ProbeInfo.GetType("ModelFramework." + TypeToFind) != null;    //??????
+            return ProbeInfo.GetType("ModelFramework." + TypeToFind) != null;  
     }
     //----------------------------------------------------------------------
     /// <summary>
     /// Create a DotNetProxy class to represent an Apsim component.
+    /// <param name="TypeToFind">The type to find. [Type.]ProxyClass.</param>
+    /// <param name="FQN"></param>
+    /// <param name="Comp"></param>
     /// </summary>
     //----------------------------------------------------------------------
     protected static Object CreateDotNetProxy(String TypeToFind, String FQN, ApsimComponent Comp)
@@ -177,10 +187,12 @@ public class LinkField
     //----------------------------------------------------------------------
     /// <summary>
     /// Go find an Apsim component IN SCOPE that matches the specified name and type.
-    /// IN SCOPE means a component that is a sibling or in the system above.
+    /// IN SCOPE means a component that is a sibling (or in the system above ?????)
     /// </summary>
     /// <param name="NameToFind">Name of the component.</param>
-    /// <param name="TypeToFind">The DotNetProxy type name.</param>
+    /// <param name="TypeToFind">The type to find. [Type.]ProxyClass</param>
+    /// <param name="SystemName"></param>
+    /// <param name="Comp"></param>
     //----------------------------------------------------------------------
     protected static Object FindApsimComponent(String NameToFind, String TypeToFind, string SystemName, ApsimComponent Comp)
     {
@@ -188,22 +200,6 @@ public class LinkField
             return CreateDotNetProxy(TypeToFind, SystemName, Comp);
         if (TypeToFind == "Component" && NameToFind == null)
             return CreateDotNetProxy(TypeToFind, Comp.Name, Comp);
-
-        // The TypeToFind passed in is a DotNetProxy type name. We need to convert this to a Component Type
-        // e.g. TypeToFind = Outputfile, Component Type (or class) = Report
-        // Query DotNetProxies for metadata about the TypeToFind class. Find [ComponentType()] attribute 
-        String compClass = "";
-        Type ProxyType;
-        ProxyType = ProbeInfo.GetType("ModelFramework." + TypeToFind);
-        if (ProxyType != null)
-        {
-            Attribute[] attribs = Attribute.GetCustomAttributes(ProxyType);
-            foreach (Attribute attrib in attribs)
-            {
-                if (attrib.GetType() == typeof(ComponentTypeAttribute))
-                    compClass = ((ComponentTypeAttribute)attrib).ComponentClass;
-            }
-        }
 
         //Get a list of siblings.
         String sSearchName = SystemName + ".*";    //search parent.*
@@ -213,19 +209,86 @@ public class LinkField
         //using sibling components find the one to create.
         String SiblingShortName = "";
 
-        //for each sibling of this component
-        foreach (TComp pair in comps)
+        // The TypeToFind passed in as [Type.]DotNetProxy . We need to convert this to a Component Type
+        // e.g. TypeToFind = Plant2.Lucerne2, Component Type = Plant2, ProxyClass = Lucerne2
+        // Query DotNetProxies for metadata about the TypeToFind class. Find [ComponentType()] attribute 
+        String compClass = "";
+        if (TypeToFind != null)
         {
-            String SiblingType = pair.CompClass;
-            if (SiblingType.ToLower() == compClass.ToLower())
+            Type ProxyType;
+            ProxyType = ProbeInfo.GetType("ModelFramework." + unQualifiedName(TypeToFind));
+            if (ProxyType != null)
             {
-                SiblingShortName = pair.name.Substring(pair.name.LastIndexOf('.') + 1).ToLower();
-                if (NameToFind == null || NameToFind.ToLower() == SiblingShortName)
-                    return CreateDotNetProxy(TypeToFind, pair.name, Comp);
+                Attribute[] attribs = Attribute.GetCustomAttributes(ProxyType);
+                foreach (Attribute attrib in attribs)
+                {
+                    if (attrib.GetType() == typeof(ComponentTypeAttribute))
+                        compClass = ((ComponentTypeAttribute)attrib).ComponentClass;
+                    if (compClass.ToLower() != unQualifiedName(TypeToFind).ToLower())
+                        compClass += "." + unQualifiedName(TypeToFind);                //e.g Plant2.Lucerne2
+                }
+            }
+            else
+            {
+                //this TypeToFind may have been Plant2 which means we search through the components
+                //to get the full Type.DotNetProxy type
+                foreach (TComp pair in comps)
+                {
+                    int firstPeriod = pair.CompClass.IndexOf('.');
+                    if (firstPeriod == -1)
+                        firstPeriod = pair.CompClass.Length;
+                    String SiblingType = pair.CompClass.Substring(0, firstPeriod);
+                    if (SiblingType.ToLower() == TypeToFind.ToLower())
+                    {
+                        return CreateDotNetProxy(unQualifiedName(pair.CompClass), pair.name, Comp);
+                    }
+                }
+            }
+            //for each sibling of this component
+            foreach (TComp pair in comps)
+            {
+                String SiblingType = pair.CompClass;
+                if (SiblingType.ToLower() == compClass.ToLower())
+                {
+                    SiblingShortName = unQualifiedName(pair.name).ToLower();
+                    if (NameToFind == null || NameToFind.ToLower() == SiblingShortName)
+                        return CreateDotNetProxy(unQualifiedName(TypeToFind), pair.name, Comp);
+                }
             }
         }
+        else
+        {
+            //TypeToFind==null but the name is used. So then we can use the compClass 
+            //that was found for the component using queryInfo before.
+            foreach (TComp pair in comps)                                   //for each sibling of this component
+            {
+                SiblingShortName = unQualifiedName(pair.name).ToLower();
+                if (NameToFind.ToLower() == SiblingShortName)
+                {
+                    compClass = unQualifiedName(pair.CompClass);
+                    if (compClass.Length > 0)
+                    {
+                        //find the proxytype for this component class 
+                        return CreateDotNetProxy(compClass, pair.name, Comp);
+                    }
+                }
+            }
+        }
+
         // If we get this far then we didn't find the APSIM component.
         return null;
+    }
+    //============================================================================
+    /// <summary>
+    /// Extracts the last section of a FQN
+    /// </summary>
+    /// <param name="sFQN">Fully qualified name.</param>
+    /// <returns>The unqualified name.</returns>
+    //============================================================================
+    public static string unQualifiedName(string sFQN)
+    {
+        int lastDot = sFQN.LastIndexOf(".");
+        return sFQN.Substring(lastDot + 1);
     }
     //----------------------------------------------------------------------
     /// <summary>

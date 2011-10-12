@@ -160,8 +160,6 @@ void SimCreator::ConvertConModule(std::string RunTitle,
    ApsimSettings settings;
    string st;
    settings.read("DotNetcomponents|" + moduleInstance.moduleName, st);
-   if (Str_i_Eq(st, ".NET"))
-      out << "      <componentinterface>%apsim%\\Model\\DotNetComponentInterface.dll</componentinterface>\n";
    out << "      <initdata>\n";
 
    if (Str_i_Eq(moduleInstance.moduleName, "input") ||

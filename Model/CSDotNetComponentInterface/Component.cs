@@ -34,7 +34,32 @@ namespace ModelFramework
         // --------------------------------------------------------------------
         public override bool IsOfType(String TypeNameToMatch)
         {
-            return TypeName.ToLower() == TypeNameToMatch.ToLower();
+            string matchString = TypeNameToMatch.ToLower();
+            // If the search name is compound (e.g., plant2.wheat),
+            // match the full string
+            if (TypeNameToMatch.IndexOf('.') > 0)
+            {
+                return TypeName.ToLower() == matchString;
+            }
+            else 
+            // Search name is not compound
+            {
+                int dotPos = TypeName.IndexOf('.');
+                // If our typename is compound, allow a match of either half
+                // That is, if our typename is "plant2.wheat", then both
+                // IsOfType("plant2") and IsOfType("wheat") return true
+                if (dotPos > 0)
+                {
+                    string left = TypeName.Substring(0, dotPos);
+                    string right = TypeName.Substring(dotPos + 1);
+                    return matchString == left.ToLower() || matchString == right.ToLower();
+                }
+                // If our typename is not compound, it's just a simple match
+                else
+                {
+                    return TypeName.ToLower() == matchString;
+                }
+            }
         }
         // --------------------------------------------------------------------
         /// <summary>

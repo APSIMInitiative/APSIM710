@@ -15,7 +15,7 @@ namespace CMPComp
     [ComVisible(true)]
     public class TComponentInstance : TAPSIMHost
     {
-        private static String _STYPE = "Plant2";
+        private static String _STYPE = "AgPasture";
         private static String _SVERSION = "1.0";
         private static String _SAUTHOR = "APSIM";
         

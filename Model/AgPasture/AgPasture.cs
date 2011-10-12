@@ -2116,7 +2116,7 @@ public class AgPasture : Instance
         }
     }
     [Output]
-    [Units("(0-1)")]
+    [Units("0-1")]
     public double HerbageDigestibility
     {
         get
@@ -2131,7 +2131,7 @@ public class AgPasture : Instance
         }
     }
     [Output]
-    [Units("(0-1)")]
+    [Units("0-1")]
     public double DefoliatedDigestibility
     {
         get { return p_harvestDigest; }
@@ -2246,7 +2246,7 @@ public class AgPasture : Instance
 
     //** water related
     [Output]
-    [Units("mm/mm3")]
+    [Units("mm/mm^3")]
     public double[] rlv         //Root Length Density (mm/mm3)  
     {
         get
@@ -2459,7 +2459,7 @@ public class AgPasture : Instance
 
     //Following are species values (arrays) 
     [Output]
-    [Units("m2/m2")]
+    [Units("m^2/m^2")]
     public float[] SpeciesGreenLAI  //spGreenLAI
     {
         get
@@ -2898,7 +2898,7 @@ public class AgPasture : Instance
 
 
     [Output]
-    [Units("frac")]
+    [Units("0-1")]
     public double outcoverRF
     {
         get { return coverRF(); }

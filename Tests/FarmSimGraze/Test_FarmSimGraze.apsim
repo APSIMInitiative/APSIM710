@@ -1,4 +1,4 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="Test_FarmSimGraze">
     <manager2 name="FarmSimOptions">
       <ui>
@@ -54,7 +54,7 @@ End Class
     ]]></text>
     </manager2>
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\WinchmoreMet.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\WinchmoreMet.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1972</start_date>
@@ -82,7 +82,7 @@ End Class
         <c_interception type="text" description="c_interception">0</c_interception>
         <d_interception type="text" description="d_interception">0</d_interception>
       </micromet>
-      <SoilTemp2 name="Soil Temperature (.NET)">
+      <SoilTemp2 name="Soil Temperature (dotNET)">
         <maxt_time_default type="text" description="hours">14</maxt_time_default>
         <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
         <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
@@ -965,6 +965,8 @@ End Class
       </soil>
       <FarmSimGraze />
       <outputfile name="Outputs">
+        <filename output="yes">Test_FarmSimGraze paddock1 Outputs.out</filename>
+        <title>Test_FarmSimGraze paddock1 Outputs</title>
         <events name="Reporting Frequency">
           <event name="daily" />
         </events>

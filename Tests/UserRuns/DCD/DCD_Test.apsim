@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="DCD_Test">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/07/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/07/1940</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="Pdk_plusDCD">
       <folder name="Manager folder">
         <manager name="Cut or graze AgPasture">
@@ -164,7 +162,7 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -327,9 +325,9 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
       Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
       Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
@@ -417,7 +415,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim SoilWaterComp As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWaterComp As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
@@ -535,7 +533,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       If (SoilWater Is Nothing) Then
          Console.WriteLine("asdf")
       End If
@@ -568,7 +566,7 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       
       Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
@@ -785,6 +783,8 @@ End Class
         <waterStressFactor type="text" description="Scale factor of water stress on plant growth">1         1           1</waterStressFactor>
       </AgPasture>
       <outputfile name="ForAnalysis">
+        <filename output="yes">DCD_Test Pdk_plusDCD ForAnalysis.out</filename>
+        <title>DCD_Test Pdk_plusDCD ForAnalysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="nh4()" />
@@ -980,7 +980,7 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -1143,9 +1143,9 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
       Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
       Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
@@ -1233,7 +1233,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       
       Dim SAT As Single() = MySoilW.sat                       'Soil water content at saturation ()
       Dim WP As Single() = MySoilW.ll15                       'Soil water content at lower limit/wilting point ()
@@ -1352,7 +1352,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       Dim sw_DUL As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_LL15 As Single() = SoilWater.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
@@ -1381,7 +1381,7 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-      Dim SoilWater As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
 
       Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
@@ -1543,6 +1543,8 @@ End Class
         </ini>
       </SWIM2ui>
       <outputfile name="ForAnalysis">
+        <filename output="yes">DCD_Test Pdk_noDCD ForAnalysis.out</filename>
+        <title>DCD_Test Pdk_noDCD ForAnalysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="nh4()" />
@@ -1793,7 +1795,7 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -1956,9 +1958,9 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilN = MyPaddock.ComponentByType("SoilN")
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("solute")
+      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
       Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
       Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
@@ -2047,7 +2049,7 @@ Public Class Script
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
 
-      Dim SoilWaterComp As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim SoilWaterComp As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
@@ -2166,7 +2168,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       Dim sw_DUL As Single() = MySoilW.dul_dep        'sw at DUL
       Dim sw_LL15 As Single() = MySoilW.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
@@ -2196,7 +2198,7 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilW As SWIM2 = MyPaddock.ComponentByType("SWIM2")
+      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
       
       Dim sw_dul As Single() = MySoilW.dul_dep        'sw at DUL
       Dim sw_sw As Single() = MySoilW.sw_dep          'sw at LL 
@@ -2358,6 +2360,8 @@ End Class
         </ini>
       </SWIM2ui>
       <outputfile name="ForAnalysis">
+        <filename output="yes">DCD_Test Pdk_earlyDCD ForAnalysis.out</filename>
+        <title>DCD_Test Pdk_earlyDCD ForAnalysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="nh4()" />

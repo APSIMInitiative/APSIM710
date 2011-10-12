@@ -69,7 +69,8 @@ class Coordinator : public protocol::Component
       void addComponent(const std::string& name,
                         const std::string& executable,
                         const std::string& componentInterfaceExecutable,
-                        const std::string& sdml);
+                        const std::string& sdml,
+						const std::string& compClass);
 
       // ------------------------------------------------------------------
       // Send queryValue messages to all subscribed components.

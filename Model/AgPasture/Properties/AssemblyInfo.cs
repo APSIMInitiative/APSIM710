@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AgPasture")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A multi-species pasture model")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AgResearch")]
+[assembly: AssemblyCompany("CSIRO")]
 [assembly: AssemblyProduct("AgPasture")]
-[assembly: AssemblyCopyright("Copyright © AgResearch 2011")]
+[assembly: AssemblyCopyright("CSIRO")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("8cbb8763-3625-4a17-bfb7-d4df0e69e883")]
+[assembly: Guid("4f00967a-4051-4eba-8d24-052f65b42a81")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("3.0.0.0")]
-//[assembly: AssemblyFileVersion("7.4.0.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+//[assembly: AssemblyFileVersion("1")]

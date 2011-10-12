@@ -8,7 +8,7 @@ Public Class FarmSimGraze
    'these are to cope with the fact that AgPasture uses different conventions to the other crop modules - IRRITATING
    Public Variable4TotalDM As String = "topstotalwt"
    Public Variable4TotalN As String = "topstotaln"
-   Public UnitsMultiplier As Integer = 10.0   'AgPasture works in kg/ha and the others in g/m2 !  NEED TO FIX!!!!!!!!
+    Public UnitsMultiplier As Double = 10.0   'AgPasture works in kg/ha and the others in g/m2 !  NEED TO FIX!!!!!!!!
 
    <Link()> Public MyPaddock As Paddock
 
@@ -244,17 +244,17 @@ Public Class FarmSimGraze
    End Sub
 
 
-   Private Function GetCropDM(ByVal Crop2Graze, ByVal Variable4TotalDM, ByVal UnitsMultiplier)
+    Private Function GetCropDM(ByVal Crop2Graze As String, ByVal Variable4TotalDM As String, ByVal UnitsMultiplier As Double) As Double
 
-      Return (MyPaddock.ComponentByName(Crop2Graze).Variable(Variable4TotalDM).ToDouble * UnitsMultiplier)
+        Return (MyPaddock.ComponentByName(Crop2Graze).Variable(Variable4TotalDM).ToDouble * UnitsMultiplier)
 
-   End Function
+    End Function
 
-   Private Function GetCropN(ByVal Crop2Graze, ByVal Variable4TotalN, ByVal UnitsMultiplier)
+    Private Function GetCropN(ByVal Crop2Graze As String, ByVal Variable4TotalN As String, ByVal UnitsMultiplier As Double) As Double
 
-      Return (MyPaddock.ComponentByName(Crop2Graze).Variable(Variable4TotalN).ToDouble * UnitsMultiplier)
+        Return (MyPaddock.ComponentByName(Crop2Graze).Variable(Variable4TotalN).ToDouble * UnitsMultiplier)
 
-   End Function
+    End Function
 
 
    Public Sub GrazeDM(ByVal PropDMRemoval As Double, ByVal Crop2Graze As String)
@@ -274,10 +274,10 @@ Public Class FarmSimGraze
       Dim dlt_DeadLeaf As Double = 0.0
       Dim dlt_DeadStem As Double = 0.0
 
-      GreenLeaf = MyPaddock.ComponentByName(Crop2Graze).Variable("leafgreenwt").ToDouble
-      GreenStem = MyPaddock.ComponentByName(Crop2Graze).Variable("stemgreenwt").ToDouble
-      DeadLeaf = MyPaddock.ComponentByName(Crop2Graze).Variable("leafsenescedwt").ToDouble
-      DeadStem = MyPaddock.ComponentByName(Crop2Graze).Variable("stemsenescedwt").ToDouble
+        GreenLeaf = MyPaddock.ComponentByName(Crop2Graze).Variable("leafgreenwt").ToDouble
+        GreenStem = MyPaddock.ComponentByName(Crop2Graze).Variable("stemgreenwt").ToDouble
+        DeadLeaf = MyPaddock.ComponentByName(Crop2Graze).Variable("leafsenescedwt").ToDouble
+        DeadStem = MyPaddock.ComponentByName(Crop2Graze).Variable("stemsenescedwt").ToDouble
 
       dlt_GreenLeaf = PropDMRemoval * GreenLeaf
       dlt_GreenStem = PropDMRemoval * GreenStem
@@ -311,7 +311,7 @@ Public Class FarmSimGraze
             MyRemoveCropDM.dm = New RemoveCropBiomassdmType() {GreenRemoveCropDmDm}
       End If
 
-      MyPaddock.ComponentByName(Crop2Graze).Publish("remove_crop_biomass", MyRemoveCropDM)
+        MyPaddock.ComponentByName(Crop2Graze).Publish("remove_crop_biomass", MyRemoveCropDM)
 
 
 

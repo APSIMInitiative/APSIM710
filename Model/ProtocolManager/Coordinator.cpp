@@ -162,7 +162,8 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       addComponent(component.getName(),
                    component.getExecutableFileName(),
                    component.getComponentInterfaceFileName(),
-                   component.getXML());
+                   component.getXML(),
+				   component.getClass());
       }
 
    // loop through all systems specified in SDML and create
@@ -177,7 +178,8 @@ void Coordinator::doInit1(const protocol::Init1Data &init1Data)
       addComponent(system.getName(),
                    system.getExecutableFileName(),
                    "",
-                   system.getXML());
+                   system.getXML(),
+				   system.getClass());
       }
    }
 // ------------------------------------------------------------------
@@ -248,7 +250,8 @@ void Coordinator::doCommence(void)
 void Coordinator::addComponent(const string& compName,
                                const string& compExecutable,
                                const string& componentInterfaceExecutable,
-                               const string& compSdml)
+                               const string& compSdml,
+							   const string& compClass)
    {
    // get a unique id for the component we're about to create.
    sendMessage(protocol::newRequestComponentIDMessage(componentID,
@@ -276,10 +279,13 @@ void Coordinator::addComponent(const string& compName,
       fqn += compName;
 
       // assume it's foreign until we know more about it..
-      string componentType = compExecutable;
-      replaceAll(componentType, "/", "\\");
-      componentType = fileTail(fileRoot(componentType));
-      registry.addComponent(componentID, childComponentID, fqn, componentType, componentAlias->isSystem());
+	  if (compClass == "")
+	  {
+        string compClass = compExecutable;
+        replaceAll(compClass, "/", "\\");
+        compClass = fileTail(fileRoot(compClass));
+	  }
+      registry.addComponent(componentID, childComponentID, fqn, compClass, componentAlias->isSystem());
       registry.setForeignTaint(childComponentID);
 
       // send component an init1 message.
@@ -581,9 +587,10 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
    {
    ApsimRegistry &registry = ApsimRegistry::getApsimRegistry();
    std::vector<ApsimRegistration *> matches;
-   
+  
    int queryComponentID;
    string queryName;
+   string fqn;
    registry.unCrackPath(fromID, asString(queryInfo.name), queryComponentID, queryName);
    
    if (queryInfo.kind == protocol::respondToGetInfo)
@@ -616,7 +623,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
       registry.lookup(&reg, matches);
       }
    else if ( (queryInfo.kind == protocol::componentInfo) || (queryInfo.kind == protocol::systemInfo) )
-      {
+      {  
       int childID;
       if (Is_numerical(queryName.c_str()))
          {
@@ -625,9 +632,13 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
             queryName = components[childID]->getName();
          if (childID == componentID)
             queryName = getName();
-         }
-      else
+      }
+      else {
          componentNameToID(asString(queryInfo.name), childID);
+         if (childID != 0) {
+            fqn = registry.componentByID(childID);
+         }
+      }
 
 	  //if no entity has been found yet, try another approach
       if (childID == 0 || queryName == "") 
@@ -676,11 +687,14 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
 	        } 
   	     }
 	  else
-	     {
-         string fqn = getName();
-         fqn += ".";
-         fqn += queryName;
-
+	  {
+         if (fqn.length() == 0)
+         {
+             fqn = getName(); 
+             fqn += ".";
+             fqn += queryName;
+         }
+         
          sendMessage(protocol::newReturnInfoMessage(
                                        componentID,
                                        fromID,
@@ -690,7 +704,7 @@ void Coordinator::onQueryInfoMessage(unsigned int fromID,
                                        fqn.c_str(),
                                        registry.getComponentType(childID).c_str(), //return component type
                                        registry.componentIsSystem(childID) ? protocol::systemInfo : protocol::componentInfo));   //component or system
-         }
+      }
    }
 
    for (unsigned i = 0; i != matches.size(); i++)

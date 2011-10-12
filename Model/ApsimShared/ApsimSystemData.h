@@ -14,6 +14,7 @@ class EXPORT ApsimSystemData
 
       std::string getExecutableFileName(void) const;
       std::string getName(void) const;
+	  std::string getClass(void) const;
       void setName(const std::string& name);
       void setExecutableFileName(const std::string& executable);
 

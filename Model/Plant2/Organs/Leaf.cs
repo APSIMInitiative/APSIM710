@@ -411,7 +411,7 @@ public class Leaf : BaseOrgan, AboveGround
     /// Solar radiation intercepted by the crop (MJ/m2/day)
     /// </summary>
     [Output("RadIntTot")]
-    [Units("MJ/m2/day")]
+    [Units("MJ/m^2/day")]
     public double RadIntTot
     {
         get

@@ -37,9 +37,9 @@ namespace ModelFramework
         private Dictionary<int, ApsimType> RegistrationsDriverExtra;
         private Dictionary<String, int> RegistrationsDriverExtraLookup; //allows the lookup by name for the Get() function
         private Dictionary<int, ApsimType> RegistrationsEvent;
+        private Dictionary<int, ApsimType> RegistrationsEventPublished;
         private Dictionary<int, ApsimType> RegistrationsSet;
         public Dictionary<uint, TComp> SiblingComponents;  //includes itself
-        public String CompClass;
         private XmlNode InitData;
         private bool EndCropToday;
 
@@ -148,6 +148,9 @@ namespace ModelFramework
 
                     XmlDocument Doc = new XmlDocument();
                     Doc.LoadXml(Contents.ToString());
+                    String _compClass = XmlHelper.Attribute(Doc.DocumentElement, "class");
+                    if (_compClass.Length > 0)
+                        CompClass = _compClass;
                     InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
                     IsPlant = (XmlHelper.FindByType(InitData, "Plant") != null);
                     IsScript = (XmlHelper.FindByType(InitData, "text") != null);
@@ -228,6 +231,7 @@ namespace ModelFramework
         // --------------------------------------------------------------------------
         public void SendFatalError(String Line)
         {
+            Line += "\nComponent name: " + TRegistrar.unQualifiedName(Name) + "\n";
             Host.sendError(Line, true);
         }
         // --------------------------------------------------------------------------
@@ -299,11 +303,18 @@ namespace ModelFramework
                     {
                         try
                         {
-                            ((FactoryEventHandler)Event).unpack(messageData);   //unpacks and Invoke()
+                            if (Event.GetType() == typeof(FactoryEventHandler))
+                                ((FactoryEventHandler)Event).unpack(messageData);   //unpacks and Invoke()
+                            else if (Event.GetType() == typeof(RuntimeEventHandler))
+                                ((RuntimeEventHandler)Event).Invoke(null);
                         }
                         catch (System.Exception err)
                         {
-                            SendFatalError(err.InnerException.Message);
+                            String details = Name + "." + ((EvntHandler)Event).EventName;
+                            if (err.InnerException != null)
+                                SendFatalError(err.InnerException.Message + " " + details);
+                            else
+                                SendFatalError(err.Message + " for event in handleEvent() + " + details);
                             result = 1;
                         }
                     }
@@ -311,7 +322,10 @@ namespace ModelFramework
             }
             catch (System.Exception err)
             {
-                SendFatalError(err.Message);
+                if (err.InnerException != null)
+                    SendFatalError(err.InnerException.Message);
+                else
+                    SendFatalError(err.Message + " for event in handleEvent()");
                 result = 1;
             }
             return result;
@@ -466,7 +480,7 @@ namespace ModelFramework
         // ----------------------------------------------
         public void Publish(String EventName, ApsimType Data)
         {
-            int RegistrationIndex = Host.getEventID(EventName);
+            int RegistrationIndex = Host.getEventID(EventName, TypeSpec.KIND_PUBLISHEDEVENT);
             if (RegistrationIndex < 0)  //if not registered yet
             {
                 RegistrationIndex = Host.eventCount();
@@ -647,25 +661,37 @@ namespace ModelFramework
         }
         //============================================================================
         /// <summary>
-        /// Call each event handler with the name EventName (of SowPlant2Type).
+        /// Call each event handler with the name EventName (of SowPlant2Type) (should this be ApsimType?).
         /// </summary>
-        /// <param name="EventName"></param>
-        /// <param name="Data"></param>
+        /// <param name="EventName">Name of the event.</param>
+        /// <param name="Data">The message data.</param>
         //============================================================================
         public void CallEventHandlers(String EventName, SowPlant2Type Data)
         {
-            for (int i = 0; i != Fact.EventHandlers.Count; i++)
+            try
             {
-                EvntHandler Event = Fact.EventHandlers[i];
-                if (String.Compare(Event.EventName, EventName) == 0)
-                    Event.Invoke(Data);
+                for (int i = 0; i != Fact.EventHandlers.Count; i++)
+                {
+                    EvntHandler Event = Fact.EventHandlers[i];
+                    if (String.Compare(Event.EventName, EventName) == 0)
+                        Event.Invoke(Data);
+                }
+            }
+            catch (Exception err)
+            {
+                if (err.InnerException != null)
+                    SendFatalError(err.InnerException.Message + "\n");
+                else
+                    SendFatalError(err.Message + "\n");
             }
         }
+        //============================================================================
         /// <summary>
         /// ?
         /// </summary>
         /// <param name="Parameter"></param>
         /// <param name="Node"></param>
+        //============================================================================
         public Boolean InsertParameterIntoModel(XmlNode Parameter, XmlNode Node)
         {
             Boolean found = false;
@@ -814,6 +840,16 @@ namespace ModelFramework
         }
         // -----------------------------------------------------------------------
         /// <summary>
+        /// Accessing property of the TAbstractComponent
+        /// </summary>
+        // -----------------------------------------------------------------------
+        public String CompClass
+        {
+            get { return Host.CompClass; }
+            set {Host.CompClass = value; }
+        }
+        // -----------------------------------------------------------------------
+        /// <summary>
         /// Compile the script. Can be VB or C#
         /// </summary>
         /// <param name="Node"></param>
@@ -846,7 +882,7 @@ namespace ModelFramework
                         _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
                         System.Reflection.Assembly currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
                         _params.ReferencedAssemblies.Add(currentAssembly.Location);   // Reference the current assembly from within dynamic one
-
+                        
                         foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
                             if (File.Exists(val))
                                 _params.ReferencedAssemblies.Add(val);
@@ -899,9 +935,14 @@ namespace ModelFramework
                 object[] attributes = assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
                 if (attributes.Length > 0)
                     company = (attributes[0] as AssemblyCompanyAttribute).Company;
-                attributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length > 0)
-                    product = (attributes[0] as AssemblyProductAttribute).Product;
+                if (CompClass.Length == 0)
+                {
+                    attributes = assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                    if (attributes.Length > 0)
+                        product = (attributes[0] as AssemblyProductAttribute).Product;
+                }
+                else
+                    product = CompClass;
                 version = assembly.GetName().Version.Major.ToString() + "." + assembly.GetName().Version.Minor.ToString();
             }
             Desc.Append("   <executable>" + DllFileName + "</executable>\r\n");
@@ -914,7 +955,7 @@ namespace ModelFramework
             if (CultivarNode != null)
                 PerformInstructions(CultivarNode, ref ModelDescription);
             else if (InitData.ChildNodes.Count > 0)
-                ModelDescription = InitData.ChildNodes[0];
+                ModelDescription = InitData.ChildNodes[0];  //always expects the Model node at [0] !
 
             if (ModelDescription != null)
             {

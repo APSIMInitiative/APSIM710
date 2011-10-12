@@ -364,7 +364,6 @@ void Component::doInit1(const Init1Data& init1Data)
       name = fqn.substr(posPeriod+1);
 	  pathName = fqn.substr(0, posPeriod);
       }
-   type = getType();   //components implement getType()
    version = "1";
    author = "APSRU";
    active = 1;
@@ -378,6 +377,10 @@ void Component::doInit1(const Init1Data& init1Data)
 #endif
    componentData = newApsimComponentData(init1Data.sdml.f_str(),
                                          init1Data.sdml.length());
+
+   type = componentData->getClass();
+   if (type.length() == 0)
+       type = getType();   //components implement getType()
 
    addGettableVar("name", name, "", "");
    addGettableVar("type", type, "", "");
@@ -1069,7 +1072,7 @@ std::string Component::getDescription()
    {
 	  string returnString = "<describecomp>\n";
 	  returnString += string("<executable>") + dllName + "</executable>\n";
-	  returnString += string("<class>") + name + "</class>\n";
+	  returnString += string("<class>") + type + "</class>\n";
 	  returnString += "<version>" + version + "</version>\n";
 	  returnString += "<author>" + author + "</author>\n";
 

@@ -1,4 +1,4 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Test_UrinePatch">
     <manager2 name="FarmSimOptions">
       <ui>
@@ -58,11 +58,9 @@ End Class
       <end_date type="date" description="Enter the end date of the simulation">28/02/1980</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\WinchmoreMet.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\WinchmoreMet.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock01">
       <UrinePatch />
       <AgPasture name="ryegrass_clover">
@@ -118,7 +116,7 @@ End Class
         <Frgr type="text" description="Relative growth factor">1 1</Frgr>
         <rlvp type="text" description="Root distribution of swards (relative to each soil layer)">1.0 1.0</rlvp>
       </AgPasture>
-      <SoilTemp2 name="Soil Temperature (.NET)">
+      <SoilTemp2 name="Soil Temperature (dotNET)">
         <maxt_time_default type="text" description="hours">14</maxt_time_default>
         <bound_layer_cond_source type="text" description="boundary layer conductance source (calc/constant)">calc</bound_layer_cond_source>
         <bound_layer_cond type="text" description="boundary layer conductance">20</bound_layer_cond>
@@ -1162,6 +1160,8 @@ endif
         </script>
       </manager>
       <outputfile name="Outputfile">
+        <filename output="yes">Test_UrinePatch paddock01.out</filename>
+        <title>Test_UrinePatch paddock01</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="UrineN_FromAnimal" />

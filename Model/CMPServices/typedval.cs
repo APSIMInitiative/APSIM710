@@ -781,7 +781,7 @@ namespace CMPServices
         public Boolean setValue(Double[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF))
+            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -801,7 +801,7 @@ namespace CMPServices
         public Boolean setValue(int[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF))
+            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -821,7 +821,7 @@ namespace CMPServices
         public Boolean setValue(Single[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF))
+            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -841,7 +841,7 @@ namespace CMPServices
         public Boolean setValue(Boolean[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) )
+            if (isArray() && (FBaseType != TBaseType.ITYPE_DEF) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -861,7 +861,7 @@ namespace CMPServices
         public Boolean setValue(String[] values)
         {
             Boolean result = false;
-            if (isArray() && (FBaseType == TBaseType.ITYPE_STR) )
+            if (isArray() && (FBaseType == TBaseType.ITYPE_STR) && (values != null))
             {
                 result = true;
                 setElementCount((uint)values.Length);
@@ -2084,10 +2084,15 @@ namespace CMPServices
         // N.B. this is a temporary implementation.
         // A.Moore
         //============================================================================
-        static protected Boolean unitsMatch(String sUnit1, String sUnit2)
+        static protected Boolean unitsMatch(String sUnitA, String sUnitB)
         {
             int i;
             Boolean result = false;
+
+            // APSIM has historically sometimes encased units in parentheses
+            // Get rid of these before proceding
+            String sUnit1 = stripOuterParens(ref sUnitA);
+            String sUnit2 = stripOuterParens(ref sUnitB);
 
             if (sUnit1 == sUnit2)
                 result = true;
@@ -2108,6 +2113,15 @@ namespace CMPServices
             }
             return result;
         }
+
+        static private String stripOuterParens(ref String text)
+        {
+            if (text.Length > 2 && text[0] == '(' && text[text.Length - 1] == ')')
+                return text.Substring(1, text.Length - 2);
+            else
+                return text;
+        }
+
 
         //============================================================================
         /// <summary>

@@ -466,11 +466,7 @@ class DLLProber
             Params.WarningLevel = 2;
             Params.IncludeDebugInformation = true;
             Params.ReferencedAssemblies.Add("System.dll");
-#if fulldotnet
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
-#else
-            Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetComponentInterface.dll"));
-#endif
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimFile.dll"));
             String[] Source = new String[2];

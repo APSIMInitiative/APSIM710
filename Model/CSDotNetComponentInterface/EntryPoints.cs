@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Xml;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CMPServices;
@@ -9,16 +10,20 @@ namespace CMPComp
 {
     //=========================================================================
     /// <summary>
-    /// 
+    /// This class provides a standard interface for .NET components.
+    /// You can create an instance of this class if you are loading this
+    /// component from the .NET world.
     /// </summary>
     //=========================================================================
     [ComVisible(true)]
-    internal class TComponentInstance : TAPSIMHost
+    public class TComponentInstance : TAPSIMHost
     {
-        private static String _STYPE = "manager2";
-        private static String _SVERSION = "1.0";
-        private static String _SAUTHOR = "APSIM";
-        
+        private static String _STYPE = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().GetName().Name);
+        private static String _SVERSION = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." + Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
+        private static String _SAUTHOR = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false).Length > 0 ?
+                                          (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company :
+                                          "APSRU";
+
         //=========================================================================
         /// <summary>
         /// Create an instance of a component here
@@ -38,8 +43,13 @@ namespace CMPComp
     // loaded and used by native applications.
     //============================================================================
 
+    //=========================================================================
+    /// <summary>
+    /// 
+    /// </summary>
+    //=========================================================================
     [ComVisible(true)]
-    internal class TGCComponent : TComponentInstance
+    public class TGCComponent : TComponentInstance
     {
         //============================================================================
         /// <summary>
@@ -65,7 +75,17 @@ namespace CMPComp
         }
 
         //[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        //=========================================================================
+        /// <summary>
+        /// Define type for the native MessageFromLogic function
+        /// </summary>
+        //=========================================================================
         public delegate void NativeMessageFromLogic(ref uint dummy, ref TNativeMsgHeader inMsg);
+        //=========================================================================
+        /// <summary>
+        /// Define a delegate (function pointer) for MessageFromLogic
+        /// </summary>
+        //=========================================================================
         protected NativeMessageFromLogic msgNativeDestFunction = null;
 
         //==============================================================================
@@ -138,10 +158,10 @@ namespace CMPComp
         /// Send a message up to the owning system so it can be routed throughout
         /// the simulation. Overridden to allow the message data to be converted
         /// to a native pointer. This enables calling from embedded Microsoft Frameworks or Mono.
-        // The message itself then needs to be converted from a TNativeMsgHeader to a TMsgHeader,
-        // which includes taking a copy of the data referenced by the data pointer
+        /// The message itself then needs to be converted from a TNativeMsgHeader to a TMsgHeader,
+        /// which includes taking a copy of the data referenced by the data pointer
         /// </summary>
-        /// <param name="msg">Message that will be sent to the engine.
+        /// <param name="inVal">Message that will be sent to the engine.
         /// The value passed in, although described as a "uint", is actually
         /// a pointer to a native TMsgHeader
         /// </param>

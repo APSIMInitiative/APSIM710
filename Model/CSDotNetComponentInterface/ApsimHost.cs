@@ -401,6 +401,7 @@ public class TAPSIMHost : TBaseComp
                 if (Doc != null)
                 {
                     String ExecutableFileName = XmlHelper.Attribute(Doc.DocumentElement, "executable");
+                    FType = XmlHelper.Attribute(Doc.DocumentElement, "class");
                     Assembly Assemb = Assembly.LoadFile(ExecutableFileName);        // Load the assembly.
                     ApsimComponent Comp = new ApsimComponent(Assemb, 0, this);
                     XmlNode InitData = XmlHelper.Find(Doc.DocumentElement, "initdata");
@@ -439,27 +440,27 @@ public class TAPSIMHost : TBaseComp
     /// <summary>
     /// Get the event ID of the named event.
     /// </summary>
-    /// <param name="eventName"></param>
+    /// <param name="eventName">Name of the event</param>
+    /// <param name="kind">The event type e.g. TypeSpec.KIND_PUBLISHEDEVENT</param>
     /// <returns></returns>
     //=========================================================================
-    public int getEventID(String eventName)
+    public int getEventID(String eventName, int kind)
     {
         int eventID = -1;
         for (int i = 0; i < eventList.Count; i++)
         {
             if (eventList[i] != null)
             {
-                if (eventList[i].Name.ToLower() == eventName.ToLower())
+                if ((eventList[i].Name.ToLower() == eventName.ToLower()) && ( ((TEventInfo)eventList[i]).iKind == kind) ) 
                     eventID = i; //indexed as in array
             }
         }
         return eventID;
     }
-    public String CompClass {
-        set
-        {
-            FType = value;
-        }
+    public String CompClass
+    {
+        set { FType = value; }
+        get { return FType; }
     }
 }
 

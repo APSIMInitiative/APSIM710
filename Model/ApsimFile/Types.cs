@@ -29,7 +29,7 @@ public class Types
     public Types()
     {
         // Constructor.
-        TypesDoc.AppendChild(TypesDoc.CreateElement("types"));
+        TypesDoc.AppendChild(TypesDoc.CreateElement("type"));
     }
     public void Clear()
     {

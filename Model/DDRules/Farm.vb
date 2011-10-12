@@ -772,7 +772,7 @@ Public Class Farm
     <Output()> <Units("kgN/ha")> Public N_to_milk As Single
     <Output()> <Units("kgN/ha")> Public N_to_BC As Single
     <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
-    <Output()> <Units("kgN/ha")> Public N_to_urine As Single
+    <Output()> <Units("kgN/ha")> Public N_to_urine As Double
     <Output()> <Units("kgN/ha")> Public DM_to_feaces As Single ' added
 
     <Output()> <Units("")> Public ReadOnly Property PaddockStatus() As String()
@@ -897,9 +897,9 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Single()
+    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Double()
         Get
-            Dim result(myPaddocks.Count - 1) As Single
+            Dim result(myPaddocks.Count - 1) As Double
             'sort by index
             For i As Integer = 0 To (myPaddocks.Count - 1)
                 result(i) = myPaddocks(i).N_Eaten()
@@ -920,7 +920,7 @@ Public Class Farm
     <Output()> <Units("kgN/cow")> Public N_to_milk_Cow As Single
     <Output()> <Units("kgN/cow")> Public N_to_BC_Cow As Single
     <Output()> <Units("kgN/cow")> Public N_to_feaces_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Single
+    <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Double
     <Output()> <Units("kgN/cow")> Public ReadOnly Property LWt_Change_Cow() As Single
         Get
             Return myMilkingHerd.LWt_Change

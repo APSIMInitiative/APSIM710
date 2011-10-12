@@ -65,6 +65,7 @@ class EXPORT CMPComponentInterface
       unsigned componentID;
       unsigned parentID;
       std::string name;
+      std::string type;
       std::string pathName;
       std::string dllName;
       CallbackType* messageCallback;

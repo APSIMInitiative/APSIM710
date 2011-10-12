@@ -671,14 +671,19 @@ void CMPComponentInterface::onInit1(const Message& message)
       name = init1.fqn.substr(posPeriod+1);
       pathName = init1.fqn.substr(0, posPeriod);
       }
+
+   simScript = new XMLDocument(init1.sdml, XMLDocument::xmlContents);
+   type = simScript->documentElement().getAttribute("class");
+   if (type.length() == 0)
+       type = fileTailNoExtension(dllName);
+
    expose("name", "", "", false, new CMPBuiltIn<string&>(name));
-   expose("type", "", "", false, new CMPBuiltIn<string&>(fileTailNoExtension(dllName)));
+   expose("type", "", "", false, new CMPBuiltIn<string&>(type));
    expose("version", "", "", false, new CMPBuiltIn<string&>(version));
    expose("author", "", "", false, new CMPBuiltIn<string&>(author));
    expose("active", "", "", false, new CMPBuiltIn<int&>(active));
    expose("state", "", "", false, new CMPBuiltIn<string&>(state));
 
-   simScript = new XMLDocument(init1.sdml, XMLDocument::xmlContents);
    if (this->init1 != NULL) 
       {
       this->init1->unpack(messageData, "");
@@ -844,7 +849,7 @@ std::string CMPComponentInterface::getDescription(const std::string& dllName)
       returnString = "<describecomp>\n";
 
       returnString += string("<executable>") + dllName + "</executable>\n";
-      returnString += string("<class>") + fileTailNoExtension(dllName) + "</class>\n";
+      returnString += string("<class>") + type + "</class>\n";
 	  returnString += "<version>" + version + "</version>\n";
       returnString += "<author>" + author + "</author>\n";
 

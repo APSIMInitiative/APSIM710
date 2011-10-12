@@ -34,8 +34,7 @@ namespace ModelFramework
         public Paddock(Instance In)
             : base(In)
         {
-            if (Types.Instance.TypeNames.Length == 0)
-                PlugIns.LoadAll();
+
         }
         public new String Name
         {
@@ -89,6 +88,7 @@ namespace ModelFramework
         //=========================================================================
         /// <summary>
         /// Returns a component that is a child of the paddock
+        /// <param name="TypeToFind">The type to find. [Type.]ProxyClass</param>
         /// </summary>
         //=========================================================================
         public Component ComponentByType(String TypeToFind)
@@ -148,7 +148,7 @@ namespace ModelFramework
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
                     Component ChildComponent = new Component(pair.Value.name, HostComponent);
-                    if (ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2"))
+                    if (ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2") || ChildComponent.IsOfType("AgPasture"))
                         Children.Add(ChildComponent);
                 }
                 return Children;

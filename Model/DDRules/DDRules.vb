@@ -298,11 +298,11 @@ Public Class DDRules
 
 #Region "CowProperties"
     'Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off
-    <Output()> <Units("cows/ha")> Public Property StockingRate() As Single
+    <Output()> <Units("cows/ha")> Public Property StockingRate() As Double
         Get
             Return myFarm.StockingRate
         End Get
-        Set(ByVal value As Single)
+        Set(ByVal value As Double)
             If (value >= 0) Then
                 myFarm.StockingRate = value
             End If
@@ -843,7 +843,7 @@ Public Class DDRules
     'Nitrogen partitioned to dung
     <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
     'Nitrogen partitioned to urine
-    <Output()> <Units("kgN/ha")> Public N_to_urine As Single
+    <Output()> <Units("kgN/ha")> Public N_to_urine As Double
     'Drymatter partitioned to dung
     <Output()> <Units("kgDM/ha")> Public DM_to_feaces As Single
 
@@ -915,7 +915,7 @@ Public Class DDRules
         End Get
     End Property
     'Nitrogen partitioned to urine per paddock
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Single()
+    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Double()
         Get
             Return myFarm.N_to_urine_Pdks
         End Get
@@ -947,7 +947,7 @@ Public Class DDRules
     'Nitrogen partitioned to dung per cow
     <Output()> <Units("kgN/cow")> Public N_to_feaces_Cow As Single
     'Nitrogen partitioned to urine per cow
-    <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Single
+    <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Double
     'Daily per cow live weight change
 #End Region
 
@@ -1318,7 +1318,7 @@ Public Class DDRules
     End Property
 
     'Grazing allocation system used (0=Dawns rules, 1=LUDF)
-    <Output()> <Units("[0,1]")> Public Property AllocationType() As Integer
+    <Output()> <Units("0-1")> Public Property AllocationType() As Integer
         Get
             Return myFarm.AllocationType
         End Get
@@ -1328,7 +1328,7 @@ Public Class DDRules
     End Property
 
     'Grazing allocation system used (0=Dawns rules, 1=LUDF)
-    <Output()> <Units("[0-1]")> Public Property DryOffProportion() As Double
+    <Output()> <Units("0-1")> Public Property DryOffProportion() As Double
         Get
             Return myFarm.DryOffProportion
         End Get
