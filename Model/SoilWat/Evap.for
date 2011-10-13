@@ -1,5 +1,6 @@
 ! ===========================================================================
       module EvapModule
+      use infrastructure
 ! ===========================================================================
 
       private  ! ALL MEMBERS ARE PRIVATE BY DEFAULT!!!
@@ -51,7 +52,7 @@
 * ====================================================================
        subroutine Evap_zero_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -104,7 +105,7 @@
 * ====================================================================
        subroutine Evap_get_other_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -147,7 +148,7 @@ c     :     ,1000.)          ! Upper Limit for bound checking
 *     ===========================================================
       subroutine Evap_read_param (g)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -228,7 +229,7 @@ c     :     ,1000.)          ! Upper Limit for bound checking
       subroutine Evap_read_constants (g)
 *     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 *+  Calls
@@ -297,7 +298,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_prepare (g)
 * ====================================================================
-       Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -330,7 +331,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
      :                            ,eos
      :                            ,es)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -463,7 +464,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_zero_daily_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -492,7 +493,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_Create (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -523,7 +524,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_Init (g, num_layers,dlayer,air_dry_dep,dul_dep)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -571,7 +572,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_Read (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -605,7 +606,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Evap_init_calc (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Calls
@@ -652,7 +653,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
        subroutine Evap_space_weighting_factor (g, evap_swf)
 * ====================================================================
 
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments

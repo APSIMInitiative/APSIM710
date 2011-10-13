@@ -1,5 +1,6 @@
       module Soilwat2Module
       use ComponentInterfaceModule
+      use InfraStructure
       use LateralModule
       use EvapModule
 
@@ -302,7 +303,7 @@
 *     ===========================================================
       subroutine soilwat2_prepare
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -347,7 +348,7 @@
       subroutine soilwat2_process
 *     ===========================================================
       use LateralModule
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -522,7 +523,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_runoff ( rain,runon, interception, runoff )
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -595,7 +596,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_scs_runoff (rain,runon, interception,runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -738,7 +739,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_cover_surface_runoff (cover_surface_runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -816,7 +817,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_pot_evapotranspiration (eo)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -860,7 +861,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_pot_evapotranspiration_effective (eos)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -917,7 +918,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_priestly_taylor (eo)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -983,7 +984,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       real function soilwat2_eeq_fac ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -1034,7 +1035,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_evaporation (esoil, eos)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1083,7 +1084,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_pot_soil_evaporation (eos)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1207,7 +1208,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
       subroutine soilwat2_soil_evaporation (es, eos, eos_max)
 *     ===========================================================
       use EvapModule
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1278,7 +1279,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_ritchie_evaporation (es, eos, eos_max)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1430,7 +1431,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_bs_a_evaporation (es, eos, eos_max)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1522,7 +1523,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_bs_b_evaporation (es, eos, eos_max)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1669,7 +1670,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_bs_acs_evaporation (es, eos, eos_max)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1789,7 +1790,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *     ===========================================================
       subroutine soilwat2_rickert_evaporation (es, eos)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1905,7 +1906,7 @@ c     should suffice.
 *     ===========================================================
       real function soilwat2_comp_curve (ndx, a)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -1945,7 +1946,7 @@ c     should suffice.
 *     ===========================================================
       subroutine soilwat2_drainage (flux,extra_runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2065,7 +2066,7 @@ c     should suffice.
 *     ===========================================================
       subroutine soilwat2_drainage_old (flux,extra_runoff)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2208,7 +2209,7 @@ c     should suffice.
 *     ===========================================================
       subroutine soilwat2_unsat_flow (flow)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2434,7 +2435,7 @@ cjh
 *     ===========================================================
       subroutine soilwat2_check_profile (layer)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2620,7 +2621,7 @@ cjh
 *     ===========================================================
       subroutine soilwat2_layer_check (layer)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -2681,7 +2682,7 @@ cjh
 * ====================================================================
       subroutine soilwat2_read_constants ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -2862,7 +2863,7 @@ cjh
 *     ===========================================================
       use EvapModule
 
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3161,7 +3162,7 @@ cjh
 *     ===========================================================
       subroutine soilwat2_soil_profile_param ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3326,7 +3327,7 @@ c       be set to '1' in all layers by default
 *     ===========================================================
       subroutine soilwat2_set_default ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3579,7 +3580,7 @@ c       be set to '1' in all layers by default
 *     ===========================================================
       use EvapModule
 
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3636,7 +3637,7 @@ c       be set to '1' in all layers by default
 *     ===========================================================
       subroutine soilwat2_ritchie_init
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3698,7 +3699,7 @@ c       be set to '1' in all layers by default
 *     ===========================================================
       subroutine soilwat2_bs_a_init
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3784,7 +3785,7 @@ c       be set to '1' in all layers by default
 *     ===========================================================
       subroutine soilwat2_bs_b_init
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3817,7 +3818,7 @@ c     he should have. Any ideas? Perhaps
 *     ===========================================================
       subroutine soilwat2_bs_acs_init
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3888,7 +3889,7 @@ c     he should have. Any ideas? Perhaps
 *     ===========================================================
       subroutine soilwat2_rickert_init
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3923,7 +3924,7 @@ c     he should have. Any ideas? Perhaps
 * ====================================================================
       subroutine soilwat2_get_other_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -3961,7 +3962,7 @@ c     he should have. Any ideas? Perhaps
 * ====================================================================
       subroutine soilwat2_get_residue_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4006,7 +4007,7 @@ c     he should have. Any ideas? Perhaps
 * ====================================================================
       subroutine soilwat2_get_crop_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4112,7 +4113,7 @@ c     :                           , 0.0, 1.0)
 * ====================================================================
       subroutine soilwat2_get_solute_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4182,7 +4183,7 @@ c     :                           , 0.0, 1.0)
 * ====================================================================
       subroutine soilwat2_get_environ_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4266,7 +4267,7 @@ c  dsg   070302  added runon
 * ====================================================================
       subroutine soilwat2_zero_default_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4309,7 +4310,7 @@ c  dsg   070302  added runon
 *     ===========================================================
       subroutine soilwat2_ExternalMassFlow (dltSWDep)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       real, intent(in) :: dltSWDep
@@ -4358,7 +4359,7 @@ c  dsg   070302  added runon
      :      array_size)
 * ====================================================================
 * Checks the array lengths of variables being set in soilwat2_set_my_variable	
-      Use Infrastructure
+
       implicit none
       character variable_name*(*)
       integer array_size, nlayers
@@ -4387,7 +4388,7 @@ c  dsg   070302  added runon
 * ====================================================================
       subroutine soilwat2_set_my_variable (variable_name)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -4766,7 +4767,7 @@ c  dsg   070302  added runon
 * ====================================================================
       subroutine soilwat2_set_other_variables ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -4835,7 +4836,7 @@ c  dsg   070302  added runon
       subroutine soilwat2_send_my_variable (variable_name)
 * ====================================================================
       use LateralModule
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5132,7 +5133,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_zero_variables ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5325,7 +5326,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 *     ===========================================================
       subroutine soilwat2_zero_data_links ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5356,7 +5357,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 *     ===========================================================
       subroutine soilwat2_zero_event_data ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5394,7 +5395,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 *     ===========================================================
       subroutine soilwat2_zero_daily_variables ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5467,7 +5468,7 @@ c         g%crop_module(:) = ' '               ! list of modules
       subroutine soilwat2_solute_flux (solute_out
      :                                , solute_kg)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5567,7 +5568,7 @@ c         g%crop_module(:) = ' '               ! list of modules
 *     ===========================================================
       subroutine soilwat2_solute_flow (solute_up, solute_kg)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -5767,7 +5768,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine soilwat2_ONirrigated ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -5829,7 +5830,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
       subroutine soilwat2_sum_report ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6183,7 +6184,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
       subroutine soilwat2_init ()
 *     ===========================================================
       use LateralModule
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6234,7 +6235,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 !     ===========================================================
       subroutine soilwat2_save_state ()
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 
@@ -6248,7 +6249,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 !     ===========================================================
       subroutine soilwat2_delta_state ()
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 !+  Local Variables
@@ -6267,7 +6268,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 !     ===========================================================
       real function soilwat2_total_sw_dep ()
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
       integer    num_layers
 
@@ -6283,7 +6284,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine Soilwat2_runoff_depth_factor (runoff_wf)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6371,7 +6372,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine soilwat2_irrig_solute ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6417,7 +6418,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine soilwat2_rainfall_solute ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6469,7 +6470,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine soilwat2_move_solute_down ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6540,7 +6541,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 * ====================================================================
        subroutine soilwat2_move_solute_up ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6611,7 +6612,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
 *     ===========================================================
       subroutine soilwat2_infiltration ( infiltration )
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6668,7 +6669,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_tillage ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -6776,7 +6777,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_tillage_addrain ( rain, runon, interception)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -6829,7 +6830,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_on_new_solute (variant)
 *     ===========================================================
-      Use Infrastructure
+
        implicit none
 
 *+  Purpose
@@ -6943,7 +6944,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_ONtick (variant)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       integer, intent(in) :: variant
@@ -6977,7 +6978,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_ONnewmet (variant)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       integer, intent(in) :: variant
@@ -7019,7 +7020,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine OnWaterChanged (variant)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -7041,7 +7042,7 @@ c dsg 070302 added runon
 *     ===========================================================
       subroutine soilwat2_New_Profile_Event ()
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 *+  Purpose
 *     Advise other modules of new profile specification
@@ -7095,7 +7096,7 @@ c
 * ====================================================================
        real function soilwat_water_table ()
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -7221,7 +7222,7 @@ c
 * ====================================================================
        subroutine SetWaterTable (water_table)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
       real water_table
 
@@ -7274,7 +7275,7 @@ c
        subroutine soilwat2_create ()
 * ====================================================================
       use EvapModule
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -7301,7 +7302,6 @@ c
       call soilwat2_zero_data_links ()
       call soilwat2_zero_event_data ()
       call lateral_zero_variables (lateral)
-
 
       call pop_routine (myname)
       return
@@ -7348,7 +7348,7 @@ c
 * ====================================================================
       subroutine Main (action, data_string)
 * ====================================================================
-      Use Infrastructure
+
       use Soilwat2Module
       implicit none
       ml_external Main
@@ -7490,7 +7490,7 @@ c
 ! ====================================================================
       subroutine respondToEvent(fromID, eventID, variant)
       use SoilWat2Module
-      Use infrastructure
+
       implicit none
       ml_external respondToEvent
 !STDCALL(respondToEvent)
@@ -7516,7 +7516,7 @@ c
 ! ====================================================================
       subroutine doInit1()
       use SoilWat2Module
-      Use infrastructure
+
       implicit none
       ml_external doInit1
 !STDCALL(doInit1)

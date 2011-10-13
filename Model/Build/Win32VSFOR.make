@@ -1,34 +1,36 @@
 ###########################################
-# Lahey FORTRAN compiler switches.
+# gfortran compiler switches.
 ###########################################
-LFLM=lm.exe
-LF95=lf95.exe
-RC=rc
+FC=gfortran
+LD=ld
+RC=windres
 
 # add .lib to all user libraries
-LIBS := $(foreach library,$(LIBS),..\$(library).lib)
-STATICLIBS := $(foreach library,$(STATICLIBS),..\$(library).lib)
+LIBS := $(foreach library,$(LIBS),../$(library).lib)
+STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 
-F90FLAGS = -dll -tpp -nco -o0 -pca -libpath $(APSIM)\Model -ml bc -staticlink
-F90INCLUDES = ##### -i .;$(APSIM)\Model\FortranInfrastructure
-F90MODS=-mod .;$(APSIM)\Model\FortranInfrastructure;$(APSIM)\Model\CropTemplate;$(APSIM)\Model\CropMod
+F90FLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O3 -frounding-math -g -march=pentiumpro -mtune=pentiumpro
+F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
-#F90CROPINCLUDES=-i .;$(APSIM)\Model\infra\source;$(APSROOT)\apsim\croptemp\source
-#F90CROPMODS=-mod .;$(APSROOT)\apsim\infra\source;$(APSROOT)\apsim\croptemp\source
-#F90CROPLIBS=-libPath $(APSROOT)\apsbuild -lib $(APSROOT)\apsim\infra\lib\apsinfra.lib -lib $(APSROOT)\apsim\croptemp\lib\croptemp.lib
+F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
 
 # Generic rules
-%.obj:	%.for
-	$(LF95) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+%.o:	%.for
+	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
-%.obj:	%.f90
-	$(LF95) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+%.o:	%.f90
+	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
-OBJS:=	$(SRC:.for=.obj)
-OBJS:=	$(OBJS:.f90=.obj)
+OBJS:=	$(SRC:.for=.o)
+OBJS:=	$(OBJS:.f90=.o)
 
 # remove all paths on OBJ files.
-OBJSNODIR := $(foreach obj,$(OBJS),$(notdir $(obj)))
+OBJSNODIR := $(foreach o,$(OBJS),$(notdir $(o)))
+
+ifeq ($(PROJECTTYPE),libdll)
+LDFLAGS:= --export-dynamic
+all: $(APSIM)/Model/$(PROJECT).dll
+endif
 
 ifeq ($(PROJECTTYPE),dll)
 
@@ -39,23 +41,26 @@ ifeq ($(MAJOR_VERSION),)
   BUILD_NUMBER = 0
 endif
 
-   RESOBJ = dllres.res
-   EXPORTS := -export Main,doInit1,wrapperDLL,respondToEvent,alloc_dealloc_instance,getInstance,getDescription,getDescriptionLength
-   $(PROJECT).dll: $(OBJS) $(RESOBJ)
-	   $(LF95) $(F90FLAGS) $(LIBS) $(STATICLIBS) $(OBJSNODIR) $(RESOBJ) $(EXPORTS) -exe ..\$(PROJECT).dll
-	   
+RESOBJ = dllres.obj
+LDFLAGS:= -Xlinker --enable-stdcall-fixup -Xlinker --no-allow-shlib-undefined -Xlinker --disable-auto-import
+all: $(APSIM)/Model/$(PROJECT).dll 
+$(APSIM)/Model/$(PROJECT).dll: $(OBJS) $(RESOBJ)
+	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) 
+
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
-#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 else
+
 ifeq ($(PROJECTTYPE),lib)
-OBJSNODIR := $(foreach obj,$(OBJS),$(notdir $(obj)))
-OBJSWITHPLUS := $(foreach obj,$(OBJSNODIR),+$(obj))
+all: $(APSIM)/Model/$(PROJECT).a
+$(APSIM)/Model/$(PROJECT).a: $(OBJS)
+	ar rv $@ $(OBJS)
+OBJSNODIR := $(foreach o,$(OBJS),$(notdir $(o)))
+OBJSWITHPLUS := $(foreach o,$(OBJSNODIR),+$(o))
 $(PROJECT).lib: $(OBJS)
 	del /Q $(PROJECT).lib 2>nul
-	$(LFLM) $(PROJECT).lib $(OBJSWITHPLUS),,
-	cmd /C move /Y $(PROJECT).lib ..
+#    cmd /C move /Y $(PROJECT).lib ..
 
 else
    echo "Error: target type $(PROJECTTYPE) unknown"

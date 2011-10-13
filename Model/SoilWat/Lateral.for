@@ -1,7 +1,8 @@
 ! ===========================================================================
       module LateralModule
 ! ===========================================================================
-
+      use infrastructure
+	  
       private  ! ALL MEMBERS ARE PRIVATE BY DEFAULT!!!
                ! =====================================
 
@@ -45,7 +46,7 @@
 * ====================================================================
        subroutine Lateral_zero_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -92,7 +93,7 @@
 * ====================================================================
        subroutine Lateral_get_other_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -135,7 +136,7 @@ c     :     ,1000.)          ! Upper Limit for bound checking
 *     ===========================================================
       subroutine Lateral_read_param (g)
 *     ===========================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -224,7 +225,7 @@ c     :     ,1000.)          ! Upper Limit for bound checking
       subroutine Lateral_read_constants (g)
 *     ===========================================================
 
-      Use Infrastructure
+
       implicit none
 
 *+  Calls
@@ -272,7 +273,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Lateral_prepare (g)
 * ====================================================================
-       Use Infrastructure
+ 
       implicit none
 
 *+  Sub-Program Arguments
@@ -304,7 +305,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
      :                            ,sat_dep
      :                            ,dlayer)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -398,7 +399,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Lateral_zero_daily_variables (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Purpose
@@ -427,7 +428,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Lateral_Init (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -460,7 +461,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        subroutine Lateral_Read (g)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments
@@ -494,7 +495,7 @@ c     :              1.0)                   ! Upper Limit for bound checking
 * ====================================================================
        logical function Lateral_Send_my_variable (g, variable_name)
 * ====================================================================
-      Use Infrastructure
+
       implicit none
 
 *+  Sub-Program Arguments

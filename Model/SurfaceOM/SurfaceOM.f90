@@ -1,6 +1,7 @@
 module SurfaceOMModule
    use ComponentInterfaceModule
    use Registrations
+   use infrastructure
   
 ! ====================================================================
 !     SurfaceOM constants
@@ -132,7 +133,7 @@ contains
 !===========================================================
 subroutine surfom_zero_all_globals ()
 !===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -162,6 +163,7 @@ subroutine surfom_zero_all_globals ()
    g%phosphorus_aware     = .false.
    c%fom_types(:)         = blank
    c%num_fom_types        = 0
+   g%num_surfom           = 0
    g%pond_active          = 'no'
 
    g%oldSOMstate%amount = 0.0
@@ -214,7 +216,7 @@ end subroutine
 !================================================================
 subroutine surfom_zero_event_data ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -240,9 +242,8 @@ end subroutine
 !================================================================
 subroutine surfom_Reset ()
 !================================================================
-   Use Infrastructure
-   implicit none
 
+   implicit none
 !+  Purpose
 !      Initialise residue module
 
@@ -270,7 +271,7 @@ end subroutine
 !     ===========================================================
 subroutine surfom_save_state ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !- Implementation Section ----------------------------------
@@ -283,7 +284,7 @@ end subroutine
 !     ===========================================================
 subroutine surfom_delta_state ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Local Variables
@@ -313,7 +314,7 @@ end subroutine
 !     ===========================================================
       subroutine surfom_ExternalMassFlow (massBalanceChange)
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
      type (ExternalMassFlowType) :: massBalanceChange
@@ -329,7 +330,7 @@ end subroutine
 !     ===========================================================
  subroutine surfom_total_state (SOMstate)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
    type(OMFractionType) :: SOMState
    integer :: pool
@@ -359,7 +360,7 @@ end subroutine
 !================================================================
 subroutine surfom_zero_variables ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -392,7 +393,7 @@ end subroutine
 !================================================================
 subroutine surfom_get_other_variables ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -421,7 +422,7 @@ end subroutine
 !================================================================
 subroutine surfom_check_pond ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -449,7 +450,7 @@ end subroutine
 !================================================================
 subroutine surfom_read_coeff ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -490,7 +491,7 @@ end subroutine
 !================================================================
 subroutine surfom_read_param ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -609,7 +610,7 @@ subroutine surfom_read_param ()
       g%SurfOM(i)%Lying(1:MaxFr)%N  = tot_n(i) *  c%fr_pool_n(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%P  = tot_p(i) *  c%fr_pool_p(1:MaxFr,i) * (1 - p%standing_fraction(i))
       g%SurfOM(i)%Lying(1:MaxFr)%AshAlk = 0.0
-	  
+  
       dummy = add_reg(respondToGetReg, 'surfaceom_wt_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
       dummy = add_reg(respondToGetReg, 'surfaceom_c_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
       dummy = add_reg(respondToGetReg, 'surfaceom_n_' // g%surfOM(i)%name, floatTypeDDML, 'kg/ha', '')
@@ -649,7 +650,7 @@ end subroutine
 ! ====================================================================
     integer function surfom_number (surfomname)
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 
@@ -689,7 +690,7 @@ end function
 !===========================================================
 subroutine surfom_ONnewmet (variant)
 !===========================================================
-   Use infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -719,7 +720,7 @@ end subroutine
 !================================================================
 subroutine surfom_Pot_Decomp (C_decomp, N_decomp, P_decomp)
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -783,7 +784,7 @@ end subroutine
 !================================================================
    real function surfom_tf ()
 !================================================================
-   use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -827,7 +828,7 @@ end function
 !================================================================
    real function surfom_cf ()
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -873,7 +874,7 @@ end function
 !================================================================
    real function surfom_cnrf (residue)
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -926,7 +927,7 @@ end function
 !================================================================
    real function surfom_wf ()
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -970,7 +971,7 @@ end function
 !================================================================
    real function surfom_cover_total ()
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1002,7 +1003,7 @@ end function
 !================================================================
 subroutine surfom_Process ()
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1041,7 +1042,7 @@ end subroutine
 !================================================================
 subroutine surfom_set_vars (cumeos, leach_rain)
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1093,7 +1094,7 @@ end subroutine
 !================================================================
 subroutine surfom_Leach (leach_rain)
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1154,7 +1155,7 @@ end subroutine
 ! ====================================================================
  subroutine surfom_Send_PotDecomp_Event ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1198,7 +1199,7 @@ end subroutine
 ! ====================================================================
  subroutine respond2get_SurfaceOrganicMatter ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1252,7 +1253,7 @@ end subroutine
 !================================================================
 subroutine surfom_remove_surfom (variant)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1374,7 +1375,7 @@ end subroutine
 ! ====================================================================
  subroutine surfom_ONirrigated ()
 ! ====================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1403,7 +1404,7 @@ end subroutine
 ! ====================================================================
 subroutine surfom_decompose_surfom (variant)
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1499,7 +1500,7 @@ end subroutine
 !================================================================
 subroutine surfom_Decomp (C_decomp, N_decomp, P_decomp,residue)
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1553,7 +1554,7 @@ end subroutine
 !================================================================
 subroutine surfom_Tillage ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1634,7 +1635,7 @@ end subroutine
 !================================================================
 subroutine surfom_Tillage_single ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1674,7 +1675,7 @@ subroutine surfom_Tillage_single ()
    call collect_real_var_optional ('tillage_depth', '()', tillage_depth, numvals_t, 0.0, 1000.0)
 
               Write (Err_string,*)   ' OH BOY Im in tillage_single subroutine '
-   	      call Write_string (Err_string)
+         call Write_string (Err_string)
 
    ! ----------------------------------------------------------
    !    If no user defined characteristics then use the
@@ -1723,7 +1724,7 @@ end subroutine
 !================================================================
 subroutine surfom_incorp (action_type, F_incorp, Tillage_depth)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1895,7 +1896,7 @@ end subroutine
 !================================================================
 subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_depth)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2071,7 +2072,7 @@ end subroutine
 !================================================================
 subroutine surfom_add_surfom ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2152,8 +2153,10 @@ subroutine surfom_add_surfom ()
 
    if (surfom_added .gt. -10000.0) then
       ! Get N content of material added
+      surfom_N_added = 0.0
       call collect_real_var_optional ('n', '(kg/ha)', surfom_N_added, numval_n, -10000.0, 10000.0)
       if (numval_n  .eq.  0) then
+         surfom_cnr_added = 0.0
          call collect_real_var_optional ('cnr', '()', surfom_cnr_added, numval_cnr, 0.0, 10000.0)
          surfom_N_added = divide ((surfom_added * c%C_fract(SOMNo)), surfom_cnr_added, 0.0)
 
@@ -2264,7 +2267,7 @@ end subroutine
 !================================================================
 subroutine surfom_prop_up ()
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2367,7 +2370,7 @@ end subroutine
 !================================================================
 subroutine surfom_read_type_specific_constants(surfom_type,i)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2396,16 +2399,16 @@ subroutine surfom_read_type_specific_constants(surfom_type,i)
       call fatal_error (ERR_USER,'No ini-file information available on specified residue-type')
    else
 
-	   call read_real_var (surfom_type, 'fraction_C', '()', c%c_fract(i), numvals, 0.0, 1.0)
-      call read_real_var (surfom_type, 'po4ppm', '(ppm)', c%po4ppm(i), numvals, 0.0, 1000.0)
-	   call read_real_var (surfom_type, 'nh4ppm', '(ppm)', c%nh4ppm(i), numvals, 0.0, 2000.0)
-	   call read_real_var (surfom_type, 'no3ppm', '(ppm)', c%no3ppm(i), numvals, 0.0, 1000.0)
-	   call read_real_var (surfom_type, 'specific_area', '(ha/kg)', c%specific_area(i), numvals, 0.0, 0.01)
-	   call read_integer_var (surfom_type, 'cf_contrib', '()', c%cf_contrib(i), numvals, 0, 1)
-	   call read_real_var (surfom_type, 'pot_decomp_rate', '(/day)', g%SurfOM(i)%PotDecompRate, numvals, 0.0, 1.0)
-	   call read_real_array (surfom_type, 'fr_c', MaxFr, '()', c%fr_pool_c(1:MaxFr,i), numvals, 0.0, 1.0)
-	   call read_real_array (surfom_type, 'fr_n', MaxFr, '()', c%fr_pool_n(1:MaxFr,i), numvals, 0.0, 1.0)
-	   call read_real_array (surfom_type, 'fr_p', MaxFr, '()', c%fr_pool_p(1:MaxFr,i), numvals, 0.0, 1.0)
+       call read_real_var (surfom_type, 'fraction_C', '()', c%c_fract(i), numvals, 0.0, 1.0)
+       call read_real_var (surfom_type, 'po4ppm', '(ppm)', c%po4ppm(i), numvals, 0.0, 1000.0)
+       call read_real_var (surfom_type, 'nh4ppm', '(ppm)', c%nh4ppm(i), numvals, 0.0, 2000.0)
+       call read_real_var (surfom_type, 'no3ppm', '(ppm)', c%no3ppm(i), numvals, 0.0, 1000.0)
+       call read_real_var (surfom_type, 'specific_area', '(ha/kg)', c%specific_area(i), numvals, 0.0, 0.01)
+       call read_integer_var (surfom_type, 'cf_contrib', '()', c%cf_contrib(i), numvals, 0, 1)
+       call read_real_var (surfom_type, 'pot_decomp_rate', '(/day)', g%SurfOM(i)%PotDecompRate, numvals, 0.0, 1.0)
+       call read_real_array (surfom_type, 'fr_c', MaxFr, '()', c%fr_pool_c(1:MaxFr,i), numvals, 0.0, 1.0)
+       call read_real_array (surfom_type, 'fr_n', MaxFr, '()', c%fr_pool_n(1:MaxFr,i), numvals, 0.0, 1.0)
+   call read_real_array (surfom_type, 'fr_p', MaxFr, '()', c%fr_pool_p(1:MaxFr,i), numvals, 0.0, 1.0)
 
    endif
 
@@ -2416,7 +2419,7 @@ end subroutine
 !================================================================
 subroutine surfom_Send_my_variable (Variable_name)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2474,7 +2477,7 @@ subroutine surfom_Send_my_variable (Variable_name)
                     - (total_c-g%DailyInitialC)  ! Delta Storage
 
       call respond2get_real_var (variable_name, '(kg/ha)', carbonbalance)
-	  
+
    elseif (Variable_name .eq. 'nitrogenbalance') then
       
       total_n = 0.0
@@ -2484,7 +2487,7 @@ subroutine surfom_Send_my_variable (Variable_name)
       NitrogenBalance = 0.0 &                      ! Inputs-Losses
                     - (total_n-g%DailyInitialN)  ! Delta Storage
 
-      call respond2get_real_var (variable_name, '(kg/ha)', Nitrogenbalance)	  
+      call respond2get_real_var (variable_name, '(kg/ha)', Nitrogenbalance)  
       
    else if (Variable_name .eq. 'surfaceom_c') then
    !                       --------
@@ -2639,8 +2642,8 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual surfom C in pool3 can be requested here in the format 'surfaceom_c3_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom C in pool3 can be requested here in the format 'surfaceom_c3_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_c3_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
@@ -2648,8 +2651,8 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual surfom N in pool1 can be requested here in the format 'surfaceom_n1_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom N in pool1 can be requested here in the format 'surfaceom_n1_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_n1_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
@@ -2657,16 +2660,16 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual surfom N in pool2 can be requested here in the format 'surfaceom_n2_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom N in pool2 can be requested here in the format 'surfaceom_n2_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_n2_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
          call respond2Get_real_var (Variable_name,'(kg/ha)',(g%SurfOM(surfnum)%Standing(2)%N +  g%SurfOM(surfnum)%Lying(2)%N))
       endif
 
-	! Individual surfom N in pool3 can be requested here in the format 'surfaceom_n3_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom N in pool3 can be requested here in the format 'surfaceom_n3_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_n3_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
@@ -2674,16 +2677,16 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual surfom P in pool1 can be requested here in the format 'surfaceom_p1_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom P in pool1 can be requested here in the format 'surfaceom_p1_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_p1_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
          call respond2Get_real_var (Variable_name,'(kg/ha)',(g%SurfOM(surfnum)%Standing(1)%P +  g%SurfOM(surfnum)%Lying(1)%P))
       endif
 
-	! Individual surfom P in pool2 can be requested here in the format 'surfaceom_p2_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom P in pool2 can be requested here in the format 'surfaceom_p2_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_p2_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
@@ -2691,8 +2694,8 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual surfom P in pool3 can be requested here in the format 'surfaceom_p3_wheat' (for example)
-	! where 'wheat' is the name of the surfom
+   ! Individual surfom P in pool3 can be requested here in the format 'surfaceom_p3_wheat' (for example)
+   ! where 'wheat' is the name of the surfom
    else if (index(Variable_name,'surfaceom_p3_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       if (surfnum .gt. 0)then
@@ -2700,9 +2703,9 @@ subroutine surfom_Send_my_variable (Variable_name)
       endif
 
 
-	! Individual potential decompositions can be requested here in the
-	! format 'pot_c_decomp_wheat' (for example), where 'wheat' is the name
-	! of the surfom
+   ! Individual potential decompositions can be requested here in the
+   ! format 'pot_c_decomp_wheat' (for example), where 'wheat' is the name
+   ! of the surfom
    else if (index(variable_name,'pot_c_decomp_') .eq. 1) then
       surfnum = surfom_number (Variable_name(14:))
       call Surfom_Pot_Decomp (c_decomp, n_decomp,p_decomp)
@@ -2718,18 +2721,18 @@ subroutine surfom_Send_my_variable (Variable_name)
       call Surfom_Pot_Decomp (c_decomp, n_decomp,p_decomp)
       call respond2get_real_var (variable_name, '(kg/ha)', p_decomp(surfnum))
 
-	! Standing fraction for individual surfom's
+   ! Standing fraction for individual surfom's
    else if (index(variable_name,'standing_fr_') .eq. 1) then
       surfnum = surfom_number (Variable_name(13:))
       standing_fraction = divide(g%SurfOM(surfnum)%Standing(1)%amount, (g%SurfOM(surfnum)%Standing(1)%amount +  g%SurfOM(surfnum)%Lying(1)%amount), 0.0)
       call respond2get_real_var (variable_name, '()', standing_fraction)
 
-	! The total cover is calculated here by combining all surfom's in system.
+   ! The total cover is calculated here by combining all surfom's in system.
    else if (Variable_name .eq. 'surfaceom_cover') then
       combined_cover = surfom_cover_total()
       call respond2get_real_var (variable_name, '(m^2/m^2)', combined_cover)
 
-	! Individual surfom cover is reported here in the format 'surfaceom_cover_wheat'
+   ! Individual surfom cover is reported here in the format 'surfaceom_cover_wheat'
    else if (index(variable_name,'surfaceom_cover_') .eq. 1) then
       surfnum = surfom_number (Variable_name(17:))
       cover1 = surfom_Cover(surfnum)
@@ -2773,7 +2776,7 @@ end subroutine
 !================================================================
 real function Surfom_Cover (SOMindex)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2825,7 +2828,7 @@ end function
 !================================================================
 subroutine surfom_set_my_variable (Variable_name)
 !================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2879,7 +2882,7 @@ end subroutine
 !================================================================
 subroutine surfom_set_phosphorus_aware ()
 !================================================================
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2914,7 +2917,7 @@ end subroutine
 !===========================================================
 subroutine surfom_ON_Crop_chopped ()
 !===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2964,22 +2967,22 @@ subroutine surfom_ON_Crop_chopped ()
 
       if (surfom_added .gt. 0.0) then
 
-   	      ! Find the amount of N added in surfom today
-   	   dlt_dm_N(:) = 0.0
-   	   call collect_real_array(DATA_dlt_dm_n, MaxArraySize, '(kg/ha)', dlt_dm_n, numval_n, -10000.0, 10000.0)
-   	   surfom_N_added = sum(dlt_dm_N(:) * fraction_to_Residue(:))
+       ! Find the amount of N added in surfom today
+       dlt_dm_N(:) = 0.0
+       call collect_real_array(DATA_dlt_dm_n, MaxArraySize, '(kg/ha)', dlt_dm_n, numval_n, -10000.0, 10000.0)
+       surfom_N_added = sum(dlt_dm_N(:) * fraction_to_Residue(:))
 
-   	      ! Find the amount of P added in surfom today, if phosphorus aware
+      ! Find the amount of P added in surfom today, if phosphorus aware
 
-   	   if ( g%phosphorus_aware ) then
-   	      dlt_dm_P(:) = 0.0
-   	      call collect_real_array_optional (DATA_dlt_dm_p, MaxArraySize, '(kg/ha)', dlt_dm_p, numval_p, -10000.0, 10000.0)
-   	      surfom_P_added = sum(dlt_dm_P(:) * fraction_to_Residue(:))
-   	   else
-   	      ! Not phosphorus aware
-   	      dlt_dm_P(:) = 0.0
-   	      surfom_P_added = 0.0
-   	   endif
+       if ( g%phosphorus_aware ) then
+          dlt_dm_P(:) = 0.0
+          call collect_real_array_optional (DATA_dlt_dm_p, MaxArraySize, '(kg/ha)', dlt_dm_p, numval_p, -10000.0, 10000.0)
+          surfom_P_added = sum(dlt_dm_P(:) * fraction_to_Residue(:))
+       else
+          ! Not phosphorus aware
+          dlt_dm_P(:) = 0.0
+          surfom_P_added = 0.0
+       endif
 
          call AddSurfaceOM(surfom_added, surfom_N_added, surfom_P_added, crop_type)
       endif
@@ -2992,7 +2995,7 @@ end subroutine
 !===========================================================
 subroutine SurfOMOnBiomassRemoved (variant)
 !===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -3020,8 +3023,8 @@ subroutine SurfOMOnBiomassRemoved (variant)
 
       if (surfom_added .gt. 0.0) then
          ! Find the amount of N & added in surfom today
-   	   surfom_N_added = sum(BiomassRemoved%dlt_dm_N(:) * BiomassRemoved%fraction_to_Residue(:))
- 	      surfom_P_added = sum(BiomassRemoved%dlt_dm_P(:) * BiomassRemoved%fraction_to_Residue(:))
+         surfom_N_added = sum(BiomassRemoved%dlt_dm_N(:) * BiomassRemoved%fraction_to_Residue(:))
+         surfom_P_added = sum(BiomassRemoved%dlt_dm_P(:) * BiomassRemoved%fraction_to_Residue(:))
 
          call AddSurfaceOM(surfom_added, surfom_N_added, surfom_P_added, BiomassRemoved%crop_type)
 
@@ -3037,7 +3040,7 @@ end subroutine
 ! ====================================================================
    subroutine AddSurfaceOM(surfom_added, surfom_N_added, surfom_P_added, crop_type)
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
    real surfom_added
@@ -3111,7 +3114,7 @@ end subroutine
 subroutine residue2_Send_Res_added_Event(residue_type, dm_type, dlt_residue_wt, dlt_residue_N_wt, dlt_residue_P_wt)
 
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3149,7 +3152,7 @@ end subroutine
 ! ====================================================================
 subroutine residue2_Send_Res_removed_Event(residue_removed_action, dlt_residue_fraction, residue_incorp_fraction, deepest_layer)
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3186,7 +3189,7 @@ end subroutine
 subroutine surfom_Send_SOM_removed_Event(residue_type, dm_type, dlt_residue_wt, dlt_residue_N_wt, dlt_residue_P_wt)
 
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3224,7 +3227,7 @@ end subroutine
 ! ================================================================
 subroutine surfom_Sum_Report ()
 ! ================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -3314,7 +3317,7 @@ end subroutine
 !     ===========================================================
 subroutine surfaceom_ONtick (variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -3339,7 +3342,7 @@ subroutine surfaceom_ONtick (variant)
       do i = 1,g%num_surfom
           total_c = total_c + sum(g%SurfOM(i)%Standing(1:MaxFr)%C) + sum(g%SurfOM(i)%Lying(1:MaxFr)%C)
       end do   
-	  
+  
       total_n = 0.0
       do i = 1,g%num_surfom
           total_n = total_n + sum(g%SurfOM(i)%Standing(1:MaxFr)%N) + sum(g%SurfOM(i)%Lying(1:MaxFr)%N)
@@ -3390,7 +3393,7 @@ end subroutine
 ! ====================================================================
 subroutine Main (action, data_string)
 ! ====================================================================
-   Use Infrastructure
+
    use SurfaceOMModule
    implicit none
    ml_external Main
@@ -3461,7 +3464,7 @@ end subroutine
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-      use infrastructure
+
       use SurfaceOMModule
 
       ml_external doInit1
@@ -3478,7 +3481,7 @@ end subroutine
 ! ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use SurfaceOMModule
-   Use infrastructure
+
    implicit none
    ml_external respondToEvent
 !STDCALL(respondToEvent)

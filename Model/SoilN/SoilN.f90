@@ -1,5 +1,6 @@
 module Soiln2Module
    use DataTypes
+   use infrastructure
 
 ! ====================================================================
 !      SoilN variables
@@ -351,7 +352,7 @@ module Soiln2Module
 !     ===========================================================
 subroutine soiln2_reset ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -403,7 +404,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_save_state ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 
@@ -442,7 +443,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_delta_state ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 
@@ -487,7 +488,7 @@ end subroutine
 !     ===========================================================
 real function soiln2_total_c ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
    integer    num_layers
    integer    layer                 ! layer number
@@ -516,7 +517,7 @@ end function
 !     ===========================================================
 real function soiln2_total_n ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
    integer    num_layers
 
@@ -532,7 +533,7 @@ end function
 !     ===========================================================
 subroutine soiln2_read_param ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -687,7 +688,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_zero_all_globals ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -871,7 +872,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_zero_variables ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1031,7 +1032,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_get_other_variables ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1077,7 +1078,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_check_pond ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1098,6 +1099,7 @@ subroutine soiln2_check_pond ()
    call push_routine (my_name)
 
 ! dsg 180508 check for the presence of a pond
+      string = 'no'
       call get_char_var_optional (Unknown_module,'pond_active','()',string,numvals)
       if (numvals .gt. 0) then
          g%pond_active = string
@@ -1112,7 +1114,7 @@ end subroutine
 subroutine Soiln2_sendActualResidueDecompositionCalculated()
 !     ===========================================================
    use ComponentInterfaceModule
-   Use infrastructure
+
    implicit none
 
 !+  Purpose
@@ -1206,7 +1208,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_send_my_variable (variable_name)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -1801,7 +1803,7 @@ end subroutine
 !     ===========================================================
       subroutine soilN2_ExternalMassFlow (dltN)
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       real, intent(in) :: dltN
@@ -1848,7 +1850,7 @@ end subroutine
 !     ===========================================================
       subroutine soilN2_ExternalMassFlowC (dltC)
 !     ===========================================================
-      Use Infrastructure
+
       implicit none
 
       real, intent(in) :: dltC
@@ -1896,7 +1898,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_set_my_variable (variable_name)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2102,7 +2104,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_read_constants ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2247,7 +2249,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_init_calc ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2374,7 +2376,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_sum_report ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2493,7 +2495,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_OnIncorpFOMPool(variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2552,7 +2554,7 @@ end subroutine
 !     ===========================================================
 subroutine OnIncorpFOM (variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -2614,7 +2616,7 @@ end subroutine
 !     ===========================================================
 real function soiln2_fac (layer)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2647,7 +2649,7 @@ end function
 !     ===========================================================
 subroutine soiln2_soil_temp (soil_temp)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2785,7 +2787,7 @@ end subroutine
 !     ===========================================================
 real function soiln2_layer_temp (depth_lag, alx, dlt_temp)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2827,7 +2829,7 @@ end function
 !     ===========================================================
 real function soiln2_soiltemp_dt (alx)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -2917,7 +2919,7 @@ end function
 !     ===========================================================
 real function soiln2_soiltemp_dampdepth ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -3045,7 +3047,7 @@ end function
 !     ===========================================================
 subroutine soiln2_urea_hydrolysis (layer, dlt_urea_hydrol)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3135,7 +3137,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_min_residues (dlt_C_decomp, dlt_N_decomp, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_nh4_min, dlt_no3_min)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3312,7 +3314,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_process ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -3518,7 +3520,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_min_humic (layer, dlt_c_biom, dlt_c_atm, dlt_n_min)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3595,7 +3597,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_min_biomass (layer,dlt_c_hum,dlt_c_atm,dlt_n_min)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3664,7 +3666,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, dlt_n_min)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3850,7 +3852,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_nitrification (layer, dlt_rntrf, dlt_rntrf_eff, dlt_nh4_dnit, n2o_atm)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -3944,7 +3946,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_denitrification (layer, dlt_n_atm, n2o_atm)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4070,7 +4072,7 @@ end subroutine
 !     ===========================================================
 real function soiln2_wf_nitrf (layer,index)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4131,7 +4133,7 @@ end function
 !     ===========================================================
 real function soiln2_wf_denit (layer)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4178,7 +4180,7 @@ end function
 !     ===========================================================
 real function soiln2_wf (layer,index)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4240,7 +4242,7 @@ end function
 !     ===========================================================
 real function soiln2_tf (layer, index)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4293,7 +4295,7 @@ end function
 !     ===========================================================
 real function rothc_tf (layer,index)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4332,7 +4334,7 @@ end function
 !     ===========================================================
 subroutine soiln2_check_profile (new_profile)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4425,7 +4427,7 @@ end subroutine
 !     ================================================================
 subroutine soiln2_move_layers (variable,new_profile,profile_loss)
 !     ================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4539,7 +4541,7 @@ end subroutine
 !     ===========================================================
 real function soiln2_layer_fract (layer)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4582,7 +4584,7 @@ end function
 !     ===========================================================
 real function soiln2_phf_nitrf (layer)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Sub-Program Arguments
@@ -4615,7 +4617,7 @@ end function
 !     ===========================================================
 subroutine soiln2_check_data_supply ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -4661,7 +4663,7 @@ end subroutine
 ! ====================================================================
 subroutine soiln2_notification ()
 ! ====================================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -4709,7 +4711,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_ONtick (variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -4748,7 +4750,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_ONnewmet (variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
    integer, intent(in) :: variant
@@ -4781,7 +4783,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_get_site_variables ()
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -4813,7 +4815,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_ONPotentialResidueDecompositionCalculated(variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 !+  Purpose
 !     Get information of potential residue decomposition
@@ -4857,7 +4859,7 @@ end subroutine
 !     ===========================================================
 subroutine soiln2_OC_percent (oc_percent)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 
@@ -4902,7 +4904,7 @@ end subroutine
 !     ===========================================================
 subroutine Soiln2_ONNew_Profile (variant)
 !     ===========================================================
-   Use Infrastructure
+
    implicit none
 
 !+  Purpose
@@ -4957,7 +4959,7 @@ end subroutine
 !  ===========================================================
 subroutine OnNitrogenChanged (variant)
 !  ===========================================================
-   Use Infrastructure
+
    implicit none
 
    ! Another module wants to change our nitrogen
@@ -5011,7 +5013,7 @@ end subroutine
 !     ===========================================================
 subroutine Main (action, data_string)
 !     ===========================================================
-   Use Infrastructure
+
    Use SoilN2Module
    implicit none
    ml_external Main
@@ -5075,7 +5077,7 @@ end subroutine
 ! ====================================================================
 subroutine doInit1()
    use Soiln2Module
-   Use infrastructure
+
    implicit none
    ml_external doInit1
 !STDCALL(doInit1)
@@ -5203,7 +5205,7 @@ end subroutine doInit1
 ! ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use Soiln2Module
-   Use infrastructure
+
    implicit none
    ml_external respondToEvent
 !STDCALL(respondToEvent)

@@ -5,7 +5,7 @@
       Use infrastructure
       implicit none
       ! Comment out the following line if building under gfortran
-      ml_external doInit1
+      ! ml_external doInit1
 !STDCALL(doInit1)
       integer dummy
 
