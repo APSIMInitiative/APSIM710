@@ -1,4 +1,8 @@
       module ReadModule
+      use DataModule
+      use DataStrModule
+      use ConstantsModule
+      use ComponentInterfaceModule
 
       contains
 
@@ -10,10 +14,6 @@
           units, variable, numvals, &
           lower_limit, upper_limit)
 ! ====================================================================
-      use DataStrModule
-      use DataModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -73,10 +73,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataStrModule
-      use DataModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -136,10 +132,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataStrModule
-      use DataModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -198,9 +190,6 @@
           (section_name, variable_name, &
            units, variable, numvals)
 ! ====================================================================
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -255,8 +244,6 @@
           (section_name, variable_name, &
            units, variable, numvals)
 ! ====================================================================
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -306,10 +293,6 @@
           units, variable, numvals, &
           lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -365,10 +348,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -427,10 +406,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -488,9 +463,6 @@
           (section_name, variable_name, &
            units, variable, numvals)
 ! ====================================================================
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -548,7 +520,6 @@
           (section_name, variable_name, &
            units, variable, numvals)
 ! ====================================================================
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -598,10 +569,6 @@
           units, variable, numvals, &
           lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -659,10 +626,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -719,10 +682,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -778,9 +737,6 @@
           (section_name, variable_name, size_of, &
            units, variable, numvals)
 ! ====================================================================
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -832,9 +788,6 @@
           (section_name, variable_name, size_of, &
            units, variable, numvals)
 ! ====================================================================
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -887,10 +840,6 @@
           units, variable, numvals, &
           lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -950,10 +899,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -1013,10 +958,6 @@
            units, variable, numvals, &
            lower_limit, upper_limit)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -1075,10 +1016,6 @@
           (section_name, variable_name, size_of, &
            units, variable, numvals)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -1133,10 +1070,6 @@
           (section_name, variable_name, size_of, &
            units, variable, numvals)
 ! ====================================================================
-      use DataModule
-      use DataStrModule
-      use ConstantsModule
-      use ComponentInterfaceModule
       implicit none
 
 !+ Sub-Program Arguments
@@ -1199,7 +1132,6 @@
                                       ,upper)
 ! ====================================================================
       use ErrorModule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1278,7 +1210,6 @@
                                       ,upper)
 ! ====================================================================
       use ErrorModule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1357,7 +1288,6 @@
                                       ,numvals)
 ! ====================================================================
       use ErrorModule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1431,7 +1361,6 @@
                                       ,numvals)
 ! ====================================================================
       use ErrorMOdule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1505,7 +1434,6 @@
                                       ,upper)
 ! ====================================================================
       use ErrorModule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1584,7 +1512,6 @@
                                       ,upper)
 ! ====================================================================
       use ErrorMOdule
-      use ConstantsModule
       implicit none
 
 !+  Sub-Program Arguments

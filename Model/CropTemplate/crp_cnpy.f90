@@ -1,4 +1,8 @@
       Module crp_cnpyModule
+      use dataModule
+      use errorModule
+      use scienceModule
+      use convertModule
 
       contains
 
@@ -13,9 +17,6 @@
 !     ===========================================================
 
 !      dll_export crop_lai_equilib_water
-      use scienceModule
-      use dataModule
-      use errorModule
       use crp_utilModule
       implicit none
 
@@ -117,8 +118,6 @@
 !     ===========================================================
 
 !      dll_export crop_lai_equilib_light
-      use dataModule
-      use errorModule
       use crp_utilModule
       implicit none
 
@@ -184,10 +183,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_frost1
-      use convertmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -247,9 +242,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_water2
-      use scienceModule
-      use dataModule
-      use errorModule
       use crp_utilModule
       implicit none
 
@@ -328,8 +320,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_light2
-      use dataModule
-      use errorModule
       use crp_utilModule
       implicit none
 
@@ -419,9 +409,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_age1
-      use convertmodule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -512,9 +499,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_light1
-      use convertmodule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -578,9 +562,6 @@
 !     ===========================================================
 
 !      dll_export crop_leaf_area_sen_water1
-      use convertmodule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -658,7 +639,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_sen1
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -778,9 +758,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_init1
-      use convertmodule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -831,7 +808,6 @@
 !     ===========================================================
 
 !      dll_export cproc_lai_detachment1
-      use errorModule
       use crp_utilModule
       implicit none
 
@@ -891,9 +867,6 @@
 !     ===========================================================
 
 !      dll_export cproc_canopy_height
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -955,8 +928,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_no_init1
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1027,9 +998,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_no_pot1
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1143,10 +1111,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_pot1
-      use convertmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1212,7 +1176,6 @@
 ! ====================================================================
 
 !      dll_export cproc_leaf_area_stressed1
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1262,9 +1225,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_actual1
-      use convertmodule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1329,9 +1289,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_no_actual1
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1410,9 +1367,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_no_pot2
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1517,10 +1471,6 @@
 !     ===========================================================
 
 !      dll_export cproc_tpla_max
-      use convertmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1584,10 +1534,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_pot_tpla
-      use convertmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1716,9 +1662,6 @@
 !     ===========================================================
 
 !      dll_export cproc_leaf_area_pot_bellshapecurve
-      use convertmodule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1823,8 +1766,6 @@
 !     ===========================================================
 
 !      dll_export leaf_size_bellshapecurve
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments

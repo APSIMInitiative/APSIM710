@@ -1,4 +1,8 @@
       Module crp_nitnModule
+      use ConstantsModule
+      use dataModule
+      use errorModule
+      use scienceModule
 
       contains
 
@@ -9,9 +13,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_conc_ratio
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -99,9 +100,6 @@
 !     ===========================================================
 
 !      dll_export crop_nfact_photo
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -160,9 +158,6 @@
 !     ===========================================================
 
 !      dll_export crop_nfact_pheno
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -221,9 +216,6 @@
 !     ===========================================================
 
 !      dll_export crop_nfact_grain_conc
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -283,9 +275,6 @@
 !     ===========================================================
 
 !      dll_export crop_nfact_expansion
-      use ConstantsModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -375,8 +364,6 @@
 !     ===========================================================
 
 !      dll_export crop_N_detachment
-      use errorModule
-      use dataModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -425,7 +412,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_dead_detachment
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -480,7 +466,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_dlt_grain_conc
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -569,8 +554,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_retrans_avail
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -640,8 +623,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_senescence1
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -718,11 +699,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_uptake1
-      use ConstantsModule
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -882,7 +858,6 @@
 ! ====================================================================
 
 !      dll_export cproc_n_supply1
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -962,9 +937,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_mass_flow1
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1038,9 +1010,6 @@
 
 !      dll_export crop_n_diffusion1
       use convertmodule       ! ha2sm, kg2gm
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1115,7 +1084,6 @@
 !     ===========================================================
 
 !      dll_export crop_n_fixation_pot1
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1178,8 +1146,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_demand1
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1319,8 +1285,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_init1
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1377,7 +1341,6 @@
 
 !      dll_export cproc_n_detachment1
       use Crp_UtilModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1445,7 +1408,6 @@
 ! ====================================================================
 
 !      dll_export cproc_n_supply2
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1537,8 +1499,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_demand2
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1677,11 +1637,6 @@
 !     ===========================================================
 
 !      dll_export cproc_n_uptake2
-      use ConstantsModule
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments

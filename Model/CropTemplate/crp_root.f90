@@ -1,4 +1,9 @@
       Module crp_rootModule
+      use dataModule
+      use errorModule
+      use scienceModule
+      use constantsModule
+      use convertModule
 
       contains
 
@@ -9,9 +14,6 @@
 !     ===========================================================
 
 !      dll_export crop_sw_avail_fac
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -76,11 +78,6 @@
                ,max_layer)
 ! ====================================================================
 
-      use convertmodule
-      use scienceModule
-      use dataModule
-      use errorModule
-      use constantsmodule
       implicit none
 
 !+  Sub-Program Arguments
@@ -159,9 +156,6 @@
 ! ====================================================================
 
 !      dll_export cproc_root_length_senescence1
-      use ConvertModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -241,9 +235,6 @@
 !     ===========================================================
 
 !      dll_export cproc_root_depth1
-      use constantsmodule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -329,10 +320,6 @@
 !     ===========================================================
 
 !      dll_export crop_root_depth_increase
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -411,8 +398,6 @@
 !     ===========================================================
 
 !      dll_export cproc_root_depth_init1
-      use errorModule
-      use scienceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -471,11 +456,6 @@
 ! ====================================================================
 
 !      dll_export cproc_root_length_init1
-      use ConvertModule
-      use constantsmodule
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -566,12 +546,6 @@
 ! ====================================================================
 
 !      dll_export cproc_root_length_growth1
-      use ConstantsModule
-      use ConvertModule
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -702,9 +676,6 @@
 !     ===========================================================
 
 !      dll_export crop_root_dist
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -765,10 +736,6 @@
 ! ====================================================================
 
 !      dll_export crop_root_redistribute
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -900,10 +867,6 @@
 !     ===========================================================
 
 !      dll_export crop_root_sw_avail_factor
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1023,10 +986,6 @@
 !     ===========================================================
 
 !      dll_export cproc_root_depth2
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1144,10 +1103,6 @@
 !     ===========================================================
 
 !      dll_export crop_root_depth_increase2
-      use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments

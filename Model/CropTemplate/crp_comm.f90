@@ -1,4 +1,10 @@
       Module crp_commModule
+      use ConstantsModule
+      use stringModule
+      use errorModule
+      use convertModule
+      use ComponentInterfaceModule
+      Use infrastructure
 
       contains
 
@@ -16,7 +22,6 @@
 !     ===========================================================
 
 !      dll_export crop_root_incorp
-      Use infrastructure
       use crp_rootModule
       implicit none
 
@@ -140,10 +145,6 @@
 !     ===========================================================
 
 !      dll_export crop_top_residue
-      use ConstantsModule            ! all_active_modules
-      use convertmodule
-      use errorModule
-      use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -209,10 +210,6 @@
                                                 , fraction_to_Residue  &
                                                 , max_part)
 ! ====================================================================
-      use ConstantsModule            ! all_active_modules
-      use convertmodule
-      use errorModule
-      use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -294,10 +291,6 @@
                                                 , fraction_to_Residue  &
                                                 , max_part)
 ! ====================================================================
-      use ConstantsModule            ! all_active_modules
-      use convertmodule
-      use errorModule
-      use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -391,10 +384,6 @@
 ! ====================================================================
 
 !      dll_export crop_get_ext_uptakes
-      use ConstantsModule
-      use stringModule
-      use errorModule
-      use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -482,10 +471,6 @@ then
 ! ====================================================================
 
 !      dll_export crop_get_ext_uptakes
-      use ConstantsModule
-      use stringModule
-      use errorModule
-      use ComponentInterfaceModule
       implicit none
 
 !+  Sub-Program Arguments

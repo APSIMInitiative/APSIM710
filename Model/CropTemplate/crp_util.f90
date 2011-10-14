@@ -1,4 +1,7 @@
       Module crp_utilModule
+      use dataModule
+      use dateModule
+      use errorModule
 
       contains
 
@@ -10,8 +13,6 @@
 !     ===========================================================
 
 !      dll_export crop_radn_int0
-      use errorModule
-      use dataModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -59,8 +60,6 @@
 !     ===========================================================
 
 !      dll_export crop_radn_int1
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -116,8 +115,6 @@
 !     ===========================================================
 
 !      dll_export crop_store_value
-      use errorModule
-      use dateModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -165,9 +162,6 @@
 
 !      dll_export crop_running_ave
       use scienceModule
-      use dateModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -217,7 +211,6 @@
 !     ===========================================================
 
 !      dll_export crop_pool_fraction_delta
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -262,7 +255,6 @@
 !     ===========================================================
 
 !      dll_export crop_part_fraction_delta
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments

@@ -1,4 +1,8 @@
       Module crp_phenModule
+      use ConstantsModule            ! err_user
+      use scienceModule
+      use dataModule
+      use errorModule
 
       contains
 
@@ -12,10 +16,6 @@
 !     ===========================================================
 
 !      dll_export crop_stage_code
-      use ConstantsModule            ! err_user
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -124,8 +124,6 @@
 !     ===========================================================
 
 !      dll_export crop_thermal_time
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -202,8 +200,6 @@
 !     ===========================================================
 
 !      dll_export crop_phase_tt
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -255,7 +251,6 @@
 !     ===========================================================
 
 !      dll_export crop_devel
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -326,9 +321,6 @@
 !     ===========================================================
 
 !      dll_export crop_germination
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -432,8 +424,6 @@
 !     ===========================================================
 
 !      dll_export crop_phase_devel
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -571,8 +561,6 @@
 !     ===========================================================
 
 !      dll_export cproc_phenology1
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -713,9 +701,6 @@
 !     ===========================================================
 
 !      dll_export crop_germ_dlt_tt
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments

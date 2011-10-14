@@ -1,4 +1,7 @@
       Module crp_biomModule
+      use dataModule
+      use errorModule
+      use scienceModule
 
       contains
 
@@ -8,7 +11,6 @@
                 temp_stress_photo, nfact_photo, dlt_dm_pot)
 !     ===========================================================
 !!! !      dll_export crop_dm_pot_rue
-       use errorModule
 
       implicit none
 
@@ -79,8 +81,6 @@
                                dlt_dm_sen_retrans)
 !     ===========================================================
 !!      dll_export crop_dm_senescence0
-      use dataModule
-      use errorModule
 
       implicit none
 
@@ -179,7 +179,6 @@
                dm_dead, dlt_dm_dead_detached)
 !     ===========================================================
 !      dll_export crop_dm_dead_detachment
-      use errorModule
 
       implicit none
 
@@ -234,9 +233,6 @@
                                , dlt_dm_senesced)
 !     ===========================================================
 !      dll_export cproc_dm_senescence1
-      use scienceModule
-      use dataModule
-      use errorModule
 
       implicit none
 
@@ -319,9 +315,6 @@
                )
 !     ===========================================================
 !      dll_export cproc_dm_retranslocate1
-      use scienceModule
-      use dataModule
-      use errorModule
 
       implicit none
 
@@ -445,7 +438,6 @@
                               , g_dlt_dm_dead_detached)
 !     ===========================================================
 !      dll_export cproc_dm_detachment1
-      use errorModule
       use crp_utilModule
 
       implicit none
@@ -516,9 +508,6 @@
                )
 !     ===========================================================
 !      dll_export cproc_bio_yieldpart_demand1
-      use scienceModule
-      use dataModule
-      use errorModule
 
       implicit none
 
@@ -630,7 +619,6 @@
                )
 !     ===========================================================
 !      dll_export cproc_yieldpart_demand_stress1
-      use errorModule
 
       implicit none
 
@@ -688,8 +676,6 @@
                )
 !     ===========================================================
 !      dll_export cproc_bio_init1
-      use scienceModule
-      use errorModule
       use crp_utilModule
 
       implicit none
@@ -759,9 +745,6 @@
 !     ===========================================================
 !      dll_export cproc_RUE_N_Gradients
       use ConstantsModule
-      use scienceModule
-      use dataModule
-      use errorModule
 
       implicit none
 
@@ -1062,7 +1045,6 @@
                                       dlt_dm_pot)
 !     ===========================================================
 !!! !      dll_export crop_dm_pot_rue_co2
-       use errorModule
 
       implicit none
 
@@ -1125,8 +1107,6 @@
                  modifier)
 !     ===========================================================
 !      dll_export cproc_rue_co2_modifier
-      use dataModule
-      use errorModule
 
       implicit none
 

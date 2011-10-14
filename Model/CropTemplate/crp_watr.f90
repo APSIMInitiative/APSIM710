@@ -1,4 +1,7 @@
       Module crp_watrModule
+      use dataModule
+      use errorModule
+      use scienceModule
 
       contains
 
@@ -9,9 +12,6 @@
 !     ===========================================================
 
 !      dll_export crop_sw_avail
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -77,9 +77,6 @@
 !     ===========================================================
 
 !      dll_export crop_sw_supply
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -150,9 +147,6 @@
 !     ===========================================================
 
 !      dll_export crop_sw_uptake0
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -239,9 +233,6 @@
 !     ===========================================================
 
 !      dll_export crop_swdef_expansion
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -300,9 +291,6 @@
 !     ===========================================================
 
 !      dll_export crop_swdef_photo
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -357,9 +345,6 @@
 !     ===========================================================
 
 !      dll_export crop_swdef_pheno
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -421,9 +406,6 @@
 
 !      dll_export crop_swdef_fixation
       use ConstantsModule
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -498,9 +480,6 @@
 
 !      dll_export crop_oxdef_photo1
       use constantsmodule
-      use scienceModule
-      use dataModule
-      use errorModule
       use crp_rootModule
       implicit none
 
@@ -595,7 +574,6 @@
 ! ====================================================================
 
 !      dll_export cproc_sw_supply1
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -651,9 +629,6 @@
 !     ===========================================================
 
 !      dll_export crop_sw_avail_pot
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -715,9 +690,6 @@
 !     ===========================================================
 
 !      dll_export cproc_sw_uptake1
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -800,8 +772,6 @@
 !     ===========================================================
 
 !      dll_export cproc_sw_demand1
-      use errorModule
-      use dataModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -848,8 +818,6 @@
 !     ===========================================================
 
 !      dll_export cproc_sw_demand_bound
-      use errorModule
-      use dataModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -899,8 +867,6 @@
 
 !      dll_export cproc_transp_eff1
       use convertmodule  ! g2mm, mb2kpa
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -975,9 +941,6 @@
 !     ===========================================================
 
 !      dll_export cproc_bio_water1
-      use dataModule
-      use scienceModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1027,8 +990,6 @@
 
 !      dll_export crop_check_sw
       use ConstantsModule        ! err_internal
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
@@ -1131,9 +1092,6 @@
 
 !      dll_export cproc_transp_eff_co2
       use convertmodule  ! g2mm, mb2kpa
-      use scienceModule
-      use dataModule
-      use errorModule
       implicit none
 
 !+  Sub-Program Arguments
