@@ -601,7 +601,7 @@ namespace CMPServices
             String buf;
 
             asDateTime(ref yr, ref mon, ref day, ref hr, ref min, ref sec);
-            buf = String.Format("{0, 2}/{1, 2}/{2, 4:d4}", day, mon, yr);
+            buf = String.Format("{0, 2:d2}/{1, 2:d2}/{2, 4:d4}", day, mon, yr);
 
             return buf;
         }
@@ -619,7 +619,7 @@ namespace CMPServices
             String buf;
 
             asDateTime(ref yr, ref mon, ref day, ref hr, ref min, ref sec);
-            buf = String.Format("{0, 4:d4}/{1, 2}/{2, 2}", yr, mon, day);
+            buf = String.Format("{0, 4:d4}/{1, 2:d2}/{2, 2:d2}", yr, mon, day);
 
             return buf;
         }

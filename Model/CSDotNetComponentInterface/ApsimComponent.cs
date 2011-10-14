@@ -209,6 +209,15 @@ namespace ModelFramework
                         }
                         BuildObjects(InitData.ChildNodes[0], modelAssembly);
                     }
+                    //process any init1's in the component
+                    for (int i = 0; i != Fact.EventHandlers.Count; i++)
+                    {
+                        EvntHandler Event = Fact.EventHandlers[i];
+                        if (String.Compare(Event.EventName, "Init1") == 0)
+                        {
+                            Event.Invoke(null);
+                        }
+                    }
                 }
             }
             catch (System.Exception err)
