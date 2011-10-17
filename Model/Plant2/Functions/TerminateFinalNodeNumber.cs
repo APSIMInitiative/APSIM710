@@ -8,9 +8,10 @@ public class TerminateFinalNodeNumber : Instance
 {
  #region Setup
     [Link]
-    Plant Plant = null;
-    [Link]
     Leaf Leaf = null;
+
+    [Link]
+    Function Photoperiod = null;
 
     //Class Parameters
     [Param]
@@ -148,7 +149,7 @@ public class TerminateFinalNodeNumber : Instance
 
      public void PhotoperiodFinalNodeNumberFunction()
      {
-         Function Photoperiod = (Function)Children["Photoperiod"];
+        
          double PhotoPeriodResponse = 0;
          if (Photoperiod.Value <SaturationPhotoperiod)
              PhotoPeriodResponse = PhotoperiodSensitivity * (SaturationPhotoperiod - Photoperiod.Value);

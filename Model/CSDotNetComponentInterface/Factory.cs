@@ -84,6 +84,12 @@ public class Factory
     {
         ResolveLinks();
         CallInitialisedOnAll(_Root);
+
+        for (int i = 0; i != EventHandlers.Count; i++)
+        {
+            if (EventHandlers[i].EventName == "Initialised")
+                EventHandlers[i].Invoke(null);
+        }
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -105,7 +111,14 @@ public class Factory
         Type ClassType = GetTypeOfChild(Node, ParentInstance); 
         if (ClassType == null)
             throw new Exception("Cannot find a class called: " + Node.Name);
-        Instance CreatedInstance = (Instance)(Activator.CreateInstance(ClassType));
+        object Model = Activator.CreateInstance(ClassType);
+        Instance CreatedInstance;
+        if (Model.GetType().IsSubclassOf(typeof(Instance)))
+        {
+            CreatedInstance = (Instance)Model;
+        }
+        else
+            CreatedInstance = new Instance(Model);
 
         if (CreatedInstance.GetType().IsSubclassOf(typeof(DerivedInstance)))
         {
@@ -137,7 +150,7 @@ public class Factory
     // --------------------------------------------------------------------
     private void GetAllProperties(Instance Obj, XmlNode Parent)
     {
-        foreach (FieldInfo Property in Obj.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (FieldInfo Property in Obj.Model.GetType().GetFields(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
         {
             bool AddProperty = false;
             bool IsOutput = false;
@@ -159,13 +172,13 @@ public class Factory
             }
             if (AddProperty)
             {
-                FactoryProperty NewProperty = new FactoryProperty(new ReflectedField(Property, Obj), Parent);
+                FactoryProperty NewProperty = new FactoryProperty(new ReflectedField(Property, Obj.Model), Parent);
                 if (IsOutput)
                     RemoveRegisteredOutput(NewProperty.OutputName);
                 RegisteredProperties.Add(NewProperty);
             }
         }
-        foreach (PropertyInfo Property in Obj.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (PropertyInfo Property in Obj.Model.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
         {
             bool AddProperty = false;
             bool IsOutput = false;
@@ -182,7 +195,7 @@ public class Factory
             }
             if (AddProperty)
             {
-                FactoryProperty NewProperty = new FactoryProperty(new ReflectedProperty(Property, Obj), Parent);
+                FactoryProperty NewProperty = new FactoryProperty(new ReflectedProperty(Property, Obj.Model), Parent);
                 if (IsOutput)
                     RemoveRegisteredOutput(NewProperty.OutputName);
                 RegisteredProperties.Add(NewProperty);
@@ -219,7 +232,7 @@ public class Factory
     // --------------------------------------------------------------------
     private void GetAllEventHandlers(Instance Obj)
     {
-        foreach (MethodInfo Method in Obj.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (MethodInfo Method in Obj.Model.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
         {
             Object[] Attributes = Method.GetCustomAttributes(false);
             foreach (Object Attr in Attributes)
@@ -228,7 +241,7 @@ public class Factory
                 if ((Attr.GetType() == typeof(EventHandler)) &&
                     Method.Name.Length > 2 &&
                     Method.Name.Substring(0, 2) == "On")
-                    RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj));
+                    RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj.Model));
             }
         }
     }
@@ -240,13 +253,13 @@ public class Factory
     // --------------------------------------------------------------------
     private void GetAllEvents(Instance Obj)
     {
-        foreach (EventInfo Event in Obj.GetType().GetEvents(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (EventInfo Event in Obj.Model.GetType().GetEvents(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
         {
             Object[] Attributes = Event.GetCustomAttributes(false);
             foreach (Object Attr in Attributes)
             {
                 if (Attr.GetType() == typeof(Event))
-                    RegisteredEvents.Add(new FactoryEvent(Event, Obj));
+                    RegisteredEvents.Add(new FactoryEvent(Event, Obj.Model));
             }
         }
     }
@@ -281,7 +294,7 @@ public class Factory
                 if (Child.GetType() != typeof(XmlComment))
                 {
                     Type t = GetTypeOfChild(Child, Obj);
-                    if ((t != null) && (t.IsSubclassOf(typeof(Instance))))
+                    if ((t != null) && (t.IsSubclassOf(typeof(Instance)) || t.IsClass))
                     {
                         // Create a child instance - indirect recursion.
                         Instance ChildInstance = CreateInstance(Child, Child, Obj, ParentComponent);

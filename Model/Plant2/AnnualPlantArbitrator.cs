@@ -6,8 +6,11 @@ using CSGeneral;
 
 public class AnnualPlantArbitrator : Arbitrator
 {
-    private Function DMSink = null;
-    private Function NSink = null;
+    [Link]
+    public Function DMSink = null;
+
+    [Link]
+    public Function NSink = null;
 
     // DM Arbitration Variables
     private double TotalDMDemand = 0;
@@ -23,12 +26,7 @@ public class AnnualPlantArbitrator : Arbitrator
     private double TotalNAllocated = 0;
     private double TotalNRetranslocationSupply = 0;
 
-    public override void Initialised()
-    {
-        base.Initialised();
-        DMSink = (Function)Children["DMSink"];
-        NSink = (Function)Children["NSink"];
-    }
+
     [Output]
     public override double DMSupply
     {

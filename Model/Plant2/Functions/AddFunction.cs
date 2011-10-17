@@ -4,11 +4,14 @@ using System.Text;
 using System.Reflection;
 
 /// <summary>
-/// Sum the values of the children of this node
+/// Sum the values of the child nodes of this node
 /// </summary>
 
 public class AddFunction : Function
-{ 
+{
+    [Link]
+    ModelEnvironment ModelEnvironment;
+
     [Output]
     public override double Value
     {
@@ -16,9 +19,11 @@ public class AddFunction : Function
         {
             double returnValue = 0.0;
 
-            if (Children.Count != 0)
-                foreach (Function F in Children)
-                    returnValue = returnValue + F.Value;
+            foreach (string ChildName in ModelEnvironment.ChildModelNames())
+            {
+                Function F = ModelEnvironment.ModelByName(ChildName) as Function;
+                returnValue = returnValue + F.Value;
+            }
 
             return returnValue;
         }

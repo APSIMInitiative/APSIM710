@@ -49,6 +49,25 @@ public class Instance : NamedItem
     }
     public Instance Parent;
     public NamedList<NamedItem> Children;
+
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// 
+    /// </summary>
+    // --------------------------------------------------------------------
+    public object _ModelObj;
+    public object Model
+    {
+        get
+        {
+            if (_ModelObj == null)
+                return this;
+            else
+                return _ModelObj;
+        }
+    }
+
+
     // --------------------------------------------------------------------
     /// <summary>
     /// 
@@ -58,6 +77,18 @@ public class Instance : NamedItem
     {
         Children = new NamedList<NamedItem>();
         Parent = null;
+        _ModelObj = null;
+    }
+    // --------------------------------------------------------------------
+    /// <summary>
+    /// 
+    /// </summary>
+    // --------------------------------------------------------------------
+    public Instance(object model)
+    {
+        Children = new NamedList<NamedItem>();
+        Parent = null;
+        _ModelObj = model;
     }
     // --------------------------------------------------------------------
     /// <summary>
@@ -112,11 +143,11 @@ public class Instance : NamedItem
     /// <param name="Name"></param>
     /// <returns></returns>
     // --------------------------------------------------------------------
-    public Instance Find(String Name)
+    public object Find(String Name)
     {
         int PosPeriod = Name.IndexOf('.');
         if (PosPeriod == -1)
-            return (Instance)Children[Name];
+            return Children[Name];
         else
         {
             String ChildName = Name.Substring(0, PosPeriod);
@@ -241,7 +272,7 @@ public class DerivedInstance : Instance
                 if (ReferencedNodeName == "")
                     target = Root;
                 else
-                    target = Root.Find(ReferencedNodeName.Replace(".", "/"));
+                    target = (Instance) Root.Find(ReferencedNodeName.Replace(".", "/"));
                 foreach (XmlNode Child in Instruction.ChildNodes)
                 {
                     if (Child.Name == "Memo")

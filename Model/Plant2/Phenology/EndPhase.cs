@@ -4,27 +4,30 @@ using System.Text;
 
 
 public class EndPhase : Phase
-   {
-   private double _CumulativeValue;
+{
+    private double _CumulativeValue;
 
-   [Output] public double CumulativeValue { get { return _CumulativeValue; } }
+    [Link]
+    Function ThermalTime = null;
 
-   /// <summary>
-   /// Do our timestep development
-   /// </summary>
-   public override double DoTimeStep(double PropOfDayToUse)
-      {
-      Function F = Children["ThermalTime"] as Function;
-      _CumulativeValue += F.Value;
-      return 0;
-      }
+    [Output]
+    public double CumulativeValue { get { return _CumulativeValue; } }
 
-   /// <summary>
-   /// Return a fraction of phase complete.
-   /// </summary>
-   public override double FractionComplete { get { return 0.0; } }
+    /// <summary>
+    /// Do our timestep development
+    /// </summary>
+    public override double DoTimeStep(double PropOfDayToUse)
+    {
+        _CumulativeValue += ThermalTime.Value;
+        return 0;
+    }
 
-   }
+    /// <summary>
+    /// Return a fraction of phase complete.
+    /// </summary>
+    public override double FractionComplete { get { return 0.0; } }
+
+}
 
 
       

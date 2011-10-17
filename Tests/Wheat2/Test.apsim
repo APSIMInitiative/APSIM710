@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="ReleasedWheat">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/04/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1941</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -1189,6 +1187,8 @@
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">ReleasedWheat.out</filename>
+        <title>ReleasedWheat</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="stage" />
@@ -1207,7 +1207,9 @@
     </area>
   </simulation>
   <simulation name="Wheat2" shortcut="/simulations/ReleasedWheat">
-    <metfile name="met" shortcut="/simulations/ReleasedWheat/met" />
+    <metfile name="met" shortcut="/simulations/ReleasedWheat/met">
+      <filename shortcut="/simulations/ReleasedWheat/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/ReleasedWheat/clock" />
     <summaryfile shortcut="/simulations/ReleasedWheat/summaryfile" />
     <area name="paddock" shortcut="/simulations/ReleasedWheat/paddock">
@@ -1254,7 +1256,9 @@
         </manager>
         <manager name="Harvesting rule" shortcut="/simulations/Wheat2WithSWIM3/paddock/Manager folder/Harvesting rule" />
       </folder>
-      <outputfile shortcut="/simulations/ReleasedWheat/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Wheat2.out</filename>
+        <title>Wheat2</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="StageCodeValue" />
@@ -1283,7 +1287,9 @@
     </area>
   </simulation>
   <simulation name="Wheat2 With CO2" shortcut="/simulations/Wheat2">
-    <metfile name="met" shortcut="/simulations/Wheat2/met" />
+    <metfile name="met" shortcut="/simulations/Wheat2/met">
+      <filename shortcut="/simulations/Wheat2/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/Wheat2/clock" />
     <summaryfile shortcut="/simulations/Wheat2/summaryfile" />
     <manager name="ClimateControl">
@@ -1358,7 +1364,9 @@ if (date_within('[date1], [date2]') = 1) then
           </script>
         </manager>
       </folder>
-      <outputfile shortcut="/simulations/Wheat2/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Wheat2 With CO2.out</filename>
+        <title>Wheat2 With CO2</title>
         <variables name="Variables" shortcut="/simulations/Wheat2/paddock/outputfile/Variables" />
         <events name="Reporting Frequency" shortcut="/simulations/Wheat2/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1367,7 +1375,9 @@ if (date_within('[date1], [date2]') = 1) then
     </area>
   </simulation>
   <simulation name="Wheat2WithSWIM3" shortcut="/simulations/Wheat2">
-    <metfile name="met" shortcut="/simulations/Wheat2/met" />
+    <metfile name="met" shortcut="/simulations/Wheat2/met">
+      <filename shortcut="/simulations/Wheat2/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/Wheat2/clock" />
     <summaryfile shortcut="/simulations/Wheat2/summaryfile" />
     <area name="paddock" shortcut="/simulations/Wheat2/paddock">
@@ -1455,7 +1465,9 @@ if (date_within('[date1], [date2]') = 1) then
         <manager name="Sow on a fixed date" shortcut="/simulations/Wheat2/paddock/Manager folder/Sow on a fixed date" />
         <manager name="Harvesting rule" shortcut="/simulations/Wheat2 With CO2/paddock/Manager folder/Harvesting rule" />
       </folder>
-      <outputfile shortcut="/simulations/Wheat2/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Wheat2WithSWIM3.out</filename>
+        <title>Wheat2WithSWIM3</title>
         <variables name="Variables" shortcut="/simulations/Wheat2/paddock/outputfile/Variables" />
         <events name="Reporting Frequency" shortcut="/simulations/Wheat2/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1509,7 +1521,9 @@ if (date_within('[date1], [date2]') = 1) then
     </Plot>
   </Graph>
   <simulation name="Wheat2modified" shortcut="/simulations/ReleasedWheat">
-    <metfile name="met" shortcut="/simulations/ReleasedWheat/met" />
+    <metfile name="met" shortcut="/simulations/ReleasedWheat/met">
+      <filename shortcut="/simulations/ReleasedWheat/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/ReleasedWheat/clock" />
     <summaryfile shortcut="/simulations/ReleasedWheat/summaryfile" />
     <area name="paddock" shortcut="/simulations/ReleasedWheat/paddock">
@@ -1572,7 +1586,9 @@ if (date_within('[date1], [date2]') = 1) then
           </script>
         </manager>
       </folder>
-      <outputfile shortcut="/simulations/ReleasedWheat/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Wheat2modified.out</filename>
+        <title>Wheat2modified</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="StageCodeValue" />

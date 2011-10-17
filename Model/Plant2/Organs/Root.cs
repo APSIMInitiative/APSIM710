@@ -221,38 +221,6 @@ public class Root : BaseOrgan, BelowGround
          return A.DMSupply * PartitionFraction.Value;
          }
       }
-   public override Biomass Live
-      {
-      get
-         {
-         Biomass Total = new Biomass();
-         foreach (Biomass Layer in LayerLive)
-            {
-            Total.StructuralWt += Layer.StructuralWt;
-            Total.NonStructuralWt += Layer.NonStructuralWt;
-            Total.StructuralN += Layer.StructuralN;
-            Total.NonStructuralN += Layer.NonStructuralN;
-
-            }
-         return Total;
-         }
-      }
-   public override Biomass Dead
-      {
-      get
-         {
-         Biomass Total = new Biomass();
-         foreach (Biomass Layer in LayerDead)
-            {
-            Total.StructuralWt += Layer.StructuralWt;
-            Total.NonStructuralWt += Layer.NonStructuralWt;
-            Total.StructuralN += Layer.StructuralN;
-            Total.NonStructuralN += Layer.NonStructuralN;
-
-            }
-         return Total;
-         }
-      }
    
    [Output("rlv")]
    double[] rlv
@@ -392,49 +360,6 @@ public class Root : BaseOrgan, BelowGround
       depth_of_root_in_layer = Math.Max(0.0, depth_to_root - depth_to_layer_top);
 
       return depth_of_root_in_layer / dlayer[layer];
-      }
-
-   [Output]
-   public double LiveN
-      {
-      get
-         {
-         return Live.N;
-         }
-      }
-   [Output]
-   public double DeadN
-      {
-      get
-         {
-         return Dead.N;
-         }
-      }
-
-   [Output]
-   public double LiveWt
-      {
-      get
-         {
-         return Live.Wt;
-         }
-      }
-   [Output]
-   public double DeadWt
-      {
-      get
-         {
-         return Dead.Wt;
-         }
-      }
-
-   [Output]
-   public double LiveNConc
-      {
-      get
-         {
-         return Live.NConc;
-         }
       }
 
    private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)

@@ -13,14 +13,18 @@ public class PowerFunction : Function
     [Param]
     private double Exponent = 1.0;
 
+    [Link]
+    ModelEnvironment ModelEnvironment;
+
     [Output]
     public override double Value
     {
         get
         {
-            if (Children.Count == 1)
+            string[] ChildNames = ModelEnvironment.ChildModelNames();
+            if (ChildNames.Length == 1)
             {
-                Function F = Children[0] as Function;
+                Function F = ModelEnvironment.ModelByName(ChildNames[0]) as Function;
                 return Math.Pow(F.Value, Exponent);
             }
             else

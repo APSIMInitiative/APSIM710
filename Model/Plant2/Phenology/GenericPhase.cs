@@ -4,77 +4,85 @@ using System.Text;
 
 
 public class GenericPhase : Phase
-   {
-   private  double _CumulativeTT;
-   [Output] public double CumulativeTT { get { return _CumulativeTT; } }
+{
+    private double _CumulativeTT;
+    [Output]
+    public double CumulativeTT { get { return _CumulativeTT; } }
 
-   /// <summary>
-   /// Initialise everything
-   /// </summary>
-   public override void Initialising() { _CumulativeTT = 0; }
+    [Link]
+    public Function ThermalTime = null;
 
-   /// <summary>
-   /// Do our timestep development
-   /// </summary>
-   public override double DoTimeStep(double PropOfDayToUse)
-      {
-      // Calculate the TT for today.
-      Function F = Children["ThermalTime"] as Function;
-      double TTForToday = F.Value * PropOfDayToUse;
+    [Link(IsOptional.Yes)]
+    public Function Stress = null;
 
-      // Reduce the TT for today if a "stress" function is present.
-      if (Children.Contains("Stress"))
-         {
-         Function StressFunction = Children["Stress"] as Function;
-         TTForToday *= StressFunction.Value;
-         }
+    [Link(IsOptional.Yes)]
+    public Function Target = null;
 
-      // Accumulate the TT
-      _CumulativeTT += TTForToday;
 
-      // Get the Target TT
-      double Target = CalcTarget();
+    /// <summary>
+    /// Initialise everything
+    /// </summary>
+    public override void Initialising() { _CumulativeTT = 0; }
 
-      // Work out if we've reached our target. 
-      // If we have then return the left over day to our caller.
-      double PropOfDayUnused = 0.0;
-      if (_CumulativeTT > Target)
-         {
-         double LeftOverValue = _CumulativeTT - Target;
-         if (TTForToday > 0.0)
-         {
-             double PropOfValueUnused = LeftOverValue / TTForToday;
-             PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
-         }
-         else
-             PropOfDayUnused = 1.0;
-         _CumulativeTT = Target;
-         }
+    /// <summary>
+    /// Do our timestep development
+    /// </summary>
+    public override double DoTimeStep(double PropOfDayToUse)
+    {
+        // Calculate the TT for today.      
+        double TTForToday = ThermalTime.Value * PropOfDayToUse;
 
-      return PropOfDayUnused;
-      }
+        // Reduce the TT for today if a "stress" function is present.
+        if (Stress != null)
+            TTForToday *= Stress.Value;
 
-   /// <summary>
-   /// Return the target to caller. Can be overridden by derived classes.
-   /// </summary>
-   protected virtual double CalcTarget()
-      {
-      Function TargetFunction = (Function)Children["Target"];
-      return TargetFunction.Value;
-      }
+        // Accumulate the TT
+        _CumulativeTT += TTForToday;
 
-   /// <summary>
-   /// Return a fraction of phase complete.
-   /// </summary>
-   public override double FractionComplete
-      {
-      get
-         {
-         return _CumulativeTT / CalcTarget();
-         }
-      }
+        // Get the Target TT
+        double Target = CalcTarget();
 
-   }
+        // Work out if we've reached our target. 
+        // If we have then return the left over day to our caller.
+        double PropOfDayUnused = 0.0;
+        if (_CumulativeTT > Target)
+        {
+            double LeftOverValue = _CumulativeTT - Target;
+            if (TTForToday > 0.0)
+            {
+                double PropOfValueUnused = LeftOverValue / TTForToday;
+                PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
+            }
+            else
+                PropOfDayUnused = 1.0;
+            _CumulativeTT = Target;
+        }
+
+        return PropOfDayUnused;
+    }
+
+    /// <summary>
+    /// Return the target to caller. Can be overridden by derived classes.
+    /// </summary>
+    protected virtual double CalcTarget()
+    {
+        if (Target == null)
+            throw new Exception("Cannot find target for phase: " + Name);
+        return Target.Value;
+    }
+
+    /// <summary>
+    /// Return a fraction of phase complete.
+    /// </summary>
+    public override double FractionComplete
+    {
+        get
+        {
+            return _CumulativeTT / CalcTarget();
+        }
+    }
+
+}
 
 
       

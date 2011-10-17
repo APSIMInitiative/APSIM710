@@ -57,7 +57,7 @@ public class ExpressionFunction : Function
             symFilled.m_type = EBMath.Type.Variable;
             symFilled.m_valueString = "";
             symFilled.m_value = 0;
-            object Value = ExpressionFunction.GetPropertyValueFromPlant(Plant, sym.m_name.Trim());
+            object Value = Plant.GetPlantVariable(sym.m_name.Trim());
             if (Value is string)
                 symFilled.m_valueString = Value.ToString();
             else
@@ -105,99 +105,6 @@ public class ExpressionFunction : Function
             return fn.Result;
     }
 
-    /// <summary>
-    /// Return the value of the specified property as an object. The PropertyName
-    /// is relative to the RelativeTo argument (usually Plant).
-    /// Format:
-    ///     PropertyName is the name of a Plant variable. It can also include an array. Array can
-    ///                  have a filter inside of square brackets. Filter can be an array index (0 based)
-    ///                  or be the name of a class or base class.
-    /// e.g. Leaf.MinT
-    ///      Leaf.Leaves[].Live.Wt              - returns all live weights of all objects in leaves array.
-    ///      Leaf.Leaves[1].Live.Wt             - returns the live weight of the 2nd element of the leaves array.
-    ///      Organs[AboveGround].Live.Wt        - returns all the live weights for all above ground organs.
-    /// </summary>
-    private static object GetPropertyValueFromPlant(object RelativeTo, string PropertyName)
-    {
-        while (PropertyName.Contains("."))
-        {
-            int PosPeriod = PropertyName.IndexOf('.');
-            object O = null;
-            string NameToLookFor = PropertyName.Substring(0, PosPeriod);
-            string ArraySpecifier = null;
-            if (NameToLookFor.Contains("[") && NameToLookFor.Contains("]"))
-                ArraySpecifier = StringManip.SplitOffBracketedValue(ref NameToLookFor, '[', ']');
-
-            if (RelativeTo is Instance)
-            {
-                // Try and look in the children list first.
-                Instance Inst = (Instance)RelativeTo;
-                if (Inst.Children.Contains(NameToLookFor))
-                    O = Inst.Find(NameToLookFor);
-            }
-            if (O == null)
-            {
-                // Look for a field or property
-                O = GetValueOfField(NameToLookFor, RelativeTo);
-            }
-            if (O == null)
-                throw new Exception("Cannot find property: " + PropertyName);
-
-            // Go handle arrays.
-            if (ArraySpecifier != null)
-            {
-                IList Array = (IList)O;
-                int ArrayIndex;
-                if (int.TryParse(ArraySpecifier, out ArrayIndex))
-                {
-                    RelativeTo = Array[ArrayIndex];
-                }
-                else
-                {
-                    PropertyName = PropertyName.Substring(PosPeriod + 1);
-                    string Value = "";
-                    for (int i = 0; i < Array.Count; i++)
-                    {
-                        object Obj = GetPropertyValueFromPlant(Array[i], PropertyName);
-                        if (Obj == null)
-                            throw new Exception("Cannot evaluate: " + PropertyName);
-
-                        if (ArraySpecifier == "" || Utility.IsOfType(Array[i].GetType(), ArraySpecifier))
-                        {
-                            if (Value != "")
-                                Value += ",";
-                            Value += Obj.ToString();
-                        }
-                    }
-                    return Value;
-                }
-
-            }
-            RelativeTo = O;
-            PropertyName = PropertyName.Substring(PosPeriod + 1);
-        }
-
-        return GetValueOfField(PropertyName, RelativeTo);
-    }
-
-    /// <summary>
-    /// Return the value (using Reflection) of the specified property on the specified object.
-    /// Returns null if not found.
-    /// </summary>
-    private static object GetValueOfField(string PropertyName, object I)
-    {
-        FieldInfo FI = I.GetType().GetField(PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        object v = null;
-        if (FI == null)
-        {
-            PropertyInfo PI = I.GetType().GetProperty(PropertyName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            if (PI != null)
-                v = PI.GetValue(I, null);
-        }
-        else
-            v = FI.GetValue(I);
-        return v;
-    }
 }
 
 

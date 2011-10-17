@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="ReleasedLucerne">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/06/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1941</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -1302,6 +1300,8 @@ repro_dm = podtotalwt + grainwt
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">ReleasedLucerne.out</filename>
+        <title>ReleasedLucerne</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="stage" array="No" description="Plant stage" />
@@ -1352,7 +1352,9 @@ repro_dm = podtotalwt + grainwt
     </area>
   </simulation>
   <simulation name="Lucerne2" shortcut="/simulations/ReleasedLucerne">
-    <metfile name="met" shortcut="/simulations/ReleasedLucerne/met" />
+    <metfile name="met" shortcut="/simulations/ReleasedLucerne/met">
+      <filename shortcut="/simulations/ReleasedLucerne/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/ReleasedLucerne/clock" />
     <summaryfile shortcut="/simulations/ReleasedLucerne/summaryfile" />
     <area name="paddock" shortcut="/simulations/ReleasedLucerne/paddock">
@@ -1465,7 +1467,9 @@ endif]]></text>
           </script>
         </manager>
       </folder>
-      <outputfile shortcut="/simulations/ReleasedLucerne/paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Lucerne2.out</filename>
+        <title>Lucerne2</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="StageCodeValue" array="No" description="Plant stage" />

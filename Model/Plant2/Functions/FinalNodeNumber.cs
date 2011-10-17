@@ -5,7 +5,7 @@ using System.Reflection;
 
 
 public class FinalNodeNumber : Instance
-   {
+{
 
     //Class Linkages
     [Link]
@@ -36,12 +36,12 @@ public class FinalNodeNumber : Instance
     {
         return MaxNodeNo;
     }
-    
-    public double FinalLeafNumber() 
+
+    public double FinalLeafNumber()
     {
         double FLN = 0;
         if (TerminateFinalNodeNumber == null)
-         FLN = Math.Min(_PrimordiaNumber, MaxNodeNo);
+            FLN = Math.Min(_PrimordiaNumber, MaxNodeNo);
         else FLN = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
 
         return FLN;
@@ -55,7 +55,6 @@ public class FinalNodeNumber : Instance
             if (_PrimordiaNumber == 0.0)
                 _PrimordiaNumber = InitialLeafPrimordia;
             double DeltaPrimordiaNo = 0;
-            //Function NodeInitiationRate = (Function)Children["NodeInitiationRate"];
             if (NodeInitiationRate.Value > 0.0)
                 DeltaPrimordiaNo = ThermalTime.Value / NodeInitiationRate.Value;
             _PrimordiaNumber = _PrimordiaNumber + DeltaPrimordiaNo;
@@ -64,4 +63,4 @@ public class FinalNodeNumber : Instance
 
         return _PrimordiaNumber;
     }
-   }
+}

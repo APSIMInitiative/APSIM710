@@ -8,6 +8,9 @@ using System.Reflection;
 /// </summary>
 public class MultiplyFunction : Function
 {
+    [Link]
+    ModelEnvironment ModelEnvironment = null;
+
     [Output]
     public override double Value
     {
@@ -15,10 +18,11 @@ public class MultiplyFunction : Function
         {
             double returnValue = 1.0;
 
-            if (Children.Count != 0)
-                foreach (Function F in Children)
-                    returnValue = returnValue * F.Value;
-
+            foreach (string ChildName in ModelEnvironment.ChildModelNames())
+            {
+                Function F = ModelEnvironment.ModelByName(ChildName) as Function;
+                returnValue = returnValue * F.Value;
+            }
             return returnValue;
         }
     }

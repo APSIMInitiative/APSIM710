@@ -9,9 +9,6 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
    private double Uptake = 0;
    [Link] Plant Plant = null;
   
-   public override Biomass Live { get { return new Biomass(); } }
-   public override Biomass Dead { get { return new Biomass(); } }
-
    public override double DMDemand { get { return 0; } }
    public override double DMSupply { get { return 0; } }
    public override double DMRetranslocationSupply { get { return 0; } }

@@ -15,6 +15,8 @@ public class LeafStagePhyllochronFunction : Function
     Leaf Leaf = null;
     [Link]
     Phenology Phenology = null;
+    [Link]
+    Function BasePhyllochron = null;
 
     //Class paramaters
     [Param]
@@ -52,24 +54,14 @@ public class LeafStagePhyllochronFunction : Function
                 throw new Exception("Phase start name not set:" + Name);
             if (End == "")
                 throw new Exception("Phase end name not set:" + Name);
-
-            if (Phenology.Between(Start, End) && Children.Count > 0)
+            if (Phenology.Between(Start, End))
             {
                 if (Leaf.NodeNo <= Phase1End)
-                {
-                    Function Lookup = Children[0] as Function;
-                    return Lookup.Value * Phase1Multiplier;
-                }
+                    return BasePhyllochron.Value * Phase1Multiplier;
                 else if (Leaf.NodeNo <= Phase2End)
-                {
-                    Function Lookup = Children[0] as Function;
-                    return Lookup.Value * Phase2Multiplier;
-                }
+                    return BasePhyllochron.Value * Phase2Multiplier;
                 else
-                {
-                    Function Lookup = Children[0] as Function;
-                    return Lookup.Value * Phase3Multiplier;
-                }
+                    return BasePhyllochron.Value * Phase3Multiplier;
             }
             else
                 return 0.0;

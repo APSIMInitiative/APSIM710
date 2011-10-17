@@ -21,7 +21,7 @@ namespace ModelFramework
     {
         private bool IsScript;
         private bool IsPlant;
-        private Instance Model;
+        private Instance ModelInstance;
         private StringBuilder Contents;
         private Assembly modelAssembly;
         private bool Init1;
@@ -274,11 +274,11 @@ namespace ModelFramework
                     if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
                         Fact.Initialise();
                     Init2Received = true;
-                    if (Model != null)
+                    if (ModelInstance != null)
                     {
                         Console.WriteLine();
-                        Console.Write("------- " + Model.Name + " Initialisation ");
-                        int col = Model.Name.Length + 24;
+                        Console.Write("------- " + ModelInstance.Name + " Initialisation ");
+                        int col = ModelInstance.Name.Length + 24;
                         String line = new String('-', 80 - col - 1);
                         Console.Write(line);
                         Console.WriteLine();
@@ -575,13 +575,13 @@ namespace ModelFramework
             Fact.Create(XML.OuterXml, modelAssembly, this);
             if (Init2Received)
                 Fact.Initialise();  //resolve links can only happen after init2 
-            Model = (Instance)(Fact.Root);
+            ModelInstance = (Instance)(Fact.Root);
             String InstanceName = Name;
             if (InstanceName.Contains("."))
             {
                 InstanceName = InstanceName.Substring(InstanceName.LastIndexOf('.') + 1);
             }
-            Model.Name = InstanceName;
+            ModelInstance.Name = InstanceName;
             RegisterAllProperties(Fact);
             RegisterAllEventHandlers(Fact);
             TrapAllEvents(Fact);
@@ -644,7 +644,7 @@ namespace ModelFramework
             if (Sow.Cultivar == null)
                 throw new Exception("Cannot find cultivar on sow line");
 
-            if (Model != null)
+            if (ModelInstance != null)
                 throw new Exception("Plant already in ground while trying to sow another crop");
 
             // Now locate the cultivar parameter section and perform all instructions found there.
@@ -775,7 +775,7 @@ namespace ModelFramework
                     Host.delProp(pair.Key);
                 }
                 RegistrationsProp.Clear();
-                Model = null;
+                ModelInstance = null;
             }
         }
         // -----------------------------------------------------------------------
@@ -970,7 +970,7 @@ namespace ModelFramework
             {
                 Fact = new Factory();
                 Fact.Create(ModelDescription.OuterXml, modelAssembly, this);
-                Model = (Instance)(Fact.Root);
+                ModelInstance = (Instance)(Fact.Root);
 
                 // get description for all properties.
                 for (int i = 0; i != Fact.Properties.Count; i++)

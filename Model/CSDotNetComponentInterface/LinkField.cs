@@ -56,7 +56,7 @@ public class LinkField
     /// </summary>
     public void Resolve()
     {
-        if (Field.GetValue(In) == null)
+        if (Field.GetValue(In.Model) == null)
         {
             Object ReferencedObject = null;
 
@@ -71,7 +71,11 @@ public class LinkField
             else
                 NameToFind = LinkAttr._Path;
 
-            if (IsAPSIMType(TypeToFind))
+            if (TypeToFind == "ModelEnvironment")
+            {
+                ReferencedObject = new ModelEnvironment(In);
+            }
+            else if (IsAPSIMType(TypeToFind))
             {
                 if (LinkAttr._Path == null)
                     NameToFind = null; // default is not to use name.
@@ -81,7 +85,7 @@ public class LinkField
             else
             {
                 // Link is an Instance link - use name and type to find the object.
-                ReferencedObject = FindInstanceObject(NameToFind, TypeToFind);
+                ReferencedObject = FindInstanceObject(In, NameToFind, TypeToFind);
             }
 
             // Set the value of the [Link] field to the newly created object.
@@ -90,8 +94,10 @@ public class LinkField
                 if (LinkAttr._IsOptional != IsOptional.Yes)
                     throw new Exception("Cannot find [Link] for type: " + TypeToFind + " " + NameToFind + " in object: " + In.Name);
             }
+            else if (ReferencedObject is Instance)
+                Field.SetValue(In.Model, ((Instance)ReferencedObject).Model);
             else
-                Field.SetValue(In, ReferencedObject);
+                Field.SetValue(In.Model, ReferencedObject);
         }
 
     }
@@ -123,12 +129,12 @@ public class LinkField
     /// <param name="TypeToFind">The type to find. [Type.]ProxyClass.</param>
     /// </summary>
     //----------------------------------------------------------------------
-    private Object FindInstanceObject(String NameToFind, String TypeToFind)
+    public static Object FindInstanceObject(Instance In, String NameToFind, String TypeToFind)
     {
         // Check our children first.
-        foreach (NamedItem Child in In.Children)
+        foreach (Instance Child in In.Children)
         {
-            if (NameToFind.ToLower() == Child.Name.ToLower() && Utility.IsOfType(Child.GetType(), TypeToFind))
+            if (NameToFind.ToLower() == Child.Name.ToLower() && Utility.IsOfType(Child.Model.GetType(), TypeToFind))
                 return Child;
         }
 
@@ -138,9 +144,9 @@ public class LinkField
         {
             if (Parent.Name.ToLower() == TypeToFind.ToLower())
                 return Parent;
-            foreach (NamedItem Sibling in Parent.Children)
+            foreach (Instance Sibling in Parent.Children)
             {
-                if (NameToFind.ToLower() == Sibling.Name.ToLower() && Utility.IsOfType(Sibling.GetType(), TypeToFind))
+                if (NameToFind.ToLower() == Sibling.Name.ToLower() && Utility.IsOfType(Sibling.Model.GetType(), TypeToFind))
                     return Sibling;
             }
             Parent = Parent.Parent;

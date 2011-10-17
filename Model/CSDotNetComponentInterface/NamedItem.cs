@@ -27,14 +27,23 @@ public class NamedItem
 public class NamedList<T> : List<T> where T : NamedItem
 {
     public String ParentName;
-    public T this[String Name]
+    public object this[String Name]
     {
         get
         {
             foreach (T Obj in this)
             {
                 if (Obj.Name.Equals(Name, StringComparison.OrdinalIgnoreCase))
-                    return Obj;
+                {
+                    if (Obj is Instance)
+                    {
+                        NamedItem N = Obj;
+                        Instance I = (Instance)N;
+                        return I.Model;
+                    }
+                    else
+                        return Obj;
+                }
             }
             throw new Exception("Cannot find object: " + ParentName + Name);
         }

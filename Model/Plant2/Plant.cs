@@ -14,6 +14,9 @@ public class Plant : Instance
     [Link(IsOptional.Yes)]
     Arbitrator Arbitrator = null;
 
+    [Link]
+    ModelEnvironment ModelEnvironment = null;
+
     private List<Organ> _Organs = new List<Organ>();
     public List<Organ> Organs
     {
@@ -138,6 +141,10 @@ public class Plant : Instance
     {
         foreach (Organ o in Organs)
             o.DoActualGrowth();
+    }
+    public object GetPlantVariable(string VariablePath)
+    {
+        return ModelEnvironment.Get(VariablePath);
     }
  #endregion
 
