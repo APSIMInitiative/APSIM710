@@ -16,7 +16,7 @@ endif
 CC=/usr/bin/g++
 LD=/usr/bin/ld
 CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model \
--Wno-write-strings -fpermissive -fPIC -O0 $(CPPDEBUGFLAGS) $(INCLUDES)
+-DBOOST_FILESYSTEM_VERSION=2 -Wno-write-strings -fpermissive -fPIC -O0 $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
 
@@ -27,17 +27,17 @@ LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= --no-allow-shlib-undefined --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions  $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions  $(LDFLAGS) 
 LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),libdll)
-LDFLAGS:= --no-allow-shlib-undefined --warn-common --export-dynamic $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker --export-dynamic $(LDFLAGS) 
 LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),exe)
-LDFLAGS:= --export-dynamic $(LDFLAGS)
+LDFLAGS:= -Xlinker --export-dynamic $(LDFLAGS)
 endif
 
 

@@ -56,9 +56,9 @@ Namespace CMPComp
         ''' ============================================================================
         ''' </remarks>
         Public Sub New(compID As UInteger, parentCompID As UInteger, messageCallback As UInteger)
-            MyBase.New(compID, parentCompID, If(messageCallback = 0, Nothing, DirectCast(Marshal.GetDelegateForFunctionPointer(CType(messageCallback, IntPtr), GetType(MessageFromLogic)), MessageFromLogic)))
+            MyBase.New(compID, parentCompID, If(messageCallback = 0, Nothing, DirectCast(Marshal.GetDelegateForFunctionPointer(TMessageInterpreter.PtrCast(messageCallback), GetType(MessageFromLogic)), MessageFromLogic)))
             If messageCallback <> 0 Then
-                msgNativeDestFunction = DirectCast(Marshal.GetDelegateForFunctionPointer(CType(messageCallback, IntPtr), GetType(NativeMessageFromLogic)), NativeMessageFromLogic)
+                msgNativeDestFunction = DirectCast(Marshal.GetDelegateForFunctionPointer(TMessageInterpreter.PtrCast(messageCallback), GetType(NativeMessageFromLogic)), NativeMessageFromLogic)
             End If
         End Sub
 
@@ -127,7 +127,7 @@ Namespace CMPComp
         ''' ==============================================================================
         Public Overloads Sub handleMessage(inVal As UInteger)
             ' We need to copy the "native" message point into a managed object.
-            Dim src As TNativeMsgHeader = DirectCast(Marshal.PtrToStructure(CType(inVal, IntPtr), GetType(TNativeMsgHeader)), TNativeMsgHeader)
+            Dim src As TNativeMsgHeader = DirectCast(Marshal.PtrToStructure(TMessageInterpreter.PtrCast(inVal), GetType(TNativeMsgHeader)), TNativeMsgHeader)
 
             Dim msgPtr As TMsgHeader = TMessageInterpreter.NativeMsgToManagedMsg(src)
 

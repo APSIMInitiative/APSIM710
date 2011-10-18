@@ -12,7 +12,7 @@ Namespace CMPComp
     <ComVisible(True)> _
     Public Class TComponentInstance
         Inherits TAPSIMHost
-        Private Shared _STYPE As [String] = "UrinePatch"
+        Private Shared _STYPE As [String] = "Root"
         Private Shared _SVERSION As [String] = "1.0"
         Private Shared _SAUTHOR As [String] = "APSIM"
 

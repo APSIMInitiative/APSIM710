@@ -49,7 +49,7 @@ endif
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(APSIM)/Model/$(PROJECT).so: $(OBJS)
-	$(CC) -shared -o $(APSIM)/Model/$(PROJECT).so $(LDFLAGS) -lgfortran \
+	$(FC) -shared -o $(APSIM)/Model/$(PROJECT).so $(LDFLAGS) -lgfortran \
 	$(OBJS) $(STATICLIBS) $(LIBS) $(DEF)
 
 $(APSIM)/Model/$(PROJECT).a: $(OBJS)

@@ -9,12 +9,14 @@ ifdef windir
    ECHO=echo
    RM=del /f
    MV=move /y
+   CP=xcopy /i /y
  else
    PLATFORM=WIN32
    DLL=dll
    ECHO=echo
    RM=del /f
    MV=move /y
+   CP=xcopy /i /y
  endif
 else
    PLATFORM=Linux
@@ -22,7 +24,8 @@ else
    ECHO=echo
    RM=rm -f 
    MV=mv
+   CP=cp
    USE_MONO=1
-   MONO=/opt/mono-2.10
+   MONO=/usr
 endif
 
