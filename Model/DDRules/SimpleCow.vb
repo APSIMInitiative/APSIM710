@@ -1,8 +1,8 @@
 Public Class SimpleCow
     Inherits Instance
-    ' The energy requirements in this clas are based on 
-    '    DairyNZ farmfact 1-7 Feed requirements of milking cows (2006)
-    '    DairyNZ farmfact 1-7 Feed requirements of dry cows (2006)
+        ' The energy requirements in this clas are based on 
+    '    DairyNZ farmfact 1-8 Feed requirements of milking cows (2006)
+        '    DairyNZ farmfact 1-7 Feed requirements of dry cows (2006)
 
     Public Live_Weight As Double = 480
     Public CondistionScore As Double = 3
@@ -189,6 +189,8 @@ Public Class SimpleCow
             Case 7 : Return 10
             Case 8 : Return 20
             Case 9 : Return 30
+            Case Else
+                Return 0
         End Select
         Return 0
     End Function

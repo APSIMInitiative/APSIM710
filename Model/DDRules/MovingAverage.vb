@@ -18,6 +18,9 @@
         End Sub
 
         Public Function Average() As Double
+                If (myData.Count = 0) Then
+                        Throw New Exception("MovingAverage does not contain any data points")
+                End If
                 Return mySum / myData.Count
         End Function
 End Class

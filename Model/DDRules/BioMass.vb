@@ -3,6 +3,7 @@ Imports ModelFramework
 Public Class BioMass
     Public Name As String
     Public gLeaf, gStem, dLeaf, dStem As Double ' drymatter [kg]
+    Public stolon As Double
     Private N_concentration As Double = 0 'total N in biomass [kg]
     Public digestibility As Double = 0
     Private myME As Double = 0 'ME value <= 0 then use a calculated value
@@ -18,6 +19,7 @@ Public Class BioMass
         Me.gStem = other.gStem
         Me.dLeaf = other.dLeaf
         Me.dStem = other.dStem
+        Me.stolon = other.stolon
         Me.N_concentration = other.N_concentration
         Me.myME = other.myME
         Me.digestibility = other.digestibility
@@ -29,6 +31,7 @@ Public Class BioMass
         gStem = 0
         dLeaf = 0
         dStem = 0
+        stolon = 0
         N_concentration = 0
         digestibility = 0
     End Sub
@@ -83,6 +86,7 @@ Public Class BioMass
         result.gStem = gStem * factor
         result.dLeaf = dLeaf * factor
         result.dStem = dStem * factor
+        result.stolon = stolon * factor
         result.N_concentration = N_concentration
         result.myME = myME
         result.digestibility = digestibility
@@ -100,6 +104,7 @@ Public Class BioMass
         result.gStem = gStem + other.gStem
         result.dLeaf = dLeaf + other.dLeaf
         result.dStem = dStem + other.dStem
+        result.stolon = dStem + other.stolon
         result.N_concentration = (N_Total() + other.N_Total()) / result.DM_Total()
         If (result.N_concentration.ToString.Contains("NaN")) Then
             Console.WriteLine("DDRules (debug) - " & "BioMass.Add: N_concentration not a number")
@@ -121,6 +126,7 @@ Public Class BioMass
         result.gStem = gStem - other.gStem
         result.dLeaf = dLeaf - other.dLeaf
         result.dStem = dStem - other.dStem
+        result.stolon = stolon - other.stolon
         If (result.DM_Total <> 0) Then
             result.N_concentration = (N_Total() - other.N_Total) / result.DM_Total
         Else
@@ -150,7 +156,8 @@ Public Class BioMass
         Dim result As New RemoveCropBiomassType
         Dim green As RemoveCropBiomassdmType = getDMType("green", gLeaf, gStem)
         Dim dead As RemoveCropBiomassdmType = getDMType("dead", dLeaf, dStem)
-        result.dm = New RemoveCropBiomassdmType() {green, dead}
+        Dim stolon As RemoveCropBiomassdmType = getDMType("stolon", Me.stolon, 0)
+        result.dm = New RemoveCropBiomassdmType() {green, dead, stolon}
         Return result
     End Function
 

@@ -9,13 +9,18 @@
 <h2>Please Note</h2>
 <ul>
 	<li>This manager module is currently under heavy development as may be give unacceptable results. <b>Use with caution</b>.</li>
-	<li>This moduale <b>should</b> be capable of grazing crops other that AgPasture, but this is currently untested</li>
-	<li>AgPasture reports stolons as an above ground pasture component. DDRules does not graze stolons under any curcumstances.</li>
+	<li>This module <b>should</b> be capable of grazing crops other that AgPasture, but this is currently untested</li>
+	<li>AgPasture reports stolons as an above ground pasture component. DDRules does not graze stolons under any circumstances.</li>
 </ul>
 <h2>Introduction</h2>
 <p>
-	DDRules is a dairy farm manager component originally developed from a collection of rules and managment practices developed by Dawn Dally of DairyNZ. A number of 
-	the orginal user input parameters are now being supplied by Apsim modules, most notably pasture mass and quality.
+	DDRules is a dairy farm manager component originally developed from a collection of rules and management practices developed by Dawn Dally of DairyNZ. A number of 
+	the original user input parameters are now being supplied by Apsim modules, most notably pasture mass and quality.
+</p>
+	Dawn&apos;s rule have since been expanded to allow the reasonable duplication of the farm management 
+	involved in the opperation of the Lincoln University dairy farm. The two key aspect of this are 
+	feed managment in the form of a feed wedge and related pasture conservation rules.
+<p>
 </p>
 <h2>Original Documentation</h2>
 <ul>
@@ -31,8 +36,8 @@
 	e.g. FarmArea = 300
 </p>
 <p>
-	The farm effective area is defined as the sum of the area of all paddocks in the simulation. Paddocks are able to be set as being unavalible for grazing (WIP)
-	to allow development of forage crops etc. This will effect the grazable area at any given time, but the effective area of the farm will remain unchanged during a
+	The farm effective area is defined as the sum of the area of all paddocks in the simulation. Paddocks are able to be set as being unavailable for grazing (WIP)
+	to allow development of forage crops etc. This will affect the grazable area at any given time, but the effective area of the farm will remain unchanged during a
 	simulation run.
 </p>
 <p>
@@ -48,7 +53,7 @@
 <p>
 	Paddock will be grazed down to the given cover and then fed silage or supplements.<br/>
 	Note: AgPasture includes stolons in the above ground pasture mass. These are not considered grazable and as such it may look like DDRules is not grazing 
-	to the correct residual. Also all paddock will be grazed to the same residual irrispecive of the plant species in the paddock.
+	to the correct residual. Also all paddocks will be grazed to the same residual irrespective of the plant species in the paddock.
 </p>
 <h4>Rotation Length</h4>
 <p>
@@ -56,13 +61,13 @@
 </p>
 <p>
 	This sets the number of days it takes to graze every paddock on the farm. Internally this is used to calculate the number of days the hard will
-	spend in each paddock e.g. 30 days / 10 paddock (assuming equal size) == 3 grazing days per paddock. <br/>
-	Note: Paddocks with the highest masses will be grazed first and as such the current model make no guarantee a paddock will be grazed. 
+	spend in each paddock e.g. 30 days / 10 paddocks (assuming equal size) == 3 grazing days per paddock. <br/>
+	Note: Paddocks with the highest masses will be grazed first and as such the current model makes no guarantee a paddock will be grazed. 
 </p>
 
 <h3>Supplementation</h3>
 <p>
-	Cows are assumed to be fully feed through out the year. Where this demand is unable to be meet by grazing pasture, silage made on farm and then supplements will be fed.
+	Cows are assumed to be fully feed throughout the year. Where this demand is unable to be meet by grazing pasture, silage made on farm and then supplements will be fed.
 </p>
 <ol>
 	<li>Pasture</li>
@@ -88,38 +93,37 @@
 	&nbsp;&nbsp;&nbsp;SilageCutWastage = 5 %<br/>
 	&nbsp;&nbsp;&nbsp;SilageStoreEnable = 1<br/>
 	<br/>
-	The above can be interpred as:<br/>
+	The above can be interpreted as;<br/>
 	The conservation window is from <b>1st January</b> to <b>2 March</b>. Shut any paddock over <b>3500</b> kgDM/ha. At cutting leave <b>1200</b> kgDM/ha standing, <b>5%</b> of the 
-	cut mass remains in the paddock as surface organic matter, and the silage collected is to be <b>stored on farm</b> for latter use.
+	cut mass remains in the paddock as surface organic matter, and the silage collected is to be <b>stored on farm</b> for later use.
 </p>
 <p>
 	Todo:
 	<ul>
 		<li>Allow the cutting frequency to be set from the manager</li>
-		<li>Set maximum (and minumum?) number of paddocks / area able to be shut at any one time</li>
+		<li>Set maximum (and minimum?) number of paddocks / area able to be shut at any one time</li>
 	</ul>
 </p>
 
 <h3>Irrigation &amp; Fertiliser Application</h3>
-<p>In order to simplify whole farm irrgation and fertiliser applications (e.g. centre piovit irrgation and whole farm top dressing) DDRules implements two
+<p>In order to simplify whole farm irrigation and fertiliser applications (e.g. centre pivot  irrigation and whole farm top dressing) DDRules implements two
 events able to apply water and fertiliser to the whole farm using the same event call system a user would use at a paddock level.</p>
 <h4>Old Manager</h4>
 <p>
-When using the old manager
-the "Apply" events names have been extend to differenciate between the differetn event call;
+When using the old manager the "Apply" events names have been extend to differentiate between the different event calls;
 <ul>
-<li>OnApplyIrrigation</li>
-<li>OnApplyFertiliser</li>
+<li>ApplyIrrigation</li>
+<li>ApplyFertiliser</li>
 </ul>
 These events take the same data/options as any paddock level applications. The key difference being a manager script sits at "Simulation Level" and the DDRules
-respondes to the event with applications to all paddocks in the simulation.
+responds to the event with applications to all paddocks in the simulation.
 </p>
 <h4>New Manager / DLL Code Interface</h4>
-<p>For code simplisity overloaded "Apply" event calls are provided for both irrigation and fertiliser
+<p>For code simplicity overloaded "Apply" event calls are provided for both irrigation and fertiliser
 </p>
-<h4>Decission Values</h4>
-<p>Farm level (i.e. agrigate) decission varible are provide by DDRules to allow the triggering irrigation and fertiliser events. Where possible these
-have names equivinant to the paddock level output variables. These return average values for the whole farm.
+<h4>Decision Values</h4>
+<p>Farm level (i.e. aggregate) decision variable are provide by DDRules to allow the triggering irrigation and fertiliser events. Where possible these
+have names equivalent to the paddock level output variables. These return average values for the whole farm.
 </p>
 <h4>Example Irrigation Rule</h4>
 <p>
@@ -127,7 +131,7 @@ have names equivinant to the paddock level output variables. These return averag
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDRules ApplyIrrigation amount = 5.5<br/>
 &nbsp;&nbsp;&nbsp;endif<br/>
 <br/>
-This will apply 5.5mm of irrigation to the whole farm when the average plant avalible water level drops below 75%.
+This will apply 5.5mm of irrigation to the whole farm when the average plant available water level drops below 75%.
 </p>
 <h4>Example Fertiliser Rule</h4>
 <p>
@@ -135,8 +139,15 @@ This will apply 5.5mm of irrigation to the whole farm when the average plant ava
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DDRules ApplyFertiliser amount = 100 (kg/ha), depth = 0 (mm), type = urea_N()<br/>
 &nbsp;&nbsp;&nbsp;endif<br/>
 <br/>
-This will apply 100kg of urea nitrgen to the soil surface on the 20th of January.
+This will apply 100kg of urea nitrogen to the soil surface on the 20th of January.
 </p>
+<h4>Addition Parameters</h4>
+<dl>
+<dt>irrigation_efficiency [0-1]</dt>
+<dd>This parameter determines the proportion of the irrigation that reaches the soil surface where 1 = all applied water reaches the soil. Default = 1 (i.e. all irrigation reaches soil surface)</dd>
+<dt>ApplyFertToEffluentPdks [0,1]</dt>
+<dd>Switch to limit the application of fertiliser to effluent paddocks. Default = 0 (i.e. fertiliser not applied to effluent paddocks)</dd>
+</dl>
 
 <h2>Parameter Settings</h2>
 <p>
@@ -148,8 +159,9 @@ This will apply 100kg of urea nitrgen to the soil surface on the 20th of January
 	<dd>Sets the level of detail output to the summary file</dd>
 </dl>
 <p>
-	DDRules debuging messages are controlled via a "debug level" system. The higher the number, the more detail is returned
-	to the console/summary file. Higher level settting include outputs from lower setting e.g. DebugLevel = 2 turn on both
+	DDRules debugging messages are controlled via a "debug level" system. 
+	The higher the number, the more detail is returned to the console/summary file. 
+	Higher level setting include outputs from lower setting e.g. DebugLevel = 2 turn on both
 	Apsim level and farm level messages
 </p>
 <p>
@@ -160,8 +172,8 @@ This will apply 100kg of urea nitrgen to the soil surface on the 20th of January
 	4 = Verbose Paddock/plant level messages<br/>
 </p>
 <h4>Note</h4>
-<p>The debug level can be set at the start or during a simulation run. This wil override the value in the parameter file. 
-This allows the user to either set simulation specific values or enble say verbose debuggin output between two date using and apsim manager script.
+<p>The debug level can be set at the start or during a simulation run. This will override the value in the parameter file. 
+This allows the user to either set simulation specific values or enable say verbose debugging output between two dates using and apsim manager script.
 </p>
 <h3>Cow Energy Demands</h3>
 <dl>
@@ -179,7 +191,7 @@ This allows the user to either set simulation specific values or enble say verbo
 	</ul>
 </p>
 <p>
-	Note: The current "simplified" cows model will be depriciated once a biophsyical cow model has been created.
+	Note: The current "simplified" cow model will be depreciated once a biophysical cow model has been created.
 </p>
 
 <h3>Break Feeding</h3>
@@ -200,7 +212,7 @@ This allows the user to either set simulation specific values or enble say verbo
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where;<br/>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ME<sub>allowed</sub> = Amount of energy allocated for removal on the current grazing day [MJME]<br/>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ME<sub>avalible</sub> = (Pasture cover [kgDM] - Grazing Residual [kgDM]) x PastureME [MJME/kgDM]<br/>
-	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GR<sub>est</sub> = Average pasture growth rate over the preceed <b>GrowthRateWindowSize</b> days x Days<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GR<sub>est</sub> = Average pasture growth rate over the preceding <b>GrowthRateWindowSize</b> days x Days<br/>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Days = Number of days the herd will remain in the paddock
 </p>
 <p>
@@ -216,18 +228,18 @@ This allows the user to either set simulation specific values or enble say verbo
 	<ul>
 		<li>ME<sub>allowed</sub> = (2300 - 1500 + 100 * 2) / 2</li>
 		<li>&nbsp;&nbsp;&nbsp;= 500 kgDM/ha/day * 10 MJME</li>
-		<li>&nbsp;&nbsp;&nbsp;= 5000 MJME/ha will be removed by todays grazing event</li>
-		<li>and the remaining 1000 MJME will be met by supplementy feeding</li>
+		<li>&nbsp;&nbsp;&nbsp;= 5000 MJME/ha will be removed by today&apos;s grazing event</li>
+		<li>and the remaining 1000 MJME will be met by supplement feeding</li>
 	</ul>
 </p>
 <p>
 	Todo: An alternative implementation might be to calculate a set amount of supplement to be fed to the herd for each grazing day when the herd enters the paddock i.e.
-	on entering the paddock it is estimated that pasture will only meet 80% of the herd requirements, so lets fed 100 kgDM of silage per day.<br/>
+	on entering the paddock it is estimated that pasture will only meet 80% of the herd requirements, so let&apos;s fed 100 kgDM of silage per day.<br/>
 	This would better reflect what dairy farmers to in the real world, but would raise some questions about how well this would work in simulations
 	with a small number of paddocks and long rotation periods i.e. spend a considerable amount of time in any one paddock.
 <p>
-	When <b>disabled</b> if there is enough pasutre avalible in the paddock to meet animal requirements then this will be grazed. Silage / supplements are
-	provided only once the paddock has been grazing down to the current grazing residual. As a result the herd may eat all the avalible dry matter in 2 days
+	When <b>disabled</b> if there is enough pasture available in the paddock to meet animal requirements then this will be grazed. Silage / supplements are
+	provided only once the paddock has been grazing down to the current grazing residual. As a result the herd may eat all the available dry matter in 2 days
 	and remain in the paddock being fed silage for say 10 days.
 </p>
 <p>
@@ -235,7 +247,7 @@ This allows the user to either set simulation specific values or enble say verbo
 </p> 
 <h2>Module Inputs/Outputs</h2>
 <p>
-	<b>Warning:</b> Some of the variable contained in the list below are either currently or will shortly be depreciated as DDRules moves away from an inital test implementation.
+	<b>Warning:</b> Some of the variable contained in the list below are either currently or will shortly be depreciated as DDRules moves away from an initial test implementation.
 	Parameter and variable names may also be altered to better align with Apsim standards.
 </p>
 <p>There are three key scales applied to returned data
@@ -244,9 +256,20 @@ This allows the user to either set simulation specific values or enble say verbo
 	<li>per cow [_cow]</li>
 	<li>total / whole farm [_farm]</li>
 </ul>
-Unless other wise stated output data can be assumed to be in per hectare values.
+Unless otherwise stated output data can be assumed to be in per hectare values.
 </p>
 <p>A full list of input and output values can be found in this document ... <a href="DDRulesIO.html">DDRulesIO.html</a>
+</p>
+
+<h2>References</h2>
+<p>
+DairyNZ (2006), farmfact 1-7 Feed requirements of milking cows [<a href="http://www.dairynz.co.nz/file/fileid/36297">http://www.dairynz.co.nz/file/fileid/36297</a>] as at 21<sup>st</sup> July 2011<br/>
+DairyNZ (2006), farmfact 1-8 Feed requirements of dry cows [<a href="http://www.dairynz.co.nz/file/fileid/36299">http://www.dairynz.co.nz/file/fileid/36299]</a> as at 21<sup>st</sup> July 2011<br/>
+DairyNZ (2008), farmfact 1-14 Pasture feed wedges [<a href="http://www.dairynz.co.nz/file/fileid/36306">http://www.dairynz.co.nz/file/fileid/36306]</a> as at 21<sup>st</sup> July 2011<br/>
+National Research Council of the National Academies (2003) Air Emissions from Animal Feeding Operations: Current Knowledge, Future Needs<br/>
+Rouch et. el. (2008) - Determination of a nitrogen conversion factor for protein content in Cheddar cheese<br/>
+Lincoln University Farm Technical Manual (2003) Ed Fleming, P.H., Christchurch, New Zealand (A-154)<br/>
+McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607<br/>
 </p>
 </body>
 </html>

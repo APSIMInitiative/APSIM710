@@ -30,7 +30,8 @@ Public Class Farm
     Public AllocationType As Integer = 0
     'LUDF Process
     Private EnableCutting As Boolean = True
-
+    Private DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
+    Public myAverageCover As MovingAverage = New MovingAverage(7)
 
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
@@ -46,7 +47,6 @@ Public Class Farm
             Console.WriteLine("   Month    = " + Month.ToString())
             Console.WriteLine("   FarmArea = " + FarmArea.ToString())
         End If
-
         myPaddocks = New List(Of LocalPaddockType)
         PaddockQueue = New Queue(Of LocalPaddockType)
         GrazedList = New List(Of LocalPaddockType)
@@ -63,26 +63,26 @@ Public Class Farm
 
         MyFarmArea = FarmArea
         Dim j As Integer = 0
-        If (DebugLevel > 0) Then
-            Console.WriteLine("DDRules.Farm.Init() - Checking for laneways")
-        End If
-        For Each pdk As Paddock In MasterPM.SubPaddocks
-            If (pdk.Name = "Laneways") Then
-                If (DebugLevel > 0) Then
-                    Console.WriteLine("Found lanes *******************************************************************************")
-                    Console.WriteLine(pdk.Name + "")
-                    Console.WriteLine(pdk.TypeName)
-                End If
-                Dim tempArea As Double = FarmArea * myPorportionOfFarmInLaneWays
-                SpecifiedArea += tempArea
-                MyFarmArea += tempArea 'add lane area into total area i.e. not included in effective area allocation
-                TempList.Add(pdk.Name, tempArea)
-            End If
-            j += 1
-        Next
-        If (DebugLevel > 0) Then
-            Console.WriteLine("DDRules.Farm.Init() - Checking for laneways - Complete")
-        End If
+        'If (DebugLevel > 0) Then
+        '        Console.WriteLine("DDRules.Farm.Init() - Checking for laneways")
+        'End If
+        'For Each pdk As Paddock In MasterPM.SubPaddocks
+        '        If (pdk.Name = "Laneways") Then
+        '                If (DebugLevel > 0) Then
+        '                        Console.WriteLine("Found lanes *******************************************************************************")
+        '                        Console.WriteLine(pdk.Name + "")
+        '                        Console.WriteLine(pdk.TypeName)
+        '                End If
+        '                Dim tempArea As Double = FarmArea * myPorportionOfFarmInLaneWays
+        '                SpecifiedArea += tempArea
+        '                MyFarmArea += tempArea 'add lane area into total area i.e. not included in effective area allocation
+        '                TempList.Add(pdk.Name, tempArea)
+        '        End If
+        '        j += 1
+        'Next
+        'If (DebugLevel > 0) Then
+        '        Console.WriteLine("DDRules.Farm.Init() - Checking for laneways - Complete")
+        'End If
 
         'Todo: Get area from paddock level variable
         'For Each SubPaddock As Paddock In MasterPM.SubPaddocks
@@ -172,27 +172,43 @@ Public Class Farm
         'Next
         SilageHeap.Prepare()
         SupplementStore.Prepare()
+
+        preGrazeCovers = updateCovers()
+        postGrazeCovers = updateCovers()
     End Sub
 
-    Public Sub Update()
-        updateCovers()
-    End Sub
+    Public Function Update() As Double()
+        Dim result() As Double = updateCovers()
+        Return result
+    End Function
 
-    Public Sub Process(ByVal start_of_week As Boolean)
+    <Output()> <Units("kg/ha")> Public preGrazeCovers() As Double
+    <Output()> <Units("kg/ha")> Public postGrazeCovers() As Double
+    Public Sub Process(ByVal start_of_week As Integer)
         CheckWinteringOff()
         If Not (IsWinteringOff()) Then 'assume all stock wintering off farm i.e. no grazing
             If (start_of_week) Then
-                If AllocationType > 0 Then
-                    NewAllocation()
-                Else
-                    Allocate_Paddocks()
-                End If
+                Select Case AllocationType
+                    Case 1 : NewAllocation()
+                    Case Else
+                        Allocate_Paddocks()
+                End Select
+            End If
+
+            If (DebugLevel > 1) Then
+                Console.WriteLine(" DDRules - Grazing paddock queue : Day = " & start_of_week.ToString)
+                For Each pdk As LocalPaddockType In PaddockQueue
+                    Console.WriteLine("    " & pdk.ToString())
+                Next
+                Console.WriteLine(" DDRules - Grazing paddock queue - done")
             End If
 
             'If (PaddockQueue.Count = 0) Then 'either it is time to shift or have completed a full rotation
             'Allocate_Paddocks()
             'End If
+            preGrazeCovers = updateCovers()
             Graze()
+            postGrazeCovers = updateCovers()
             doAnimalsPost()
         End If
         doConservation()
@@ -201,6 +217,7 @@ Public Class Farm
         For Each Paddock As LocalPaddockType In myPaddocks
             Paddock.OnPost()
         Next
+        myAverageCover.Add(AverageCover)
     End Sub
 
     Sub Allocate_Paddocks()
@@ -229,7 +246,7 @@ Public Class Farm
             If (pdk.BeingGrazed()) Then
                 pdk.GrazingCounter = Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa)
                 TempList.Add(pdk)
-                UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
+                'UnallocatedArea -= pdk.Area 'to count or not to count...that is the question
             End If
         Next
 
@@ -296,34 +313,24 @@ Public Class Farm
                 '                        If (p.AvalibleDryMater <= 50) Then
                 Dim pdk As LocalPaddockType = PaddockQueue.Dequeue()
                 pdk.JustGrazed = True
+                'PaddockQueue.Enqueue(pdk)
             Else
                 Return
             End If
         End While
     End Sub
 
-    'Calculating the pre-grazing cover target - Method 1
-    'Source: DairyNZ farmfact, 1-14 Pasture feed wedges [http://www.dairynz.co.nz/file/fileid/36306]
-    'Parameters
-    '       Stocking_Rate   [cows/ha]
-    '       Intake          [kgDM/cow/day]
-    '       Rotation        [days]
-    '       Residual        [kgDM/ha]
-    'Result [kgDM/ha]
-    Private Function CalcPregrazingCoverTarget(ByVal Stocking_Rate As Double, ByVal Intake As Double, ByVal Rotation As Double, ByVal Residual As Double) As Double
-        Return (Stocking_Rate * Intake * Rotation) + Residual
-    End Function
-
     Public Function CutToFeedWedge(ByVal Optimum_residual As Integer, ByVal Rotation As Integer, Optional ByVal Stocking_rate As Double = 3.0, Optional ByVal Intake As Double = 18.0) As BioMass '
         Dim pre As Integer = CalcPregrazingCoverTarget(Stocking_rate, Intake, Rotation, Optimum_residual)
-        Dim interval As Double = (pre - Optimum_residual) / (myPaddocks.Count - 1)
+        Dim interval As Double = (pre - Optimum_residual) / (myPaddocks.Count)
         Dim i As Integer = 0
         Dim result As BioMass = New BioMass()
 
+        updateCovers()
         For Each pdk As LocalPaddockType In myPaddocks
             If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
                 Dim cover As Integer = Optimum_residual + (i * interval)
-                Dim temp As BioMass = pdk.Harvest(cover, 0.0)
+                Dim temp As BioMass = pdk.Harvest(cover, SilageCutWastage)
                 result = result.Add(temp)
                 i += 1
             End If
@@ -358,14 +365,16 @@ Public Class Farm
     '<Units("kgDM")> Public SilageFed As Double 'kgDM @ 10.5me fed to meet animal requirements
     '<Units("kgDM")> Public SupplementFedout As Double 'kg of grain fed this period (to fill unsatisifed feed demand)
     Public SupplementWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
-    Public SilageCutWastage As Double = 0.0 'percentage of silage lost as part of cutting
-    Public SilageWastage As Double = 0.0 'percentage of feed wasted as part of feeding out [Dawns' default = 10%]
+    Public SilageCutWastage As Double = 0.05 'percentage of silage lost as part of cutting 5% @ 30%DM : farmFact 1-44 Losses when making pasture silage
+    Public SilageWastage As Double = 0.15 'percentage of feed wasted as part of feeding out [Dawns' default = 15%]
 
     Private SupplementStore As New FeedStore 'this is used to track the supplements that have been fed to the herd (oppsite of SilageHeap)
 
     'Todo: Set supplemnt parameter in "Supplement heap" - this assumes same feed throughout simulation
     <Units("0-1")> Public SupplementDigestability As Double = 0.8
     <Units("0-1")> Public SilageDigestability As Double = 0.68 'need to check this value
+    <Units("0-1")> Public SilageQualityModifier As Double = 0.9 'need to check this value
+
     <Units("kgN/kgDM")> Public SilageN As Double = 0.035 'N content of silage (need to check this value - add to the user interface
     <Units("kgN/kgDM")> Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
     <Units("ME/kgDM")> Public SupplementME As Single = 12
@@ -465,7 +474,6 @@ Public Class Farm
     End Function
 
     Public DCWO As Date 'Commence Wintering Off
-
     Public DSWO As Date 'Stop wintering Off
     Public PWO As Single = 1.0 'Proportion wintered off
     Private myPWO As Single = 0.0
@@ -491,15 +499,23 @@ Public Class Farm
             If (value < 0) Then
                 value = 0
             End If
+            Dim temp As Double = DryOffProportion
+            myMilkingHerd.setCowNumbers(0)
+            myDryCowHerd.setCowNumbers(0)
             myMilkingHerd.setCowNumbers(value * FarmArea) 'assume 1ha paddocks
+            DryOffProportion = temp
         End Set
     End Property
 
-    Sub updateCovers()
+    Function updateCovers() As Double()
+        Dim result(myPaddocks.Count) As Double
+        Dim i As Integer = 0
         For Each Paddock As LocalPaddockType In myPaddocks
             Paddock.UpdateCovers()
+            result(i) = Paddock.Cover
         Next
-    End Sub
+        Return result
+    End Function
 
     Sub updateGrazingResidual(ByVal residual As Integer)
         For Each Paddock As LocalPaddockType In myPaddocks
@@ -581,10 +597,14 @@ Public Class Farm
             'For Each lp As LocalPaddockType In myPaddocks
             '        Console.Out.WriteLine(" Average Cover ********* " + lp.index.ToString() + " - " + lp.Name() + " - " + lp.Cover().ToString("0") + " kgDM/ha - " + lp.Area.ToString("0.0") + " ha")
             'Next
-            TotalCover += pdk.Cover * pdk.Area
+            TotalCover += pdk.Cover() * pdk.Area
             TotalArea += pdk.Area
         Next
         Return TotalCover / TotalArea
+    End Function
+
+    Public Function AverageFarmCoverWeekly() As Double
+        Return myAverageCover.Average()
     End Function
 
     Public Property FarmArea() As Double
@@ -641,26 +661,29 @@ Public Class Farm
 
     Private Sub doConservation()
         Dim IsCuttingDay As Boolean = end_week 'only cut once a week [as per Dawn's rules]
-        If (AllocationType = 0) Then
-            If isBetween(myDate, FCD, LCD) Then
-                ClosePaddocks()
-            End If
-        Else
-            IsCuttingDay = True
+        If isBetween(myDate, FCD, LCD) Then
+            Select Case AllocationType
+                Case 1 : IsCuttingDay = True
+                Case Else : ClosePaddocks()
+            End Select
         End If
 
         If (IsCuttingDay) Then ' And PaddocksClosed) Then
             Dim HarvestedDM As BioMass = New BioMass()
             Select Case (AllocationType)
                 Case 1
-                    If (FeedSituation() > 0) Then
-                        HarvestedDM = CutToFeedWedge(myGrazingResidual, myGrazingInterval, MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / 11.5)
+                    If (FeedSituation() / IdealGrazingCover() > 0.2) Then 'Cut when 10% in surplus?
+                        HarvestedDM = CutToFeedWedge(myGrazingResidual, myGrazingInterval, MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / DefaultPastureME)
                     End If
                 Case Else
                     HarvestedDM = doHarvest(SilageCutWastage)
             End Select
 
-            HarvestedDM.setME(DefualtSilageME)
+            If (DebugLevel > 0) Then
+                Console.WriteLine("DDRules Harvested " & HarvestedDM.ToString())
+            End If
+            'HarvestedDM.setME(DefualtSilageME)
+            HarvestedDM.setME(HarvestedDM.getME() * SilageQualityModifier)
             SilageHeap.Add(HarvestedDM)
         End If
     End Sub
@@ -1013,31 +1036,54 @@ Public Class Farm
         SortByIndex()
     End Sub
 
+    'Amount of feed surplus/deficit [kgDM/ha]
+    ' 1 = supply == demand i.e. in balance
+    ' <1 = deficit
+    ' >1 = surplus
     Public Function FeedSituation() As Double
         If (myMilkingHerd.Size() > 0) Then
             Dim post As Double = GrazingResidual
             Dim target As Double = IdealGrazingCover()
-            Dim pre As Double = post + (target - post)
+            Dim pre As Double = IdealPreGrazingCover() 'post + (target - post)
             Return AverageCover() - target
         Else
             Return 0
         End If
     End Function
 
+    'Calculating the pre-grazing cover target - Method 1
+    'Source: DairyNZ farmfact, 1-14 Pasture feed wedges [http://www.dairynz.co.nz/file/fileid/36306]
+    'Parameters
+    '       Stocking_Rate   [cows/ha]
+    '       Intake          [kgDM/cow/day]
+    '       Rotation        [days]
+    '       Residual        [kgDM/ha]
+    'Result [kgDM/ha]
+    Private Function CalcPregrazingCoverTarget(ByVal Stocking_Rate As Double, ByVal Intake As Double, ByVal Rotation As Double, ByVal Residual As Double) As Double
+        Dim calcPre As Double = (Stocking_Rate * Intake * Rotation) + Residual
+        If (Stocking_Rate <= 0.1) Then
+            calcPre = 4000
+        End If
+        Dim maxPre As Double = 10000 '3860
+        Return Math.Min(calcPre, maxPre)
+    End Function
+
     ' Source: DairyNZ - Feed Wedge Reconer
     Public Function IdealGrazingCover() As Double
-        Dim Cows_ha As Double = StockingRate
-        Dim KgDM_Cow As Double = myMilkingHerd.ME_Demand_Cow / 11.5 '17 'from doc
-        Dim RotationLength As Double = GrazingInterval
-        Dim TargetResidual As Double = GrazingResidual
-        Dim KgDM_ha As Double = Cows_ha * KgDM_Cow * RotationLength + TargetResidual
-        Return KgDM_ha
+        'Dim Cows_ha As Double = StockingRate
+        'Dim KgDM_Cow As Double = myMilkingHerd.ME_Demand_Cow / 11.5 '17 'from doc
+        'Dim RotationLength As Double = GrazingInterval
+        'Dim TargetResidual As Double = GrazingResidual
+        'Dim KgDM_ha As Double = Cows_ha * KgDM_Cow * RotationLength + TargetResidual
+        'Return KgDM_ha
+        Return (IdealPreGrazingCover() + myGrazingResidual) / 2.0
     End Function
 
     Public Function IdealPreGrazingCover() As Double
-        Dim post As Double = GrazingResidual
-        Dim average As Double = IdealGrazingCover()
-        Return average + (average - post)
+        'Dim post As Double = GrazingResidual
+        'Dim average As Double = IdealGrazingCover()
+        'Return average + (average - post)
+        Return CalcPregrazingCoverTarget(MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / DefaultPastureME, myGrazingInterval, myGrazingResidual)
     End Function
 
     Public Function PreGrazingCover() As Double
@@ -1060,12 +1106,12 @@ Public Class Farm
         If (data.Amount > 0) Then
             Dim totalAmount As Double = 0
             Dim totalArea As Double = 0
-            If (Not ApplyToEffPdks) Then 'adjust amount applied to match LUDF reporting
-                Dim effArea As Double = GetEffluentArea()
-                data.Amount *= MyFarmArea / (MyFarmArea - effArea)
-            End If
+            'If (Not ApplyToEffPdks) Then 'adjust amount applied to match LUDF reporting - removal because weekly reporting is based on non-effluent area
+            '        Dim effArea As Double = GetEffluentArea()
+            '        data.Amount *= MyFarmArea / (MyFarmArea - effArea)
+            'End If
             For Each pdk As LocalPaddockType In myPaddocks
-                If (myEffluentPaddocks Is Nothing Or Not (ApplyToEffPdks)) Then 'apply to all paddocks
+                If (myEffluentPaddocks Is Nothing Or ApplyToEffPdks) Then 'apply to all paddocks
                     pdk.Apply(data)
                     totalArea += pdk.Area
                     totalAmount += (data.Amount * pdk.Area)
@@ -1079,20 +1125,20 @@ Public Class Farm
             If (DebugLevel > 0) Then
                 Console.WriteLine("Fertilise " + totalAmount.ToString() + " / " + FarmArea.ToString() + " = " + (totalAmount / FarmArea).ToString())
             End If
-            Return totalAmount / FarmArea
+            Return totalAmount / totalArea
         Else
             Return 0.0
         End If
     End Function
 
-    '<Units("mm/ha")> 
-    Function Irrigate(ByVal data As IrrigationApplicationType) As Double
+    Function Irrigate(ByVal data As IrrigationApplicationType, ByVal efficiency As Double) As Double
         If (data.Amount > 0) Then
             Dim total As Double = 0
             Dim area As Double = 0
+            data.Amount *= efficiency
             For Each paddock As LocalPaddockType In myPaddocks
                 area += data.Crop_Area
-                total += (data.Amount * data.Crop_Area)
+                total += (data.Amount * data.Crop_Area / efficiency)
                 paddock.Irrigate(data)
             Next
             If (DebugLevel > 0) Then
@@ -1148,7 +1194,7 @@ Public Class Farm
     'Simulation passing a list of paddock names
     Sub setEffluentPaddocks(ByVal values As String())
         If (values Is Nothing) Then
-            myEffluentPaddocks = Nothing
+            myEffluentPaddocks = New List(Of LocalPaddockType)()
             Return
         End If
         If (values.Length > 0) Then
@@ -1212,6 +1258,16 @@ Public Class Farm
                 End If
             Next
         End If
+        If (myLanewayPaddocks.Count > 0) Then
+            Dim newArea As Double = FarmArea / myPaddocks.Count
+            For Each pdk As LocalPaddockType In myPaddocks
+                pdk.Area = newArea
+            Next
+            Dim lArea As Double = FarmArea * myPorportionOfFarmInLaneWays / myLanewayPaddocks.Count
+            For Each pdk As LocalPaddockType In myLanewayPaddocks
+                pdk.Area = lArea
+            Next
+        End If
     End Sub
 #End Region
 
@@ -1243,6 +1299,21 @@ Public Class Farm
             Console.WriteLine("             N Content               " & SilageN.ToString("0.0%"))
             Console.WriteLine("             Wastage (at feeding)    " & SilageWastage.ToString("0.0%"))
         End If
+        If (DebugLevel > 0) Then
+
+            Console.WriteLine("     Grazing Paddocks")
+            For Each pdk As LocalPaddockType In myPaddocks
+                Console.WriteLine("             " & pdk.ToString())
+            Next
+            Console.WriteLine("     Effluent Paddocks")
+            For Each pdk As LocalPaddockType In myEffluentPaddocks
+                Console.WriteLine("             " & pdk.ToString())
+            Next
+            Console.WriteLine("     Laneway Paddocks")
+            For Each pdk As LocalPaddockType In myLanewayPaddocks
+                Console.WriteLine("             " & pdk.ToString())
+            Next
+        End If
     End Sub
 
     Public Function TotalCows() As Double
@@ -1259,6 +1330,9 @@ Public Class Farm
 
     Property DryOffProportion As Double
         Get
+            If (TotalCows() <= 0) Then
+                Return 0
+            End If
             Return DryCows() / TotalCows()
             '  Return myDryOffProportion
         End Get

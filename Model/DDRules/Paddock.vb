@@ -16,7 +16,9 @@ Public Class LocalPaddockType
 
     Public DebugLevel As Integer = 0 '0==none, 1==brief, 2==verbose
     Public Shared DebugTestBreakFeeding As Boolean = True
-    Public Shared MovingAverageSeriesLength As Integer = 30
+    Public Shared MovingAverageSeriesLength As Integer = 7
+    Public myAverageGrowthRate As MovingAverage = New MovingAverage(MovingAverageSeriesLength)
+    Public Shared IncludeStolon As Boolean = False
 
     <Link()> Private ApSim_SubPaddock As Paddock
     <Input(True)> Public Area As Double = -1
@@ -26,7 +28,6 @@ Public Class LocalPaddockType
     Dim Pasture_Cover As BioMass = New BioMass()
     'Lookup for indervidual pasture species
     Public PastureMasses As Dictionary(Of String, BioMass) = New Dictionary(Of String, BioMass)
-    Public myAverageGrowthRate As MovingAverage
 
     Private Default_N_Conc As Double = 0.035
     Private Default_Digestability As Double = 0.68
@@ -38,7 +39,9 @@ Public Class LocalPaddockType
     Dim Default_Application_Depth As Double = 300 'mm
 
     Private UrinePatchComponent As Component
-    Private AgPasture As Component
+    'Private AgPasture As Component
+    Private AgPasture As AgPasture '<Link()> 
+    Private UpdatedGrowth As Boolean = False
 
     Public Sub New(ByVal index As Integer, ByRef paddock As Paddock, ByVal PaddockArea As Double)
         ApSim_SubPaddock = paddock                              'store a local pointer to the ApSim "Subpaddock" 
@@ -68,6 +71,7 @@ Public Class LocalPaddockType
         C_Feaces = 0
         N_Urine = 0
         DM_Grazed = New BioMass()
+        UpdatedGrowth = False
     End Sub
 
     Sub OnPost()
@@ -226,7 +230,7 @@ Public Class LocalPaddockType
             Console.WriteLine("DDRules (debug) - " & "  = Energy Removed    = " & result.getME_Total)
             Console.WriteLine("DDRules (debug) - " & "                      = " & Removal.getME_Total)
         End If
-        DM_Grazed = result
+        DM_Grazed = result 'should this be stored as kg/ha, could use PreGrazeMass.Subtract(PostGrazeMass)?
         Return result
     End Function
 
@@ -332,8 +336,13 @@ Public Class LocalPaddockType
                     Console.WriteLine("DDRules.Harvest - " & tempBioMass.ToString())
                 End If
                 Dim tempRemovedMass As BioMass = tempBioMass.Multiply(RemovalProportion)
+                'Console.WriteLine("     " & "DM  = " & tempRemovedMass.DM_Total)
+                'Console.WriteLine("     " & "N Conc  = " & tempRemovedMass.N_Conc)
+                'Console.WriteLine("     " & "N Total  = " & tempRemovedMass.N_Total)
                 crop.Publish("remove_crop_biomass", tempRemovedMass.toRemoveCropDmType())
-                ReturnDM(tempRemovedMass, loss)
+                Dim lostDM As BioMass = tempRemovedMass.Multiply(loss)
+                tempRemovedMass = tempRemovedMass.Subtract(lostDM)
+                ReturnDMtoSOM(lostDM)
                 RemovedMass = RemovedMass.Add(tempRemovedMass)
                 UpdateCovers()
                 PastureMasses.TryGetValue(crop.Name, tempBioMass) 'this should really be checked, it should never fail but...
@@ -353,11 +362,10 @@ Public Class LocalPaddockType
     ' Return removed biomass to the SOM pools
     ' Being used during silage cutting for return of uncollected pasture mass
     ' Will be used as part of grazing event if trampling is to be included
-    Public Sub ReturnDM(ByVal Mass As BioMass, ByVal PercentageReturn As Double)
-        If (PercentageReturn > 0) Then
-            Dim DM As BiomassRemovedType = Mass.toBiomassRemovedType(PercentageReturn)
+    Public Sub ReturnDMtoSOM(ByVal Mass As BioMass)
+        If (Mass.DM_Total > 0) Then
             Dim SOM As Component = ApSim_SubPaddock.ComponentByType("surfaceom")
-            SOM.Publish("BiomassRemoved", DM)
+            SOM.Publish("BiomassRemoved", Mass.toBiomassRemovedType(1.0))
         End If
     End Sub
 
@@ -369,11 +377,12 @@ Public Class LocalPaddockType
         Dim kgN_ha As Double = kgN / Area
         Dim vol_ha As Double = volume / Area
         If (DebugLevel > 1) Then
-            If (kgN.ToString.Contains("NaN")) Then
-                Console.WriteLine("DDRules (debug) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
+            If (Double.IsNaN(kgN)) Then
+                Console.WriteLine("DDRules (error) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
             End If
-            Console.WriteLine("DDRules (debug) - " & "Urine: N = " & kgN.ToString & " V = " & volume.ToString & " A = " & Area.ToString)
-            Console.WriteLine("                  " & "         = " & kgN_ha.ToString & "kgN/ha V = " & vol_ha.ToString & "l/ha")
+            Console.WriteLine("DDRules (debug) - " & ToString())
+            Console.WriteLine("                  " & "Urine: N = " & kgN.ToString("0.0") & " V = " & volume.ToString("0.0") & " A = " & Area.ToString("0.0"))
+            Console.WriteLine("                  " & "         = " & kgN_ha.ToString("0.0") & " kgN/ha V = " & vol_ha.ToString("0.0") & "l/ha")
         End If
         If Not (UrinePatchComponent Is Nothing) Then ' use Val's new urine patch model is avalible
             Dim urine As ApplyUrineType = New ApplyUrineType()
@@ -405,6 +414,9 @@ Public Class LocalPaddockType
             IrrigationA.Apply(IrrData)
             'Console.WriteLine("3 : Irrigation Applied")
             N_Urine = kgN / Area
+        End If
+        If (DebugLevel > 1) Then
+            Console.WriteLine("DDRules (debug) - " & "Urine application done.")
         End If
     End Sub
 
@@ -444,10 +456,16 @@ Public Class LocalPaddockType
             mass.dLeaf = Crop.Variable("leafsenescedwt").ToDouble * 10
             mass.dStem = Crop.Variable("stemsenescedwt").ToDouble * 10
 
+            'Is it dangerous to assmue a single instance per paddock?
             If Not (AgPasture Is Nothing) Then ' Note: this assumes AgPasture is the only crop model in the paddock
                 mass.N_Conc = Crop.Variable("AboveGroundNPct").ToDouble() / 100.0
-                Dim GrowthRate As Double = Crop.Variable("HerbageGrowthWt").ToDouble()
-                myAverageGrowthRate.Add(GrowthRate)
+                mass.N_Conc = (AgPasture.LeafN + AgPasture.StemN) / (AgPasture.LeafWt + AgPasture.StemWt)
+                mass.stolon = AgPasture.StolonWt
+                If Not (UpdatedGrowth) Then
+                    Dim GrowthRate As Double = Crop.Variable("HerbageGrowthWt").ToDouble()
+                    myAverageGrowthRate.Add(GrowthRate) 'this should only be called once a day
+                    UpdatedGrowth = True
+                End If
                 'Dim HerbageME As Double = Crop.Variable("HerbageME").ToDouble()
                 'Dim AboveGroundWt As Double = Crop.Variable("AboveGroundWt").ToDouble()
                 'Console.WriteLine(" AgPasture ME = " + (AboveGroundWt / HerbageME).ToString("0.00"))
@@ -569,8 +587,17 @@ Public Class LocalPaddockType
     Public Function AvalibleME() As Double
         Return AvalibleDryMater() * PastureME()
     End Function
+
     Public Function Cover() As Double
-        Return Pasture_Cover.DM_Total
+        Return Cover(IncludeStolon)
+    End Function
+
+    Private Function Cover(ByVal IncludeStolon As Boolean) As Double
+        Dim result As Double = Pasture_Cover.DM_Total
+        If (IncludeStolon) Then
+            result += Pasture_Cover.stolon
+        End If
+        Return result
     End Function
     Public Function StatusCode() As String
         Return myStatus.ToString
@@ -598,6 +625,7 @@ Public Class LocalPaddockType
     Public Function PlantAvalibleWater(ByVal atDepth As Single) As Single
         Dim SoilWater As ModelFramework.SoilWat
         SoilWater = CType(ApSim_SubPaddock.ComponentByType("SoilWat"), ModelFramework.SoilWat)
+
         'Dim esw As Single = SoilWater.esw '  ApSim_SubPaddock.Variable("esw").ToDoubleArray()
         Dim sw_dep As Single() = SoilWater.sw_dep ' ApSim_SubPaddock.Variable("sw_dep").ToDoubleArray()
         Dim dul_dep As Single() = SoilWater.dul_dep ' ApSim_SubPaddock.Variable("ll15_dep").ToDoubleA

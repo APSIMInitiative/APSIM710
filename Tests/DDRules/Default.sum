@@ -28,7 +28,7 @@ Paddock:
    Component       "Canterbury_M  Nitrogen" = %apsim%\Model\SoilN.dll
    Component              "ryegrass_clover" = %apsim%\Model\AgPasture.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
@@ -63,6 +63,7 @@ Paddock:
         StockingRate
         MilkSolids_Cow
         MilkSolids_Ha
+        SilageCutWastage
 
      Output file = Default.out
      Format = normal
@@ -130,15 +131,15 @@ Paddock:
              Finish Date             01-Jan
              Trigger Residule        0 kgDM/ha
              Cutting Residule        1500 kgDM/ha
-             Wastage at cutting      0.0%
+             Wastage at cutting      5.0%
              Silage Stored on Farm   True
              ME Content              0.0 ME/kgDM
              N Content               3.5%
-             Wastage (at feeding)    0.0%
+             Wastage (at feeding)    15.0%
      Debug Switches
              Debug Level   0
              Break Feeding 0
-             Avg length    30
+             Avg length    7
 
 ------- outputfile Initialisation ---------------------------------------------
      Output frequency:
@@ -160,6 +161,9 @@ Paddock:
         cover_green
         AboveGroundNPct
         fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
 
      Output file = Default paddock01.out
      Format = normal
@@ -352,11 +356,11 @@ Paddock:
 
 ------- ryegrass_clover Initialisation ----------------------------------------
 
-------- outputfile Initialisation ---------------------------------------------
+------- Outputfile Initialisation ---------------------------------------------
      Output frequency:
-        end_day
+        post
      Output variables:
-        dd/mmm/yyyy as Date
+        dd/mm/yyyy as Date
         HerbageGrowthWt
         SpeciesLiveWt
         LAI_total
@@ -372,6 +376,9 @@ Paddock:
         cover_green
         AboveGroundNPct
         fertiliser
+        dlt_nh4
+        surfaceom_nh4
+        nh4
 
      Output file = Default paddock02.out
      Format = normal

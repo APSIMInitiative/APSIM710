@@ -303,6 +303,12 @@
         myTempExcreta = New Excreta(myExcreta) ' this for returning
     End Sub
 
+    Public Function getNutrientReturns(ByVal proporiton As Double) As Excreta
+        Dim amount As Excreta = myExcreta.Multiply(proporiton)
+        myTempExcreta.Subtract(amount)
+        Return amount
+    End Function
+
     'Return all nutrients evenly to the paddocks in the list
     ' Todo: distribute nutrients by amount of drymatter removal (if grazed)
     Public Sub doNutrientReturns(ByVal myGrazedPaddocks As List(Of LocalPaddockType))
@@ -325,18 +331,12 @@
             Else 'if grazed then distribute over paddocks by amount of ME removed
                 For Each pdk As LocalPaddockType In myGrazedPaddocks
                     Dim delta As Double = pdk.ME_Eaten / totalMERemoved
-                    Dim density As Double = delta * TotalCows
+                    Dim density As Double = delta * TotalCows / pdk.Area
                     ReferenceCow.doNutrientReturns(pdk, urineN * delta, dungN * delta, dungDM * delta, density)
                 Next
             End If
         End If
     End Sub
-
-    Public Function getNutrientReturns(Optional ByVal proporiton As Double = 1.0) As Excreta
-        Dim amount As Excreta = myExcreta.Multiply(proporiton)
-        myTempExcreta.Subtract(amount)
-        Return amount
-    End Function
 
     Public Sub doNutrientReturnsToPaddock(ByVal paddock As List(Of LocalPaddockType), Optional ByVal proporiton As Double = 1.0)
         Dim area As Double = 0

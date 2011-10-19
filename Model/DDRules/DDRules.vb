@@ -45,9 +45,9 @@ Public Class DDRules
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
-    <Input()> Private month As Integer
-    <Input()> Private year As Integer
-    <Input()> Private day_of_month As Integer
+    '<Input()> Private month As Integer
+    '<Input()> Private year As Integer
+    '<Input()> Private day_of_month As Integer
     <Input()> Private end_week As Boolean
     <Input()> Private Start_week As Boolean
 
@@ -64,8 +64,7 @@ Public Class DDRules
     Private TotalFarmArea As Double = 0
     Private GrazingIntervalIsSet As Boolean = False
     Private GrazingResidualIsSet As Boolean = False
-
-
+    Dim myIrrigation_efficiency As Double = 1.0
 
     Public Sub New()
         myFarm = New Farm()
@@ -82,6 +81,7 @@ Public Class DDRules
     '        End If
     'End Sub
 
+    'Initilise farm components
     <EventHandler()> Public Sub OnInit2()
         DebugLevel = myDebugLevel
         If (DebugLevel > 0) Then
@@ -101,7 +101,8 @@ Public Class DDRules
                 Console.WriteLine("*** DDRules OnInit2() - Farm = " + "NULL VALUE")
             End If
         End If
-        myFarm.Init(MySimulation, year, month, TotalFarmArea)
+
+        myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea)
         myFarm.setEffluentPaddocks(strEffluentPaddocks)
         myFarm.setLanewayPaddocks(strLanewayPaddocks)
 
@@ -137,14 +138,14 @@ Public Class DDRules
         myFertiliserAmount = 0
     End Sub
 
-    'Reset paddock status etc. 
+    'Reset paddock status etc.
     <EventHandler()> Sub OnPrepare()
         If (DebugLevel > 0) Then
             Console.WriteLine("Enter OnPrepare()")
             Console.WriteLine("        " & MyClock.simulation_days)
         End If
 
-        myFarm.Prepare(year, month, day_of_month, end_week)
+        myFarm.Prepare(MyClock.year, MyClock.month, MyClock.day_of_month, end_week)
         'myFarm.StockingRate = BaseStockingRate
 
         If (DebugLevel > 0) Then
@@ -154,15 +155,28 @@ Public Class DDRules
         End If
     End Sub
 
+    'Pasture covers pre-grazing
+    <Output()> <Units("kg/ha")> Public ReadOnly Property preGrazeCovers As Double()
+        Get
+            Return myFarm.preGrazeCovers
+        End Get
+    End Property
+
+    <Output()> <Units("kg/ha")> Public ReadOnly Property postGrazeCovers As Double()
+        Get
+            Return myFarm.postGrazeCovers
+        End Get
+    End Property
+
     'Main model step
     <EventHandler()> Sub OnProcess()
         ' ************* Farm testing **********************
         If Not (GrazingIntervalIsSet) Then
-            GrazingInterval = dairyNZ_mg(month - 1)
+            GrazingInterval = dairyNZ_mg(MyClock.month - 1)
             GrazingIntervalIsSet = False 'not user set so reset switch
         End If
         If Not (GrazingResidualIsSet) Then
-            GrazingResidual = dairyNZ_gr(month - 1)
+            GrazingResidual = dairyNZ_gr(MyClock.month - 1)
             GrazingResidualIsSet = False 'not user set so reset switch
         End If
 
@@ -170,23 +184,25 @@ Public Class DDRules
         myFarm.GrazingInterval = GrazingInterval
         'myFarm.StockingRate = sr
 
-        myFarm.Update()
-        If (MyClock.simulation_days = 0) And AllocationType > 0 Then
-            myFarm.CutToFeedWedge(1500, 21)
+        If (MyClock.simulation_days = 0) And AllocationType = 1 Then
+            'myFarm.CutToFeedWedge(GrazingResidual, GrazingInterval, MilkingCows() / FarmArea, ME_Demand_Cow / 11.5)
+            myFarm.CutToFeedWedge(GrazingResidual, 21)
         End If
-        myFarm.Process(Start_week)
 
+        myFarm.Process(start_week)
 
-        Dim cover As Double = myFarm.AverageCover
+        'Dim cover = myFarm.AverageCover()
         ' ************* Farm testing **********************
         PrepareOutputs()
 
         'PublishGrazingEvent() - testing
     End Sub
 
+    'Do whole farm fertiliser events apply fertiliser to effluent paddocks
     <Output()> Public ApplyFertToEffluentPdks As Boolean = False
     'Whole farm fertiliser application
 
+    'Whole farm fertiliser event
     <EventHandler()> Public Sub OnApplyFertiliser(ByVal amount As FertiliserApplicationType)
         'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
         myFertiliserAmount += myFarm.Fertilise(amount, ApplyFertToEffluentPdks)
@@ -196,16 +212,16 @@ Public Class DDRules
     'Whole farm irrigation application
     <EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
         'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
-        myIrrigationAmount += myFarm.Irrigate(amount)
+        myIrrigationAmount += myFarm.Irrigate(amount, myIrrigation_efficiency)
         'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
     End Sub
 
-    'Testing overloaded irrigation Apply event
+    'Overloaded irrigation Apply event
     <EventHandler()> Public Sub OnApply(ByVal amount As IrrigationApplicationType)
         OnApplyIrrigation(amount)
     End Sub
 
-    'Testing overloaded fertiliser Apply event
+    'Overloaded fertiliser Apply event
     <EventHandler()> Public Sub OnApply(ByVal amount As FertiliserApplicationType)
         OnApplyFertiliser(amount)
     End Sub
@@ -225,7 +241,23 @@ Public Class DDRules
     End Property
 #End Region
 
-    'Effective farm area [ha]
+    'Porportion of applied irrgation that reaches the soil surface
+    <Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
+        Get
+            Return myIrrigation_efficiency
+        End Get
+        Set(ByVal value As Double)
+            If (value < 0) Then
+                myIrrigation_efficiency = 0
+            ElseIf (value > 1) Then
+                myIrrigation_efficiency = 1
+            Else
+                myIrrigation_efficiency = value
+            End If
+        End Set
+    End Property
+
+    <Description("Effective farm area [ha]")>
     <Output()> <Units("ha")> Public Property FarmArea() As Double
         Get
             Return TotalFarmArea
@@ -612,7 +644,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Proportion of silage lost during feeding out
+    'Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)
     <Output()> <Units("0-1")> Public Property SilageWastage() As Double
         Get
             Return myFarm.SilageWastage * 100
@@ -629,6 +661,16 @@ Public Class DDRules
         End Get
         Set(ByVal value As Double)
             myFarm.SilageDigestability = value
+        End Set
+    End Property
+
+    'proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage]
+    <Output()> <Units("0-1")> Public Property SilageQualityModifier() As Double
+        Get
+            Return myFarm.SilageQualityModifier
+        End Get
+        Set(ByVal value As Double)
+            myFarm.SilageQualityModifier = Math.Max(0, Math.Min(1, value))
         End Set
     End Property
 #End Region
@@ -1074,7 +1116,17 @@ Public Class DDRules
         End Set
     End Property
 
-    'Testing: Use a moving average of daily growth to predict future growth
+    'Switch to include stolon mass in calculations and reporting [0=No, 1=Yes]
+    <Param()> Property IncludeStolon() As Integer
+        Get
+            Return LocalPaddockType.IncludeStolon
+        End Get
+        Set(ByVal value As Integer)
+            LocalPaddockType.IncludeStolon = value
+        End Set
+    End Property
+
+    'Testing: Use a moving average of daily growth to predict future growth based in past growth
     <Param()> Property GrowthRateWindowSize() As Integer
         Get
             Return LocalPaddockType.MovingAverageSeriesLength
@@ -1148,7 +1200,21 @@ Public Class DDRules
     'Average pasture mass across the milking platform
     <Output()> <Units("kg/ha")> Public ReadOnly Property AverageFarmCover() As Double
         Get
-            Return myFarm.AverageCover
+            Return myFarm.AverageCover()
+        End Get
+    End Property
+
+    'Average pasture mass across the milking platform
+    <Output()> <Units("kg/ha")> Public ReadOnly Property AverageFarmCoverWeekly() As Double
+        Get
+            Return myFarm.AverageFarmCoverWeekly()
+        End Get
+    End Property
+
+    'Average pasture mass across the milking platform in "clicks". Source 1-15 Using the Rising Plate Meter (RPM)
+    <Output()> <Units("kg/ha")> Public ReadOnly Property AverageCoverClicks() As Double
+        Get
+            Return (myFarm.AverageCover() - 500) / 140.0
         End Get
     End Property
 
@@ -1171,24 +1237,6 @@ Public Class DDRules
         Get
             Return myFarm.IdealPreGrazingCover()
         End Get
-    End Property
-
-    Dim myIrrigation_efficiency As Double
-
-    'This can be set but is not used yet
-    <Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
-        Get
-            Return myIrrigation_efficiency
-        End Get
-        Set(ByVal value As Double)
-            If (value < 0) Then
-                myIrrigation_efficiency = 0
-            ElseIf (value > 1) Then
-                myIrrigation_efficiency = 1
-            Else
-                myIrrigation_efficiency = value
-            End If
-        End Set
     End Property
 
     'Test array output (not used)
@@ -1317,8 +1365,8 @@ Public Class DDRules
         End Set
     End Property
 
-    'Grazing allocation system used (0=Dawns rules, 1=LUDF)
-    <Output()> <Units("0-1")> Public Property AllocationType() As Integer
+    'Grazing allocation system used (0=Simple, 1=Feed Wedge)
+    <Output()> <Units("0,1")> Public Property AllocationType() As Integer
         Get
             Return myFarm.AllocationType
         End Get
@@ -1327,7 +1375,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Grazing allocation system used (0=Dawns rules, 1=LUDF)
+    'Proportion of total cows to dry off [0-1]
     <Output()> <Units("0-1")> Public Property DryOffProportion() As Double
         Get
             Return myFarm.DryOffProportion
@@ -1337,18 +1385,19 @@ Public Class DDRules
         End Set
     End Property
 
+    'Number of dry cows on farm
     <Output()> ReadOnly Property DryCows As Double
         Get
             Return myFarm.DryCows
         End Get
     End Property
 
+    'Number of milking cows on farm
     <Output()> ReadOnly Property MilkingCows As Double
         Get
             Return myFarm.MilkingCows
         End Get
     End Property
-
 
     'Notes: Nitrogen Balance
     'Inputs
