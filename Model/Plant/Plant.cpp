@@ -78,6 +78,11 @@ Plant::Plant(protocol::Component *P, ScienceAPI& api, XMLNode parameters)
 
 Plant::~Plant(void)
    {
+     delete nStress;
+     delete pStress;
+     delete swStress;
+     delete tempStress;
+     delete co2Modifier;
    }
 
 void Plant::onInit1(void)

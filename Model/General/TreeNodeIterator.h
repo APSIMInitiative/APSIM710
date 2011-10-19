@@ -1,6 +1,6 @@
 #ifndef TreeNodeIteratorH
 #define TreeNodeIteratorH
-
+#include <stddef.h>
 // turn of the warnings about "Functions containing for are not expanded inline.
 
 // ------------------------------------------------------------------

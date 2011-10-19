@@ -31,7 +31,7 @@ all: $(APSIM)/Model/$(PROJECT).so
 endif
 
 ifeq ($(PROJECTTYPE),dll)
- LDFLAGS:= --no-allow-shlib-undefined -static -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions
+ LDFLAGS:= -static -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 

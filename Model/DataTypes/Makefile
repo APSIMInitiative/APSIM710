@@ -25,7 +25,10 @@ DOTNETDataTypes.cs:  Datatypes.xml CSDOTNETDataTypes.macro
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make
 
 cleanall: 
-	rm -f $(APSIM)/Model/ProcessDataTypesInterface.exe \
+	rm -f DOTNETDataTypes.h \
+	  DOTNETDataTypes.cpp \
+	  DOTNETDataTypes.cs \
+	  $(APSIM)/Model/ProcessDataTypesInterface.exe \
 	  $(APSIM)/Model/ComponentInterface2/DataTypes.h DOTNETDataTypes.h \
 	  $(APSIM)/Model/ComponentInterface/DataTypes.h
 

@@ -5205,7 +5205,7 @@ cpsc
 !            ! crop not in
             call millet_zero_variables ()
 !               ! set class
-            call millet_set_my_class (module_name)
+            call millet_set_my_class (Lower_case(module_name))
          endif
 
       elseif (action.eq.ACTION_process) then
@@ -5227,7 +5227,7 @@ cpsc
             ! Get constants
          call millet_init ()
             ! set class
-         call millet_set_my_class (module_name)
+         call millet_set_my_class (Lower_case(module_name))
             ! request and receive variables from owner-modules
          call millet_get_other_parameters ()
          call millet_get_other_variables ()
