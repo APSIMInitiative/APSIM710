@@ -72,11 +72,27 @@ public class TAPSIMHost : TBaseComp
             Comp.handleEvent(ApsimComponent.INIT2INDEX, null);
         }   
     }
+    //=========================================================================
+    /// <summary>
+    /// Do a QueryInfo for an entity(s) of a certain type (not a component). 
+    /// </summary>
+    /// <param name="searchPattern">Name of the entity being searched for. e.g. Year or lucerne.*</param>
+    /// <param name="findKind">Type of entity. e.g. TypeSpec.KIND_OWNED</param>
+    /// <param name="entityList">The list that will contain the results of the QueryInfo. (Assumes synchronous call)</param>
+    //=========================================================================
     public void queryEntityInfo(String searchPattern, uint findKind, ref List<TIDSpec> entityList)
     {
         entityInfoList.Add(searchPattern, entityList);  //keep track of the entity list
         sendQueryInfo(searchPattern, findKind, 0);
     }
+    //=========================================================================
+    /// <summary>
+    /// Do a QueryInfo for components or systems.
+    /// </summary>
+    /// <param name="searchPattern">Name of the entity being searched for. e.g. Paddock.*</param>
+    /// <param name="findKind">TypeSpec.KIND_COMPONENT or TypeSpec.KIND_SYSTEM</param>
+    /// <param name="componentList">The list that will contain the results of the QueryInfo.</param>
+    //=========================================================================
     public void queryCompInfo(String searchPattern, uint findKind, ref List<TComp> componentList)
     {
         compInfoList.Add(searchPattern, componentList);    //keep track of the component list
@@ -127,7 +143,7 @@ public class TAPSIMHost : TBaseComp
         base.processEntityInfo(sReqName, sReturnName, ownerID, entityID, iKind, sDDML);
         
         //queryInfo's have been sent for sibling component names
-        if ( (iKind == TypeSpec.KIND_COMPONENT) || (iKind == TypeSpec.KIND_SYSTEM) )
+        if ((iKind == TypeSpec.KIND_COMPONENT) || (iKind == TypeSpec.KIND_SYSTEM))
         {
             if (compInfoList.ContainsKey(sReqName))
             {
@@ -156,7 +172,25 @@ public class TAPSIMHost : TBaseComp
                 }
             }
             else
-            { 
+            {
+            }
+        }
+        else
+        {   //assume that any other type being returned will be placed into the entity info list because
+            //of a call to queryEntityInfo()
+            if (entityInfoList.ContainsKey(sReqName))
+            {
+                List<TIDSpec> entities;
+                if (entityInfoList.TryGetValue(sReqName, out entities))
+                {
+                    TIDSpec foundEntity = new TIDSpec();
+                    foundEntity.compID = ownerID;
+                    foundEntity.itemID = entityID;
+                    foundEntity.kind = iKind;
+                    foundEntity.name = sReturnName;
+                    foundEntity.sType = sDDML;
+                    entities.Add(foundEntity);
+                }
             }
         }
     }
