@@ -3,6 +3,7 @@
 // Keeps pointers to fortran entry points (Main(), do_init1() etc..
 // and calls them when reqd.
 #include <stdio.h>
+#include <stdlib.h>
 #include <ComponentInterface/ScienceAPI.h>
 #include <General/dll.h>
 #include "FORTRANComponentWrapper.h"
@@ -1598,6 +1599,24 @@ extern "C" double EXPORT STDCALL string_to_float(const char* str, bool* ok, unsi
 	return result;
 }
 
+// ------------------------------------------------------------------
+// Provide access to a method for rapdily converting floating point numeric to a string
+// which should be noticeably faster than a Fortran internal write (especially with gfortran)
+// Returns the number of characters actually written
+// We are trying to emulate the results returned by "write(value_string, '(g25.15e3)' ) Value"
+// used in Real_var_to_string
+// ------------------------------------------------------------------
+extern "C" int EXPORT STDCALL float_to_string(const double* value, char* str, unsigned strLength)
+{
+    if (strLength < 25) // Fail if the buffer is too small
+	  return 0;
+    char* dest = gcvt(*value, 15, str);
+	int len = 0;
+	while (*dest++)
+	  len++;
+    memset(--dest, ' ', 25 - len);
+	return len;
+}
 extern "C" int EXPORT STDCALL fast_index(char* str, const char* ch, unsigned strLeng, unsigned chLeng)
 {
 	char lastCh = str[strLeng - 1];

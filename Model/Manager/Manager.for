@@ -860,6 +860,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
       real RealValue
       character*500 str
       logical*1 read_status
+      integer leng
 
       integer    Ok_status             ! Line was read from file ok.
       parameter (Ok_status = 0)
@@ -867,12 +868,14 @@ C     Last change:  P    25 Oct 2000    9:26 am
 !- Implementation Section ----------------------------------
 
       call assign_string(g%local_variable_values(Indx), value)
-      if (Trim(Value) .ne. blank) then
+      if (Value .ne. blank) then
          realvalue = string_to_float(value, read_status)
          if (read_status) then
+            !leng = float_to_string(realvalue, str)
             write(str, '(f15.5)' ) RealValue
             !g%local_variable_values(Indx) = Trim(str)
-            call assign_string(g%local_variable_values(Indx), Trim(str))
+            call assign_string(g%local_variable_values(Indx), 
+     .                          Trim(str))
          endif
       endif
       return
@@ -1017,7 +1020,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
       n = len_trim(Variable_name)      
       
-      if (variable_name .eq. ' ') then
+      if (n .eq. 0) then
          ! do nothing
 
       else if (n .ge. 5 .and. variable_name(1:5) .eq. 'date(')then
@@ -1107,7 +1110,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :                             , plant_status, numvals)
 
             if (numvals.ne.0) then
-               crop_in_ground = (plant_status .ne. 'out')
+               crop_in_ground = (plant_status(1:3) .ne. 'out')
             else
                more_crops_to_check = .false.
             endif
@@ -1534,7 +1537,7 @@ C     Last change:  P    25 Oct 2000    9:26 am
          ! manager variable.  Make sure we honour double quotes ie don't
          ! substitute local variable values.
          call get_next_variable(st, key, Value_string)
-         do while (key .ne. ' ')
+         do while (key(1:1) .ne. ' ')
             call split_off_units (Value_string, units)
                ! may be multiple values
             new_value_string = ' '
@@ -1545,7 +1548,8 @@ C     Last change:  P    25 Oct 2000    9:26 am
                if (aValue(1:1).ne.'"' .and. aValue(1:1).ne.'''') then
                   localIndex = LocalVarIndex(aValue)
                   if (localIndex > 0) then
-                     aValue = g%local_variable_values(localIndex)
+                     aValue = No_leading_spaces(
+     :                       g%local_variable_values(localIndex))
                   else
                      ! local variable name not found - leave as is
                   endif
@@ -1554,21 +1558,21 @@ C     Last change:  P    25 Oct 2000    9:26 am
                endif
                   ! append value to a new value string.
                call append_string(new_value_string, ' '
-     :                           // No_leading_spaces(aValue))
+     :                           // aValue)
             enddo
 
             ! append all the bits for the current key to a new string.
-            if (newString .ne. ' ') then
+            if (newString(1:2) .ne. '  ') then
                call append_string(newString, ',')
             endif
             call append_string(newString, ' ' // key)
-            if (aValue .ne. ' ') then
+            if (aValue(1:1) .ne. ' ') then
                call append_string(newString, ' =')
                call append_string(newString, ' '
      :                        // No_leading_spaces(new_value_string))
             else
             endif
-            if (units .ne. '()') then
+            if (units(1:2) .ne. '()') then
                call append_string(newString, ' ' // units)
             endif
 
@@ -2308,11 +2312,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer    end_of_line           ! end position of line
       character  Charact               ! Character from line
 
-      character  Zero
-      parameter (Zero='0')
+!      character  Zero
+!      parameter (Zero='0')
 
-      character  Nine
-      parameter (Nine='9')
+!      character  Nine
+!      parameter (Nine='9')
 
 !+  Purpose
 !     Convert a string value to a double number.
@@ -2366,11 +2370,11 @@ C     Last change:  P    25 Oct 2000    9:26 am
       integer    end_of_line           ! end position of line
       character  Charact               ! Character from line
 
-      character  Zero
-      parameter (Zero='0')
+!      character  Zero
+!      parameter (Zero='0')
 
-      character  Nine
-      parameter (Nine='9')
+!      character  Nine
+!      parameter (Nine='9')
 
 !+  Purpose
 !     Convert a string value to a real number.
@@ -2461,44 +2465,44 @@ C     Last change:  P    25 Oct 2000    9:26 am
             if (g%all_ok .eq. YES) then
                 if (operator .eq. C_EQUAL) then
                     if (doubles_are_equal(temp_1, temp_2)) then
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                      else
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     endif
 
                 elseif (operator .eq. C_LESS_THAN) then
                     if (temp_1 .lt. temp_2) then
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                     else
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     endif
 
                 elseif (operator .eq. C_LESS_EQUAL) then
                     if (temp_1 .le. temp_2) then
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                     else
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     endif
 
                 elseif (operator .eq. C_GREATER_THAN) then
                     if (temp_1 .gt. temp_2) then
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                     else
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     endif
 
                 elseif (operator .eq. C_GREATER_EQUAL) then
                     if (temp_1 .ge. temp_2) then
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                     else
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     endif
 
                 elseif (operator .eq. C_NOT_EQUAL) then
                     if (doubles_are_equal (temp_1, temp_2)) then
-                        call   push_stack('0.0')
+                        call   push_stack('0')
                     else
-                        call   push_stack('1.0')
+                        call   push_stack('1')
                     endif
                 endif
             endif
@@ -2507,44 +2511,44 @@ C     Last change:  P    25 Oct 2000    9:26 am
               if (operator .eq. C_EQUAL) then
                   if (strings_equal(Operand_1(:op1_leng), 
      :                              Operand_2(:op2_leng))) then
-                      call   push_stack('1.0')
+                      call   push_stack('1')
                    else
-                      call   push_stack('0.0')
+                      call   push_stack('0')
                   endif
 
               elseif (operator .eq. C_LESS_THAN) then
                 if (operand_1(:op1_leng) .lt. operand_2(:op2_leng)) then
-                      call   push_stack('1.0')
+                      call   push_stack('1')
                 else
-                      call   push_stack('0.0')
+                      call   push_stack('0')
                 endif
 
               elseif (operator .eq. C_LESS_EQUAL) then
                 if (operand_1(:op1_leng) .le. operand_2(:op2_leng)) then
-                    call   push_stack('1.0')
+                    call   push_stack('1')
                 else
-                    call   push_stack('0.0')
+                    call   push_stack('0')
                 endif
 
               elseif (operator .eq. C_GREATER_THAN) then
                 if (operand_1(:op1_leng) .gt. operand_2(:op2_leng)) then
-                    call   push_stack('1.0')
+                    call   push_stack('1')
                 else
-                    call   push_stack('0.0')
+                    call   push_stack('0')
                 endif
 
               elseif (operator .eq. C_GREATER_EQUAL) then
                 if (operand_1(:op1_leng) .ge. operand_2(:op2_leng)) then
-                    call   push_stack('1.0')
+                    call   push_stack('1')
                 else
-                    call   push_stack('0.0')
+                    call   push_stack('0')
                 endif
 
               elseif (operator .eq. C_NOT_EQUAL) then
                 if (operand_1(:op1_leng) .ne. operand_2(:op2_leng)) then
-                    call   push_stack('1.0')
+                    call   push_stack('1')
                 else
-                    call   push_stack('0.0')
+                    call   push_stack('0')
                 endif
               endif
             endif
@@ -2626,9 +2630,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
                 if (doubles_are_equal (Temp_1, 1.0d0) .and.
      .              doubles_are_equal (Temp_2, 1.0d0)) then
-                   call push_stack('1.0')
+                   call push_stack('1')
                 else
-                   call push_stack('0.0')
+                   call push_stack('0')
                 endif
              endif
 
@@ -2722,9 +2726,9 @@ C     Last change:  P    25 Oct 2000    9:26 am
      :                                    Temp_2, numvals)
                 if (Doubles_are_equal (Temp_1, 1.0d0) .or.
      .              Doubles_are_equal (Temp_2, 1.0d0)) then
-                   call push_stack('1.0')
+                   call push_stack('1')
                 else
-                   call push_stack('0.0')
+                   call push_stack('0')
                 endif
              endif
 
@@ -3128,18 +3132,25 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 
 ! =====================================================================
-       recursive character*(buffer_size) function Real_or_not
-     .     (Variable_Value, Variable_leng)
+       recursive function Real_or_not
+     .     (Variable_Value, Variable_leng)  RESULT(res)
 ! =====================================================================
       implicit none
 
 !+  Sub-Program Arguments
        character*(*) Variable_Value
        integer Variable_leng
+       character*(buffer_size) res
 
 !+  Purpose
 !     check to see if the value is a real
 !     then return the resulting real or not.
+
+!     I think the real purpose here is to ensure that strings representing
+!     real values are converted into a consistent representation.
+!     This means that, down the line, a string comporison can be used
+!     to check for equivalency, and will give the expected results even
+!     if the original strings were different representations like "1." vs. "1.000"
 
 !+  Changes
 !      TM - 21/11/94
@@ -3150,16 +3161,27 @@ C     Last change:  P    25 Oct 2000    9:26 am
 
 !- Implementation Section ----------------------------------
 
-       call Str_to_double_var(Variable_value, Temp, Double_flag)
-
-       if (Double_flag .eq. 0) then
-          call Real_var_to_string(real(Temp), Real_or_not)
-          Variable_leng = 25  ! Real_var_to_string uses "G25.15e3"
+! handle some common cases first...
+       if (Variable_value .eq. '0' .or. 
+     .      Variable_value .eq. ' 0.') then
+          res(1:3) = ' 0.'
+          Variable_leng = 3
+       else if (Variable_value .eq. '1' .or.
+     .      Variable_value .eq. ' 1.') then
+          res(1:3) = ' 1.'
+          Variable_leng = 3
        else
-          Variable_leng = len(Variable_value)
-          Real_or_not(:Variable_leng) = Variable_Value
-       endif
+         call Str_to_double_var(Variable_value, Temp, Double_flag)
 
+         if (Double_flag .eq. 0) then
+            res(1:1) = ' '
+            variable_leng = 1 + float_to_string(Temp, res(2:))
+         else
+            Variable_leng = len(Variable_value)
+            Res(:Variable_leng) = Variable_Value(:Variable_leng)
+         endif
+       endif
+	   
        return
        end function
 

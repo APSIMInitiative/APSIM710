@@ -818,6 +818,14 @@ module ComponentInterfaceModule
        double precision string_to_float
        end function string_to_float	   
 
+       function float_to_string(dValue, outString)
+       ml_external float_to_string
+!STDCALL(float_to_string)
+       double precision, intent(in)   :: dValue
+       character (len=*), intent(out) :: outString
+       integer float_to_string
+       end function float_to_string
+
        function fast_index(inString, ch)
        ml_external fast_index
 !STDCALL(fast_index)
