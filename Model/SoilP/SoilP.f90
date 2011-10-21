@@ -102,6 +102,7 @@ module SoilPModule
                                        ! Soils P sorption characteristic
       real      root_cp                ! C:P ratio of roots at initialisation
       real      root_cp_pool(3)        ! C:P ratio of roots at initialisation in each pool
+      real         fraction_urine_added
 
    end type SoilPParameters
 ! ====================================================================
@@ -612,6 +613,9 @@ subroutine soilp_read_param ()
    ! Now change rate coefficients from fraction per year to fraction per day
    p%rate_loss_avail_p = - alog (1.0 - p%rate_loss_avail_p) / 365.0
 
+   call read_real_var_optional (section_name, 'fraction_urine_added', '(0-1)', p%fraction_urine_added, numvals, 0.0, 1.0)
+   if (numvals.le.0) p%fraction_urine_added = 0.5
+   
    call pop_routine (myname)
    return
 end subroutine
@@ -2389,6 +2393,26 @@ subroutine soilp_dlt_fom_p_pools ()
    return
 end subroutine
 
+!     ===========================================================
+subroutine soilp_OnAddUrine(variant)
+!     ===========================================================
+
+   implicit none
+
+!+  Purpose
+!       Add P from pee
+
+!+  Sub-Program Arguments
+   integer, intent(in) :: variant
+
+   type(AddUrineType) :: UrineAdded
+   integer :: layer
+
+   call unpack_AddUrine(variant, UrineAdded)
+   g%labile_p(1) = g%labile_p(1) + UrineAdded%POX
+   return
+
+end subroutine
 
 end module SoilPModule
 
@@ -2521,6 +2545,8 @@ subroutine respondToEvent(fromID, eventID, variant)
       call soilp_min_residues ()
    elseif (eventID .eq.id%Incorp_FOM) then
       call soilp_OnIncorpFOM(variant)
+   elseif (eventID .eq.id%add_urine) then
+      call soilp_OnAddUrine(variant)
    endif
 
    return

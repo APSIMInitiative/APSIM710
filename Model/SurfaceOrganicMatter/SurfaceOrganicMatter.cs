@@ -1740,7 +1740,36 @@ public partial class SurfaceOrganicMatter : Instance
         }
     }
 
+    /// <summary>
+    /// Adds excreta in response to an AddFaeces event
+    /// This is a still the minimalist version, providing
+    /// an alternative to using add_surfaceom directly
+    /// </summary>
+    private void surfom_add_faeces(AddFaecesType data)
+    {
+        string Manure = "manure";
+        AddSurfaceOM((float)(data.OMWeight * fractionFaecesAdded), 
+                     (float)(data.OMN * fractionFaecesAdded),
+                     (float)(data.OMP * fractionFaecesAdded), 
+                     Manure);
 
+        // We should also have added ash alkalinity, but AddSurfaceOM
+        // doesn't have a field for that.
+        // So let's add a bit of logic here to handle it...
+        // We don't have a "fr_pool_ashalk" either, so we'll assume
+        // it follows the same pattern as P.
+        int SOMNo = surfom_number(Manure);
+
+        if (SOMNo >= 0) // Should always be OK, following creation in surfom_add_surfom
+        {
+            for (int i = 0; i < MaxFr; i++)
+            {
+                g.SurfOM[SOMNo].Lying[i].AshAlk += (float)(data.OMAshAlk * fractionFaecesAdded * c.fr_pool_P[i, SOMNo]);
+            }
+        }
+
+        // We should also handle sulphur someday....
+    }
 
     /// <summary>
     /// Calculates surfom addition as a result of add_surfom message

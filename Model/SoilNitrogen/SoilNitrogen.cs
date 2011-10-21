@@ -185,7 +185,11 @@ public class SoilN : Instance
                 _ureappm = value;
         }
     }
-    #endregion
+
+    [Param(Optional = true, MinVal=0.0, MaxVal=1.0)]
+    private double fraction_urine_added = 0.5;  // What is appropriate here?
+
+#endregion
 #region Parameters not usually provided by the user
     [Param]
     private double enr_a_coeff = 0.0;   // enrichment equation coefficient a
@@ -1398,6 +1402,15 @@ public class SoilN : Instance
                         " less than lower limit of " + nh4_min[layer]);
         }
     }
+
+    [EventHandler]
+    public void OnAddUrine(AddUrineType UrineAdded) 
+    {
+       // Starting with the minimalist version. To be updated by Val's group to
+       // include a urine patch algorithm
+       _urea[0] += UrineAdded.Urea * fraction_urine_added;
+    }
+
 
 #endregion
 

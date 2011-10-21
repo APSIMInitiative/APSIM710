@@ -130,6 +130,13 @@ public partial class SurfaceOrganicMatter : Instance
     [Units("")]
     public float standing_extinct_coeff;
 
+    /// <summary>
+    /// fraction of incoming faeces to add
+    /// </summary>
+    [Param(Optional = true, MinVal = 0.0, MaxVal = 0.0)]
+    [Units("0-1")]
+    public double fractionFaecesAdded = 0.5;
+
     public string[] fom_types;
     public int num_fom_types;
     public int[] cf_contrib = new int[max_residues];            //determinant of whether a residue type contributes to the calculation of contact factor (1 or 0)

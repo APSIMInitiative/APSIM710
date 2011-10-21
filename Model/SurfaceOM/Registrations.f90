@@ -26,6 +26,7 @@ module Registrations
       integer :: post
       integer :: actualresiduedecompositioncalculated
       integer :: BiomassRemoved
+      integer :: add_faeces
       integer :: dummy
 
    end type IDsType
@@ -73,6 +74,7 @@ module Registrations
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
+         id%add_faeces = add_registration(respondToEventReg, 'add_faeces', AddFaecesTypeDDML, '')
 
 	 end subroutine
 end module Registrations

@@ -114,6 +114,7 @@ module SurfaceOMModule
       real  po4ppm(max_residues)       ! ammonium component of residue (ppm)
       real  specific_area(max_residues)! specific area of residue (ha/kg)
       real  standing_extinct_coeff   ! extinction coefficient for standing residues
+      real  fraction_faeces_added
 
       end type SurfaceOMConstants
 !     ================================================================
@@ -482,6 +483,9 @@ subroutine surfom_read_coeff ()
    call read_real_var (section_name, 'default_cpr', '()', c%default_cpr, numvals, 0.0, 1000.)
    call read_real_var (section_name, 'default_standing_fraction', '()', c%default_standing_fraction, numvals, 0.0, 1.0)
    call read_real_var (section_name, 'standing_extinct_coeff', '()', c%standing_extinct_coeff, numvals, 0.0, 1.0)
+   call read_real_var_optional (section_name, 'fraction_faeces_added', '()', c%fraction_faeces_added, numvals, 0.0, 1.0)
+   if (numvals.le.0) c%fraction_faeces_added = 0.5
+  
 
    call pop_routine (my_name)
    return
@@ -3037,6 +3041,43 @@ subroutine SurfOMOnBiomassRemoved (variant)
 end subroutine
 
 
+!===========================================================
+subroutine SurfOMOnAddFaeces (variant)
+!===========================================================
+
+   implicit none
+
+!+  Purpose
+!     Get information on surfom added from the crops
+
+   integer, intent(in) :: variant
+   type(AddFaecesType) :: FaecesAdded
+   integer SOMNo
+   
+   call unpack_AddFaeces(variant, FaecesAdded)
+
+   call AddSurfaceOM(SNGL(FaecesAdded%OMWeight) * c%fraction_faeces_added , &
+                    SNGL(FaecesAdded%OMN) * c%fraction_faeces_added, &
+                    SNGL(FaecesAdded%OMP) * c%fraction_faeces_added, &
+                    'manure')
+
+    ! We should also have added ash alkalinity, but AddSurfaceOM
+    !  doesn't have a field for that.
+    ! So let's add a bit of logic here to handle it...
+    ! We don't have a "fr_pool_ashalk" either, so we'll assume
+    ! it follows the same pattern as P.
+    SOMNo = surfom_number('manure')
+
+    if (SOMNo .GE. 0) then ! Should always be OK, following creation in surfom_add_surfom
+       g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk  = &
+               g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk  + & 
+               SNGL(FaecesAdded%OMAshAlk) * c%fraction_faeces_added * c%fr_pool_p(1:MaxFr,SOMNo)
+    endif
+
+    ! We should also handle sulphur someday....
+   return
+end subroutine
+
 ! ====================================================================
    subroutine AddSurfaceOM(surfom_added, surfom_N_added, surfom_P_added, crop_type)
 ! ====================================================================
@@ -3500,6 +3541,8 @@ subroutine respondToEvent(fromID, eventID, variant)
       call surfom_remove_surfom(variant)
    elseif (eventID  .eq. id%BiomassRemoved) then
       call SurfOMOnBiomassRemoved(variant)
+   elseif (eventID  .eq. id%add_faeces) then
+      call SurfOMOnAddFaeces(variant)
    endif
    return
 end subroutine respondToEvent

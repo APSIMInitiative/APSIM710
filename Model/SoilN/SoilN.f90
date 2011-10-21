@@ -316,6 +316,7 @@ module Soiln2Module
                                           ! decomposition of FOM pools (0-1)
       real         rd_hum(2)              ! potential rate of humus
                                           ! mineralization (per day)
+      real      fraction_urine_added
    end type Soiln2Constants
 ! ====================================================================
    type IDsType
@@ -333,6 +334,7 @@ module Soiln2Module
       integer :: new_profile
       integer :: process
       integer :: NitrogenChanged
+      integer :: AddUrine
    end type IDsType
 
 
@@ -665,6 +667,9 @@ subroutine soiln2_read_param ()
 
    endif
 
+   call read_real_var_optional (section_name, 'fraction_urine_added', '(0-1)', c%fraction_urine_added, numvals, 0.0, 1.0)
+   if (numvals.le.0) c%fraction_urine_added = 0.5
+   
    string = ' '
    call read_char_var_optional (section_name, 'use_organic_solutes', '()', string, numvals)
    if (string(1:2) .eq. 'on') then
@@ -4978,6 +4983,23 @@ subroutine OnNitrogenChanged (variant)
    return
 end subroutine
 
+!  ===========================================================
+subroutine soiln2_OnAddUrine (variant)
+!  ===========================================================
+   implicit none
+
+   ! Adding urine from stock
+
+   integer, intent(in) :: variant
+   type(AddUrineType) :: UrineAdded
+   integer :: layer
+
+   call unpack_AddUrine(variant, UrineAdded)
+   g%urea(1) = g%urea(1) + UrineAdded%Urea * c%fraction_urine_added
+
+   return
+end subroutine
+
 end module Soiln2Module
 
 !     ===========================================================
@@ -5099,6 +5121,7 @@ subroutine doInit1()
    id%IncorpFOMPool = add_registration(respondToEventReg, 'IncorpFOMPool', FOMPoolTypeDDML, '')
    id%new_profile = add_registration(respondToEventReg, 'new_profile', newprofileTypeDDML, '')
    id%NitrogenChanged = add_registration(respondToEventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
+   id%AddUrine = add_registration(respondToEventReg, 'AddUrine', AddUrineTypeDDML, '')
 
    ! variables we get from other modules.
    dummy = add_registration_with_units(getVariableReg, 'amp', floatTypeDDML, 'oC')
@@ -5236,6 +5259,9 @@ subroutine respondToEvent(fromID, eventID, variant)
 
    else if (eventID .eq. id%NitrogenChanged) then
       call OnNitrogenChanged(variant)
+
+   else if (eventID .eq. id%AddUrine) then
+      call soiln2_OnAddUrine(variant)
    endif
    return
 end subroutine respondToEvent

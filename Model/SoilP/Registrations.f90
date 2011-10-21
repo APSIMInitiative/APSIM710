@@ -13,6 +13,7 @@ module Registrations
       integer :: actualresiduedecompositioncalculated
       integer :: tick
       integer :: process
+      integer :: add_urine
 
    end type IDsType
 
@@ -34,6 +35,7 @@ module Registrations
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%tick = add_registration(respondToEventReg, 'tick', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
+         id%add_urine = add_registration(respondToEventReg, 'AddUrine', AddUrineTypeDDML, '')
 
          dummy = add_reg(respondToGetSetReg, 'labile_p', floatarrayTypeDDML, 'kg/ha', 'Labile P')
          dummy = add_reg(respondToGetReg, 'unavail_p', floatarrayTypeDDML, 'kg/ha', 'Unavailable P')
