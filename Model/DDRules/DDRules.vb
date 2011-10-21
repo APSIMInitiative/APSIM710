@@ -241,7 +241,7 @@ Public Class DDRules
     End Property
 #End Region
 
-    'Porportion of applied irrgation that reaches the soil surface
+    'Proportion of applied irrgation that reaches the soil surface
     <Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
         Get
             Return myIrrigation_efficiency
@@ -257,7 +257,7 @@ Public Class DDRules
         End Set
     End Property
 
-    <Description("Effective farm area [ha]")>
+    <Description("Effective farm area [ha]")> _
     <Output()> <Units("ha")> Public Property FarmArea() As Double
         Get
             Return TotalFarmArea

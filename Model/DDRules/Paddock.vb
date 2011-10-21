@@ -40,7 +40,7 @@ Public Class LocalPaddockType
 
     Private UrinePatchComponent As Component
     'Private AgPasture As Component
-    Private AgPasture As AgPasture '<Link()> 
+    Private AgPastureInstance As AgPasture '<Link()> 
     Private UpdatedGrowth As Boolean = False
 
     Public Sub New(ByVal index As Integer, ByRef paddock As Paddock, ByVal PaddockArea As Double)
@@ -54,7 +54,7 @@ Public Class LocalPaddockType
         Grazable = True                               'paddock grazable at initilisation time
         Me.index = index                                        'sort origional paddock position in the simulation for sorting
         UrinePatchComponent = ApSim_SubPaddock.ComponentByName("UrinePatch")
-        AgPasture = ApSim_SubPaddock.ComponentByType("AgPasture")
+        AgPastureInstance = CType(ApSim_SubPaddock.ComponentByType("AgPasture"), AgPasture)
         myAverageGrowthRate = New MovingAverage(MovingAverageSeriesLength)
     End Sub
 
@@ -301,7 +301,7 @@ Public Class LocalPaddockType
         result = result.Multiply(percentageRemoval)
         crop.Publish("remove_crop_biomass", result.toRemoveCropDmType)
 
-        If Not (AgPasture Is Nothing) Then
+        If Not (AgPastureInstance Is Nothing) Then
             result.N_Conc = crop.Variable("AboveGroundNPct").ToDouble / 100.0
             result.digestibility = crop.Variable("DefoliatedDigestibility").ToDouble
         Else
@@ -457,10 +457,10 @@ Public Class LocalPaddockType
             mass.dStem = Crop.Variable("stemsenescedwt").ToDouble * 10
 
             'Is it dangerous to assmue a single instance per paddock?
-            If Not (AgPasture Is Nothing) Then ' Note: this assumes AgPasture is the only crop model in the paddock
+            If Not (AgPastureInstance Is Nothing) Then ' Note: this assumes AgPasture is the only crop model in the paddock
                 mass.N_Conc = Crop.Variable("AboveGroundNPct").ToDouble() / 100.0
-                mass.N_Conc = (AgPasture.LeafN + AgPasture.StemN) / (AgPasture.LeafWt + AgPasture.StemWt)
-                mass.stolon = AgPasture.StolonWt
+                mass.N_Conc = (AgPastureInstance.LeafN + AgPastureInstance.StemN) / (AgPastureInstance.LeafWt + AgPastureInstance.StemWt)
+                mass.stolon = AgPastureInstance.StolonWt
                 If Not (UpdatedGrowth) Then
                     Dim GrowthRate As Double = Crop.Variable("HerbageGrowthWt").ToDouble()
                     myAverageGrowthRate.Add(GrowthRate) 'this should only be called once a day
