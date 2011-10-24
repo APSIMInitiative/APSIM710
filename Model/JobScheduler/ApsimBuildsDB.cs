@@ -8,6 +8,7 @@ using System.Text;
 using System.Security.Authentication;
 using System.Data.SqlClient;
 using CSGeneral;
+using System.Threading;
 
 public class ApsimBuildsDB
 {
@@ -20,8 +21,22 @@ public class ApsimBuildsDB
     {
         //string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Initial Catalog=\"APSIM Builds\";Integrated Security=True";
         string ConnectionString = "Data Source=www.apsim.info\\SQLEXPRESS;Database=\"APSIM Builds\";Trusted_Connection=True;User ID=apsrunet;password=CsiroDMZ!";
-        Connection = new SqlConnection(ConnectionString);
-        Connection.Open();
+
+        // There are often network intermittent issues so try 5 times to make a connection.
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                Connection = new SqlConnection(ConnectionString);
+                Connection.Open();
+                return;
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(3 * 60 * 1000); // 3 minutes
+            }
+        }
+        throw new Exception("Cannot open connection to SQL server: www.apsim.info");
     }
 
     /// <summary>   
@@ -31,9 +46,56 @@ public class ApsimBuildsDB
     {
         if (Connection != null)
         {
-            Connection.Close();
-            Connection = null;
+            // There are often network intermittent issues so try 5 times to close a connection.
+            for (int i = 0; i < 5; i++)
+            {
+                try
+                {
+                    Connection.Close();
+                    Connection = null;
+                    return;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(3 * 60 * 1000); // 3 minutes
+                }
+            }
+            throw new Exception("Cannot close connection to SQL server: www.apsim.info");
         }
+    }
+
+    private void ExecuteNonQuery(SqlCommand Cmd)
+    {
+        // There are often network intermittent issues so try 5 times to execute a non query
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                Cmd.ExecuteNonQuery();
+                return;
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(3 * 60 * 1000); // 3 minutes
+            }
+        }
+        throw new Exception("Cannot execute query to SQL server: www.apsim.info");
+    }
+    private SqlDataReader ExecuteReader(SqlCommand Cmd)
+    {
+        // There are often network intermittent issues so try 5 times to execute a reader query
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                return Cmd.ExecuteReader(); 
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(3 * 60 * 1000); // 3 minutes
+            }
+        }
+        throw new Exception("Cannot execute reader query to SQL server: www.apsim.info");
     }
 
     /// <summary>
@@ -56,7 +118,7 @@ public class ApsimBuildsDB
             Cmd.Parameters.Add(new SqlParameter("@DoCommit", "1"));
         else
             Cmd.Parameters.Add(new SqlParameter("@DoCommit", "0"));
-        Cmd.ExecuteNonQuery();
+        ExecuteNonQuery(Cmd);
     }
 
     /// <summary>
@@ -67,7 +129,7 @@ public class ApsimBuildsDB
         string SQL = "SELECT * FROM BuildJobs WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        SqlDataReader Reader = Command.ExecuteReader();
+        SqlDataReader Reader = ExecuteReader(Command);
         if (Reader.Read()) 
         {
             Dictionary<string, object> Items = new Dictionary<string, object>();
@@ -93,7 +155,7 @@ public class ApsimBuildsDB
         string SQL = "UPDATE BuildJobs SET Status = '" + NewStatus + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
     /// <summary>
@@ -105,7 +167,7 @@ public class ApsimBuildsDB
         string SQL = "UPDATE BuildJobs SET StartTime = '" + NowString + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
     /// <summary>
@@ -117,7 +179,7 @@ public class ApsimBuildsDB
         string SQL = "UPDATE BuildJobs SET FinishTime = '" + NowString + "' WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
     /// <summary>
@@ -128,7 +190,7 @@ public class ApsimBuildsDB
         string SQL = "UPDATE BuildJobs SET RevisionNumber = " + RevisionNumber.ToString() + " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
     /// <summary>
@@ -140,7 +202,7 @@ public class ApsimBuildsDB
                                             " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
     /// <summary>
@@ -151,7 +213,7 @@ public class ApsimBuildsDB
         string SQL = "UPDATE BuildJobs SET NumDiffs = " + NumDiffs.ToString() + " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
 
@@ -164,7 +226,7 @@ public class ApsimBuildsDB
                                             " WHERE ID = " + JobID.ToString();
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
 
@@ -177,7 +239,7 @@ public class ApsimBuildsDB
         string SQL = "SELECT ID FROM BuildJobs WHERE Status = 'Queued' ORDER BY ID";
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        SqlDataReader Reader = Command.ExecuteReader();
+        SqlDataReader Reader = ExecuteReader(Command);
         if (Reader.Read())
             JobID = Convert.ToInt32(Reader["ID"]);
         Reader.Close();
@@ -199,7 +261,7 @@ public class ApsimBuildsDB
         string SQL = "ALTER TABLE BuildJobs ADD DoCommit int";
 
         SqlCommand Command = new SqlCommand(SQL, Connection);
-        Command.ExecuteNonQuery();
+        ExecuteNonQuery(Command);
     }
 
 
