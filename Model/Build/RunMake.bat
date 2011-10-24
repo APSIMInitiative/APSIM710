@@ -14,7 +14,7 @@ rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
 
 rem ----- Set the APSIM versioning info
-if EXIST VersionInfo.bat call "%APSIM%\Model\Build\VersionInfo.bat"
+if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\VersionInfo.bat"
 
 rem ----- Run MAKE
 %APSIM%\Model\Build\make %2 %3 %4
