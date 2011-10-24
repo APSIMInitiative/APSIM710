@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
 
-class PhaseJumpFunction : Instance
+class PhaseJumpFunction
 {
-    [Link]
-    Plant ParentPlant = null;
-
     [Link]
     Phenology Phenology = null;
 
@@ -20,10 +17,12 @@ class PhaseJumpFunction : Instance
     [Param]
     private string Event = "";
     [Link]
-    private Paddock MyPaddock;
-    public override void Initialised()
+    private ModelEnvironment ModelEnvironment = null;
+
+    [EventHandler]
+    public void OnInitialised()
     {
-        MyPaddock.Subscribe(Event, OnEvent);
+        ModelEnvironment.Subscribe(Event, OnEvent);
     }
 
     public void OnEvent()

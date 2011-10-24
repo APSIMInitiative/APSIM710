@@ -19,10 +19,10 @@ public class GenericPhase : Phase
     public Function Target = null;
 
 
-    /// <summary>
-    /// Initialise everything
+     /// <summary>
+    /// Reset phase
     /// </summary>
-    public override void Initialising() { _CumulativeTT = 0; }
+    public override void ResetPhase() { _CumulativeTT = 0; }
 
     /// <summary>
     /// Do our timestep development

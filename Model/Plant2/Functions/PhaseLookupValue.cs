@@ -6,9 +6,6 @@ using System.Text;
 public class PhaseLookupValue : Function
 {
     [Link]
-    Plant P = null;
-
-    [Link]
     Phenology Phenology = null;
 
     [Link]

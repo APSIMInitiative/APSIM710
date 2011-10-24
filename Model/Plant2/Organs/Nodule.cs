@@ -9,6 +9,22 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
     public double RespiredWt = 0;
     public double PropFixationDemand = 0;
     public double _NFixed = 0;
+
+    [Link]
+    Function FixationMetabolicCost = null;
+
+    [Link]
+    Function SpecificNitrogenaseActivity = null;
+
+    [Link]
+    Function FT = null;
+
+    [Link]
+    Function FW = null;
+
+    [Link]
+    Function FWlog = null;
+
   #endregion
         
  #region Fixation methods
@@ -17,7 +33,6 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
     {
         get
         {
-            Function FixationMetabolicCost = Children["FixationMetabolicCost"] as Function;
             return FixationMetabolicCost.Value;
         }
     }
@@ -41,10 +56,6 @@ public class Nodule : SIRIUSGenericOrgan, BelowGround
     {
         get
         {
-            Function SpecificNitrogenaseActivity = Children["SpecificNitrogenaseActivity"] as Function;
-            Function FT = Children["FT"] as Function;
-            Function FW = Children["FW"] as Function;
-            Function FWlog = Children["FWlog"] as Function;
             return Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
         }
     }

@@ -322,7 +322,7 @@ public class FactoryProperty : Instance, ApsimType
             Property.SetObject(Activator.CreateInstance(Property.Typ));
 
         IList L = (IList)Property.Get;
-        L.Add((Object)ChildInstance);
+        L.Add((Object)ChildInstance.Model);
         HaveSet = true;
     }
     /// <summary>

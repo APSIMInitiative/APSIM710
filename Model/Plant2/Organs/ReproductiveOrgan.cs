@@ -11,6 +11,21 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     protected Phenology Phenology = null;
 
+    [Link]
+    protected Function WaterContent = null;
+
+    [Link]
+    protected Function FillingRate = null;
+
+    [Link]
+    protected Function NumberFunction = null;
+
+    [Link]
+    protected Function NFillingRate = null;
+
+    [Link]
+    protected Function MaxNConcDailyGrowth = null;
+
     [Input]
     protected int Day = 0;
 
@@ -38,9 +53,8 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function WC = Children["WaterContent"] as Function;
-            if (WC != null)
-                return Live.Wt / (1 - WC.Value);
+            if (WaterContent != null)
+                return Live.Wt / (1 - WaterContent.Value);
             else
                 return 0.0;
         }
@@ -67,9 +81,8 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         {
             if (Number > 0)
             {
-                Function WC = Children["WaterContent"] as Function;
-                if (WC != null)
-                    return (Live.Wt / Number) / (1 - WC.Value);
+                if (WaterContent != null)
+                    return (Live.Wt / Number) / (1 - WaterContent.Value);
                 else
                     return 0.0;
             }
@@ -150,11 +163,9 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function FillingRate = Children["FillingRate"] as Function;
             if (Number == 0 && FillingRate.Value > 0)
             {
                 // We must be on the first day of filling
-                Function NumberFunction = Children["NumberFunction"] as Function;
                 Number = NumberFunction.Value;
             }
             if (Number > 0)
@@ -174,8 +185,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function NFillingRate = Children["NFillingRate"] as Function;
-            Function MaxNConcDailyGrowth = Children["MaxNConcDailyGrowth"] as Function;
             double demand = Number * NFillingRate.Value;
             return Math.Min(demand, MaxNConcDailyGrowth.Value * DailyGrowth);
         }

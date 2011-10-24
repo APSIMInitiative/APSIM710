@@ -7,10 +7,40 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
 {
     [Link]
     Plant Plant = null;
+
     [Link(IsOptional.Yes)]
     protected Function NitrogenDemandSwitch = null;
+
     [Link(IsOptional.Yes)]
     protected Function SenescenceRate = null;
+
+    [Link]
+    Population Population = null;
+
+    [Link]
+    Function TemperatureEffect = null;
+
+    [Link]
+    Function RootFrontVelocity = null;
+
+    [Link]
+    Arbitrator Arbitrator = null;
+
+    [Link]
+    Function PartitionFraction = null;
+
+    [Link]
+    Function MaximumNConc = null;
+
+    [Link]
+    Function MaxDailyNUptake = null;
+
+    [Link]
+    Function MinimumNConc = null;
+
+    [Link]
+    Function KLModifier = null;
+
 
  #region Class Data Members
     const double kgha2gsm = 0.1;
@@ -75,7 +105,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         
         if (Live.Wt == 0)
         {
-            Population Population = Plant.Children["Population"] as Population;
             LayerLive[0].StructuralWt = InitialDM * Population.Value;
             LayerLive[0].StructuralN = InitialDM * MaxNconc * Population.Value;
             Depth = SowingInfo.Depth;
@@ -98,10 +127,8 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         base.DoActualGrowth();
 
         // Do Root Front Advance
-        Function TF = Children["TemperatureEffect"] as Function;
-        Function RFV = Children["RootFrontVelocity"] as Function;
         int RootLayer = LayerIndex(Depth);
-        Depth = Depth + RFV.Value * xf[RootLayer] * TF.Value;
+        Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TemperatureEffect.Value;
         double MaxDepth = 0;
         for (int i = 0; i < dlayer.Length; i++)
             if (xf[i] > 0)
@@ -110,7 +137,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         Depth = Math.Min(Depth, MaxDepth);
 
         // Do Root Senescence
-        //Function SenescenceRate = Children["SenescenceRate"] as Function;
         FOMLayerLayerType[] FOMLayers = new FOMLayerLayerType[dlayer.Length];
 
         for (int layer = 0; layer < dlayer.Length; layer++)
@@ -260,9 +286,7 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         get
         {
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            return A.DMSupply * PartitionFraction.Value;
+            return Arbitrator.DMSupply * PartitionFraction.Value;
         }
     }
     public override double DMPotentialAllocation
@@ -381,7 +405,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         {
             //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
             double TotalDeficit = 0.0;
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             double _NitrogenDemandSwitch = 1;
             if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
@@ -402,7 +425,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             double[] no3supply = new double[dlayer.Length];
             double[] nh4supply = new double[dlayer.Length];
             SoilNSupply(no3supply, nh4supply);
-            Function MaxDailyNUptake = Children["MaxDailyNUptake"] as Function;
             double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
             return NSupply;
         }
@@ -449,7 +471,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
         {
             // Recalculate N defict following DM allocation for checking N allocation and partitioning N between layers   
             double Demand = 0.0;
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             foreach (Biomass Layer in LayerLive)
             {
                 double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
@@ -482,7 +503,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             return MaximumNConc.Value;
         }
     }
@@ -490,7 +510,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         get
         {
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
             return MinimumNConc.Value;
         }
     }
@@ -503,7 +522,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
             if (SWSupply == null || SWSupply.Length != dlayer.Length)
                 SWSupply = new double[dlayer.Length];
 
-            Function KLModifier = Children["KLModifier"] as Function;
 
             for (int layer = 0; layer < dlayer.Length; layer++)
                 if (layer <= LayerIndex(Depth))

@@ -25,6 +25,39 @@ public class Leaf : BaseOrgan, AboveGround
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected TemperatureFunction ThermalTime = null;
+    [Link]
+    protected Population Population = null;
+
+    [Link]
+    protected Function MaximumNConc = null;
+
+    [Link]
+    protected Function MinimumNConc = null;
+
+    [Link]
+    protected Function ExtinctionCoeff = null;
+
+    [Link]
+    protected Function NodeAppearanceRate = null;
+
+    [Link]
+    protected Function FrostFraction = null;
+
+    [Link]
+    protected Function BranchingRate = null;
+
+    [Link("Height")]
+    protected Function HeightModel = null;
+
+    [Link]
+    protected Arbitrator Arbitrator = null;
+
+    [Link]
+    private Function PartitionFraction = null;
+
+    [Link]
+    Function ExpansionStress = null;
+
     [Input]
     protected int Day = 0;
     [Input]
@@ -191,7 +224,6 @@ public class Leaf : BaseOrgan, AboveGround
             {
                 n += L.Population;
             }
-            Population Population = Plant.Children["Population"] as Population;
 
             return n / Population.Value;
         }
@@ -208,7 +240,6 @@ public class Leaf : BaseOrgan, AboveGround
                 if (!L.Finished)
                     n += L.Population;
             }
-            Population Population = Plant.Children["Population"] as Population;
             return n / Population.Value;
         }
     }
@@ -337,8 +368,6 @@ public class Leaf : BaseOrgan, AboveGround
         get
         {
             double F = 1;
-            Function MaximumNConc = (Function)Children["MaximumNConc"];
-            Function MinimumNConc = (Function)Children["MinimumNConc"];
             if (MaximumNConc.Value == 0)
                 F = 1;
             else
@@ -385,7 +414,6 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
         }
     }
@@ -430,7 +458,6 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
@@ -454,7 +481,6 @@ public class Leaf : BaseOrgan, AboveGround
                 NodeNo = NodeNo + ThermalTime.Value / NodeAppearanceRate.Value;
         }
 
-        Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
@@ -465,8 +491,6 @@ public class Leaf : BaseOrgan, AboveGround
             
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
 
-            Function BranchingRate = (Function)Children["BranchingRate"];
-            Population Population = Plant.Children["Population"] as Population;
             double BranchNo = Population.Value * PrimaryBudNo;
             if (Leaves.Count > 0)
                 BranchNo = Leaves[Leaves.Count - 1].Population;
@@ -493,7 +517,6 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort Leaf in Leaves)
         {
             NodeNo = Leaf.Rank;
-            Population Population = Plant.Children["Population"] as Population;
             Leaf._Population = Population.Value * PrimaryBudNo;
             Leaf.DoInitialisation();
         }
@@ -516,7 +539,6 @@ public class Leaf : BaseOrgan, AboveGround
                 ZeroLeaves();
             }
 
-        Function HeightModel = Children["Height"] as Function;
         Height = Math.Max(Height, HeightModel.Value);
 
         PublishNewCanopyEvent();
@@ -552,19 +574,10 @@ public class Leaf : BaseOrgan, AboveGround
             if (Demand == 0)
                 return 0;
 
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            Demand = A.DMSupply * PartitionFraction.Value;
-
-
-            // Limit Demand to a max proportion of DMSupply
-            //Function PFmax = Children["PartitionFractionMax"] as Function;
-            //Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            //Demand = Math.Min(Demand, A.TotalDMSupply * PFmax.Value);
+            Demand = Arbitrator.DMSupply * PartitionFraction.Value;
 
             // Discount this demand according to water stress impacts on canopy expansion
-            Function Stress = Children["ExpansionStress"] as Function;
-            Demand = Demand * Stress.Value;
+            Demand = Demand * ExpansionStress.Value;
 
             return Demand;
         }
@@ -773,7 +786,7 @@ public class Leaf : BaseOrgan, AboveGround
         int i = 0;
         while (!found && (i != CWB.Canopy.Length))
         {
-            if (CWB.Canopy[i].name.ToLower() == Parent.Name.ToLower())
+            if (CWB.Canopy[i].name.ToLower() == Plant.Name.ToLower())
             {
                 PEP = CWB.Canopy[i].PotentialEp;
                 found = true;

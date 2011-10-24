@@ -7,8 +7,21 @@ public class GenericOrgan : BaseOrgan, AboveGround
 {
     [Link]
     protected Plant Plant = null;
+
     [Link(IsOptional.Yes)]
     protected Function StructuralFraction = null;
+
+    [Link]
+    protected Arbitrator Arbitrator = null;
+
+    [Link(IsOptional.Yes)]
+    protected Function PartitionFraction = null;
+
+    [Link]
+    Function MaximumNConc = null;
+
+    [Link]
+    Function StructuralNConc = null;
 
     [Input]
     protected int Day = 0;
@@ -21,9 +34,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         get
         {
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            return A.DMSupply * PartitionFraction.Value;
+            return Arbitrator.DMSupply * PartitionFraction.Value;
         }
     }
     public override double DMRetranslocationSupply
@@ -59,7 +70,6 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * Live.Wt - Live.N);
             return NDeficit;
         }
@@ -68,7 +78,6 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            Function StructuralNConc = Children["StructuralNConc"] as Function;
             double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * StructuralNConc.Value - Live.StructuralN);
             double StructuralAllocation = Math.Min(StructuralNRequirement, value);
             Live.StructuralN += StructuralAllocation;

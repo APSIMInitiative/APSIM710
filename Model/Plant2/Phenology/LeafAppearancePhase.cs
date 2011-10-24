@@ -7,6 +7,9 @@ public class LeafAppearancePhase : Phase
     [Link]
     Leaf Leaf = null;
 
+    [Link]
+    Function ThermalTime = null;
+
     private double CumulativeTT;
     private double NodeNoAtStart;
     bool First = true;
@@ -19,9 +22,9 @@ public class LeafAppearancePhase : Phase
 
 
     /// <summary>
-    /// Initialise everything
+    /// Reset phase
     /// </summary>
-    public override void Initialising()
+    public override void ResetPhase()
     {
         CumulativeTT = 0;
         NodeNoAtStart = 0;
@@ -40,8 +43,7 @@ public class LeafAppearancePhase : Phase
         }
 
         // Accumulate thermal time.
-        Function TT = Children["ThermalTime"] as Function;
-        CumulativeTT += TT.Value;
+        CumulativeTT += ThermalTime.Value;
 
         if (Leaf.FullyExpandedNodeNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
             return 0.00001;

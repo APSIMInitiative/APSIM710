@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-public class Population : Instance
+public class Population
    {
    [Param] [Output("Population")] public double Value;
 

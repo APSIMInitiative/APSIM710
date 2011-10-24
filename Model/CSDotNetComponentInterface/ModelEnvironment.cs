@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using CMPServices;
 using System.Reflection;
+using ModelFramework;
 
 public class ModelEnvironment
 {
@@ -41,13 +42,10 @@ public class ModelEnvironment
     /// A helper function for getting the system name from the specified
     /// fully qualified name passed in.
     /// </summary>
-    private static string SystemName(string Name)
+    public static string SystemName(string Name)
     {
         int PosLastPeriod = Name.LastIndexOf('.');
-        if (PosLastPeriod == -1)
-            return null;
-        else
-            return Name.Substring(0, PosLastPeriod);
+        return Name.Substring(0, PosLastPeriod);
     }
 
     /// <summary>
@@ -55,7 +53,28 @@ public class ModelEnvironment
     /// </summary>
     public string Name
     {
-        get { return In.Name; }
+        get
+        {
+            int PosLastPeriod = In.InstanceName.LastIndexOf('.');
+            if (PosLastPeriod == -1)
+                return In.InstanceName;
+            else
+                return In.InstanceName.Substring(PosLastPeriod + 1);
+
+        }
+    }
+
+    /// <summary>
+    /// Property for returning the name of this instance.
+    /// </summary>
+    public string FullName
+    {
+        get
+        {
+            string SystemName = In.ParentComponent().Name;
+            SystemName = SystemName.Remove(SystemName.LastIndexOf('.'));  // remove instance name
+            return SystemName + "." + In.InstanceName;
+        }
     }
 
     /// <summary>
@@ -66,6 +85,28 @@ public class ModelEnvironment
     public string[] ChildModelNames()
     {
         return ChildModelNames(In);
+    }
+
+    /// <summary>
+    /// Returns a list of fully qualified child model names for the specified system path. 
+    /// The returned list may be zero length but will never be null.
+    /// </summary>
+    /// <returns></returns>
+    public string[] SystemNames(string SystemPath)
+    {
+        List<string> ReturnNames = new List<string>();
+
+        string sSearchName = SystemPath + ".*";    //search comp.*
+
+        List<TComp> comps = new List<TComp>();
+        In.ParentComponent().Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+        ChildComponents = new Dictionary<uint, TComp>();
+        for (int i = 0; i < comps.Count; i++)
+        {
+            if (comps[i].isSystem)
+                ReturnNames.Add(comps[i].name);
+        }
+        return ReturnNames.ToArray();
     }
 
     /// <summary>
@@ -132,6 +173,11 @@ public class ModelEnvironment
     }
 
 
+    public void Publish(string EventPath, ApsimType Data)
+    {
+        In.ParentComponent().Publish(EventPath, Data);
+    }
+
     public object ModelByName(string NamePath)
     {
         for (int i = 0; i < In.Children.Count; i++)
@@ -149,6 +195,52 @@ public class ModelEnvironment
 
         return LinkField.FindApsimObject(null, NamePath, SystemName(NamePath), In.ParentComponent());
     }
+    public bool Get(string NamePath, out double Data)
+    {
+        WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
+        if (GetInternal<double>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = Double.NaN;
+            return false;
+        }
+    }
+
+    public bool Get(string NamePath, out double[] Data)
+    {
+        WrapBuiltInVariable<double[]> Value = new WrapBuiltInVariable<double[]>();
+        if (GetInternal<double[]>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = null;
+            return false;
+        }
+    }
+
+    public object Get(string NamePath)
+    {
+        // Try and convert namePath into a relative path.
+        NamePath = NamePath.Replace(FullName + ".", "");
+
+        object E = FindInternalEntity(NamePath, In);
+        if (E != null)
+        {
+            if (E is Entity)
+                return (E as Entity).Get();
+            else if (E is Instance)
+                return (E as Instance).Model;
+        }
+        return E;
+    }
+    
     /// <summary>
     /// Locate a variable that matches the specified path and return its value. Returns null
     /// if not found. e.g. NamePath:
@@ -156,35 +248,132 @@ public class ModelEnvironment
     ///     "Phenology.CurrentPhase" - relative path specified so look for matching child
     ///     ".met.maxt" - absolute path specified so look for exact variable.
     /// </summary>    
-    public object Get(string NamePath)
+    
+    private bool GetInternal<T>(string NamePath, WrapBuiltInVariable<T> Data)
     {
         if (NamePath.Length > 0 && NamePath[0] == '.')
         {
             // absolute path.
-            WrapBuiltIn Data = new WrapBuiltIn();
-            if (In.ParentComponent().Get(NamePath, Data, true))
-                return Data.Value;
+            return In.ParentComponent().Get(NamePath, Data, true);
 
         }
         else if (NamePath.Contains('.'))
         {
             // relative path.
-            return FindInternalEntity(NamePath, In);
+            // assume internal entity.
+            object E = FindInternalEntity(NamePath, In);
+            if (E != null && E is Entity)
+            {
+                Data.setValue( (E as Entity).Get());
+                return true;
+            }
+            else
+                return false;
         }
         else
         {
             // no path
-            // first see if it is a relative path.
-            object Value = FindInternalEntity(NamePath, In);
-            if (Value != null)
-                return Value;
+            // First look for an internal entity.
+            object E = FindInternalEntity(NamePath, In);
+            if (E != null && E is Entity)
+                Data.setValue((E as Entity).Get());
             else
             {
-                // not a relative path so go look for it.
+                // not an internal entity so look for an external one.
+                return In.ParentComponent().Get(NamePath, Data, true);
             }
         }
 
-        return null;      
+        return false;
+    }
+
+    /// <summary>
+    /// Set the value of a variable.
+    /// </summary>
+    public bool Set(string NamePath, double Data)
+    {
+        return SetInternal<double>(NamePath, Data);
+    }
+
+
+    /// <summary>
+    /// Set the value of a variable.
+    /// </summary>
+    private bool SetInternal<T>(string NamePath, T Value)
+    {
+        WrapBuiltInVariable<T> Data = new WrapBuiltInVariable<T>();
+        Data.Value = Value;
+        if (NamePath.Length > 0 && NamePath[0] == '.')
+        {
+            // absolute path.
+            In.ParentComponent().Set(NamePath, Data);
+            return true;
+        }
+        else if (NamePath.Contains('.'))
+        {
+            // relative path.
+            object E = FindInternalEntity(NamePath, In);
+            if (E != null && E is Entity)
+                return (E as Entity).Set(Data);
+            else
+                return false;
+        }
+        else
+        {
+            // no path
+            // First look for an internal entity.
+            object E = FindInternalEntity(NamePath, In);
+            if (E != null && E is Entity)
+            {
+                Data.setValue( (E as Entity).Get());
+                return true;
+            }
+            else
+            {
+                // not an internal entity so look for an external one.
+                In.ParentComponent().Set(NamePath, Data);
+                return true;
+            }
+
+        }
+
+    }
+
+    class Entity
+    {
+        public MemberInfo MI;
+        public object Obj;
+
+        public object Get()
+        {
+            if (MI is FieldInfo)
+            {
+                FieldInfo FI = MI as FieldInfo;
+                return  FI.GetValue(Obj);
+            }
+            else
+            {
+                PropertyInfo PI = MI as PropertyInfo;
+                return PI.GetValue(Obj, null);
+            }
+
+
+
+        }
+        public bool Set(object Value)
+        {
+            if (MI is FieldInfo)
+            {
+                FieldInfo FI = MI as FieldInfo;
+                FI.SetValue(Obj, Value);
+            }
+            else
+            {
+                PropertyInfo PI = MI as PropertyInfo;
+                PI.SetValue(Obj, Value, null);
+            }
+            return true;
+        }
     }
 
 
@@ -193,6 +382,22 @@ public class ModelEnvironment
     /// Returns null if not found.
     /// </summary>
     private static object FindInternalEntity(string NamePath, Instance RelativeTo)
+    {
+        object Value = null;
+        do
+        {
+            Value = FindChildEntity(NamePath, RelativeTo);
+            RelativeTo = RelativeTo.Parent;
+        }
+        while (Value == null && RelativeTo != null);
+        return Value;
+    }
+
+    /// <summary>
+    /// Return the value (using Reflection) of the specified property on the specified object.
+    /// Returns null if not found.
+    /// </summary>
+    private static object FindChildEntity(string NamePath, Instance RelativeTo)
     {
         string[] Bits = NamePath.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < Bits.Length; i++)
@@ -220,120 +425,24 @@ public class ModelEnvironment
                 if (i == Bits.Length - 1)
                 {
                     FieldInfo FI = RelativeTo.Model.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                    object v = null;
                     if (FI == null)
                     {
                         PropertyInfo PI = RelativeTo.Model.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                         if (PI != null)
-                            v = PI.GetValue(RelativeTo.Model, null);
+                            return new Entity { MI = PI, Obj = RelativeTo.Model };
                     }
                     else
-                        v = FI.GetValue(RelativeTo.Model);
-                    return v;
+                        return new Entity { MI = FI, Obj = RelativeTo.Model };
                 }
-                else
-                    return null;
+                return null;
             }
             else
                 RelativeTo = MatchingChild;
         }
-        return null;
+
+        // If we get this far then we've found a match.
+        return RelativeTo;
     }
 
 
 }
-
-
-// --------------------------------------------------------------------
-// This class wraps a FactoryProperty and a built in type (e.g. Single, 
-// Double etc). It then makes it look like an ApsimType with pack,
-// unpack methods etc.
-// --------------------------------------------------------------------
-public class WrapBuiltIn : TypeInterpreter, ApsimType
-{
-    /*This class is a quick way to wrap the TTypedValue into a generic class
-        * that handles scalars and arrays of scalars - NH
-        I think this class should be superceded by TypeInterpreter or TDDMLValue
-        */
-    protected Type tType;
-    public object Value;
-    //protected override TDDMLValue DDMLValue; */
-    public WrapBuiltIn()
-    {
-    }
-    public override void pack(out byte[] messageData)
-    {
-        throw new NotImplementedException();
-    }
-    public override void unpack(byte[] messageData)
-    {
-        //::unpackWithConverter(messageData, Value);
-        DDMLValue.setData(messageData, messageData.Length, 0);
-       /* if (DDMLValue.typeName() == typeof(Boolean))
-        {
-            Value = Convert.ChangeType(DDMLValue.asBool(), typeof(bool));
-        }
-        else if (tType == typeof(Int32))
-        {
-            Value = Convert.ChangeType(DDMLValue.asInt(), typeof(int));
-        }
-        else if (tType == typeof(Single))
-        {
-            Value = Convert.ChangeType(DDMLValue.asSingle(), typeof(Single));
-        }
-        else if (tType == typeof(double))
-        {
-            Value = Convert.ChangeType(DDMLValue.asDouble(), typeof(double));
-        }
-        else if (tType == typeof(String))
-        {
-            Value = Convert.ChangeType(DDMLValue.asStr(), typeof(String));
-        }
-        else if (tType == typeof(Boolean[]))
-        {
-            Value = Convert.ChangeType(DDMLValue.asBooleanArray(), typeof(Boolean[]));
-        }
-        else if (tType == typeof(Int32[]))
-        {
-            Value = Convert.ChangeType(DDMLValue.asIntArray(), typeof(Int32[]));
-        }
-        else if (tType == typeof(Single[]))
-        {
-            Value = Convert.ChangeType(DDMLValue.asSingleArray(), typeof(Single[]));
-        }
-        else if (tType == typeof(double[]))
-        {
-            Value = Convert.ChangeType(DDMLValue.asDoubleArray(), typeof(double[]));
-        }
-        else if (tType == typeof(String[]))
-        {
-            Value = Convert.ChangeType(DDMLValue.asStringArray(), typeof(String[]));
-        }
-        else if (tType == typeof(DateTime))
-        {
-            double JulianDate = DDMLValue.asDouble();               //stored as a double
-            DateTime jDate = TTimeValue.JDToDateTime(JulianDate);
-            Value = Convert.ChangeType(jDate, typeof(DateTime));
-        }*/
-    }
-    public override uint memorySize()
-    {
-        throw new NotImplementedException();
-    }
-    public override String DDML()
-    {
-        return DDML(Value);
-    }
-
-    public String DDML(object Value)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-
-
-
-
-
-

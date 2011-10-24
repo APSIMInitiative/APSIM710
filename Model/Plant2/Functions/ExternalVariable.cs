@@ -16,16 +16,16 @@ public class ExternalVariable : Function
     private string VariableName = "";
 
     [Link]
-    ModelEnvironment ModelEnvironment;
+    ModelEnvironment ModelEnvironment = null;
 
     [Output]
     public override double Value
     {
         get
         {
-            object val = ModelEnvironment.Get(VariableName);
+            double val;
 
-            if (val != null)
+            if (ModelEnvironment.Get(VariableName, out val))
                  return Convert.ToDouble(val);
             else 
                  throw new Exception(Name + ": External value for " + VariableName.Trim() + " not found");

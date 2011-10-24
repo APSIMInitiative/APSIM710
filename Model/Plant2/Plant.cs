@@ -6,7 +6,7 @@ using VBMet;
 using CSGeneral;
 
 [Model]
-public class Plant : Instance
+public class Plant
 {
     [Link(IsOptional.Yes)]
     Phenology Phenology = null;
@@ -17,13 +17,16 @@ public class Plant : Instance
     [Link]
     ModelEnvironment ModelEnvironment = null;
 
+    public string Name { get { return ModelEnvironment.Name; } }
+
+
     private List<Organ> _Organs = new List<Organ>();
     public List<Organ> Organs
     {
         // Public property to return our organs to caller. Used primarily for unit testing.
         get { return _Organs; }
     }
-
+    
     [Input(true)] Single swim3 = 0;
 
  #region Outputs
@@ -49,6 +52,11 @@ public class Plant : Instance
                 Demand += o.WaterDemand;
             return Demand;
         }
+    }
+
+    public string FullName
+    {
+        get { return ModelEnvironment.FullName; }
     }
  #endregion
 
@@ -161,8 +169,9 @@ public class Plant : Instance
     public void OnSow(SowPlant2Type Sow)
     {
         // Go through all our children and find all organs.
-        foreach (Instance Child in Children)
+        foreach (string ChildName in ModelEnvironment.ChildModelNames())
         {
+            object Child = ModelEnvironment.ModelByName(ChildName);
             if (Child is Organ)
                 Organs.Add((Organ)Child);
         }

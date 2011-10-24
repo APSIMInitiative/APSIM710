@@ -33,7 +33,13 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     private double StartStructuralWt = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
-            
+
+    [Link]
+    protected Function MaximumNConc = null;
+
+    [Link]
+    protected Function MinimumNConc = null;
+
  #endregion
 
  #region Organ functions
@@ -69,10 +75,8 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
             //Function StructuralFraction = Children["StructuralFraction"] as Function;
-            StructuralDMDemand = A.DMSupply * PartitionFraction.Value * _StructuralFraction;
+            StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * _StructuralFraction;
             return StructuralDMDemand;
         }
     }
@@ -80,7 +84,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-           //Function StructuralFraction = Children["StructuralFraction"] as Function;
            double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1/_StructuralFraction;
            MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartStructuralWt - StartNonStructuralWt);
@@ -113,8 +116,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         {
             double _NitrogenDemandSwitch = 1;
             if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
-                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value; 
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
             double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Live.Wt + PotentialDMAllocation) - Live.N);
             return NDeficit * _NitrogenDemandSwitch;
         }
@@ -136,7 +138,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             double _NRetranslocationFactor = 0;
             if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
                 _NRetranslocationFactor = NRetranslocationFactor.Value;
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
             double LabileN = Math.Max(0, StartNonStructuralN - StartNonStructuralWt * MinimumNConc.Value);
             double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
             return Nretrans;
@@ -192,7 +193,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         {
             if (value > 0)
             {
-                Function MinimumNConc = Children["MinimumNConc"] as Function;
                 double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * MinimumNConc.Value - Live.StructuralN);
                 double StructuralAllocation = Math.Min(StructuralNRequirement, value);
                 Live.StructuralN += StructuralAllocation;
@@ -216,7 +216,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             return MaximumNConc.Value;
         }
     }
@@ -224,7 +223,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
             return MinimumNConc.Value;
         }
     }

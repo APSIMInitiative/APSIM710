@@ -7,9 +7,6 @@ using CSGeneral;
 class GerminatingPhase : Phase
 {
     [Link]
-    Plant Plant = null;
-
-    [Link]
     Phenology Phenology = null;
 
     [Input]

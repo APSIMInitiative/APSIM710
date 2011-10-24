@@ -12,10 +12,6 @@ public class SIRIUSArbitrator : Arbitrator
     [Description("Select method used for Arbitration")]
     protected string ArbitrationOption = "";
 
-    public override void Initialised()
-    {
-        base.Initialised();
-    }
     private void Or(bool p)
     {
         throw new NotImplementedException();

@@ -7,6 +7,12 @@ class SIRIUSGrain : ReproductiveOrgan
     [Link(IsOptional.Yes)]
     protected Function NitrogenDemandSwitch = null;
     
+    [Link]
+    protected Function MaximumNConc = null;
+
+    [Link]
+    protected Function MinimumNConc = null;
+
     private double PotentialDMAllocation = 0;
 
     
@@ -29,10 +35,8 @@ class SIRIUSGrain : ReproductiveOrgan
             double _NitrogenDemandSwitch = 1;
             if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
                 _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
-            Function NFillingRate = Children["NFillingRate"] as Function;
-            Function MaxNconc = Children["MaximumNconc"] as Function;
             double demand = Number * NFillingRate.Value;
-            return Math.Min(demand, MaxNconc.Value * DailyGrowth) * _NitrogenDemandSwitch;
+            return Math.Min(demand, MaximumNConc.Value * DailyGrowth) * _NitrogenDemandSwitch;
         }
 
     }
@@ -40,7 +44,6 @@ class SIRIUSGrain : ReproductiveOrgan
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             return MaximumNConc.Value;
         }
     }
@@ -48,7 +51,6 @@ class SIRIUSGrain : ReproductiveOrgan
     {
         get
         {
-            Function MinimumNConc = Children["MinimumNConc"] as Function;
             return MinimumNConc.Value;
         }
     }

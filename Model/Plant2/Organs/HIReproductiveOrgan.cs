@@ -10,6 +10,15 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     Biomass AboveGround = null;
 
+    [Link(IsOptional.Yes)]
+    Function WaterContent = null;
+
+    [Link]
+    Function HIIncrement = null;
+
+    [Link]
+    Function NConc = null;
+
     [Input]
     private int Day = 0;
 
@@ -23,9 +32,9 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function WC = Children["WaterContent"] as Function;
-            if (WC != null)
-                return Live.Wt / (1 - WC.Value);
+
+            if (WaterContent != null)
+                return Live.Wt / (1 - WaterContent.Value);
             else
                 return 0.0;
         }
@@ -69,9 +78,8 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function HIIncrease = Children["HIIncrement"] as Function;
             double CurrentWt = (Live.Wt + Dead.Wt);
-            double NewHI = HI + HIIncrease.Value;
+            double NewHI = HI + HIIncrement.Value;
             double NewWt = NewHI * AboveGround.Wt;
             double Demand = Math.Max(0.0, NewWt - CurrentWt);
 
@@ -85,7 +93,6 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function NConc = Children["NConc"] as Function;
             double demand = Math.Max(0.0, (NConc.Value * Live.Wt) - Live.N);
             return demand;
         }

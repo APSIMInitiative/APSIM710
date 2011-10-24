@@ -28,6 +28,8 @@ public class Instance : NamedItem
         String FQN = "";
         if (Parent != null)
             FQN = Parent.MyFQN();
+        if (FQN != "")
+            FQN += ".";
         FQN += Name;
         return FQN;
     }

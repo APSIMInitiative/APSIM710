@@ -10,7 +10,7 @@ using System.Reflection;
 public class AddFunction : Function
 {
     [Link]
-    ModelEnvironment ModelEnvironment;
+    ModelEnvironment ModelEnvironment = null;
 
     [Output]
     public override double Value

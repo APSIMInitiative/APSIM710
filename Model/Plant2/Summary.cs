@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 
 
-class Summary : Instance
+class Summary
 {
-    [Link]
-    Plant Plant = null;
-
     [Link]
     Biomass AboveGround = null;
 
     [Link]
     Phenology Phenology = null;
+
+    [Link(IsOptional.Yes)]
+    Leaf Leaf = null;
+
 
     [Input]
     private int Day = 0;
@@ -26,9 +27,8 @@ class Summary : Instance
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);
         Console.WriteLine(Today.ToShortDateString() + " - " + Phenology.CurrentPhase.Start);
-        if (Plant.Children.Contains("Leaf"))
+        if (Leaf != null)
         {
-            Leaf Leaf = Plant.Children["Leaf"] as Leaf;
             Console.WriteLine("                            LAI = " + Leaf.LAI.ToString("f2") + " (m^2/m^2)");
             Console.WriteLine("           Above Ground Biomass = " + AboveGround.Wt.ToString("f2") + " (g/m^2)");
         }

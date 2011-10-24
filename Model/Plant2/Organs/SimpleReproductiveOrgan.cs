@@ -10,6 +10,16 @@ class SimpleReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     Phenology Phenology = null;
 
+    [Link(IsOptional.Yes)]
+    Function WaterContent = null;
+
+    [Link]
+    Arbitrator Arbitrator = null;
+
+    [Link]
+    Function PartitionFraction = null;
+
+
     #region Class Data Members
     [Event]
     public event NullTypeDelegate Harvesting;
@@ -28,9 +38,8 @@ class SimpleReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Function WC = Children["WaterContent"] as Function;
-            if (WC != null)
-                return Live.Wt / (1 - WC.Value);
+            if (WaterContent != null)
+                return Live.Wt / (1 - WaterContent.Value);
             else
                 return 0.0;
         }
@@ -45,9 +54,7 @@ class SimpleReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            Arbitrator A = Plant.Children["Arbitrator"] as Arbitrator;
-            Function PartitionFraction = Children["PartitionFraction"] as Function;
-            return A.DMSupply * PartitionFraction.Value;
+            return Arbitrator.DMSupply * PartitionFraction.Value;
         }
     }
     public override double DMAllocation { set { Live.StructuralWt += value; } }

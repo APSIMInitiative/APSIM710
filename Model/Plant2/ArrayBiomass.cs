@@ -5,7 +5,7 @@ using System.Collections;
 using System.Reflection;
 
 
-public class ArrayBiomass : Instance
+public class ArrayBiomass
 {
     [Link]
     Plant Plant = null;

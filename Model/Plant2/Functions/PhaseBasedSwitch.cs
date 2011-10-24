@@ -7,9 +7,6 @@ using System.Text;
 public class PhaseBasedSwitch : Function
 {
     [Link]
-    Plant Plant = null;
-
-    [Link]
     Phenology Phenology = null;
 
     [Param]

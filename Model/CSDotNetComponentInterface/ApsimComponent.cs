@@ -37,7 +37,7 @@ namespace ModelFramework
         private Dictionary<int, ApsimType> RegistrationsDriverExtra;
         private Dictionary<String, int> RegistrationsDriverExtraLookup; //allows the lookup by name for the Get() function
         private Dictionary<int, ApsimType> RegistrationsEvent;
-        private Dictionary<int, ApsimType> RegistrationsEventPublished;
+        
         private Dictionary<int, ApsimType> RegistrationsSet;
         public Dictionary<uint, TComp> SiblingComponents;  //includes itself
         private XmlNode InitData;

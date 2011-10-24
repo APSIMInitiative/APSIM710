@@ -4,7 +4,7 @@ using System.Text;
 using System.Reflection;
 
 
-public class TerminateFinalNodeNumber : Instance
+public class TerminateFinalNodeNumber
 {
  #region Setup
     [Link]

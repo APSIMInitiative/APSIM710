@@ -5,6 +5,17 @@ using CSGeneral;
 
 public class SIRIUSLeaf : Leaf, AboveGround
 {
+    [Link]
+    Function CriticalNConc = null;
+
+    [Link]
+    Function StructuralFraction = null;
+
+    [Link]
+    Function ExpansionStress = null;
+
+
+
 
  #region Outputs Variables
     [Output]
@@ -177,9 +188,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
         get
         {
             double F = 1;
-            Function CriticalNConc = (Function)Children["CriticalNConc"];
-            Function MinimumNConc = (Function)Children["MinimumNConc"];
-            Function StructuralFraction = (Function)Children["StructuralFraction"];
             double FunctionalNConc = (CriticalNConc.Value - (MinimumNConc.Value * StructuralFraction.Value)) * (1 / (1 - StructuralFraction.Value));
             if (FunctionalNConc == 0)
                 F = 1;
@@ -191,18 +199,16 @@ public class SIRIUSLeaf : Leaf, AboveGround
             return F;
         }
     }
-    public double ExpansionStress
+    public double ExpansionStressValue
     {
         get
         {
-            Function _ExpansionStress = (Function)Children["ExpansionStress"];
-            return _ExpansionStress.Value;
+            return ExpansionStress.Value;
         }
     }
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        Function NodeAppearanceRate = (Function)Children["NodeAppearanceRate"];
 
        if (Phenology.OnDayOf(InitialiseStage))
         {
@@ -228,7 +234,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
            if (NodeAppearanceRate.Value > 0)
                DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
        }
-        Function FrostFraction = Children["FrostFraction"] as Function;
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
@@ -239,8 +244,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
             
             double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
 
-            Function BranchingRate = (Function)Children["BranchingRate"];
-            Population Population = Plant.Children["Population"] as Population;
             double BranchNumber = Population.Value * PrimaryBudNo;
             if (Leaves.Count > 0)
                 BranchNumber = Leaves[Leaves.Count - 1].Population;
@@ -277,7 +280,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
         //        ZeroLeaves();
         //    }
 
-        Function HeightModel = Children["Height"] as Function;
         Height = Math.Max(Height, HeightModel.Value);
 
         PublishNewCanopyEvent();
@@ -303,7 +305,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
         {
             LAIabove += Leaves[i].LiveArea / MM2ToM2;
         }
-            Function ExtinctionCoeff = (Function)Children["ExtinctionCoeff"];
             return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
 
@@ -371,7 +372,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         get
         {
-            Function MaximumNConc = Children["MaximumNConc"] as Function;
             return MaximumNConc.Value;
         }
     }
@@ -379,9 +379,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         get
         {
-            //Function MinimumNConc = Children["MinimumNConc"] as Function;
-            //return MinimumNConc.Value;
-            Function CriticalNConc = Children["CriticalNConc"] as Function;
             return CriticalNConc.Value;
         }
     }

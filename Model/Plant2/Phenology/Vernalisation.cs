@@ -1,12 +1,12 @@
 
 
-public class Vernalisation : Instance
+public class Vernalisation
 {
     [Link]
-    Plant Plant = null;
+    Phenology Phenology = null;
 
     [Link]
-    Phenology Phenology = null;
+    TemperatureFunction VDModel = null;
 
     [Param]
     private string StartStage = "";
@@ -28,7 +28,8 @@ public class Vernalisation : Instance
     /// <summary>
     /// Initialise everything
     /// </summary>
-    public override void Initialising()
+    [EventHandler]
+    public void OnInitialised()
     {
         CumulativeVD = 0;
     }
@@ -38,7 +39,6 @@ public class Vernalisation : Instance
     /// </summary>
     public void DoVernalisation(double Maxt, double Mint)
     {
-        TemperatureFunction VDModel = (TemperatureFunction)Children["VDModel"];
         CumulativeVD += VDModel.Value;
     }
 

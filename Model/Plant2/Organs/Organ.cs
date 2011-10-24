@@ -11,7 +11,7 @@ public interface BelowGround
 public interface Reproductive
    {
    }
-abstract public class Organ : Instance
+abstract public class Organ
 {
     [Link(IsOptional.Yes)]
     public Biomass Live = null;
@@ -19,6 +19,10 @@ abstract public class Organ : Instance
     [Link(IsOptional.Yes)]
     public Biomass Dead = null;
 
+    [Link]
+    public ModelEnvironment ModelEnvironment = null;
+
+    public string Name { get { return ModelEnvironment.Name; } }
 
     //DryMatter methods
     abstract public double DMDemand { get; }

@@ -185,7 +185,7 @@ class SimpleLeaf : BaseOrgan
         int i = 0;
         while (!found && (i != CWB.Canopy.Length))
         {
-            if (CWB.Canopy[i].name.ToLower() == Parent.Name.ToLower())
+            if (CWB.Canopy[i].name.ToLower() == Plant.Name.ToLower())
             {
                 PEP = CWB.Canopy[i].PotentialEp;
                 found = true;

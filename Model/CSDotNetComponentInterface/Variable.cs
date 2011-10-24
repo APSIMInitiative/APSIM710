@@ -277,7 +277,7 @@ namespace ModelFramework
             }
             return result;
         }
-        protected void setValue(T value)
+        public void setValue(object value)
         {
             if (tType == typeof(Boolean))
             {

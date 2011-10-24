@@ -14,7 +14,6 @@ class SIRIUSLeafCohort : LeafCohort
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
     private double SpecificLeafAreaMin = 0;
-    private double SpecificLeafAreaMax = 0;
     //Local variables
     private double SenescedFrac = 0;
     public double PotentialSize = 0;
@@ -57,37 +56,34 @@ class SIRIUSLeafCohort : LeafCohort
     private double FracSenShade = 0;
 
     [Link("Leaf")]
-    public SIRIUSLeaf SIRIUSLeaf;
+    public SIRIUSLeaf SIRIUSLeaf = null;
 
     [Link("StructuralFraction")]
-    public Function StructuralFractionFunction;
+    public Function StructuralFractionFunction = null;
     
     [Link("NReallocationFactor")]
-    public Function NReallocationFactorFunction;
+    public Function NReallocationFactorFunction = null;
     
     [Link("NRetranslocationFactor")]
-    public Function NRetranslocationFactorFunction;
+    public Function NRetranslocationFactorFunction = null;
     
     [Link("ExpansionStress")]
-    public Function ExpansionStressFunction;
+    public Function ExpansionStressFunction = null;
     
     [Link("SpecificLeafAreaMin")]
-    public Function SpecificLeafAreaMinFunction;
+    public Function SpecificLeafAreaMinFunction = null;
 
-    //[Link("SpecificLeafAreaMax")]
-    //public Function SLAmax;
-    
     [Link("CriticalNConc")]
-    public Function CriticalNConcFunction;
+    public Function CriticalNConcFunction = null;
     
     [Link("SenescenceInducingCover")]
-    public Function SenescenceInducingCoverFunction;
+    public Function SenescenceInducingCoverFunction = null;
     
     [Link("DMRetranslocationFactor")]
-    public Function DMRetranslocationFactorFunction;
+    public Function DMRetranslocationFactorFunction = null;
     
     [Link("ShadeInducedSenRate")]
-    public Function ShadeInducedSenRateFunction;
+    public Function ShadeInducedSenRateFunction = null;
 
  #endregion
     
@@ -311,7 +307,7 @@ class SIRIUSLeafCohort : LeafCohort
         {
 
             //Leaf area growth parameters
-            _ExpansionStress = SIRIUSLeaf.ExpansionStress;  //Get daily expansion stress value
+            _ExpansionStress = SIRIUSLeaf.ExpansionStressValue;  //Get daily expansion stress value
             DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
             DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
 

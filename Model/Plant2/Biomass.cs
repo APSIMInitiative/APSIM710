@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-public class Biomass : Instance
+
+public class Biomass
 {
     private double _StructuralWt = 0;
     private double _NonStructuralWt = 0;

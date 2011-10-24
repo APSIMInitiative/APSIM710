@@ -14,7 +14,7 @@ public class PowerFunction : Function
     private double Exponent = 1.0;
 
     [Link]
-    ModelEnvironment ModelEnvironment;
+    ModelEnvironment ModelEnvironment = null;
 
     [Output]
     public override double Value

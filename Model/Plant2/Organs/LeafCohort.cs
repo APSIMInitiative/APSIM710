@@ -4,7 +4,7 @@ using System.Text;
 using CSGeneral;
 using ModelFramework;
 
-public class LeafCohort : Instance
+public class LeafCohort
 {
  #region Class Data Members
     public double _Population = 0;
@@ -75,7 +75,7 @@ public class LeafCohort : Instance
     public Function InitialNConcFunction;
 
     [Link]
-    public Paddock Paddock;
+    public ModelEnvironment ModelEnvironment;
 #endregion
     
  #region arbitration methods
@@ -309,9 +309,10 @@ public class LeafCohort : Instance
 
     }
 
-    public override void Initialised()
+    [EventHandler]
+    public void OnInitialised()
     {
-        Paddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
+        ModelEnvironment.Subscribe(Leaf.InitialiseStage, DoInitialisation);
     }
 
    // virtual public void DoStartSet(double TT)

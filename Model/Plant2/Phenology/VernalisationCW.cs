@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-public class VernalisationCW : Instance
+public class VernalisationCW
 {
     [Link]
-    Plant Plant = null;
+    Phenology Phenology = null;
 
     [Link]
-    Phenology Phenology = null;
+    Function Photoperiod = null;
 
     [Output]
     private double PhotopEff;
@@ -47,7 +47,8 @@ public class VernalisationCW : Instance
     /// <summary>
     /// Initialise everything
     /// </summary>
-    public override void Initialising()
+    [EventHandler] 
+    public void OnInitialised()
     {
         CumulativeVD = 0;
         VernEff = 1;
@@ -64,7 +65,6 @@ public class VernalisationCW : Instance
         double MaxVernalisationRequirement = 50; //maximum vernalisation requirement is 50 days
         VernEff = VernalisationEffect(VernSens, CumulativeVD, DeltaCumulativeVD, MaxVernalisationRequirement);
 
-        Function Photoperiod = (Function)Children["Photoperiod"];
         PhotopEff = PhotoperiodEffect(Photoperiod.Value, PhotopSens);
 
         CumulativeVD += DeltaCumulativeVD;

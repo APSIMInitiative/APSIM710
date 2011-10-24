@@ -4,9 +4,9 @@ using System.Text;
 using System.Reflection;
 
 
-public class FinalNodeNumber : Instance
-{
 
+public class FinalNodeNumber
+{
     //Class Linkages
     [Link]
     protected TemperatureFunction ThermalTime = null;
