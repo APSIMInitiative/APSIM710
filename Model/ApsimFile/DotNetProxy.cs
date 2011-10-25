@@ -454,6 +454,10 @@ class DLLProber
         string AssemblyInfoContents = In.ReadToEnd();
         In.Close();
 
+        In = new StreamReader(Path.Combine(Configuration.ApsimBinDirectory(), "Build", "VersionInfo.cs"));
+        string VersionInfoContents = In.ReadToEnd();
+        In.Close();
+
         string language = CodeDomProvider.GetLanguageFromExtension(".cs");
         CodeDomProvider provider = CodeDomProvider.CreateProvider(language);
         if (provider != null)
@@ -469,9 +473,10 @@ class DLLProber
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
             Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimFile.dll"));
-            String[] Source = new String[2];
+            String[] Source = new String[3];
             Source[0] = Contents;
             Source[1] = AssemblyInfoContents;
+            Source[2] = VersionInfoContents;
 
             CompilerResults Results = provider.CompileAssemblyFromSource(Params, Source);
 
