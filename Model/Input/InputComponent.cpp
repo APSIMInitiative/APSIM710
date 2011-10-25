@@ -162,6 +162,10 @@ void InputComponent::openInputFile(void)
    fileName = componentData->getProperty("parameters", "filename");
    if (fileName == "")
 	  throw "Cannot find a filename parameter for module: " + string(getName());
+#ifndef __WIN32__
+   // Convert DOS paths to native unix format
+   Replace_all(fileName, "\\", "/");
+#endif
 
    data.open(fileName);
    }

@@ -27,7 +27,7 @@ WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
 CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"
 
-LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86
+LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /LTCG
 
 SYSOBJS := kernel32.lib user32.lib advapi32.lib shell32.lib uuid.lib
 
@@ -66,8 +66,8 @@ ifeq ($(MAJOR_VERSION),)
 endif
 
 ifeq ($(PROJECTTYPE),exe)
+#### EXEs
 RESOBJ = exeres.res
-
 $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" /MANIFEST @$(PROJECT).rsp
@@ -75,26 +75,17 @@ $(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
 
 $(RESOBJ): $(APSIM)/Model/Build/exe.rc
 	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
-#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 else
 
 RESOBJ = dllres.res
-# Ugh. By default, MS dlls export symbols with _@ adornments, eg function "xyz" appears as "_xyz@n"
-#   what we do here is build the dll once, generate an unadorned .def file, and build it again with
-#   that def file so that the unadorned names are visible.
-#   Then after all that, we embed a manifest into the DLL
 $(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
-	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" /MANIFEST @$(PROJECT).rsp
-	$(TCL) $(APSIM)/Model/Build/mashDllExports.tcl $(APSIM)/Model/$(PROJECT).dll > $(PROJECT).def
 	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" /MANIFEST @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
 	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
-#	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
 
 endif
 
