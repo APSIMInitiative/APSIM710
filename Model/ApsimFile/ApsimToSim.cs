@@ -149,7 +149,7 @@ public class ApsimToSim
       {
       // Replace all occurrences of %dllext%
       if (arch == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
-         return(ApsimToSimContents.Replace("%dllext%", "so"));
+          return (ApsimToSimContents.Replace("%dllext%", "so"));
             
       return (ApsimToSimContents.Replace("%dllext%", "dll"));
       }
@@ -292,28 +292,28 @@ public class ApsimToSim
             if (MacroWords.Length == 2)
                ChildType = MacroWords[1];
 
-            string ChildSimContents = "";
+            StringBuilder ChildSimContents = new StringBuilder();
             foreach (Component Child in ApsimComponent.ChildNodes)
                {
                if (ChildType == "" || Child.Type.ToLower() == ChildType.ToLower())
-                  ChildSimContents += WriteSimScript(Child, arch);
+                  ChildSimContents.Append(WriteSimScript(Child, arch));
                }
             ApsimToSimContents = ApsimToSimContents.Remove(PosStartMacro, PosEndMacro - PosStartMacro + 1);
-            ApsimToSimContents = ApsimToSimContents.Insert(PosStartMacro, ChildSimContents);
+            ApsimToSimContents = ApsimToSimContents.Insert(PosStartMacro, ChildSimContents.ToString());
             }
          PosStartMacro = ApsimToSimContents.IndexOf("[Children", PosStartMacro + 1);
          }
       if (ApsimToSimContents.Contains("[HasChildren"))
          {
 
-         string ChildSimContents = "";
+         StringBuilder ChildSimContents = new StringBuilder();
          foreach (Component Child in ApsimComponent.ChildNodes)
-            ChildSimContents += WriteSimScript(Child, arch);
-         if (ChildSimContents == "")
+            ChildSimContents.Append(WriteSimScript(Child, arch));
+         if (ChildSimContents.Length == 0)
             ApsimToSimContents = ApsimToSimContents.Replace("[HasChildren]", "");
          else
             ApsimToSimContents = ApsimToSimContents.Replace("[HasChildren]", "Yes");
-         ApsimToSimContents = ApsimToSimContents.Replace("[Children]", ChildSimContents);
+         ApsimToSimContents = ApsimToSimContents.Replace("[Children]", ChildSimContents.ToString());
          }
       return ApsimToSimContents;
       }

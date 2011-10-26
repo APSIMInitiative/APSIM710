@@ -90,16 +90,17 @@ namespace ApsimFile
         {
             string result = St.Replace("%apsim%", ApsimDirectory());
             string ausfarmDir = AusFarmDirectory();
-            if (ausfarmDir != "") result = result.Replace("%ausfarm%", AusFarmDirectory());
+            if (ausfarmDir != "") result = result.Replace("%ausfarm%", ausfarmDir);
             return result;
         }
         public static string AddMacros(string St)
         {
             string ReturnString = St;
-            int Pos = St.ToLower().IndexOf(ApsimDirectory().ToLower());
+            string apsimDir = ApsimDirectory();
+            int Pos = St.ToLower().IndexOf(apsimDir.ToLower());
             if (Pos != -1)
             {
-                ReturnString = ReturnString.Remove(Pos, ApsimDirectory().Length);
+                ReturnString = ReturnString.Remove(Pos, apsimDir.Length);
                 ReturnString = ReturnString.Insert(Pos, "%apsim%");
             }
             string ausfarmDir = AusFarmDirectory();
@@ -108,20 +109,25 @@ namespace ApsimFile
                 Pos = ReturnString.ToLower().IndexOf(ausfarmDir.ToLower());
                 if (Pos != -1)
                 {
-                    ReturnString = ReturnString.Remove(Pos, AusFarmDirectory().Length);
+                    ReturnString = ReturnString.Remove(Pos, ausfarmDir.Length);
                     ReturnString = ReturnString.Insert(Pos, "%ausfarm%");
                 }
             }
             return ReturnString;
         }
+        private static string ApsimDir = "";
         public static string ApsimDirectory()
         {
-            string Directory = Path.GetDirectoryName(CSGeneral.Utility.ConvertURLToPath(Assembly.GetExecutingAssembly().CodeBase));
-            while (Directory != Path.GetPathRoot(Directory) && !File.Exists(Path.Combine(Directory, "Apsim.xml")))
-                Directory = Path.GetFullPath(Path.Combine(Directory, ".."));
-            if (Directory == Path.GetPathRoot(Directory))
-                return "";
-            return Directory;
+            if (ApsimDir == "")
+            {
+                ApsimDir = Path.GetDirectoryName(CSGeneral.Utility.ConvertURLToPath(Assembly.GetExecutingAssembly().CodeBase));
+                while (ApsimDir != Path.GetPathRoot(ApsimDir) && !File.Exists(Path.Combine(ApsimDir, "Apsim.xml")))
+                    ApsimDir = Path.GetFullPath(Path.Combine(ApsimDir, ".."));
+                if (ApsimDir == Path.GetPathRoot(ApsimDir))
+                    return "";
+                return ApsimDir;
+            }
+            return ApsimDir;
         }
         public static string ApsimBinDirectory()
         {
@@ -153,7 +159,7 @@ namespace ApsimFile
 
         public static string AusFarmDirectory()
         {
-            if (getArchitecture() == architecture.win32 && AusFarmDir == "")
+            if (AusFarmDir == "" && getArchitecture() == architecture.win32)
             {
                 RegistryKey rk = Registry.LocalMachine.OpenSubKey("SOFTWARE");
                 if (rk != null)

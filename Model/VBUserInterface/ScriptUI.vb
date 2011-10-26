@@ -32,7 +32,7 @@ Public Class ScriptUI
         Else
             TextBox.Lexer = CsParser
         End If
-        Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + "DotNetComponentInterface.dll")
+        Assembly.LoadFile(Path.GetDirectoryName(Application.ExecutablePath) + "\" + "CSDotNetComponentInterface.dll")
         Assembly.LoadFile(Types.GetProbeInfoDLLFileName())
 
         For Each ref As String In XmlHelper.ValuesRecursive(Data, "reference")
