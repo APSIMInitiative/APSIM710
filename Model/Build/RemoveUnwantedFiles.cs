@@ -19,9 +19,11 @@ class Program
             if (args.Length != 1)
                 throw new Exception("Usage: RemoveUnversionedFiles directory");
             string directory = args[0];
-            string SVNFileName = FindFileOnPath("svn.exe");
+			string svnexe = "svn.exe";
+			if (Path.DirectorySeparatorChar == '/') svnexe = "svn";
+            string SVNFileName = FindFileOnPath(svnexe);
             if (SVNFileName == "")
-                throw new Exception("Cannot find svn.exe on PATH");
+                throw new Exception("Cannot find " + svnexe + " on PATH");
 
             // Start an SVN process to return a list of unversioned files.
             Process P = RunProcess(SVNFileName, "status --non-interactive --no-ignore", directory);
@@ -48,7 +50,6 @@ class Program
                             }
                             else
                             {
-                                File.SetAttributes(path, FileAttributes.Normal);
                                 File.Delete(path);
                             }
                         }
@@ -98,13 +99,11 @@ class Program
             Process PlugInProcess = new Process();
             PlugInProcess.StartInfo.FileName = Executable;
             PlugInProcess.StartInfo.Arguments = Arguments;
-            PlugInProcess.StartInfo.UseShellExecute = Path.GetExtension(Executable) != ".exe";
+            PlugInProcess.StartInfo.UseShellExecute = false;
             PlugInProcess.StartInfo.CreateNoWindow = true;
-            if (!PlugInProcess.StartInfo.UseShellExecute)
-            {
-                PlugInProcess.StartInfo.RedirectStandardOutput = true;
-                PlugInProcess.StartInfo.RedirectStandardError = true;
-            }
+            PlugInProcess.StartInfo.RedirectStandardInput = false;
+            PlugInProcess.StartInfo.RedirectStandardOutput = true;
+            PlugInProcess.StartInfo.RedirectStandardError = true;
             PlugInProcess.StartInfo.WorkingDirectory = JobFolder;
             PlugInProcess.Start();
             return PlugInProcess;
