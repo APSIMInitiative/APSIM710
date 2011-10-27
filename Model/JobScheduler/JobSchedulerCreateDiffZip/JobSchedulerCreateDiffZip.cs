@@ -298,6 +298,8 @@ class Program
             Db.UpdateStatus(JobID, "Fail");
             string DiffsFileName = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(PatchFileName) + ".diffs.zip";
             Db.UpdateDiffFileName(JobID, DiffsFileName);
+            Db.Close();
+            throw new Exception("Build is not clean");
         }
 
         Db.Close();

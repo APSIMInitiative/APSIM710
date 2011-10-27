@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../Model/Build/Build.xsl"?>
+<Folder name="Release">
+	<Job name="Compile InsertFilesIntoSetup" wait="yes">
+		<WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
+		<CommandLine>"%VS100COMNTOOLS%\..\IDE\devenv" InsertFilesIntoSetup.sln /build release</CommandLine>
+	</Job>		
+	<Job name="Create Bootleg MSI" wait="yes">
+		<WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+		<CommandLine>CreateMSI.bat %PatchFileName%.Bootleg Bootleg</CommandLine>
+	</Job>
+	<Job name="Create Release MSI">
+		<WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+		<CommandLine>CreateMSI.bat %PatchFileName%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
+	</Job>	
+	<Job name="Create MSI Binaries">
+		<WorkingDirectory>%Apsim%\Release</WorkingDirectory>
+		<CommandLine>CreateMSIBinaries.bat %PatchFileName%.binaries.Win32</CommandLine>
+	</Job>	
+	<Job name="Update DB Setup Bootleg" wait="yes">
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.bootleg.exe</CommandLine>
+	</Job>
+	<Job name="Update DB Setup">
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
+	</Job>
+</Folder>

@@ -80,12 +80,12 @@ class InsertFilesIntoSetup
 
         // Write to XML file - for debugging purposes.
         string XmlFileName = Path.ChangeExtension(SourceFileName, ".xml");
-        Doc.Save("Test.xml");
+        //Doc.Save("Test.xml");
 
         InsertFilesIntoXML(WildCard, Doc.DocumentElement, TargetDirectory);
 
         // Update the ProductCode and ProductVersion.
-        UpdateVersionInfo(Doc.DocumentElement);
+        UpdateVersionInfo(Doc.DocumentElement, SourceFileName);
 
         // write to .vdproj
         //string NewFileName = Path.ChangeExtension(SourceFileName, ".vdprojnew");
@@ -428,7 +428,7 @@ class InsertFilesIntoSetup
     /// <summary>
     /// Update the ProductCode and ProductVersion
     /// </summary>
-    private void UpdateVersionInfo(XmlNode Node)
+    private void UpdateVersionInfo(XmlNode Node, string SourceFileName)
     {
         string ProductName = "APSIM " + Configuration.Instance.ApsimVersion()
                                 + " " +
@@ -451,6 +451,11 @@ class InsertFilesIntoSetup
         // thinking there's a previous version already installed on users computer.
         XmlHelper.SetValue(Node, "Deployable/Product/ProductCode", "8:{" + ProductCode + "}");
 
+        // We need to change the OutputFileName to match the name of the project file we're working with.
+        XmlHelper.SetValue(Node, "Configurations/Debug/OutputFilename",
+                                 "8:" + Path.GetFileNameWithoutExtension(SourceFileName) + ".msi");
+        XmlHelper.SetValue(Node, "Configurations/Release/OutputFilename",
+                                 "8:" + Path.GetFileNameWithoutExtension(SourceFileName) + ".msi");
     }
 
 

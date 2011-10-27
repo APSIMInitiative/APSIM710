@@ -24,14 +24,14 @@ SourceFiles=SourceFiles
 InstallPrompt=
 DisplayLicense=
 FinishMessage=
-TargetName=ApsimSetupForRelease.exe
+TargetName=Bootleg.exe
 FriendlyName=APSIM
 AppLaunched=cmd.exe /c Install.bat
 PostInstallCmd=<None>
 AdminQuietInstCmd=
 UserQuietInstCmd=
 FILE0="Install.bat"
-FILE1="ApsimSetup.msi"
+FILE1="Bootleg.msi"
 FILE2="setup.exe"
 [SourceFiles]
 SourceFiles0=.\
