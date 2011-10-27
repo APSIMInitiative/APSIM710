@@ -5,8 +5,8 @@ set APSIM=%CD%
 popd
 
 call CleanAll.bat
-call RunMake %APSIM%\Model\RunTime
-call RunMake %APSIM%\Model\JobScheduler
+call %APSIM%\Model\Build\RunMake %APSIM%\Model\RunTime
+call %APSIM%\Model\Build\RunMake %APSIM%\Model\JobScheduler
 
 rem Now go and do full build and run.
-..\JobScheduler.exe BuildAll.xml
+%APSIM%\Model\JobScheduler.exe %APSIM%\Model\Build\BuildAll.xml

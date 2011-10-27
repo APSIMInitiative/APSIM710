@@ -4,6 +4,9 @@ set APSIM=%CD%
 popd
 cd %APSIM%
 
+rem ----- Save the path 
+path > %TEMP%\SavedPath.bat
+
 rem ----- Setup the bootstrap.xml
 echo ^<StdOut^>^<StdOut^>                                                           > %TEMP%\Bootstrap.xml
 
@@ -65,3 +68,4 @@ set INCLUDE=
 set LIB=
 set PatchFileName=
 set JobID=
+%TEMP%\SavedPath.bat
