@@ -6,11 +6,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
+using System.Text;
 
 using CSGeneral;
 
 namespace ApsimFile
    {
+
    /// <summary>
    /// This class implements a macro language  e.g.
    ///
@@ -50,7 +52,7 @@ namespace ApsimFile
          Contents = ParseForEach(MacroValues, Contents);
          ReplaceGlobalMacros(ref Contents, MacroValues);
          ParseIf(ref Contents);
-		 ParseToLower(ref Contents);
+         ParseToLower(ref Contents);
          return Contents;
          }
       // ------------------------------------------------------------------
@@ -107,10 +109,10 @@ namespace ApsimFile
             int PosAfterEndFor = ParseEndForMacro(Contents, PosEndForEach);
 
             // get the bit of text before the foreach macro
-            string PreForEachText = Contents.Substring(0, AdjustStartPos(Contents, PosForEach));
+            string PreForEachText = Contents.Substring(0, AdjustStartPos(ref Contents, PosForEach));
 
             // get the contents of the foreach body
-            string ForEachText = Contents.Substring(PosAfterForEach, AdjustStartPos(Contents, PosEndForEach) - PosAfterForEach);
+            string ForEachText = Contents.Substring(PosAfterForEach, AdjustStartPos(ref Contents, PosEndForEach) - PosAfterForEach);
 
             // get the bit of text after the endfor macro
             string PostForEachText = Contents.Substring(PosAfterEndFor);
@@ -152,7 +154,7 @@ namespace ApsimFile
       // unwanted spaces on the front of the macro if the macro has
       // nothing before it on the line.
       // ------------------------------------------------------------------
-      int AdjustStartPos(string Contents, int PosStartOfMacro)
+      int AdjustStartPos(ref string Contents, int PosStartOfMacro)
          {
          if (PosStartOfMacro > 0)
             {
@@ -169,12 +171,34 @@ namespace ApsimFile
             return 0;
          }
       // ------------------------------------------------------------------
+      // Adjust the start position of a macro. This routine will remove
+      // unwanted spaces on the front of the macro if the macro has
+      // nothing before it on the line.
+      // Same as the version above, but for StringBuilder instead of string
+      // ------------------------------------------------------------------
+      int AdjustStartPos(ref StringBuilder Contents, int PosStartOfMacro)
+      {
+          if (PosStartOfMacro > 0)
+          {
+              int Pos = PosStartOfMacro - 1;
+              while (Pos > 0 && Contents[Pos] == ' ')
+                  Pos--;
+
+              if (Contents[Pos] == '\n')
+                  return Pos + 1;
+              else
+                  return PosStartOfMacro;
+          }
+          else
+              return 0;
+      }
+      // ------------------------------------------------------------------
       // Adjust the end position of a macro. This routine will remove
       // unwanted spaces and a carriage return on end of the macro
       // if there is nothing else between the end of the macro and
       // the end of the line.
       // ------------------------------------------------------------------
-      int AdjustEndPos(string Contents, int PosMacro)
+      int AdjustEndPos(ref string Contents, int PosMacro)
          {
          int PosEndOfMacro = PosMacro;
          if (Contents[PosMacro] != ']')
@@ -189,12 +213,34 @@ namespace ApsimFile
          else
             return PosEndOfMacro;
          }
+      // ------------------------------------------------------------------
+      // Adjust the end position of a macro. This routine will remove
+      // unwanted spaces and a carriage return on end of the macro
+      // if there is nothing else between the end of the macro and
+      // the end of the line.
+      // Same as the version above, but for StringBuilder instead of string
+      // ------------------------------------------------------------------
+      int AdjustEndPos(ref StringBuilder Contents, int PosMacro)
+      {
+          int PosEndOfMacro = PosMacro;
+          if (Contents[PosMacro] != ']')
+              PosEndOfMacro = Contents.IndexOf("]", PosMacro, false);
+          PosEndOfMacro++;
+          int Pos = PosEndOfMacro;
+          while (Pos < Contents.Length && (Contents[Pos] == ' ' || Contents[Pos] == '\r'))
+              Pos++;
+
+          if (Pos < Contents.Length && Contents[Pos] == '\n')
+              return Pos + 1;
+          else
+              return PosEndOfMacro;
+      }
       //---------------------------------------------------------------
       // Find the start of a foreach macro in the specified contents.
       //---------------------------------------------------------------
       int FindForEachMacro(string Contents, int StartPos)
          {
-         return Contents.IndexOf("[foreach ", StartPos);
+             return Contents.IndexOf("[foreach ", StartPos, StringComparison.Ordinal);
          }
       // -------------------------------------------------
       // Parses a string like: [foreach simulation.soil as s]
@@ -206,7 +252,7 @@ namespace ApsimFile
       void ParseForEachMacro(string Contents, int PosForEach, out string ForEachAlias,
          out string NodeName, out string NodeType, out int PosAfterForEach)
          {
-         PosAfterForEach = Contents.IndexOf("]", PosForEach);
+             PosAfterForEach = Contents.IndexOf("]", PosForEach, StringComparison.Ordinal);
          if (PosAfterForEach == -1)
             throw new Exception("Expected a ']' character while trying to parse a foreach macro");
          string Macro = Contents.Substring(PosForEach + 1, PosAfterForEach - PosForEach - 1);
@@ -239,7 +285,7 @@ namespace ApsimFile
             ForEachAlias = NodeType;
          else
             throw new Exception("Invalid foreach macro at : " + Contents);
-         PosAfterForEach = AdjustEndPos(Contents, PosAfterForEach);
+         PosAfterForEach = AdjustEndPos(ref Contents, PosAfterForEach);
          }
       //---------------------------------------------------------------
       // Parse the endfor macro and return the position to just after
@@ -247,7 +293,7 @@ namespace ApsimFile
       //---------------------------------------------------------------
       int ParseEndForMacro(string Contents, int PosEndForEach)
          {
-         return AdjustEndPos(Contents, PosEndForEach);
+         return AdjustEndPos(ref Contents, PosEndForEach);
          }
       //---------------------------------------------------------------
       // Find the matching endfor for the specified foreach.
@@ -263,7 +309,7 @@ namespace ApsimFile
          while (Count > 0)
             {
             int PosForEach = FindForEachMacro(Contents, CurrentPos);
-            PosEndFor = Contents.IndexOf("[endfor]", CurrentPos);
+            PosEndFor = Contents.IndexOf("[endfor]", CurrentPos, StringComparison.Ordinal);
             if (PosForEach != -1 && PosForEach < PosEndFor)
                {
                Count++;
@@ -410,75 +456,85 @@ namespace ApsimFile
       // Parse all if statements.
       //---------------------------------------------------------------
       void ParseIf(ref string Contents)
-         {
-         int PosElseIf = 0;
-         int PosElse = 0;
-         int PosCondition = Contents.IndexOf("[if");
-         while (PosCondition != -1 && PosCondition != Contents.Length)
-            {
-            int PosEndMacro = FindMatchingCloseBracket(ref Contents, PosCondition + 1);
-            int PosEndIf = Contents.IndexOf("[endif]", PosCondition + 1);
-            int PosNextElse = Contents.IndexOf("[else]", PosCondition + 1);
-            int PosNextElseIf = Contents.IndexOf("[elseif", PosCondition + 1);
-            if (PosNextElse == -1)
-               PosNextElse = Contents.Length;
-            if (PosNextElseIf == -1)
-               PosNextElseIf = Contents.Length;
+      {
+          // This routine used "Remove", which can be slow with large string objects
+          // To speed this up, we can use a StringBuilder object, for which these
+          // operations are a lot less expensive. We copy our contents string
+          // to a new StringBuilder at the start, then copy the StringBuilder back
+          // to the string at the end.
+          int PosElseIf = 0;
+          int PosElse = 0;
+          int PosCondition = Contents.IndexOf("[if", StringComparison.Ordinal);
+          if (PosCondition != -1)
+          {
+              StringBuilder Cnts = new StringBuilder(Contents);
+              while (PosCondition != -1 && PosCondition != Cnts.Length)
+              {
+                  int PosEndMacro = FindMatchingCloseBracket(ref Cnts, PosCondition + 1);
+                  int PosEndIf = Cnts.IndexOf("[endif]", PosCondition + 1, false);
+                  int PosNextElse = Cnts.IndexOf("[else]", PosCondition + 1, false);
+                  int PosNextElseIf = Cnts.IndexOf("[elseif", PosCondition + 1, false);
+                  if (PosNextElse == -1)
+                      PosNextElse = Cnts.Length;
+                  if (PosNextElseIf == -1)
+                      PosNextElseIf = Cnts.Length;
 
-            int PosIf;
-            int PosEndBlock = Math.Min(Math.Min(PosNextElseIf, PosNextElse), PosEndIf);
-            if (PosEndBlock != -1)
-               {
-               bool ok;
-               if (PosCondition == PosElse && PosCondition != PosElseIf)
-                  ok = true;
-
-               else
+                  int PosIf;
+                  int PosEndBlock = Math.Min(Math.Min(PosNextElseIf, PosNextElse), PosEndIf);
+                  if (PosEndBlock != -1)
                   {
-                  int PosSpace = Contents.IndexOf(' ', PosCondition);
+                      bool ok;
+                      if (PosCondition == PosElse && PosCondition != PosElseIf)
+                          ok = true;
 
-                  ok = EvaluateIf(Contents.Substring(PosSpace, PosEndMacro - PosSpace));
+                      else
+                      {
+                          int PosSpace = Cnts.IndexOf(" ", PosCondition, false);
+
+                          ok = EvaluateIf(Cnts.ToString(PosSpace, PosEndMacro - PosSpace));
+                      }
+                      if (ok)
+                      {
+                          PosEndBlock = AdjustStartPos(ref Cnts, PosEndBlock);
+                          PosEndIf = AdjustEndPos(ref Cnts, PosEndIf);
+
+                          // remove everything from the end of block to after the endif.
+                          Cnts = Cnts.Remove(PosEndBlock, PosEndIf - PosEndBlock);
+
+                          // remove the condition line.
+                          PosEndMacro = AdjustEndPos(ref Cnts, PosEndMacro);
+                          PosCondition = AdjustStartPos(ref Cnts, PosCondition);
+                          Cnts = Cnts.Remove(PosCondition, PosEndMacro - PosCondition);
+                      }
+                      else
+                      {
+                          // remove everything from start of condition down to end of block.
+                          PosCondition = AdjustStartPos(ref Cnts, PosCondition);
+                          if (PosEndBlock == PosEndIf)
+                              PosEndBlock = AdjustEndPos(ref Cnts, PosEndBlock);
+                          else
+                              PosEndBlock = AdjustStartPos(ref Cnts, PosEndBlock);
+                          Cnts = Cnts.Remove(PosCondition, PosEndBlock - PosCondition);
+                      }
+                      PosIf = Cnts.IndexOf("[if", PosCondition, false);
                   }
-               if (ok)
-                  {
-                  PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
-                  PosEndIf = AdjustEndPos(Contents, PosEndIf);
-
-                  // remove everything from the end of block to after the endif.
-                  Contents = Contents.Remove(PosEndBlock, PosEndIf - PosEndBlock);
-
-                  // remove the condition line.
-                  PosEndMacro = AdjustEndPos(Contents, PosEndMacro);
-                  PosCondition = AdjustStartPos(Contents, PosCondition);
-                  Contents = Contents.Remove(PosCondition, PosEndMacro - PosCondition);
-                  }
-               else
-                  {
-                  // remove everything from start of condition down to end of block.
-                  PosCondition = AdjustStartPos(Contents, PosCondition);
-                  if (PosEndBlock == PosEndIf)
-                     PosEndBlock = AdjustEndPos(Contents, PosEndBlock);
                   else
-                     PosEndBlock = AdjustStartPos(Contents, PosEndBlock);
-                  Contents = Contents.Remove(PosCondition, PosEndBlock - PosCondition);
-                  }
-               PosIf = Contents.IndexOf("[if");
-               }
-            else
-               PosIf = Contents.IndexOf("[if", PosCondition+1);
-            
-            PosElse = Contents.IndexOf("[else]");
-            PosElseIf = Contents.IndexOf("[elseif");
-            if (PosIf == -1)
-               PosIf = Contents.Length;
-            if (PosElse == -1)
-               PosElse = Contents.Length;
-            if (PosElseIf == -1)
-               PosElseIf = Contents.Length;
+                      PosIf = Cnts.IndexOf("[if", PosCondition + 1, false);
 
-            PosCondition = Math.Min(Math.Min(PosIf, PosElse), PosElseIf);
-            }
-         }
+                  PosElse = Cnts.IndexOf("[else]", PosCondition, false);
+                  PosElseIf = Cnts.IndexOf("[elseif", PosCondition, false);
+                  if (PosIf == -1)
+                      PosIf = Cnts.Length;
+                  if (PosElse == -1)
+                      PosElse = Cnts.Length;
+                  if (PosElseIf == -1)
+                      PosElseIf = Cnts.Length;
+
+                  PosCondition = Math.Min(Math.Min(PosIf, PosElse), PosElseIf);
+              }
+              Contents = Cnts.ToString();
+          }
+      }
 
       //---------------------------------------------------------------
       // Find the matching close bracket starting from the specified
@@ -501,20 +557,41 @@ namespace ApsimFile
          }
 
       //---------------------------------------------------------------
+      // Find the matching close bracket starting from the specified
+      // position 
+      // Same as the above, but for StringBuilder instead of string
+      //---------------------------------------------------------------
+      int FindMatchingCloseBracket(ref StringBuilder Contents, int Pos)
+      {
+          int Count = 1;
+          while (Pos < Contents.Length && Count != 0)
+          {
+              if (Contents[Pos] == '[')
+                  Count++;
+              if (Contents[Pos] == ']')
+                  Count--;
+              Pos++;
+          }
+          if (Count != 0)
+              throw new Exception("Badly formed if statement: " + Contents.ToString(Pos, 25));
+          return Pos - 1;
+      }
+
+      //---------------------------------------------------------------
       // Parse all comment statements and remove.
       //---------------------------------------------------------------
       void ParseComments(ref string Contents)
          {
-         int PosComment = Contents.IndexOf("[comment]");
+             int PosComment = Contents.IndexOf("[comment]", StringComparison.Ordinal);
          while (PosComment != -1)
             {
-            PosComment = AdjustStartPos(Contents, PosComment);
-            int PosEndComment = Contents.IndexOf("[endcomment]");
+            PosComment = AdjustStartPos(ref Contents, PosComment);
+            int PosEndComment = Contents.IndexOf("[endcomment]", PosComment + 1, StringComparison.Ordinal);
             if (PosEndComment == -1)
                throw new Exception("Cannot find matching [endcomment] macro");
-            PosEndComment = AdjustEndPos(Contents, PosEndComment);
+            PosEndComment = AdjustEndPos(ref Contents, PosEndComment);
             Contents = Contents.Remove(PosComment, PosEndComment - PosComment);
-            PosComment = Contents.IndexOf("[comment]");
+            PosComment = Contents.IndexOf("[comment]", PosComment + 1, StringComparison.Ordinal);
             }
          }
       void ParseToLower(ref string Contents)
@@ -522,15 +599,13 @@ namespace ApsimFile
          const string opentext = "[tolower]";
          const string closetext = "[endtolower]";
 
-		 int Pos = Contents.IndexOf(opentext);
+         int Pos = Contents.IndexOf(opentext, StringComparison.Ordinal);
          while (Pos != -1)
             {
-            Pos = AdjustStartPos(Contents, Pos);
-            int PosEnd = Contents.IndexOf(closetext);
+            int PosEnd = Contents.IndexOf(closetext, Pos, StringComparison.Ordinal);
             if (PosEnd == -1)
                throw new Exception("Cannot find matching [endtolower] macro");
 
-			PosEnd = AdjustStartPos(Contents, PosEnd);
 			int n = PosEnd - Pos - opentext.Length;
 
 			string text = Contents.Substring(Pos + opentext.Length, n);
@@ -538,7 +613,7 @@ namespace ApsimFile
             Contents =  Contents.Substring(0, Pos ) + 
 					     text.ToLower() +
 						 Contents.Substring(PosEnd + closetext.Length, Contents.Length - (PosEnd + closetext.Length));
-            Pos = Contents.IndexOf(opentext);
+            Pos = Contents.IndexOf(opentext, Pos, StringComparison.Ordinal);
             }
          }
 
@@ -550,14 +625,14 @@ namespace ApsimFile
          const string opentext = "[include]";
          const string closetext = "[endinclude]";
 
-         int PosInclude = Contents.IndexOf(opentext);
+         int PosInclude = Contents.IndexOf(opentext, StringComparison.Ordinal);
          while (PosInclude != -1)
             {
-            PosInclude = AdjustStartPos(Contents, PosInclude);
-            int PosEndInclude = Contents.IndexOf(closetext);
+            PosInclude = AdjustStartPos(ref Contents, PosInclude);
+            int PosEndInclude = Contents.IndexOf(closetext, PosInclude, StringComparison.Ordinal);
             if (PosEndInclude == -1)
                throw new Exception("Cannot find matching [endinclude] macro");
-            PosEndInclude = AdjustEndPos(Contents, PosEndInclude);
+            PosEndInclude = AdjustEndPos(ref Contents, PosEndInclude);
             string filename = Contents.Substring(PosInclude + opentext.Length, PosEndInclude - PosInclude - opentext.Length - closetext.Length - 2);
             filename = Configuration.RemoveMacros(filename);
             string oldtext = Contents.Substring(PosInclude, PosEndInclude - PosInclude);
@@ -567,7 +642,7 @@ namespace ApsimFile
             string newtext = sr.ReadToEnd();
 
             Contents = Contents.Replace(oldtext, newtext);
-            PosInclude = Contents.IndexOf("[include]");
+            PosInclude = Contents.IndexOf("[include]", PosInclude, StringComparison.Ordinal);
             }
          }
       //---------------------------------------------------------------
@@ -639,7 +714,7 @@ namespace ApsimFile
          {
          StringCollection FileNamesCreated = new StringCollection();
          const string FileMacro = "[file";
-         int PosFile = Contents.IndexOf(FileMacro);
+         int PosFile = Contents.IndexOf(FileMacro, StringComparison.Ordinal);
          while (PosFile != -1)
             {
             PosFile += FileMacro.Length;
@@ -649,8 +724,8 @@ namespace ApsimFile
             if (OutputDirectory != "")
                Filename = OutputDirectory + "/" + Filename;
 
-            int PosStartFileBody = AdjustEndPos(Contents, PosFile);
-            int PosEndFileBody = Contents.IndexOf("[endfile]", PosStartFileBody);
+            int PosStartFileBody = AdjustEndPos(ref Contents, PosFile);
+            int PosEndFileBody = Contents.IndexOf("[endfile]", PosStartFileBody, StringComparison.Ordinal);
             if (PosEndFileBody == -1)
                throw new Exception("Cannot find a matching [endfile] keyword for file " + Filename);
 
@@ -662,7 +737,7 @@ namespace ApsimFile
             o.Close();
             FileNamesCreated.Add(Path.GetFullPath(Filename));
 
-            PosFile = Contents.IndexOf(FileMacro, PosEndFileBody);
+            PosFile = Contents.IndexOf(FileMacro, PosEndFileBody, StringComparison.Ordinal);
             }
          return FileNamesCreated;
          }
@@ -680,6 +755,60 @@ namespace ApsimFile
          Contents = Contents.Replace("&nbsp;", " ");
          return Contents;
          }
+
       }
+
+   // Extend the StringBuilder class to provide an IndexOf function.
+   // Copied from http://stackoverflow.com/questions/1359948/why-doesnt-stringbuilder-have-indexof-method
+   public static class StringBuilderExtensions
+   {
+       /// <summary>
+       /// Returns the index of the start of the contents in a StringBuilder
+       /// </summary>        
+       /// <param name="value">The string to find</param>
+       /// <param name="startIndex">The starting index.</param>
+       /// <param name="ignoreCase">if set to <c>true</c> it will ignore case</param>
+       /// <returns></returns>
+       public static int IndexOf(this StringBuilder sb, string value, int startIndex, bool ignoreCase)
+       {
+           int index;
+           int length = value.Length;
+           int maxSearchLength = (sb.Length - length) + 1;
+
+           if (ignoreCase)
+           {
+               for (int i = startIndex; i < maxSearchLength; ++i)
+               {
+                   if (Char.ToLower(sb[i]) == Char.ToLower(value[0]))
+                   {
+                       index = 1;
+                       while ((index < length) && (Char.ToLower(sb[i + index]) == Char.ToLower(value[index])))
+                           ++index;
+
+                       if (index == length)
+                           return i;
+                   }
+               }
+
+               return -1;
+           }
+
+           for (int i = startIndex; i < maxSearchLength; ++i)
+           {
+               if (sb[i] == value[0])
+               {
+                   index = 1;
+                   while ((index < length) && (sb[i + index] == value[index]))
+                       ++index;
+
+                   if (index == length)
+                       return i;
+               }
+           }
+
+           return -1;
+       }
+   }
+
    }
 
