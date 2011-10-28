@@ -18,11 +18,17 @@ namespace CMPComp
     [ComVisible(true)]
     public class TComponentInstance : TAPSIMHost
     {
-        private static String _STYPE = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().GetName().Name);
-        private static String _SVERSION = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." + Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
+        // Get Type from the the "Product" attribute of the assembly; use the DLL name if this is absent
+        // Get Version from the assembly version number's major and minor components 
+        // Get Author from the "Company" attribute of the assembly; use "APSIM Initiative" if this is absent
+        private static String _STYPE = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false).Length > 0 ?
+                                       (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0] as AssemblyProductAttribute).Product :
+                                       Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().GetName().Name);
+        private static String _SVERSION = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." +
+                                          Assembly.GetExecutingAssembly().GetName().Version.Major.ToString();
         private static String _SAUTHOR = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false).Length > 0 ?
                                           (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0] as AssemblyCompanyAttribute).Company :
-                                          "APSRU";
+                                          "APSIM Initiative";
 
         //=========================================================================
         /// <summary>

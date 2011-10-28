@@ -133,7 +133,7 @@ public partial class SurfaceOrganicMatter : Instance
     /// <summary>
     /// fraction of incoming faeces to add
     /// </summary>
-    [Param(Optional = true, MinVal = 0.0, MaxVal = 0.0)]
+    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 0.0)]
     [Units("0-1")]
     public double fractionFaecesAdded = 0.5;
 

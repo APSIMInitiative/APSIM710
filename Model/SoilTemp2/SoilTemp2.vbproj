@@ -58,7 +58,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CMPServices, Version=1.0.4272.27290, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="CMPServices, Version=1.0.4269.29109, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CMPServices.dll</HintPath>
     </Reference>
@@ -79,9 +79,13 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntryPoints.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
-    <Compile Include="..\Build\VersionInfo.vb" />
+    <Compile Include="..\CSDotNetComponentInterface\EntryPoints.vb">
+      <Link>EntryPoints.vb</Link>
+    </Compile>
+    <Compile Include="..\Build\VersionInfo.vb">
+      <Link>VersionInfo.vb</Link>
+    </Compile>
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
@@ -107,7 +111,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

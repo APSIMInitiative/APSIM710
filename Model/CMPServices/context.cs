@@ -118,6 +118,7 @@ namespace CMPServices
             XmlNode compNode;
             String compName;
             String compDll = "";
+            string compClass = "";
             String model;
             StringBuilder buf;
             String xml;
@@ -159,10 +160,13 @@ namespace CMPServices
                     anode = xmlParse.firstElementChild(metaDataNode, "ApsimToSim");
                     if (anode != null)
                     {
+                        if (dllList.Count < 1) 
+                            throw new Exception("No dll's found in the context file.");
                         compNode = FindCompNode(xmlParse, anode, dllList[0], dllPath);   //find the matching component section for dllPath
                         if (compNode != null)
                         {
                             compDll = dllPath; //we know the full path so use it
+                            compClass = xmlParse.getAttrValue(compNode, "class");
 
                             FInitList.Clear();
                             //now expand the sections under <component><initdata>
@@ -194,11 +198,11 @@ namespace CMPServices
 
                     buf = new StringBuilder();
                     //now build the correct xml for the context file
-                    buf.Append("<component name=\"" + compName.Trim() + "\" executable=\"" + compDll + "\">");
+                    buf.Append("<component name=\"" + compName.Trim() + "\" executable=\"" + compDll + "\"" + " class=\"" + compClass + "\">");
                     buf.Append("  <initdata>\r\n");
+                    buf.Append(model);
                     for (i = 0; i < FInitList.Count - 1; i++)
                         buf.Append("    <" + FInitList[i] + "></" + FInitList[i] + ">\r\n");
-                    buf.Append(model);
                     buf.Append("  </initdata>");
                     buf.Append("</component>");
                     strContext = buf.ToString();
