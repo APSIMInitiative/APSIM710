@@ -18,6 +18,7 @@ Paddock:
    Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
@@ -52,7 +53,7 @@ Paddock:
      Output frequency:
         post
      Output variables:
-        dd/mmm/yyyy
+        dd/mmm/yyyy as Date
         AccumTtemerg
         StageCodeValue
         no3()
@@ -141,15 +142,6 @@ Paddock:
         LeafFw
         LeafPhotosynthesisFtValue
         LeafPhotosynthesisFvpdValue
-        LeafTotalNo
-        LeafGreenNo
-        LeafExpandingNodeNo
-        LeafCohortNo
-        LeafBranchNo
-        LeafDeadNodeNo
-        LeafNodeNo
-        LeafSenescingNodeNo
-        LeafLeafNo
         sw
         no3
         LeafPartitionFractionValue
@@ -187,6 +179,33 @@ Paddock:
         LeafLiveMetabolicWt
         RootNUptakeSupply
         ArbitratorNDemand
+        LeafFullyExpandedNodeNo
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
+        LeafPrimordiaNo
+        LeafFinalNodeNo
+        LeafPhotoPeriodValue
+        PhenologyVernalisationIndexValue
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationIndex as VernalisationIndex
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationFinalNodeNumber as VFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberPhotoperiodFinalNodeNumber as PPFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberCommitPrimordia as Commit
+        LeafFinalNodeNumberTerminateFinalNodeNumberTerminatedFinalNodeNumber as TFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberTargetFinalNodeNumber as FLN
+        MaxT
+        MinT
+        maxt_soil_surface
+        mint_soil_surface
+        LeafThermalTimeValue
+        LeafFinalLeafNo
+        sw
 
      Output file = RS_Oats_9899_FULL Outputs.out
      Format = normal
@@ -214,6 +233,7 @@ Paddock:
         LeafSpecificLeafAreaMinValue
         LeafCohortSize
         LeafCohortArea
+        LeafCohortDeadArea
 
      Output file = RS_Oats_9899_FULL Leaf Cohort Analysis.out
      Format = normal
@@ -261,7 +281,7 @@ Paddock:
      
      SECTION:- start_of_day
      if today = date('29/09/1998') then
-        oat2 sow population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+        oat2 sow population = 250, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      endif
      END of rules
      
@@ -515,16 +535,16 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.00  2.49  130.05    3.00    0.00
-             2     6.00  0.92   15.00    2.00    0.00
-             3     6.00  0.32   15.00    1.00    0.00
-             4     6.00  0.28   10.00    1.00    0.00
-             5     6.00  0.21    5.00    1.00    0.00
+             1     6.00  2.49  530.20    3.00    0.00
+             2     6.00  0.92   70.00    2.00    0.00
+             3     6.00  0.32   50.00    1.00    0.00
+             4     6.00  0.28   20.00    1.00    0.00
+             5     6.00  0.21   10.00    1.00    0.00
              6     6.00  0.20    5.00    1.00    0.00
              7     6.00  0.20    5.00    1.00    0.00
              8     6.00  0.20    5.00    1.00    0.00
           ------------------------------------------------
-           Totals              190.05   11.00    0.00
+           Totals              695.21   11.00    0.00
           ------------------------------------------------
      
      
@@ -537,19 +557,19 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      64115.2  5828.7  1093.9   136.7   131.6     3.3
-             2      27950.1  2540.9   122.0    15.3    90.5     2.3
-             3      10409.5   946.3    18.5     2.3    62.2     1.6
-             4       8890.2   808.2    11.3     1.4    42.7     1.1
-             5       6656.5   605.1     3.6     0.5    29.4     0.7
-             6       6402.9   582.1     1.1     0.1    20.2     0.5
-             7       6402.9   582.1     1.1     0.1    13.9     0.3
-             8       6387.8   580.7    16.2     2.0     9.5     0.2
+             1      63591.6  5781.1  1617.6   202.2   658.2    16.5
+             2      27811.3  2528.3   260.8    32.6   452.4    11.3
+             3      10403.3   945.8    24.7     3.1   310.9     7.8
+             4       8887.1   807.9    14.4     1.8   213.7     5.3
+             5       6656.5   605.1     3.6     0.5   146.9     3.7
+             6       6402.9   582.1     1.1     0.1   100.9     2.5
+             7       6402.9   582.1     1.1     0.1    69.4     1.7
+             8       6387.8   580.7    16.2     2.0    47.7     1.2
           ---------------------------------------------------------
-           Totals  137215.2 12474.1  1267.8   158.5   400.0    10.0
+           Totals  136543.4 12413.0  1939.6   242.4  2000.0    50.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- oat2 sow  population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     Manager sending message :- oat2 sow  population = 250, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -570,25 +590,18 @@ Paddock:
      
      
      Manager creating a new local real variable : podgreenwt = 0.00000
-     Manager creating a new local real variable : initialsoilomn = 12642.57813
+     Manager creating a new local real variable : initialsoilomn = 12705.48047
      Manager creating a new local real variable : initialsurfaceomn = 5.00000
-     Manager creating a new local real variable : initialmineraln = 201.04895
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "fertiliser".
-     Variables should have a value before they are used in an expression.
-     Component name: Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : fertiliser = 0.00000
+     Manager creating a new local real variable : initialmineraln = 706.20526
 30/09/1998 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 7/10/1998 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
+27/10/1998 - FloralInitiation
+                            LAI = 0.49 (m^2/m^2)
+           Above Ground Biomass = 19.47 (g/m^2)
 3 November 1998(Day of year=307), operations: 
       Sending apply message to irrigation
 9 November 1998(Day of year=313), operations: 
@@ -599,51 +612,48 @@ Paddock:
       Sending apply message to irrigation
 30 November 1998(Day of year=334), operations: 
       Sending apply message to irrigation
-4/12/1998 - FloralInitiation
-                            LAI = 5.22 (m^2/m^2)
-           Above Ground Biomass = 720.24 (g/m^2)
 7 December 1998(Day of year=341), operations: 
       Sending apply message to irrigation
+12/12/1998 - FlagLeaf
+                            LAI = 7.34 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
 14 December 1998(Day of year=348), operations: 
       Sending apply message to irrigation
 21 December 1998(Day of year=355), operations: 
       Sending apply message to irrigation
 29 December 1998(Day of year=363), operations: 
       Sending apply message to irrigation
-29/12/1998 - FlagLeaf
-                            LAI = 4.62 (m^2/m^2)
-           Above Ground Biomass = 1202.99 (g/m^2)
+30/12/1998 - Flowering
+                            LAI = 7.23 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
 5 January 1999(Day of year=5), operations: 
       Sending apply message to irrigation
+6/01/1999 - StartGrainFill
+                            LAI = 7.23 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
 11 January 1999(Day of year=11), operations: 
       Sending apply message to irrigation
-14/01/1999 - Flowering
-                            LAI = 2.41 (m^2/m^2)
-           Above Ground Biomass = 1519.21 (g/m^2)
 18 January 1999(Day of year=18), operations: 
       Sending apply message to irrigation
-21/01/1999 - StartGrainFill
-                            LAI = 1.96 (m^2/m^2)
-           Above Ground Biomass = 1582.22 (g/m^2)
 25 January 1999(Day of year=25), operations: 
       Sending apply message to irrigation
 1 February 1999(Day of year=32), operations: 
       Sending apply message to irrigation
+6/02/1999 - EndGrainFill
+                            LAI = 6.39 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
 8 February 1999(Day of year=39), operations: 
       Sending apply message to irrigation
+8/02/1999 - Maturity
+                            LAI = 5.96 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
+8/02/1999 - HarvestRipe
+                            LAI = 5.96 (m^2/m^2)
+           Above Ground Biomass = 472.26 (g/m^2)
 15 February 1999(Day of year=46), operations: 
       Sending apply message to irrigation
-21/02/1999 - EndGrainFill
-                            LAI = 0.33 (m^2/m^2)
-           Above Ground Biomass = 1783.98 (g/m^2)
 22 February 1999(Day of year=53), operations: 
       Sending apply message to irrigation
-24/02/1999 - Maturity
-                            LAI = 0.19 (m^2/m^2)
-           Above Ground Biomass = 1798.27 (g/m^2)
-24/02/1999 - HarvestRipe
-                            LAI = 0.19 (m^2/m^2)
-           Above Ground Biomass = 1798.27 (g/m^2)
 1 March 1999(Day of year=60), operations: 
       Sending apply message to irrigation
 8 March 1999(Day of year=67), operations: 

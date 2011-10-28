@@ -31,7 +31,6 @@ public class TerminateFinalNodeNumber
     public double PhotoPeriod = 0;
     private double _VernalisationIncrement = 0;
     private double _VernalisationIndex = 0;
-    public bool _CropIsVernalised = false;
     public double _AttainableFinalNodeNumber = 0;
     public double _VernalisationFinalNodeNumber = 0;
     public double _PhotoperiodFinalNodeNumber = 0;
@@ -41,8 +40,20 @@ public class TerminateFinalNodeNumber
     [Output]
     public double VernalisationIncrement { get { return _VernalisationIncrement; } }
     [Output]
+    public double JuvenileDevelopmentIndex 
+    { 
+        get 
+        {
+            if ((_VernalisationIndex >= 1) || (Leaf.PrimordiaNo >= _AttainableFinalNodeNumber))
+                return 1.0;
+            else
+                return Math.Max(Leaf.PrimordiaNo / _AttainableFinalNodeNumber, _VernalisationIndex);
+        } 
+    }
+    //JuvenileDevelopmentIndex is a combination of progress toward vernalisation saturation and vegetative development toward final leaf number
+    [Output]
     public double VernalisationIndex { get { return _VernalisationIndex; } }
-    //VernalisationIndex is 0 if the crop is not vernalised, 1 if it is fully vernalised and somewhere inbetween if the vernalisation response is partially saturated
+    //Vernalisation index is 1 if fully saturated, 0 if not vernalised at all and some where in between is vernalisation is partly completed.
     [Output]
     public double VernalisationFinalNodeNumber { get { return _VernalisationFinalNodeNumber; } }
     //LongDayFinalNodeNumber is the number of leaves that the crop will produce if grown in long photoperiod (greater than the saturating photoperiod)
@@ -62,7 +73,7 @@ public class TerminateFinalNodeNumber
     {
         get
         {
-            return Math.Max(_AttainableFinalNodeNumber, _TerminatedFinalNodeNumber); ;
+            return (int)Math.Max(_AttainableFinalNodeNumber, _TerminatedFinalNodeNumber); ;
         }
     }
     //This returns an estimate of the final node number that the crop will committ to starting off with maximum node number, decreasing as the crop is vernalised and then changing in response to photoperiod 
@@ -77,11 +88,11 @@ public class TerminateFinalNodeNumber
         MeanT = (MaxT + MinT) / 2;
         if (_VernalisationIndex < 1.0)
             IncrementVernalisation();
-        CropIsernalised();
     }
 
     public void UpdateTerminateNodeVariables()
     {
+        AttainableFinalNodeNumber();
         VernalisationFinalNodeNumberFunction();
         PhotoperiodFinalNodeNumberFunction();
         CommitPrimordiaFunction();
@@ -95,8 +106,7 @@ public class TerminateFinalNodeNumber
     }
 
  #endregion
-
-
+    
  #region vernalisation functions
 
     /// <summary>
@@ -115,14 +125,6 @@ public class TerminateFinalNodeNumber
         _VernalisationIndex += _VernalisationIncrement;
     }
 
-    /// <summary>
-    /// This function determines if the crop has been vernalised either from saturation of vernalisation index or primordia number reaching the AttainableFinalNodeNumber
-    /// </summary>
-     public void CropIsernalised()
-     {
-         if ((_VernalisationIndex >= 1) || (Leaf.PrimordiaNo >= AttainableFinalNodeNumber))
-            _CropIsVernalised = true;
-     }
  #endregion
 
  #region Final node number functions
@@ -130,21 +132,22 @@ public class TerminateFinalNodeNumber
      /// AttainableFinalNodeNumber is the final leaf number that the crop may committ to 
      /// It decreases from the MaximumNodeNumber toward a minimum depending on the extent of vernalisation
      /// </summary>
-     public double AttainableFinalNodeNumber
+     //public double AttainableFinalNodeNumber
+    public void AttainableFinalNodeNumber()
      {
-         get
-         {
+         //get
+         //{
              _AttainableFinalNodeNumber = Leaf.MaxNodeNo * (1 - _VernalisationIndex);
-             return _AttainableFinalNodeNumber;
-         }
+           //  return _AttainableFinalNodeNumber;
+         //}
      }
 
      public void VernalisationFinalNodeNumberFunction()
     {
-        if ((Leaf.CohortNo >= 3.0) && (_CropIsVernalised == true))
+        if ((Leaf.CohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))//(_CropIsVernalised == true))
         { } // do nothing
         else
-        _VernalisationFinalNodeNumber = Leaf.PrimordiaNo;
+        _VernalisationFinalNodeNumber = (Leaf.PrimordiaNo);
     }
 
      public void PhotoperiodFinalNodeNumberFunction()

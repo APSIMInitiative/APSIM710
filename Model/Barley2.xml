@@ -1,4 +1,4 @@
-<Type version="27" name="Barley2">
+<Type version="28" name="Barley2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -10,8 +10,7 @@
     <LargeIcon type="text" description="LargeIcon">%apsim%\UserInterface\Images\wheat32.png</LargeIcon>
     <SmallIcon type="text" description="SmallIcon">%apsim%\UserInterface\Images\wheat16.png</SmallIcon>
     <dll type="text" description="dll">%apsim%\Model\Plant2.dll</dll>
-    
-	<drops>
+    <drops>
       <drop>toolbox</drop>
       <drop>area</drop>
       <drop>simulation</drop>
@@ -19,7 +18,7 @@
     </drops>
     <ApsimToSim>
       <component name="[InstanceName]" executable="[dll]" class="Plant2.Barley2">
-        <executable name="[dll]" version="1.0"/>
+        <executable name="[dll]" version="1.0" />
         <initdata>
                [Model]
                <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
@@ -106,8 +105,8 @@
           <Constant name="Target">
             <Value>1.0</Value>
           </Constant>
-          <Variable name="VernalisationIndex">
-            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.VernalisationIndex</VariableName>
+          <Variable name="JuvenileDevelopmentIndex">
+            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.JuvenileDevelopmentIndex</VariableName>
           </Variable>
         </ObligateVernalisationPhase>
         <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
@@ -279,12 +278,6 @@
         </PhaseBasedSwitch>
       </SIRIUSGrain>
       <SIRIUSRoot name="Root">
-        <CompositeBiomass name="Live">
-           <Property>Root.LayerLive[]</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-           <Property>Root.LayerDead[]</Property>
-        </CompositeBiomass>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -292,6 +285,12 @@
         <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.03</KNO3>
         <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
         <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>

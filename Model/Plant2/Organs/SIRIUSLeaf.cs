@@ -228,6 +228,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
                DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
            NodeNo += DeltaNodeNumber;
            NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
+           _JuvDev = FinalNodeNumber.JuvDev(); //This is temporary until I can get linking between unrelated childern working
        }
        else
        {

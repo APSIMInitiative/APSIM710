@@ -108,9 +108,12 @@ public class Leaf : BaseOrgan, AboveGround
     public double MaxNodeNo = 0;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
     protected bool CohortsInitialised = false;
+    public double _JuvDev = 0; //This is temporary until I can get linking between unrelated childern working
  #endregion
 
  #region Outputs
+    [Output]
+    public double JuvDev { get { return _JuvDev; } }//This is temporary until I can get linking between unrelated childern working
     [Output]
     public double PrimordiaNo { get { return _PrimordiaNo; } }
     [Output]

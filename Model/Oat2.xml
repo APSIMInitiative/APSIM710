@@ -28,6 +28,7 @@
   <Model>
     <Cultivar name="Drummond">
       <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">18</Override>
     </Cultivar>
     <Cultivar name="Hokonui">
       <Construct type="text" description="Construct">Plant</Construct>
@@ -81,8 +82,8 @@
           <Constant name="Target">
             <Value>1.0</Value>
           </Constant>
-          <Variable name="VernalisationIndex">
-            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.VernalisationIndex</VariableName>
+          <Variable name="JuvenileDevelopmentIndex">
+            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.JuvenileDevelopmentIndex</VariableName>
           </Variable>
         </ObligateVernalisationPhase>
         <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
@@ -211,7 +212,7 @@
             <End>StartGrainFill</End>
             <TemperatureFunction name="Function">
               <XYPairs>
-                <XY>0 0.0</XY>
+                <XY>0 0</XY>
                 <XY>26 0.001</XY>
                 <XY>30 0.001</XY>
                 <XY>35 0.001</XY>
@@ -254,12 +255,6 @@
         </PhaseBasedSwitch>
       </SIRIUSGrain>
       <SIRIUSRoot name="Root">
-        <CompositeBiomass name="Live">
-           <Property>Root.LayerLive[]</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-           <Property>Root.LayerDead[]</Property>
-        </CompositeBiomass>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -267,6 +262,12 @@
         <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.03</KNO3>
         <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
         <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -339,9 +340,9 @@
         <KDead type="text" description="KDead">.03</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <SIRIUSLeafCohort name="Leaves[1]">
-          <Rank>1</Rank>
-          <Area>500</Area>
-          <Age>50</Age>
+          <Rank type="text" description="Rank">1</Rank>
+          <Area type="text" description="Area">50</Area>
+          <Age type="text" description="Age">50</Age>
         </SIRIUSLeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
@@ -440,7 +441,7 @@
           </RUECO2Function>
         </RUEModel>
         <Constant name="NReallocationFactor">
-          <Value type="text" description="Value">1</Value>
+          <Value type="text" description="Value">.05</Value>
         </Constant>
         <Constant name="NRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
@@ -449,15 +450,15 @@
           <Value type="text" description="Value">.5</Value>
         </Constant>
         <LeafStagePhyllochronFunction name="NodeAppearanceRate">
-          <Start>Emergence</Start>
-          <End>FlagLeaf</End>
-          <Phase1End>2.0</Phase1End>
-          <Phase1Multiplier>0.75</Phase1Multiplier>
-          <Phase2End>8.0</Phase2End>
-          <Phase2Multiplier>1.0</Phase2Multiplier>
-          <Phase3Multiplier>1.3</Phase3Multiplier>
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FlagLeaf</End>
+          <Phase1End type="text" description="Phase1End">2.0</Phase1End>
+          <Phase1Multiplier type="text" description="Phase1Multiplier">.75</Phase1Multiplier>
+          <Phase2End type="text" description="Phase2End">8.0</Phase2End>
+          <Phase2Multiplier type="text" description="Phase2Multiplier">1.0</Phase2Multiplier>
+          <Phase3Multiplier type="text" description="Phase3Multiplier">1.3</Phase3Multiplier>
           <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">90</Value>
+            <Value type="text" description="Value">85</Value>
           </Constant>
         </LeafStagePhyllochronFunction>
         <LinearInterpolationFunction name="ExtinctionCoeff">
@@ -481,42 +482,45 @@
             <XY>34 0</XY>
           </XYPairs>
         </TemperatureFunction>
-        <LinearInterpolationFunction name="MaxArea">
-          <XProperty>Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY>1 1400</XY>
-            <XY>5 3700</XY>
-            <XY>8 2000</XY>
-            <XY>10 1000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="GrowthDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
-          <XYPairs>
-            <XY>1 95</XY>
-            <XY>10 190</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
+        <DeterminantLeafSizeFunction name="MaxArea">
+          <FirstLeafSize type="text" description="FirstLeafSize">300</FirstLeafSize>
+          <JuvenileLeafsizeincrement type="text" description="JuvenileLeafsizeincrement">200</JuvenileLeafsizeincrement>
+          <LargestLeafSize type="text" description="LargestLeafSize">5000</LargestLeafSize>
+          <LargestLeafPosition type="text" description="LargestLeafPosition">1</LargestLeafPosition>
+          <FlagLeafSize type="text" description="FlagLeafSize">3500</FlagLeafSize>
+        </DeterminantLeafSizeFunction>
+        <MultiplyFunction name="GrowthDuration">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <Variable name="Phyllochron">
+            <VariableName type="text" description="Variable Name">Leaf.NodeAppearanceRate.BasePhyllochron.Value</VariableName>
+            <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                 </Memo>
+          </Variable>
+          <Constant name="NumberOfExpandingLeaves">
+            <Value type="text" description="Value">2</Value>
+          </Constant>
+        </MultiplyFunction>
         <LinearInterpolationFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY> 1  400.0</XY>
-            <XY> 10 900.0</XY>
+            <XY>1 1100</XY>
+            <XY>10 1100</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY> 5 150.0</XY>
-            <XY>30 150.0</XY>
+            <XY>5 300</XY>
+            <XY>30 300</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
+            <XY>2 0</XY>
+            <XY>3 1</XY>
             <XY>4 0</XY>
-            <XY>5 0.7</XY>
-            <XY>8 0</XY>
+            <XY>7 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
@@ -530,10 +534,10 @@
           <Value type="text" description="Value">.5</Value>
         </Constant>
         <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.9</Value>
+          <Value type="text" description="Value">.95</Value>
         </Constant>
         <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">0.2</Value>
+          <Value type="text" description="Value">.15</Value>
           <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
         </Constant>
         <Constant name="MaximumNConc">
@@ -546,7 +550,7 @@
           <Value type="text" description="Value">.01</Value>
         </Constant>
         <Constant name="SpecificLeafAreaMax">
-          <Value type="text" description="Value">54000</Value>
+          <Value type="text" description="Value">45000</Value>
         </Constant>
         <Constant name="SpecificLeafAreaMin">
           <Value type="text" description="Value">20000</Value>
@@ -562,8 +566,8 @@
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
+          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values type="text" description="Values">    0.0       0.00      0.00             0.0       0.0         0.0         0.0           0.0     0.0 </Values>
         </StageBasedInterpolation>
         <Constant name="StructuralFraction">
           <Value>1.0</Value>
@@ -595,8 +599,8 @@
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+          <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values type="text" description="Values">    0.0       0.0      0.00             0.0       0.0         0.0         0.0           0.0     0.0 </Values>
         </StageBasedInterpolation>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">

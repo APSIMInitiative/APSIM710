@@ -54,7 +54,7 @@ class SIRIUSLeafCohort : LeafCohort
     private double MetabolicDMAllocation = 0;
     private double CoverAbove = 0;
     private double FracSenShade = 0;
-
+    
     [Link("Leaf")]
     public SIRIUSLeaf SIRIUSLeaf = null;
 
@@ -363,28 +363,25 @@ class SIRIUSLeafCohort : LeafCohort
     {
         if (IsInitialised)
         {
-            # region Growing leaf area after DM allocated
+            //Growing leaf area after DM allocated
 
             double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
             double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); // FIXME-EIT - Choice between carbon limited LAI expansion done here (Forcing to C unsconstrained to test it)
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
-  
-            #endregion
             
-            # region Senessing leaf area
+            //Senessing leaf area
 
             double AreaSenescing = LiveArea * SenescedFrac;
             double AreaSenescingN = 0;
             if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
                 AreaSenescingN = LeafStartArea * (MetabolicNRetranslocated - MetabolicNAllocation) / LeafStartMetabolicN;
 
+            //double LeafAreaLoss = Math.Max(AreaSenescingAge, Math.Max(AreaSenescingN, AreaSenescingShade));
             double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
-            #endregion
-
-            # region Update area and biomass of leaves
+            //Update area and biomass of leaves
 
             double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
             double StructuralNSenescing = SenescedFrac * Live.StructuralN;
@@ -392,7 +389,6 @@ class SIRIUSLeafCohort : LeafCohort
             double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
             double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
             double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
-
 
             DeadArea = DeadArea + LeafAreaLoss;
             LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
@@ -414,14 +410,13 @@ class SIRIUSLeafCohort : LeafCohort
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-
-            # endregion
-
+                        
             Age = Age + TT;
         }
     }
     public double FractionSenescing(double TT)
     {
+        //Calculate fraction of leaf area senessing based on age and shading.  This is used to to calculate change in leaf area and Nreallocation supply.
         if (IsInitialised)
         {
             double FracSenAge = 0;
@@ -429,7 +424,7 @@ class SIRIUSLeafCohort : LeafCohort
             if (TTInSenPhase > 0)
             {
 
-                if (Rank == 10)
+                if (Rank == 10)  //FIX ME, work out what this does???
                 { }
 
                 double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
@@ -448,10 +443,21 @@ class SIRIUSLeafCohort : LeafCohort
             {
                 FracSenAge = 0;
             }
+            
+            if (MaxLiveArea < LiveArea)
+                MaxLiveArea = LiveArea;
+
             double _FracSenShade = 0;
-            if (CoverAbove >= CriticalCover)
-                _FracSenShade = FracSenShade;
+            //if (CoverAbove >= CriticalCover)
+            //    _FracSenShade = FracSenShade;
+            if ((CoverAbove >= CriticalCover) && (LiveArea > 0))
+                _FracSenShade = Math.Min(MaxLiveArea * FracSenShade, LiveArea) / LiveArea;
+            
             return Math.Max(FracSenAge, _FracSenShade);
+
+
+
+            //return FracSenAge;
         }
         else
             return 0;

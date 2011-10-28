@@ -44,7 +44,7 @@ public class FinalNodeNumber
             FLN = Math.Min(_PrimordiaNumber, MaxNodeNo);
         else FLN = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
 
-        return FLN;
+        return FLN;//Fixme  This needs to be cast to an interger but will cause colatoral damage so will fix later.
     }
 
     public double PrimordiaNumber()
@@ -62,5 +62,13 @@ public class FinalNodeNumber
         else _PrimordiaNumber = MaxNodeNo;
 
         return _PrimordiaNumber;
+    }
+
+    public double JuvDev()  //This is temporary until I can get linking between unrelated childern working
+    {
+        if (TerminateFinalNodeNumber == null)
+            return 0.0;
+        else
+            return TerminateFinalNodeNumber.JuvenileDevelopmentIndex;
     }
 }

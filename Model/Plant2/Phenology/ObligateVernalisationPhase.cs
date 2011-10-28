@@ -6,7 +6,7 @@ using System.Text;
 public class ObligateVernalisationPhase : Phase
 {
     [Link]
-    Function VernalisationIndex = null;
+    Function JuvenileDevelopmentIndex = null;
 
     [Link]
     Function Target = null;
@@ -30,7 +30,7 @@ public class ObligateVernalisationPhase : Phase
     public override double DoTimeStep(double PropOfDayToUse)
     {
         // Calculate the Vern for today.
-        ExtentOfVern = VernalisationIndex.Value * PropOfDayToUse;
+        ExtentOfVern = JuvenileDevelopmentIndex.Value * PropOfDayToUse;
 
         // Accumulate Vernalisation
         //_CumulativeVern += VernForToday;
