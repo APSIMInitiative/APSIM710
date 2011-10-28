@@ -121,7 +121,7 @@ namespace ApsimFile
             XmlNode MacroNode = ResolveNode(NodeName, AliasNames, AliasNodes);
 
             // Loop through all matching child nodes and duplicate the foreach body for each child.
-            string Body = "";
+            StringBuilder Body = new StringBuilder();
             List<XmlNode> ChildNodes = XmlHelper.ChildNodes(MacroNode, NodeType);
             foreach (XmlNode Child in ChildNodes)
                {
@@ -137,10 +137,10 @@ namespace ApsimFile
                // Remove local alias'
                AliasNames.Remove(ForEachAlias.ToLower());
 
-               Body += NewForEachBody;
+               Body.Append(NewForEachBody);
                }
 
-            ForEachText = Body;
+            ForEachText = Body.ToString();
 
             Contents = PreForEachText + ForEachText + PostForEachText;
 
