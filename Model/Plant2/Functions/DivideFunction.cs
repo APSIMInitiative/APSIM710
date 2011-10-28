@@ -9,9 +9,6 @@ using System.Reflection;
 
 public class DivideFunction : Function
 {
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
     [Output]
     public override double Value
     {

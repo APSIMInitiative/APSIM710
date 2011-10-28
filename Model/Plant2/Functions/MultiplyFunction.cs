@@ -8,9 +8,6 @@ using System.Reflection;
 /// </summary>
 public class MultiplyFunction : Function
 {
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
     [Output]
     public override double Value
     {

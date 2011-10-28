@@ -38,7 +38,7 @@ public partial class SurfaceOrganicMatter : Instance
     [Units("")]
     public string cpr;
 
-    [Param(true)]
+    [Param(IsOptional = true)]
     [Units("")]
     public string cnr;
 
@@ -164,15 +164,15 @@ public partial class SurfaceOrganicMatter : Instance
     [Units("mm")]
     float[] dlayer = null;
 
-    [Input(true)]
+    [Input(IsOptional = true)]
     [Units("")]
     string pond_active = null;
 
-    [Input(true)]
+    [Input(IsOptional = true)]
     [Units("")]
     float[] labile_p = null;
 
-    [Input(true)]
+    [Input(IsOptional = true)]
     [Units("")]
     float irrigation = float.NaN;
 

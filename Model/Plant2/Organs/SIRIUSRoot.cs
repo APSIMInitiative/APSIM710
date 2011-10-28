@@ -8,10 +8,10 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     [Link]
     Plant Plant = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function NitrogenDemandSwitch = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function SenescenceRate = null;
 
     [Link]
@@ -538,8 +538,6 @@ public class SIRIUSRoot : BaseOrgan, BelowGround
     {
         get { return -MathUtility.Sum(Uptake); }
     }
-    [Output]
-    [Units("g/m2")]
  #endregion
 
  #region Output Variables

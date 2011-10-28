@@ -69,7 +69,7 @@ public class SoilErosion : Instance
   #endregion
 #region Optional parameters
     private double _cover_extra = 0.0;
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Output]
     [Description("\"Fudge factor\" added to total cover")]
     [Units("")]
@@ -79,52 +79,52 @@ public class SoilErosion : Instance
         set { _cover_extra = value; }
     }
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor")]
     [Units("t/ha/EI30")]
     private double k_factor = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for bed load")]
     [Units("t/ha/EI30")]
     private double k_factor_bed = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 1.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for suspended load")]
     [Units("t/ha/EI30")]
     private double k_factor_susp = -1.0;
 
-    [Param(Optional = true)]
+    [Param(IsOptional = true)]
     [Description("Supporting practise factor")]
     [Units("")]
     private double p_factor = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface")]
     [Units("")]
     private double entrain_eff = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - bed load")]
     [Units("")]
     private double entrain_eff_bed = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 2.0)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - suspended load")]
     [Units("")]
     private double entrain_eff_susp = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 0.2)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model")]
     [Units("")]
     private double eros_rose_b2 = -1.0;
 
-    [Param(Optional = true, MinVal = -1.0, MaxVal = 0.2)]
+    [Param(IsOptional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - bed load")]
     [Units("")]
     private double eros_rose_b2_bed = -1.0;
 
-    [Param(Optional = true, MinVal =-1.0, MaxVal = 0.2)]
+    [Param(IsOptional = true, MinVal =-1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - suspended load")]
     [Units("")]
     private double eros_rose_b2_susp = -1.0;

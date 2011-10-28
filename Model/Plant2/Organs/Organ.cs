@@ -13,10 +13,10 @@ public interface Reproductive
    }
 abstract public class Organ
 {
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     public Biomass Live = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     public Biomass Dead = null;
 
     [Link]

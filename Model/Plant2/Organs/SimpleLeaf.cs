@@ -22,13 +22,13 @@ class SimpleLeaf : BaseOrgan
     private float mint = 0;
     [Input]
     private float vp = 0;
-    [Param("Height")]
+    [Param(Name = "Height")]
     private double _Height;         // Height of the canopy (mm) 
-    [Param("LAI")]
+    [Param(Name = "LAI")]
     private double _LAI;            // Leaf Area Index (Green)
-    [Param("LAIDead")]
+    [Param(Name = "LAIDead")]
     private double _LAIDead;        // Leaf Area Index (Dead)
-    [Param("Frgr")]
+    [Param(Name = "Frgr")]
     private double _Frgr;           // Relative Growth Rate Factor
     [Link]
     private XYPairs FT = null;     // Temperature effect on Growth Interpolation Set

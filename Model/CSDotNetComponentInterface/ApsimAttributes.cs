@@ -19,47 +19,46 @@ public class Event : Attribute
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class Param : Attribute
 {
-    public String Name;
-    public Boolean Optional;
-    public Double MinVal;
-    public Double MaxVal;
-    public Param()
+    private string _Name = "";
+    private bool _Optional = false;
+    private double _MinVal = Double.NaN;
+    private double _MaxVal = Double.NaN;
+
+    public string Name
     {
-        Name = "";
-        Optional = false;
-		MinVal = MaxVal = Double.NaN;  // Using Nan to indicate min. and max. values not set
+        get { return _Name; }
+        set { _Name = value; }
     }
-    public Param(Boolean IsOptional)
-	{
-			Name = "";
-			Optional = IsOptional;
-			MinVal = MaxVal = Double.NaN;  // Using Nan to indicate min. and max. values not set
-    }
-    public Param(String sName)
+
+    public bool IsOptional
     {
-        Name = sName;
-        Optional = false;
-		MinVal = MaxVal = Double.NaN;
+        get { return _Optional; }
+        set { _Optional = value; }
     }
-    public Param(String Name, bool IsOptional)
+
+    public double MinVal
     {
-        this.Name = Name;
-        Optional = IsOptional;
-        MinVal = MaxVal = Double.NaN;
+        get { return _MinVal; }
+        set { _MinVal = value; }
     }
+
+    public double MaxVal
+    {
+        get { return _MaxVal; }
+        set { _MaxVal = value; }
+    }
+
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class Input : Attribute
 {
-    public bool Optional;
-    public Input()
+    private bool Optional = false;
+
+    public bool IsOptional
     {
-        Optional = false;
-    }
-    public Input(bool IsOptional)
-    {
-        Optional = IsOptional;
+        get { return Optional; }
+        set { Optional = value; }
     }
 }
 
@@ -118,17 +117,25 @@ public class Model : Attribute
 {
 }
 
-public enum IsOptional {Yes, No};
-
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
 public class Link : Attribute
 {
-    public String _Path;
-    public IsOptional _IsOptional;
-    public Link() { _Path = null; _IsOptional = IsOptional.No; }
-    public Link(IsOptional isOptional) { _Path = null; _IsOptional = isOptional; }
-    public Link(String Path) { _Path = Path; _IsOptional = IsOptional.No; }
-    public Link(String Path, IsOptional isOptional) { _Path = Path; _IsOptional = isOptional; }
+    private String _Path = null;
+    private bool _IsOptional = false;
+
+    //public Link() { }
+    //public Link(string NamePath, bool IsOptional) { _Path = NamePath; _IsOptional = IsOptional; }
+    public string NamePath
+    {
+        get { return _Path; }
+        set { _Path = value; }
+    }
+    public bool IsOptional
+    {
+        get { return _IsOptional; }
+        set { _IsOptional = value; }
+    }
+   
 }
 
 

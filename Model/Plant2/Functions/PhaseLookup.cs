@@ -6,10 +6,6 @@ using System.Text;
 [Description("A value is determined depending upon the current phenological growth phase for the crop.")]
 public class PhaseLookup : Function
 {
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
-
     [Output]
     public override double Value
     {

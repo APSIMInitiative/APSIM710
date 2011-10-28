@@ -37,22 +37,22 @@ Partial Public Class MicroMet
     Inherits Instance
 #Region "Parameters used to initialise the model"
 #Region "Parameters set in the GUI by the user"
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=10.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=10.0)> _
     <Units("mm/mm")> _
     <Description("")> _
     Private a_interception As Double = 0.0
 
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=5.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=5.0)> _
     <Units("")> _
     <Description("")> _
     Private b_interception As Double = 1.0
 
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=10.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=10.0)> _
     <Units("mm")> _
     <Description("")> _
     Private c_interception As Double = 0.0
 
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=20.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=20.0)> _
     <Units("mm")> _
     <Description("")> _
     Private d_interception As Double = 0.0
@@ -133,7 +133,7 @@ Partial Public Class MicroMet
     ' [Units("deg")]
     ''' private double latitude;
 
-    <Input([Optional]:=True)> _
+   <Input(IsOptional:=True)> _
     <Units("m/s")> _
     Private windspeed As Double = 0.0
 
@@ -998,26 +998,26 @@ End Class
 ''' <remarks></remarks>
 Public Class CropType
     Inherits Instance
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
     <Units("0-1")> _
     <Description("")> _
     Public albedo As Double = -1
 
-    <Param([Optional]:=True, MinVal:=0.9, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.9, MaxVal:=1.0)> _
     <Units("0-1")> _
     <Description("")> _
     Public emissivity As Double = -1
 
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
     <Units("m/s")> _
     <Description("")> _
     Public gsmax As Double = -1
 
-    <Param([Optional]:=True, MinVal:=0.0, MaxVal:=1000.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1000.0)> _
     <Units("W/m^2")> _
     <Description("")> _
     Public r50 As Double = -1
 
-    <Param([Optional]:=True)> _
+    <Param(IsOptional:=True)> _
     Public apply_to As String() = Nothing
 End Class

@@ -224,7 +224,7 @@ public class AgPasture : Instance
     private double[] CO2NMin;
     [Param]
     private double[] CO2NCurvature;
-    [Input(true)]
+    [Input(IsOptional = true)]
     private double co2 = 380; //expected to be updated from ClimateControl 
 
     [Link]
@@ -252,9 +252,9 @@ public class AgPasture : Instance
     [Param]
     public String NUptakeSource = "calc";
 
-    [Param(true)]
+    [Param(IsOptional = true)]
     private string alt_N_uptake = "no";
-    [Param(true)]
+    [Param(IsOptional = true)]
     private double NUtilFac = 1;//0.95;
     [Input]
     DateTime Today;

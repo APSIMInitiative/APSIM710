@@ -11,7 +11,7 @@ class Summary
     [Link]
     Phenology Phenology = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     Leaf Leaf = null;
 
 

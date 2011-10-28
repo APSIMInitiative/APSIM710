@@ -8,10 +8,10 @@ using CSGeneral;
 [Model]
 public class Plant
 {
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     Phenology Phenology = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     Arbitrator Arbitrator = null;
 
     [Link]
@@ -27,7 +27,8 @@ public class Plant
         get { return _Organs; }
     }
     
-    [Input(true)] Single swim3 = 0;
+    [Input(IsOptional = true)]
+    Single swim3 = 0;
 
  #region Outputs
     [Output("Crop_Type")]

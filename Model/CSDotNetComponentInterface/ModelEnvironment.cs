@@ -173,8 +173,10 @@ public class ModelEnvironment
     }
 
 
-    public void Publish(string EventPath, ApsimType Data)
+    public void Publish(string EventPath, ApsimType Data = null)
     {
+        if (Data == null)
+            Data = new NullType();
         In.ParentComponent().Publish(EventPath, Data);
     }
 

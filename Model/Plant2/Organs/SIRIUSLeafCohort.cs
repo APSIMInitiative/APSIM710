@@ -55,34 +55,34 @@ class SIRIUSLeafCohort : LeafCohort
     private double CoverAbove = 0;
     private double FracSenShade = 0;
     
-    [Link("Leaf")]
+    [Link(NamePath = "Leaf")]
     public SIRIUSLeaf SIRIUSLeaf = null;
 
-    [Link("StructuralFraction")]
+    [Link(NamePath = "StructuralFraction")]
     public Function StructuralFractionFunction = null;
-    
-    [Link("NReallocationFactor")]
+
+    [Link(NamePath = "NReallocationFactor")]
     public Function NReallocationFactorFunction = null;
-    
-    [Link("NRetranslocationFactor")]
+
+    [Link(NamePath = "NRetranslocationFactor")]
     public Function NRetranslocationFactorFunction = null;
-    
-    [Link("ExpansionStress")]
+
+    [Link(NamePath = "ExpansionStress")]
     public Function ExpansionStressFunction = null;
-    
-    [Link("SpecificLeafAreaMin")]
+
+    [Link(NamePath = "SpecificLeafAreaMin")]
     public Function SpecificLeafAreaMinFunction = null;
 
-    [Link("CriticalNConc")]
+    [Link(NamePath = "CriticalNConc")]
     public Function CriticalNConcFunction = null;
-    
-    [Link("SenescenceInducingCover")]
+
+    [Link(NamePath = "SenescenceInducingCover")]
     public Function SenescenceInducingCoverFunction = null;
-    
-    [Link("DMRetranslocationFactor")]
+
+    [Link(NamePath = "DMRetranslocationFactor")]
     public Function DMRetranslocationFactorFunction = null;
-    
-    [Link("ShadeInducedSenRate")]
+
+    [Link(NamePath = "ShadeInducedSenRate")]
     public Function ShadeInducedSenRateFunction = null;
 
  #endregion

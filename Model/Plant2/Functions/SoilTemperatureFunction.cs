@@ -12,10 +12,10 @@ class SoilTemperatureFunction : Function
     [Param]
     [Units("mm")]
     private double Depth = 0;
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double[] ave_soil_temp = null;
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double[] st = null;
     [Input]

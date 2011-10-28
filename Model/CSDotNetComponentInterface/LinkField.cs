@@ -66,10 +66,10 @@ public class LinkField
 
             String TypeToFind = Field.FieldType.Name;
             String NameToFind;
-            if (LinkAttr._Path == null)
+            if (LinkAttr.NamePath == null)
                 NameToFind = Field.Name;
             else
-                NameToFind = LinkAttr._Path;
+                NameToFind = LinkAttr.NamePath;
 
             if (TypeToFind == "ModelEnvironment")
             {
@@ -77,7 +77,7 @@ public class LinkField
             }
             else if (IsAPSIMType(TypeToFind))
             {
-                if (LinkAttr._Path == null)
+                if (LinkAttr.NamePath == null)
                     NameToFind = null; // default is not to use name.
                 string SystemName = Comp.Name.Substring(0, Math.Max(Comp.Name.LastIndexOf('.'), 0));
                 ReferencedObject = FindApsimObject(TypeToFind, NameToFind, SystemName, Comp);
@@ -91,7 +91,7 @@ public class LinkField
             // Set the value of the [Link] field to the newly created object.
             if (ReferencedObject == null)
             {
-                if (LinkAttr._IsOptional != IsOptional.Yes)
+                if (!LinkAttr.IsOptional)
                     throw new Exception("Cannot find [Link] for type: " + TypeToFind + " " + NameToFind + " in object: " + In.Name);
             }
             else if (ReferencedObject is Instance)

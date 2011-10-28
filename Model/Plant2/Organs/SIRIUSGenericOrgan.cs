@@ -7,17 +7,17 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 {
 
  #region Optional IDE input field
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function SenescenceRate = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function NReallocationFactor = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function NRetranslocationFactor = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function NitrogenDemandSwitch = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function DMRetranslocationFactor = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     new protected Function StructuralFraction = null;
  #endregion
 

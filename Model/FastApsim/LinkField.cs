@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-class ModelRef
+class LinkField
    {
    public string Name;
    public FieldInfo Info;
    public object Model;
    public bool Optional;
-   public ModelRef(object TheModel, string RefName, FieldInfo FI, bool optional)
+   public LinkField(object TheModel, string RefName, FieldInfo FI, bool optional)
       {
       Name = RefName;
       Info = FI;

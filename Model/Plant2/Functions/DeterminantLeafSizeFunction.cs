@@ -27,7 +27,7 @@ public class DeterminantLeafSizeFunction : Function
     private double JuvenileLeafsizeincrement = 0;
 
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional = true)]
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
 
     [Link]

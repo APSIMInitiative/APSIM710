@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-class SoilWat
+public class SoilWat
    {
    [Output] public double[] ESW = new double[] { 10, 20 };
    [Output] public double[] dlayer = new double[] { 150, 150, 300, 300, 300, 300, 300 };

@@ -465,7 +465,7 @@ public class FactoryProperty : Instance, ApsimType
             if (P != null)
             {
                 IsParam = true;
-                OptionalParam = P.Optional;
+                OptionalParam = P.IsOptional;
                 ParamMinVal = P.MinVal;
                 ParamMaxVal = P.MaxVal;
                 if (P.Name != "")
@@ -477,7 +477,7 @@ public class FactoryProperty : Instance, ApsimType
             else if (I != null)
             {
                 IsInput = true;
-                OptionalInput = I.Optional;
+                OptionalInput = I.IsOptional;
             }
             else if (O != null)
             {

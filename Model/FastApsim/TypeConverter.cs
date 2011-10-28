@@ -4,10 +4,10 @@ using System.Text;
 using System.Xml;
 using CSGeneral;
 
-class ToDouble : Variable
+class ToDouble : VariableBase
    {
-   private Variable Var;
-   public ToDouble(Variable var) { Var = var; Name = var.Name; }
+   private VariableBase Var;
+   public ToDouble(VariableBase var) { Var = var; Name = var.Name; }
    public override object Value
       {
       get 
@@ -25,10 +25,10 @@ class ToDouble : Variable
       }
    public override Type Type {get { return typeof(double); }}
    }
-class ToInt : Variable
+class ToInt : VariableBase
    {
-   private Variable Var;
-   public ToInt(Variable var) { Var = var; Name = var.Name; }
+   private VariableBase Var;
+   public ToInt(VariableBase var) { Var = var; Name = var.Name; }
    public override object Value
       {
       get
@@ -46,10 +46,10 @@ class ToInt : Variable
       }
    public override Type Type { get { return typeof(int); } }
    }
-class ToString : Variable
+class ToString : VariableBase
    {
-   private Variable Var;
-   public ToString(Variable var) { Var = var; Name = var.Name; }
+   private VariableBase Var;
+   public ToString(VariableBase var) { Var = var; Name = var.Name; }
    public override object Value
       {
       get 
@@ -60,10 +60,10 @@ class ToString : Variable
       }
    public override Type Type { get { return typeof(string); } }
    }
-class ToDoubleArray : Variable
+class ToDoubleArray : VariableBase
    {
-   private Variable Var;
-   public ToDoubleArray(Variable var) { Var = var; Name = var.Name; }
+   private VariableBase Var;
+   public ToDoubleArray(VariableBase var) { Var = var; Name = var.Name; }
    public override object Value
       {
       get
@@ -91,10 +91,10 @@ class ToDoubleArray : Variable
       }
    public override Type Type { get { return typeof(double); } }
    }
-class ToStringArray : Variable
+class ToStringArray : VariableBase
    {
-   private Variable Var;
-   public ToStringArray(Variable var) { Var = var; Name = var.Name; }
+   private VariableBase Var;
+   public ToStringArray(VariableBase var) { Var = var; Name = var.Name; }
    public override object Value
       {
       get
@@ -132,27 +132,27 @@ class ToStringArray : Variable
       }
    public override Type Type { get { return typeof(double); } }
    }
-class ToLinearInterpolation : Variable
-   {
-   private Variable Var;
-   public ToLinearInterpolation(Variable var) { Var = var; Name = var.Name; }
-   public override object Value
-      {
-      get
-         {
-         LinearInterpolation LI = new LinearInterpolation();
-         XmlDocument Doc = new XmlDocument();
-         Doc.LoadXml("<XYPairs>" + Var.Value + "</XYPairs>");
-         LI.ReadFromXML(Doc.DocumentElement);
-         return LI;
-         }
-      set { new NotImplementedException("Type converters are not settable"); }
-      }
-   public override Type Type { get { return typeof(string); } }
-   }
+//class ToLinearInterpolation : Variable
+//   {
+//   private Variable Var;
+//   public ToLinearInterpolation(Variable var) { Var = var; Name = var.Name; }
+//   public override object Value
+//      {
+//      get
+//         {
+//         LinearInterpolation LI = new LinearInterpolation();
+//         XmlDocument Doc = new XmlDocument();
+//         Doc.LoadXml("<XYPairs>" + Var.Value + "</XYPairs>");
+//         LI.ReadFromXML(Doc.DocumentElement);
+//         return LI;
+//         }
+//      set { new NotImplementedException("Type converters are not settable"); }
+//      }
+//   public override Type Type { get { return typeof(string); } }
+//   }
 class TypeConverter
    {
-   public static Variable CreateConverterIfNecessary(Variable From, Variable To)
+   public static VariableBase CreateConverterIfNecessary(VariableBase From, VariableBase To)
       {
       if (From.Type != To.Type)
          {
@@ -166,8 +166,8 @@ class TypeConverter
             return new ToDoubleArray(From);
          else if (To.Type.Name == "String[]")
             return new ToStringArray(From);
-         else if (To.Type.Name == "LinearInterpolation")
-            return new ToLinearInterpolation(From);
+         //else if (To.Type.Name == "LinearInterpolation")
+         //   return new ToLinearInterpolation(From);
          else
             throw new Exception("Cannot convert from type " + From.Type.ToString() + " to type " + To.Type.ToString());
          }

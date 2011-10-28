@@ -14,29 +14,29 @@ public class SoilN : Instance
 #region Parameters used to initialise the model
 
 #region Parameters we expect to see provided by the user
-    [Param(Optional=true)]
+    [Param(IsOptional=true)]
     private string soiltype = "standard";   // soil type spec used to determine mineralisation properties
 
-    [Param(Optional=true, MinVal=0.0, MaxVal=50.0)]
-    [Input(Optional = true)]
+    [Param(IsOptional=true, MinVal=0.0, MaxVal=50.0)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double amp = 0.0;       // annual amplitude in mean monthly temperature (oC) [ave_temp]
 
-    [Param(Optional=true, MinVal=0.0, MaxVal=50.0)]
-    [Input(Optional = true)]
+    [Param(IsOptional=true, MinVal=0.0, MaxVal=50.0)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double tav = 0.0;       // annual average ambient temperature (oC)
 
     [Param(MinVal=0.0, MaxVal=500.0)]
     private double root_cn = 0.0;   // initial C:N ratio of roots 
 
-    [Param(Optional=true, MinVal=0.0, MaxVal=1000.0)]
+    [Param(IsOptional=true, MinVal=0.0, MaxVal=1000.0)]
     private double[] root_cn_pool = null;   // initial C:N ratio of each of the three root composition pools (carbohydrate, cellulose, and lignin)
 
     [Param]
     private double root_wt = 0.0;   // initial root weight
 
-    [Param(Optional=true)]
+    [Param(IsOptional=true)]
     private double root_depth = 0.0;// initial depth over which roots are distributed (mm)
 
     [Param]
@@ -65,8 +65,8 @@ public class SoilN : Instance
         }
     }
 
-    [Param(Optional = true, MinVal=3.5, MaxVal=11.0)]
-    [Input(Optional = true)]
+    [Param(IsOptional = true, MinVal=3.5, MaxVal=11.0)]
+    [Input(IsOptional = true)]
     private double[] ph = null;     // pH of soil in a 1:1 soil-water slurry
 
     [Param]
@@ -152,7 +152,7 @@ public class SoilN : Instance
     }
 
     private double[] _ureappm; // local variable to hold parameter value until we can get dlayer!
-    [Param(Optional = true)]
+    [Param(IsOptional = true)]
     [Output]
     [Units("mg/kg")]
     [Description("Urea nitrogen")]
@@ -186,7 +186,7 @@ public class SoilN : Instance
         }
     }
 
-    [Param(Optional = true, MinVal=0.0, MaxVal=1.0)]
+    [Param(IsOptional = true, MinVal=0.0, MaxVal=1.0)]
     private double fraction_urine_added = 0.5;  // What is appropriate here?
 
 #endregion
@@ -200,7 +200,7 @@ public class SoilN : Instance
     [Param]
     private string profile_reduction = "off";
 
-    [Param(Optional=true)]
+    [Param(IsOptional=true)]
     private string use_organic_solutes = "off";
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
@@ -209,7 +209,7 @@ public class SoilN : Instance
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     public double nh4ppm_min;           // minimum allowable NH4 (ppm)
 
-    [Param(Optional = true, MinVal = 1.0, MaxVal = 50.0)]
+    [Param(IsOptional = true, MinVal = 1.0, MaxVal = 50.0)]
     public double mcn = 8.0;            // C:N ratio of microbes ()
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
@@ -1146,14 +1146,14 @@ public class SoilN : Instance
     [Units("deg")]
     private double latitude;
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("t/ha")]
     private double soil_loss = 0.0;
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     private string pond_active = "no";
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double[] ave_soil_temp
     {
@@ -1164,11 +1164,11 @@ public class SoilN : Instance
         }
     }
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("kg/ha")]
     private double pond_biom_C;
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("kg/ha")]
     private double pond_hum_C;
 #endregion 

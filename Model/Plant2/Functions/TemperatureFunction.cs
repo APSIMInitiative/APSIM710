@@ -19,14 +19,14 @@ public class TemperatureFunction : Function
     Phenology Phenology = null;
 
 
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double maxt_soil_surface = -99.0;
-    [Input(Optional = true)]
+    [Input(IsOptional = true)]
     [Units("oC")]
     private double mint_soil_surface = -99.0;
 
-    [Param(Optional = true)]
+    [Param(IsOptional = true)]
     string[] SoilTemperaturePhases = null;
 
     [Output]

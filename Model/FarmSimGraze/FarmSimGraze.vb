@@ -17,7 +17,7 @@ Public Class FarmSimGraze
    Private SUBeefPercentage As Single
 
    <Input()> Private day As Integer
-   <Input(True)> Private Crop2Graze As String = "None"
+   <Input(IsOptional:=True)> Private Crop2Graze As String = "None"
    <Output()> Public FSG_Crop2Graze As String = "None"
 
    <Output()> Public DM_trigger As Double = 0.0   ' consider changing to rotation rate though

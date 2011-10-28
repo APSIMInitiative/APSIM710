@@ -21,7 +21,7 @@ Public Class LocalPaddockType
     Public Shared IncludeStolon As Boolean = False
 
     <Link()> Private ApSim_SubPaddock As Paddock
-    <Input(True)> Public Area As Double = -1
+    <Input(IsOptional := True)> Public Area As Double = -1
 
     Private myStatus As PaddockStatus
     'Homogeneous pasture cover

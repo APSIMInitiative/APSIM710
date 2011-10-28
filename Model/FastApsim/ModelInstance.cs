@@ -27,13 +27,13 @@ internal class ModelInstance
             return name;
          }
       }
-   public Variable ModelAPI;
+   public VariableBase ModelAPI;
    public List<ModelInstance> Children = new List<ModelInstance>();
-   public List<Variable> Inputs = new List<Variable>();
-   public List<Variable> Outputs = new List<Variable>();
-   public List<Variable> Params = new List<Variable>();
-   public List<Variable> States = new List<Variable>();
-   public List<ModelRef> Refs = new List<ModelRef>();
+   public List<VariableBase> Inputs = new List<VariableBase>();
+   public List<VariableBase> Outputs = new List<VariableBase>();
+   public List<VariableBase> Params = new List<VariableBase>();
+   public List<VariableBase> States = new List<VariableBase>();
+   public List<LinkField> Refs = new List<LinkField>();
    public List<EventPublisher> Publishers = new List<EventPublisher>();
    public List<EventSubscriber> Subscribers = new List<EventSubscriber>();
 
@@ -43,7 +43,7 @@ internal class ModelInstance
    /// </summary>
    public void ResolveRefs()
       {
-      foreach (ModelRef Ref in Refs)
+      foreach (LinkField Ref in Refs)
          {
          object ModelReference = FindModel(Ref.Name);
          if (ModelReference == null)
@@ -149,10 +149,10 @@ internal class ModelInstance
    /// Find a specific output that matches "NameToFind". This method will search the
    /// instance passed in plus all child instances.
    /// </summary>
-   public Variable FindOutput(string NameToFind)
+   public VariableBase FindOutput(string NameToFind)
       {
       // See if the instance passed in has the output we want.
-      foreach (Variable Output in Outputs)
+      foreach (VariableBase Output in Outputs)
          {
          if (Output.Name.ToLower() == NameToFind.ToLower())
             return Output;
@@ -161,7 +161,7 @@ internal class ModelInstance
       // If we get this far, then we haven't found the output so go check our children.
       foreach (ModelInstance Child in Children)
          {
-         Variable Output = Child.FindOutput(NameToFind);
+         VariableBase Output = Child.FindOutput(NameToFind);
          if (Output != null)
             return Output;
          }
@@ -169,7 +169,7 @@ internal class ModelInstance
       }
    public void UpdateValues()
       {
-      foreach (Variable Input in Inputs)
+      foreach (VariableBase Input in Inputs)
          Input.UpdateValue();
       foreach (ModelInstance Child in Children)
          Child.UpdateValues();
@@ -178,13 +178,13 @@ internal class ModelInstance
    internal void SetModelAPIs()
       {
       if (ModelAPI != null)
-         ModelAPI.Value = new ModelAPI(this);
+          ModelAPI.Value = new ModelEnvironment(this);
       foreach (ModelInstance Child in Children)
          Child.SetModelAPIs();
       }
    internal void GetAllOutputNames(ref List<string> VariableNames)
       {
-      foreach (Variable Output in Outputs)
+      foreach (VariableBase Output in Outputs)
          VariableNames.Add(Name + "." + Output.Name);
       foreach (ModelInstance Child in Children)
          Child.GetAllOutputNames(ref VariableNames);
@@ -192,7 +192,7 @@ internal class ModelInstance
 
    internal void GetAllOutputValues(ref List<object> Values)
       {
-      foreach (Variable Output in Outputs)
+      foreach (VariableBase Output in Outputs)
          Values.Add(Output.Value);
       foreach (ModelInstance Child in Children)
          Child.GetAllOutputValues(ref Values);
@@ -203,7 +203,7 @@ internal class ModelInstance
       if (ParamName == "Script")
          return true;
 
-      foreach (Variable Param in Params)
+      foreach (VariableBase Param in Params)
          {
          if (Param.Name.ToLower() == ParamName.ToLower())
             return true;

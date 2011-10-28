@@ -15,9 +15,6 @@ public class ExternalVariable : Function
     [Param]
     private string VariableName = "";
 
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
     [Output]
     public override double Value
     {

@@ -10,7 +10,7 @@ class SimpleReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     Phenology Phenology = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     Function WaterContent = null;
 
     [Link]

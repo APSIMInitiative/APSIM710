@@ -8,9 +8,6 @@ public class PhaseLookupValue : Function
     [Link]
     Phenology Phenology = null;
 
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
     [Param]
     private string Start = "";
 

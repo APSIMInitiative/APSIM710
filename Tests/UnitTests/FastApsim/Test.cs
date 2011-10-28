@@ -15,7 +15,7 @@ public class Component1
    [Param] public double Param1;
    [Param] public int Param2;
    [Param] public string Param3;
-   [Ref("parent().Component2")] public Component2 c2;
+   [Link(NamePath="parent().Component2")] public Component2 c2;
    [Input] public ModelAPIInterface ScienceAPI;
    public delegate void IntDelegate(int i);
    public event IntDelegate MyEvent;
@@ -43,7 +43,7 @@ public class Component2
    public static bool EventWasCalled = false;
    [Output] public double Day = 300;
    [Param]  public string Param4;
-   [Ref("*")] public Component4[] Children;
+   [Link(NamePath="*")] public Component4[] Children;
 
    [EventHandler]
    public void OnTick()

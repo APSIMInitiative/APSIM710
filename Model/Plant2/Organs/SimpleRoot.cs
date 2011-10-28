@@ -25,7 +25,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override double NUptake { set { } }
     public override double WaterDemand { get { return 0; } }
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     SoilWat SoilWater = null;
 
 

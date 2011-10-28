@@ -10,7 +10,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Link]
     Biomass AboveGround = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     Function WaterContent = null;
 
     [Link]

@@ -44,34 +44,34 @@ public class LeafCohort
     [Link]
     public Leaf Leaf = null;
 
-    [Link("Population")]
+    [Link(NamePath = "Population")]
     public Population PopulationFunction = null;
 
-    [Link("MaxArea")]
+    [Link(NamePath = "MaxArea")]
     public Function MaxAreaFunction;
-    
-    [Link("GrowthDuration")]
+
+    [Link(NamePath = "GrowthDuration")]
     public Function GrowthDurationFunction;
-    
-    [Link("LagDuration")]
+
+    [Link(NamePath = "LagDuration")]
     public Function LagDurationFunction;
-    
-    [Link("SenescenceDuration")]
+
+    [Link(NamePath = "SenescenceDuration")]
     public Function SenescenceDurationFunction;
 
-    [Link("SpecificLeafAreaMax")]
+    [Link(NamePath = "SpecificLeafAreaMax")]
     public Function SpecificLeafAreaMaxFunction;
 
-    [Link("MaximumNConc")]
+    [Link(NamePath = "MaximumNConc")]
     public Function MaximumNConcFunction;
-    
-    [Link("MinimumNConc")]
+
+    [Link(NamePath = "MinimumNConc")]
     public Function MinimumNConcFunction;
-    
-    [Link("StructuralNConc", IsOptional.Yes)]
+
+    [Link(NamePath = "StructuralNConc", IsOptional = true)]
     public Function StructuralNConcFunction;
 
-    [Link("InitialNConc", IsOptional.Yes)]
+    [Link(NamePath = "InitialNConc", IsOptional = true)]
     public Function InitialNConcFunction;
 
     [Link]

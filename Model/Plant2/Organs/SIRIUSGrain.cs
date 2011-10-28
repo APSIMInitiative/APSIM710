@@ -4,7 +4,7 @@ using System.Text;
 
 class SIRIUSGrain : ReproductiveOrgan
 {
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional = true)]
     protected Function NitrogenDemandSwitch = null;
     
     [Link]

@@ -152,7 +152,7 @@ public class Phenology
                 PhaseChangedData.NewPhaseName = CurrentPhase.Name;
                 PhaseChanged.Invoke(PhaseChangedData);
                 //MyPaddock is created when ApsimComponent Factory is created
-                ModelEnvironment.Publish(CurrentPhase.Start, new NullType());
+                ModelEnvironment.Publish(CurrentPhase.Start);
             }
         }
     }

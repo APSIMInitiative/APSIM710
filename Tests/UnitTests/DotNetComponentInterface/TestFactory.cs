@@ -10,7 +10,7 @@ public class Comp1 : Instance
    [Param]
    public NewMetType NewMet = null;
    public double NotAParam = 0;
-   [Param("Alias")] public double Param2;
+   [Param(Name="Alias")] public double Param2;
    [Input] private double Param3 = 0;
    public double GetParam3() { return Param3; }
    [Param] public NewMetType Param4 = null;

@@ -8,12 +8,11 @@ using CSGeneral;
 class Report
    {
    [Param] private string FileName = "";
-   [Ref(".simulation.met")] Met Met;
 
    [Input] private ModelAPIInterface ScienceAPI = null;
    private SQLite Connection;
    private IntPtr Query;
-   [Param] private string[] Variables;
+   [Param] private string[] Variables = null;
 
    /// <summary>
    /// Destructor. Close our DB connection.

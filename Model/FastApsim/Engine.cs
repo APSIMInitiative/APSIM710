@@ -108,7 +108,7 @@ public class Engine
       {
       get
          {
-         return new ModelAPI(Simulation);
+             return new ModelEnvironment(Simulation);
          }
       }
    /// <summary>
@@ -210,15 +210,10 @@ public class Engine
          {
          foreach (object Attribute in Field.GetCustomAttributes(false))
             {
-            if (Attribute is Ref)
+            if (Attribute is Link)
                {
-               Ref RefAttribute = (Ref) Attribute;
-               Inst.Refs.Add(new ModelRef(Inst.TheModel, RefAttribute.Name, Field, false));
-               }
-            else if (Attribute is RefOptional)
-               {
-               RefOptional RefAttribute = (RefOptional)Attribute;
-               Inst.Refs.Add(new ModelRef(Inst.TheModel, RefAttribute.Name, Field, true));
+               Link LinkAttribute = (Link) Attribute;
+               Inst.Refs.Add(new LinkField(Inst.TheModel, LinkAttribute.NamePath, Field, LinkAttribute.IsOptional));
                }
             else
                {
@@ -255,7 +250,7 @@ public class Engine
                      throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Inst.Name);
 
                   // Push parameter value to the field.
-                  Variable ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(ParamName, ParamValue), Var);
+                  VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(ParamName, ParamValue), Var);
                   Var.Value = ConvertedVariable.Value;
                   Inst.Params.Add(ConvertedVariable);
                   }
@@ -267,7 +262,7 @@ public class Engine
          {
          foreach (object Attribute in Property.GetCustomAttributes(false))
             {
-            if (Attribute is Ref || Attribute is RefOptional)
+            if (Attribute is Link)
                {
                }
             else
@@ -287,7 +282,7 @@ public class Engine
                   if (ParamValue == "")
                      throw new Exception("Cannot find a parameter value for: " + Property.Name);
 
-                  Variable ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(Property.Name, ParamValue), Var);
+                  VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(Property.Name, ParamValue), Var);
                   Var.Value = ConvertedVariable.Value;
                   }
                }
@@ -331,9 +326,9 @@ public class Engine
    /// </summary>
    private static void ConnectInputsAndOutputs(ModelInstance Inst, ModelInstance RootInstance)
       {
-      foreach (Variable Input in Inst.Inputs)
+      foreach (VariableBase Input in Inst.Inputs)
          {
-         Variable Output = RootInstance.FindOutput(Input.Name);
+         VariableBase Output = RootInstance.FindOutput(Input.Name);
          if (Output != null)
             {
             Output = TypeConverter.CreateConverterIfNecessary(Output, Input);
@@ -393,7 +388,7 @@ public class Engine
    /// </summary>
    private static void CheckAllInputs(ModelInstance Inst)
       {
-      foreach (Variable Var in Inst.Inputs)
+      foreach (VariableBase Var in Inst.Inputs)
          {
          if (!Var.IsConnected)
             throw new Exception("Cannot find an input value for: " + Var.Name + " in " + Inst.Name);

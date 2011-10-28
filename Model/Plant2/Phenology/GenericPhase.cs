@@ -12,10 +12,10 @@ public class GenericPhase : Phase
     [Link]
     public Function ThermalTime = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     public Function Stress = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     public Function Target = null;
 
 

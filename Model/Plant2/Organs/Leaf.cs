@@ -21,7 +21,7 @@ public class Leaf : BaseOrgan, AboveGround
     protected Phenology Phenology = null;
     [Link]
     protected RUEModel Photosynthesis = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected TemperatureFunction ThermalTime = null;
@@ -46,7 +46,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Link]
     protected Function BranchingRate = null;
 
-    [Link("Height")]
+    [Link(NamePath = "Height")]
     protected Function HeightModel = null;
 
     [Link]

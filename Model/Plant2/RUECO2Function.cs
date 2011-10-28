@@ -15,7 +15,7 @@ public class RUECO2Function : Function
     [Input]
     double MinT = 0;
 
-    [Input(true)]
+    [Input(IsOptional = true)]
     double CO2 = 350;  // If CO2 is not supplied we default to 350 ppm
 
     [Output]

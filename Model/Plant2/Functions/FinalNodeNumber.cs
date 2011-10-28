@@ -10,9 +10,9 @@ public class FinalNodeNumber
     //Class Linkages
     [Link]
     protected TemperatureFunction ThermalTime = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function NodeInitiationRate = null;
 
     //Class Parameters

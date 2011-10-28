@@ -8,13 +8,13 @@ public class GenericOrgan : BaseOrgan, AboveGround
     [Link]
     protected Plant Plant = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function StructuralFraction = null;
 
     [Link]
     protected Arbitrator Arbitrator = null;
 
-    [Link(IsOptional.Yes)]
+    [Link(IsOptional=true)]
     protected Function PartitionFraction = null;
 
     [Link]
