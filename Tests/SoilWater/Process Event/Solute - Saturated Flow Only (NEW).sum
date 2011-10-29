@@ -1,0 +1,470 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Solute - Saturated Flow Only (NEW)
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWater.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   =  2/03/1940
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\SoilWater\Process Event\Solute - Saturated Flow Only.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dlayer
+        sat_dep
+        dul_dep
+        ll15_dep
+        air_dry_dep
+        rain
+        sw_dep
+        flux
+        drain
+        runoff
+        es
+        dd/mm/yyyy as Date
+        leach_cl as leach_mobile
+        leach_nh4 as leach_immobile
+        leach_no3
+        leach_urea
+        cl format 3 as mobile
+        nh4 format 3 as immobile
+        no3 format 3
+        urea format 3
+
+     Output file = Solute - Saturated Flow Only (NEW).out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Soil Water Initialisation ---------------------------------------------
+SHAUN - Made it to the init
+
+
+Initial soilwater distributed using "sw" parameter.
+
+
+
+                 Soil Profile Properties
+   ---------------------------------------------------------------------
+         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+   ---------------------------------------------------------------------
+        0 -  150  0.150  0.290  0.540  0.590  0.590  1.020  0.762  0.300
+      150 -  300  0.260  0.290  0.530  0.580  0.580  1.030  0.190  0.300
+      300 -  600  0.290  0.290  0.540  0.590  0.590  1.020  0.048  0.300
+      600 -  900  0.290  0.290  0.540  0.580  0.580  1.020  0.000  0.300
+      900 - 1200  0.300  0.300  0.520  0.570  0.570  1.060  0.000  0.300
+     1200 - 1500  0.310  0.310  0.500  0.550  0.550  1.110  0.000  0.300
+     1500 - 1800  0.320  0.320  0.500  0.550  0.550  1.120  0.000  0.300
+     1800 - 2100  0.330  0.330  0.480  0.530  0.530  1.150  0.000  0.300
+     2100 - 2400  0.340  0.340  0.470  0.520  0.520  1.180  0.000  0.300
+     2400 - 2700  0.350  0.350  0.460  0.510  0.510  1.200  0.000  0.300
+     2700 - 3000  0.360  0.360  0.440  0.490  0.490  1.250  0.000  0.300
+   ---------------------------------------------------------------------
+
+
+             Soil Water Holding Capacity
+     ---------------------------------------------------------
+         Depth    Unavailable Available  Max Avail.  Drainable
+                     (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                       mm        mm          mm         mm
+     ---------------------------------------------------------
+        0 -  150      43.50      45.00      37.50       7.50
+      150 -  300      43.50      43.50      36.00       7.50
+      300 -  600      87.00      90.00      75.00      15.00
+      600 -  900      87.00      87.00      75.00      12.00
+      900 - 1200      90.00      81.00      66.00      15.00
+     1200 - 1500      93.00      72.00      57.00      15.00
+     1500 - 1800      96.00      69.00      54.00      15.00
+     1800 - 2100      99.00      60.00      45.00      15.00
+     2100 - 2400     102.00      54.00      39.00      15.00
+     2400 - 2700     105.00      48.00      33.00      15.00
+     2700 - 3000     108.00      39.00      24.00      15.00
+     ---------------------------------------------------------
+           Totals    954.00     688.50     541.50     147.00
+     ---------------------------------------------------------
+
+
+
+
+             Initial Soil Parameters
+     ---------------------------------------------------------
+            Insoil        Salb     Dif_Con   Dif_Slope
+     ---------------------------------------------------------
+               NaN        0.13        0.00        0.00
+     ---------------------------------------------------------
+
+
+             Runoff is predicted using scs curve number:
+           Cn2  Cn_Red  Cn_Cov   H_Eff_Depth 
+                                      mm     
+     ---------------------------------------------------------
+          1.00    0.00    0.00      450.00
+     ---------------------------------------------------------
+
+
+      Using Ritchie evaporation model
+       Cuml evap (U):             0.00  (mm^0.5)
+       CONA:                      0.00  ()
+
+       Eo from priestly-taylor
+
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ph =     1.000000
+             less than lower limit of    3.500000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     1.00  0.00    0.00  350.00    0.00
+             2     1.00  0.00    0.00  250.00    0.00
+             3     1.00  0.00    0.00  350.00    0.00
+             4     1.00  0.00    0.00  250.00    0.00
+             5     1.00  0.00    0.00  350.00    0.00
+             6     1.00  0.00    0.00  250.00    0.00
+             7     1.00  0.00    0.00  350.00    0.00
+             8     1.00  0.00    0.00  250.00    0.00
+             9     1.00  0.00    0.00  350.00    0.00
+            10     1.00  0.00    0.00  250.00    0.00
+            11     1.00  0.00    0.00  350.00    0.00
+          ------------------------------------------------
+           Totals                0.00  ******    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1          0.0     0.0     0.0     0.0     0.0     0.0
+             2          0.0     0.0     0.0     0.0     0.0     0.0
+             3          0.0     0.0     0.0     0.0     0.0     0.0
+             4          0.0     0.0     0.0     0.0     0.0     0.0
+             5          0.0     0.0     0.0     0.0     0.0     0.0
+             6          0.0     0.0     0.0     0.0     0.0     0.0
+             7          0.0     0.0     0.0     0.0     0.0     0.0
+             8          0.0     0.0     0.0     0.0     0.0     0.0
+             9          0.0     0.0     0.0     0.0     0.0     0.0
+            10          0.0     0.0     0.0     0.0     0.0     0.0
+            11          0.0     0.0     0.0     0.0     0.0     0.0
+          ---------------------------------------------------------
+           Totals       0.0     0.0     0.0     0.0     0.0     0.0
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+SHAUN - made it to prepare event
+2 March 1940(Day of year=62), clock: 
+     Simulation is terminating due to end criteria being met.

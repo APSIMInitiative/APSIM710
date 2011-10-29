@@ -357,11 +357,23 @@
    		<field name="SurfaceOM_dlt_dm_p" kind="single"/>
    	</type>
    	
-   	<type name="Tillage">
+	
+		<!-- type can be: disc, burn, rip etc. -->
+		<!-- Specifying a "type" in a Tillage Event parameter presets the variables below, using values from either the SurfaceOM or SoilWater INI file -->
+		<!-- eg. Surface OM ini file has f_incorp and depth values for each type-->
+		<!--     SoilWater ini file cn_red, cn_rain, values for each type-->
+		<!-- The user does not have to specify a type. -->
+		<!-- They can just manually set the parameters for the tillage event.--> 
+		<!-- eg."type=anything" then specify either SurfaceOM variables or SoilWater variables (depending on who you are sending Tillage event to) -->
+		<!--f_incorp and tillage_depth eg. 'Surface Organic Matter' tillage type=anything f_incorp=0.5 tillage_depth=100mm -->
+		<!--cn_red and cn_rain are used in SoilWater to alter runoff eg. 'SoilName Water' tillage type=anything cn_red=3 cn_rain=100mm-->
+	<type name="Tillage">
    		<field name="type" kind="string"/>
    		<field name="f_incorp" kind="single"/>
    		<field name="tillage_depth" kind="single"/>
-   	</type>
+		<field name="cn_red" kind="single"/>
+		<field name="cn_rain" kind="single"/>
+	</type>
 	
 	<type name="Tillage_single">
 	   	<field name="name" kind="string"/>
