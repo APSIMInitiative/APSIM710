@@ -15,8 +15,8 @@ endif
 
 CC=/usr/bin/g++
 LD=/usr/bin/ld
-CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model \
--DBOOST_FILESYSTEM_VERSION=2 -Wno-write-strings -fpermissive -fPIC -O0 $(CPPDEBUGFLAGS) $(INCLUDES)
+CFLAGS= -Wall $(MONO_DEFINE) $(BOOST_INCLUDEDIR) $(XML2_INCLUDEDIR) $(GLIB_INCLUDEDIR) $(MONO_INCLUDEDIR) -I$(APSIM)/Model -I$(APSIM)/Model/$(PROJECT) \
+-DBOOST_FILESYSTEM_VERSION=2 -Wno-write-strings -fpermissive -fPIC -O3 $(CPPDEBUGFLAGS) $(INCLUDES)
 
 #-Wno-deprecated
 
@@ -40,6 +40,9 @@ ifeq ($(PROJECTTYPE),exe)
 LDFLAGS:= -Xlinker --export-dynamic $(LDFLAGS)
 endif
 
+ifdef PRECOMPILE
+	PRECOMPILEDHEADERS = $(PRECOMPILE).gch
+endif
 
 OBJ:=	$(SRC:.cpp=.o)
 
@@ -54,15 +57,19 @@ endif
 %.o:    %.cpp
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
-$(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(OBJ)
+$(APSIM)/Model/$(PROJECT).x: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
 	$(CC) -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS)
 
-$(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(OBJ)
+$(APSIM)/Model/$(PROJECT).so: $(PREBUILD) $(PRECOMPILEDHEADERS) $(OBJ)
 	$(CC) -shared -o $@ $(OBJ) $(OBJS) $(LDFLAGS) $(LIBS) $(LDDEBUGFLAGS) $(DEF)
+	
+$(PRECOMPILEDHEADERS) : PRECOMPILE
+	$(CC) $(CPPFLAGS) $(CFLAGS) $<
+	
 ifeq ($(PROJECTTYPE),libdll)
 	ln -sf $@ $(APSIM)/Model/lib$(PROJECT).so
 endif
 	
 
 clean:
-	rm -f $(OBJ) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so
+	rm -f $(OBJ) $(PRECOMPILEDHEADERS) $(APSIM)/Model/$(PROJECT).x $(APSIM)/Model/$(PROJECT).so
