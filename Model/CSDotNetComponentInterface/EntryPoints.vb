@@ -22,7 +22,7 @@ Namespace CMPComp
         Private Shared _STYPE As [String] = If(Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyProductAttribute), False).Length > 0, _
                                             CType(Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyProductAttribute), False)(0), AssemblyProductAttribute).Product, _
                                             Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().GetName().Name))
-        Private Shared _SVERSION As [String] = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." +
+        Private Shared _SVERSION As [String] = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString() + "." + _
                                                Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString()
         Private Shared _SAUTHOR As [String] = If(Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyCompanyAttribute), False).Length > 0, _
                                               CType(Assembly.GetExecutingAssembly().GetCustomAttributes(GetType(AssemblyCompanyAttribute), False)(0), AssemblyCompanyAttribute).Company, _
