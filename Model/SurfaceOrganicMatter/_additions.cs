@@ -5,7 +5,7 @@ using System.Xml;
 using System.Reflection;
 using System.Linq;
 
-public partial class SurfaceOrganicMatter : Instance
+public partial class SurfaceOM : Instance
 {
     const double acceptableErr = 1e-4;
 

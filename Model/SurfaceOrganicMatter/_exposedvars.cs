@@ -5,7 +5,7 @@ using ModelFramework;
 using System.Linq;
 using CSGeneral;
 
-public partial class SurfaceOrganicMatter : Instance
+public partial class SurfaceOM : Instance
 {
     [Link]
     Paddock mypaddock;
@@ -20,7 +20,7 @@ public partial class SurfaceOrganicMatter : Instance
 
     [Param]
     [Units("")]
-    public string pname;
+    public string PoolName;
 
     [Param]
     [Units("")]

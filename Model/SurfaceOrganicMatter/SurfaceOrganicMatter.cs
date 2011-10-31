@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-public partial class SurfaceOrganicMatter : Instance
+public partial class SurfaceOM : Instance
 {
     //====================================================================
     //    SurfaceOM constants;
@@ -217,7 +217,7 @@ public partial class SurfaceOrganicMatter : Instance
     SurfaceOMConstants c;
 
 
-    public SurfaceOrganicMatter()
+    public SurfaceOM()
         : base()
     {
         g = new SurfaceOMGlobals();
@@ -413,7 +413,7 @@ public partial class SurfaceOrganicMatter : Instance
     private void surfom_read_param()
     {
         //  Local Variables;
-        string[] temp_name = ToArray<string>(pname);	                    //temporary array for residue names;
+        string[] temp_name = ToArray<string>(PoolName);	                    //temporary array for residue names;
         string[] temp_type = ToArray<string>(type);	                        //temporary array for residue types;
         float[] temp_wt = ToArray<float>(mass);
         float[] temp_residue_cnr = ToArray<float>(cnr);	                    //temporary residue_cnr array;			

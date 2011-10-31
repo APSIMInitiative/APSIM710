@@ -26,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -51,6 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Build\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CSDotNetComponentInterface\EntryPoints.cs">
+      <Link>EntryPoints.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SurfaceOrganicMatter.cs" />
     <Compile Include="_additions.cs" />
@@ -58,23 +64,12 @@
     <Compile Include="_eventhandlers.cs" />
     <Compile Include="_events.cs" />
     <Compile Include="_exposedvars.cs" />
-    <Compile Include="..\Build\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\CSDotNetComponentInterface\EntryPoints.cs">
-      <Link>EntryPoints.cs</Link>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SurfaceOrganicMatter.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Validation\TestDecomp.apsim" />
-    <None Include="Validation\TestSoilNitrogen.apsim" />
-    <None Include="Validation\ValidateMe.apsim" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
