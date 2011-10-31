@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "RUEWholePlantModel.h"
 #include "../Co2Modifier.h"

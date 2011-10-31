@@ -1,7 +1,5 @@
-
+#include "StdPlant.h"
 #include <stdexcept>
-#include "../StdPlant.h"
-
 #include "ExternalFunction.h"
 #include "InterpolationFunction.h"
 using namespace std;

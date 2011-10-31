@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "PlantFruitCohorting.h"
 #include "../Environment.h"

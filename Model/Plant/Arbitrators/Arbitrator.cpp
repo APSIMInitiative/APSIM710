@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "../Leaf/Leaf.h"
 #include "Arbitrator.h"

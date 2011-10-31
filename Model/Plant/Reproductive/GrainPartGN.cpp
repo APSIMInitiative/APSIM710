@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "GrainPartGN.h"
 #include "../Phenology/Phenology.h"

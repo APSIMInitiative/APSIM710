@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "RootPart.h"
 #include "RootGrowthOption1.h"

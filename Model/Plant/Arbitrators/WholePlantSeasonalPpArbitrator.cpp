@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 #include "WholePlantSeasonalPpArbitrator.h"
 #include "../CompositePart.h"
 #include "../Environment.h"

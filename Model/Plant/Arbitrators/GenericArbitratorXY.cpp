@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 #include "GenericArbitratorXY.h"
 #include "../Phenology/Phenology.h"

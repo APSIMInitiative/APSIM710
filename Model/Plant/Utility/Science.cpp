@@ -1,4 +1,4 @@
-#include "../StdPlant.h"
+#include "StdPlant.h"
 
 //==========================================================================
 void accumulate (float value,             //  (INPUT) value to add to array
