@@ -16,9 +16,9 @@
 	</Job>
 
 	<Folder name="BuildAndRun" wait="yes">
-		<!--
-    Get the APSIM directory up to date and clean.
-	-->
+			<!--
+		Get the APSIM directory up to date and clean.
+		-->
 
 		<Job name="Apply patch">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
@@ -42,9 +42,9 @@
 			<CommandLine>%Apsim%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl Increment</CommandLine>
 		</Job>
 
-		<!--
-    Build APSIM
-	-->
+			<!--
+		Build APSIM
+		-->
 
 		<Job name="Load in Build.xml">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
@@ -52,55 +52,55 @@
 		</Job>
 		<Folder name="Build" wait="yes"/>
 
-		<!--
-    Run all APSIM tests
-	-->
+			<!--
+		Run all APSIM tests
+		-->
 
 		<Job name="Load in Run.xml">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%apsim%\Model\Build\RunAll.xml"</CommandLine>
 		</Job>
 		<Folder name="Run" wait="yes"/>
-
-		<Job name="CreateDiffsZip">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
-		</Job>	
-		
+	</Folder>
+	
+	<Job name="Look for diffs" wait="yes" IgnoreErrors="yes">
+		<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+		<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
+	</Job>	
+	
 		<!--
     Build APSIM Documentation
 	-->	
 
-		<Folder name="Plant2 Documentation" wait="yes">
-			<Job name="Create Broccoli Documentation">
-				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-				<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
-			</Job>
-			<Job name="Create Vine Documentation">
-				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-				<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
-			</Job>
-			<Job name="Create documentation">
-				<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
-				<CommandLine>CreateIndex.bat</CommandLine>
-			</Job> 	
-		</Folder>
+	<Folder name="Plant2 Documentation" wait="yes">
+		<Job name="Create Broccoli Documentation">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
+		</Job>
+		<Job name="Create Vine Documentation">
+			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+			<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
+		</Job>
+		<Job name="Create documentation">
+			<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
+			<CommandLine>CreateIndex.bat</CommandLine>
+		</Job> 	
+	</Folder>
 
 		<!--
     Build APSIM Release
 	-->	
 
-		<Folder name="Release" wait="yes">
-			<Job name="Load in Release.xml">
-				<WorkingDirectory>%apsim%\Release</WorkingDirectory>
-				<CommandLine>%Apsim%\Model\JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Release~%apsim%\Release\Release.xml"</CommandLine>
-			</Job>
-			<Folder name="Release" wait="yes"/>		
-		</Folder>
+	<Folder name="Release" wait="yes">
+		<Job name="Load in Release.xml">
+			<WorkingDirectory>%apsim%\Release</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Release~%apsim%\Release\Release.xml"</CommandLine>
+		</Job>
+		<Folder name="Release" wait="yes"/>		
 	</Folder>
 
 		<!--
-    Finish up by collecting diffs and sending the email.
+    Finish up by creating various zip files and updating database
 	-->	
 
 	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
