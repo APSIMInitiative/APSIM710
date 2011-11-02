@@ -1471,6 +1471,19 @@ endif
           <tillage_f_incorp description="User_defined fraction of surface residues to incorporate (0-1): ">0</tillage_f_incorp>
         </ui>
       </manager>
+        <manager name="Report on date">
+          <ui>
+            <category type="category" description="Report on a specific date" />
+            <output type="modulename" description="Name of module to write to:">outputfile</output>
+            <date type="ddmmmdate" description="Enter date to report on:">15-oct</date>
+          </ui>
+          <script>
+            <text>if (today = date('[date]')) then
+				   [output] do_output
+				endif</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>	  
       <manager name="Reset water, nitrogen and surfaceOM on fixed date">
         <script>
           <text>
@@ -1958,6 +1971,68 @@ public class Script : Instance
 }
       </text>
      </manager2>
+	</folder>
+	<folder name="Weed management">
+         <manager name="Weed control">
+          <ui>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-may</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-jul</date2>
+            <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
+            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <category type="category" description="Sowing parameters" />
+            <weed type="crop" description="Enter name of weed to sow : ">raphanus_raphanistrum</weed>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">PacN145</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
+            <category type="category" description="Control parameters stage 1" />
+            <killdate type="ddmmmdate" description="Enter date to apply control   -OR-" />
+            <killdoe type="text" description="Enter number of days after emergence to apply">10</killdoe>
+            <amount type="text" description="Enter fraction to kill (between 0 and 1)">0.9</amount>
+            <category type="category" description="Control parameters stage 2" />
+            <killdate2 type="ddmmmdate" description="Enter date to apply control   -OR-" />
+            <killdoe2 type="text" description="Enter number of days after emergence to apply">10</killdoe2>
+            <amount2 description="Enter fraction to kill (between 0 and 1)">0</amount2>
+          </ui>
+          <script>
+            <text>if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[weed]')) then
+   if (date_within('[date1], [date2]') = 1) then
+      if (rain[[rainnumdays]] &gt;= [raincrit]) THEN
+         ChooseNextCrop = 'yes'   ! for rotations
+         [weed] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+      endif
+      if today = date('[date2]') then
+         ChooseNextCrop = 'yes'
+      endif
+   endif
+endif
+
+if (today = date('[killdate]')) then
+   [weed] kill_crop plants_kill_fraction = [amount]
+elseif ('[killdoe]' &lt;&gt; '') then
+   if (daysafteremergence = [killdoe]) then
+      [weed] kill_crop plants_kill_fraction = [amount]
+   endif
+endif
+
+if (today = date('[killdate2]')) then
+   [weed] kill_crop plants_kill_fraction = [amount2]
+elseif ('[killdoe2]' &lt;&gt; '') then
+   if (daysafteremergence = [killdoe2]) then
+      [weed] kill_crop plants_kill_fraction = [amount2]
+   endif
+endif </text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>nextcrop = 0
+fallowin = 0</text>
+            <event>init</event>
+          </script>
+        </manager>
 	</folder>
 	<folder name="African and Indian specialisations">
       <folder name="Phosphorus and Manure">
