@@ -55,7 +55,11 @@ class JobSchedulerApplyPatch
             string Line = In.ReadLine();
             StringCollection LineBits = StringManip.SplitStringHonouringQuotes(Line, " ");
             if (LineBits.Count == 3)
+            {
+                // Convert either '/' or '\' to the local directory separator
+                LineBits[0] = LineBits[0].Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar); 
                 FileDetails.Add(new PatchDetail {FileName=LineBits[0], Status=LineBits[1], Revision=LineBits[2] });
+            }
         }
         In.Close();
         File.Delete(RevisionsFileName);

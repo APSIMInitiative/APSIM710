@@ -99,7 +99,7 @@ Public Class DataTree
 
         Return CurrentNode
     End Function
-    Private Function GetPathFromNode(ByVal Node As TreeNode)
+    Private Function GetPathFromNode(ByVal Node As TreeNode) As String
         Return PathSeparator + Node.FullPath    'just put an extra "/" in front of the node path, so "root/child" becomes "/root/child" (this is needed because our "Selected Path" root starts with a /, whereas the inbuilt node full path property does not start with a / at the root)
     End Function
 

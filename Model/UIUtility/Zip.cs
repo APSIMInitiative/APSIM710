@@ -51,7 +51,7 @@ namespace UIUtility
         /// </summary>
         public static string ZipFilesWithDirectories(IEnumerable<string> FilesToZip, string ZipFileName, string Password)
         {
-            if (!File.Exists(ZipFileName))
+            if (File.Exists(ZipFileName))
                 File.Delete(ZipFileName);
 
             ZipOutputStream Zip = new ZipOutputStream(File.Create(ZipFileName));
@@ -99,7 +99,9 @@ namespace UIUtility
             ZipEntry Entry;
             while ((Entry = Zip.GetNextEntry()) != null)
             {
-                string DestFileName = DestFolder + "\\" + Entry.Name;
+				// Convert either '/' or '\' to the local directory separator
+                string DestFileName = DestFolder + Path.DirectorySeparatorChar + 
+					   Entry.Name.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
                 // Make sure the destination folder exists.
                 Directory.CreateDirectory(Path.GetDirectoryName(DestFileName));

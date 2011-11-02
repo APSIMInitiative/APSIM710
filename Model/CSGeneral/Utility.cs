@@ -63,7 +63,8 @@ namespace CSGeneral
             Process PlugInProcess = new Process();
             PlugInProcess.StartInfo.FileName = Executable;
             PlugInProcess.StartInfo.Arguments = Arguments;
-            PlugInProcess.StartInfo.UseShellExecute = Path.GetExtension(Executable) != ".exe";
+            // Determine whether or not the file is an executable; execute from the shell if it's not
+            PlugInProcess.StartInfo.UseShellExecute = isManaged(Executable) == CompilationMode.Invalid;
             PlugInProcess.StartInfo.CreateNoWindow = true;
             if (!PlugInProcess.StartInfo.UseShellExecute)
             {

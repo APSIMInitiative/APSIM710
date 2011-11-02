@@ -226,10 +226,10 @@ Public Class BaseController
    Private Sub ClearRunStrip()
       Dim RunPanels As Control() = MainForm.Controls.Find("RunToolStrip", True)
       If RunPanels.Length = 1 Then
-         Dim Strip As ToolStrip = RunPanels(0)
-         Dim ErrorsButton As ToolStripButton = Strip.Items("ErrorsButton")
-         Dim PercentLabel As ToolStripLabel = Strip.Items("PercentLabel")
-         Dim ProgressBar As ToolStripProgressBar = Strip.Items("RunProgress")
+         Dim Strip As ToolStrip = CType(RunPanels(0), System.Windows.Forms.ToolStrip)
+         Dim ErrorsButton As ToolStripButton = CType(Strip.Items("ErrorsButton"), ToolStripButton)
+         Dim PercentLabel As ToolStripLabel = CType(Strip.Items("PercentLabel"), ToolStripLabel)
+         Dim ProgressBar As ToolStripProgressBar = CType(Strip.Items("RunProgress"), ToolStripProgressBar)
 
          ErrorsButton.Visible = False
          PercentLabel.Text = ""
@@ -251,7 +251,7 @@ Public Class BaseController
         Else
             Dim st As String = Configuration.RemoveMacros(FileName)
             If Path.GetDirectoryName(ApsimData.FileName) <> "" Then
-                Dim CWD = Directory.GetCurrentDirectory()
+                Dim CWD As String = Directory.GetCurrentDirectory()
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimData.FileName))
                 st = Path.GetFullPath(st)
                 Directory.SetCurrentDirectory(CWD)
@@ -434,7 +434,7 @@ Public Class BaseController
             End If
             'Does this toolstrip item have a sub menu (such as "Open") 
             If TypeOf ToolItem Is ToolStripDropDownItem Then
-                Dim DropDownItem As ToolStripDropDownItem = ToolItem    'recast item as a sub menu item
+                Dim DropDownItem As ToolStripDropDownItem = CType(ToolItem, ToolStripDropDownItem)    'recast item as a sub menu item
                 ToolItem.Enabled = IsActionAllowed(XmlHelper.Find(ActionFile, "/Folder/Actions/" + ToolItem.Tag.ToString))
                 EnableActions(DropDownItem.DropDown)                    'recursion call, to enable/disable actions in the sub menu.
             End If
@@ -459,7 +459,7 @@ Public Class BaseController
                 Next                                                            'Step into any DropDownItems to look for RecentFileLists in submenu
             ElseIf XmlHelper.Type(ChildDescriptor) = "DropDownItem" And _
                    TypeOf Strip.Items(ItemIndex) Is ToolStripDropDownItem Then
-                Dim DropDownButton As ToolStripDropDownItem = Strip.Items(ItemIndex)
+                Dim DropDownButton As ToolStripDropDownItem = CType(Strip.Items(ItemIndex), ToolStripDropDownItem)
                 RefreshRecentFileList(DropDownButton.DropDown, ChildDescriptor)      'recursion call
                 ItemIndex = ItemIndex + 1
             End If

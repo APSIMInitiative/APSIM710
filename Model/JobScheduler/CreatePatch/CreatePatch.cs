@@ -48,9 +48,13 @@ public partial class MainForm : Form
             Cursor.Current = Cursors.WaitCursor;
 
             // Get the revision number of this directory.
-            string SVNFileName = Utility.FindFileOnPath("svn.exe");
+            string svnName = "svn";
+            int p = (int) Environment.OSVersion.Platform;
+            if (p != 4 && p != 128) // Either 4 or 128 indicates Unix
+               svnName += ".exe";
+            string SVNFileName = Utility.FindFileOnPath(svnName);
             if (SVNFileName == "")
-                throw new Exception("Cannot find svn.exe on PATH");
+                throw new Exception("Cannot find " + svnName + " on PATH");
 
             string DirectoryName = Directory.GetCurrentDirectory();
 
@@ -230,7 +234,7 @@ public partial class MainForm : Form
                 else
                 {
                     // Zip all files.
-                    Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
+                    UIUtility.Zip.ZipFilesWithDirectories(FileNames, SaveFileDialog.FileName, "");
 
                     if (MessageBox.Show("Patch file successfully created. Upload to Bob?", "Success", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                         Process.Start("http://bob.apsim.info/BobWeb/Upload.aspx");
