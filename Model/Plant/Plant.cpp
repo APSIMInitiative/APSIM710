@@ -1652,7 +1652,7 @@ float Plant::getLeafNo(void)
 
 void Plant::get_height(protocol::Component *system, protocol::QueryValueData &qd)
 {
-   system->sendVariable(qd, stem().height());
+   system->sendVariable(qd, plantSpatial.densityHeightFactor() * stem().height());
 }
 
 void Plant::get_width(protocol::Component *system, protocol::QueryValueData &qd)

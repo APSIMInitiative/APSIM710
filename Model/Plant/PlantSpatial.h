@@ -18,7 +18,8 @@ class PlantSpatial {
    void setCanopyWidth(float canopy_width);
    float canopyFac(void);
    float rowSpacing(void);
-
+   float densityHeightFactor(void);
+ 
 //  private:
       float dlt_plants;
       float row_spacing_default;
@@ -36,6 +37,8 @@ class PlantSpatial {
       ScienceAPI& scienceAPI;  
       float plants;
       float canopy_width;
+
+      interpolationFunction densityHeightFunction;
 
       plantInterface *plant;                 // The plant we are attached to
 };

@@ -47,6 +47,10 @@ void PlantSpatial::read(ScienceAPI& scienceAPI)
    {
    scienceAPI.read("row_spacing_default", row_spacing_default, 0.0f, 2000.0f);
    scienceAPI.read("skiprow_default", skip_row_default, 0.0f, 2.0f);
+   if (!densityHeightFunction.readOptional(scienceAPI
+                                           , "x_density" , "(plants/m2)", 0.0, 10000.0
+                                           , "y_density_height_factor", "(mm)", 0.0, 100.0))
+		densityHeightFunction.setDefaultValue(1.0);								     
    }
 
 void PlantSpatial::startCrop(protocol::SowType& Sow)
@@ -130,3 +134,8 @@ void PlantSpatial::setCanopyWidth (float width)
     canopy_width = width;
 }
 
+float PlantSpatial::densityHeightFactor (void)
+   //===========================================================================
+{
+    return densityHeightFunction.value(plants);
+}
