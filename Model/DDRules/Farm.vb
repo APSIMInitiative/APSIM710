@@ -1183,10 +1183,19 @@ Public Class Farm
         myMilkingHerd.setMilkSolids(values)
     End Sub
 
+    Public Function getMilkSolids() As Double()        
+        Return myMilkingHerd.getMilkSolids()
+    End Function
+
     Public Sub setLiveWeight(ByVal values As Double())
         'Todo 20110524 - add checking here
         myMilkingHerd.setLiveWeight(values)
     End Sub
+
+    Public Function getLiveWeight() As Double()
+        Return myMilkingHerd.getLiveWeight()
+    End Function
+
 
 #Region "Effluent Retun from Dairy Shed"
     Dim myEffluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)

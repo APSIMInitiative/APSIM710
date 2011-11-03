@@ -303,6 +303,10 @@ Public Class SimpleCow
         Change_in_CondistionScore_per_Day = deltaBC / days
     End Sub
 
+    Public Function getMilkSolids() As Double()
+        Return MS
+    End Function
+
     Public Sub setMilkSolids(ByVal values As Double())
         'Todo 20110524 - add checking here?
         Console.WriteLine("Setting MS values")
@@ -319,6 +323,9 @@ Public Class SimpleCow
     Public Sub setLiveWeight(ByVal values As Double())
         LWt = values
     End Sub
+    Public Function getLiveWeight() As Double()
+        Return LWt
+    End Function
 
     Private Sub setMilkProduction(ByVal year As Integer, ByVal mth As Integer)
         Dim days As Integer = Date.DaysInMonth(year, mth)

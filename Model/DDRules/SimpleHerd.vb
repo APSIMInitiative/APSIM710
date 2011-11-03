@@ -410,10 +410,16 @@
         'Todo 20110524 - add checking here
         ReferenceCow.setMilkSolids(values)
     End Sub
+    Public Function getMilkSolids() As Double()
+        Return ReferenceCow.getMilkSolids()
+    End Function
     Public Sub setLiveWeight(ByVal values As Double())
         'Todo 20110524 - add checking here
         ReferenceCow.setLiveWeight(values)
     End Sub
+    Public Function getLiveWeight() As Double()
+        Return ReferenceCow.getLiveWeight()
+    End Function
 
     Public Function Size() As Double
         Return TotalCows

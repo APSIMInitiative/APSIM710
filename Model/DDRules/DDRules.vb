@@ -1260,18 +1260,18 @@ Public Class DDRules
     End Property
 
     'Set milk production data
-    <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As String
+    <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As Double()
         Get
-            Return "MilkCurve"
+            Return myFarm.getMilkSolids()
         End Get
-        Set(ByVal value As String)
-            Dim strValues As String() = value.Split(New [Char]() {","c})
+        Set(ByVal value As Double())
+            'Dim strValues As String() = value 'value.Split(New [Char]() {","c})
             Dim values(11) As Double
-            For i As Integer = 0 To strValues.Length - 1
+            For i As Integer = 0 To 11 'strValues.Length - 1
                 If (DebugLevel > 0) Then
-                    Console.Write("Milk Curve = " + strValues(i))
+                    Console.Write("Milk Curve = " + value(i))
                 End If
-                values(i) = strValues((i + 6) Mod 12)
+                values(i) = value((i + 6) Mod 12)
                 If (DebugLevel > 0) Then
                     'Console.WriteLine(" [ha] = " + (values(i) * BaseStockingRate).ToString("0.00"))
                     Console.WriteLine(" [ha] = " + (values(i) * StockingRate).ToString("0.00"))
@@ -1282,23 +1282,15 @@ Public Class DDRules
     End Property
 
     'Set paddocks to return dairyshed effluent to
-    <Output()> <Units("")> Public Property EffluentPaddocks As String
+    <Output()> <Units("")> Public Property EffluentPaddocks As String()
         Get
             If (strEffluentPaddocks Is Nothing) Then
-                Return ""
+                Return {""}
             End If
-            Dim result As String = ""
-            For Each str As String In strEffluentPaddocks 'myFarm.getEffluentPaddocks()
-                result += str + ","
-            Next
-            'result = result.Substring(0, result.Length - 2)
-            If (result.Length > 0) Then
-                Return result.Substring(0, result.Length - 1)
-            End If
-            Return result
+            Return strEffluentPaddocks 'myFarm.getEffluentPaddocks()
         End Get
-        Set(ByVal value As String)
-            Dim strValues As String() = value.Split(New [Char]() {","c})
+        Set(ByVal value As String())
+            Dim strValues As String() = value 'value.Split(New [Char]() {","c})
             ReDim strEffluentPaddocks(strValues.Length - 1)
             For i As Integer = 0 To strValues.Length - 1
                 If (DebugLevel > 0) Then
@@ -1344,22 +1336,14 @@ Public Class DDRules
     End Property
 
     'Set Live Weight Profile
-    <Output()> <Units("kgMS/cow/day")> Public Property LWtCurve As String
+    <Output()> <Units("kgMS/cow/day")> Public Property LWtCurve As Double()
         Get
-            Return "LWtCurve"
+            Return myFarm.getLiveWeight()
         End Get
-        Set(ByVal value As String)
-            Dim strValues As String() = value.Split(New [Char]() {","c})
-            Dim values(12) As Double
-            For i As Integer = 0 To strValues.Length - 1
-                If (DebugLevel > 0) Then
-                    Console.Write("LWt Curve = " + strValues(i))
-                End If
-                values(i) = strValues((i + 6) Mod 12)
-                If (DebugLevel > 0) Then
-                    'Console.WriteLine(" [kg/ha] = " + (values(i) * BaseStockingRate).ToString("0.00"))
-                    Console.WriteLine(" [kg/ha] = " + (values(i) * StockingRate).ToString("0.00"))
-                End If
+        Set(ByVal value As Double())
+            Dim values(11) As Double
+            For i As Integer = 0 To 11 'strValues.Length - 1
+                values(i) = LWtCurve((i + 6) Mod 12)
             Next
             myFarm.setLiveWeight(values)
         End Set
