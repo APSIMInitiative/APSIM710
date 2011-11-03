@@ -232,15 +232,6 @@ Public Class FileUI
         Else
             FileContentsBox.Text = "<File doesn't exist>"
         End If
-        Dim C As Control = Parent
-        While Not IsNothing(C)
-            If C.Name = "MainUI" Then
-                Dim F As Form = C
-                Exit While
-            Else
-                C = C.Parent
-            End If
-        End While
 
         BrowseButton.Visible = (XmlHelper.Type(Data) <> "outputfile" And XmlHelper.Type(Data) <> "summaryfile")
 

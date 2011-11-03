@@ -589,17 +589,27 @@ namespace ApsimFile
          foreach (Component Child in ChildNodes)
             Child.FindRecursively(ComponentType, ref Matches);
          }
-      public void Replace(string Xml)
+      public void SetValue(string valueName, string value)
          {
-         // -------------------------------------------------------
-         // We need to replace 'this' component with the one
-         // passed in - need to be mindfull of shortcuts.
-         // -------------------------------------------------------
-         Component TempComponent = Parent.Add(Xml);
-         Replace(TempComponent);
-         Parent.Delete(TempComponent);
-         MyFile.PublishComponentChanged(this);
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml("<dummy>" + MyContents + "</dummy>");
+            if (value == "") 
+                XmlHelper.DeleteValue(doc.DocumentElement, valueName);
+            else
+                XmlHelper.SetValue(doc.DocumentElement, valueName, value);
+            MyContents = doc.DocumentElement.InnerXml;
          }
+      public void Replace(string Xml)
+      {
+          // -------------------------------------------------------
+          // We need to replace 'this' component with the one
+          // passed in - need to be mindfull of shortcuts.
+          // -------------------------------------------------------
+          Component TempComponent = Parent.Add(Xml);
+          Replace(TempComponent);
+          Parent.Delete(TempComponent);
+          MyFile.PublishComponentChanged(this);
+      }
       private void Replace(Component Rhs)
          {
          // -------------------------------------------------------

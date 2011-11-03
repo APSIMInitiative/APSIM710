@@ -15,6 +15,7 @@ Imports UIUtility   'GridUtility.cs
 Public Class OutputFileDescUI
     Inherits BaseView
     Private UserChange As Boolean = True
+    Private hasTitle = False
     Private ComponentNames As New StringCollection
     Friend WithEvents ConstantsBox As System.Windows.Forms.TextBox
     Friend WithEvents Splitter1 As System.Windows.Forms.Splitter
@@ -442,10 +443,15 @@ Public Class OutputFileDescUI
         ConstantsBox.Clear()
         'Fill it in with the new stuff from this node.
         Dim Lines As List(Of String) = New List(Of String)
-        Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
 
+        ' Titles are "special" 
+        Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
+        hasTitle = False
         Dim TitleNode As XmlNode = XmlHelper.Find(outputfileComponent.ContentsAsXML(), "title")
-        Lines.Add("Title = " + TitleNode.InnerText)
+        If (Not IsNothing(TitleNode)) Then
+            Lines.Add("Title = " + TitleNode.InnerText)
+            hasTitle = True
+        End If
         Dim Index As Integer = 1
         Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
         If Not IsNothing(ConstantsNode) Then
@@ -538,21 +544,38 @@ Public Class OutputFileDescUI
         Dim Constants As XmlNode = XmlHelper.Find(Data, "constants")
       If Not IsNothing(Constants) Then
          Data.RemoveChild(Constants)
-      End If
+        End If
+        Dim titleIsInListbox As Boolean = False
       For Each Line As String In ConstantsBox.Lines
          Dim PosEquals As Integer = Line.IndexOf("=")
          If PosEquals <> -1 Then
-            Dim ConstantName As String = Trim(Line.Substring(0, PosEquals))
+                Dim ConstantName As String = Trim(Line.Substring(0, PosEquals))
                 Dim ConstantValue As String = Trim(Line.Substring(PosEquals + 1))
                 If (ConstantName = "Title") Then
                     Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
-                    XmlHelper.SetValue(outputfileComponent.ContentsAsXML, "title", ConstantValue)
+                    outputfileComponent.SetValue("title", ConstantValue)
+                    titleIsInListbox = True
                 Else
                     XmlHelper.SetValue(Data, "constants/" + ConstantName, ConstantValue)
                 End If
             End If
         Next
-   End Sub
+        If (hasTitle And Not titleIsInListbox) Then
+            ' User has deleted the title. Set it to the default value
+            Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
+            Dim simulationName As String = ""
+            Dim d As Component = outputfileComponent
+            While (Not IsNothing(d.Parent))
+                d = d.Parent
+                If (d.Type.ToLower() = "simulation") Then
+                    simulationName = d.Name
+                End If
+            End While
+            outputfileComponent.SetValue("title", simulationName)
+
+        End If
+
+    End Sub
 
 
    Private Sub AddVariablesToGrid(ByVal VariableNames As ListView.SelectedListViewItemCollection)
