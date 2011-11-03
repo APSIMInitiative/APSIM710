@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -460,7 +461,7 @@ using System.Text;
 
          int         indx;                  //! position in table
          double      y = 0.0;                     //! interpolated value
-
+         double      m, dx, c;
 
          //! find where x lies in the x cord
          for(indx = si; indx<=ci(Num_Cord); indx++)
@@ -486,7 +487,10 @@ using System.Text;
                   else
                      {
                      //! interpolate - y = mx+c
-                     y = mu.divide(Y_cord[indx] - Y_cord[indx-1], X_cord[indx] - X_cord[indx-1], 0.0) * (X - X_cord[indx-1] ) + Y_cord[indx-1];
+                     m = mu.divide((Y_cord[indx] - Y_cord[indx-1]), (X_cord[indx] - X_cord[indx-1]), 0.0);   //m = dy/dx  //there are different slopes between any two points in the array
+                     dx = (X - X_cord[indx-1]);  //distance from the first point that we going to go along this slope 
+                     c =  Y_cord[indx-1];        //add the y value of the first point to the dy value we have calculated using dx. 
+                     y = m * dx + c;
                      }
                   }
 

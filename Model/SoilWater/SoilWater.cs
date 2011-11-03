@@ -148,6 +148,14 @@ public class SoilWater : Instance
    private double[] type_info_from_sim = null;   //sv- contains the tillage_cn_red and tillage_cn_rain specified in the sim file. Only used if manager module does not send it with the Event. 
 
 
+   //Irrigation Layer
+
+   [Param(IsOptional=true, MinVal=0, MaxVal=100)]
+   [Units("()")]
+   [Output]
+   private int         irrigation_layer = -1;      //! number of soil layer to which irrigation water is applied
+
+
 #endregion
 
 
@@ -159,17 +167,27 @@ public class SoilWater : Instance
    //Soilwat2Parameters   //sv- also from soilwat2_soil_property_param()
    */
    
+
    //see "obsrunoff" in the Daily Inputs ie. [Input] tag.
    [Output]
    [Param(IsOptional=true, Name="observed_runoff")]
    [Units("()")]
    private string      obsrunoff_name = "not_read";    //! system name of observed runoff
 
+
+   private string      _eo_source = "not_read";
    [Output]
    [Param(IsOptional=true)]
    [Units("()")]
-   private string      eo_source = "not_read";      //! system variable name of external eo source
-
+   public string      eo_source      //! system variable name of external eo source
+      {
+      get {return _eo_source;}
+      set 
+         {
+         _eo_source = value;
+         Console.WriteLine("Eo source: " + _eo_source);
+         }
+      }
 
 
 
@@ -179,32 +197,102 @@ public class SoilWater : Instance
       //sv- User Specified Soil Water Conent method is used when insoil > 1 
       //sv- FASW evenly distributed method is used when  0 <= insoil <= 1 
 
+   private int       numvals_insoil = 0;                    //! number of values returned for insoil
+   private double    _insoil = Double.NaN; 
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=10.0)]
    [Units("(0-10)")]   
-   private double      insoil = Double.NaN;            //! switch describing initial soil water  //sv-specifies which option you are using.
-   private int         numvals_insoil;                    //! number of values returned for insoil
+   public double     insoil            //! switch describing initial soil water  //sv-specifies which option you are using.
+      {
+      get {return _insoil;}
+      set
+         {
+         //sv- the only reason to make this a settable property is if you want to change the initial water conditions before doing a Reset command.
+         numvals_insoil = 1;
+         _insoil = value;
+
+         soilwat2_set_default();       //TODO: I don't know if this insoil "set" is used. Perhaps it can be removed along with this function. 
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }
+         }
+      }
 
       //sv- FASW filled from top method
+
+   private int       numvals_profile_fesw = 0;              //! number of values returned for profile_fesw
+   private double    _profile_fesw = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=1.0)]
    [Units("(0-1)")]   
-   private double      profile_fesw = Double.NaN;     //! initial fraction of esw of profile distributed from top down ()
-   private int         numvals_profile_fesw;              //! number of values returned for profile_fesw
+   public double    profile_fesw     //! initial fraction of esw of profile distributed from top down ()
+      {
+      get{return _profile_fesw;}
+      set
+         {
+         //sv- the only reason to make this a settable property is if you want to change the initial water conditions before doing a Reset command.
+         numvals_profile_fesw = 1;
+         soilwat2_zero_default_variables();
+         _profile_fesw = value;
+         soilwat2_set_default();       
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }
+         }
+      }
 
       //sv- depth of available sw from top of profile method
+
+   private int         numvals_profile_esw_depth = 0;         //! number of values returned for profile_esw_depth
+   private double      _profile_esw_depth = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=10000.0)]
    [Units("(mm)")]   
-   private double      profile_esw_depth = Double.NaN; //! initial depth of extractable soil water distributed from the top down (mm)
-   private int         numvals_profile_esw_depth;         //! number of values returned for profile_esw_depth
+   public double      profile_esw_depth   //! initial depth of extractable soil water distributed from the top down (mm)
+      {
+      get{return _profile_esw_depth;}
+      set
+         {
+         //sv- the only reason to make this a settable property is if you want to change the initial water conditions before doing a Reset command.
+         numvals_profile_esw_depth = 1;
+         soilwat2_zero_default_variables();
+         _profile_esw_depth = value;
+         soilwat2_set_default();      
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }
+         }      
+      }
 
       //sv- depth of wet soil (filled to dul) method
+   private int         numvals_wet_soil_depth = 0;            //! number of values returned for wet_soil_depth
+   private double      _wet_soil_depth = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=10000.0)]
    [Units("(mm)")]   
-   private double      wet_soil_depth = Double.NaN;   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
-   private int         numvals_wet_soil_depth;            //! number of values returned for wet_soil_depth
+   private double      wet_soil_depth   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
+      {
+      get{return _wet_soil_depth;}
+      set
+         {
+         //sv- the only reason to make this a settable property is if you want to change the initial water conditions before doing a Reset command.
+         numvals_wet_soil_depth = 1;
+         soilwat2_zero_default_variables();
+         _wet_soil_depth = value;
+         soilwat2_set_default();      
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }
+         }  
+      }
 
    //sv- end of initial sw section
 
@@ -220,25 +308,48 @@ public class SoilWater : Instance
    [Units("(0-100)")]
    private double    diffus_slope = Double.NaN;     //! slope for diffusivity/soil water content relationship
 
+   private double   _cn2_bare = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=1.0, MaxVal=100.0)]
    [Units("(1-100)")]
-   private double    cn2_bare = Double.NaN;         //! curve number input used to calculate daily runoff
+   public double    cn2_bare         //! curve number input used to calculate daily runoff
+      {
+      get {return _cn2_bare;}
+      set {_cn2_bare = value;}
+      }
 
+   private double   _cn_red = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=100.0)]
    [Units("(0-100)")]
-   private double    cn_red = Double.NaN;           //! maximum reduction in cn2_bare due to cover
+   public double    cn_red           //! maximum reduction in cn2_bare due to cover
+      {
+      get {return _cn_red;}
+      set {_cn_red = value;}
+      }
 
+   private double    _cn_cov = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=1.0)]
    [Units("(0-1)")]
-   private double    cn_cov = Double.NaN;           //! cover at which cn_red occurs
+   public double    cn_cov           //! cover at which cn_red occurs
+      {
+      get {return _cn_cov;}
+      set {_cn_cov = value;}      
+      }
 
+   private double    _max_pond = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=1000.0)]
    [Units("()")]
-   private double    max_pond = Double.NaN;         //! maximum surface storage capacity of soil  //sv- used to store water from runoff on the surface.
+   public double    max_pond         //! maximum surface storage capacity of soil  //sv- used to store water from runoff on the surface.
+      {
+      get {return _max_pond;}
+      set {_max_pond = value;}
+      //* made settable to allow for erosion 'max_pond'
+      //*** dsg 280103  Added re-settable 'max-pond' for Shaun Lisson to simulate dam-break in rice cropping
+      }
+
 
    [Param(MinVal=0.0001, MaxVal=1.0)]
    [Units("(>0-1)")]
@@ -251,15 +362,25 @@ public class SoilWater : Instance
          //(see soilwat2_init() for which u and cona is used)
 
          //same evap for summer and winter
+   private double    _u = Double.NaN;
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=40.0)]
    [Units("(mm)")]
-   private double    u = Double.NaN;            //! upper limit of stage 1 soil evaporation (mm)
+   public double    u            //! upper limit of stage 1 soil evaporation (mm)
+      {
+      get {return _u;}
+      set {throw new Exception("setting U is done via GUI");}
+      }
 
+   private double    _cona = Double.NaN; 
    [Output]
    [Param(IsOptional=true, MinVal=0.0, MaxVal=10.0)]
    [Units("(>0-10)")]
-   private double    cona = Double.NaN;         //! stage 2 drying coefficient
+   public double    cona         //! stage 2 drying coefficient
+      {
+      get {return _cona;}
+      set {throw new Exception("setting cona is done via GUI");}
+      }
 
          //different evap for summer and winter
             //summer
@@ -333,7 +454,7 @@ public class SoilWater : Instance
    private double    esw;                       //! potential extractable sw in profile   //sv- local variable declared in soilwat2_send_my_variable()
 
    [Output] 
-   private double    cover_surface_runoff;     //! effective total cover (0-1)
+   private double    cover_surface_runoff;     //! effective total cover (0-1)   //residue cover + cover from any crops (tall or short)
 
    [Output] 
    private double    t;                        //! time after 2nd-stage soil evaporation begins (d)
@@ -376,13 +497,12 @@ public class SoilWater : Instance
    //It is always is an output because a water table can always build up. (See soilwat_water_table())
    //Sometimes it is an input when the user specifies a set command in a manager because they want to set the water_table at a specific height on a given day. (see SetWaterTable())
 
-   private double watertable = Double.NaN;  //! water table depth (depth below the ground surface of the first saturated layer)
-
+   private double _water_table = Double.NaN; 
    [Output]
    [Units("(mm)")] 
-   public double  water_table    
+   public double  water_table     //! water table depth (depth below the ground surface of the first saturated layer)
       {
-      get{ return watertable; }
+      get{ return _water_table; }
       set{ SetWaterTable(value); }
       }   
 
@@ -396,50 +516,262 @@ public class SoilWater : Instance
 
 #region Soil "Profile (layered)": (Constants & Starting Values from SIM file), and the Outputs 
 
+
+   //Has the soilwat_init() been done? If so let the fractional soil arrays (eg. sw, sat, dul etc) now allow "sets".
+   //It is the fractional soil arrays that are read in from the SIM file as [Param]'s.
+   //They are then used to initialise the equivalent "_dep" arrays in soilwat_int() (more specfically by soilwat2_soil_profile_param()).
+   //This causes a problem because the fractional arrays also use their _dep equivalent in their "set".
+   //(because it is the _dep arrays that are actually used by the model not the fractionals. The fractional arrays are just used for input and ouput, so just changing them and not the _dep array is pointless.) 
+   //If the set for the fraction array is called BEFORE the soilwat_init(), then this causes an error. 
+   //Which is exactly what happens at the start of the simulation when the [Param] tags get initialised. 
+   //They call the fractional arrays "set" which tries to use the _dep array which is uninitialised because soilwat_init() has not been called yet. 
+   //This flag is used to prevent in fractional arrays "gets" or "sets" the calling of any code with a _dep array in it before the soilwat_init() has been called. 
+
+   bool initDone = false;    
+                            
+                            
+                            
+
+
    //SIM file gets them from .APSIM file
 
     //Soilwat2Parameters   //sv- also from soilwat2_soil_profile_param()
 
-   [Param(IsOptional=true, MinVal=0, MaxVal=100)]
-   [Units("()")]
-   [Output]
-   private int         irrigation_layer = -1;      //! number of soil layer to which irrigation water is applied
 
+   private double[]    _dlayer;
    [Param(MinVal=0.0, MaxVal=10000.0)] 
    [Units("(mm)")]
    [Output]  
-   private double[]    dlayer;    //! thickness of soil layer (mm)
+   public double[]    dlayer    //! thickness of soil layer (mm)
+      {
+      get {return _dlayer;}
+      set 
+         { 
+         //* made settable to allow for erosion
+         _dlayer = value;
+         if (initDone)
+            {
+            int num_layers = au.count_of_real_vals(value, max_layer);
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               //If you change the depths of the layer then you need to modify the water "_dep" variables by the same amount. (they are in mm too)
+               //If you don't do this, you will have the same amount of water that is now in a shallower layer, 
+               //therefore you will have a different fraction equivalent variables, the ones without the "_dep" eg. sw, dul.  
+               double fract = mu.divide(value[layer], _dlayer[layer], 0.0);
+               _air_dry_dep[layer] = _air_dry_dep[layer] * fract;
+               _dul_dep[layer] = _dul_dep[layer] * fract;
+               _ll15_dep[layer] = _ll15_dep[layer] * fract;
+               _sat_dep[layer] = _sat_dep[layer] * fract;
+               _sw_dep[layer] = _sw_dep[layer] * fract;
+            
+               //_dlayer[layer] = value[layer];
+ 
+               soilwat2_check_profile(layer);
+               }
 
+            //resize all the arrays if they changed the number of layers
+            if (num_layers != _dlayer.Length)
+               {
+               Array.Resize(ref _air_dry_dep, num_layers);
+               Array.Resize(ref _dul_dep, num_layers);
+               Array.Resize(ref _ll15_dep, num_layers);
+               Array.Resize(ref _sat_dep, num_layers);
+               Array.Resize(ref _sw_dep, num_layers);
+               Array.Resize(ref _dlayer, num_layers);  
+               }
+
+            soilwat2_New_Profile_Event();
+            }
+         }
+      }
+
+
+   private double[]    _sat;        
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1)")]
    [Output]  
-   private double[]    sat;       //! saturated water content for layer  
+   public double[]    sat       //! saturated water content for layer  
+      {
+      get 
+         {
+         if (initDone)
+            {  
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for (int layer = au.si; layer <= au.ci(num_layers); layer++)
+               {
+               _sat[layer] = mu.divide(_sat_dep[layer], _dlayer[layer], 0.0);
+               }
+            }
+         return _sat;
+         }
+      set 
+         {
+         //* made settable to allow for erosion
+         _sat = value;       //This fractional value is used in soilwat_init() to initialise _sat_dep. That is the only place it is used. Everywhere else uses _sat_dep.
+         if (initDone)
+            {  
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               _sat_dep[layer] = value[layer] * _dlayer[layer];   //change sat_dep NOT sat. The sat variable is just for inputting and outputting and is immediately converted to sw_dep.
+               soilwat2_check_profile(layer);
+               }   
+            }      
+         }
+      }
 
 
+   private double[]    _dul;    
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1)")]
    [Output]  
-   private double[]    dul;       //! drained upper limit soil water content for each soil layer 
+   public double[]    dul       //! drained upper limit soil water content for each soil layer 
+      {
+      get 
+         {
+         //* made settable to allow for erosion
+         if (initDone)
+            {  
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for (int layer = au.si; layer <= au.ci(num_layers); layer++)
+               {
+               _dul[layer] = mu.divide(_dul_dep[layer], _dlayer[layer], 0.0);
+               }
+            }
+         return _dul;
+         }
+      set 
+         { 
+         //* made settable to allow for erosion
+         _dul = value;     //This fractional value is used in soilwat_init() to initialise _dul_dep. That is the only place it is used. Everywhere else uses _dul_dep. 
+         if (initDone)
+            {       
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               _dul_dep[layer] = value[layer] * _dlayer[layer];   //change dul_dep NOT dul. The dul variable is just for inputting and outputting and is immediately converted to sw_dep.
+               soilwat2_check_profile(layer);
+               }         
+            }
+         }
+      }
 
-
+   private int        numvals_sw = 0;                        //! number of values returned for sw 
+   private double[]    _sw;   
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1)")]
    [Output]  
-   private double[]    sw;        //! soil water content of layer
-   private int         numvals_sw;                        //! number of values returned for sw
+   public double[]    sw        //! soil water content of layer
+      {
+      get 
+         {
+         if (initDone)
+            {
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for (int layer = au.si; layer <= au.ci(num_layers); layer++)
+               {
+               _sw[layer] = mu.divide(_sw_dep[layer], _dlayer[layer], 0.0);
+               }
+            }
+          return _sw;
+          }
+      set 
+         {
+         _sw = value;        //This fractional value is used in soilwat_init() to initialise _sw_dep. That is the only place it is used. Everywhere else uses _sw_dep.
+         if (initDone)
+            {
+            int numvals_sw = value.Length;
+
+            double[] sw_dep_old;
+            double sw_dep_lyr_new, sw_dep_delta_sum;         
+
+            sw_dep_old = _sw_dep;
+            soilwat2_zero_default_variables();
+            sw_dep_delta_sum = 0.0;
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               sw_dep_lyr_new = value[layer] * _dlayer[layer];   //sw_dep = sw * dlayer
+               sw_dep_delta_sum = sw_dep_delta_sum + (sw_dep_lyr_new - sw_dep_old[layer]);   //accumulate the change in the entire soil profile.
+               _sw_dep[layer] = sw_dep_lyr_new;  //change sw_dep NOT sw. The sw variable is just for inputting and outputting and is immediately converted to sw_dep.    
+               soilwat2_check_profile(layer);
+               }
+         
+            soilwat2_ExternalMassFlow(sw_dep_delta_sum);     //tell the "System Balance" module (if there is one) that the user has changed the water by this amount.
+            }
+         }
+      }
 
 
+   private double[]    _ll15;    
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1)")]
    [Output]  
-   private double[]    ll15;      //! 15 bar lower limit of extractable soil water for each soil layer
+   public double[]    ll15      //! 15 bar lower limit of extractable soil water for each soil layer
+      {
+      get 
+         {
+         if (initDone)
+            {  
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for (int layer = au.si; layer <= au.ci(num_layers); layer++)
+               {
+               _ll15[layer] = mu.divide(_ll15_dep[layer], _dlayer[layer], 0.0);
+               }
+            }
+         return _ll15;
+         }
+      set 
+         {
+         //* made settable to allow for erosion
+         _ll15 = value;      //This fractional value is used in soilwat_init() to initialise _ll15_dep. That is the only place it is used. Everywhere else uses _ll15_dep.
+         if (initDone)
+            {    
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               _ll15_dep[layer] = value[layer] * _dlayer[layer];   //change ll15_dep NOT dul. The dll15 variable is just for inputting and outputting and is immediately converted to sw_dep.
+               soilwat2_check_profile(layer);
+               }
+            }         
+         }
+      }
 
 
+   private double[]    _air_dry;    
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1)")]
    [Output]  
-   private double[]    air_dry;   //! air dry soil water content
-
+   public double[]    air_dry   //! air dry soil water content
+      {
+      get 
+         {
+         if (initDone)
+            {  
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for (int layer = au.si; layer <= au.ci(num_layers); layer++)
+               {
+               _air_dry[layer] = mu.divide(_air_dry_dep[layer], _dlayer[layer], 0.0);
+               }
+            }
+         return _air_dry;
+         }
+      set 
+         { 
+         //* made settable to allow for erosion  
+         _air_dry = value;   //This fractional value is used in soilwat_init() to initialise _air_dry_dep. That is the only place it is used. Everywhere else uses _air_dry_dep.
+         if (initDone)
+            {    
+            int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+            for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+               {
+               _air_dry_dep[layer] = value[layer] * _dlayer[layer];   //change air_dry_dep NOT dul. The air_dry variable is just for inputting and outputting and is immediately converted to sw_dep.
+               soilwat2_check_profile(layer);
+               }    
+            }     
+         }
+      }
 
    [Param(MinVal=0.0, MaxVal=1.0)] 
    [Units("(0-1 /d)")]
@@ -484,25 +816,99 @@ public class SoilWater : Instance
 
                               //TODO: you have not done all the variable calculations from soilwat2_send_my_variable() yet. Need to recalculate sw from sw_dep before outputting it.
 */
+   private double[]    _sat_dep;
    [Output]
    [Units("(mm)")]
-   private double[]    sat_dep;   // sat * dlayer //see soilwat2_init() for initialisation
+   public double[]    sat_dep   // sat * dlayer //see soilwat2_init() for initialisation
+      {
+      get {return _sat_dep;}
+      set 
+         {
+         //* made settable to allow for erosion
+         _sat_dep = value;
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }         
+         }
+      }
 
+   private double[]    _dul_dep;
    [Output]
    [Units("(mm)")]
-   private double[]    dul_dep;   // dul * dlayer  //see soilwat2_init() for initialisation
+   public double[]    dul_dep   // dul * dlayer  //see soilwat2_init() for initialisation
+      {
+      get {return _dul_dep;}
+      set 
+         {
+         //* made settable to allow for erosion
+         _dul_dep = value;
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }         
+         }
+      }
 
+   private double[]    _sw_dep; 
    [Output]
    [Units("(mm)")]
-   private double[]    sw_dep;    // sw * dlayer //see soilwat2_init() for initialisation
+   public double[]    sw_dep    // sw * dlayer //see soilwat2_init() for initialisation
+      {   
+      get {return _sw_dep;}
+      set 
+         {
+         _sw_dep = value;
 
-   [Output]
-   [Units("(mm)")]
-   private double[]    ll15_dep;  // ll15 * dlayer //see soilwat2_init() for initialisation
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for (int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }
 
+         //TODO: Externaml Mass Flow event should be triggered just like for sw. Same should go for dlt_sw and dlt_sw_dep.
+         }
+      }
+
+
+   private double[]   _ll15_dep;
    [Output]
    [Units("(mm)")]
-   private double[]    air_dry_dep; // air_dry * dlayer //see soilwat2_init() for initialisation
+   public double[]    ll15_dep  // ll15 * dlayer //see soilwat2_init() for initialisation
+      {
+      get {return _ll15_dep;}
+      set 
+         {
+         //* made settable to allow for erosion
+         _ll15_dep = value;
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }         
+         }
+      }
+
+
+   private double[]   _air_dry_dep;
+   [Output]
+   [Units("(mm)")]
+   public double[]    air_dry_dep  // air_dry * dlayer //see soilwat2_init() for initialisation
+      {
+      get {return _air_dry_dep;}
+      set 
+         {
+         //* made settable to allow for erosion
+          _air_dry_dep = value;
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            soilwat2_check_profile(layer);
+            }         
+         }
+      }
 
    [Output] private double[]  sws;       //TODO: this appears to just be an output variable and is identical to sw. I think it should be removed.   //! temporary soil water array used in water_table calculation
 
@@ -567,8 +973,6 @@ public class SoilWater : Instance
    //soilwat2_on_new_solute event handler
 
 
-
-
    //Lateral Flow profile     //sv- also from Lateral_Send_my_variable()
 
    [Output]
@@ -589,7 +993,7 @@ public class SoilWater : Instance
       //Assign the solute Output variables for this module 
       //       taken from soilwat2_send_my_variable()
 
-      int num_layers = au.count_of_real_vals(dlayer, max_layer);
+      int num_layers = au.count_of_real_vals(_dlayer, max_layer);
       double[] solute_leach1D = new double[num_layers];
       double[] solute_flow1D = new double[num_layers];
 
@@ -638,7 +1042,7 @@ public class SoilWater : Instance
    private void soilwat2_send_my_variable()
       {
 
-       int num_layers = au.count_of_real_vals (dlayer, max_layer);
+       int num_layers = au.count_of_real_vals (_dlayer, max_layer);
 
       //taken from soilwat2_send_my_variable()
       //I had to do this here because the new .NET way of outputting variables using [Output] tag does not allow for a way to do processing (summations, etc) before sending.
@@ -649,12 +1053,12 @@ public class SoilWater : Instance
       esw = 0.0;
       for (int layer = au.si; layer <= au.ci(num_layers); layer++)
          {
-         esw = esw + mu.l_bound(sw_dep[layer] - ll15_dep[layer], 0.0);
-         sw[layer] = mu.divide(sw_dep[layer], dlayer[layer], 0.0);
-         ll15[layer] = mu.divide(ll15_dep[layer], dlayer[layer], 0.0);
-         dul[layer] = mu.divide(dul_dep[layer], dlayer[layer], 0.0);
-         sat[layer] = mu.divide(sat_dep[layer], dlayer[layer], 0.0);
-         air_dry[layer] = mu.divide(air_dry_dep[layer], dlayer[layer], 0.0);
+         esw = esw + mu.l_bound(_sw_dep[layer] - _ll15_dep[layer], 0.0);
+         //sw[layer] = mu.divide(_sw_dep[layer], _dlayer[layer], 0.0);
+         //ll15[layer] = mu.divide(_ll15_dep[layer], _dlayer[layer], 0.0);
+         //dul[layer] = mu.divide(_dul_dep[layer], _dlayer[layer], 0.0);
+         //sat[layer] = mu.divide(_sat_dep[layer], _dlayer[layer], 0.0);
+         //air_dry[layer] = mu.divide(_air_dry_dep[layer], _dlayer[layer], 0.0);
          //! --- Resultant water and solute flow output variables ---
          flow_water[layer] = flux[layer] - flow[layer];
          //for flow_ and leach_ solute variables see AssignSoluteFlowLeachOutputs() below this loop.  
@@ -667,10 +1071,94 @@ public class SoilWater : Instance
 #endregion
 
 
+#region Set My Variables (Let other modules change me) (these are sort of like a [Param]'s but after the start of the simulation)
 
-//INPUTS FROM OTHER MODULES
+   //These are the sets for ficticious variables that actually set other variables.
 
-#region Daily Inputs from other Modules
+   [Output]
+   [Units("(mm)")]
+   public double[] dlt_dlayer
+      {
+      set 
+         {      
+         int num_layers = au.count_of_real_vals(value, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            //If you change the depths of the layer then you need to modify the water "_dep" variables by the same amount. (they are in mm too)
+            //If you don't do this, you will have the same amount of water that is now in a shallower layer, 
+            //therefore you will have a different fraction equivalent variables, the ones without the "_dep" eg. sw, dul.  
+            double fract = mu.divide((_dlayer[layer] + value[layer]), _dlayer[layer], 0.0);
+            _air_dry_dep[layer] = _air_dry_dep[layer] * fract;
+            _dul_dep[layer] = _dul_dep[layer] * fract;
+            _ll15_dep[layer] = _ll15_dep[layer] * fract;
+            _sat_dep[layer] = _sat_dep[layer] * fract;
+            _sw_dep[layer] = _sw_dep[layer] * fract;
+            
+            _dlayer[layer] = _dlayer[layer] + value[layer];
+ 
+            soilwat2_check_profile(layer);
+            }
+
+         //resize all the arrays if they changed the number of layers
+         if (num_layers != _dlayer.Length)
+            {
+            Array.Resize(ref _air_dry_dep, num_layers);
+            Array.Resize(ref _dul_dep, num_layers);
+            Array.Resize(ref _ll15_dep, num_layers);
+            Array.Resize(ref _sat_dep, num_layers);
+            Array.Resize(ref _sw_dep, num_layers);
+            Array.Resize(ref _dlayer, num_layers);  
+            }  
+
+         soilwat2_New_Profile_Event();
+         }
+      }
+
+   [Output]
+   [Units("(mm)")]
+   public double[] dlt_sw
+      {
+      set   
+         {
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            //sw_dep = sw * dlayer
+            sw_dep[layer] = sw_dep[layer] + (value[layer] * _dlayer[layer]);      //change sw_dep NOT sw. The sw variable is just for inputting and outputting and is immediately converted to sw_dep.
+            soilwat2_check_profile(layer);
+            }   
+         }
+      }
+
+   [Output]
+   [Units("(mm)")]
+   public double[] dlt_sw_dep
+      {
+      set   
+         {
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         for(int layer=au.si; layer<=au.ci(num_layers); layer++)
+            {
+            sw_dep[layer] = sw_dep[layer] + value[layer];      
+            soilwat2_check_profile(layer);
+            }   
+         }
+      }
+
+
+   private void soilwat2_set_my_variable()
+      {
+    
+      }
+
+#endregion
+
+
+
+
+//DAILY INPUTS FROM OTHER MODULES
+
+#region [INPUTS]
 
 
 
@@ -903,17 +1391,6 @@ public class SoilWater : Instance
 #endregion 
 
 
-#region Set My Variables (Let other modules change me) (this is sort of like input)
-
-
-   private void soilwat2_set_my_variable()
-      {
-
-
-      }
-
-#endregion
-
 
 
 
@@ -939,7 +1416,7 @@ public class SoilWater : Instance
       //if there are solutes in this simulation.
       if (num_solutes > 0)
          {
-         int num_layers = au.count_of_real_vals(dlayer, max_layer); //dlt_solute.GetLength(1);
+         int num_layers = au.count_of_real_vals(_dlayer, max_layer); //dlt_solute.GetLength(1);
          double[] temp_dlt_solute_double = new double[num_layers];
          float[] temp_dlt_solute = new float[num_layers]; 
 
@@ -1064,14 +1541,14 @@ public class SoilWater : Instance
    private double      sumeos_last;    //! sumeos before inf reset
    //r double eos;
    //r double[] cn2_new;
-   //r double[] air_dry_dep;
+   //r double[] _air_dry_dep;
    //r double[] bd[];
-   //r double[] dul_dep;
-   //r double[] ll15_dep;
-   //r double[] sat_dep;
+   //r double[] _dul_dep;
+   //r double[] _ll15_dep;
+   //r double[] _sat_dep;
    //r double[] flow;
    //r double[] flux;
-   //r double[] sw_dep;
+   //r double[] _sw_dep;
    private double[]    es_layers = new double[max_layer];     //! actual soil evaporation (mm)
 
 
@@ -1124,18 +1601,18 @@ public class SoilWater : Instance
       {
       
       //need this for arrays below.
-      int num_layers = dlayer.Length;
+      int num_layers = _dlayer.Length;
 
 
       //INSTANTIATE THE ARRAYS
       //----------------------      
 
       //profile outputs
-      sat_dep     = new double[num_layers];
-      dul_dep     = new double[num_layers];
-      sw_dep      = new double[num_layers];
-      ll15_dep    = new double[num_layers];
-      air_dry_dep = new double[num_layers];
+      _sat_dep     = new double[num_layers];
+      _dul_dep     = new double[num_layers];
+      _sw_dep      = new double[num_layers];
+      _ll15_dep    = new double[num_layers];
+      _air_dry_dep = new double[num_layers];
       sws         = new double[num_layers];
       flow        = new double[num_layers];
       flux        = new double[num_layers];
@@ -1164,11 +1641,11 @@ public class SoilWater : Instance
       //---------------
 
       //profile outputs
-      au.ZeroArray(ref sat_dep);
-      au.ZeroArray(ref dul_dep);
-      au.ZeroArray(ref sw_dep);
-      au.ZeroArray(ref ll15_dep);
-      au.ZeroArray(ref air_dry_dep);
+      au.ZeroArray(ref _sat_dep);
+      au.ZeroArray(ref _dul_dep);
+      au.ZeroArray(ref _sw_dep);
+      au.ZeroArray(ref _ll15_dep);
+      au.ZeroArray(ref _air_dry_dep);
       au.ZeroArray(ref sws);
       au.ZeroArray(ref flow);
       au.ZeroArray(ref flux);
@@ -1218,11 +1695,11 @@ public class SoilWater : Instance
          eo = 0.0;                               //! potential evapotranspiration (mm)
          eos = 0.0;                              //! pot sevap after modification for green cover & residue wt
          cn2_new = 0.0;                          //! New cn2  after modification for crop cover & residue cover
-         au.ZeroArray(ref air_dry_dep);              //! air dry soil water content (mm water)
+         au.ZeroArray(ref _air_dry_dep);              //! air dry soil water content (mm water)
          au.ZeroArray(ref bd);                       //! moist bulk density of soil (g/cm^3)
-         au.ZeroArray(ref dul_dep);                  //! drained upper limit soil water content for each soil layer (mm water)
-         au.ZeroArray(ref ll15_dep);                 //! 15 bar lower limit of extractable soil water for each soil layer(mm water)
-         au.ZeroArray(ref sat_dep);                  //! saturated water content for layer l (mm water)
+         au.ZeroArray(ref _dul_dep);                  //! drained upper limit soil water content for each soil layer (mm water)
+         au.ZeroArray(ref _ll15_dep);                 //! 15 bar lower limit of extractable soil water for each soil layer(mm water)
+         au.ZeroArray(ref _sat_dep);                  //! saturated water content for layer l (mm water)
          au.ZeroArray(ref flow);                     //! depth of water moving from layer l+1
                                                       //! into layer l because of unsaturated
                                                       //! flow; positive value indicates upward
@@ -1230,7 +1707,7 @@ public class SoilWater : Instance
                                                       //! indicates downward movement (mm) out of layer l
          au.ZeroArray(ref flux);                     //! initially, water moving downward into layer l (mm), 
                                                       //then water moving downward out of layer l (mm)
-         au.ZeroArray(ref sw_dep);                   //! soil water content of layer l (mm)
+         au.ZeroArray(ref _sw_dep);                   //! soil water content of layer l (mm)
          au.ZeroArray(ref es_layers);                //! actual soil evaporation (mm)
 
          drain = 0.0;                            //! drainage rate from bottom layer (cm/d)
@@ -1267,33 +1744,33 @@ public class SoilWater : Instance
          sumeos = 0.0;                           //! summed eos
          sumeos_last = 0.0;                      //! sumeos before inf reset
          eo_system = 0.0;                        //! eo from somewhere else in the system
-         eo_source = "not_read";                         //! system variable name of external eo source
+         _eo_source = "not_read";                         //! system variable name of external eo source
 
          pond  =  0.0;                           //! surface ponding depth (mm)
-         watertable = 0.0;                      //! water table depth (mm)
+         _water_table = 0.0;                      //! water table depth (mm)
          au.ZeroArray(ref sws);                      //! soil water (mm/layer)
          pond_evap = 0.0;                        //! evaporation from the pond surface (mm)
          real_eo = 0.0;                          //! eo determined before any ponded water is evaporated (mm)
 //* ====================================================================
 //* Parameters
          irrigation_layer = 0;                   //! trickle irrigation input layer
-         au.ZeroArray(ref dlayer);                   //! thickness of soil layer i (mm)
+         au.ZeroArray(ref _dlayer);                   //! thickness of soil layer i (mm)
          au.ZeroArray(ref swcon);                    //! soil water conductivity constant (1/d)
                                                       //! ie day**-1 for each soil layer
-         cn2_bare = 0.0;                         //! curve number input used to calculate daily g_runoff
-         cn_cov = 0.0;                           //! cover at which c_cn_red occurs
-         cn_red = 0.0;                           //! maximum reduction in p_cn2_bare due to cover
-         cona = 0.0;                             //! stage 2 drying coefficient
+         _cn2_bare = 0.0;                         //! curve number input used to calculate daily g_runoff
+         _cn_cov = 0.0;                           //! cover at which c_cn_red occurs
+         _cn_red = 0.0;                           //! maximum reduction in p_cn2_bare due to cover
+         _cona = 0.0;                             //! stage 2 drying coefficient
          diffus_const = 0.0;                     //! diffusivity constant for soil testure
          diffus_slope = 0.0;                     //! slope for diffusivity/soil water content relationship
          salb = 0.0;                             //! bare soil albedo (unitless)
-         u = 0.0;                                //! upper limit of stage 1 soil evaporation (mm)
-         insoil = 0.0;                           //! switch describing initial soil water distributed evenly
-         profile_esw_depth = 0.0;                //! initial depth of esw in profile filled top down with soil water (mm)
-         wet_soil_depth = 0.0;                   //! initial depth profile filled top down with soil water (mm)
-         profile_fesw = 0.0;                     //! initial fraction of profile esw filled top down with soil water (mm)
+         _u = 0.0;                                //! upper limit of stage 1 soil evaporation (mm)
+         _insoil = 0.0;                           //! switch describing initial soil water distributed evenly
+         _profile_esw_depth = 0.0;                //! initial depth of esw in profile filled top down with soil water (mm)
+         _wet_soil_depth = 0.0;                   //! initial depth profile filled top down with soil water (mm)
+         _profile_fesw = 0.0;                     //! initial fraction of profile esw filled top down with soil water (mm)
 
-         max_pond = 0.0;                         //! maximum allowable surface storage (ponding) mm
+         _max_pond = 0.0;                         //! maximum allowable surface storage (ponding) mm
          au.ZeroArray(ref mwcon);                    //! layer permeability factor (zero or one)
          au.ZeroArray(ref solute_conc_rain);         //! solute concentrations in rainfall (optional parameter)
 //* ====================================================================
@@ -1344,11 +1821,11 @@ public class SoilWater : Instance
       numvals_wet_soil_depth = 0;
       numvals_profile_fesw = 0;
 
-      insoil = 0.0;
-      au.ZeroArray(ref sw_dep);
-      profile_esw_depth = 0.0;
-      wet_soil_depth = 0.0;
-      profile_fesw = 0.0;
+      _insoil = 0.0;
+      au.ZeroArray(ref _sw_dep);
+      _profile_esw_depth = 0.0;
+      _wet_soil_depth = 0.0;
+      _profile_fesw = 0.0;
       }
 
    
@@ -1405,8 +1882,11 @@ public class SoilWater : Instance
 #region Set Initial SW values
 
 
-/*
+
    //sv- DEAN SAYS THAT THE GUI ALWAYS SPECIFIES A SET OF SW VALUES. THEREFORE YOU DON'T NEED ANY OF THIS CODE TO SET DEFAULTS ANYMORE. ALL OF THIS IS DONE IN THE GUI NOW AND YOU JUST GET GIVE THE SW VALUES FOR EACH LAYER. SO DON'T NEED THIS ANYMORE.
+   //Had to uncomment this because it is called in the "set" for the "insoil" property. I don't think any simulation actually does a set on "insoil" though
+   //so perhaps I can comment it out and turn "insoil" just into a normal variable that is a [Param].
+   //TODO: see if I can comment out the soilwat2_set_default() as per the comments above.
 
    private void soilwat2_set_default()
       {
@@ -1551,14 +2031,14 @@ public class SoilWater : Instance
       if (numvals_insoil > 0)
          {
          //! insoil parameter set - distibute evenly
-         au.ZeroArray(ref sw_dep);
-         num_layers = au.count_of_real_vals(dlayer, max_layer);
+         au.ZeroArray(ref _sw_dep);
+         num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
          for (layer=au.si; layer<=au.ci(num_layers); layer++)
             {
             //! set default according to insoil fraction of plant-
             //! available water
-            sw_dep[layer] = ll15_dep[layer] + (dul_dep[layer] - ll15_dep[layer]) * insoil;
+            _sw_dep[layer] = _ll15_dep[layer] + (_dul_dep[layer] - _ll15_dep[layer]) * _insoil;
 
             soilwat2_layer_check(layer);
             soilwat2_check_profile(layer);
@@ -1569,26 +2049,26 @@ public class SoilWater : Instance
       else if (numvals_wet_soil_depth > 0)
          {         
          //! wet_soil_depth parameter set - distribute top down
-         au.ZeroArray(ref sw_dep);
-         num_layers = au.count_of_real_vals(dlayer, max_layer);
-         au.CopyTo(ref sw_dep, ll15_dep, num_layers);
+         au.ZeroArray(ref _sw_dep);
+         num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         au.CopyTo(ref _sw_dep, _ll15_dep, num_layers);
       
-         num_layers_filled = au.find_layer_no(wet_soil_depth, dlayer, num_layers);
+         num_layers_filled = au.find_layer_no(_wet_soil_depth, _dlayer, num_layers);
 
          for(layer=au.si;layer<=au.ci(num_layers_filled); layer++)
             {
             //! set default according to wet_soil_depth of plant available water
-            sw_dep[layer] = dul_dep[layer];
+            _sw_dep[layer] = _dul_dep[layer];
             }
 
          //! adjust last layer
-         sw_dep[au.ci(num_layers_filled)] = ll15_dep[au.ci(num_layers_filled)]
-                                       + (dul_dep[au.ci(num_layers_filled)] - ll15_dep[au.ci(num_layers_filled)])
-                                       * ApsimUtil.root_proportion(au.ci(num_layers_filled), dlayer, wet_soil_depth);
+         _sw_dep[au.ci(num_layers_filled)] = _ll15_dep[au.ci(num_layers_filled)]
+                                       + (_dul_dep[au.ci(num_layers_filled)] - _ll15_dep[au.ci(num_layers_filled)])
+                                       * ApsimUtil.root_proportion(au.ci(num_layers_filled), _dlayer, _wet_soil_depth);
 
-         if ((au.SumArray(dlayer)+ precision_sw_dep) < wet_soil_depth)
+         if ((au.SumArray(_dlayer)+ precision_sw_dep) < _wet_soil_depth)
             {
-            line = "Can't fit wet soil depth of " + wet_soil_depth + " into profile depth of " + au.SumArray(dlayer);
+            line = "Can't fit wet soil depth of " + _wet_soil_depth + " into profile depth of " + au.SumArray(_dlayer);
             throw new Exception(line);
             }
          else
@@ -1601,18 +2081,18 @@ public class SoilWater : Instance
       else if (numvals_profile_fesw > 0)
          {
          //! profile_fesw parameter set - distribute top down
-         au.ZeroArray(ref sw_dep);
-         num_layers = au.count_of_real_vals(dlayer, max_layer);
-         au.CopyTo(ref sw_dep, ll15_dep, num_layers);
-         profile_esw_depth_local = au.SumArray(au.Subtract(dul_dep, ll15_dep)) * profile_fesw;
+         au.ZeroArray(ref _sw_dep);
+         num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         au.CopyTo(ref _sw_dep, _ll15_dep, num_layers);
+         profile_esw_depth_local = au.SumArray(au.Subtract(_dul_dep, _ll15_dep)) * _profile_fesw;
          esw_remaining = profile_esw_depth_local;
 
          for (layer=au.si; layer<=au.ci(num_layers); layer++)
             {
             //! set default according to profile_esw_depth of plant available water
-            esw_avail =  mu.bound(esw_remaining, 0.0, (dul_dep[layer] - ll15_dep[layer]));
+            esw_avail =  mu.bound(esw_remaining, 0.0, (_dul_dep[layer] - _ll15_dep[layer]));
 
-            sw_dep[layer] = ll15_dep[layer] + esw_avail;
+            _sw_dep[layer] = _ll15_dep[layer] + esw_avail;
             esw_remaining = esw_remaining - esw_avail;
             }
 
@@ -1632,26 +2112,26 @@ public class SoilWater : Instance
       else if (numvals_profile_esw_depth > 0)
          {
          //! profile_esw_depth parameter set - distribute top down
-         au.ZeroArray(ref sw_dep);
-         num_layers = au.count_of_real_vals(dlayer, max_layer);
-         au.CopyTo(ref sw_dep, ll15_dep, num_layers);
+         au.ZeroArray(ref _sw_dep);
+         num_layers = au.count_of_real_vals(_dlayer, max_layer);
+         au.CopyTo(ref _sw_dep, _ll15_dep, num_layers);
 
-         esw_remaining = profile_esw_depth;
+         esw_remaining = _profile_esw_depth;
 
          for(layer=au.si; layer<=au.ci(num_layers); layer++)
             {
             //! set default according to profile_esw_depth of plant available water
-            esw_avail =  mu.bound(esw_remaining, 0.0, (dul_dep[layer] - ll15_dep[layer]));
+            esw_avail =  mu.bound(esw_remaining, 0.0, (_dul_dep[layer] - _ll15_dep[layer]));
 
-            sw_dep[layer] = ll15_dep[layer] + esw_avail;
+            _sw_dep[layer] = _ll15_dep[layer] + esw_avail;
             esw_remaining = esw_remaining - esw_avail;
             }
 
          if (esw_remaining > precision_sw_dep)
             {
             //! we have too much water to distirbute - won't fit in profile
-            profile_esw_depth_local = au.SumArray(au.Subtract(dul_dep, ll15_dep));
-            line = "Can't fit profile esw of " + profile_esw_depth + " into profile esw depth of " + profile_esw_depth_local;
+            profile_esw_depth_local = au.SumArray(au.Subtract(_dul_dep, _ll15_dep));
+            line = "Can't fit profile esw of " + _profile_esw_depth + " into profile esw depth of " + profile_esw_depth_local;
             throw new Exception(line);
             }
          else
@@ -1674,7 +2154,7 @@ public class SoilWater : Instance
 
    
       }
-*/
+
 
    //All the following function are used ONLY in soilwat2_init() no where else.
 
@@ -1760,25 +2240,25 @@ public class SoilWater : Instance
       //sv- insoil is used for two different initialisation of sw methods:
       //sv- User Specified Soil Water Conent method is used when insoil > 1 
       //sv- FASW evenly distributed method is used when  0 <= insoil <= 1 
-      if (Double.IsNaN(insoil))
+      if (Double.IsNaN(_insoil))
          numvals_insoil = 0;
       else
          numvals_insoil = 1;
 
       //sv- FASW filled from top method method
-      if (Double.IsNaN(profile_fesw))
+      if (Double.IsNaN(_profile_fesw))
          numvals_profile_fesw = 0;
       else
          numvals_profile_fesw = 1;
 
       //sv- depth of available sw from top of profile method
-      if (Double.IsNaN(profile_esw_depth))
+      if (Double.IsNaN(_profile_esw_depth))
          numvals_profile_esw_depth = 0;
       else
          numvals_profile_esw_depth = 1;
 
       //sv- depth of wet soil (filled to dul) method
-      if (Double.IsNaN(wet_soil_depth))
+      if (Double.IsNaN(_wet_soil_depth))
          numvals_wet_soil_depth = 0;
       else
          numvals_wet_soil_depth = 1;
@@ -1791,9 +2271,9 @@ public class SoilWater : Instance
 
 
       //sv- the following test is removed from soilwat2_soil_property_param()
-      if (cn_red >= cn2_bare)
+      if (_cn_red >= _cn2_bare)
          {
-         cn_red = cn2_bare - 0.00009;
+         _cn_red = _cn2_bare - 0.00009;
          }
 
 
@@ -1807,7 +2287,7 @@ public class SoilWater : Instance
 
       //u - can either use (one value for summer and winter) or two different values.
       //    (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-      if (Double.IsNaN(u))
+      if (Double.IsNaN(_u))
          {
          if ( (Double.IsNaN(summeru) || (Double.IsNaN(winteru))) )
             {
@@ -1816,18 +2296,18 @@ public class SoilWater : Instance
          //if they entered two values but they made them the same
          if (summeru == winteru)
             {
-            u = summeru;      //u is now no longer null. As if the user had entered a value for u.
+            _u = summeru;      //u is now no longer null. As if the user had entered a value for u.
             }
          }
       else
          {
-         summeru = u;
-         winteru = u;
+         summeru = _u;
+         winteru = _u;
          }
 
       //cona - can either use (one value for summer and winter) or two different values.
       //       (must also take into consideration where they enter two values [one for summer and one for winter] but they make them both the same)
-      if (Double.IsNaN(cona))
+      if (Double.IsNaN(_cona))
          {
          if ((Double.IsNaN(summercona)) || (Double.IsNaN(wintercona)))
             {
@@ -1836,13 +2316,13 @@ public class SoilWater : Instance
          //if they entered two values but they made them the same.
          if (summercona == wintercona)
             {
-            cona = summercona;   //cona is now no longer null. As if the user had entered a value for cona.
+            _cona = summercona;   //cona is now no longer null. As if the user had entered a value for cona.
             }
          }
       else
          {
-         summercona = cona;
-         wintercona = cona;
+         summercona = _cona;
+         wintercona = _cona;
          }
 
       //summer and winter default dates.
@@ -1859,13 +2339,13 @@ public class SoilWater : Instance
       //assign u and cona to either sumer or winter values
       if (ApsimUtil.date_within(winterdate, summerdate, today))
          {
-         cona = wintercona;
-         u = winteru;
+         _cona = wintercona;
+         _u = winteru;
          }
       else
          {
-         cona = summercona;
-         u = summeru;
+         _cona = summercona;
+         _u = summeru;
          }
 
 
@@ -1917,8 +2397,8 @@ public class SoilWater : Instance
       //c dsg - if there is NO impermeable layer specified, then mwcon must be set to '1' in all layers by default.
       if (mwcon == null)
          {
-         mwcon = new double[dlayer.Length];
-         au.fill_real_array(ref mwcon, 1.0, dlayer.Length);
+         mwcon = new double[_dlayer.Length];
+         au.fill_real_array(ref mwcon, 1.0, _dlayer.Length);
          }
       else
          {
@@ -1930,7 +2410,7 @@ public class SoilWater : Instance
       if (ks == null)
          {
          using_ks = false;
-         ks = new double[dlayer.Length];
+         ks = new double[_dlayer.Length];
          au.ZeroArray(ref ks);
          }
       else
@@ -1943,13 +2423,13 @@ public class SoilWater : Instance
 
 
       //sv- the following initialisation is removed from soilwat2_soil_profile_param()
-      for (int i = au.si; i <= au.ci(dlayer.Length); i++)
+      for (int i = au.si; i <= au.ci(_dlayer.Length); i++)
          {
-         sat_dep[i] = sat[i] * dlayer[i];
-         dul_dep[i] = dul[i] * dlayer[i];
-         sw_dep[i] = sw[i] * dlayer[i];
-         ll15_dep[i] = ll15[i] * dlayer[i];
-         air_dry_dep[i] = air_dry[i] * dlayer[i];
+         _sat_dep[i] = sat[i] * _dlayer[i];
+         _dul_dep[i] = dul[i] * _dlayer[i];
+         _sw_dep[i] = sw[i] * _dlayer[i];
+         _ll15_dep[i] = ll15[i] * _dlayer[i];
+         _air_dry_dep[i] = air_dry[i] * _dlayer[i];
          }
 
 
@@ -1985,7 +2465,7 @@ public class SoilWater : Instance
       ////sv- the following initialisation is removed from soilwat2_soil_profile_param()
       ////sv- if insoil is specified then sort out which of the two methods you are using (user specified sw OR FASW evenly distributed) 
       ////sv- if the user specified an insoil and they specified FASW evenly distributed method (ie. 0>=insoil<=1) not the user specified sw method.
-      //if ((numvals_insoil > 0) && ((insoil >= 0.0) && (insoil <= 1.0)))
+      //if ((numvals_insoil > 0) && ((_insoil >= 0.0) && (_insoil <= 1.0)))
       //   {
       //   //sv- warn the user that their user specified sw is beign overridden.
       //   Console.WriteLine("Soil water in parameter file is being overridden by" + Environment.NewLine + "the insoil parameter which is between 0 and 1");
@@ -2005,7 +2485,7 @@ public class SoilWater : Instance
 
 
       //check each layer of the init sw profile
-      for (int layer = au.si; layer <= au.ci(dlayer.Length); layer++)
+      for (int layer = au.si; layer <= au.ci(_dlayer.Length); layer++)
          {
          soilwat2_check_profile(layer);
          }
@@ -2039,7 +2519,7 @@ public class SoilWater : Instance
          double swr_top;       //! stage 2 evaporation occurs ratio available sw potentially available sw in top layer
 
          //! set up evaporation stage
-         swr_top = mu.divide((sw_dep[au.si] - ll15[au.si]), (dul_dep[au.si] - ll15_dep[au.si]), 0.0);
+         swr_top = mu.divide((_sw_dep[au.si] - ll15[au.si]), (_dul_dep[au.si] - _ll15_dep[au.si]), 0.0);
          swr_top = mu.bound(swr_top, 0.0, 1.0);
 
          //! are we in stage1 or stage2 evap?
@@ -2047,8 +2527,8 @@ public class SoilWater : Instance
             {
             //! stage 2 evap
             sumes2 = sumes2_max - (sumes2_max * mu.divide(swr_top, sw_top_crit, 0.0));
-            sumes1 = u;
-            t = Math.Pow((mu.divide(sumes2, cona, 0.0)), 2);
+            sumes1 = _u;
+            t = Math.Pow((mu.divide(sumes2, _cona, 0.0)), 2);
             }
          else
             {
@@ -2095,7 +2575,7 @@ public class SoilWater : Instance
 
       if (klat == null)
          {
-         klat = new double[dlayer.Length];
+         klat = new double[_dlayer.Length];
          au.ZeroArray(ref klat);
          }
 
@@ -2137,7 +2617,7 @@ public class SoilWater : Instance
       string error_messg;
       int    num_layers;
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       if (layer < min_layer) 
          {
@@ -2164,7 +2644,7 @@ public class SoilWater : Instance
 
       //*+  Notes
       //*           reports an error if
-      //*           - g%ll15_dep, dul_dep, and sat_dep are not in ascending order
+      //*           - g%ll15_dep, _dul_dep, and _sat_dep are not in ascending order
       //*           - ll15 is below min_sw
       //*           - sat is above max_sw
       //*           - sw > sat or sw < min_sw      
@@ -2191,11 +2671,11 @@ public class SoilWater : Instance
 
       max_sw_local = 1.0 - mu.divide(bd[layer], specific_bd, 0.0);  //ie. Total Porosity
 
-      sw_local = mu.divide(sw_dep[layer], dlayer[layer], 0.0);
-      sat_local = mu.divide(sat_dep[layer], dlayer[layer], 0.0);
-      dul_local = mu.divide(dul_dep[layer], dlayer[layer], 0.0);
-      ll15_local = mu.divide(ll15_dep[layer], dlayer[layer], 0.0);
-      air_dry_local = mu.divide(air_dry_dep[layer], dlayer[layer], 0.0);
+      sw_local = mu.divide(_sw_dep[layer], _dlayer[layer], 0.0);
+      sat_local = mu.divide(_sat_dep[layer], _dlayer[layer], 0.0);
+      dul_local = mu.divide(_dul_dep[layer], _dlayer[layer], 0.0);
+      ll15_local = mu.divide(_ll15_dep[layer], _dlayer[layer], 0.0);
+      air_dry_local = mu.divide(_air_dry_dep[layer], _dlayer[layer], 0.0);
 
       //TODO: where do these error_margins come from?
       sw_errmargin = mu.error_margin(sw_local);
@@ -2370,25 +2850,27 @@ public class SoilWater : Instance
       double   s;                                  //! potential max retention (surface ponding + infiltration)
       double   xpb;                                //! intermedite variable for deriving runof
       double[] runoff_wf =  new double[max_layer]; //! weighting factor for depth for each la
+      double   dul_fraction;                       // if between (0-1) not above dul, if (1-infinity) above dul 
       double   tillage_reduction;                  //! reduction in cn due to tillage
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       soilwat2_runoff_depth_factor(ref runoff_wf);
       
       cnpd = 0.0;
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
          {
-         cnpd = cnpd + mu.divide((sw_dep[layer] - ll15_dep[layer]), (dul_dep[layer] - ll15_dep[layer]), 0.0) * runoff_wf[layer];
+         dul_fraction = mu.divide((_sw_dep[layer] - _ll15_dep[layer]), (_dul_dep[layer] - _ll15_dep[layer]), 0.0);
+         cnpd = cnpd + dul_fraction * runoff_wf[layer];
          }
       cnpd = mu.bound(cnpd, 0.0,1.0);
 
 
       //reduce cn2 for the day due to the cover effect
       //nb. cover_surface_runoff should really be a parameter to this function
-      cover_fract = mu.divide(cover_surface_runoff, cn_cov, 0.0);
+      cover_fract = mu.divide(cover_surface_runoff, _cn_cov, 0.0);
       cover_fract = mu.bound(cover_fract, 0.0, 1.0);
-      cn2_new = cn2_bare - (cn_red * cover_fract);
+      cn2_new = _cn2_bare - (_cn_red * cover_fract);
 
 
       //tillage reduction on cn
@@ -2504,18 +2986,18 @@ public class SoilWater : Instance
       xx = 0.0;
       cum_depth = 0.0;
       wf_tot = 0.0;
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       //! check if hydro_effective_depth applies for eroded profile.
-      profile_depth = au.sum_real_array(dlayer, num_layers);
+      profile_depth = au.sum_real_array(_dlayer, num_layers);
       hydrol_effective_depth_local = Math.Min(hydrol_effective_depth, profile_depth);
 
       scale_fact = 1.0/(1.0 - Math.Exp(-4.16));
-      hydrol_effective_layer = au.find_layer_no(hydrol_effective_depth_local, dlayer, num_layers);
+      hydrol_effective_layer = au.find_layer_no(hydrol_effective_depth_local, _dlayer, num_layers);
 
       for (layer=au.si; layer<=au.ci(hydrol_effective_layer); layer++)
          {
-         cum_depth = cum_depth + dlayer[layer];
+         cum_depth = cum_depth + _dlayer[layer];
          cum_depth = mu.u_bound(cum_depth, hydrol_effective_depth_local);
          
          //! assume water content to c%hydrol_effective_depth affects runoff
@@ -2646,7 +3128,7 @@ public class SoilWater : Instance
       //*       But, for now we use either priestly-taylor, or whatever
       //*       the user specified.
       
-      if (eo_source == "not_read")
+      if (_eo_source == "not_read")
          {
          soilwat2_priestly_taylor(ref Eo);    //! eo from priestly taylor
          }
@@ -2757,7 +3239,7 @@ public class SoilWater : Instance
       //2. get available soil water for evaporation
       //   ! NB. ritchie + b&s evaporate from layer 1, but rickert
       //   !     can evaporate from L1 + L2.
-      asw1 = sw_dep[au.si] - air_dry_dep[au.si];
+      asw1 = _sw_dep[au.si] - _air_dry_dep[au.si];
       asw1 = mu.bound(asw1, 0.0, eo);
 
       //3. get actual soil water evaporation
@@ -2892,16 +3374,16 @@ public class SoilWater : Instance
 
       if (ApsimUtil.date_within(winterdate, summerdate, today))
          {
-         cona = wintercona;
-         u = winteru;
+         _cona = wintercona;
+         _u = winteru;
          }
       else
 	      {
-         cona = summercona;
-         u = summeru;
+         _cona = summercona;
+         _u = summeru;
 	      }
 
-      sumes1_max = u;
+      sumes1_max = _u;
       w_inf = infiltration;
 
 
@@ -2916,7 +3398,7 @@ public class SoilWater : Instance
          sumes1 = Math.Max(0.0, sumes1 - w_inf);
 
          //! update t (incase sumes2 changed)
-         t = Math.Pow((mu.divide(sumes2, cona, 0.0)), 2);     
+         t = Math.Pow((mu.divide(sumes2, _cona, 0.0)), 2);     
          }
       else
 	      {
@@ -2947,7 +3429,7 @@ public class SoilWater : Instance
             if (sumes2 > 0.0)
                {
                t = t + 1.0;
-               esoil2 = Math.Min((Eos - esoil1), (cona * Math.Pow(t, 0.5) - sumes2));
+               esoil2 = Math.Min((Eos - esoil1), (_cona * Math.Pow(t, 0.5) - sumes2));
                }
             else
 	            {
@@ -2967,7 +3449,7 @@ public class SoilWater : Instance
          //!  update 1st and 2nd stage soil evaporation.     
          sumes1 = sumes1 + esoil1;
          sumes2 = sumes2 + esoil2;
-         t = Math.Pow((mu.divide(sumes2, cona, 0.0)), 2);
+         t = Math.Pow((mu.divide(sumes2, _cona, 0.0)), 2);
          }
       else
 	      {
@@ -2975,7 +3457,7 @@ public class SoilWater : Instance
          esoil1 = 0.0;
 
          t = t + 1.0;
-         esoil2 = Math.Min(Eos, (cona * Math.Pow(t, 0.5) - sumes2)); 
+         esoil2 = Math.Min(Eos, (_cona * Math.Pow(t, 0.5) - sumes2)); 
 
          //! check with lower limit of evaporative sw.
          esoil2 = Math.Min(esoil2, Eos_max);
@@ -3053,23 +3535,23 @@ public class SoilWater : Instance
                        //! calculate drainage and water
                        //! redistribution.
 
-             num_layers = au.count_of_real_vals(dlayer, max_layer);
+             num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
              for (layer=au.si; layer<=au.ci(num_layers); layer++) 
                {
                     //! get total water concentration in layer
 
-                w_tot = sw_dep[layer] + w_in;
+                w_tot = _sw_dep[layer] + w_in;
 
                     //! get excess water above saturation & then water left
                     //! to drain between sat and dul.  Only this water is
                     //! subject to swcon. The excess is not - treated as a
                     //! bucket model. (mm)
 
-                if (w_tot > sat_dep[layer])
+                if (w_tot > _sat_dep[layer])
                    {
-                   excess = w_tot - sat_dep[layer];
-                   w_tot = sat_dep[layer];
+                   excess = w_tot - _sat_dep[layer];
+                   w_tot = _sat_dep[layer];
                    }
                 else
                    {
@@ -3077,9 +3559,9 @@ public class SoilWater : Instance
                    }
 
 
-                if (w_tot > dul_dep[layer])
+                if (w_tot > _dul_dep[layer])
                    {
-                   w_drain = (w_tot - dul_dep[layer]) * swcon[layer];
+                   w_drain = (w_tot - _dul_dep[layer]) * swcon[layer];
                    //!w_drain = min(w_drain,p%Ks(layer))
                    }
                 else
@@ -3096,7 +3578,7 @@ public class SoilWater : Instance
                    //! Firstly top up this layer (to saturation)
                    add = Math.Min(excess, w_drain);
                    excess = excess - add;
-                   new_sw_dep[layer] = sat_dep[layer] - w_drain + add;
+                   new_sw_dep[layer] = _sat_dep[layer] - w_drain + add;
 
                    //! partition between flow back up and flow down
                    excess_down = Math.Min(ks[layer]-w_drain, excess);
@@ -3112,7 +3594,7 @@ public class SoilWater : Instance
                    for(i=layer-1;i>=au.si;i--)     //TODO: THis could be a problem when layer==0. May have to change to i>=0.
                       {
                       Flux[i] = Flux[i] - backup;
-                      add = Math.Min(sat_dep[i] - new_sw_dep[i],backup);
+                      add = Math.Min(_sat_dep[i] - new_sw_dep[i],backup);
                       new_sw_dep[i] = new_sw_dep[i] + add;
                       backup = backup - add;
                       }
@@ -3123,7 +3605,7 @@ public class SoilWater : Instance
                    //! there is no excess so do nothing
                    w_out = w_drain;
                    Flux[layer] = w_out;
-                   new_sw_dep[layer] = sw_dep[layer] + w_in - w_out;
+                   new_sw_dep[layer] = _sw_dep[layer] + w_in - w_out;
 
                    }
 
@@ -3171,31 +3653,31 @@ public class SoilWater : Instance
       //! calculate drainage and water
       //! redistribution.
       au.fill_real_array(ref Flux, 0.0, max_layer);
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
          {
          //! get total water concentration in layer
-         w_tot = sw_dep[layer] + w_in;
+         w_tot = _sw_dep[layer] + w_in;
 
          //! get excess water above saturation & then water left
          //! to drain between sat and dul.  Only this water is
          //! subject to swcon. The excess is not - treated as a
          //! bucket model. (mm)
 
-         if (w_tot > sat_dep[layer])
+         if (w_tot > _sat_dep[layer])
             {
-            excess = w_tot -sat_dep[layer];
-            w_tot = sat_dep[layer];
+            excess = w_tot -_sat_dep[layer];
+            w_tot = _sat_dep[layer];
             }
          else
 	         {
             excess = 0.0;
 	         }
       
-         if (w_tot > dul_dep[layer])
+         if (w_tot > _dul_dep[layer])
             {
-            w_drain = (w_tot - dul_dep[layer]) * swcon[layer];
+            w_drain = (w_tot - _dul_dep[layer]) * swcon[layer];
             }
          else
 	         {
@@ -3209,7 +3691,7 @@ public class SoilWater : Instance
                {
                //! all this excess goes on down so do nothing
                w_out = excess + w_drain;
-               new_sw_dep[layer] = sw_dep[layer] + w_in - w_out;
+               new_sw_dep[layer] = _sw_dep[layer] + w_in - w_out;
                Flux[layer] = w_out;
                }
             else
@@ -3218,7 +3700,7 @@ public class SoilWater : Instance
                //! Firstly top up this layer (to saturation)
                add = Math.Min(excess, w_drain);
                excess = excess - add;
-               new_sw_dep[layer] = sat_dep[layer] - w_drain + add;
+               new_sw_dep[layer] = _sat_dep[layer] - w_drain + add;
 
                //! partition between flow back up and flow down
                backup = (1.0 - mwcon[layer]) * excess;
@@ -3233,7 +3715,7 @@ public class SoilWater : Instance
                for (i=layer-1; i>=au.si; layer--)   //TODO: THis could be a problem when layer==0. May have to change to i>=0.
                   {
                   Flux[i] = Flux[i] - backup;
-                  add = Math.Min((sat_dep[i] - new_sw_dep[i]), backup);
+                  add = Math.Min((_sat_dep[i] - new_sw_dep[i]), backup);
                   new_sw_dep[i] = new_sw_dep[i] + add;
                   backup = backup - add;
                   }
@@ -3246,7 +3728,7 @@ public class SoilWater : Instance
             //! there is no excess so do nothing
             w_out = w_drain;
             Flux[layer] = w_out;
-            new_sw_dep[layer] = sw_dep[layer] + w_in - w_out;
+            new_sw_dep[layer] = _sw_dep[layer] + w_in - w_out;
 	         }
 
          //! drainage out of this layer goes into next layer down
@@ -3312,7 +3794,7 @@ public class SoilWater : Instance
 
       
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       //! *** calculate unsaturated flow below drained upper limit (flow)***   
       au.fill_real_array(ref Flow, 0.0, max_layer);
@@ -3328,21 +3810,21 @@ public class SoilWater : Instance
          {
          next_layer = layer + 1;
 
-         dlayer1 = dlayer[layer];
-         dlayer2 = dlayer[next_layer];
+         dlayer1 = _dlayer[layer];
+         dlayer2 = _dlayer[next_layer];
          ave_dlayer = (dlayer1 + dlayer2) * 0.5;
       
-         sw_dep1 = sw_dep[layer];
-         sw_dep2 = sw_dep[next_layer];
+         sw_dep1 = _sw_dep[layer];
+         sw_dep2 = _sw_dep[next_layer];
 
-         ll15_dep1 = ll15_dep[layer];
-         ll15_dep2 = ll15_dep[next_layer];
+         ll15_dep1 = _ll15_dep[layer];
+         ll15_dep2 = _ll15_dep[next_layer];
 
-         sat_dep1 = sat_dep[layer];
-         sat_dep2 = sat_dep[next_layer];
+         sat_dep1 = _sat_dep[layer];
+         sat_dep2 = _sat_dep[next_layer];
 
-         dul_dep1 = dul_dep[layer];
-         dul_dep2 = dul_dep[next_layer];
+         dul_dep1 = _dul_dep[layer];
+         dul_dep2 = _dul_dep[next_layer];
 
          esw_dep1 = mu.l_bound((sw_dep1 - w_out) - ll15_dep1, 0.0);
          esw_dep2 = mu.l_bound(sw_dep2 -ll15_dep2, 0.0);
@@ -3387,7 +3869,7 @@ public class SoilWater : Instance
          //c dsg 260202
          //c dsg    this code will stop a saturated layer difusing water into a partially saturated
          //c        layer above for Water_table height calculations
-         if ((sw_dep[layer] >= dul_dep[layer]) && (sw_dep[next_layer] >= dul_dep[next_layer]))
+         if ((_sw_dep[layer] >= _dul_dep[layer]) && (_sw_dep[next_layer] >= _dul_dep[next_layer]))
             {
             Flow[layer] = 0.0;
             }
@@ -3478,7 +3960,7 @@ public class SoilWater : Instance
       double         solute_flux_eff_local;
 
       au.fill_real_array(ref solute_out, 0.0, max_layer);
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
       in_solute = 0.0;
 
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
@@ -3498,7 +3980,7 @@ public class SoilWater : Instance
             //array was specified in ini file
             solute_flux_eff_local = solute_flux_eff[layer];
             }
-         water = sw_dep[layer] + out_w;
+         water = _sw_dep[layer] + out_w;
          out_solute = solute_kg_layer * mu.divide(out_w, water, 0.0) * solute_flux_eff_local;
 
          //! don't allow the n to be reduced below a minimum level
@@ -3562,7 +4044,7 @@ public class SoilWater : Instance
       //! + ve flow : upward movement. go from bottom to top layer   
       //**********************************************************
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
       in_solute = 0.0;
       for (layer=au.ci(num_layers); layer>=(au.si+1); layer--)
          {
@@ -3582,7 +4064,7 @@ public class SoilWater : Instance
 
             //! get n content of layer includes that moving from other layer
             solute_kg_layer = solute_kg[layer] + in_solute;
-            water = sw_dep[layer] + out_w - bottomw;
+            water = _sw_dep[layer] + out_w - bottomw;
 
             //! n moving out of layer is proportional to the water moving out.
             if (num_solute_flow == 1)
@@ -3638,7 +4120,7 @@ public class SoilWater : Instance
 	         {
             //! get n content of layer includes that moving from other layer
             solute_kg_layer = solute_kg[layer] + in_solute + remain[layer];
-            water = sw_dep[layer] + out_w - top_w;
+            water = _sw_dep[layer] + out_w - top_w;
 
             //! n moving out of layer is proportional to the water moving out.
             if (num_solute_flow == 1)
@@ -3750,7 +4232,7 @@ public class SoilWater : Instance
       //! flux routine then insert moved solute back into the global
       //! record.
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       for (solnum=au.si; solnum<=au.ci(num_solutes); solnum++)
          {
@@ -3807,7 +4289,7 @@ public class SoilWater : Instance
       //! flux routine then insert moved solute back into the global
       //! record.
 
-      num_layers  = au.count_of_real_vals(dlayer, max_layer);
+      num_layers  = au.count_of_real_vals(_dlayer, max_layer);
 
       for (solnum=au.si; solnum<=au.ci(num_solutes); solnum++)
          {
@@ -3874,22 +4356,22 @@ public class SoilWater : Instance
       layer_is_saturated = false;
      
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
       
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
          {
-         margin = mu.error_margin(sat_dep[layer]);
+         margin = mu.error_margin(_sat_dep[layer]);
 
          //Find the first layer that is above saturation or really close to it. 
          //nb. sat_layer is a layer number not an index. Therefore it starts at 1 and not zero. So we need to convert it to a layer number from an index. "layer" variable is really an index not a layer number.
-         if ((sat_dep[layer] - sw_dep[layer]) <= margin)
+         if ((_sat_dep[layer] - _sw_dep[layer]) <= margin)
             {
             sat_layer = au.cl(layer);     
             break;
             }
          //Or if mwcon is set to be impermeable for this layer and above sw is above dul then consider this layer as saturated.
-         else if ((mwcon[layer] < 1.0) && (sw_dep[layer] > dul_dep[layer]))
+         else if ((mwcon[layer] < 1.0) && (_sw_dep[layer] > _dul_dep[layer]))
             {
             //!  dsg 150302     also check whether impermeable layer is above dul. If so then consider it to be saturated
             sat_layer = au.cl(layer);     
@@ -3908,16 +4390,16 @@ public class SoilWater : Instance
          //calculate the saturation_fraction of current layer incase,
          //there is no layer above
          //or incase mwcon was set to impermeable and sw was above dul (so there are layers above but no saturated layers, the impermeable layer is just above dul which is the watertable) 
-         drainable = sw_dep[au.ci(sat_layer)] - dul_dep[au.ci(sat_layer)];
-         drainable_capacity = sat_dep[au.ci(sat_layer)] - dul_dep[au.ci(sat_layer)];
+         drainable = _sw_dep[au.ci(sat_layer)] - _dul_dep[au.ci(sat_layer)];
+         drainable_capacity = _sat_dep[au.ci(sat_layer)] - _dul_dep[au.ci(sat_layer)];
          saturated_fraction = mu.divide(drainable, drainable_capacity, 0.0);
          //if it is not the top layer that is saturated (ie. there is a layer above the saturated layer)
          //Then see if the layer above it is above dul and if so calculate the fraction so we can add this as extra millimeters to the water_table.
          if (sat_layer > 1)
             {
             //! saturated fraction of layer above saturated layer
-            drainable = sw_dep[au.ci(sat_layer-1)] - dul_dep[au.ci(sat_layer-1)];
-            drainable_capacity = sat_dep[au.ci(sat_layer-1)] - dul_dep[au.ci(sat_layer-1)];
+            drainable = _sw_dep[au.ci(sat_layer-1)] - _dul_dep[au.ci(sat_layer-1)];
+            drainable_capacity = _sat_dep[au.ci(sat_layer-1)] - _dul_dep[au.ci(sat_layer-1)];
             saturated_fraction_above = mu.divide(drainable, drainable_capacity, 0.0);
             }
          else
@@ -3964,21 +4446,21 @@ public class SoilWater : Instance
       if (layer_is_fully_saturated && layer_above_is_saturated)
          {
          //! dsg 150302  saturated layer = layer, layer above is over dul
-         bottom_depth = au.sum_real_array(dlayer, sat_layer-1);
-         saturated = saturated_fraction_above * dlayer[au.ci(sat_layer-1)];
+         bottom_depth = au.sum_real_array(_dlayer, sat_layer-1);
+         saturated = saturated_fraction_above * _dlayer[au.ci(sat_layer-1)];
          return (bottom_depth - saturated);
          }
       else if (layer_is_saturated)
          {
          //! dsg 150302  saturated layer = layer, layer above not over dul
-         bottom_depth = au.sum_real_array(dlayer, sat_layer);
-         saturated = saturated_fraction * dlayer[au.ci(sat_layer)];
+         bottom_depth = au.sum_real_array(_dlayer, sat_layer);
+         saturated = saturated_fraction * _dlayer[au.ci(sat_layer)];
          return (bottom_depth - saturated);
          } 
       else
          {
          //! profile is not saturated
-         bottom_depth = au.sum_real_array(dlayer, num_layers);
+         bottom_depth = au.sum_real_array(_dlayer, num_layers);
          return bottom_depth;
          }
   
@@ -3995,14 +4477,14 @@ public class SoilWater : Instance
       double   fraction;
       double   drainable_porosity;
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
       top = 0.0;
       bottom = 0.0;
 
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
          {
          top = bottom;
-         bottom = bottom + dlayer[layer];
+         bottom = bottom + _dlayer[layer];
          if (WaterTable >= bottom)
             {
             //do nothing;
@@ -4011,16 +4493,16 @@ public class SoilWater : Instance
 	         {
             //! top of water table is in this layer
             fraction = (bottom - WaterTable)/(bottom - top);
-            drainable_porosity = sat_dep[layer] - dul_dep[layer];
-            sw_dep[layer] = dul_dep[layer] + fraction * drainable_porosity;
+            drainable_porosity = _sat_dep[layer] - _dul_dep[layer];
+            _sw_dep[layer] = _dul_dep[layer] + fraction * drainable_porosity;
 	         }
          else
             {
-            sw_dep[layer] = sat_dep[layer];
+            _sw_dep[layer] = _sat_dep[layer];
             }
          }
 
-      watertable = WaterTable;
+      _water_table = WaterTable;
 
       }
 
@@ -4044,25 +4526,25 @@ public class SoilWater : Instance
       double max_flow;
      
 
-      int num_layers = au.count_of_real_vals(dlayer, max_layer);
+      int num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
 
       //TODO: This initialisation section should be in soilwat2_set_my_variable() not really here. But this is how SoilWat does it, so leave it here for now.
       //inflow_lat is optional daily input so if it does not exist just create it and zero it.
       if (inflow_lat == null)
          {
-         inflow_lat = new double[dlayer.Length];
+         inflow_lat = new double[_dlayer.Length];
          au.ZeroArray(ref inflow_lat);
          }
 
       //The user does not have have specify a value for ALL the layers in the soil. Just can specify the layers from the top down to whatever layer they like.
       //Therefore we need to resize the array if they did not specify a value for every layer and then put in zero values for the layers they did not specify.
-      if (inflow_lat.Length < dlayer.Length)
+      if (inflow_lat.Length < _dlayer.Length)
          {
          int startZeroingFromHere = au.ci(inflow_lat.Length) + 1;  //seems stupid but do this incase one day change back to 1 based array again.
-         Array.Resize(ref inflow_lat, dlayer.Length);
+         Array.Resize(ref inflow_lat, _dlayer.Length);
          //This following is probably not necessary as the resize probably zeros it, but do it just incase.
-         for (int i = startZeroingFromHere; i<=au.ci(dlayer.Length); i++)
+         for (int i = startZeroingFromHere; i<=au.ci(_dlayer.Length); i++)
             {
             inflow_lat[i] = 0.0;
             } 
@@ -4073,8 +4555,8 @@ public class SoilWater : Instance
       for (layer=au.si; layer<=au.ci(num_layers); layer++)
          {
          //! dsg 150302   add the inflowing lateral water
-         sw_dep[layer] = sw_dep[layer] + inflow_lat[layer];
-         d = dlayer[layer] * mu.divide((sw_dep[layer]-dul_dep[layer]),(sat_dep[layer]-dul_dep[layer]),0.0); 
+         _sw_dep[layer] = _sw_dep[layer] + inflow_lat[layer];
+         d = _dlayer[layer] * mu.divide((_sw_dep[layer]-_dul_dep[layer]),(_sat_dep[layer]-_dul_dep[layer]),0.0); 
          d = Math.Max(0.0, d);  //! water table depth in layer must be +ve
          
          double i, j;
@@ -4083,11 +4565,11 @@ public class SoilWater : Instance
          outflow_lat[layer] = mu.divide(i, j, 0.0); 
 
          //! Cannot drop sw below dul
-         max_flow = Math.Max(0.0, (sw_dep[layer] - dul_dep[layer]));
+         max_flow = Math.Max(0.0, (_sw_dep[layer] - _dul_dep[layer]));
 
          outflow_lat[layer] = mu.bound(outflow_lat[layer], 0.0, max_flow);
 
-         sw_dep[layer] = sw_dep[layer] - outflow_lat[layer]; 
+         _sw_dep[layer] = _sw_dep[layer] - outflow_lat[layer]; 
          }
 
       }
@@ -4164,13 +4646,13 @@ public class SoilWater : Instance
       line = "   ---------------------------------------------------------------------";
       Console.WriteLine(line);
 
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
       depth_layer_top = 0.0;
       soilwat2_runoff_depth_factor(ref runoff_wf);  
 
       for(layer=au.si;layer<=au.ci(num_layers); layer++)
          {
-         depth_layer_bottom = depth_layer_top + dlayer[layer];
+         depth_layer_bottom = depth_layer_top + _dlayer[layer];
 
          if (!using_ks)
             {
@@ -4178,11 +4660,11 @@ public class SoilWater : Instance
                                  depth_layer_top, 
                                  "-", 
                                  depth_layer_bottom,
-                                 mu.divide(air_dry_dep[layer],dlayer[layer], 0.0),
-                                 mu.divide(ll15_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(dul_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(sat_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(sw_dep[layer], dlayer[layer], 0.0),
+                                 mu.divide(_air_dry_dep[layer],_dlayer[layer], 0.0),
+                                 mu.divide(_ll15_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_dul_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_sat_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_sw_dep[layer], _dlayer[layer], 0.0),
                                  bd[layer],
                                  runoff_wf[layer],
                                  swcon[layer]);
@@ -4193,11 +4675,11 @@ public class SoilWater : Instance
                                  depth_layer_top, 
                                  "-", 
                                  depth_layer_bottom,
-                                 mu.divide(air_dry_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(ll15_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(dul_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(sat_dep[layer], dlayer[layer], 0.0),
-                                 mu.divide(sw_dep[layer], dlayer[layer], 0.0),
+                                 mu.divide(_air_dry_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_ll15_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_dul_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_sat_dep[layer], _dlayer[layer], 0.0),
+                                 mu.divide(_sw_dep[layer], _dlayer[layer], 0.0),
                                  bd[layer],
                                  runoff_wf[layer],
                                  swcon[layer],
@@ -4230,16 +4712,16 @@ public class SoilWater : Instance
       line = "     ---------------------------------------------------------";
       Console.WriteLine(line);
 
-      num_layers = au.count_of_real_vals (dlayer, max_layer);
+      num_layers = au.count_of_real_vals (_dlayer, max_layer);
       depth_layer_top = 0.0;
 
       for(layer=au.si;layer<=au.ci(num_layers); layer++)
          {
-         depth_layer_bottom = depth_layer_top + dlayer[layer];
-         usw[layer] = ll15_dep[layer];
-         asw[layer] = mu.l_bound((sw_dep[layer]-ll15_dep[layer]),0.0);
-         masw[layer] = dul_dep[layer] - ll15_dep[layer];
-         dsw[layer] = sat_dep[layer] - dul_dep[layer];
+         depth_layer_bottom = depth_layer_top + _dlayer[layer];
+         usw[layer] = _ll15_dep[layer];
+         asw[layer] = mu.l_bound((_sw_dep[layer]-_ll15_dep[layer]),0.0);
+         masw[layer] = _dul_dep[layer] - _ll15_dep[layer];
+         dsw[layer] = _sat_dep[layer] - _dul_dep[layer];
 
          line = String.Format("   {0,6:0.#} {1} {2,4:0.#} {3,10:0.00} {4,10:0.00} {5,10:0.00} {6,10:0.00}",   
                               depth_layer_top, 
@@ -4289,7 +4771,7 @@ public class SoilWater : Instance
       Console.WriteLine(line);
 
       line = String.Format("       {0,11:0.00} {1,11:0.00} {2,11:0.00} {3,11:0.00}",
-                           insoil,
+                           _insoil,
                            salb,
                            diffus_const,
                            diffus_slope);
@@ -4326,9 +4808,9 @@ public class SoilWater : Instance
          Console.WriteLine(line);
 
          line = String.Format("      {0,8:0.00} {1,7:0.00} {2,7:0.00} {3,11:0.00}",
-                              cn2_bare, 
-                              cn_red, 
-                              cn_cov,
+                              _cn2_bare, 
+                              _cn_red, 
+                              _cn_cov,
                               hydrol_effective_depth);
 
          Console.WriteLine(line);
@@ -4351,7 +4833,7 @@ public class SoilWater : Instance
             {
             line = String.Format("       {0} {1,8:0.00} {2}",
                                  "Cuml evap (U):        ",
-                                 u, 
+                                 _u, 
                                  " (mm^0.5)");
 
             Console.WriteLine(line);
@@ -4372,7 +4854,7 @@ public class SoilWater : Instance
             {
             line = String.Format("       {0} {1,8:0.00} {2}",
                                  "CONA:                 ",
-                                 cona, 
+                                 _cona, 
                                  " ()");
             Console.WriteLine(line);
             }
@@ -4403,11 +4885,11 @@ public class SoilWater : Instance
       Console.WriteLine();
 
 
-      if (eo_source != "not_read")
+      if (_eo_source != "not_read")
          {
          line = String.Format("      {0} {1}",
                               "Eo source:             ",
-                              eo_source);
+                              _eo_source);
          Console.WriteLine(line);
          }
       else
@@ -4442,6 +4924,7 @@ public class SoilWater : Instance
 
       Lateral_init();
 
+      initDone = true;     //let the classes properties to now allow "sets"
 
       //publish event saying there is a new soil profile.
       soilwat2_New_Profile_Event();
@@ -4464,7 +4947,7 @@ public class SoilWater : Instance
       newSWDep = soilwat2_total_sw_dep();
       dltSWDep = newSWDep - oldSWDep;
       //TODO: put the event below back in
-      //soilwat2_ExternalMassFlow(dltSWDep);
+      //soilwat2_ExternalMassFlow(dltSWDep);       //tell the "System Balance" module (if there is one) that the user has changed the water by this amount (by doing a Reset).
       }
 
    
@@ -4473,9 +4956,9 @@ public class SoilWater : Instance
       //only used above in save_state and delta_state
 
       int    num_layers;
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
 
-      return au.SumArray(sw_dep, num_layers);
+      return au.SumArray(_sw_dep, num_layers);
       }
 
 
@@ -4490,7 +4973,7 @@ public class SoilWater : Instance
    [EventHandler] public void OnInit2()
       {
 
-      //sv- I had to put this in so that sw_dep is instantiated and then soilwat2_save_state() does not throw an error. 
+      //sv- I had to put this in so that _sw_dep is instantiated and then soilwat2_save_state() does not throw an error. 
       InstantiateArrays_PureOutputs();
 
       //Save State
@@ -4577,7 +5060,7 @@ public class SoilWater : Instance
        //*- Implementation Section ----------------------------------
 
 
-      num_layers = au.count_of_real_vals (dlayer, max_layer);
+      num_layers = au.count_of_real_vals (_dlayer, max_layer);
 
 
       // LATERAL FLOW
@@ -4601,8 +5084,8 @@ public class SoilWater : Instance
       //! ponding into account
 
       pond = pond + runoff_pot;
-      runoff = Math.Max((pond - max_pond), 0.0);
-      pond = Math.Min(pond, max_pond);
+      runoff = Math.Max((pond - _max_pond), 0.0);
+      pond = Math.Min(pond, _max_pond);
 
 
 
@@ -4613,7 +5096,7 @@ public class SoilWater : Instance
       //! all infiltration and solutes(from irrigation)
       //! go into the top layer.
 
-      sw_dep[au.si] = sw_dep[au.si] + infiltration;
+      _sw_dep[au.si] = _sw_dep[au.si] + infiltration;
 
 
 
@@ -4623,7 +5106,7 @@ public class SoilWater : Instance
          {
          //add the irrigation
          //TODO:this irrigation_layer is wrong. Should be ci.(irrigation_layer). ALso zeroing of it is wrong which is why it does not work in the fortran version. Also assigning
-         sw_dep[irrigation_layer] = sw_dep[irrigation_layer] + irrigation;
+         _sw_dep[irrigation_layer] = _sw_dep[irrigation_layer] + irrigation;
          }
 
       //! save solutes from irrigation
@@ -4662,18 +5145,18 @@ public class SoilWater : Instance
       //"extra_runoff" is caused by backing up of top layer due to inability of soil to drain. See soilwat2_drainage() above.
  
       //Any extra_runoff then it becomes a pond. 
-      pond = Math.Min(extra_runoff, max_pond);
+      pond = Math.Min(extra_runoff, _max_pond);
       //If there is too much for the pond handle then add the excess (ie. extra_runoff-pond) to normal runoff.
       runoff = runoff + extra_runoff - pond;
       //Deduct the extra_runoff from the infiltration because it did not infiltrate (because it backed up).
       infiltration = infiltration - extra_runoff;
 
-      sw_dep[au.si] = sw_dep[au.si] - extra_runoff;   //sv- actually add the extra runoff to sw_dep
+      _sw_dep[au.si] = _sw_dep[au.si] - extra_runoff;   //sv- actually add the extra runoff to _sw_dep
 
 
 
-      //! move water down     (Saturated Flow - alter sw_dep values using flux calculation)
-      au.move_down_real(flux, ref sw_dep, num_layers);    
+      //! move water down     (Saturated Flow - alter _sw_dep values using flux calculation)
+      au.move_down_real(flux, ref _sw_dep, num_layers);    
 
       //! drainage out of bottom layer
       drain = flux[au.ci(num_layers)];
@@ -4700,7 +5183,7 @@ public class SoilWater : Instance
       //! ** take away evaporation
       for(layer=au.si; layer<=au.ci(num_layers); layer++)
          {
-         sw_dep[layer] = sw_dep[layer] - es_layers[layer];
+         _sw_dep[layer] = _sw_dep[layer] - es_layers[layer];
          }
 
 
@@ -4709,8 +5192,8 @@ public class SoilWater : Instance
       //! get unsaturated flow   
       soilwat2_unsat_flow(ref flow);
 
-      //! move water up          (Unsaturated Flow - alter sw_dep values using flow calculation)
-      au.move_up_real(flow, ref sw_dep, num_layers);
+      //! move water up          (Unsaturated Flow - alter _sw_dep values using flow calculation)
+      au.move_up_real(flow, ref _sw_dep, num_layers);
 
       //! now check that the soil water is not silly
       for(layer=au.si;layer<=au.ci(num_layers); layer++)
@@ -4721,14 +5204,14 @@ public class SoilWater : Instance
 
       // WATER TABLE
  
-      watertable = soilwat_water_table();
+      _water_table = soilwat_water_table();
 
 //TODO: this sws value appears to just be an output variable but it is identical to sw? I think it should be removed.
 /*
-      num_layers = au.count_of_real_vals(dlayer, max_layer);
+      num_layers = au.count_of_real_vals(_dlayer, max_layer);
       for(layer=au.si;layer<=au.ci(num_layers); layer++)
          {
-         sws[layer] = mu.divide(sw_dep[layer], dlayer[layer], 0.0);
+         sws[layer] = mu.divide(_sw_dep[layer], _dlayer[layer], 0.0);
          }
 */
 
@@ -4791,7 +5274,7 @@ public class SoilWater : Instance
 
 
 
-#region Met, Irrig, Solute Module Event Handlers
+#region Met, Irrig, Solute, Plant Module Event Handlers
 
 
 
@@ -4949,6 +5432,30 @@ public class SoilWater : Instance
 
 
 
+   [EventHandler] void OnWaterChanged(WaterChangedType WaterChanged)
+      {
+
+      //This event is Only used by Plant2 and AgPasture.
+      //This event was added so that the Plant2 module could extract water via its roots from the SoilWater module.
+      //At the time Plant2 was not advanced enough to be able to do a "Set" on another modules variables.
+      //Plant2 still uses this method to extract water using its roots.
+  
+      //*+  Purpose
+      //*     Another module wants to change our water
+
+
+      int layer; 
+
+      for(layer=au.si; layer<=au.ci(WaterChanged.DeltaWater.Length); layer++)
+         {
+         _sw_dep[layer] = _sw_dep[layer] + WaterChanged.DeltaWater[layer];
+         soilwat2_check_profile(layer);
+         }
+      
+      }
+
+
+
 #endregion
 
 
@@ -4997,34 +5504,6 @@ public class SoilWater : Instance
       soilwat2_delta_state();
       }
 */
-
-
-
-
-
-   [EventHandler] void OnWaterChanged(WaterChangedType WaterChanged)
-      {
-
-      //This event is Only used by Plant2 and AgPasture.
-      //This event was added so that the Plant2 module could extract water via its roots from the SoilWater module.
-      //At the time Plant2 was not advanced enough to be able to do a "Set" on another modules variables.
-      //Plant2 still uses this method to extract water using its roots.
-  
-      //*+  Purpose
-      //*     Another module wants to change our water
-
-
-      int layer; 
-
-      for(layer=au.si; layer<=au.ci(WaterChanged.DeltaWater.Length); layer++)
-         {
- //        sw_dep[layer] = sw_dep[layer] + WaterChanged.DeltaWater[layer];
-         soilwat2_check_profile(layer);
-         }
-      
-      }
-
-
 
 
 
@@ -5097,7 +5576,7 @@ public class SoilWater : Instance
 
  
       //! Ensure cn equation won't go silly
-      tillage_cn_red = mu.bound(tillage_cn_red, 0.0, cn2_bare);
+      tillage_cn_red = mu.bound(tillage_cn_red, 0.0, _cn2_bare);
 
 
       //sv- write what we are doing to the summary file.
@@ -5111,6 +5590,7 @@ public class SoilWater : Instance
       tillage_rain_sum = 0.0;
 
       }
+
 
 
 
@@ -5131,29 +5611,35 @@ public class SoilWater : Instance
       //*     Advise other modules of new profile specification
 
       NewProfileType newProfile =  new NewProfileType();
-      newProfile.air_dry_dep =   au.ToFloatArray(air_dry_dep);
+      newProfile.air_dry_dep =   au.ToFloatArray(_air_dry_dep);
       newProfile.bd =            au.ToFloatArray(bd);
-      newProfile.dlayer =        au.ToFloatArray(dlayer);
-      newProfile.dul_dep =       au.ToFloatArray(dul_dep);
-      newProfile.ll15_dep =      au.ToFloatArray(ll15_dep);
-      newProfile.sat_dep =       au.ToFloatArray(sat_dep);
-      newProfile.sw_dep =        au.ToFloatArray(sw_dep);
+      newProfile.dlayer =        au.ToFloatArray(_dlayer);
+      newProfile.dul_dep =       au.ToFloatArray(_dul_dep);
+      newProfile.ll15_dep =      au.ToFloatArray(_ll15_dep);
+      newProfile.sat_dep =       au.ToFloatArray(_sat_dep);
+      newProfile.sw_dep =        au.ToFloatArray(_sw_dep);
       New_profile.Invoke(newProfile);
       }
 
-/*
 
-   private void soilwat2_ExternalMassFlow (double dltSWDep)
+   private void soilwat2_ExternalMassFlow (double sw_dep_delta_sum)
       {
 
       //*+  Mission Statement
       //*     Update internal time record and reset daily state variables.
 
+      //External Mass Flow event is used for a model called "System Balance" which just keeps track of all the water, solutes etc in the model. 
+      //To make sure it all balances out and no water is being lost from the system. It is used for debugging purposes.
+      //Some times however the user will do something that will diliberately upset this, such as forcibly reseting a water content by doing a
+      //Reset command in a manager or by Setting a variable in the manager manually. When this happens the "System Balance" module's balance 
+      //no longer adds up. So when you do a Reset or Set a variable you must send an External Mass Flow Type event that alerts the "System Balance"
+      //module that the user has forced a change and the amount by which they have changed it, so that the "System Balance" module can add this
+      //amount to its balance so it's balance will work out correctly again. 
 
       ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
 
 
-      if (dltSWDep >= 0.0)
+      if (sw_dep_delta_sum >= 0.0)
          {
          massBalanceChange.FlowType = "gain";
          }
@@ -5163,17 +5649,17 @@ public class SoilWater : Instance
          }
       
          massBalanceChange.PoolClass = "soil";
-         massBalanceChange.DM = 0.0;
-         massBalanceChange.C  = 0.0;
-         massBalanceChange.N  = 0.0;
-         massBalanceChange.P  = 0.0;
-         massBalanceChange.SW = Math.Abs(dltSWDep);
+         massBalanceChange.DM = 0.0F;
+         massBalanceChange.C  = 0.0F;
+         massBalanceChange.N  = 0.0F;
+         massBalanceChange.P  = 0.0F;
+         massBalanceChange.SW = Math.Abs((float)sw_dep_delta_sum);
 
          ExternalMassFlow.Invoke(massBalanceChange);         
 
       }
 
- */
+ 
 
 #endregion
 

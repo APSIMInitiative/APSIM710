@@ -16,6 +16,7 @@ Title                  = Ponding Only using KS (OLD)
 Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
+   Component         "calculate total_pond" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
 
@@ -51,6 +52,7 @@ Paddock:
         runoff
         pond_evap
         pond
+        total_pond
         sw_dep(1-3) as sw_top
         es
         drain
@@ -63,6 +65,14 @@ Paddock:
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
+
+------- calculate total_pond Initialisation -----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     total_pond = pond + pond_evap
+     END of rules
+     
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -458,6 +468,7 @@ Paddock:
            Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : total_pond = 0.00000
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
