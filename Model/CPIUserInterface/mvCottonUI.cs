@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 
@@ -28,18 +25,25 @@ namespace CPIUserInterface
     /// specified/adjusted in the sow command (manager).
     /// </summary>
     //=====================================================================
-    public partial class mvCottonUI : BaseView
+    public partial class mvCottonUI : CPIBaseView
     {
+
         private List<TTypedValue> typedvals;
 
-        public mvCottonUI()
+        public mvCottonUI() : base()
         {
             InitializeComponent();
             typedvals = new List<TTypedValue>();
         }
+        //=====================================================================
+        /// <summary>
+        /// When the UI is created and loaded
+        /// </summary>
+        //=====================================================================
         protected override void OnLoad()
         {
             base.HelpText = " Cotton component";
+            InitFromComponentDescription(); //fills the propertyList with init properties
         }
         //=====================================================================
         /// <summary>
@@ -110,25 +114,6 @@ namespace CPIUserInterface
             doc.DocumentElement.AppendChild(doc.ImportNode(cultivar.DocumentElement, true));
 
             Data.AppendChild(Data.OwnerDocument.ImportNode(doc.DocumentElement, true));
-        }
-        //=====================================================================
-        /// <summary>
-        /// Write the TTypedValues to an xml string.
-        /// </summary>
-        /// <returns>The init section string</returns>
-        //=====================================================================
-        private String WriteInitsectionXml()
-        {
-            StringBuilder newXML = new StringBuilder();
-            newXML.Append("<initsection>");
-
-            TSDMLValue sdmlWriter = new TSDMLValue("<init/>", "");
-            for (int i = 0; i < typedvals.Count; i++)
-            {
-                newXML.Append(sdmlWriter.getText(typedvals[i], 0, -1));
-            }
-            newXML.Append("</initsection>");
-            return newXML.ToString();
         }
         //=====================================================================
         /// <summary>
@@ -225,5 +210,6 @@ namespace CPIUserInterface
             TSDMLValue writer = new TSDMLValue("<type/>", "");
             return writer.getText(CultivarValues, 0, 2);
         }
+
     }
 }

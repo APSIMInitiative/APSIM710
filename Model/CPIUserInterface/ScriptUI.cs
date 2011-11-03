@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.Diagnostics;
 
 using ApsimFile;
 using Controllers;
@@ -24,7 +23,7 @@ namespace CPIUserInterface
     /// published from clock in the first part of the day.
     /// </summary>
     //=====================================================================
-    public partial class ScriptUI : BaseView
+    public partial class ScriptUI : CPIBaseView
     {
         //settings for the manager script highlighting
         private String[] keywords = { "define", "on", "on_event", "each", "from", "to", "repeat", 
@@ -128,7 +127,7 @@ namespace CPIUserInterface
         /// </summary>
         /// <returns>The init section string</returns>
         //=====================================================================
-        private String WriteInitsectionXml()
+        protected override String WriteInitsectionXml()
         {
             StringBuilder newXML = new StringBuilder();
             newXML.Append("<initsection>");
@@ -136,7 +135,7 @@ namespace CPIUserInterface
             TSDMLValue sdmlWriter = new TSDMLValue("<init/>", "");
             for (int i = 0; i < typedvals.Count; i++)
             {
-                newXML.Append(sdmlWriter.getText(typedvals[i], 0, -1));
+                newXML.Append(sdmlWriter.getText(typedvals[i], 0, 2));
             }
             newXML.Append("</initsection>");
             return newXML.ToString();
@@ -349,11 +348,13 @@ namespace CPIUserInterface
             int col = index - richTextBox1.GetCharIndexFromPosition(pt);
             label1.Text = "Ln " + (++line).ToString() + " Col " + (++col).ToString();
         }
+        //=======================================================================
         /// <summary>
         /// Open help file based on the dll component name.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        //=======================================================================
         private void button2_Click(object sender, EventArgs e)
         {
             //find the full path to the dll for the component
@@ -375,13 +376,6 @@ namespace CPIUserInterface
                 else
                     MessageBox.Show("Cannot find help file " + helpFileName);
             }
-        }
-        private void openHelp(String helpFile)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = helpFile;
-            startInfo.Arguments = "";
-            Process.Start(startInfo);
         }
     }
 }
