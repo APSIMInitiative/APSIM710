@@ -107,7 +107,6 @@ Public Class MainUI
             PlugIns.LoadAll()
             SimulationController = New BaseController(Me, ApplicationName, True)
 
-
             ' Display splash screen
             If Configuration.Instance.Setting("SplashScreen") <> "" And Args.Count = 0 Then
                 Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
@@ -494,6 +493,7 @@ Public Class MainUI
         Try
 
             AddHandler SimulationController.ApsimData.DirtyChanged, AddressOf OnDirtyChanged
+            AddHandler SimulationController.ApsimData.FileNameChanged, AddressOf OnFileNameChanged
 
             ' Load some assemblies for later. The code for some actions are found in
             ' these assemblies.
@@ -579,6 +579,7 @@ Public Class MainUI
                 Else
                     ToolBoxesToolStrip.Visible = False
                 End If
+                UpdateCaption()
             End If
 
         Catch ex As Exception
