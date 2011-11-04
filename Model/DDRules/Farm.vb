@@ -182,8 +182,8 @@ Public Class Farm
         Return result
     End Function
 
-    <Output()> <Units("kg/ha")> Public preGrazeCovers() As Double
-    <Output()> <Units("kg/ha")> Public postGrazeCovers() As Double
+    Public preGrazeCovers() As Double
+    Public postGrazeCovers() As Double
     Public Sub Process(ByVal start_of_week As Integer)
         CheckWinteringOff()
         If Not (IsWinteringOff()) Then 'assume all stock wintering off farm i.e. no grazing
@@ -371,14 +371,14 @@ Public Class Farm
     Private SupplementStore As New FeedStore 'this is used to track the supplements that have been fed to the herd (oppsite of SilageHeap)
 
     'Todo: Set supplemnt parameter in "Supplement heap" - this assumes same feed throughout simulation
-    <Units("0-1")> Public SupplementDigestability As Double = 0.8
-    <Units("0-1")> Public SilageDigestability As Double = 0.68 'need to check this value
-    <Units("0-1")> Public SilageQualityModifier As Double = 0.9 'need to check this value
+    Public SupplementDigestability As Double = 0.8
+    Public SilageDigestability As Double = 0.68 'need to check this value
+    Public SilageQualityModifier As Double = 0.9 'need to check this value
 
-    <Units("kgN/kgDM")> Public SilageN As Double = 0.035 'N content of silage (need to check this value - add to the user interface
-    <Units("kgN/kgDM")> Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
-    <Units("ME/kgDM")> Public SupplementME As Single = 12
-    <Units("ME/kgDM")> Public DefualtSilageME As Single = 10.5
+    Public SilageN As Double = 0.035 'N content of silage (need to check this value - add to the user interface
+    Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
+    Public SupplementME As Single = 12
+    Public DefualtSilageME As Single = 10.5
 
     Public Property SilageME() As Double
         Get
@@ -776,29 +776,29 @@ Public Class Farm
     '<Output()> <Units("kgN/ha")> Public N_to_BC As Single
     '<Output()> <Units("kgN/ha")> Public N_to_feaces As Single
     '<Output()> <Units("kgN/ha")> Public N_to_urine As Single
-    <Output()> <Units("kgN/ha")> Public N_Balance As Single
-    <Output()> <Units("kgN/ha")> Public N_Out As Single
+    Public N_Balance As Single
+    Public N_Out As Single
 
-    <Output()> <Units("MJME/ha")> Public ME_Demand As Single
-    <Output()> <Units("MJME/ha")> Public ME_Eaten As Single
-    <Output()> <Units("MJME/ha")> Public ME_Eaten_Pasture As Single
-    <Output()> <Units("MJME/ha")> Public ME_Eaten_Silage As Single
-    <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement As Single
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten As Single
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten_Pasture As Single
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten_Silage As Single
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement As Single
-    <Output()> <Units("kgN/ha")> Public N_Eaten As Single
-    <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture As Single
-    <Output()> <Units("kgN/ha")> Public N_Eaten_Silage As Single
-    <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement As Single
-    <Output()> <Units("kgN/ha")> Public N_to_milk As Single
-    <Output()> <Units("kgN/ha")> Public N_to_BC As Single
-    <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
-    <Output()> <Units("kgN/ha")> Public N_to_urine As Double
-    <Output()> <Units("kgN/ha")> Public DM_to_feaces As Single ' added
+    Public ME_Demand As Single
+    Public ME_Eaten As Single
+    Public ME_Eaten_Pasture As Single
+    Public ME_Eaten_Silage As Single
+    Public ME_Eaten_Supplement As Single
+    Public DM_Eaten As Single
+    Public DM_Eaten_Pasture As Single
+    Public DM_Eaten_Silage As Single
+    Public DM_Eaten_Supplement As Single
+    Public N_Eaten As Single
+    Public N_Eaten_Pasture As Single
+    Public N_Eaten_Silage As Single
+    Public N_Eaten_Supplement As Single
+    Public N_to_milk As Single
+    Public N_to_BC As Single
+    Public N_to_feaces As Single
+    Public N_to_urine As Double
+    Public DM_to_feaces As Single ' added
 
-    <Output()> <Units("")> Public ReadOnly Property PaddockStatus() As String()
+    Public ReadOnly Property PaddockStatus() As String()
         Get
             Dim result(myPaddocks.Count - 1) As String
             'sort by index
@@ -849,7 +849,7 @@ Public Class Farm
         End Get
     End Property
 
-    <Output()> <Units("MJME/ha")> Public ReadOnly Property AverageGrowthRate() As Single
+    Public ReadOnly Property AverageGrowthRate() As Single
         Get
             Dim growth As Single = 0
             Dim area As Single = 0
@@ -873,7 +873,7 @@ Public Class Farm
     '        End Get
     'End Property
 
-    <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pasture_Pdks() As Single()
+    Public ReadOnly Property ME_Eaten_Pasture_Pdks() As Single()
         Get
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index here
@@ -883,8 +883,8 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement_Pdks As Single()
-    <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pdks() As Single()
+    Public ME_Eaten_Supplement_Pdks As Single()
+    Public ReadOnly Property ME_Eaten_Pdks() As Single()
         Get
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
@@ -894,9 +894,9 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten_Pasture_Pdks As Single()
-    <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement_Pdks As Single()
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_Eaten_Pdks() As Single()
+    Public DM_Eaten_Pasture_Pdks As Single()
+    Public DM_Eaten_Supplement_Pdks As Single()
+    Public ReadOnly Property N_Eaten_Pdks() As Single()
         Get
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
@@ -906,11 +906,11 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture_Pdks As Single()
-    <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement_Pdks As Single()
-    <Output()> <Units("kgN/ha")> Public N_to_milk_Pdks As Single()
-    <Output()> <Units("kgN/ha")> Public N_to_BC_Pdks As Single()
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_feaces_Pdks() As Single()
+    Public N_Eaten_Pasture_Pdks As Single()
+    Public N_Eaten_Supplement_Pdks As Single()
+    Public N_to_milk_Pdks As Single()
+    Public N_to_BC_Pdks As Single()
+    Public ReadOnly Property N_to_feaces_Pdks() As Single()
         Get
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
@@ -920,7 +920,7 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Double()
+    Public ReadOnly Property N_to_urine_Pdks() As Double()
         Get
             Dim result(myPaddocks.Count - 1) As Double
             'sort by index
@@ -930,21 +930,21 @@ Public Class Farm
             Return result
         End Get
     End Property
-    <Output()> <Units("MJME/cow")> Public ME_Demand_Cow As Single
-    <Output()> <Units("MJME/cow")> Public ME_Eaten_Cow As Single
-    <Output()> <Units("MJME/cow")> Public ME_Eaten_Pasture_Cow As Single
-    <Output()> <Units("MJME/cow")> Public ME_Eaten_Supplement_Cow As Single
-    <Output()> <Units("kgDM/cow")> Public DM_Eaten_Cow As Single
-    <Output()> <Units("kgDM/cow")> Public DM_Eaten_Pasture_Cow As Single
-    <Output()> <Units("kgDM/cow")> Public DM_Eaten_Supplement_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_Eaten_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_Eaten_Pasture_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_Eaten_Supplement_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_to_milk_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_to_BC_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_to_feaces_Cow As Single
-    <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Double
-    <Output()> <Units("kgN/cow")> Public ReadOnly Property LWt_Change_Cow() As Single
+    Public ME_Demand_Cow As Single
+    Public ME_Eaten_Cow As Single
+    Public ME_Eaten_Pasture_Cow As Single
+    Public ME_Eaten_Supplement_Cow As Single
+    Public DM_Eaten_Cow As Single
+    Public DM_Eaten_Pasture_Cow As Single
+    Public DM_Eaten_Supplement_Cow As Single
+    Public N_Eaten_Cow As Single
+    Public N_Eaten_Pasture_Cow As Single
+    Public N_Eaten_Supplement_Cow As Single
+    Public N_to_milk_Cow As Single
+    Public N_to_BC_Cow As Single
+    Public N_to_feaces_Cow As Single
+    Public N_to_urine_Cow As Double
+    Public ReadOnly Property LWt_Change_Cow() As Single
         Get
             Return myMilkingHerd.LWt_Change
         End Get
@@ -973,7 +973,7 @@ Public Class Farm
         myPaddocks.AddRange(list)
     End Sub
 
-    <Output()> <Units("0-1")> Public Property PorportionOfFarmInLaneWays() As Double
+    Public Property PorportionOfFarmInLaneWays() As Double
         Get
             Return myPorportionOfFarmInLaneWays
         End Get
@@ -982,7 +982,7 @@ Public Class Farm
         End Set
     End Property
 
-    <Output()> <Units("0-24")> Public Property HoursOnLaneWays() As Double
+    Public Property HoursOnLaneWays() As Double
         Get
             Return myTimeOnLaneWays * 24.0
         End Get
@@ -997,7 +997,7 @@ Public Class Farm
         End Set
     End Property
 
-    <Output()> <Units("0-24")> Public Property HoursInDairyShed() As Double
+    Public Property HoursInDairyShed() As Double
         Get
             Return myTimeInDairyShed * 24.0
         End Get
@@ -1150,7 +1150,7 @@ Public Class Farm
         End If
     End Function
 
-    <Output()> <Units("")> Public ReadOnly Property PlantAvalibleWater(ByVal atDepth As Single) As Single
+    Public ReadOnly Property PlantAvalibleWater(ByVal atDepth As Single) As Single
         Get
             Dim total As Double = 0
             Dim area As Double = 0
@@ -1164,7 +1164,7 @@ Public Class Farm
     End Property
 
     'Proportion of farm to return effluient to
-    <Param()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
+    Public Property EffluentPaddocksPercentage() As Double
         Get
             Return myEffluentPaddocksPercentage
         End Get

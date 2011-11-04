@@ -40,16 +40,13 @@ Imports ModelFramework
 Public Class DDRules
     Inherits Instance
     Public myDebugLevel As Integer = 0
-    <Link()> Private MySimulation As Paddock
-    <Link()> Private MyClock As Clock
+    <Link()> Public MySimulation As Paddock
+    <Link()> Public MyClock As Clock
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
-    '<Input()> Private month As Integer
-    '<Input()> Private year As Integer
-    '<Input()> Private day_of_month As Integer
-    <Input()> Private end_week As Boolean
-    <Input()> Private Start_week As Boolean
+    <Input()> Public end_week As Boolean
+    <Input()> Public Start_week As Boolean
 
     Public dairyNZ_mg As Single() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
     Public dairyNZ_gr As Single() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
@@ -81,7 +78,7 @@ Public Class DDRules
     '        End If
     'End Sub
 
-    'Initilise farm components
+    <Description("Initilise farm components")> _
     <EventHandler()> Public Sub OnInit2()
         DebugLevel = myDebugLevel
         If (DebugLevel > 0) Then
@@ -132,13 +129,13 @@ Public Class DDRules
 
     End Sub
 
-    'Reset tracked output variables
+    <Description("Reset tracked output variables")> _
     <EventHandler()> Sub OnNewMet(ByVal NewMet As NewMetType)
         myIrrigationAmount = 0
         myFertiliserAmount = 0
     End Sub
 
-    'Reset paddock status etc.
+    <Description("Reset paddock status etc.")> _
     <EventHandler()> Sub OnPrepare()
         If (DebugLevel > 0) Then
             Console.WriteLine("Enter OnPrepare()")
@@ -155,20 +152,21 @@ Public Class DDRules
         End If
     End Sub
 
-    'Pasture covers pre-grazing
+    <Description("Pasture covers pre-grazing")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property preGrazeCovers As Double()
         Get
             Return myFarm.preGrazeCovers
         End Get
     End Property
 
+    <Description("Pasture covers post-grazing")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property postGrazeCovers As Double()
         Get
             Return myFarm.postGrazeCovers
         End Get
     End Property
 
-    'Main model step
+    <Description("Main model step")> _
     <EventHandler()> Sub OnProcess()
         ' ************* Farm testing **********************
         If Not (GrazingIntervalIsSet) Then
@@ -189,7 +187,7 @@ Public Class DDRules
             myFarm.CutToFeedWedge(GrazingResidual, 21)
         End If
 
-        myFarm.Process(start_week)
+        myFarm.Process(Start_week)
 
         'Dim cover = myFarm.AverageCover()
         ' ************* Farm testing **********************
@@ -198,42 +196,42 @@ Public Class DDRules
         'PublishGrazingEvent() - testing
     End Sub
 
-    'Do whole farm fertiliser events apply fertiliser to effluent paddocks
+    <Description("Do whole farm fertiliser events apply fertiliser to effluent paddocks")> _
     <Output()> Public ApplyFertToEffluentPdks As Boolean = False
     'Whole farm fertiliser application
 
-    'Whole farm fertiliser event
+    <Description("Whole farm fertiliser event")> _
     <EventHandler()> Public Sub OnApplyFertiliser(ByVal amount As FertiliserApplicationType)
         'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
         myFertiliserAmount += myFarm.Fertilise(amount, ApplyFertToEffluentPdks)
         'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
     End Sub
 
-    'Whole farm irrigation application
+    <Description("Whole farm irrigation application")> _
     <EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
         'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
         myIrrigationAmount += myFarm.Irrigate(amount, myIrrigation_efficiency)
         'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
     End Sub
 
-    'Overloaded irrigation Apply event
+    <Description("Overloaded irrigation Apply event")> _
     <EventHandler()> Public Sub OnApply(ByVal amount As IrrigationApplicationType)
         OnApplyIrrigation(amount)
     End Sub
 
-    'Overloaded fertiliser Apply event
+    <Description("Overloaded fertiliser Apply event")> _
     <EventHandler()> Public Sub OnApply(ByVal amount As FertiliserApplicationType)
         OnApplyFertiliser(amount)
     End Sub
 
-    'Amount of water applied in relation to the whole farm
+    <Description("Amount of water applied in relation to the whole farm")> _
     <Output()> <Units("mm/ha")> Public ReadOnly Property Irrigation() As Double
         Get
             Return myIrrigationAmount
         End Get
     End Property
 
-    'Amount of fertiliser applied in relation to the whole farm
+    <Description("Amount of fertiliser applied in relation to the whole farm")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property Fertiliser() As Double
         Get
             Return myFertiliserAmount
@@ -241,7 +239,7 @@ Public Class DDRules
     End Property
 #End Region
 
-    'Proportion of applied irrgation that reaches the soil surface
+    <Description("Proportion of applied irrgation that reaches the soil surface")> _
     <Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
         Get
             Return myIrrigation_efficiency
@@ -270,7 +268,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Take dry stock off farm
+    <Description("Take dry stock off farm")> _
     <Output()> <Units("")> Public Property WinterOffDryStock() As Integer
         Get
             If (myFarm.WinterOffDryStock) Then
@@ -284,7 +282,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Set paddocks avalibility to be included in the grazing rotation
+    <Description("Set paddocks avalibility to be included in the grazing rotation")> _
     <Output()> <Units("")> Public Property PaddockGrazable(ByVal i As Integer) As Integer
         Get
             Return myFarm.PaddockGrazable(i)
@@ -329,7 +327,7 @@ Public Class DDRules
 
 
 #Region "CowProperties"
-    'Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off
+    <Description("Stocking is the actual number of cows on farm i.e. normal stocking rate less cows wintering off")> _
     <Output()> <Units("cows/ha")> Public Property StockingRate() As Double
         Get
             Return myFarm.StockingRate
@@ -356,7 +354,7 @@ Public Class DDRules
     '        End Set
     'End Property
 
-    'Stocking rate a peak of lactation
+    <Description("Stocking rate a peak of lactation")> _
     <Output()> <Units("cows/ha")> Public Property PeakStockingRate() As Single
         Get
             Return StockingRate
@@ -370,21 +368,21 @@ Public Class DDRules
         End Set
     End Property
 
-    'ME still required to meet animal requirements
+    <Description("ME still required to meet animal requirements")> _
     <Output()> <Units("MJME")> Public ReadOnly Property RemainingFeedDemand() As Double
         Get
             Return myHerd.RemainingFeedDemand
         End Get
     End Property
 
-    'Total animal requirements [MJME] (for the full herd)
+    <Description("Total animal requirements [MJME] (for the full herd)")> _
     <Output()> <Units("Cows")> Public ReadOnly Property TotalCows() As Double
         Get
             Return myFarm.TotalCows
         End Get
     End Property
 
-    'Total animal requirements [MJME] (for the full herd)
+    <Description("Total animal requirements [MJME] (for the full herd)")> _
     <Output()> <Units("MJME")> Public ReadOnly Property TotalFeedDemand() As Double
         Get
             Return myHerd.TodaysEnergyRequirement
@@ -392,39 +390,39 @@ Public Class DDRules
     End Property
 
 #Region "ME Requirements (Herd)"
-    'Total Metabolisable energy required by herd [MJME/day]
+    <Description("Total Metabolisable energy required by herd [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Total() As Double
         Get
             Return myHerd.ME_Total
         End Get
     End Property
 
-    'Metabolisable energy required by herd for maintance [MJME/day]
+    <Description("Metabolisable energy required by herd for maintance [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Maintance() As Double
         Get
             Return myHerd.ME_Maintance
         End Get
     End Property
 
-    'Metabolisable energy required by herd for lactation [MJME/day]
+    <Description("Metabolisable energy required by herd for lactation [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Lactation() As Double
         Get
             Return myHerd.ME_Lactation
         End Get
     End Property
-    'Metabolisable energy required by herd for pregnancy [MJME/day]
+    <Description("Metabolisable energy required by herd for pregnancy [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Pregnancy() As Double
         Get
             Return myHerd.ME_Pregnancy
         End Get
     End Property
-    ' Metabolisable energy required by herd for walking [MJME/day]
+    <Description("Metabolisable energy required by herd for walking [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_Walking() As Double
         Get
             Return myHerd.ME_Walking
         End Get
     End Property
-    'Metabolisable energy required by herd for live weight change [MJME/day]
+    <Description("Metabolisable energy required by herd for live weight change [MJME/day]")> _
     <Output()> <Units("MJME")> Public ReadOnly Property ME_Demand_WeightChange() As Double
         Get
             Return myHerd.ME_WeightChange
@@ -432,59 +430,59 @@ Public Class DDRules
     End Property
 #End Region
 #Region "ME Requirements (Cow)"
-    'Total Metabolisable energy required [MJME/cow/day]
+    <Description("Total Metabolisable energy required [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Total_Cow() As Double
         Get
             Return myHerd.ME_Total_Cow
         End Get
     End Property
 
-    'Metabolisable energy required for maintainence [MJME/cow/day]
+    <Description("Metabolisable energy required for maintainence [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Maintance_Cow() As Double
         Get
             Return myHerd.ME_Maintance_Cow
         End Get
     End Property
-    'Metabolisable energy required for lactation [MJME/cow/day]
+    <Description("Metabolisable energy required for lactation [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Lactation_Cow() As Double
         Get
             Return myHerd.ME_Lactation_Cow
         End Get
     End Property
-    'Metabolisable energy required for live weight change [MJME/cow/day]
+    <Description("Metabolisable energy required for live weight change [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_WeightChange_Cow() As Double
         Get
             Return myHerd.ME_WeightChange_Cow
         End Get
     End Property
-    'Metabolisable energy required for pregnancy [MJME/cow/day]
+    <Description("Metabolisable energy required for pregnancy [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Pregnancy_Cow() As Double
         Get
             Return myHerd.ME_Pregnancy_Cow
         End Get
     End Property
-    'Metabolisable energy required for walking [MJME/cow/day]
+    <Description("Metabolisable energy required for walking [MJME/cow/day]")> _
     <Output()> <Units("MJME/cow")> Public ReadOnly Property ME_Demand_Walking_Cow() As Double
         Get
             Return myHerd.ME_Walking_Cow
         End Get
     End Property
 #End Region
-    'Milk solids production - total
+    <Description("Milk solids production - total")> _
     <Output()> <Units("kgMS/day")> Public ReadOnly Property MilkSolids() As Double
         Get
             Return myHerd.MS_per_Day
         End Get
     End Property
 
-    'Milk solids production - total
+    <Description("Milk solids production - total")> _
     <Output()> <Units("kgMS/day")> Public ReadOnly Property MilkSolids_Ha() As Double
         Get
             Return myHerd.MS_per_Day_Cow * StockingRate
         End Get
     End Property
 
-    'Milk solids production per cow
+    <Description("Milk solids production per cow")> _
     <Output()> <Units("kgMS/cow/day")> Public ReadOnly Property MilkSolids_Cow() As Double
         Get
             Return myHerd.MS_per_Day_Cow
@@ -505,28 +503,28 @@ Public Class DDRules
     '        End Get
     'End Property
 
-    'Average cow live weight
+    <Description("Average cow live weight")> _
     <Output()> <Units("kg_LWt/Cow")> Public ReadOnly Property Cow_LWt() As Double
         Get
             Return myHerd.Live_Weight
         End Get
     End Property
 
-    'Average cows change in live weight
+    <Description("Average cows change in live weight")> _
     <Output()> <Units("kg_LWt/cow/day")> Public ReadOnly Property Cow_dLWt() As Double
         Get
             Return myHerd.LWt_Change
         End Get
     End Property
 
-    'Averge body condition score
+    <Description("Averge body condition score")> _
     <Output()> <Units("")> Public ReadOnly Property Cow_BC() As Double
         Get
             Return myHerd.BC
         End Get
     End Property
 
-    'Is herd currently dried off
+    <Description("Is herd currently dried off")> _
     <Output()> <Units("")> Public ReadOnly Property Cow_IsDry() As Integer
         Get
             If (myHerd.isDry) Then
@@ -538,7 +536,7 @@ Public Class DDRules
     End Property
 #End Region
 
-    'Current grazing interval / return period
+    <Description("Current grazing interval / return period")> _
     <Output()> <Units("Days")> Public Property GrazingInterval() As Integer
         Get
             Return myFarm.GrazingInterval
@@ -549,7 +547,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Current cow grazing residual
+    <Description("Current cow grazing residual")> _
     <Output()> <Units("kgDM/ha")> Public Property GrazingResidual() As Integer
         Get
             Return myFarm.GrazingResidual
@@ -560,14 +558,14 @@ Public Class DDRules
         End Set
     End Property
 
-    'Quantity of silage cut on farm today [kgDM/day]
+    <Description("Quantity of silage cut on farm today [kgDM/day]")> _
     <Output()> <Units("kgDM")> Public ReadOnly Property SilageCut_kg() As Double
         Get
             Return myFarm.SilageCut
         End Get
     End Property
 
-    'Quantity of silage cut on farm today [kgDM/ha/day]
+    <Description("Quantity of silage cut on farm today [kgDM/ha/day]")> _
     <Output()> <Units("kgDM/ha")> Public ReadOnly Property SilageCut_kgha() As Double
         Get
             Return SilageCut_kg / FarmArea
@@ -576,35 +574,35 @@ Public Class DDRules
 
 #Region "2: Feeding Supplements"
 
-    'Quantity of silage fed to cows today [kgDM/ha/day]
+    <Description("Quantity of silage fed to cows today [kgDM/ha/day]")> _
     <Output()> <Units("kgDM/ha")> Public ReadOnly Property SupplementFedOut_kgha() As Double
         Get
             Return SupplementFedOut / FarmArea
         End Get
     End Property
 
-    'Quantity of silage fed to cows today [kgDM/ha/day]
+    <Description("Quantity of silage fed to cows today [kgDM/ha/day]")> _
     <Output()> <Units("kgDM/ha")> Public ReadOnly Property SilageFedOut_kgha() As Double
         Get
             Return SilageFedOut / FarmArea
         End Get
     End Property
 
-    'Quantity of silage fed to cows today [kgDM/day]
+    <Description("Quantity of silage fed to cows today [kgDM/day]")> _
     <Output()> <Units("kgDM")> Public ReadOnly Property SupplementFedOut() As Double
         Get
             Return myFarm.SupplementFedOut
         End Get
     End Property
 
-    'Quantity of silage fed to cows today [kgDM/day]
+    <Description("Quantity of silage fed to cows today [kgDM/day]")> _
     <Output()> <Units("kgDM")> Public ReadOnly Property SilageFedOut() As Double
         Get
             Return myFarm.SilageFedOut
         End Get
     End Property
 
-    'Energy content of purchased supplement
+    <Description("Energy content of purchased supplement")> _
     <Output()> <Units("MJME/kgDM")> Public Property SupplementME() As Double
         Get
             Return myFarm.SupplementME
@@ -614,7 +612,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Nitrogen content of purchased supplement
+    <Description("Nitrogen content of purchased supplement")> _
     <Output()> <Units("kgN/kgDM")> Public Property SupplementN() As Double
         Get
             Return myFarm.SupplementN
@@ -624,7 +622,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Supplment digestability
+    <Description("Supplment digestability")> _
     <Output()> <Units("0-1")> Public Property SupplementDigestability() As Double
         Get
             Return myFarm.SupplementDigestability
@@ -634,7 +632,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Supplment loss at feeding out
+    <Description("Supplment loss at feeding out")> _
     <Output()> <Units("%")> Public Property SupplementWastage() As Double
         Get
             Return myFarm.SupplementWastage * 100
@@ -644,7 +642,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)
+    <Description("Proportion of silage lost during feeding out (Default = 15%, source DairyNZ)")> _
     <Output()> <Units("0-1")> Public Property SilageWastage() As Double
         Get
             Return myFarm.SilageWastage * 100
@@ -654,7 +652,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Silage digestability (could this be made read only once the store has been refactored)
+    <Description("Silage digestability (could this be made read only once the store has been refactored)")> _
     <Output()> <Units("0-1")> Public Property SilageDigestability() As Double
         Get
             Return myFarm.SilageDigestability
@@ -664,7 +662,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage]
+    <Description("proportion of pasture ME captured during silage making [default = 0.9, e.g. 12 ME pasture produces 10.8 ME silage")> _
     <Output()> <Units("0-1")> Public Property SilageQualityModifier() As Double
         Get
             Return myFarm.SilageQualityModifier
@@ -687,7 +685,7 @@ Public Class DDRules
     'Last Conservation Date - uing a month for the time being
     '<Output()> <Units("")> Public LCD As Integer = 3
 
-    'Energy content of silage produced on farm
+    <Description("Energy content of silage produced on farm")> _
     <Output()> <Units("MJME/kgDM")> Public Property SilageME() As Double
         Get
             Return myFarm.SilageME
@@ -697,7 +695,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Nitrogen content of silage produced on farm
+    <Description("Nitrogen content of silage produced on farm")> _
     <Output()> <Units("kgN/kgDM")> Public Property SilageN() As Double
         Get
             Return myFarm.SilageN
@@ -707,7 +705,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Supplment/silage loss during cutting
+    <Description("Supplment/silage loss during cutting")> _
     <Output()> <Units("%")> Public Property SilageCutWastage() As Double
         Get
             Return myFarm.SilageCutWastage * 100
@@ -716,7 +714,7 @@ Public Class DDRules
             myFarm.SilageCutWastage = value / 100
         End Set
     End Property
-    'First Conservation Date
+    <Description("First Conservation Date")> _
     <Output()> <Units("")> Public Property ConservationStart() As String
         Get
             Return myFarm.FCD.ToString("dd-MMM")
@@ -726,7 +724,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Last Conservation Date
+    <Description("Last Conservation Date")> _
     <Output()> <Units("")> Public Property ConservationFinish() As String
         Get
             Return myFarm.LCD.ToString("dd-MMM")
@@ -736,7 +734,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Storage of cut silage on farm (for later use)
+    <Description("Storage of cut silage on farm (for later use)")> _
     <Output()> <Units("")> Public Property SilageStoreEnable() As Integer
         Get
             If myFarm.EnableSilageStore Then
@@ -751,7 +749,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Amount of silage avalible for feeding out [kgDM]
+    <Description("Amount of silage avalible for feeding out [kgDM]")> _
     <Output()> <Units("kgDM")> Public Property SilageStore() As Double
         Get
             Return myFarm.SilageStore
@@ -761,7 +759,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Amount of silage avalible for feeding out [kgDM]
+    <Description("Amount of silage avalible for feeding out [kgDM]")> _
     <Output()> <Units("kgDM/ha")> Public Property SilageStore_kgha() As Double
         Get
             Return SilageStore() / FarmArea()
@@ -771,7 +769,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Conservation trigger mass (close paddocks above this residual)
+    <Description("Conservation trigger mass (close paddocks above this residual)")> _
     <Output()> <Units("kgDM/ha")> Public Property ConservationTrigger() As Double
         Get
             Return myFarm.CDM
@@ -781,7 +779,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Conservation cutting residual
+    <Description("Conservation cutting residual")> _
     <Output()> <Units("kgDM/ha")> Public Property ConservationResidual() As Double
         Get
             Return myFarm.CR
@@ -848,147 +846,147 @@ Public Class DDRules
     '<Output()> <Units("kgN/ha")> Public N_to_feaces As Single
     '<Output()> <Units("kgN/ha")> Public N_to_urine As Single
 
-    'Total nitrogen balance of herd
+    <Description("Total nitrogen balance of herd")> _
     <Output()> <Units("kgN/ha")> Public N_Balance As Single
-    'Nitrogen output of herd
+    <Description("Nitrogen output of herd")> _
     <Output()> <Units("kgN/ha")> Public N_Out As Single
-    'Energy demand
+    <Description("Energy demand")> _
     <Output()> <Units("MJME/ha")> Public ME_Demand As Single
-    'Total Energy consumed
+    <Description("Total Energy consumed")> _
     <Output()> <Units("MJME/ha")> Public ME_Eaten As Single
-    'Energy consumed as silage
+    <Description("Energy consumed as silage")> _
     <Output()> <Units("MJME/ha")> Public ME_Eaten_Pasture As Single
-    'Energy consumed as pasture
+    <Description("Energy consumed as pasture")> _
     <Output()> <Units("MJME/ha")> Public ME_Eaten_Silage As Single
-    'Energy consumed as supplement
+    <Description("Energy consumed as supplement")> _
     <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement As Single
-    'Total dry matter consumed
+    <Description("Total dry matter consumed")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten As Single
-    'Dry matter consumed as pasture
+    <Description("Dry matter consumed as pasture")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten_Pasture As Single
-    'Dry matter consumed as silage
+    <Description("Dry matter consumed as silage")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten_Silage As Single
-    'Dry matter consumed as supplement
+    <Description("Dry matter consumed as supplement")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement As Single
-    'Total nitrogen consumed
+    <Description("Total nitrogen consumed")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten As Single
-    'Nitrogen consumed form pasture
+    <Description("Nitrogen consumed form pasture")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture As Single
-    'Nitrogen consumed form silage
+    <Description("Nitrogen consumed form silage")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten_Silage As Single
-    'Nitrogen consumed form supplement
+    <Description("Nitrogen consumed form supplement")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement As Single
-    'Nitrogen partitioned to milk
+    <Description("Nitrogen partitioned to milk")> _
     <Output()> <Units("kgN/ha")> Public N_to_milk As Single
-    'Nitrogen partitioned to body condition
+    <Description("Nitrogen partitioned to body condition")> _
     <Output()> <Units("kgN/ha")> Public N_to_BC As Single
-    'Nitrogen partitioned to dung
+    <Description("Nitrogen partitioned to dung")> _
     <Output()> <Units("kgN/ha")> Public N_to_feaces As Single
-    'Nitrogen partitioned to urine
+    <Description("Nitrogen partitioned to urine")> _
     <Output()> <Units("kgN/ha")> Public N_to_urine As Double
-    'Drymatter partitioned to dung
+    <Description("Drymatter partitioned to dung")> _
     <Output()> <Units("kgDM/ha")> Public DM_to_feaces As Single
 
-    'Current status of paddocks
+    <Description("Current status of paddocks")> _
     <Output()> <Units("")> Public ReadOnly Property PaddockStatus() As String()
         Get
             Return myFarm.PaddockStatus
         End Get
     End Property
 
-    'Energy consumed as pasture per paddock
+    <Description("Energy consumed as pasture per paddock")> _
     <Output()> <Units("kgDM/ha/day")> Public ReadOnly Property AverageGrowthRate() As Single
         Get
             Return myFarm.AverageGrowthRate
         End Get
     End Property
 
-    'Energy consumed as pasture per paddock
+    <Description("Energy consumed as pasture per paddock")> _
     <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pasture_Pdks() As Single()
         Get
             Return myFarm.ME_Eaten_Pasture_Pdks
         End Get
     End Property
-    'Energy consumed as Supplements per paddock
+    <Description("Energy consumed as Supplements per paddock")> _
     <Output()> <Units("MJME/ha")> Public ME_Eaten_Supplement_Pdks As Single()
 
-    'Energy consumed per paddock
+    <Description("Energy consumed per paddock")> _
     <Output()> <Units("MJME/ha")> Public ReadOnly Property ME_Eaten_Pdks() As Single()
         Get
             Return myFarm.ME_Eaten_Pdks
         End Get
     End Property
-    'Total Dry matter consumed per paddock [kgDM/day]
+    <Description("Total Dry matter consumed per paddock [kgDM/day]")> _
     <Output()> <Units("kgDM")> Public ReadOnly Property DM_Eaten_Pdks() As Single()
         Get
             Return myFarm.DM_Eaten_Pdks
         End Get
     End Property
 
-    'Dry matter consumed per paddock [kgDM/ha/day]
+    <Description("Dry matter consumed per paddock [kgDM/ha/day]")> _
     <Output()> <Units("kgDM/ha")> Public ReadOnly Property DM_Eaten_Pdks_ha() As Single()
         Get
             Return myFarm.DM_Eaten_Pdks_Ha
         End Get
     End Property
 
-    'Dry matter consumed as pasture per paddock
+    <Description("Dry matter consumed as pasture per paddock")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten_Pasture_Pdks As Single()
-    'Dry matter consumed as supplement per paddock
+    <Description("Dry matter consumed as supplement per paddock")> _
     <Output()> <Units("kgDM/ha")> Public DM_Eaten_Supplement_Pdks As Single()
-    'Nitrogen consumed per paddock
+    <Description("Nitrogen consumed per paddock")> _
     <Output()> <Units("kgN/ha")> Public ReadOnly Property N_Eaten_Pdks() As Single()
         Get
             Return myFarm.N_Eaten_Pdks
         End Get
     End Property
-    'Nitrogen consumed as pasture per paddock
+    <Description("Nitrogen consumed as pasture per paddock")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten_Pasture_Pdks As Single()
-    'Nitrogen consumed as supplement per paddock
+    <Description("Nitrogen consumed as supplement per paddock")> _
     <Output()> <Units("kgN/ha")> Public N_Eaten_Supplement_Pdks As Single()
-    'Nitrogen partitioned to milk per paddock
+    <Description("Nitrogen partitioned to milk per paddock")> _
     <Output()> <Units("kgN/ha")> Public N_to_milk_Pdks As Single()
-    'Nitrogen partitioned to body contition per paddock
+    <Description("Nitrogen partitioned to body contition per paddock")> _
     <Output()> <Units("kgN/ha")> Public N_to_BC_Pdks As Single()
-    'Nitrogen partitioned to dung per paddock
+    <Description("Nitrogen partitioned to dung per paddock")> _
     <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_feaces_Pdks() As Single()
         Get
             Return myFarm.N_to_feaces_Pdks
         End Get
     End Property
-    'Nitrogen partitioned to urine per paddock
+    <Description("Nitrogen partitioned to urine per paddock")> _
     <Output()> <Units("kgN/ha")> Public ReadOnly Property N_to_urine_Pdks() As Double()
         Get
             Return myFarm.N_to_urine_Pdks
         End Get
     End Property
-    'Energy demand per cow
+    <Description("Energy demand per cow")> _
     <Output()> <Units("MJME/cow")> Public ME_Demand_Cow As Single
-    'Energy consumed per cow
+    <Description("Energy consumed per cow")> _
     <Output()> <Units("MJME/cow")> Public ME_Eaten_Cow As Single
-    'Energy consumed as pasture per cow
+    <Description("Energy consumed as pasture per cow")> _
     <Output()> <Units("MJME/cow")> Public ME_Eaten_Pasture_Cow As Single
-    'Energy consumed as supplement per cow
+    <Description("Energy consumed as supplement per cow")> _
     <Output()> <Units("MJME/cow")> Public ME_Eaten_Supplement_Cow As Single
-    'Dry matter consumed per cow
+    <Description("Dry matter consumed per cow")> _
     <Output()> <Units("kgDM/cow")> Public DM_Eaten_Cow As Single
-    'Dry matter consumed as pasture per cow
+    <Description("Dry matter consumed as pasture per cow")> _
     <Output()> <Units("kgDM/cow")> Public DM_Eaten_Pasture_Cow As Single
-    'Dry matter consumed as supplement per cow
+    <Description("Dry matter consumed as supplement per cow")> _
     <Output()> <Units("kgDM/cow")> Public DM_Eaten_Supplement_Cow As Single
-    'Nitrogen consumed per cow
+    <Description("Nitrogen consumed per cow")> _
     <Output()> <Units("kgN/cow")> Public N_Eaten_Cow As Single
-    'Nitrogen consumed as pasture per cow
+    <Description("Nitrogen consumed as pasture per cow")> _
     <Output()> <Units("kgN/cow")> Public N_Eaten_Pasture_Cow As Single
-    'Nitrogen consumed as supplement per cow
+    <Description("Nitrogen consumed as supplement per cow")> _
     <Output()> <Units("kgN/cow")> Public N_Eaten_Supplement_Cow As Single
-    'Nitrogen partitioned to milk per cow
+    <Description("Nitrogen partitioned to milk per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_milk_Cow As Single
-    'Nitrogen partitioned to body condition per cow
+    <Description("Nitrogen partitioned to body condition per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_BC_Cow As Single
-    'Nitrogen partitioned to dung per cow
+    <Description("Nitrogen partitioned to dung per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_feaces_Cow As Single
-    'Nitrogen partitioned to urine per cow
+    <Description("Nitrogen partitioned to urine per cow")> _
     <Output()> <Units("kgN/cow")> Public N_to_urine_Cow As Double
     'Daily per cow live weight change
 #End Region
@@ -998,7 +996,7 @@ Public Class DDRules
     ' two options
     ' 1) winter off dry stock
     ' 2) winter off between specific dates
-    'Proportion (PWO) of herd wintered off-farm (range 0-1.0)
+    <Description("Proportion (PWO) of herd wintered off-farm (range 0-1.0)")> _
     <Output()> <Units("0-1")> Public Property PWO() As Single
         Get
             Return myFarm.PWO
@@ -1007,7 +1005,7 @@ Public Class DDRules
             myFarm.PWO = value
         End Set
     End Property
-    ' Date commence winter off
+    <Description("Date commence winter off")> _
     <Output()> <Units("")> Public Property DCWO() As String
         Get
             Return myFarm.DCWO
@@ -1016,7 +1014,7 @@ Public Class DDRules
             myFarm.DCWO = Date.Parse(value)
         End Set
     End Property
-    ' Date to stop winter off
+    <Description("Date to stop winter off")> _
     <Output()> <Units("")> Public Property DSWO() As String
         Get
             Return myFarm.DSWO
@@ -1026,14 +1024,14 @@ Public Class DDRules
         End Set
     End Property
 
-    'Percentage wintered off
+    <Description("Percentage wintered off")> _
     <Output()> <Units("%")> Public ReadOnly Property PercentageWinteredOff() As Double
         Get
             Return (myFarm.DryCows() / myFarm.TotalCows) * 100
         End Get
     End Property
 
-    'Proportion of farm allocated to laneways (not grazed)
+    <Description("Proportion of farm allocated to laneways (not grazed)")> _
     <Output()> <Units("0-1")> Public Property PorportionOfFarmInLaneWays() As Double
         Get
             Return myFarm.PorportionOfFarmInLaneWays()
@@ -1043,7 +1041,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Hours per day cows are on laneways
+    <Description("Hours per day cows are on laneways")> _
     <Output()> <Units("0-24")> Public Property HoursOnLaneWays() As Double
         Get
             Return myFarm.HoursOnLaneWays()
@@ -1053,7 +1051,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Hours per day cows are in the dairy shed
+    <Description("Hours per day cows are in the dairy shed")> _
     <Output()> <Units("0-24")> Public Property HoursInDairyShed() As Double
         Get
             Return myFarm.HoursInDairyShed()
@@ -1063,7 +1061,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Amount of effluient being held in storage
+    <Description("Amount of effluient being held in storage")> _
     <Output()> <Units("TBC")> Public ReadOnly Property EffluientPondVolume() As Double
         Get
             Return myFarm.myEffluentPond.Volume
@@ -1085,7 +1083,7 @@ Public Class DDRules
         Console.WriteLine("             Avg length    " & GrowthRateWindowSize)
     End Sub
 
-    'Detail level of debug output (0=none, 1=some, 2=detailed, 3=very detailed)
+    <Description("Detail level of debug output (0=none, 1=some, 2=detailed, 3=very detailed)")> _
     <Param()> <Output()> Property DebugLevel() As Integer
         Get
             Return myDebugLevel
@@ -1096,7 +1094,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Interpolate monthly values to get daily values (warning: this can cause issues) [0=No, 1=Yes]
+    <Description("Interpolate monthly values to get daily values (warning: this can cause issues) [0=No, 1=Yes]")> _
     <Param()> Property Cow_Interpolation() As Integer
         Get
             Return SimpleCow.DoInterpolate
@@ -1106,7 +1104,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Control animal grazing to simulate break feeding of indervidual paddocks [0=No, 1=Yes]
+    <Description("Control animal grazing to simulate break feeding of indervidual paddocks [0=No, 1=Yes]")> _
     <Param()> Property BreakFeeding() As Integer
         Get
             Return LocalPaddockType.DebugTestBreakFeeding
@@ -1116,7 +1114,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Switch to include stolon mass in calculations and reporting [0=No, 1=Yes]
+    <Description("Switch to include stolon mass in calculations and reporting [0=No, 1=Yes]")> _
     <Param()> Property IncludeStolon() As Integer
         Get
             Return LocalPaddockType.IncludeStolon
@@ -1126,7 +1124,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Testing: Use a moving average of daily growth to predict future growth based in past growth
+    <Description("Testing: Use a moving average of daily growth to predict future growth based in past growth")> _
     <Param()> Property GrowthRateWindowSize() As Integer
         Get
             Return LocalPaddockType.MovingAverageSeriesLength
@@ -1137,7 +1135,7 @@ Public Class DDRules
 
     End Property
 
-    'Porportion of farm to return effluient to
+    <Description("Porportion of farm to return effluient to")> _
     <Output()> <Units("0-1")> Public Property EffluentPaddocksPercentage() As Double
         Get
             Return myFarm.EffluentPaddocksPercentage
@@ -1197,49 +1195,49 @@ Public Class DDRules
     'End Sub
 
 
-    'Average pasture mass across the milking platform
+    <Description("Average pasture mass across the milking platform")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property AverageFarmCover() As Double
         Get
             Return myFarm.AverageCover()
         End Get
     End Property
 
-    'Average pasture mass across the milking platform
+    <Description("Average pasture mass across the milking platform")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property AverageFarmCoverWeekly() As Double
         Get
             Return myFarm.AverageFarmCoverWeekly()
         End Get
     End Property
 
-    'Average pasture mass across the milking platform in "clicks". Source 1-15 Using the Rising Plate Meter (RPM)
+    <Description("Average pasture mass across the milking platform in 'clicks'. Source 1-15 Using the Rising Plate Meter (RPM)")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property AverageCoverClicks() As Double
         Get
             Return (myFarm.AverageCover() - 500) / 140.0
         End Get
     End Property
 
-    'Amount of dry matter on farm in relation to the amount required to meet animal demands (+ve = surplus, -ve deficit)
+    <Description("Amount of dry matter on farm in relation to the amount required to meet animal demands (+ve = surplus, -ve deficit)")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property FeedSituation() As Double
         Get
             Return myFarm.FeedSituation()
         End Get
     End Property
 
-    'Ideal average pasture mass across the milking platform in order to meet animal demands
+    <Description("Ideal average pasture mass across the milking platform in order to meet animal demands")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property IdealAvgGrazingCover() As Double
         Get
             Return myFarm.IdealGrazingCover()
         End Get
     End Property
 
-    'Ideal pre-grazing pasture mass required to meet animal demands, post-grazing residual and rotation length
+    <Description("Ideal pre-grazing pasture mass required to meet animal demands, post-grazing residual and rotation length")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property IdealPreGrazingCover() As Double
         Get
             Return myFarm.IdealPreGrazingCover()
         End Get
     End Property
 
-    'Test array output (not used)
+    <Description("Test array output (not used)")> _
     <Output()> <Units("")> Public Property Test_Pdks() As String()
         Get
             Return New String() {"This", "is", "a", "test"}
@@ -1252,14 +1250,14 @@ Public Class DDRules
         End Set
     End Property
 
-    'Average plant available water (proportion availble in the top 300mm)
+    <Description("Average plant available water (proportion availble in the top 300mm)")> _
     <Output()> <Units("0-1")> Public ReadOnly Property PlantAvalibleWater As Single
         Get
             Return myFarm.PlantAvalibleWater(300)
         End Get
     End Property
 
-    'Set milk production data
+    <Description("Set milk production data")> _
     <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As Double()
         Get
             Return myFarm.getMilkSolids()
@@ -1281,7 +1279,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Set paddocks to return dairyshed effluent to
+    <Description("Set paddocks to return dairyshed effluent to")> _
     <Output()> <Units("")> Public Property EffluentPaddocks As String()
         Get
             If (strEffluentPaddocks Is Nothing) Then
@@ -1305,7 +1303,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Set paddocks to return laneway effluent to
+    <Description("Set paddocks to return laneway effluent to")> _
     <Output()> <Units("")> Public Property LanewayPaddocks As String
         Get
             If (strLanewayPaddocks Is Nothing) Then
@@ -1335,7 +1333,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Set Live Weight Profile
+    <Description("Set Live Weight Profile")> _
     <Output()> <Units("kgMS/cow/day")> Public Property LWtCurve As Double()
         Get
             Return myFarm.getLiveWeight()
@@ -1349,7 +1347,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Grazing allocation system used (0=Simple, 1=Feed Wedge)
+    <Description("Grazing allocation system used (0=Simple, 1=Feed Wedge)")> _
     <Output()> <Units("0,1")> Public Property AllocationType() As Integer
         Get
             Return myFarm.AllocationType
@@ -1359,7 +1357,7 @@ Public Class DDRules
         End Set
     End Property
 
-    'Proportion of total cows to dry off [0-1]
+    <Description("Proportion of total cows to dry off [0-1]")> _
     <Output()> <Units("0-1")> Public Property DryOffProportion() As Double
         Get
             Return myFarm.DryOffProportion
@@ -1369,14 +1367,14 @@ Public Class DDRules
         End Set
     End Property
 
-    'Number of dry cows on farm
+    <Description("Number of dry cows on farm")> _
     <Output()> ReadOnly Property DryCows As Double
         Get
             Return myFarm.DryCows
         End Get
     End Property
 
-    'Number of milking cows on farm
+    <Description("Number of milking cows on farm")> _
     <Output()> ReadOnly Property MilkingCows As Double
         Get
             Return myFarm.MilkingCows
