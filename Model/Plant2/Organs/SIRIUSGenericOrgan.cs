@@ -19,6 +19,11 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function DMRetranslocationFactor = null;
     [Link(IsOptional=true)]
     new protected Function StructuralFraction = null;
+    [Link(IsOptional = true)]
+    protected Function PopulationBasedDemand = null;
+    [Link(IsOptional = true)]
+    protected Function InternodeDemand = null;
+    
  #endregion
 
  #region Class data members
@@ -33,6 +38,9 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     private double StartStructuralWt = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
+
+    //[Link]
+    //Leaf Leaf = null;
 
     [Link]
     protected Function MaximumNConc = null;
@@ -70,14 +78,25 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
  #endregion
 
  #region Arbitrator methods
-    //Get Methods to provide Leaf Status
     public override double DMDemand
     {
         get
         {
-            //Function StructuralFraction = Children["StructuralFraction"] as Function;
-            StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * _StructuralFraction;
-            return StructuralDMDemand;
+            if (PopulationBasedDemand != null)
+            {
+                StructuralDMDemand = PopulationBasedDemand.Value * _StructuralFraction;
+                return StructuralDMDemand;
+            }
+            else if (InternodeDemand != null)
+            {
+                StructuralDMDemand = InternodeDemand.Value * _StructuralFraction;
+                return StructuralDMDemand;
+            }
+            else
+            {
+                StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * _StructuralFraction;
+                return StructuralDMDemand;
+            }
         }
     }
     public override double DMSinkCapacity

@@ -1096,18 +1096,14 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <XYPairs />
       </LinearInterpolationFunction>
     </BellCurveFunction>
-    <DeterminantLeafSizeFunction>
-      <FirstLeafSize>
-      </FirstLeafSize>
-      <JuvenileLeafsizeincrement>
-      </JuvenileLeafsizeincrement>
-      <LargestLeafSize>
-      </LargestLeafSize>
-      <LargestLeafPosition>
-      </LargestLeafPosition>
-      <FlagLeafSize>
-      </FlagLeafSize>
-    </DeterminantLeafSizeFunction>
+    <RelativeToFinalNodeFunction name="name">
+            <InitialSize type="text" description="InitialSize">0.001</InitialSize>
+            <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">0.001</EarlyStageSizeIncrement>
+            <SizeOfLargest type="text" description="SizeOfLargest">.4</SizeOfLargest>
+            <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
+            <SizeAtFinalNode type="text" description="SizeAtFinalNode">.3</SizeAtFinalNode>
+            <ChangeStage type="text" description="Stage code when rate change occurs">4.0</ChangeStage>
+    </RelativeToFinalNodeFunction>
     <TemperatureFunction>
       <XYPairs>
         <XY>5 0</XY>
@@ -1176,5 +1172,20 @@ General Format:
 
 </Memo>
     </ExternalVariable>
+    <PopulationBasedDemandFunction>
+      <StartStage>5.0</StartStage>
+      <GrowthDuration>120</GrowthDuration>
+      <MaximumOrganWt>6</MaximumOrganWt>
+      <Memo>Creates a DM demand for the parent organ based on the number of stems/m2 and the potential weight of the organ.  It begins growing the organ on when the start stage is reached and grows it at a linear rate for the growth duration.
+	  </Memo>
+      <TemperatureFunction name="ThermalTime">
+        <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>30 30</XY>
+          <XY>40 0</XY>
+        </XYPairs>
+      </TemperatureFunction>
+    </PopulationBasedDemandFunction>
   </folder>
 </folder>
