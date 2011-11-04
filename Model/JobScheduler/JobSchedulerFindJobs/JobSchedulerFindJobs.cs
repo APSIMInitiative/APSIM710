@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
-using CSGeneral;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Xml;
+using CSGeneral;
 using ApsimFile;
 
 class Program
@@ -14,7 +15,7 @@ class Program
     /// <summary>
     /// This program locates files and adds them as jobs to the JobScheduler.
     /// The first argument is the filespec (including directory path) e.g. 
-    ///   c:\Apsim\Examples\*.apsim.   
+    ///   c:\Apsim\Examples\*.apsim, or "c:\Apsim\Examples\Continuous Wheat.apsim"
     /// The second argument is a "NodePath". This is a reference to a node
     /// in the JobScheduler tree under which this program is to add the new
     /// jobs. When this program opens a socket connection to the JobScheduler,
@@ -42,96 +43,234 @@ class Program
     private static void Go(string DirFileSpec, string NodePath)
     {
         string RootDirectory = Path.GetDirectoryName(DirFileSpec);
-        string FileSpec = Path.GetFileName(DirFileSpec);
 
-        List<string> FileNames = new List<string>();
-        Utility.FindFiles(RootDirectory, FileSpec, ref FileNames, false);
-
-        // For each filename found, add a job for each simulation in each file.
-        string XML = "AddXML~" + NodePath + "~";
-        XmlDocument Doc = new XmlDocument();
-        Doc.AppendChild(Doc.CreateElement("Build"));
-        foreach (string FileName in FileNames)
+        if (File.Exists(DirFileSpec))
         {
-            try
+            XmlDocument Doc = new XmlDocument();
+            XmlNode Node = Doc.AppendChild(Doc.CreateElement("dummy"));
+            if (Path.GetExtension(DirFileSpec).ToLower() == ".con")
             {
-                if (Path.GetExtension(FileName).ToLower() == ".con" ||
-                    Path.GetExtension(FileName).ToLower() == ".apsim")
-                    CreateApsimJobXML(FileName, Doc.DocumentElement);
+                // Run ConToSim, find the .sim files created, and insert them back into the tree
+                CreateConJobXML(DirFileSpec, Node);
+            }
+            else if (Path.GetExtension(DirFileSpec).ToLower() == ".apsim")
+            {
+                CreateApsimJobXML(DirFileSpec, Node);
+            }
+            else if (Path.GetExtension(DirFileSpec).ToLower() == ".sim")
+            {
+                CreateSimJobXML(DirFileSpec, Node);
+            }
+            else
+            {
+                CreateShellExecuteJobXML(DirFileSpec, Node);
+            }
+            string XML = "AddXML~" + NodePath + "/RunApsim~" + Doc.DocumentElement.OuterXml;
+            TalkToJobScheduler(XML);
+            Console.WriteLine("xml=" + XML);
+        }
+        else
+        {
+            // Scan a directory.
+            // 1. For each filename found, add a job for each simulation in each file.
+            string FileSpec = Path.GetFileName(DirFileSpec);
+            List<string> FileNames = new List<string>();
+            Utility.FindFiles(RootDirectory, FileSpec, ref FileNames, false);
+            foreach (string FileName in FileNames)
+            {
+                // 2. Create a structure to send back to the Scheduler
+                XmlDocument Doc = new XmlDocument();
+                XmlNode RootNode = Doc.AppendChild(Doc.CreateElement("dummy"));
+                string XML;
+                if (Path.GetExtension(FileName).ToLower() == ".con" || Path.GetExtension(FileName).ToLower() == ".apsim" || Path.GetExtension(FileName).ToLower() == ".sim")
+                {
+                    // Book in another instance to call Create[Con|Apsim]Job
+                    ScheduleJobXML(FileName, NodePath, RootNode);
+                    XML = "AddXML~" + NodePath + "/CreateSims~" + Doc.DocumentElement.OuterXml;
+                }
                 else
                 {
-                    XmlNode NewJobNode = Doc.CreateElement("Job");
-                    Doc.DocumentElement.AppendChild(NewJobNode);
-                    XmlHelper.SetName(NewJobNode, StringManip.DQuote(FileName));
-                    XmlHelper.SetValue(NewJobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
-                    XmlHelper.SetValue(NewJobNode, "CommandLine", Path.GetFileName(FileName));
+                    CreateShellExecuteJobXML(FileName, RootNode);
+                    XML = "AddXML~" + NodePath + "/~" + Doc.DocumentElement.OuterXml;
                 }
-            }
-            catch (Exception err)
-            {
-                throw new Exception(err.Message + ". File name = " + FileName);
+                TalkToJobScheduler(XML);
             }
         }
-        XML += Doc.DocumentElement.OuterXml;
-        TalkToJobScheduler(XML);
+
+    }
+    /// <summary>
+    /// Create a job to convert a [.con or .apsim] file.
+    /// </summary>
+    private static void ScheduleJobXML(string FileName, string NodePath, XmlNode RootNode)
+    {
+        XmlNode JobNode = RootNode.AppendChild(RootNode.OwnerDocument.CreateElement("Job"));
+
+        XmlHelper.SetName(JobNode, "Convert To Sim " + FileName);
+        XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
+
+        string commandLine = ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "JobSchedulerFindJobs.exe")) + " " + StringManip.DQuote(FileName) + " " + NodePath);
+        XmlHelper.SetValue(JobNode, "CommandLine", commandLine);
+        XmlHelper.SetValue(JobNode, "CommandLineUnix", commandLine);
+
     }
 
     /// <summary>
     /// For APSIM simulations, create a special type of job that not only runs
     /// ApsimToSim (or ConToSim) but also APSIM.
     /// </summary>
-    private static void CreateApsimJobXML(string FileName, XmlNode RootNode)
+    private static void CreateApsimJobXML(string FileName, XmlNode Node)
     {
-        XmlNode CreateSimsNode = XmlHelper.Find(RootNode, "CreateSims");
-        XmlNode RunApsimNode = XmlHelper.Find(RootNode, "RunApsim");
-        if (CreateSimsNode == null)
+        // Add multiple nodes to the RunApsim folder.
+        ApsimFile.ApsimFile Apsim = new ApsimFile.ApsimFile();
+        PlugIns.LoadAll();
+        Apsim.OpenFile(FileName);
+        foreach (ApsimFile.Component Child in Apsim.RootComponent.ChildNodes)
         {
-            CreateSimsNode = RootNode.OwnerDocument.CreateElement("Folder");
-            RootNode.AppendChild(CreateSimsNode);
-            XmlHelper.SetName(CreateSimsNode, "CreateSims");
-
-            RunApsimNode = RootNode.OwnerDocument.CreateElement("Folder");
-            RootNode.AppendChild(RunApsimNode);
-            XmlHelper.SetName(RunApsimNode, "RunApsim");
-            //XmlHelper.SetAttribute(RunApsimNode, "wait", "yes");
+            CreateApsimJobXML(Child, Node);
         }
-
-        string SimConvTool;
-        List<string> SimFileNames = new List<string>();
-        if (Path.GetExtension(FileName).ToLower() == ".con")
+    }
+    private static void CreateApsimJobXML(Component Comp, XmlNode Node)
+    {
+        if (Comp.Type.ToLower() == "simulation" && Comp.Enabled)
         {
-            SimFileNames = ConFile.GetSimsInConFile(FileName);
-            SimConvTool = "ConToSim.exe";
-            for (int i = 0; i < SimFileNames.Count; i++)
-                SimFileNames[i] = Path.GetFileNameWithoutExtension(FileName)
-                                  + "." + SimFileNames[i];
-
+            string SimFileName = ApsimToSim.WriteSimFile(Comp);
+            if (Path.DirectorySeparatorChar == '\\') SimFileName = SimFileName.Replace('/', '\\'); else SimFileName = SimFileName.Replace('\\', '/');
+            string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
+            XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
+            XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+            XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(SimFileName));
+            XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+            XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
         }
-        else
+        else if (Comp.Type.ToLower() == "folder" && Comp.Enabled)
         {
-            SimConvTool = "ApsimToSim.exe";
-            SimFileNames = ApsimFile.ApsimFile.GetSimNamesInApsimFile(FileName);
+            foreach (Component Child in Comp.ChildNodes)
+               if (Child.Type == "simulation" || Child.Type == "folder")
+                   CreateApsimJobXML(Child, Node);
         }
-        for (int i = 0; i < SimFileNames.Count; i++)
-            SimFileNames[i] += ".sim";
-
-        // Add a node to CreateSims folder
-        XmlNode JobNode = CreateSimsNode.AppendChild(RootNode.OwnerDocument.CreateElement("Job"));
-        XmlHelper.SetName(JobNode, SimConvTool + " " + FileName);
-        XmlHelper.SetValue(JobNode, "WorkingDirectory", "%Apsim%\\Model");
-        XmlHelper.SetValue(JobNode, "CommandLine", SimConvTool + " " + StringManip.DQuote(FileName));
+    }
+    /// <summary>
+    /// For APSIM simulations, create a job that runs APSIM.
+    /// </summary>
+    private static void CreateConJobXML(string FileName, XmlNode Node)
+    {
+        List<string> SimFileNames = GetSimsInConFile(FileName);
 
         // Add multiple nodes to the RunApsim folder.
         foreach (string SimFileName in SimFileNames)
         {
-            string FullSimFileName = Path.GetDirectoryName(FileName) + "\\" + SimFileName;
-            string SumFileName = Path.ChangeExtension(FullSimFileName, ".sum");
-
-            JobNode = RunApsimNode.AppendChild(RootNode.OwnerDocument.CreateElement("Job"));
-            XmlHelper.SetName(JobNode, "Apsim.exe " + FullSimFileName);
-            XmlHelper.SetValue(JobNode, "WorkingDirectory", "%Apsim%\\Model");
-            XmlHelper.SetValue(JobNode, "CommandLine", "Apsim.exe " + StringManip.DQuote(FullSimFileName) + "> " + StringManip.DQuote(SumFileName));
+            string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
+            XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
+            XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+            XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
+            XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+            XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
         }
+    }
+
+    /// <summary>
+    /// Find the simulations in a .con file
+    /// </summary>
+    public static List<string> GetSimsInConFile(string FileName)
+    {
+        Process P = new Process();
+        if (Configuration.getArchitecture() == Configuration.architecture.unix)
+            P.StartInfo.FileName = ReplaceEnvironmentVariables(Path.Combine("%APSIM%", "Model", "ConToSim.x"));
+        else
+            P.StartInfo.FileName = ReplaceEnvironmentVariables(Path.Combine("%APSIM%", "Model", "ConToSim.exe"));
+        P.StartInfo.UseShellExecute = false;
+        P.StartInfo.ErrorDialog = false;
+        P.StartInfo.RedirectStandardOutput = true;
+        P.StartInfo.RedirectStandardError = true;
+        P.StartInfo.RedirectStandardInput = false;
+        P.StartInfo.Arguments = StringManip.DQuote(FileName);
+        P.StartInfo.WorkingDirectory = Path.GetDirectoryName(FileName);
+        P.Start();
+        P.WaitForExit();
+
+        List<string> SimsInConFile = new List<string>();
+        if (P.ExitCode == 0)
+        {
+            string Line = P.StandardOutput.ReadLine();
+            while (Line != null)
+            {
+                if (Line.Length > 8 && Line.Substring(0, 8) == "Written ")
+                {
+                    string SimFileName = Line.Substring(8);
+                    if (Path.DirectorySeparatorChar == '\\') SimFileName = SimFileName.Replace('/', '\\'); else SimFileName = SimFileName.Replace('\\', '/');
+                    SimsInConFile.Add(SimFileName);
+                }
+                Line = P.StandardOutput.ReadLine();
+            }
+            P.StandardOutput.Close();
+        }
+        return SimsInConFile;
+    }
+
+    /// <summary>
+    /// .sim files need no special processing
+    /// </summary>
+    private static void CreateSimJobXML(string SimFileName, XmlNode Node)
+    {
+        if (Path.DirectorySeparatorChar == '\\') SimFileName = SimFileName.Replace('/', '\\'); else SimFileName = SimFileName.Replace('\\', '/');
+        string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
+
+        XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
+        XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+        XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(SimFileName));
+        XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+        XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+    }
+
+    /// <summary>
+    /// .sim files need no special processing
+    /// </summary>
+    private static void CreateShellExecuteJobXML(string shellCommand, XmlNode Node)
+    {
+        if (Path.DirectorySeparatorChar == '\\') shellCommand = shellCommand.Replace('/', '\\'); else shellCommand = shellCommand.Replace('\\', '/');
+
+        XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
+        XmlHelper.SetName(JobNode, shellCommand);
+        XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(shellCommand));
+        XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(shellCommand));
+        XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(shellCommand));
+    }
+    
+    /// <summary>
+    /// Look through the specified string for an environment variable name surrounded by
+    /// % characters. Replace them with the environment variable value.
+    /// </summary>
+    public static string ReplaceEnvironmentVariables(string CommandLine)
+    {
+        int PosPercent = CommandLine.IndexOf('%');
+        while (PosPercent != -1)
+        {
+            string Value = null;
+            int EndVariablePercent = CommandLine.IndexOf('%', PosPercent + 1);
+            if (EndVariablePercent != -1)
+            {
+                string VariableName = CommandLine.Substring(PosPercent + 1, EndVariablePercent - PosPercent - 1);
+                Value = System.Environment.GetEnvironmentVariable(VariableName);
+                if (Value == null)
+                    Value = System.Environment.GetEnvironmentVariable(VariableName, EnvironmentVariableTarget.User);
+            }
+
+            if (Value != null)
+            {
+                CommandLine = CommandLine.Remove(PosPercent, EndVariablePercent - PosPercent + 1);
+                CommandLine = CommandLine.Insert(PosPercent, Value);
+                PosPercent = PosPercent + 1;
+            }
+
+            else
+                PosPercent = PosPercent + 1;
+
+            if (PosPercent >= CommandLine.Length)
+                PosPercent = -1;
+            else
+                PosPercent = CommandLine.IndexOf('%', PosPercent);
+        }
+        return CommandLine;
     }
 
     /// <summary>
@@ -160,4 +299,4 @@ class Program
     }
 
 }
-   
+

@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="Build.xsl"?>
+
+<!--
+    This is the Job Scheduler file that Bob uses. It cleans the %APSIM% directory, loads
+	Build.xml to perform the build and run and then compresses the %APSIM% directory, creates a 
+	binary zip file and sends an email.
+	
+	NB: If you run this on your computer, it will clean out all unversioned files from your %APSIM%
+	    directory and revert all changes to SVN.
+		i.e. YOU MAY LOSE YOUR WORK !!!!!!!!
+
+-->
+<Folder name="Bob" LoopForever="no">
+
+	<Folder name="BuildAndRun" wait="yes">
+		<!--
+    Get the APSIM directory up to date and clean.
+		<Job name="SVN Revert"  wait="yes">
+			<WorkingDirectory>%APSIM%</WorkingDirectory>
+			<CommandLineUnix>svn revert -R %APSIM%</CommandLineUnix>
+		</Job>
+		<Job name="SVN Update"  wait="yes">
+			<WorkingDirectory>%APSIM%</WorkingDirectory>
+			<CommandLineUnix>svn update %APSIM%</CommandLineUnix>
+		</Job>	
+		<Job name="Remove unversioned files"  wait="yes">
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLineUnix>JobSchedulerRemoveUnwantedFiles.exe %APSIM%</CommandLineUnix>
+		</Job>
+		<Job name="Copy RunTime DLL's into model directory" wait="yes">
+			<WorkingDirectory>%APSIM%/Model/RunTime</WorkingDirectory>
+			<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+		</Job>
+	-->
+		<!--<Job name="Apply patch"  wait="yes">
+			<WorkingDirectory>%APSIM%</WorkingDirectory>
+			<CommandLineUnix>%APSIM%/Model/JobSchedulerApplyPatch.exe %APSIM% "%PatchFileName%.zip"</CommandLineUnix>
+		</Job>
+		-->
+		<Job name="Remove all .out and .sum files" wait="yes">
+			<WorkingDirectory>%APSIM%</WorkingDirectory>
+			<CommandLineUnix>find . -name "*.out" -or -name "*.sum" -exec rm {} \; </CommandLineUnix>
+		</Job>
+		<Job name="Delete the apsim.xml file in Bobs profile">
+			<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
+			<CommandLineUnix>rm  %APSIM%/Apsim.xml</CommandLineUnix>
+		</Job>
+		<Job name="Write potential revision number into Apsim.xml" wait="yes">
+			<WorkingDirectory>%APSIM%\Model\Build</WorkingDirectory>
+			<CommandLineUnix>tclsh VersionStamper.tcl Increment</CommandLineUnix>
+		</Job>
+
+		<!--
+    Build APSIM
+	-->
+
+		<Job name="Load in Build.xml">
+			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+			<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Build~%APSIM%/Model/Build/BuildAll.xml"</CommandLineUnix>
+		</Job>
+		<Folder name="Build" wait="yes"/>
+
+		<!--
+    Run all APSIM tests
+	-->
+
+		<Job name="Load in Run.xml">
+			<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+			<CommandLineUnix>JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Run~%APSIM%/Model/Build/RunAll.xml"</CommandLineUnix>
+		</Job>
+		<Folder name="Run" wait="yes"/>
+
+
+		<Folder name="Release" wait="yes">
+			<Job name="Create release">
+				<WorkingDirectory>%APSIM%\Release</WorkingDirectory>
+				<CommandLine>Release.bat %PatchFileName%</CommandLine>
+			</Job>	
+			<Job name="Update DB Setup" wait="yes">
+				<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+				<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetupforrelease.exe</CommandLine>
+			</Job>
+			<Job name="Update DB Setup">
+				<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+				<CommandLine>JobSchedulerUpdateFieldInDB.exe SetupForReleaseFileName http://bob.apsim.info/files/%PatchFileName%.apsimsetup.exe</CommandLine>
+			</Job>	
+		</Folder>
+
+		<Job name="CreateBuildTreeZip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.zip %APSIM% > nul</CommandLine>
+		</Job>	
+		<Job name="Update DB Build tree" wait="yes">
+			<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe BuildTreeFileName http://bob.apsim.info/files/%PatchFileName%.zip</CommandLine>
+		</Job>		
+		<Job name="CreateBinariesZip">
+			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
+			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on %PatchFileName%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll > nul</CommandLine>
+		</Job>		
+		<Job name="Update DB Binaries" wait="yes">
+			<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerUpdateFieldInDB.exe BinariesFileName http://bob.apsim.info/files/%PatchFileName%.binaries.zip</CommandLine>
+		</Job>		
+	</Folder>
+
+		<!--
+    Finish up by collecting diffs and sending the email.
+	-->	
+
+	<Folder name="WrapUp"  wait="yes" IgnoreErrors="yes">
+		<Job name="CreateDiffsZip">
+			<WorkingDirectory>%APSIM%\Model</WorkingDirectory>
+			<CommandLine>JobSchedulerCreateDiffZip.exe %APSIM% C:\Upload\%PatchFileName%.zip</CommandLine>
+		</Job>
+	</Folder>
+
+</Folder>

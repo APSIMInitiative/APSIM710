@@ -1,14 +1,15 @@
 @echo off
 rem ----- Usage: RunMake Directory
-rem -----    e.g. RunMake %APSIM%\Model\CSGeneral
-
+rem -----    e.g. RunMake [%APSIM%\Model\CSGeneral]
 
 rem ----- Set the %APSIM% variable based on the directory where this batch file is located
+set PATHSAVED=%CD%
 cd %~dp0..\..
 set APSIM=%CD%
 
-rem ----- Change the working directory to that specified by %1
-cd %1
+rem return to where we were called
+cd %PATHSAVED%
+set PATHSAVED=
 
 rem ----- Setup the Visual Studio 2010 compiler tools
 if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
@@ -17,4 +18,7 @@ rem ----- Set the APSIM versioning info
 if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\VersionInfo.bat"
 
 rem ----- Run MAKE
-%APSIM%\Model\Build\make %2 %3 %4
+rem ----- The working directory is specified by %1 (may be blank)
+rem NB. Make sure make.exe is the last thing executed in this script to that errors are noticed on exit
+if "%1"=="" make 
+if NOT "%1"=="" make -C "%1" %2 %3 %4

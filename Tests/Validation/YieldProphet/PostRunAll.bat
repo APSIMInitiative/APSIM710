@@ -1,18 +1,21 @@
 @echo off
 
-cd 2004
+pushd .\2004
 call CreateAllOut.bat
+popd
 
-cd ..\2005
+pushd .\2005
 call CreateAllOut.bat
+popd
 
-cd ..\2006
+pushd .\2006
 call CreateAllOut.bat
+popd
 
-cd ..\2007
+pushd .\2007
 call CreateAllOut.bat
+popd
 
-cd ..\2008
+pushd .\2008
 call CreateAllOut.bat
-
-cd ..\
+popd

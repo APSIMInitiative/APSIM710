@@ -6,18 +6,25 @@
 		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Examples\*.apsim" "%JobPath%/../Examples"</CommandLine>
 		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Examples/*.apsim" "%JobPath%/../Examples"</CommandLineUnix>
 	</Job>
-	<Job name="FindTests" wait="yes">
+	<Job name="FindTests" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.apsim" "%JobPath%/../Tests"</CommandLine>
 		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.apsim" "%JobPath%/../Tests"</CommandLineUnix>
 	</Job>      
-	<Job name="FindControlFiles" wait="yes">
+	<Job name="FindControlFiles" >
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 		<CommandLine>JobSchedulerFindJobs.exe "%APSIM%\Tests\*.con" "%JobPath%/../Tests"</CommandLine>
 		<CommandLineUnix>JobSchedulerFindJobs.exe "%APSIM%/Tests/*.con" "%JobPath%/../Tests"</CommandLineUnix>
 	</Job>      
-	<Folder name="Examples" wait="yes" />
-	<Folder name="Tests" />
+	<Folder name="Examples" wait="yes">
+	  <Folder name="CreateSims"  />
+   	  <Folder name="RunApsim"  IgnoreErrors="yes"/>
+    </Folder>
+
+	<Folder name="Tests" wait="yes">
+	  <Folder name="CreateSims"  />
+   	  <Folder name="RunApsim"  IgnoreErrors="yes"/>
+    </Folder>
      
 	<!--
     Unit tests.
@@ -25,7 +32,7 @@
 	
 	<Job name="Unit tests" wait="yes" IgnoreErrors="yes">
 		<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-		<CommandLine>RunAllUnitTests.bat</CommandLine>
+		<CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
 	</Job>     
 
 	<!--

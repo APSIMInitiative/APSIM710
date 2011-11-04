@@ -103,6 +103,8 @@ public class JobScheduler
     private Dictionary<string, string> Options = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
     private bool SomeJobsHaveFailed = false;
     public bool StopSignal;
+    private int TotalJobs;
+    private int JobsCompleted;
 
     /// <summary>
     /// Store all macros found in the command line arguments.
@@ -162,6 +164,8 @@ public class JobScheduler
         // Load the job file.
         Doc.Load(JobFileName);
         XmlNode CurrentJob = Doc.DocumentElement;
+        TotalJobs = Doc.GetElementsByTagName("Job").Count;
+        JobsCompleted = 0;
 
         // Create a socket listener.
         SocketListener = new Thread(ListenForTCPConnection);
@@ -405,7 +409,7 @@ public class JobScheduler
         string WorkingDirectory;
         lock (this)
         {
-            if (Path.VolumeSeparatorChar == '/')
+            if (Path.DirectorySeparatorChar == '/')
                 CommandLine = XmlHelper.Value(JobNode, "CommandLineUnix");
             else
                 CommandLine = XmlHelper.Value(JobNode, "CommandLine");
@@ -424,10 +428,10 @@ public class JobScheduler
         if (PosRedirect != -1)
         {
             StdOutFile = CommandLine.Substring(PosRedirect + 1).Trim();
-            CommandLine = CommandLine.Remove(PosRedirect);
-            if (StdOutFile.IndexOf(Path.VolumeSeparatorChar) == -1 && StdOutFile != "nul")
-                StdOutFile = Path.Combine(WorkingDirectory, StdOutFile);
             StdOutFile = StdOutFile.Replace("\"", "");
+            if (!Path.IsPathRooted(StdOutFile) && StdOutFile != "nul")
+                StdOutFile = Path.Combine(WorkingDirectory, StdOutFile);
+            CommandLine = CommandLine.Remove(PosRedirect);
         }
 
 
@@ -437,13 +441,19 @@ public class JobScheduler
             Executable = CommandLineBits[0].Replace("\"", "");
 
         // If no path is specified on the Executable - go find the executable on the path if possible.
-        if (Executable != "" && Path.GetDirectoryName(Executable) == "" && !File.Exists(Path.Combine(WorkingDirectory, Executable)))
+        if (!Path.IsPathRooted(Executable))
         {
-            string FullFileName = Utility.FindFileOnPath(Executable);
-            if (FullFileName != "")
-                Executable = FullFileName;
+            if (File.Exists(Path.Combine(WorkingDirectory, Executable)))
+            {
+                Executable = Path.Combine(WorkingDirectory, Executable);
+            }
+            else
+            {
+                string FullFileName = Utility.FindFileOnPath(Executable);
+                if (FullFileName != "")
+                    Executable = FullFileName;
+            }
         }
-
         string Arguments = "";
         for (int i = 1; i < CommandLineBits.Count; i++)
         {
@@ -454,15 +464,16 @@ public class JobScheduler
             else
                 Arguments += CommandLineBits[i];
         }
+        lock (this) { XmlHelper.SetValue(JobNode, "StdOutFile", StdOutFile); XmlHelper.SetValue(JobNode, "Executable", Executable); XmlHelper.SetValue(JobNode, "Arguments", Arguments); } // only needed for debugging
 
         // Create a process object, configure it and then start it.
         DateTime StartTime = DateTime.Now;
 
+        OutputReader stdoutReader = null;
+        OutputReader stderrReader = null;
         try
         {
             int ExitCode = 0;
-            OutputReader stdoutReader = null;
-            OutputReader stderrReader = null;
             if (Executable != "")
             {
                 Process process = new Process();
@@ -472,7 +483,7 @@ public class JobScheduler
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.RedirectStandardInput = true;
                 process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.FileName = Path.Combine(WorkingDirectory, Executable);
+                process.StartInfo.FileName = Executable;
                 process.StartInfo.Arguments = Arguments;
                 process.StartInfo.WorkingDirectory = WorkingDirectory;
 
@@ -526,7 +537,12 @@ public class JobScheduler
                 SetStatusOfJob(JobNode, "Fail");
                 XmlHelper.SetValue(JobNode, "ExitCode", "1");
                 XmlHelper.SetAttribute(JobNode, "ElapsedTime", "0");
-                XmlHelper.SetValue(JobNode, "StdErr", err.Message);
+                if (stdoutReader != null)
+                    XmlHelper.SetValue(JobNode, "StdOut", stdoutReader.buffer.ToString());
+                if (stderrReader != null)
+                    XmlHelper.SetValue(JobNode, "StdErr", stderrReader.buffer.ToString() + "\n" + err + err.Message);
+                else
+                    XmlHelper.SetValue(JobNode, "StdErr", err + err.Message);
             }
         }
 
@@ -539,6 +555,8 @@ public class JobScheduler
                 Node = Node.ParentNode;
             }
             NumberJobsRunning--;
+            JobsCompleted++;
+            Console.Out.Write("\rJobs Completed = " + JobsCompleted + " of " + TotalJobs + " [" + JobNode.Attributes.GetNamedItem("name").Value + "]" + "                                   ");
         }
     }
 
@@ -745,6 +763,9 @@ public class JobScheduler
             }
             else if (CommandBits.Length == 2 && CommandBits[0] == "GetVariable")
             {
+                // Whats wrong with:??
+                //if (Macros.ContainsKey (CommandBits[1]))
+                //    return Macros[CommandBits[1]];
                 // try and look for an environment variable first.
                 string Value = ReplaceEnvironmentVariables("%" + CommandBits[1] + "%");
                 if (Value != "%" + CommandBits[1] + "%")

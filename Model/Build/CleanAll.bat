@@ -24,7 +24,10 @@ del /Q *.pdb >nul 2>nul
 del /Q *.imp >nul 2>nul
 del /Q *.map >nul 2>nul
 
-cd TclLink
-..\Build\make.exe clean >nul 2>nul
+rmdir /Q /S TclLink\bin >nul 2>nul
+rmdir /Q /S TclLink\doc >nul 2>nul
+rmdir /Q /S TclLink\include >nul 2>nul
+rmdir /Q /S TclLink\lib >nul 2>nul
+del /Q /S TclLink\CIDataTypes.tcl >nul 2>nul
 
 popd
