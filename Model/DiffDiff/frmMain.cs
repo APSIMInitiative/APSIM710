@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -36,10 +37,11 @@ namespace DiffDiff
             else
                 run = false;
 
-            if (args.Method != DiffMethod.nul)
+            if (decimal.MaxValue != args.Tolerance)
                 txtTol.Text = args.Tolerance.ToString();
             else
                 run = false;
+
 
             if (args.Method == DiffMethod.dp)
                 radDP.Checked = true;
@@ -106,14 +108,18 @@ namespace DiffDiff
                 Differ.Diff(
                    origfile,
                    newfile,
-                   toList(lbxCols.SelectedItems),
+                   lbxCols.SelectedItems.Cast<string>().ToList(),
                    decimal.Parse(txtTol.Text),
-                   radAbs.Checked ? DiffMethod.abs :
-                       radDP.Checked ? DiffMethod.dp :
-                       DiffMethod.pct,
+                   radAbs.Checked ? 
+                        DiffMethod.abs : 
+                   radDP.Checked ? 
+                        DiffMethod.dp :
+                        DiffMethod.pct,
                    ref sb
                    );
 
+                string[] s;
+                
                 rtxtOutput.Text = sb.ToString();
             }
             catch (Exception ex)
@@ -121,16 +127,6 @@ namespace DiffDiff
                 MessageBox.Show("ERROR - Please check output text box for details");
                 rtxtOutput.Text = sb.ToString() + Environment.NewLine + ex.Message + Environment.NewLine + ex.StackTrace;
             }
-        }
-
-        private List<string> toList(ListBox.SelectedObjectCollection selectedObjectCollection)
-        {
-            List<string> result = new List<string>();
-
-            foreach (object o in selectedObjectCollection)
-                result.Add((string)o);
-
-            return result;
         }
 
         private void btnSave_Click(object sender, EventArgs e)

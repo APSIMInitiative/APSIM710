@@ -59,6 +59,7 @@ diffdiff.exe <input1> <input2> <additional args>
     (tab delimited).  This has the same name as the output with '.txt' appended
 
     valid arguments are:
+        /?          display this message
         -console    redirect output to console instead of log files
         -f:*filter* if directories are used as inputs then a filter may be
                     specified here for getting certain files
@@ -75,7 +76,7 @@ diffdiff.exe <input1> <input2> <additional args>
         -t:*tol*    set an acceptable tolerance for differences in output files
                     where *tol* is replaced with:
                     
-                        *any decimal* to set exclusive maximum difference
+                        *any double* to set exclusive maximum difference
                             i.e. -t:0.01
 
                         *any int*dp to use a given number of dec. places as
@@ -83,7 +84,7 @@ diffdiff.exe <input1> <input2> <additional args>
                             end of value to ignore (if -1dp then 0.026 -> 0.02)
                             i.e. -t:2dp     -t:-1dp
 
-                        *any decimal*pct to use a %age tolerance (new value must
+                        *any double*pct to use a %age tolerance (new value must
                             be within 'x'% of original value)
                             i.e. -t:10pct
         -vsdebug    used when debugging from Visual Studio because it adds an
@@ -139,8 +140,8 @@ diffdiff C:\prjA\tests\orig C:\prjA\tests\new -t:0.01 -o:C:\prjA\diffs.txt
             LoadGUI = false;
             ReportToConsole = false;
 
-            Method = DiffMethod.nul;
-            Tolerance = 0;
+            Method = DiffMethod.abs;
+            Tolerance = decimal.MaxValue;
 
             foreach (string arg in args)
                 if (arg.StartsWith("-"))
@@ -169,10 +170,7 @@ diffdiff C:\prjA\tests\orig C:\prjA\tests\new -t:0.01 -o:C:\prjA\diffs.txt
                                 targ = arg.Substring(3).Replace("pct", "");
                             }
                             else
-                            {
-                                Method = DiffMethod.abs;
                                 targ = arg.Substring(3);
-                            }
 
                             if (!decimal.TryParse(targ, out t))
                                 throw new Exception(string.Format("Error attempting to parse Tolerance\n\t{0} -> {1} (error)", arg, targ));
@@ -195,7 +193,7 @@ diffdiff C:\prjA\tests\orig C:\prjA\tests\new -t:0.01 -o:C:\prjA\diffs.txt
                     else
                         B = arg;
 
-            LoadGUI |= A == null || B == null || Method == DiffMethod.nul;
+            LoadGUI |= A == null || B == null || Tolerance == decimal.MaxValue;
         }
     }
 

@@ -203,17 +203,30 @@ namespace DiffDiff
 
                 if (!CheckForStrings(origval, newval, out stringmatch))
                 {
-                    decimal 
+                    decimal
                         adj_orig = tolerance < 0 ? reverseTruncate((decimal)origval, tolerance) : truncate((decimal)origval, tolerance),
                         adj_new = tolerance < 0 ? reverseTruncate((decimal)newval, tolerance) : truncate((decimal)newval, tolerance);
+                    int adj_tolerance = tolerance;
+                    if (tolerance < 0)
+                    {
+                        string str_val = ((decimal)origval).ToString();
+                        adj_tolerance = str_val.Length - (str_val.IndexOf(".") + 1) + tolerance;
+                    }
 
-                    output = decimal.Subtract(adj_new,adj_orig).ToString();
+                    decimal mul = (decimal)Math.Pow(10, adj_tolerance);
 
-                    return adj_orig.Equals(adj_new);
+                    decimal result =
+                        decimal.Truncate(decimal.Multiply((decimal)newval, mul))
+                        -
+                        decimal.Truncate(decimal.Multiply((decimal)origval, mul));
+
+                    output = decimal.Divide(result, mul).ToString("F" + adj_tolerance.ToString());
+
+                    return result == 0;
                 }
                 else
                     return stringmatch;
-                
+
             }
 
             /// <summary>
@@ -232,7 +245,7 @@ namespace DiffDiff
             }
 
             /// <summary>
-            /// Besaue 'decimal' is retarded and won't let you truncate a number to set number of DP we have to write our own method to do this
+            /// Because 'decimal' is retarded and won't let you truncate a number to set number of DP we have to write our own method to do this
             /// <para>
             /// Basically just multiply given decimal number by 10^num_dp, remove anything after the '.', then divide it back out again
             /// </para>

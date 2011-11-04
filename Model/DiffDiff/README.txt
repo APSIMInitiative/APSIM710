@@ -12,6 +12,7 @@ author is Ben Jolly - ben.jolly@agresearch.co.nz - please feel free to contact m
 
 
 DiffDiff Command-Line Usage:
+
 diffdiff.exe <input1> <input2> <additional args>
 
     where 'input1' and 'input2' may point to individual files or folders
@@ -30,6 +31,7 @@ diffdiff.exe <input1> <input2> <additional args>
     (tab delimited).  This has the same name as the output with '.txt' appended
 
     valid arguments are:
+        /?          display this message
         -console    redirect output to console instead of log files
         -f:*filter* if directories are used as inputs then a filter may be
                     specified here for getting certain files

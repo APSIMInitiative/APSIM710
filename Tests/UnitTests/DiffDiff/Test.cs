@@ -79,7 +79,7 @@ namespace Test
             Differ.CompareMethod icm = new Differ.DPCompare(1);
 
             Assert.False(icm.match(20m, 19m, out output));
-            Assert.AreEqual("-1", output);
+            Assert.AreEqual("-1.0", output);
 
             Assert.True(icm.match(20.14m, 20.18m, out output));
             Assert.AreEqual("0.0", output);
@@ -90,7 +90,7 @@ namespace Test
             icm = new Differ.DPCompare(-1);
 
             Assert.False(icm.match(20m, 19m, out output));
-            Assert.AreEqual("-1", output);
+            Assert.AreEqual("-1.0", output);
 
             Assert.True(icm.match(20.14m, 20.18m, out output));
             Assert.AreEqual("0.0", output);
@@ -99,7 +99,7 @@ namespace Test
             Assert.AreEqual("0.1", output);
 
             Assert.True(icm.match(20.104m, 20.10m, out output));
-            Assert.AreEqual("0.0", output);
+            Assert.AreEqual("0.00", output);
 
             Assert.False(icm.match(20.114m, 20.10m, out output));
             Assert.AreEqual("-0.01", output);
