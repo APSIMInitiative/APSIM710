@@ -35,7 +35,7 @@ ifeq ($(PROJECTTYPE),exe)
 	CFLAGS := $(CFLAGS) /LD
 	LFLAGS := $(LFLAGS)
 else
-	CFLAGS := $(CFLAGS) /D "$(PROJECT)_EXPORTS"
+#	CFLAGS := $(CFLAGS) /D "$(PROJECT)_EXPORTS"
 	LFLAGS := $(LFLAGS) /DLL
 endif
 

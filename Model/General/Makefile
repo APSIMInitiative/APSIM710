@@ -2,7 +2,8 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = General
 
-SRC =   date_class.cpp		\
+SRC =   pch.cpp 		\
+    date_class.cpp		\
 	math_functions.cpp	\
 	stream_functions.cpp	\
 	string_functions.cpp	\
@@ -22,5 +23,7 @@ PROJECTTYPE=libdll
 ifeq ($(PLATFORM),WIN32VS)
 LIBS = ShLwApi
 endif
+
+PRECOMPILE = ../General/pch.h
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make

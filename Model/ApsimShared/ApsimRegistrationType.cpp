@@ -1,3 +1,4 @@
+#include <../General/pch.h>
 #include <General/string_functions.h>
 
 #include "ApsimRegistrationType.h"
@@ -8,17 +9,17 @@
 EventTypeCode stringToTypeCode(const std::string& st)
    {
    if (Str_i_Eq(st, "get"))
-      return get;
+      return EventTypeCode::get;
    else if (Str_i_Eq(st, "set"))
-      return set;
+      return EventTypeCode::set;
    else if (Str_i_Eq(st, "event"))
-      return  event;
+      return EventTypeCode::event;
    else if (Str_i_Eq(st, "respondToGet"))
-      return  respondToGet;
+      return EventTypeCode::respondToGet;
    else if (Str_i_Eq(st, "respondToSet"))
-      return  respondToSet;
+      return EventTypeCode::respondToSet;
    else if (Str_i_Eq(st, "respondToEvent"))
-      return  respondToEvent;
+      return EventTypeCode::respondToEvent;
 
    throw std::runtime_error("Invalid registration type: " + st);
    }
@@ -29,15 +30,15 @@ const std::string typeCodeToString (EventTypeCode type)
    {
    switch (type)
       {
-      case get     : return "get";
-      case set     : return "set";
-      case event   : return "event";
+      case EventTypeCode::get     : return "get";
+      case EventTypeCode::set     : return "set";
+      case EventTypeCode::event   : return "event";
 
-      case respondToGet     : return "respondToGet";
-      case respondToSet     : return "respondToSet";
-      case respondToEvent   : return "respondToEvent";
+      case EventTypeCode::respondToGet     : return "respondToGet";
+      case EventTypeCode::respondToSet     : return "respondToSet";
+      case EventTypeCode::respondToEvent   : return "respondToEvent";
 
-      case respondToGetSet  : return "respondToGetSet";
+      case EventTypeCode::respondToGetSet  : return "respondToGetSet";
       };
    throw std::runtime_error(std::string("Invalid registration type: ") + itoa(type));
    }
@@ -49,13 +50,13 @@ EventTypeCode opposite(EventTypeCode type)
    {
     switch (type)
       {
-      case get      : return respondToGet;
-      case set      : return respondToSet;
-      case event    : return respondToEvent;
+      case EventTypeCode::get      : return EventTypeCode::respondToGet;
+      case EventTypeCode::set      : return EventTypeCode::respondToSet;
+      case EventTypeCode::event    : return EventTypeCode::respondToEvent;
 
-      case respondToGet     : return get;
-      case respondToSet     : return set;
-      case respondToEvent   : return event;
+      case EventTypeCode::respondToGet     : return EventTypeCode::get;
+      case EventTypeCode::respondToSet     : return EventTypeCode::set;
+      case EventTypeCode::respondToEvent   : return EventTypeCode::event;
       };
    throw std::runtime_error(std::string("Invalid opposite registration type: ") + itoa(type));
    }

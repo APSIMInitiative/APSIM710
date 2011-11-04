@@ -1,3 +1,4 @@
+#include <../General/pch.h>
 /* DOCO here:
 
 http://www.opengroup.org/onlinepubs/009695399/functions/strptime.html

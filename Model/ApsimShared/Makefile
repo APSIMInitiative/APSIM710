@@ -2,7 +2,8 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = ApsimShared
 
-SRC =   ApsimShared.cpp \
+SRC =   ../General/pch.cpp \
+    ApsimShared.cpp \
 	ApsimComponentData.cpp  \
 	ApsimControlFile.cpp \
 	ApsimDirectories.cpp \
@@ -31,5 +32,7 @@ endif
 	
 LIBS = General
 PROJECTTYPE = libdll
+
+PRECOMPILE = ../General/pch.h
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
