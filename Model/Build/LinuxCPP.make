@@ -6,8 +6,8 @@ BOOST_INCLUDEDIR=-I/usr/include/boost
 XML2_INCLUDEDIR=-I/usr/include/libxml2
 XML2_LIBDIR= -L/usr/lib
 
-MONO_INCLUDEDIR=-I$(MONO)/include/mono-2.0
-MONO_LIBDIR= -L$(MONO)/lib
+MONO_INCLUDEDIR=-I$(MONO_PREFIX)/include/mono-2.0
+MONO_LIBDIR= -L$(MONO_PREFIX)/lib
 MONO_DEFINE= -DMONO
 ifdef USE_MONO
 EXTRALIBS:= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)

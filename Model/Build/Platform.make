@@ -26,5 +26,4 @@ else
    MV=mv
    CP=cp
    USE_MONO=1
-   MONO=/usr
 endif
