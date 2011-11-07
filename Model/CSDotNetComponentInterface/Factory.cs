@@ -389,7 +389,7 @@ public class Factory
     /// <param name="Property"></param>
     /// <param name="ErrorString"></param>
     // --------------------------------------------------------------------
-    protected void CheckArray<T>(FactoryProperty Property, String ErrorString)
+    protected void CheckArray<T>(FactoryProperty Property, String MsgString)
     {
         T[] arrayObj = (T[])Property.Get;
         for (int i = 0; i < arrayObj.Length; i++)
@@ -397,14 +397,14 @@ public class Factory
             Double val = (Double)Convert.ChangeType(arrayObj[i], typeof(Double));
             if (!Double.IsNaN(Property.ParamMinVal) &&
                 val < Property.ParamMinVal)
-                ErrorString += "The value provided for element " + i +
+                MsgString += "The value provided for element " + i +
                                 " of parameter " + Property.FQN +
                                 " is less than its allowed minimum (" +
                                 val + " vs. " +
                                 Property.ParamMinVal + ")\n";
             if (!Double.IsNaN(Property.ParamMaxVal) &&
                 val > Property.ParamMaxVal)
-                ErrorString += "The value provided for element " + i +
+                MsgString += "The value provided for element " + i +
                                 " of parameter " + Property.FQN +
                                 " is greater than its allowed maximum (" +
                                 val + " vs. " +
@@ -417,10 +417,10 @@ public class Factory
     /// are found. Also do range checking, if applicable.
     /// </summary>
     // --------------------------------------------------------------------
-    public void CheckParameters()
+    public void CheckParameters(ApsimComponent ModelInstance)
     {
         String Errors = "";
-        String RangeErrors = "";
+        String RangeMsgs = "";
         for (int i = 0; i != RegisteredProperties.Count; i++)
         {
             FactoryProperty Property = RegisteredProperties[i];
@@ -444,30 +444,36 @@ public class Factory
                         double val = Convert.ToDouble(Property.Get.ToString());
                         if (!Double.IsNaN(Property.ParamMinVal) &&
                             val < Property.ParamMinVal)
-                            RangeErrors += "The value provided for parameter " + Property.FQN +
+                            RangeMsgs += "The value provided for parameter " + Property.FQN +
                                 " is less than its allowed minimum (" +
                                 Property.Get.ToString() + " vs. " +
                                 Property.ParamMinVal + ")\n";
                         if (!Double.IsNaN(Property.ParamMaxVal) &&
                             val > Property.ParamMaxVal)
-                            RangeErrors += "The value provided for parameter " + Property.FQN +
+                            RangeMsgs += "The value provided for parameter " + Property.FQN +
                                 " is greater than its allowed maximum (" +
                                 Property.Get.ToString() + " vs. " +
                                 Property.ParamMaxVal + ")\n";
                     }
                     else if (Property.TypeName == "Double[]")
-                        CheckArray<double>(Property, RangeErrors);
+                        CheckArray<double>(Property, RangeMsgs);
                     else if (Property.TypeName == "Single[]")
-                        CheckArray<float>(Property, RangeErrors);
+                        CheckArray<float>(Property, RangeMsgs);
                     else if (Property.TypeName == "Int32[]")
-                        CheckArray<int>(Property, RangeErrors);
+                        CheckArray<int>(Property, RangeMsgs);
                 }
             }
         }
         if (Errors != "")
             throw new Exception("The following parameters haven't been initialised: " + Errors);
-        if (RangeErrors != "")
-            throw new Exception("In " + Root.InstanceName + ", the following parameters are outside their allowable ranges:\n" + RangeErrors);
+        if (RangeMsgs != "")
+        {
+            string rangeMessage = "In " + Root.InstanceName + ", the following parameters are outside their allowable ranges:\n" + RangeMsgs;
+            if (ModelInstance != null)
+                ModelInstance.Warning(rangeMessage);
+            else
+                throw new Exception(rangeMessage);
+        }
     }
     // --------------------------------------------------------------------
     /// <summary>

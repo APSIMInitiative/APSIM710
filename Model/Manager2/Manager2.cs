@@ -75,8 +75,8 @@ public class Manager2 : Instance
                 Params.TreatWarningsAsErrors = false;
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
-                Params.ReferencedAssemblies.Add(Configuration.ApsimBinDirectory() + "\\CSDotNetComponentInterface.dll");
-                Params.ReferencedAssemblies.Add(Configuration.ApsimBinDirectory() + "\\CSDotNetProxies.dll");
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
 
                 string[] source = new string[1];
                 source[0] = Text;

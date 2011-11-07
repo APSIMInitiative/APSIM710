@@ -585,7 +585,7 @@ namespace ModelFramework
             RegisterAllProperties(Fact);
             RegisterAllEventHandlers(Fact);
             TrapAllEvents(Fact);
-            Fact.CheckParameters();
+            Fact.CheckParameters(this);
         }
         // ----------------------------------------------
         /// <summary>

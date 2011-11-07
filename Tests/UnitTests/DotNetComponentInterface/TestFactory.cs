@@ -66,7 +66,7 @@ public class TestFactory
                    "</Comp1>"; 
       Factory Factory = new Factory();
       Factory.Create(Xml, Assembly.GetExecutingAssembly(), null);
-      Factory.CheckParameters();
+      Factory.CheckParameters(null);
       }
 
    [Test] 
