@@ -1940,6 +1940,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    if (variable_name .eq. 'no3') then
       oldN = g%no3
+      no3(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', no3, numvals, 0.0, 1000.0)
 
       do layer = 1, numvals
@@ -1965,6 +1966,7 @@ subroutine soiln2_set_my_variable (variable_name)
    elseif (variable_name .eq. 'nh4') then
 
       oldN = g%nh4
+      nh4(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', nh4, numvals, 0.0, 1000.0)
 
       do layer = 1, numvals
@@ -1990,6 +1992,7 @@ subroutine soiln2_set_my_variable (variable_name)
    elseif (variable_name .eq. 'urea') then
 
       oldN = g%urea
+      g%urea(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', g%urea, numvals, g_urea_min, 1000.0)
 
       dltN = sum(g%urea) - sum(oldN)
@@ -1997,6 +2000,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    elseif (variable_name .eq. 'dlt_no3') then
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals,-1000.0, 1000.0)
 
       do layer = 1, numvals
@@ -2006,6 +2010,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    elseif (variable_name .eq. 'dlt_nh4') then
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals,-1000.0, 1000.0)
 
       do layer = 1, numvals
@@ -2015,6 +2020,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    elseif (variable_name .eq. 'dlt_no3ppm') then
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(ppm)', tarray, numvals,-1000.0, 1000.0)
 
       do layer = 1, numvals
@@ -2024,6 +2030,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    elseif (variable_name .eq. 'dlt_nh4ppm') then
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(ppm)', tarray, numvals,-1000.0, 1000.0)
 
       do layer = 1, numvals
@@ -2033,6 +2040,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
    elseif (variable_name .eq. 'dlt_urea') then
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals,-1000.0, 1000.0)
 
       do layer = 1, numvals
@@ -2053,6 +2061,7 @@ subroutine soiln2_set_my_variable (variable_name)
    ! NIH - This works because there is no logical difference
    ! between the pool and it delta
 
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals, 0.0, 1000.0)
 
       do layer = 1, numvals
@@ -2069,6 +2078,7 @@ subroutine soiln2_set_my_variable (variable_name)
 
       if (numvals .eq. 1) then
 
+         tarray(:) = 0.0
          call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals, 0.0, 1000.0)
 
          do layer = 1, numvals
@@ -2086,6 +2096,7 @@ subroutine soiln2_set_my_variable (variable_name)
 ! Changes by RCichota (29/Jan/2010), reviewed (9/feb/2010)
    elseif (variable_name .eq. 'nitrification_inhibition') then
    
+      tarray(:) = 0.0
       call collect_real_array(variable_name, max_layer, '()', tarray, numvals, 0.0, 1.0)
 
       do layer = 1, numvals
@@ -2828,6 +2839,7 @@ real function soiln2_layer_temp (depth_lag, alx, dlt_temp)
    call pop_routine (my_name)
    return
 end function
+
 
 
 

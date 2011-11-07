@@ -261,13 +261,14 @@ class Program
         {
             bool AreEqual;
             string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
+            string WindowsFileName = FileNameInPatch.Replace('/', '\\');
             Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
 
-            AreEqual = FilesAreIdentical(PatchContents, FileNameInPatch);
+            AreEqual = FilesAreIdentical(PatchContents, WindowsFileName);
 
             // If the files are identical then remove it from the list of ModifiedFiles,
             // otherwise make sure it is in the list.
-            int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, FileNameInPatch);
+            int I = StringManip.IndexOfCaseInsensitive(ModifiedFiles, WindowsFileName);
             if (AreEqual)
             {
                 if (I != -1)
@@ -275,8 +276,8 @@ class Program
             }
             else
             {
-                if (I == -1 && Path.GetFileName(FileNameInPatch) != "patch.revisions")
-                    ModifiedFiles.Add(FileNameInPatch);
+                if (I == -1 && Path.GetFileName(WindowsFileName) != "patch.revisions")
+                    ModifiedFiles.Add(WindowsFileName);
             }
         }
 
