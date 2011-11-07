@@ -5,21 +5,28 @@
 
 #include <stdexcept>
 
+// When using the pre-compiled headers from General, MS C++ thinks "get" is ambiguous
+// We can avoid that problem by qualifying "get" with its enumeration, but that's a
+// nonstandard extension. Hence we only do this for Windows
+#ifdef __WIN32__
+#define get EventTypeCode::get
+#endif
+
 //---------------------------------------------------------------------------
 EventTypeCode stringToTypeCode(const std::string& st)
    {
    if (Str_i_Eq(st, "get"))
-      return EventTypeCode::get;
+      return get;
    else if (Str_i_Eq(st, "set"))
-      return EventTypeCode::set;
+      return set;
    else if (Str_i_Eq(st, "event"))
-      return EventTypeCode::event;
+      return event;
    else if (Str_i_Eq(st, "respondToGet"))
-      return EventTypeCode::respondToGet;
+      return respondToGet;
    else if (Str_i_Eq(st, "respondToSet"))
-      return EventTypeCode::respondToSet;
+      return respondToSet;
    else if (Str_i_Eq(st, "respondToEvent"))
-      return EventTypeCode::respondToEvent;
+      return respondToEvent;
 
    throw std::runtime_error("Invalid registration type: " + st);
    }
@@ -30,15 +37,15 @@ const std::string typeCodeToString (EventTypeCode type)
    {
    switch (type)
       {
-      case EventTypeCode::get     : return "get";
-      case EventTypeCode::set     : return "set";
-      case EventTypeCode::event   : return "event";
+      case get     : return "get";
+      case set     : return "set";
+      case event   : return "event";
 
-      case EventTypeCode::respondToGet     : return "respondToGet";
-      case EventTypeCode::respondToSet     : return "respondToSet";
-      case EventTypeCode::respondToEvent   : return "respondToEvent";
+      case respondToGet     : return "respondToGet";
+      case respondToSet     : return "respondToSet";
+      case respondToEvent   : return "respondToEvent";
 
-      case EventTypeCode::respondToGetSet  : return "respondToGetSet";
+      case respondToGetSet  : return "respondToGetSet";
       };
    throw std::runtime_error(std::string("Invalid registration type: ") + itoa(type));
    }
@@ -50,13 +57,13 @@ EventTypeCode opposite(EventTypeCode type)
    {
     switch (type)
       {
-      case EventTypeCode::get      : return EventTypeCode::respondToGet;
-      case EventTypeCode::set      : return EventTypeCode::respondToSet;
-      case EventTypeCode::event    : return EventTypeCode::respondToEvent;
+      case get      : return respondToGet;
+      case set      : return respondToSet;
+      case event    : return respondToEvent;
 
-      case EventTypeCode::respondToGet     : return EventTypeCode::get;
-      case EventTypeCode::respondToSet     : return EventTypeCode::set;
-      case EventTypeCode::respondToEvent   : return EventTypeCode::event;
+      case respondToGet     : return get;
+      case respondToSet     : return set;
+      case respondToEvent   : return event;
       };
    throw std::runtime_error(std::string("Invalid opposite registration type: ") + itoa(type));
    }

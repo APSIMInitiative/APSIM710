@@ -15,7 +15,6 @@
 *+  Changes
 *     010994 sc   specified and programmed
 *----------------------------------------------------------
-      use CropModData
       implicit none
 *+  Calls
 
@@ -2880,7 +2879,6 @@ c        end if
 *     ===========================================================
       subroutine Update_Other_Variables()
 *     ===========================================================
-      use CropModData
       implicit none
 
 *+  Purpose
@@ -3089,7 +3087,6 @@ c        end if
      .          c_stage_names)
 *     ===========================================================
 
-      use CropModData
       implicit none
 
 *+  Sub-Program Arguments
@@ -3413,7 +3410,6 @@ c        end if
       subroutine End_Crop ()
 *     ===========================================================
 
-      use CropModData
       implicit none
 
 *+  Purpose
