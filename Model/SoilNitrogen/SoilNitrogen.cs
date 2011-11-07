@@ -1171,6 +1171,9 @@ public class SoilN : Instance
     [Input(IsOptional = true)]
     [Units("kg/ha")]
     private double pond_hum_C;
+
+    [Input]
+    DateTime today;
 #endregion 
 
 #region Events which we publish
@@ -1290,7 +1293,7 @@ public class SoilN : Instance
     [EventHandler]
     public void OnTick(TimeType time) 
     {
-        DateUtility.JulianDayNumberToDayOfYear(time.startday, out day_of_year, out year);
+        //DateUtility.JulianDayNumberToDayOfYear(time.startday, out day_of_year, out year);
         
         // Reset Potential Decomposition Register
         num_residues = 0;
@@ -1438,8 +1441,8 @@ public class SoilN : Instance
     private double[] nh4_yesterday; // yesterday's ammonium nitrogen(kg/ha)
     private double[] no3_yesterday; // yesterday's nitrate nitrogen (kg/ha)
     private bool initDone = false;
-    private int year;       // year
-    private int day_of_year;  // day of year
+    //private int year;       // year
+    //private int day_of_year;  // day of year
     private int num_residues = 0;  // number of residues decomposing
     private string[] residue_name; 
     private string[] residue_type;
@@ -2379,9 +2382,9 @@ public class SoilN : Instance
                         // day of year as a radian fraction of one year for soil
                         // temperature calculations
             if (latitude >= 0)
-                alx = ang * DateUtility.OffsetDayOfYear(year, day_of_year, (int)-nth_hot);
+                alx = ang * today.AddDays(-nth_hot).DayOfYear;//DateUtility.OffsetDayOfYear(year, day_of_year, (int)-nth_hot);
             else
-                alx = ang * DateUtility.OffsetDayOfYear(year, day_of_year, (int)-sth_hot);
+                alx = ang * today.AddDays(-sth_hot).DayOfYear;//DateUtility.OffsetDayOfYear(year, day_of_year, (int)-sth_hot);
             if (alx < 0.0 || alx > 6.31)
                 throw new Exception("Value for alx is out of range");
 
@@ -2445,10 +2448,10 @@ public class SoilN : Instance
       // weather conditions.
       // The actual soil surface temperature is affected by current
       // weather conditions.
-        int yesterday = DateUtility.OffsetDayOfYear(year, day_of_year, -1);
+        int yesterday = today.AddDays(-1).DayOfYear;// DateUtility.OffsetDayOfYear(year, day_of_year, -1);
         double ave_temp = (maxt + mint) * 0.5;
 
-        surf_temp[day_of_year - 1] = (1.0 - salb) * (ave_temp + (maxt - ave_temp) *
+        surf_temp[today.DayOfYear - 1] = (1.0 - salb) * (ave_temp + (maxt - ave_temp) *
             Math.Sqrt(radn * 23.8846 / 800.0)) + salb * surf_temp[yesterday - 1];
 
         // get last few days soil surface temperature for moving average
@@ -2457,7 +2460,7 @@ public class SoilN : Instance
 
         for (int day = 0; day < ndays; day++)
         {
-            int doy = DateUtility.OffsetDayOfYear(year, day_of_year, -day);
+            int doy = today.AddDays(-day).DayOfYear;// DateUtility.OffsetDayOfYear(year, day_of_year, -day);
             temp0[day] = surf_temp[doy - 1];
         }
 

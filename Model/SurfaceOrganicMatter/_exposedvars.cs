@@ -177,7 +177,7 @@ public partial class SurfaceOM : Instance
     float irrigation = float.NaN;
 
     [Input]
-    int today { set { Today = DateUtility.JulianDayNumberToDateTime(value); } get { return DateUtility.dateTimeToJulianDayNumber(Today); } }
+    //int today { set { Today = DateUtility.JulianDayNumberToDateTime(value); } get { return DateUtility.dateTimeToJulianDayNumber(Today); } }
     DateTime Today;
 
 

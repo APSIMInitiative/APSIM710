@@ -186,9 +186,11 @@ using System.Text;
          //    The correct term is Ordinal Date or just plain old 'Day of Year'. 
          //    See http://en.wikipedia.org/wiki/Julian_day and http://en.wikipedia.org/wiki/ISO_8601#Ordinal_dates
 
-         
+         DateTime theday = CSGeneral.DateUtility.GetDate(JulianDay);
+		 DOY = theday.DayOfYear;
+		 Year = theday.Year;
 
-         CSGeneral.DateUtility.JulianDateToDayOfYear(JulianDay, out DOY, out Year);
+         //CSGeneral.DateUtility.JulianDateToDayOfYear(JulianDay, out DOY, out Year);
 
 
          }

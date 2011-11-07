@@ -137,6 +137,8 @@ Partial Public Class MicroMet
     <Units("m/s")> _
     Private windspeed As Double = 0.0
 
+    <Input()>
+    Private today As Date
 #End Region
 
 #Region "Outputs we make available"
@@ -326,7 +328,9 @@ Partial Public Class MicroMet
     <EventHandler()> _
     Public Sub OnTick(time As TimeType)
         todayHeaderWritten = False
-        DateUtility.JulianDayNumberToDayOfYear(time.startday, day, year)
+        day = today.DayOfYear
+        year = today.Year
+        'DateUtility.JulianDayNumberToDayOfYear(time.startday, day, year)
     End Sub
 
     <EventHandler()> _
@@ -556,9 +560,9 @@ Partial Public Class MicroMet
 
     Private Sub WriteTable(title As String)
         If Not todayHeaderWritten Then
-            Dim Today As New DateTime(year, 1, 1)
-            Today = Today.AddDays(day - 1)
-            Console.WriteLine(Today.ToString("d MMMM yyyy") & "(Day of year=" & day.ToString() & "), " & Name & ": ")
+            'Dim Today As New DateTime(year, 1, 1)
+            'Today = Today.AddDays(day - 1)
+            Console.WriteLine(today.ToString("d MMMM yyyy") & "(Day of year=" & today.DayOfYear.ToString() & "), " & Name & ": ")
             todayHeaderWritten = False
         End If
 
