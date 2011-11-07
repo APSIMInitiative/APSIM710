@@ -68,39 +68,40 @@
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
 			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
 		</Job>	
+		
+			<!--
+		Build APSIM Documentation
+		-->	
+
+		<Folder name="Plant2 Documentation" wait="yes">
+			<Job name="Create Broccoli Documentation">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
+			</Job>
+			<Job name="Create Vine Documentation">
+				<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
+				<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
+			</Job>
+			<Job name="Create documentation">
+				<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
+				<CommandLine>CreateIndex.bat</CommandLine>
+			</Job> 	
+		</Folder>
+
+			<!--
+		Build APSIM Release
+		-->	
+
+		<Folder name="Release" wait="yes">
+			<Job name="Load in Release.xml">
+				<WorkingDirectory>%apsim%\Release</WorkingDirectory>
+				<CommandLine>%Apsim%\Model\JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Release~%apsim%\Release\Release.xml"</CommandLine>
+			</Job>
+			<Folder name="Release" wait="yes"/>		
+		</Folder>
+	
 	</Folder>
 	
-		<!--
-    Build APSIM Documentation
-	-->	
-
-	<Folder name="Plant2 Documentation" wait="yes">
-		<Job name="Create Broccoli Documentation">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>Plant2Documentation.exe Broccoli.xml "%Apsim%\Documentation\4 Module Reference\Broccoli.htm"</CommandLine>
-		</Job>
-		<Job name="Create Vine Documentation">
-			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>Plant2Documentation.exe Vine.xml "%Apsim%\Documentation\4 Module Reference\Vine.htm"</CommandLine>
-		</Job>
-		<Job name="Create documentation">
-			<WorkingDirectory>%Apsim%\Documentation</WorkingDirectory>
-			<CommandLine>CreateIndex.bat</CommandLine>
-		</Job> 	
-	</Folder>
-
-		<!--
-    Build APSIM Release
-	-->	
-
-	<Folder name="Release" wait="yes">
-		<Job name="Load in Release.xml">
-			<WorkingDirectory>%apsim%\Release</WorkingDirectory>
-			<CommandLine>%Apsim%\Model\JobSchedulerSendCommand.exe "AddXMLFile~%JobPath%/../Release~%apsim%\Release\Release.xml"</CommandLine>
-		</Job>
-		<Folder name="Release" wait="yes"/>		
-	</Folder>
-
 		<!--
     Finish up by creating various zip files and updating database
 	-->	
