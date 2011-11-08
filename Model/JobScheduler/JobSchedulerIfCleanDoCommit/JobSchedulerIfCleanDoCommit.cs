@@ -5,6 +5,7 @@ using System.Text;
 using CSGeneral;
 using System.Diagnostics;
 using System.IO;
+using System.Xml;
 
 
 class JobSchedulerIfCleanDoCommit
@@ -35,8 +36,21 @@ class JobSchedulerIfCleanDoCommit
         DB.Open();
         int JobID = Convert.ToInt32(JobScheduler.TalkToJobScheduler("GetVariable~JobID"));
 
+        int revision = -1;
         try
         {
+            string SVNFileName = Utility.FindFileOnPath("svn.exe");
+            if (SVNFileName == "")
+                throw new Exception("Cannot find svn.exe on PATH");
+
+            Console.WriteLine("XML Version Number START");
+            XmlDocument doc = new XmlDocument();
+            string str = Utility.CheckProcessExitedProperly(Utility.RunProcess(SVNFileName, "info --xml", ApsimDirectory));
+            Console.WriteLine(str);
+            doc.LoadXml(str);
+            int.TryParse(XmlHelper.Attribute(XmlHelper.FindRecursively(doc.FirstChild.NextSibling, "entry"), "revision"), out revision);
+            Console.WriteLine("XML Version Number = " + revision.ToString());
+
             Dictionary<string, object> Details = DB.GetDetails(JobID);
 
             string Status = Details["Status"].ToString();
@@ -45,10 +59,6 @@ class JobSchedulerIfCleanDoCommit
 
             else if (Status == "Pass")
             {
-                string SVNFileName = Utility.FindFileOnPath("svn.exe");
-                if (SVNFileName == "")
-                    throw new Exception("Cannot find svn.exe on PATH");
-
                 string BugID = Details["BugID"].ToString();
                 string Description = Details["Description"].ToString() + "\r\nbugid: " + BugID;
                 string SVNArguments = "commit --username " + Details["UserName"] + " --password " + Details["Password"] +
@@ -56,12 +66,18 @@ class JobSchedulerIfCleanDoCommit
                 Process SVNP = Utility.RunProcess(SVNFileName, SVNArguments, ApsimDirectory);
                 string StdOut = Utility.CheckProcessExitedProperly(SVNP);
                 Console.WriteLine(StdOut);
+
+                Environment.SetEnvironmentVariable("Revision", "r" + (revision + 1).ToString());
             }
             else
+            {
+                Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED");
                 Console.WriteLine("Not clean - no commit");
+            }
         }
         catch (Exception err)
         {
+            Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED");
             DB.UpdateStatus(JobID, "Fail");
             DB.Close();
             throw err;
