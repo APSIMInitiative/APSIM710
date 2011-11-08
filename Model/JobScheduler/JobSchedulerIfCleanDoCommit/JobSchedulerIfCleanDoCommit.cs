@@ -43,13 +43,13 @@ class JobSchedulerIfCleanDoCommit
             if (SVNFileName == "")
                 throw new Exception("Cannot find svn.exe on PATH");
 
-            Console.WriteLine("XML Version Number START");
+            //Console.WriteLine("XML Version Number START");
             XmlDocument doc = new XmlDocument();
-            string str = Utility.CheckProcessExitedProperly(Utility.RunProcess(SVNFileName, "info --xml", ApsimDirectory));
-            Console.WriteLine(str);
-            doc.LoadXml(str);
+            //string str = Utility.CheckProcessExitedProperly(Utility.RunProcess(SVNFileName, "info --xml", ApsimDirectory));
+            // Console.WriteLine(str);
+            doc.LoadXml(Utility.CheckProcessExitedProperly(Utility.RunProcess(SVNFileName, "info --xml", ApsimDirectory)));
             int.TryParse(XmlHelper.Attribute(XmlHelper.FindRecursively(doc.FirstChild.NextSibling, "entry"), "revision"), out revision);
-            Console.WriteLine("XML Version Number = " + revision.ToString());
+            //Console.WriteLine("XML Version Number = " + revision.ToString());
 
             Dictionary<string, object> Details = DB.GetDetails(JobID);
 
@@ -67,17 +67,17 @@ class JobSchedulerIfCleanDoCommit
                 string StdOut = Utility.CheckProcessExitedProperly(SVNP);
                 Console.WriteLine(StdOut);
 
-                Environment.SetEnvironmentVariable("Revision", "r" + (revision + 1).ToString());
+                Environment.SetEnvironmentVariable("Revision", "r" + (revision + 1).ToString(), EnvironmentVariableTarget.User);
             }
             else
             {
-                Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED");
+                Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED", EnvironmentVariableTarget.User);
                 Console.WriteLine("Not clean - no commit");
             }
         }
         catch (Exception err)
         {
-            Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED");
+            Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "ERR" + err.Message, EnvironmentVariableTarget.User);
             DB.UpdateStatus(JobID, "Fail");
             DB.Close();
             throw err;
