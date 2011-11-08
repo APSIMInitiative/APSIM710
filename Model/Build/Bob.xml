@@ -22,7 +22,7 @@
 
 		<Job name="Apply patch">
 			<WorkingDirectory>%apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip" </CommandLine>
+			<CommandLine>JobSchedulerApplyPatch.exe %APSIM% "C:\inetpub\wwwroot\Files\Upload\%PatchFileName%.zip" </CommandLine>
 		</Job>
 	
 		<Job name="Copy RunTime DLL's into model directory" wait="yes">
@@ -66,7 +66,7 @@
 	<Folder name="Look for diffs"  wait="yes" IgnoreErrors="yes">
 		<Job name="JobSchedulerCreateDiffZip"  wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
+			<CommandLine>JobSchedulerCreateDiffZip.exe %Apsim% C:\inetpub\wwwroot\Files\Upload\%PatchFileName%.zip</CommandLine>
 		</Job>	
 		
 			<!--
@@ -117,7 +117,7 @@
 		</Job>			
 		<Job name="Do commit if clean" wait="yes" IgnoreErrors="yes">
 			<WorkingDirectory>%Apsim%\Model</WorkingDirectory>
-			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% C:\Upload\%PatchFileName%.zip</CommandLine>
+			<CommandLine>JobSchedulerIfCleanDoCommit.exe %Apsim% C:\inetpub\wwwroot\Files\Upload\%PatchFileName%.zip</CommandLine>
 		</Job>			
 		<Job name="CreateBinariesZip">
 			<WorkingDirectory>C:\inetpub\wwwroot\Files</WorkingDirectory>
