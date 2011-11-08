@@ -27,7 +27,7 @@ public class Component1
       }
 
    [EventHandler]
-   public void OnTick()
+   public void OnTimeStep()
       {
       TimeStepWasCalled = true;
       MyEvent.Invoke(2);
@@ -46,7 +46,7 @@ public class Component2
    [Link(NamePath="*")] public Component4[] Children;
 
    [EventHandler]
-   public void OnTick()
+   public void OnTimeStep()
       {
       TimeStepWasCalled = true;
       }
@@ -331,39 +331,6 @@ public class Tests
       Component1 Comp1 = (Component1)e.FindModel(".Simulation.Component1");
       Assert.IsNotNull(Comp1.ScienceAPI);
       }
-
-   /// <summary>
-   /// Make sure that models can be created on the fly from a supplied piece of script.
-   /// </summary>
-   [Test]
-   public void EnsureModelScriptingWorks()
-      {
-      string XML = "<Simulation>" +
-                   "  <Test.Component3>" +
-                   "    <Param5>test</Param5>" +
-                   "  </Test.Component3>" +
-                   "  <MyScript>" +
-                   "    <Script Language=\"CS\">" +
-                   "       public class MyScript" +
-                   "          {" +
-                   "          [Output] public int A = 1234;" +
-                   "          [EventHandler]" +
-                   "          public void OnTick()" +
-                   "             {" +
-                   "             }" +
-                   "          }" +
-                   "    </Script>" +
-                   "  </MyScript>" +
-                   "</Simulation>";
-
-      Engine e = new Engine();
-      e.LoadXml(XML);
-      e.RunSingleTimeStep();
-
-      // If it gets this far, then the [Input] variable "A" of Component3 have been
-      // satisifed by the MyScript component.
-      }
-
 
    /// <summary>
    /// Make sure a Ref["*"] works so that a class can access it's children.

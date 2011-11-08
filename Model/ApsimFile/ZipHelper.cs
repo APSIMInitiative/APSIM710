@@ -52,7 +52,7 @@ public class Zip
                     string DestFileName = Path.Combine(DestFolder, Path.GetFileName(Entry.Name));
                     string DestDir = Path.GetDirectoryName(DestFileName);
                     if (!Directory.Exists(DestDir)) { Directory.CreateDirectory(DestDir); }
-                    using (BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.CreateNew)))
+                    using (BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.Create)))
                         {
                         byte[] buffer = new byte[32768];
                         int size;

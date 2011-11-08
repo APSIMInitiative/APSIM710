@@ -170,7 +170,7 @@ namespace ApsimFile
          }
 
 
-      private void ReadApsimHeader(StreamReaderRandomAccess In)
+      public void ReadApsimHeader(StreamReaderRandomAccess In)
          {
          // ----------------------------------
          // Read in the apsim header.

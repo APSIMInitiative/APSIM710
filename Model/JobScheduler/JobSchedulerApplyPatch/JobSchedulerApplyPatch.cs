@@ -122,8 +122,8 @@ class JobSchedulerApplyPatch
                         throw new Exception("Cannot find SVN info for patched file: " + FileDetail.FileName);
                     string TipRevision = SVNFileNames[FileDetail.FileName];
 
-                    if (TipRevision != FileDetail.Revision)
-                        OutOfDateFileNames += "\r\n" + FileDetail.FileName;
+                    if (TipRevision != "?" && TipRevision != FileDetail.Revision)
+                        OutOfDateFileNames += "\r\n" + FileDetail.FileName + " Tip: " + TipRevision + " File: " + FileDetail.Revision;
                 }
             }
         }

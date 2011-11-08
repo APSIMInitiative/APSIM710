@@ -12,18 +12,17 @@ using CSGeneral;
 using System.Reflection;
 
 [ComVisible(true)]
-public class Manager2 : Instance
+public class Manager2
 {
     [Param(Name = "Manager2")]
-    XmlNode Manager2Xml;
+    XmlNode Manager2Xml = null;
 
     [Link]
-    ModelFramework.Component ThisComponent;
+    ModelEnvironment ModelEnvironment = null;
 
-    public override void Initialised()
+    [EventHandler]
+    public void OnInitialised()
     {
-        base.Initialised();
-
         Assembly CompiledAssembly = CompileTextToAssembly();
 
         // Go look for our class name.
@@ -52,7 +51,7 @@ public class Manager2 : Instance
         }
 
 
-        ThisComponent.BuildObjects(ScriptNode, CompiledAssembly);
+        ModelEnvironment.AddModel(ScriptNode, CompiledAssembly);
     }
 
     private Assembly CompileTextToAssembly()

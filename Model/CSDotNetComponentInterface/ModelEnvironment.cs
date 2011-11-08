@@ -5,6 +5,7 @@ using System.Text;
 using CMPServices;
 using System.Reflection;
 using ModelFramework;
+using System.Xml;
 
 public class ModelEnvironment
 {
@@ -446,5 +447,13 @@ public class ModelEnvironment
         return RelativeTo;
     }
 
+    /// <summary>
+    /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
+    /// the model. The ModelAssembly contains the model.
+    /// </summary>
+    public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
+    {
+        In.ParentComponent().BuildObjects(ModelDescription, ModelAssembly);
+    }
 
 }

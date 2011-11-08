@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CSGeneral
 {
@@ -340,17 +341,17 @@ namespace CSGeneral
 
         static public string DataTableToCSV(DataTable Data, int StartColumnIndex)
         {
-            string St = "";
+            StringBuilder St = new StringBuilder(100000);
             bool FirstTime = true;
             for (int i = StartColumnIndex; i < Data.Columns.Count; i++)
             {
                 if (FirstTime)
                     FirstTime = false;
                 else
-                    St += ", ";
-                St += Data.Columns[i].ColumnName;
+                    St.Append(',');
+                St.Append(Data.Columns[i].ColumnName);
             }
-            St +="\r\n";
+            St.Append("\r\n");
 
             foreach (DataRow Row in Data.Rows)
             {
@@ -360,22 +361,20 @@ namespace CSGeneral
                     if (FirstTime)
                         FirstTime = false;
                     else
-                        St += ", ";
+                        St.Append(',');
 
-                    string LocalSt;
                     if (Row[i] is DateTime)
                     {
                         DateTime D = Convert.ToDateTime(Row[i]);
-                        LocalSt = D.ToShortDateString();
+                        St.Append(D.ToShortDateString());
                     }
                     else
-                        LocalSt = Row[i].ToString();
-                    St += LocalSt.Replace(",", "");
+                        St.Append(Row[i].ToString().Replace(",", ""));
                 }
 
-                St += "\r\n";
+                St.Append("\r\n");
             }
-            return St;
+            return St.ToString();
         }
 
     }
