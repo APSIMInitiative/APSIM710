@@ -20,5 +20,10 @@ if EXIST "%APSIM%\Model\Build\VersionInfo.bat" call "%APSIM%\Model\Build\Version
 rem ----- Run MAKE
 rem ----- The working directory is specified by %1 (may be blank)
 rem NB. Make sure make.exe is the last thing executed in this script to that errors are noticed on exit
-if "%1"=="" make 
-if NOT "%1"=="" make -C "%1" %2 %3 %4
+if "%1"=="" (
+	make
+	goto end
+	)
+
+make -C "%1" %2 %3 %4
+:end
