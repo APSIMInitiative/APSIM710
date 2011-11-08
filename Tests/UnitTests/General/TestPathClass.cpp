@@ -192,7 +192,7 @@ void Path_test::TestSetDirectory(){
     BOOST_CHECK_EQUAL(a.Get_name(), "");
     BOOST_CHECK_EQUAL(a.Get_name_without_ext(), "");
     BOOST_CHECK_EQUAL(a.Get_path(), "\\sth");
-    BOOST_CHECK_EQUAL(a.Get_full_path(), "c:\\sth");
+    BOOST_CHECK_EQUAL(a.Get_full_path(), "d:\\sth");
     BOOST_CHECK_EQUAL(a.Get_drive(), "");
 
     // 2. Relative directory
@@ -202,7 +202,7 @@ void Path_test::TestSetDirectory(){
     BOOST_CHECK_EQUAL(b.Get_name(), "");
     BOOST_CHECK_EQUAL(b.Get_name_without_ext(), "");
     BOOST_CHECK_EQUAL(b.Get_path(), "sth");
-    BOOST_CHECK_EQUAL(b.Get_full_path(), "c:sth");
+    BOOST_CHECK_EQUAL(b.Get_full_path(), "d:sth");
     BOOST_CHECK_EQUAL(b.Get_drive(), "");
 
     // 3. Set with ""
@@ -228,7 +228,7 @@ void Path_test::TestSetDirectory(){
     BOOST_CHECK_EQUAL(f.Get_name(), "");
     BOOST_CHECK_EQUAL(f.Get_name_without_ext(), "");
     BOOST_CHECK_EQUAL(f.Get_path(), " \\sth");
-    BOOST_CHECK_EQUAL(f.Get_full_path(), "c: \\sth");
+    BOOST_CHECK_EQUAL(f.Get_full_path(), "d: \\sth");
     BOOST_CHECK_EQUAL(f.Get_drive(), "");
 }
 
