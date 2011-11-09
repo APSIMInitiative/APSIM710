@@ -67,17 +67,17 @@ class JobSchedulerIfCleanDoCommit
                 string StdOut = Utility.CheckProcessExitedProperly(SVNP);
                 Console.WriteLine(StdOut);
 
-                Environment.SetEnvironmentVariable("Revision", "r" + (revision + 1).ToString(), EnvironmentVariableTarget.User);
+                Environment.SetEnvironmentVariable("Revision", "r" + (revision + 1).ToString(), EnvironmentVariableTarget.Machine);
             }
             else
             {
-                Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED", EnvironmentVariableTarget.User);
+                Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "FAILED", EnvironmentVariableTarget.Machine);
                 Console.WriteLine("Not clean - no commit");
             }
         }
         catch (Exception err)
         {
-            Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "ERR" + err.Message, EnvironmentVariableTarget.User);
+            Environment.SetEnvironmentVariable("Revision", "r" + revision.ToString() + "ERR" + err.Message, EnvironmentVariableTarget.Machine);
             DB.UpdateStatus(JobID, "Fail");
             DB.Close();
             throw err;
