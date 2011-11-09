@@ -77,10 +77,42 @@ using System.Text;
 
 
 
-      //TODO: where does this come from?
-      static public double root_proportion(int Layer, double[] Dlayer, double WetSoilDepth)
+      static public double root_proportion(int Layer, double[] Dlayer, double RootDepth)
          {
-         return 0.1;
+
+         //integer    layer                 ! (INPUT) layer to look at
+         //real       dlayr(*)              ! (INPUT) array of layer depths
+         //real       root_depth            ! (INPUT) depth of roots
+
+         //!+ Purpose
+         //!       returns the proportion of layer that has roots in it (0-1).
+
+         //!+  Definition
+         //!     Each element of "dlayr" holds the height of  the
+         //!     corresponding soil layer.  The height of the top layer is
+         //!     held in "dlayr"(1), and the rest follow in sequence down
+         //!     into the soil profile.  Given a root depth of "root_depth",
+         //!     this function will return the proportion of "dlayr"("layer")
+         //!     which has roots in it  (a value in the range 0..1).
+
+         //!+  Mission Statement
+         //!      proportion of layer %1 explored by roots
+
+         double       depth_to_layer_bottom;  //! depth to bottom of layer (mm)
+         double       depth_to_layer_top;     //! depth to top of layer (mm)
+         double       depth_to_root;          //! depth to root in layer (mm)
+         double       depth_of_root_in_layer; //! depth of root within layer (mm)
+
+
+
+
+         depth_to_layer_bottom = au.sum_real_array(Dlayer, Layer);
+         depth_to_layer_top = depth_to_layer_bottom - Dlayer[au.ci(Layer)];
+         depth_to_root  = Math.Min(depth_to_layer_bottom, RootDepth);
+
+         depth_of_root_in_layer = mu.dim(depth_to_root, depth_to_layer_top);
+         return mu.divide(depth_of_root_in_layer, Dlayer[au.ci(Layer)], 0.0);
+
          }
 
 /*

@@ -72,7 +72,7 @@ using System.Text;
 
       static public bool IsIniDefault(double[] A) 
          {
-         if ((A[0] == 0.0) && (A[1] == 0.0) && (A[2] == 0.0)) 
+         if ((A.Length == 3) && (A[0] == 0.0) && (A[1] == 0.0) && (A[2] == 0.0)) 
             {
             return true;
             }
@@ -136,8 +136,20 @@ using System.Text;
          }
 
 
+      static public double[] Dup(double[] Source)
+         {
+         //Dup is short for Duplicate.
+         //this is different to CopyTo() in that this creates new memory 
+         //whereas CopyTo just overwrites the existing memory of an existing array.
+         double[] returnArray = new double[Source.Length];
+         CopyTo(ref returnArray, Source, Source.Length);
+         return returnArray;
+         }
+
+
       static public void CopyTo(ref double[] Destination, double[] Source, int StopLayer)
          {
+         //Array.Copy(Source, Destination, StopLayer);
          for(int i=si; i<=ci(StopLayer); i++)
             {
             Destination[i] = Source[i];

@@ -50,6 +50,18 @@ using System.Text;
             }
          }
 
+      static public double dim(double X, double Y)
+         {
+         //this is a fortran built in math function.
+         double result = X-Y;
+         if (result > 0)
+            return result;
+         else
+            return 0;
+         
+         }
+
+
 
       static public double divide(double Dividend, double Divisor, double Default)
          {
