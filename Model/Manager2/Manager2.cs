@@ -20,10 +20,14 @@ public class Manager2
     [Link]
     ModelEnvironment ModelEnvironment = null;
 
+    string DllFileName;
+
     [EventHandler]
     public void OnInitialised()
     {
         Assembly CompiledAssembly = CompileTextToAssembly();
+
+        DllFileName = CompiledAssembly.Location;
 
         // Go look for our class name.
         string ScriptClassName = null;
@@ -76,6 +80,15 @@ public class Manager2
                 Params.ReferencedAssemblies.Add("System.dll");
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
+                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
+
+                foreach (string val in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "reference"))
+                    if (File.Exists(val))
+                        Params.ReferencedAssemblies.Add(val);
+                    else if (File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + val))
+                        Params.ReferencedAssemblies.Add(RuntimeEnvironment.GetRuntimeDirectory() + val);
+                    else
+                        Params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
 
                 string[] source = new string[1];
                 source[0] = Text;
@@ -94,7 +107,7 @@ public class Manager2
                 return results.CompiledAssembly;
             }
         }
-        throw new Exception("Cannot compile manager script to an assemble");
+        throw new Exception("Cannot compile manager script to an assembly");
     }
 }
 
