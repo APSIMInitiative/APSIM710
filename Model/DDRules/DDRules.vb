@@ -1283,7 +1283,7 @@ Public Class DDRules
     <Output()> <Units("")> Public Property EffluentPaddocks As String()
         Get
             If (strEffluentPaddocks Is Nothing) Then
-                Return {""}
+                Return New String() {""}
             End If
             Return strEffluentPaddocks 'myFarm.getEffluentPaddocks()
         End Get

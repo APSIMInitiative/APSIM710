@@ -137,7 +137,7 @@ Partial Public Class MicroMet
     <Units("m/s")> _
     Private windspeed As Double = 0.0
 
-    <Input()>
+    <Input()> _
     Private today As Date
 #End Region
 
