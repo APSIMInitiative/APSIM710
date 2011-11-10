@@ -53,8 +53,10 @@ del /Q %APSIM%\Model\*.exe
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
 echo ----- Set the (fake incremented) version numbers -----                        >> %APSIM%\Model\Build\Bootstrap.xml
+cd %APSIM%\Model\Build
 %APSIM%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl Increment                 >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\VersionInfo.bat                                           >> %APSIM%\Model\Build\Bootstrap.xml
+cd %APSIM%
 
 rem ----- Run the JobScheduler -----
 echo ^</StdOut^>^</StdOut^>                                                        >> %APSIM%\Model\Build\Bootstrap.xml
