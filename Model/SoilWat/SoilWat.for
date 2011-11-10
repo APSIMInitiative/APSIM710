@@ -4919,10 +4919,24 @@ c  dsg   070302  added runon
       else if (variable_name .eq. 'cover_surface_runoff') then
          call respond2get_real_var (variable_name, ''
      :                             , g%cover_surface_runoff)
+	 
+!sv- 2011-11-03 - I added cn2_bare, cn_red, cn_cov. 
+!    Solves the problem of being able to set these but not report them to see if the set worked.
+!sv- you must have a space in the second parameter (for units). If you just put '' instead of ' '
+!	 you end up with all the variables in p% being listed as the units.
+      else if (variable_name .eq. 'cn2_bare') then
+            call respond2get_real_var (variable_name, ' ', p%cn2_bare)
 
+      else if (variable_name .eq. 'cn_red') then
+            call respond2get_real_var (variable_name, ' ', p%cn_red)
+			
+      else if (variable_name .eq. 'cn_cov') then
+            call respond2get_real_var (variable_name, '(0-1)', p%cn_cov)
+
+			
       else if (variable_name .eq. 'cn2_new') then
-            call respond2get_real_var (variable_name, '', g%cn2_new)
-
+            call respond2get_real_var (variable_name, ' ', g%cn2_new)			
+			
       else if (variable_name .eq. 'runoff') then
          call respond2get_real_var (variable_name, 'mm', g%runoff)
 
