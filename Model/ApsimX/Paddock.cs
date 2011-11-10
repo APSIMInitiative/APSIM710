@@ -138,6 +138,15 @@ namespace ModelFramework
                 throw new NotImplementedException();
             }
         }
+
+       public List<Component> ComponentList
+         {
+         get {throw new NotImplementedException();}
+         set{throw new NotImplementedException();}
+         }
+
+      
+
     }
 
     /// <summary>
