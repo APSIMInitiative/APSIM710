@@ -11,5 +11,10 @@ if [ -f "$APSIM/Model/Build/VersionInfo.sh" ] ; then
   . "$APSIM/Model/Build/VersionInfo.sh"
 fi
 
-make $1 $2 $3 $4
+# ----- The working directory may be specified by $1 (or blank)
+if [ $# -eq 0 ] ; then
+  make 
+else
+  make -C "$1" $2 $3 
+fi
 

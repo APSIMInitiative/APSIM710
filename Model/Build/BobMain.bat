@@ -7,6 +7,9 @@ cd %APSIM%
 rem ----- Save the path 
 path > %TEMP%\SavedPath.bat
 
+rem ----- Setup the Visual Studio 2010 compiler tools
+if "%LIBPATH%" == "" call "%VS100COMNTOOLS%..\..\VC\vcvarsall.bat"
+
 rem ----- Setup the bootstrap.xml
 echo ^<StdOut^>^<StdOut^>                                                           > %TEMP%\Bootstrap.xml
 
@@ -19,7 +22,7 @@ svn.exe update %APSIM%                                                          
 echo ----- Remove unwanted files -----                                             >> %TEMP%\Bootstrap.xml
 cd %APSIM%\Model
 RunTime\cscs Build\RemoveUnwantedFiles.cs %APSIM%                                  >> %TEMP%\Bootstrap.xml
-if ERRORLEVEL 1 goto CleanUp
+if ERRORLEVEL 1 goto CleanUp 
 
 rem ------------------------------------------------------------------------
 rem At this point the development tree will be clean
@@ -45,12 +48,13 @@ for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Uploa
 if ERRORLEVEL 1 goto CleanUp
 echo Patch file: %PatchFileName%
 
-echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml
-%APSIM%\Model\JobSchedulerApplyPatch.exe %APSIM% "C:\Upload\%PatchFileName%.zip"   >> %APSIM%\Model\Build\Bootstrap.xml
-
 echo ----- Re-compile the JobScheduler -----                                       >> %APSIM%\Model\Build\Bootstrap.xml
 del /Q %APSIM%\Model\*.exe
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
+
+echo ----- Set the (fake incremented) version numbers -----                        >> %APSIM%\Model\Build\Bootstrap.xml
+%APSIM%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl Increment                 >> %APSIM%\Model\Build\Bootstrap.xml
+call %APSIM%\Model\Build\VersionInfo.bat                                           >> %APSIM%\Model\Build\Bootstrap.xml
 
 rem ----- Run the JobScheduler -----
 echo ^</StdOut^>^</StdOut^>                                                        >> %APSIM%\Model\Build\Bootstrap.xml

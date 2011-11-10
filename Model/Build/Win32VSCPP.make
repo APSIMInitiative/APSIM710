@@ -14,7 +14,6 @@ RC=rc
 BOOST = $(APSIM)\..\BuildLibraries\boost_1_44
 LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.7.win32
 ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
-TCL = $(APSIM)\Model\TclLink\bin\tclsh85.exe
 
 DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "BOOST_REGEX_STATIC_LINK" $(DEFINES)
 INCLUDES := /I $(APSIM)\Model /I $(BOOST) /I $(LIBXML)\include /I $(ICONV)\include /I $(APSIM)\Model\$(PROJECT) $(INCLUDES) 

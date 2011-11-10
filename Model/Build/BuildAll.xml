@@ -2,511 +2,513 @@
 <?xml-stylesheet type="text/xsl" href="Build.xsl"?>
 <Folder name="Build">
    <Folder name="Infrastructure">
-	<Job name="Copy RunTime DLL's into model directory" >
+	<!-- These two are superfluous if called from buildall.bat/sh
+	 <Job name="Copy RunTime DLL's into model directory" >
 		<WorkingDirectory>%APSIM%/Model/RunTime</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-	</Job>
-	<Job name="Version stamp the build" wait="yes">
+		<CommandLine>make.exe</CommandLine>
+	 </Job>
+	 <Job name="Version stamp the build" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
 		<CommandLine>%APSIM%\Model\TclLink\bin\tclsh85.exe VersionStamper.tcl</CommandLine>
 		<CommandLineUnix>tclsh VersionStamper.tcl</CommandLineUnix>
-	</Job>
+	 </Job>
+	--> 
 	<Job name="Compile CMPServices" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/CMPServices</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ApsimFile" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/ApsimFile</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile General">
 		<WorkingDirectory>%APSIM%/Model/General</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ApsimShared" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/ApsimShared</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile DataTypes">
 		<WorkingDirectory>%APSIM%/Model/DataTypes</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Protocol" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/Protocol</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ComponentInterface">
 		<WorkingDirectory>%APSIM%/Model/ComponentInterface</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ComponentInterface2">
 		<WorkingDirectory>%APSIM%/Model/ComponentInterface2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile CSDotNetComponentInterface">
 		<WorkingDirectory>%APSIM%/Model/CSDotNetComponentInterface</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile FortranInfrastructure">
 		<WorkingDirectory>%APSIM%/Model/FortranInfrastructure</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile FortranComponentInterface" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/FortranComponentInterface</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile FortranComponentInterface2">
 		<WorkingDirectory>%APSIM%/Model/FortranComponentInterface2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile CropTemplate">
 		<WorkingDirectory>%APSIM%/Model/CropTemplate</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile VBMet">
 		<WorkingDirectory>%APSIM%/Model/VBMet</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>   
 	<Job name="Compile DotNetProxies">
 		<WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>   
     </Folder>
     <Folder name="Apsim modules" wait="yes">
 	<Job name="Compile Plant">
 		<WorkingDirectory>%APSIM%/Model/Plant</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Accum">
 		<WorkingDirectory>%APSIM%/Model/Accum</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile AgPasture">
 		<WorkingDirectory>%APSIM%/Model/AgPasture</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Apsim">
 		<WorkingDirectory>%APSIM%/Model/Apsim</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Canopy">
 		<WorkingDirectory>%APSIM%/Model/Canopy</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Clock">
 		<WorkingDirectory>%APSIM%/Model/Clock</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile CropMod">
 		<WorkingDirectory>%APSIM%/Model/CropMod</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Eo">
 		<WorkingDirectory>%APSIM%/Model/Eo</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Erosion">
 		<WorkingDirectory>%APSIM%/Model/Erosion</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Fertiliser">
 		<WorkingDirectory>%APSIM%/Model/Fertiliser</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Grasp">
 		<WorkingDirectory>%APSIM%/Model/Grasp</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Graz">
 		<WorkingDirectory>%APSIM%/Model/Graz</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Growth">
 		<WorkingDirectory>%APSIM%/Model/Growth</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
       <Folder name="Input Modules">
 	<Job name="Compile Input">
 		<WorkingDirectory>%APSIM%/Model/Input</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>  
 	<Job name="Compile PatchInput" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/PatchInput</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SiloInput">
 		<WorkingDirectory>%APSIM%/Model/SiloInput</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
       </Folder>
 	<Job name="Compile Irrigation">
 		<WorkingDirectory>%APSIM%/Model/Irrigation</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Log">
 		<WorkingDirectory>%APSIM%/Model/Log</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Maize">
 		<WorkingDirectory>%APSIM%/Model/Maize</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile MaizeZ">
 		<WorkingDirectory>%APSIM%/Model/MaizeZ</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Manager">
 		<WorkingDirectory>%APSIM%/Model/Manager</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Manager2">
 		<WorkingDirectory>%APSIM%/Model/Manager2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Map">
 		<WorkingDirectory>%APSIM%/Model/Map</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile MicroClimate">
 		<WorkingDirectory>%APSIM%\Model\MicroClimate</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile MicroMet">
 		<WorkingDirectory>%APSIM%/Model/MicroMet</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Millet">
 		<WorkingDirectory>%APSIM%/Model/Millet</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Operations">
 		<WorkingDirectory>%APSIM%/Model/Operations</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Oryza">
 		<WorkingDirectory>%APSIM%/Model/Oryza</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Ozcot">
 		<WorkingDirectory>%APSIM%/Model/Ozcot</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Parasite">
 		<WorkingDirectory>%APSIM%/Model/Parasite</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Pasture">
 		<WorkingDirectory>%APSIM%/Model/Pasture</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Plant2">
 		<WorkingDirectory>%APSIM%/Model/Plant2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Pond">
 		<WorkingDirectory>%APSIM%/Model/Pond</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ProtocolManager">
 		<WorkingDirectory>%APSIM%/Model/ProtocolManager</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Report">
 		<WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Root">
 		<WorkingDirectory>%APSIM%/Model/Root</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SOI">
 		<WorkingDirectory>%APSIM%/Model/SOI</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilErosion">
 		<WorkingDirectory>%APSIM%/Model/SoilErosion</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>          
 	<Job name="Compile SoilN">
 		<WorkingDirectory>%APSIM%/Model/SoilN</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilNitrogen">
 		<WorkingDirectory>%APSIM%/Model/SoilNitrogen</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>         
 	<Job name="Compile SoilP">
 		<WorkingDirectory>%APSIM%/Model/SoilP</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilTemp">
 		<WorkingDirectory>%APSIM%/Model/SoilTemp</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilTemp2">
 		<WorkingDirectory>%APSIM%/Model/SoilTemp2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilWat">
 		<WorkingDirectory>%APSIM%/Model/SoilWat</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SoilWater">
 		<WorkingDirectory>%APSIM%/Model/SoilWater</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat %APSIM%/Model/SoilWater</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>   
 	<Job name="Compile Solute">
 		<WorkingDirectory>%APSIM%/Model/Solute</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Sorghum">
 		<WorkingDirectory>%APSIM%/Model/Sorghum</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Stock">
 		<WorkingDirectory>%APSIM%/Model/Stock</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Sugar">
 		<WorkingDirectory>%APSIM%/Model/Sugar</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Supplement">
 		<WorkingDirectory>%APSIM%/Model/Supplement</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Surface">
 		<WorkingDirectory>%APSIM%/Model/Surface</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SurfaceOM">
 		<WorkingDirectory>%APSIM%/Model/SurfaceOM</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SurfaceOrganicMatter">
 		<WorkingDirectory>%APSIM%/Model/SurfaceOrganicMatter</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat %APSIM%/Model/SurfaceOrganicMatter</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SurfaceTemp">
 		<WorkingDirectory>%APSIM%/Model/SurfaceTemp</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SWIM2">
 		<WorkingDirectory>%APSIM%/Model/SWIM2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SWIM3">
 		<WorkingDirectory>%APSIM%/Model/SWIM3</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SysBal">
 		<WorkingDirectory>%APSIM%/Model/SysBal</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SysBal2">
 		<WorkingDirectory>%APSIM%/Model/SysBal2</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile TclLink">
 		<WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
     <Job name="Compile Tracker">
 		<WorkingDirectory>%APSIM%/Model/Tracker</WorkingDirectory>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile Tree">
 		<WorkingDirectory>%APSIM%/Model/Tree</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile UrinePatch">
 		<WorkingDirectory>%APSIM%/Model/UrinePatch</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile VenLink">
 		<WorkingDirectory>%APSIM%/Model/VenLink</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile WaterSupply">
 		<WorkingDirectory>%APSIM%/Model/WaterSupply</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile YieldProphet">
 		<WorkingDirectory>%APSIM%/Model/YieldProphet</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile DDRules">
 		<WorkingDirectory>%APSIM%/Model/DDRules</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile FarmSimGraze">
 		<WorkingDirectory>%APSIM%/Model/FarmSimGraze</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
    </Folder>
    <Folder name="ApsimX">
       <Job name="Compile ApsimX">
 		<WorkingDirectory>%APSIM%/Model/ApsimX</WorkingDirectory>
-		<CommandLine>..\Build\RunMake.bat %APSIM%/Model/ApsimX</CommandLine>
-		<CommandLineUnix>../Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
       </Job>
    </Folder>   
    <Folder name="Sundry Executables">
 	<Job name="Compile ApsimToSim">
 		<WorkingDirectory>%APSIM%/Model/ApsimToSim</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ConToApsim">
 		<WorkingDirectory>%APSIM%/Model/ConToApsim</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile ConToSim">
 		<WorkingDirectory>%APSIM%/Model/ConToSim</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile SetXMLValue">
 		<WorkingDirectory>%APSIM%/Model/SetXMLValue</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile Plant2Documentation">
 		<WorkingDirectory>%APSIM%/Model/Plant2Documentation</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile RunMacro">
 		<WorkingDirectory>%APSIM%/Model/RunMacro</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile UpdateDotNetProxies">
 		<WorkingDirectory>%APSIM%/Model/UpdateDotNetProxies</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile JobSchedulerFindJobs" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
    </Folder>
    <Folder name="GUI">
 	<Job name="Compile ExcelUtility">
 		<WorkingDirectory>%APSIM%/Model/Excel</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile ApsimUI">
 		<WorkingDirectory>%APSIM%/Model/ApsimUI</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile MergeOutputFiles">
 		<WorkingDirectory>%APSIM%/Model/MergeOutputFiles</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile ShellExtensions">
 		<WorkingDirectory>%APSIM%/Model/ShellExtensions</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile RunEditor">
 		<WorkingDirectory>%APSIM%/Model/RunEditor</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile ApsimRun" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/ApsimRun</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
+		<CommandLine>make.exe</CommandLine>
 	</Job>
 	<Job name="Compile JobSchedulerFindJobs" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/JobScheduler/JobSchedulerFindJobs</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
 	<Job name="Compile CreatePatch" wait="yes">
 		<WorkingDirectory>%APSIM%/Model/JobScheduler/CreatePatch</WorkingDirectory>
-		<CommandLine>%APSIM%\Model\Build\RunMake.bat</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLine>make.exe</CommandLine>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
     </Folder>
 	<Job name="Delete old .NET proxy classes" wait="yes">
@@ -517,6 +519,6 @@
 	<Job name="Create new .NET proxy classes" wait="yes">
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 		<CommandLine>UpdateDotNetProxies.exe</CommandLine>
-		<CommandLineUnix>%APSIM%/Model/Build/RunMake.sh</CommandLineUnix>
+		<CommandLineUnix>make</CommandLineUnix>
 	</Job>
  </Folder>

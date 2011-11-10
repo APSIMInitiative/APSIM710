@@ -5,12 +5,10 @@
 #include <olectl.h>
 #include <string>
 #include <exception>
+#include <sstream>
 #include <fstream>
-#include <General\path.h>
-#include <General\inifile.h>
-#include <General\stristr.h>
-#include <General\stream_functions.h>
-#include <ApsimShared\ApsimDirectories.h>
+#include <General\platform.h>
+
 HINSTANCE hInstance;
 extern ULONG g_DllRefCount;
 using namespace std;
@@ -38,8 +36,7 @@ string getKey(void)
    }
 string getClsid(void)
    {
-   string version = getApsimBuildNumber();
-   replaceAll(version, "R", "");
+   string version = getApsimBuildNumber().substr(1); // Strip leading "r"
 
    int numChars = strlen(szCLSID) - version.length();
    string clsid = string(szCLSID, numChars);
