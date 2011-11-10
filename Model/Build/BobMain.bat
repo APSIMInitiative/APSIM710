@@ -32,7 +32,7 @@ echo ----- Copy the Bootstrap.xml file to the build directory                   
 copy %TEMP%\Bootstrap.xml %APSIM%\Model\Build
 
 echo ----- Compile the JobScheduler -----                                          >> %APSIM%\Model\Build\Bootstrap.xml
-copy %APSIM%\Model\RunTime\ICSharpCode.SharpZipLib.dll %APSIM%\Model               >> %APSIM%\Model\Build\Bootstrap.xml
+call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\RunTime                         >> %APSIM%\Model\Build\Bootstrap.xml
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
 
 rem ------------------------------------------------------------------------
