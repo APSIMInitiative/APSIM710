@@ -129,7 +129,8 @@ void fruitOilPart::doDMDemandGrain (float dlt_dm_grain_demand)
    {
    float dltDmOil = removeEnergy (dlt_dm_grain_demand) * cGrain_oil_conc;
    float dltDmOilConversion =  removeEnergy (dlt_dm_grain_demand) * (gGrain_energy - 1.0);
-   DMGreenDemand = dltDmOil + dltDmOilConversion;
+   DMGreenDemand = max(0.0, dltDmOil + dltDmOilConversion);
+   if (isnan(DMGreenDemand)) {throw new runtime_error("DMGreenDemand is NAN in fruitOilPart::doDMDemandGrain");};
    }
 
 float fruitOilPart::giveDmGreen(float delta)

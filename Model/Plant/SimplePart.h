@@ -68,7 +68,7 @@ class SimplePart : public plantPart
 
       float n_deficit_uptake_fraction;    // xxxxxxxxxx
       float MRScalingFactor;             //  Empirical factor used to scale "average" maintenace-respiration rate using daily change in photoperiod (PFR)
-      float Q10;                         // Q10 for maintenance respiration of plant parts (PFR)
+      //float Q10;                         // Q10 for maintenance respiration of plant parts (PFR)
 
       interpolationFunction GrowthStructuralFraction;
       interpolationFunction n_conc_min;

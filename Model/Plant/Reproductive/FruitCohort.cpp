@@ -44,7 +44,7 @@ void FruitCohort::onInit1(protocol::Component *system)
    CompositePart::onInit1(system);
 
    // register some other things.
-   system->addGettableVar("dlt_dm_fruit", gDlt_dm, "g/m^2", "Change in dry matter");
+   //system->addGettableVar("dlt_dm_fruit", gDlt_dm, "g/m^2", "Change in dry matter");
    }
 
 void FruitCohort::checkBounds (void)

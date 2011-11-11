@@ -42,7 +42,7 @@ protected:
    fruitGrainPart  *grainPart;
 
    bool  gHasreadconstants;
-   float gDlt_dm;
+   //float gDlt_dm;
    XMLNode parameters;
 
 };
