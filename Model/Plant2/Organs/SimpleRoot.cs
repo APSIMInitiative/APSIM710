@@ -74,7 +74,8 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         get
         {
-            string CurrentPaddockName = ModelEnvironment.SystemName(Plant.FullName);
+            string CurrentPaddockName = StringManip.ParentName(Plant.FullName);
+
             SoilWater = GetWaterModule();
             if (SoilWater != null)
             {
@@ -85,11 +86,14 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
             else
             {
                 double Total = 0;
-                foreach (string SubPaddockName in ModelEnvironment.SystemNames(CurrentPaddockName))
+                foreach (string SubPaddockName in ModelEnvironment.ChildNames(CurrentPaddockName))
                 {
-                    double[] SWSupply;
-                    ModelEnvironment.Get(SubPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
-                    Total += MathUtility.Sum(SWSupply);
+                    if (SubPaddockName.ToLower().Contains("paddock")) 
+                    {
+                        double[] SWSupply;
+                        ModelEnvironment.Get(SubPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
+                        Total += MathUtility.Sum(SWSupply);
+                    }
                 }
                 return Total;
             }
@@ -102,33 +106,33 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override void DoWaterUptake(double Amount)
     {
         Uptake = Amount;
-        string CurrentPaddockName = ModelEnvironment.SystemName(Plant.FullName);
+        string CurrentPaddockName = StringManip.ParentName(Plant.FullName);
         SoilWater = GetWaterModule();
         if (SoilWater != null)
             ModelEnvironment.Set(CurrentPaddockName + "." + Plant.Name + "Root.SWUptake", Amount);
 
         else
         {
-            string[] PaddockNames = ModelEnvironment.SystemNames(CurrentPaddockName);
-
-            double[] Supply = new double[PaddockNames.Length];
-            int i = 0;
-            double Total = 0;
-            foreach (string SubPaddockName in PaddockNames)
+            List<string> ModelNames = new List<string>();
+            List<double> Supply = new List<double>();
+            foreach (string SubPaddockName in ModelEnvironment.ChildNames(CurrentPaddockName))
             {
-                double[] SWSupply;
-                ModelEnvironment.Get(SubPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
-                Supply[i] = (MathUtility.Sum(SWSupply));
-                Total += Supply[i];
-                i++;
+                if (SubPaddockName.ToLower().Contains("paddock"))
+                {
+                    double[] SWSupply;
+                    string ModelName = SubPaddockName + "." + Plant.Name + "Root";
+                    ModelEnvironment.Get(ModelName + ".SWSupply", out SWSupply);
+                    Supply.Add(MathUtility.Sum(SWSupply));
+                    ModelNames.Add(ModelName);
+                }
             }
-            double fraction = Amount / Total;
+            double fraction = Amount / MathUtility.Sum(Supply);
             if (fraction > 1)
                 throw new Exception("Requested SW uptake > Available supplies.");
-            i = 0;
-            foreach (string SubPaddockName in PaddockNames)
+            int i = 0;
+            foreach (string ModelName in ModelNames)
             {
-                ModelEnvironment.Set(SubPaddockName + "." + Plant.Name + "Root.SWUptake", 
+                ModelEnvironment.Set(ModelName + ".SWUptake", 
                                      Supply[i] * fraction);
                 i++;
             }

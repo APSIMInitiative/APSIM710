@@ -23,10 +23,10 @@ public class PhaseLookupValue : Function
             if (End == "")
                 throw new Exception("Phase end name not set:" + Name);
 
-            string[] ChildNames = ModelEnvironment.ChildModelNames();
+            string[] ChildNames = ModelEnvironment.ChildNames();
             if (Phenology.Between(Start, End) && ChildNames.Length > 0)
             {
-                Function Lookup = ModelEnvironment.ModelByName(ChildNames[0]) as Function;
+                Function Lookup = ModelEnvironment.Link<Function>(ChildNames[0]);
                 return Lookup.Value;
             }
             else
@@ -42,10 +42,10 @@ public class PhaseLookupValue : Function
             if (End == "")
                 throw new Exception("Phase end name not set:" + Name);
 
-            string[] ChildNames = ModelEnvironment.ChildModelNames();
+            string[] ChildNames = ModelEnvironment.ChildNames();
             if (Phenology.Between(Start, End) && ChildNames.Length > 0)
             {
-                Function Lookup = ModelEnvironment.ModelByName(ChildNames[0]) as Function;
+                Function Lookup = ModelEnvironment.Link<Function>(ChildNames[0]);
                 return Lookup.ValueString;
             }
             else

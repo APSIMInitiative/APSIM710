@@ -36,9 +36,15 @@ public class Manager2
             if (t.BaseType != null && t.BaseType.Name == "Instance")
                 ScriptClassName = t.Name;
         }
-        if (ScriptClassName == "")
-   		    throw new Exception("Cannot find a script class inherited from 'Instance'");
+        if (ScriptClassName == null)
+        {
+            // Look for a class called Script
+            Type t = CompiledAssembly.GetType("Script");
+            if (t == null)
+                throw new Exception("Cannot find a public class called Script");
+            ScriptClassName = "Script";
 
+        }
 
         // Create an XML model that we can pass to BuildObjects.
         XmlDocument NewDoc = new XmlDocument();
@@ -49,13 +55,22 @@ public class Manager2
         {
             foreach (XmlNode Child in XmlHelper.ChildNodes(ui, ""))
             {
-                if (XmlHelper.Attribute(Child, "type").ToLower() != "category")
+                if (XmlHelper.Attribute(Child, "description").Contains("Create child class"))
+                    ScriptNode.AppendChild(NewDoc.CreateElement(Child.InnerText));
+
+                else if (XmlHelper.Attribute(Child, "type").ToLower() != "category")
                     XmlHelper.SetValue(ScriptNode, Child.Name, Child.InnerText);
             }
         }
 
-
-        ModelEnvironment.AddModel(ScriptNode, CompiledAssembly);
+        try
+        {
+            ModelEnvironment.AddModel(ScriptNode, CompiledAssembly);
+        }
+        catch (Exception err)
+        {
+            throw err.InnerException;
+        }
     }
 
     private Assembly CompileTextToAssembly()

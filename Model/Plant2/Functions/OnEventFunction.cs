@@ -19,12 +19,12 @@ class OnEventFunction : Function
 
     public void OnEvent()
     {
-        string[] Children = MyPaddock.ChildModelNames();
+        string[] Children = MyPaddock.ChildNames();
         
         if (Children.Length == 0)
             throw new Exception("Cannot find function in function: " + Name);
 
-        Function F = MyPaddock.ModelByName(Children[0]) as Function;
+        Function F = MyPaddock.Link<Function>(Children[0]);
         _Value = F.Value;
     }
 

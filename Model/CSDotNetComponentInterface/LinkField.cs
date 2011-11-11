@@ -115,7 +115,7 @@ public class LinkField
     {
         Object ReferencedObject;
         if (NameToFind != null && NameToFind.Contains("."))
-            ReferencedObject = GetSpecificApsimComponent(NameToFind, Comp);
+            ReferencedObject = GetSpecificApsimComponent(NameToFind, TypeToFind, Comp);
         else
             ReferencedObject = FindApsimComponent(NameToFind, TypeToFind, SystemName, Comp);
         return ReferencedObject;
@@ -200,7 +200,7 @@ public class LinkField
     /// <param name="SystemName"></param>
     /// <param name="Comp"></param>
     //----------------------------------------------------------------------
-    protected static Object FindApsimComponent(String NameToFind, String TypeToFind, string SystemName, ApsimComponent Comp)
+    internal static Object FindApsimComponent(String NameToFind, String TypeToFind, string SystemName, ApsimComponent Comp)
     {
         if ((TypeToFind == "Paddock") && (NameToFind == null) && (SystemName.Length > 0)) //if the parent is a paddock/system
             return CreateDotNetProxy(TypeToFind, SystemName, Comp);
@@ -302,10 +302,10 @@ public class LinkField
     /// a relative or absolute address.
     /// </summary>
     //----------------------------------------------------------------------
-    protected static Object GetSpecificApsimComponent(String NameToFind, ApsimComponent Comp)
+    protected static Object GetSpecificApsimComponent(String NameToFind, string TypeToFind, ApsimComponent Comp)
     {
         if (NameToFind.Contains(".MasterPM."))
-            return CreateDotNetProxy(NameToFind, NameToFind, Comp);   // absolute reference.
+            return CreateDotNetProxy(TypeToFind, NameToFind, Comp);   // absolute reference.
         else
         {
             // relative reference.

@@ -85,7 +85,7 @@ public class Factory
         ResolveLinks();
         CallInitialisedOnAll(_Root);
 
-        for (int i = 0; i != EventHandlers.Count; i++)
+        for (int i = 0; i < EventHandlers.Count; i++)
         {
             if (EventHandlers[i].EventName == "Initialised")
                 EventHandlers[i].Invoke(null);

@@ -170,10 +170,10 @@ public class Plant
     public void OnSow(SowPlant2Type Sow)
     {
         // Go through all our children and find all organs.
-        foreach (string ChildName in ModelEnvironment.ChildModelNames())
+        foreach (string ChildName in ModelEnvironment.ChildNames())
         {
-            object Child = ModelEnvironment.ModelByName(ChildName);
-            if (Child is Organ)
+            Organ Child = ModelEnvironment.Link<Organ>(ChildName);
+            if (Child != null)
                 Organs.Add((Organ)Child);
         }
 

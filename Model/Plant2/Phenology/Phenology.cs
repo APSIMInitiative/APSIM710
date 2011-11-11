@@ -60,7 +60,7 @@ public class Phenology
     public void OnInitialised()
     {
         JustInitialised = true;
-        foreach (string ChildName in ModelEnvironment.ChildModelNames())
+        foreach (string ChildName in ModelEnvironment.ChildNames())
         {
             object Child = ModelEnvironment.Get(ChildName);
             if (Child is Phase)

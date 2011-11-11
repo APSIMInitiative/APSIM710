@@ -11,9 +11,9 @@ public class PhaseLookup : Function
     {
         get
         {
-            foreach (string PhaseName in ModelEnvironment.ChildModelNames())
+            foreach (string PhaseName in ModelEnvironment.ChildNames())
             {
-                PhaseLookupValue P = ModelEnvironment.ModelByName(PhaseName) as PhaseLookupValue;
+                PhaseLookupValue P = ModelEnvironment.Link<PhaseLookupValue>(PhaseName);
                 if (P.InPhase)
                     return P.Value;
             }
@@ -25,9 +25,9 @@ public class PhaseLookup : Function
     {
         get
         {
-            foreach (string PhaseName in ModelEnvironment.ChildModelNames())
+            foreach (string PhaseName in ModelEnvironment.ChildNames())
             {
-                PhaseLookupValue P = ModelEnvironment.ModelByName(PhaseName) as PhaseLookupValue;
+                PhaseLookupValue P = ModelEnvironment.Link<PhaseLookupValue>(PhaseName);
                 if (P.InPhase)
                     return P.ValueString;
             }

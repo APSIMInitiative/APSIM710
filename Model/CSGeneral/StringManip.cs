@@ -340,5 +340,16 @@ namespace CSGeneral
             return Name;
         }
 
+        /// <summary>
+        /// A helper function for getting the parent name from the specified
+        /// fully qualified name passed in. Assumes delimiter of '.'.
+        /// e.g. if Name = .Paddock.ModelB
+        ///      then returns .Paddock
+        /// </summary>
+        public static string ParentName(string Name)
+        {
+            int PosLastPeriod = Name.LastIndexOf('.');
+            return Name.Substring(0, PosLastPeriod);
+        }
     }
 }

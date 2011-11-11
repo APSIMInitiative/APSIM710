@@ -17,7 +17,6 @@ Paddock:
    Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
-   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
@@ -37,7 +36,7 @@ Paddock:
         post
         end_step
      Simulation start date =  1/01/1940
-     Simulation end date   = 31/12/1940
+     Simulation end date   =  2/01/1940
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -49,44 +48,13 @@ Paddock:
         post
      Output variables:
         dd/mm/yyyy as Date
-        biomass
-        yield
-        grain_protein
-        grain_size
-        esw
-        flowering_count
-        stagename
+        C
 
      Output file = Continuous Wheat.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
      Initialising
-
-------- Sowing rule Initialisation --------------------------------------------
-     Manager rules:
-     
-     SECTION:- start_of_day
-           if (paddock_is_fallow() = 1 and fallowin <> 'yes' and (nextcrop = 0 or nextcrop = 'lucerne')) then
-              if (date_within('15-may, 10-jul') = 1) then
-     if (rain[3] >= 30 and esw >= 200) or
-         ('yes' = 'yes' and today = date('10-jul'))) then
-        choosenextcrop = 'yes'
-        lucerne sow plants =100, sowing_depth = 30, cultivar = aquarius, row_spacing = 250, crop_class = plant
-     endif
-     if today = date('10-jul') then
-        choosenextcrop = 'yes'
-     endif
-              endif
-           endif
-     
-     SECTION:- init
-     nextcrop = 0
-     fallowin = 0
-     END of rules
-     
-     Manager creating a new local real variable : nextcrop = 0.00000
-     Manager creating a new local real variable : fallowin = 0.00000
 
 ------- Soil Water Initialisation ---------------------------------------------
      
@@ -235,96 +203,42 @@ Paddock:
         - Reading Constants
 
 ------- Script Initialisation -------------------------------------------------
+Name: Script
+Full name: .MasterPM.paddock.Script
 ------- Start of simulation  --------------------------------------------------
-10 July 1940(Day of year=192), Sowing rule: 
-     Manager creating a new local string variable : choosenextcrop = yes
-     Manager sending message :- lucerne sow  plants = 100, sowing_depth = 30, cultivar = aquarius, row_spacing = 250, crop_class = plant
-10 July 1940(Day of year=192), lucerne: 
-     Crop Sow
-        ------------------------------------------------
-        cultivar                   = aquarius
-        Phases:
-           out
-           sowing
-           germination
-              shoot_lag                  =      15 (dd)
-              shoot_rate                 =       2 (dd/mm)
-           emergence
-              cumvd_emergence            =       0     100 (vd)
-              tt_emergence               =     300     300 (dd)
-           end_of_juvenile
-              x_pp_end_of_juvenile       =    11.5      15 (h)
-              y_tt_end_of_juvenile       =     350     200 (dd)
-           floral_initiation
-              x_pp_floral_initiation     =       1      24 (h)
-              y_tt_floral_initiation     =     300     300 (dd)
-           flowering
-              x_pp_flowering             =       1      24 (h)
-              y_tt_flowering             =     100     100 (dd)
-           start_grain_fill
-              x_pp_start_grain_fill      =       1      24 (h)
-              y_tt_start_grain_fill      =    9400    9400 (dd)
-           end_grain_fill
-              tt_end_grain_fill          =     500 (dd)
-           maturity
-              tt_maturity                =       5 (dd)
-           harvest_ripe
-              tt_harvest_ripe            =       1 (dd)
-           end_crop
-     
-        x_pp_hi_incr               =       1.00      24.00
-        y_hi_incr                  =     0.0001     0.0001
-        x_hi_max_pot_stress        =       0.00       1.00
-        y_hi_max_pot               =       0.50       0.50
-        ------------------------------------------------
-     
-     
-                        Root Profile
-         -----------------------------------------------
-          Layer       Kl           Lower    Exploration
-          Depth     Factor         Limit      Factor
-          (mm)         ()        (mm/mm)       (0-1)
-         -----------------------------------------------
-         100.0     0.060          0.169       1.000
-         100.0     0.060          0.187       1.000
-         250.0     0.060          0.215       1.000
-         250.0     0.050          0.246       1.000
-         350.0     0.040          0.292       1.000
-         450.0     0.020          0.354       1.000
-         -----------------------------------------------
-         Extractable SW:   158mm in  1500mm total depth ( 11%).
-         Crop factor for bounding water use is set to 100.0 times eo.
-      stage 1.0 sowing
-     
-                      Crop Sowing Data
-         ------------------------------------------------
-         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
-         Day no   mm     m^2     mm   row   plant name
-         ------------------------------------------------
-            192   30.0  100.0  250.0   0.0   0.0 aquarius
-         ------------------------------------------------
-     
-11 July 1940(Day of year=193), lucerne: 
-      stage 2.0 germination
-23 July 1940(Day of year=205), lucerne: 
-      stage 3.0 emergence
-                     biomass =           0.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   14.21 (mm)
-23 August 1940(Day of year=236), lucerne: 
-      stage 4.0 end_of_juvenile
-                     biomass =           2.49 (g/m^2)   lai          =   0.053 (m^2/m^2)
-                     stover N conc =     6.00 (%)    extractable sw =   52.62 (mm)
-14 September 1940(Day of year=258), lucerne: 
-      stage 5.0 floral_initiation
-                     biomass =          47.57 (g/m^2)   lai          =   0.573 (m^2/m^2)
-                     stover N conc =     4.41 (%)    extractable sw =   60.11 (mm)
-7 October 1940(Day of year=281), lucerne: 
-      stage 6.0 flowering
-                     biomass =         149.50 (g/m^2)   lai          =   1.253 (m^2/m^2)
-                     stover N conc =     2.75 (%)    extractable sw =   53.96 (mm)
-12 October 1940(Day of year=286), lucerne: 
-      stage 7.0 start_grain_fill
-                     biomass =         160.58 (g/m^2)   lai          =   1.300 (m^2/m^2)
-                     stover N conc =     2.70 (%)    extractable sw =   42.78 (mm)
-31 December 1940(Day of year=366), clock: 
+Script children:
+   .MasterPM.paddock.Script.ScriptChild
+Paddock children:
+   .MasterPM.paddock.outputfile
+   .MasterPM.paddock.accum
+   .MasterPM.paddock.fertiliser
+   .MasterPM.paddock.Soil Water
+   .MasterPM.paddock.surface organic matter
+   .MasterPM.paddock.Soil Nitrogen
+   .MasterPM.paddock.Cl
+   .MasterPM.paddock.lucerne
+   .MasterPM.paddock.wheat
+   .MasterPM.paddock.Script
+Simulation children:
+   .MasterPM.clock
+   .MasterPM.met
+   .MasterPM.paddock
+Script children:
+   .MasterPM.paddock.Script.ScriptChild
+Paddock children:
+   .MasterPM.paddock.outputfile
+   .MasterPM.paddock.accum
+   .MasterPM.paddock.fertiliser
+   .MasterPM.paddock.Soil Water
+   .MasterPM.paddock.surface organic matter
+   .MasterPM.paddock.Soil Nitrogen
+   .MasterPM.paddock.Cl
+   .MasterPM.paddock.lucerne
+   .MasterPM.paddock.wheat
+   .MasterPM.paddock.Script
+Simulation children:
+   .MasterPM.clock
+   .MasterPM.met
+   .MasterPM.paddock
+2 January 1940(Day of year=2), clock: 
      Simulation is terminating due to end criteria being met.

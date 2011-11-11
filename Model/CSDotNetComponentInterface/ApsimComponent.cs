@@ -157,29 +157,10 @@ namespace ModelFramework
 
                     if (IsScript)
                     {
-                        String ScriptClassName = "";
-                        Assembly CompiledAssembly = CompileScript(XmlHelper.FindByType(InitData, "text"));
-                        modelAssembly = CompiledAssembly;
-                        foreach (Type t in CompiledAssembly.GetTypes())
-                        {
-                            if ((t.BaseType != null) && (t.BaseType.Name == "Instance"))
-                                ScriptClassName = t.Name;
-                        }
-                        if (ScriptClassName == "")
-                            throw new Exception("Cannot find a script class inherited from 'Instance'");
-
                         // Create an XML model that we can pass to BuildObjects.
                         XmlDocument NewDoc = new XmlDocument();
-                        XmlNode ScriptNode = NewDoc.AppendChild(NewDoc.CreateElement(ScriptClassName));
-                        XmlNode UINode = XmlHelper.Find(InitData, "ui");
-                        if (UINode != null)
-                        {
-                            foreach (XmlNode Child in XmlHelper.ChildNodes(UINode, ""))
-                            {
-                                if (XmlHelper.Attribute(Child, "type").ToLower() != "category")
-                                    XmlHelper.SetValue(ScriptNode, Child.Name, Child.InnerText);
-                            }
-                        }
+                        XmlNode ScriptNode = NewDoc.AppendChild(NewDoc.CreateElement("Manager2"));
+                        ScriptNode.InnerXml = InitData.InnerXml;
                         // Build all necessary objects
                         BuildObjects(ScriptNode, modelAssembly);
                     }
@@ -271,8 +252,6 @@ namespace ModelFramework
                 if (RegistrationIndex == INIT2INDEX)
                 {
                     querySiblingComponents(Name);
-                    if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
-                        Fact.Initialise();
                     Init2Received = true;
                     if (ModelInstance != null)
                     {
@@ -283,6 +262,8 @@ namespace ModelFramework
                         Console.Write(line);
                         Console.WriteLine();
                     }
+                    if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
+                        Fact.Initialise();
                     for (int i = 0; i != Fact.EventHandlers.Count; i++)
                     {
                         EvntHandler Event = Fact.EventHandlers[i];
@@ -856,69 +837,6 @@ namespace ModelFramework
         {
             get { return Host.CompClass; }
             set {Host.CompClass = value; }
-        }
-        // -----------------------------------------------------------------------
-        /// <summary>
-        /// Compile the script. Can be VB or C#
-        /// </summary>
-        /// <param name="Node"></param>
-        /// <returns></returns>
-        // -----------------------------------------------------------------------
-        public Assembly CompileScript(XmlNode Node)
-        {
-            // Get the language associated with the file extension.
-            if (CodeDomProvider.IsDefinedExtension(".cs"))
-            {
-                bool VB = Node.InnerText.IndexOf("Inherits ") != -1;
-                String language;
-                if (VB)
-                    language = CodeDomProvider.GetLanguageFromExtension(".vb");
-                else
-                    language = CodeDomProvider.GetLanguageFromExtension(".cs");
-
-                if ((language.Length > 0) && CodeDomProvider.IsDefinedLanguage(language))
-                {
-                    CodeDomProvider provider = CodeDomProvider.CreateProvider(language);
-                    if (provider != null)
-                    {
-                        CompilerParameters _params = new CompilerParameters();
-                        _params.GenerateInMemory = true;            //in memory only
-                        _params.TreatWarningsAsErrors = false;
-                        _params.WarningLevel = 2;
-                        _params.ReferencedAssemblies.Add("System.dll");
-                        if (VB)
-                            _params.ReferencedAssemblies.Add("Microsoft.VisualBasic.dll");
-                        _params.ReferencedAssemblies.Add(Types.GetProbeInfoDLLFileName());
-                        System.Reflection.Assembly currentAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-                        _params.ReferencedAssemblies.Add(currentAssembly.Location);   // Reference the current assembly from within dynamic one
-                        
-                        foreach (string val in XmlHelper.ValuesRecursive(Node.ParentNode, "reference"))
-                            if (File.Exists(val))
-                                _params.ReferencedAssemblies.Add(val);
-                            else if (File.Exists(RuntimeEnvironment.GetRuntimeDirectory() + val))
-                                _params.ReferencedAssemblies.Add(RuntimeEnvironment.GetRuntimeDirectory() + val);
-                            else
-                                _params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
-
-                        String[] source = new String[1];
-                        source[0] = Node.InnerText;
-                        CompilerResults results = provider.CompileAssemblyFromSource(_params, source);
-                        String Errors = "";
-                        foreach (CompilerError err in results.Errors)
-                        {
-                            if (Errors != "")
-                                Errors += "\r\n";
-
-                            Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
-                        }
-                        if (Errors != "")
-                            throw new Exception(Errors);
-
-                        return results.CompiledAssembly;
-                    }
-                }
-            }
-            return null;
         }
         // -----------------------------------------------
         /// <summary>

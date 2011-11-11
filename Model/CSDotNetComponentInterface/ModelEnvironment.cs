@@ -6,47 +6,19 @@ using CMPServices;
 using System.Reflection;
 using ModelFramework;
 using System.Xml;
+using CSGeneral;
 
 public class ModelEnvironment
 {
 
     private Instance In;
-    public Dictionary<uint, TComp> ChildComponents = null;
 
     /// <summary>
     /// Constructor - created by LinkRef
     /// </summary>
-    public ModelEnvironment(Instance Obj)
+    internal ModelEnvironment(Instance Obj)
     {
         In = Obj;
-    }
-
-
-    /// <summary>
-    /// Query the system for all child components.
-    /// </summary>
-    protected void QueryChildComponents()
-    {
-        if (ChildComponents == null)
-        {
-            string sSearchName = In.ParentComponent().Name + ".*";    //search comp.*
-
-            List<TComp> comps = new List<TComp>();
-            In.ParentComponent().Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-            ChildComponents = new Dictionary<uint,TComp>();
-            for (int i = 0; i < comps.Count; i++)
-                ChildComponents.Add(comps[i].compID, comps[i]);
-        }
-    }
-
-    /// <summary>
-    /// A helper function for getting the system name from the specified
-    /// fully qualified name passed in.
-    /// </summary>
-    public static string SystemName(string Name)
-    {
-        int PosLastPeriod = Name.LastIndexOf('.');
-        return Name.Substring(0, PosLastPeriod);
     }
 
     /// <summary>
@@ -83,9 +55,9 @@ public class ModelEnvironment
     /// The returned list may be zero length but will never be null.
     /// </summary>
     /// <returns></returns>
-    public string[] ChildModelNames()
+    public string[] ChildNames()
     {
-        return ChildModelNames(In);
+        return ChildNamesForInstance(In);
     }
 
     /// <summary>
@@ -93,35 +65,25 @@ public class ModelEnvironment
     /// The returned list may be zero length but will never be null.
     /// </summary>
     /// <returns></returns>
-    public string[] SystemNames(string SystemPath)
-    {
-        List<string> ReturnNames = new List<string>();
-
-        string sSearchName = SystemPath + ".*";    //search comp.*
-
-        List<TComp> comps = new List<TComp>();
-        In.ParentComponent().Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-        ChildComponents = new Dictionary<uint, TComp>();
-        for (int i = 0; i < comps.Count; i++)
-        {
-            if (comps[i].isSystem)
-                ReturnNames.Add(comps[i].name);
-        }
-        return ReturnNames.ToArray();
-    }
-
-    /// <summary>
-    /// Returns a list of fully qualified child model names for the specified system path. 
-    /// The returned list may be zero length but will never be null.
-    /// </summary>
-    /// <returns></returns>
-    public string[] ChildModelNames(string SystemPath)
+    public string[] ChildNames(string SystemPath)
     {
         Instance Obj = (Instance) LinkField.FindInstanceObject(In, SystemPath, "Instance");
         if (Obj != null)
-            return ChildModelNames(Obj);
+            return ChildNamesForInstance(Obj);
         else
-            return new string[0];
+        {
+            List<string> ReturnNames = new List<string>();
+
+            string SearchName = SystemPath + ".*";    //search comp.*
+
+            List<TComp> comps = new List<TComp>();
+            In.ParentComponent().Host.queryCompInfo(SearchName, TypeSpec.KIND_COMPONENT, ref comps);
+            for (int i = 0; i < comps.Count; i++)
+            {
+                ReturnNames.Add(comps[i].name);
+            }
+            return ReturnNames.ToArray();
+        }
     }
 
     /// <summary>
@@ -129,7 +91,7 @@ public class ModelEnvironment
     /// The returned list may be zero length but will never be null.
     /// </summary>
     /// <returns></returns>
-    public static string[] ChildModelNames(object Obj)
+    private static string[] ChildNamesForInstance(object Obj)
     {
         string[] Names;
         if (Obj is Instance)
@@ -143,7 +105,7 @@ public class ModelEnvironment
                     if (I.Children[i] is Instance)
                     {
                         Instance Child = (Instance)I.Children[i];
-                        Names[i] = SystemName(I.ParentComponent().Name) + "." + Child.InstanceName;
+                        Names[i] = StringManip.ParentName(I.ParentComponent().Name) + "." + Child.InstanceName;
                     }
                     else
                         throw new Exception("Invalid child found: " + I.Children[i].Name);
@@ -181,23 +143,39 @@ public class ModelEnvironment
         In.ParentComponent().Publish(EventPath, Data);
     }
 
-    public object ModelByName(string NamePath)
+    /// <summary>
+    /// Attempts to find a model in the system that matches the specified name path and
+    /// return a link to it.
+    /// The NamePath may be a fully qualified name OR a name with no path (in which
+    /// case scoping rules are used to perform the match).
+    /// Returns a link to the matched model or null if not found. 
+    /// </summary>
+    public T Link<T>(string NamePath)
     {
-        for (int i = 0; i < In.Children.Count; i++)
+        object E = FindInternalEntity(NamePath, In);
+        if (E is Instance)
         {
-            string NameToFind = NamePath.Replace(SystemName(In.ParentComponent().Name) + ".", "");
-            if (In.Children[i] is Instance)
-            {
-                Instance Child = (Instance)In.Children[i];
-                if (Child.InstanceName == NameToFind)
-                    return Child.Model;
-            }
+            if ((E as Instance).Model is T)
+                return (T)(E as Instance).Model;
             else
-                throw new Exception("Invalid child found: " + In.Children[i].Name);
+                return default(T);
         }
-
-        return LinkField.FindApsimObject(null, NamePath, SystemName(NamePath), In.ParentComponent());
+        else
+            return (T)LinkField.FindApsimObject(typeof(T).Name, NamePath, StringManip.ParentName(In.ParentComponent().InstanceName),
+                                             In.ParentComponent());
     }
+
+    /// <summary>
+    /// Attempts to find a model in the system that matches the specified type and
+    /// return a link to it.
+    /// Returns a link to the matched model or null if not found.
+    /// </summary>
+    public T Link<T>()
+    {
+        return (T)LinkField.FindApsimObject(typeof(T).Name, null, StringManip.ParentName(In.ParentComponent().InstanceName),
+                                            In.ParentComponent());
+    }
+    
     public bool Get(string NamePath, out double Data)
     {
         WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
@@ -257,8 +235,10 @@ public class ModelEnvironment
         if (NamePath.Length > 0 && NamePath[0] == '.')
         {
             // absolute path.
-            return In.ParentComponent().Get(NamePath, Data, true);
-
+            {
+                bool ok = In.ParentComponent().Get(NamePath, Data, true);
+                return Data.Value != null;
+            }
         }
         else if (NamePath.Contains('.'))
         {
@@ -389,6 +369,8 @@ public class ModelEnvironment
         object Value = null;
         do
         {
+            // NamePath will sometimes be absolute - convert to relative for the following method to work.
+            NamePath = NamePath.Replace(RelativeTo.ParentComponent().InstanceName + ".", "");
             Value = FindChildEntity(NamePath, RelativeTo);
             RelativeTo = RelativeTo.Parent;
         }

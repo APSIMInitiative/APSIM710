@@ -43,7 +43,12 @@ public class ModelEnvironment : ModelAPIInterface
         throw new NotImplementedException();
     }
 
-    public string[] ChildModelNames()
+    public string[] ChildNames()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string[] ChildNames(string NamePath)
     {
         throw new NotImplementedException();
     }
@@ -58,7 +63,7 @@ public class ModelEnvironment : ModelAPIInterface
         throw new NotImplementedException();
     }
 
-    public object ModelByName(string NamePath)
+    public T Link<T>(string NamePath)
     {
         throw new NotImplementedException();
     }

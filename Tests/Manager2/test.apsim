@@ -1,16 +1,14 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Continuous Wheat">
     <memo>This simulation tests that the new manager module (in script in the paddock) can send a remove_crop_biomass event to a specific crop (lucernce).</memo>
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">1/01/1940</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/12/1940</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">02/01/1940</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <surfaceom name="surface organic matter">
         <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
@@ -22,60 +20,12 @@
       <fertiliser>
         <memo />
       </fertiliser>
-      <folder name="Manager folder">
-        <manager name="Sowing rule">
-          <ui>
-            <category type="category" description="Sowing criteria" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
-            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">200</esw_amount>
-            <category type="category" description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">lucerne</crop>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">aquarius</cultivar>
-            <class type="classes" description="Enter crop growth class : ">plant</class>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
-          </ui>
-          <script>
-            <text>
-      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-            <event>start_of_day</event>
-          </script>
-          <script>
-            <text>
-            nextcrop = 0
-            fallowin = 0
-            </text>
-            <event>init</event>
-          </script>
-        </manager>
-      </folder>
       <outputfile>
+        <filename output="yes">Continuous Wheat.out</filename>
+        <title>Continuous Wheat</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="biomass" array="?" description="Biomass" />
-          <variable name="yield" array="?" description="Yield" />
-          <variable name="grain_protein" array="?" description="grain protein content" />
-          <variable name="grain_size" array="?" description="Size of each grain" />
-          <variable name="esw" array="?" description="Extractable Soil Water (mm)" />
-          <variable name="flowering_count" />
-          <variable name="stagename" />
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="C" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -478,47 +428,99 @@
       <lucerne />
       <wheat />
       <manager2 name="Script">
-        <ui />
-        <text>Imports System
-Imports ModelFramework
+        <ui>
+          <A type="text" description="Param A">2.6</A>
+          <ChildClass type="text" description="Create child class:">ScriptChild</ChildClass>
+        </ui>
+        <text>
+using System;
+using ModelFramework;
 
-Public Class Script
-   Inherits Instance
+public class Script
+   {
+   [Param] 
+   private double A = 0;
+   
+   [Input] 
+   public int Year = 0;
+   
+   [Output][Units("oC")] 
+   public double C = 0;
+   
+   [Link]
+   public ModelEnvironment ModelEnvironment;
 
-   &lt;Input()&gt; Private Day As Integer
-   &lt;Link()&gt; Private MyPaddock As Paddock
+   [EventHandler] 
+   public void OnInitialised()
+   {
+      // Write out our name and our full name.
+      Console.WriteLine("Name: " + ModelEnvironment.Name);
+      Console.WriteLine("Full name: " + ModelEnvironment.FullName);
+      
+   }
+   
+   
+   [EventHandler] 
+   public void OnProcess()
+      {
+      // Make sure the [Param] has worked.
+      if (A != 2.6)
+         throw new Exception("Incorrect value for A: " + A.ToString());
 
-   &lt;EventHandler()&gt; Public Sub OnPost()
-      Dim dlt(0) As Double
-      dlt(0) = 100
+      // Make sure the [Input] has worked.
+      if (Year != 1940)
+         throw new Exception("Incorrect value for Year: " + Year.ToString());
       
-      Dim part(0) As String
-      part(0) = "Leaf"
+      // Make sure the [Output] works. This should be written to the output file.
+      C = 1234;
       
-      Dim dms(0) As RemoveCropBiomassdmType
-      dms(0) = New RemoveCropBiomassdmType
-      dms(0).dlt = dlt
-      dms(0).part = part
-      dms(0).pool = "Pool"
+      // ========================================================================
+      // ModelEnvironment ChildNames
+      // ========================================================================
+      Console.WriteLine("Script children:");
+      foreach (string ChildName in ModelEnvironment.ChildNames())
+         Console.WriteLine("   " + ChildName);
       
+      Console.WriteLine("Paddock children:");
+      foreach (string ChildName in ModelEnvironment.ChildNames(".MasterPM.paddock"))
+         Console.WriteLine("   " + ChildName);
+     
+      Console.WriteLine("Simulation children:");
+      foreach (string ChildName in ModelEnvironment.ChildNames(".MasterPM"))
+         Console.WriteLine("   " + ChildName);
       
-      Dim MyRemoveCropDM As New RemoveCropBiomassType
-      MyRemoveCropDM.dm = dms
+      // ========================================================================
+      // ModelEnvironment.Link
+      // ========================================================================
+      ScriptChild ScriptChild = ModelEnvironment.Link&lt;ScriptChild&gt;("ScriptChild");
+      if (ScriptChild == null)
+         throw new Exception("Cannot find ScriptChild");
+
+      ScriptChild ScriptChild2 = ModelEnvironment.Link&lt;ScriptChild&gt;(".MasterPM.paddock.Script.ScriptChild");
+      if (ScriptChild2 == null)
+         throw new Exception("Cannot find .MasterPM.paddock.Script.ScriptChild");
       
-      ' Make sure we can send an event using the ComponentByName method.
-      If Day = 300 Then
-         MyPaddock.ComponentByName("lucerne").Publish("remove_crop_biomass", MyRemoveCropDM)
-      End If
+      SoilWat SoilWat = ModelEnvironment.Link&lt;SoilWat&gt;("Soil Water");
+      if (SoilWat == null)
+         throw new Exception("Cannot find Soil Water");
       
-      ' Make sure we can send an event using the Crops method.
-      If Day = 305 Then
-         Dim c As Component = MyPaddock.Crops(0)
-         c.Publish("remove_crop_biomass", MyRemoveCropDM)
-      End If
-      
-      
-   End Sub
-End Class
+      SoilWat SoilWat2 = ModelEnvironment.Link&lt;SoilWat&gt;(".MasterPM.paddock.Soil Water");
+      if (SoilWat2 == null)
+         throw new Exception("Cannot find .MasterPM.paddock.Soil Water");      
+
+      SoilWat SoilWat3 = ModelEnvironment.Link&lt;SoilWat&gt;();
+      if (SoilWat3 == null)
+         throw new Exception("Cannot find ModelEnvironment.Link&lt;SoilWat&gt;()");      
+   
+      }
+   }
+
+
+
+public class ScriptChild
+{
+
+}
     </text>
       </manager2>
     </area>

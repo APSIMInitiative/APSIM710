@@ -15,16 +15,16 @@ public class SubtractFunction : Function
         get
         {
             double returnValue = 0.0;
-            string[] ChildNames = ModelEnvironment.ChildModelNames();
+            string[] ChildNames = ModelEnvironment.ChildNames();
             if (ChildNames.Length > 0)
             {
-                Function F = ModelEnvironment.ModelByName(ChildNames[0]) as Function;
+                Function F = ModelEnvironment.Link<Function>(ChildNames[0]);
                 returnValue = F.Value;
 
                 if (ChildNames.Length > 1)
                     for (int i = 1; i < ChildNames.Length; i++)
                     {
-                        F = ModelEnvironment.ModelByName(ChildNames[i]) as Function;
+                        F = ModelEnvironment.Link<Function>(ChildNames[i]);
                         returnValue = returnValue - F.Value;
                     }
 

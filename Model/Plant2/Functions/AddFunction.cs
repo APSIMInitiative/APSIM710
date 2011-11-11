@@ -16,9 +16,9 @@ public class AddFunction : Function
         {
             double returnValue = 0.0;
 
-            foreach (string ChildName in ModelEnvironment.ChildModelNames())
+            foreach (string ChildName in ModelEnvironment.ChildNames())
             {
-                Function F = ModelEnvironment.ModelByName(ChildName) as Function;
+                Function F = ModelEnvironment.Link<Function>(ChildName);
                 returnValue = returnValue + F.Value;
             }
 
