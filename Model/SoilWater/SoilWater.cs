@@ -5325,7 +5325,6 @@ public class SoilWater : Instance
       //Save State
       soilwat2_save_state();
 
-      Console.WriteLine("SHAUN - Made it to the init");
 
       soilwat2_init();
 
@@ -5351,8 +5350,6 @@ public class SoilWater : Instance
 
       //*- Implementation Section ----------------------------------
 
-
-      Console.WriteLine("SHAUN - made it to prepare event");
      
 
 

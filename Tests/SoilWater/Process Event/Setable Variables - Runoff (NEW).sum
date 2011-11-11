@@ -1,0 +1,3402 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Setable Variables - Runoff (NEW)
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component        "set setable variables" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWater.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 10/01/1940
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\SoilWater\Process Event\Setable Variables - Runoff.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        cn2_bare
+        cn_cov
+        cn_red
+
+     Output file = Setable Variables - Runoff (NEW).out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- set setable variables Initialisation ----------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 4 and year = 1940 then
+        'soil water' set cn2_bare = 100
+        'soil water' set cn_red = 60
+        'soil water' set cn_cov = 0.8
+     endif
+     if day = 7 and year = 1940 then
+        'soil water' reset
+     endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+   - Reading Soil Profile Parameters
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+mwcon is being replaced with a saturated conductivity (ks). 
+See documentation for details.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Initial soilwater distributed using "sw" parameter.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                 Soil Profile Properties
+   ---------------------------------------------------------------------
+         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+   ---------------------------------------------------------------------
+        0 -  150  0.400  0.600  0.700  0.800  0.000  1.020  0.762  0.000
+      150 -  300  0.500  0.600  0.700  0.800  0.000  1.030  0.190  0.000
+      300 -  600  0.500  0.600  0.700  0.800  0.000  1.020  0.048  0.000
+      600 -  900  0.500  0.600  0.700  0.800  0.000  1.020  0.000  0.000
+      900 - 1200  0.500  0.600  0.700  0.800  0.000  1.060  0.000  0.000
+     1200 - 1500  0.500  0.600  0.700  0.800  0.000  1.110  0.000  0.000
+     1500 - 1800  0.500  0.600  0.700  0.800  0.000  1.120  0.000  0.000
+     1800 - 2100  0.500  0.600  0.700  0.800  0.000  1.150  0.000  0.000
+     2100 - 2400  0.500  0.600  0.700  0.800  0.000  1.180  0.000  0.000
+     2400 - 2700  0.500  0.600  0.700  0.800  0.000  1.200  0.000  0.000
+     2700 - 3000  0.500  0.600  0.700  0.800  0.000  1.250  0.000  0.000
+   ---------------------------------------------------------------------
+
+
+             Soil Water Holding Capacity
+     ---------------------------------------------------------
+         Depth    Unavailable Available  Max Avail.  Drainable
+                     (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                       mm        mm          mm         mm
+     ---------------------------------------------------------
+        0 -  150      90.00       0.00      15.00      15.00
+      150 -  300      90.00       0.00      15.00      15.00
+      300 -  600     180.00       0.00      30.00      30.00
+      600 -  900     180.00       0.00      30.00      30.00
+      900 - 1200     180.00       0.00      30.00      30.00
+     1200 - 1500     180.00       0.00      30.00      30.00
+     1500 - 1800     180.00       0.00      30.00      30.00
+     1800 - 2100     180.00       0.00      30.00      30.00
+     2100 - 2400     180.00       0.00      30.00      30.00
+     2400 - 2700     180.00       0.00      30.00      30.00
+     2700 - 3000     180.00       0.00      30.00      30.00
+     ---------------------------------------------------------
+           Totals   1800.00       0.00     300.00     300.00
+     ---------------------------------------------------------
+
+
+
+
+             Initial Soil Parameters
+     ---------------------------------------------------------
+            Insoil        Salb     Dif_Con   Dif_Slope
+     ---------------------------------------------------------
+               NaN        0.13        0.00        0.00
+     ---------------------------------------------------------
+
+
+             Runoff is predicted using scs curve number:
+           Cn2  Cn_Red  Cn_Cov   H_Eff_Depth 
+                                      mm     
+     ---------------------------------------------------------
+         50.00   30.00    0.50      450.00
+     ---------------------------------------------------------
+
+
+      Using Ritchie evaporation model
+       Cuml evap (U):             0.00  (mm^0.5)
+       CONA:                      0.00  ()
+
+       Eo from priestly-taylor
+
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    0.00    0.00    0.00
+             2     8.80  0.89    0.00    0.00    0.00
+             3     9.00  0.89    0.00    0.00    0.00
+             4     9.20  0.89    0.00    0.00    0.00
+             5     9.20  0.77    0.00    0.00    0.00
+             6     9.10  0.45    0.00    0.00    0.00
+             7     9.00  0.27    0.00    0.00    0.00
+             8     9.00  0.22    0.00    0.00    0.00
+             9     8.90  0.16    0.00    0.00    0.00
+            10     8.90  0.13    0.00    0.00    0.00
+            11     8.90  0.12    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals                0.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2 January 1940(Day of year=2): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+3 January 1940(Day of year=3): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+4 January 1940(Day of year=4): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+5 January 1940(Day of year=5): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+6 January 1940(Day of year=6): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+   - Reading Soil Profile Parameters
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+mwcon is being replaced with a saturated conductivity (ks). 
+See documentation for details.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Initial soilwater distributed using "sw" parameter.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+7 January 1940(Day of year=7): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+8 January 1940(Day of year=8): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+9 January 1940(Day of year=9): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  0 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  0 
+          is below air-dry value of  0.4
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  1 
+          is above acceptable value of  0.611320754716981 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.611320754716981)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  1 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  2 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  2 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  3 
+          is above acceptable value of  0.615094339622641 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.615094339622641)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  3 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  4 
+          is above acceptable value of  0.6 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.6)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  4 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  5 
+          is above acceptable value of  0.581132075471698 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.581132075471698)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  5 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  6 
+          is above acceptable value of  0.577358490566038 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.577358490566038)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  6 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  7 
+          is above acceptable value of  0.566037735849057 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.566037735849057)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  7 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  8 
+          is above acceptable value of  0.554716981132075 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.554716981132075)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  8 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  9 
+          is above acceptable value of  0.547169811320755 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.547169811320755)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  9 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( saturation of  0.8)  in layer  10 
+          is above acceptable value of  0.528301886792453 
+ You must adjust bulk density (bd) to below  0.53 
+ OR saturation (sat) to below  0.528301886792453)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                 APSIM Warning Error              
+                 -------------------              
+( soil water of  0)  in layer  10 
+          is below air-dry value of  0.5
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+10 January 1940(Day of year=10): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: sw_dep
+     Value:        0.0000000
+     Bounds:        0.0000100 to     1000.0000000
+     Component name: Soil Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 January 1940(Day of year=10), clock: 
+     Simulation is terminating due to end criteria being met.
