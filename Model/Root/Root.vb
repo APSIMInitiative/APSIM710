@@ -15,7 +15,7 @@ Public Class Root
 
     Function GetWaterModule() As Component
         Dim Name As String
-        For Each Comp In MyPaddock.ComponentList
+        For Each Comp As Component In MyPaddock.ComponentList
             Name = Comp.TypeName.ToLower
             If (Name = "soilwat") Or (Name = "soilwater") Then
                 Return Comp
