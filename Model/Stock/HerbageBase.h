@@ -2,9 +2,7 @@
 #ifndef HerbageBase_H
 #define HerbageBase_H
 
-#include <General/pch.h>
 #include <math.h>
-#include <strstream>
 #include <string>
 #include <vector>
 
