@@ -99,15 +99,8 @@ void ScienceConverterComponent::doInit2(void)
 // ------------------------------------------------------------------
 void ScienceConverterComponent::respondToEvent(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 {
-   if (eventID == endRunID)  //FIXME!! Coding to avoid stack being wiped out.
-   {
-            ostringstream msg;
-            msg << "Stock Science Converter Component Exiting" << endl << ends;
-            cerr << msg;
-            exit(1);
-   }
-    conversion->respondToEvent(fromID, eventID, variant);
-
+   if (eventID != endRunID)
+      conversion->respondToEvent(fromID, eventID, variant);
 }
 
 void ScienceConverterComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData& queryData)

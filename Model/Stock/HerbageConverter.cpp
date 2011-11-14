@@ -115,15 +115,10 @@ void HerbageConverter::respondToEvent(unsigned int& fromID, unsigned int& eventI
       {
          if (grazed.herbage[dmdPool] > feed.herbage[dmdPool].dm)
          {
-            ostringstream msg;     //FIXME!! Coding to avoid stack being wiped out.
-            msg << "              !!!!! FATAL ERROR !!!!!" << endl;
+            ostringstream msg;
             msg << "Attempting to remove more herbage from dmd pool " << (dmdPool+1) << " (dmd " << feed.herbage[dmdPool].dmd << ")" << " than available:-" << endl;
             msg << "Removing " << grazed.herbage[dmdPool] << " (kg/ha) from " << feed.herbage[dmdPool].dm << " (kg/ha) available." << endl;
-            msg << "Stock Science Converter Component Exiting" << endl << ends;
-            system->writeString (msg.str().c_str());
-            cerr << msg;
-            exit(1);
-//            throw std::runtime_error (msg.str());
+            system->error (msg.str(), true);
          }
       }
 
@@ -131,15 +126,10 @@ void HerbageConverter::respondToEvent(unsigned int& fromID, unsigned int& eventI
       {
          if (grazed.seed[dmdPool] > feed.seed[dmdPool].dm)
          {
-            ostringstream msg;     //FIXME!! Coding to avoid stack being wiped out.
-            msg << "              !!!!! FATAL ERROR !!!!!" << endl;
+            ostringstream msg;
             msg << "Attempting to remove more seed from dmd pool " << (dmdPool+1) << " (dmd " << feed.seed[dmdPool].dmd << ")" << " than available:-" << endl;
             msg << "Removing " << grazed.seed[dmdPool] << " (kg/ha) from " << feed.seed[dmdPool].dm << " (kg/ha) available." << endl;
-            msg << "Stock Science Converter Component Exiting" << endl << ends;
-            system->writeString (msg.str().c_str());
-            cerr << msg;
-            exit(1);
-//            throw std::runtime_error (msg.str());
+            system->error (msg.str(), true);
          }
       }
 
