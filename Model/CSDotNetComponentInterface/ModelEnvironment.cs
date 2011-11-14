@@ -105,7 +105,14 @@ public class ModelEnvironment
                     if (I.Children[i] is Instance)
                     {
                         Instance Child = (Instance)I.Children[i];
-                        Names[i] = StringManip.ParentName(I.ParentComponent().Name) + "." + Child.InstanceName;
+
+                        // To get the fqn right we need to remove the left most bit of the child.InstanceName
+                        // because it duplicates the right most bit of I.ParentComponent().Name.
+                        string ChildName = Child.Name;
+                        if (ChildName.Contains('.'))
+                            ChildName.Remove(0, ChildName.IndexOf('.'));
+
+                        Names[i] = I.ParentComponent().Name + "." + ChildName;
                     }
                     else
                         throw new Exception("Invalid child found: " + I.Children[i].Name);
@@ -153,12 +160,22 @@ public class ModelEnvironment
     public T Link<T>(string NamePath)
     {
         object E = FindInternalEntity(NamePath, In);
-        if (E is Instance)
+        if (E != null)
         {
-            if ((E as Instance).Model is T)
-                return (T)(E as Instance).Model;
-            else
-                return default(T);
+            if (E is Entity)
+            {
+                object Value = (E as Entity).Get();
+                if (Value is T)
+                    return (T)Value;
+            }
+            else if (E is Instance)
+            {
+                object Value = (E as Instance).Model;
+                if (Value is T)
+                    return (T)Value;
+            }
+
+            return default(T);
         }
         else
             return (T)LinkField.FindApsimObject(typeof(T).Name, NamePath, StringManip.ParentName(In.ParentComponent().InstanceName),
@@ -191,6 +208,21 @@ public class ModelEnvironment
         }
     }
 
+    public bool Get(string NamePath, out string Data)
+    {
+        WrapBuiltInVariable<string> Value = new WrapBuiltInVariable<string>();
+        if (GetInternal<string>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = "";
+            return false;
+        }
+    }
+
     public bool Get(string NamePath, out double[] Data)
     {
         WrapBuiltInVariable<double[]> Value = new WrapBuiltInVariable<double[]>();
@@ -206,21 +238,6 @@ public class ModelEnvironment
         }
     }
 
-    public object Get(string NamePath)
-    {
-        // Try and convert namePath into a relative path.
-        NamePath = NamePath.Replace(FullName + ".", "");
-
-        object E = FindInternalEntity(NamePath, In);
-        if (E != null)
-        {
-            if (E is Entity)
-                return (E as Entity).Get();
-            else if (E is Instance)
-                return (E as Instance).Model;
-        }
-        return E;
-    }
     
     /// <summary>
     /// Locate a variable that matches the specified path and return its value. Returns null
@@ -259,7 +276,10 @@ public class ModelEnvironment
             // First look for an internal entity.
             object E = FindInternalEntity(NamePath, In);
             if (E != null && E is Entity)
+            {
                 Data.setValue((E as Entity).Get());
+                return true;
+            }
             else
             {
                 // not an internal entity so look for an external one.

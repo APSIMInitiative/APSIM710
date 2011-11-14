@@ -62,9 +62,9 @@ public class Phenology
         JustInitialised = true;
         foreach (string ChildName in ModelEnvironment.ChildNames())
         {
-            object Child = ModelEnvironment.Get(ChildName);
-            if (Child is Phase)
-                Phases.Add((Phase)Child);
+            Phase Child = ModelEnvironment.Link<Phase>(ChildName);
+            if (Child != null)
+                Phases.Add(Child);
         }
     }
 

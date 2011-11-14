@@ -279,6 +279,8 @@ namespace ModelFramework
         }
         public void setValue(object value)
         {
+            Value = (T)Convert.ChangeType(value, tType);
+
             if (tType == typeof(Boolean))
             {
                 DDMLValue.setValue(Convert.ToBoolean(value));

@@ -645,6 +645,7 @@ namespace ModelFramework
                 }
             }
 
+            //XmlHelper.SetName(ModelDescription, TRegistrar.unQualifiedName(Name));
             BuildObjects(ModelDescription, modelAssembly);
             GetAllInputs();
             CallEventHandlers("Sow", Sow);  //call multiple Sow events

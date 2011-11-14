@@ -57,11 +57,7 @@ public class ExpressionFunction : Function
             symFilled.m_type = EBMath.Type.Variable;
             symFilled.m_valueString = "";
             symFilled.m_value = 0;
-            object Value = Plant.GetPlantVariable(sym.m_name.Trim());
-            if (Value is string)
-                symFilled.m_valueString = Value.ToString();
-            else
-                symFilled.m_value = Convert.ToDouble(Value);
+            symFilled.m_value = Convert.ToDouble(Plant.GetPlantVariable(sym.m_name.Trim()));
             varFilled.Add(symFilled);
         }
         fn.Variables = varFilled;

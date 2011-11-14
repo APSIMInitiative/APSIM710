@@ -153,7 +153,15 @@ public class Plant
     }
     public object GetPlantVariable(string VariablePath)
     {
-        return ModelEnvironment.Get(VariablePath);
+        //object Value;
+        //Value = ModelEnvironment.Get(VariablePath);
+
+        double ValueFromGet;
+        if (!ModelEnvironment.Get(VariablePath, out ValueFromGet) ||
+            ValueFromGet == Double.NaN)
+            return null;
+        return ValueFromGet;
+
     }
  #endregion
 

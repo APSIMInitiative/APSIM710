@@ -11,6 +11,9 @@ public class CompositeBiomass : Biomass
     [Link]
     Plant Plant = null;
 
+    [Link]
+    ModelEnvironment ModelEnvironment = null;
+
     [Param]
     private string[] Propertys = null;
 
@@ -111,7 +114,7 @@ public class CompositeBiomass : Biomass
             return Convert.ToDouble(ExpressionFunction.Evaluate(Plant, PropertyName));
         else
         {
-            object ArrayObject = Plant.GetPlantVariable(PropertyName.Substring(0, PosBracket));
+            object ArrayObject = ModelEnvironment.Link<object>(Plant.FullName + "." + PropertyName.Substring(0, PosBracket));
             if (ArrayObject != null)
             {
                 string RemainderOfPropertyName = PropertyName;
