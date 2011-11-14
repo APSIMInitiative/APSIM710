@@ -145,11 +145,22 @@ namespace ModelFramework
             get
             {
                 List<Component> Children = new List<Component>();
+                List<TIDSpec> entityList = new List<TIDSpec>();
+
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
                     Component ChildComponent = new Component(pair.Value.name, HostComponent);
-                    if (ChildComponent.IsOfType("Plant") || ChildComponent.IsOfType("Plant2") || ChildComponent.IsOfType("AgPasture"))
+                    // How can we determine what is a "crop"?
+                    // Currently, all "crops" have cover_green as an output
+                    // However, the AusFarm "Paddock" component also has this as an output. Might this be a problem?
+                    // It shouldn't be, if we're looking only at children, and not descendants further down the tree
+                    String sSearchName = ChildComponent.FullName + ".cover_green";    
+                    HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
+                    if (entityList.Count > 0)
+                    {
                         Children.Add(ChildComponent);
+                        entityList.Clear();
+                    }
                 }
                 return Children;
             }

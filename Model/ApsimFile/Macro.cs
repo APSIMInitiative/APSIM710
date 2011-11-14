@@ -499,12 +499,12 @@ namespace ApsimFile
                           PosEndIf = AdjustEndPos(ref Cnts, PosEndIf);
 
                           // remove everything from the end of block to after the endif.
-                          Cnts = Cnts.Remove(PosEndBlock, PosEndIf - PosEndBlock);
+                          Cnts.Remove(PosEndBlock, PosEndIf - PosEndBlock);
 
                           // remove the condition line.
                           PosEndMacro = AdjustEndPos(ref Cnts, PosEndMacro);
                           PosCondition = AdjustStartPos(ref Cnts, PosCondition);
-                          Cnts = Cnts.Remove(PosCondition, PosEndMacro - PosCondition);
+                          Cnts.Remove(PosCondition, PosEndMacro - PosCondition);
                       }
                       else
                       {
@@ -514,7 +514,7 @@ namespace ApsimFile
                               PosEndBlock = AdjustEndPos(ref Cnts, PosEndBlock);
                           else
                               PosEndBlock = AdjustStartPos(ref Cnts, PosEndBlock);
-                          Cnts = Cnts.Remove(PosCondition, PosEndBlock - PosCondition);
+                          Cnts.Remove(PosCondition, PosEndBlock - PosCondition);
                       }
                       PosIf = Cnts.IndexOf("[if", PosCondition, false);
                   }
