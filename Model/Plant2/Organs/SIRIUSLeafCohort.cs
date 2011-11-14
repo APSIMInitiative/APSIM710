@@ -53,7 +53,7 @@ class SIRIUSLeafCohort : LeafCohort
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
     private double CoverAbove = 0;
-    private double FracSenShade = 0;
+    private double ShadeInducedSenRate = 0;
     
     [Link(NamePath = "Leaf")]
     public SIRIUSLeaf SIRIUSLeaf = null;
@@ -76,18 +76,23 @@ class SIRIUSLeafCohort : LeafCohort
     [Link(NamePath = "CriticalNConc")]
     public Function CriticalNConcFunction = null;
 
-    [Link(NamePath = "SenescenceInducingCover")]
+    [Link(NamePath = "SenescenceInducingCover", IsOptional = true)]
     public Function SenescenceInducingCoverFunction = null;
 
-    [Link(NamePath = "DMRetranslocationFactor")]
+    [Link(NamePath = "DMRetranslocationFactor", IsOptional = true)]
     public Function DMRetranslocationFactorFunction = null;
 
-    [Link(NamePath = "ShadeInducedSenRate")]
+    [Link(NamePath = "ShadeInducedSenRate", IsOptional = true)]
     public Function ShadeInducedSenRateFunction = null;
 
- #endregion
-    
+    [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
+    public Function DroughtInducedSenAcceleration;
 
+    [Link(NamePath = "NonStructuralFraction", IsOptional = true)]
+    public Function NonStructuralFraction;
+
+ #endregion
+   
  #region Arbitrator method calls
     //Get Methods to provide Cohort Status
     public override double DMDemand
@@ -96,6 +101,7 @@ class SIRIUSLeafCohort : LeafCohort
         {
             if (IsGrowing)
             {
+                //StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
                 StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
                 MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
@@ -110,8 +116,8 @@ class SIRIUSLeafCohort : LeafCohort
        {
            if (IsNotSenescing)
            {
-               //double MaximumDM = (LeafStartArea + DeltaWaterConstrainedArea) / SpecificLeafAreaMin;
                double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
+               //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction.Value);
                return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
            }
            else
@@ -297,9 +303,16 @@ class SIRIUSLeafCohort : LeafCohort
         Live.NonStructuralN = 0;
         NReallocationFactor = NReallocationFactorFunction.Value;
         NRetranslocationFactor = NRetranslocationFactorFunction.Value;
-        CriticalCover = SenescenceInducingCoverFunction.Value;
-        DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
-        FracSenShade = ShadeInducedSenRateFunction.Value;
+        if (DMRetranslocationFactorFunction != null)
+            DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
+        else DMRetranslocationFactor = 0;
+        if (SenescenceInducingCoverFunction != null)
+            CriticalCover = SenescenceInducingCoverFunction.Value;
+        else CriticalCover = 1.0;
+        if (ShadeInducedSenRateFunction != null)
+            ShadeInducedSenRate = ShadeInducedSenRateFunction.Value;
+        else ShadeInducedSenRate = 0;
+        //_ShadeInducedSenRateFunction = ShadeInducedSenRateFunction.Value;
     }
     public override void DoPotentialGrowth(double TT)
     {
@@ -365,6 +378,8 @@ class SIRIUSLeafCohort : LeafCohort
         {
             //Growing leaf area after DM allocated
 
+            //double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
+            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
             double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
             double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); // FIXME-EIT - Choice between carbon limited LAI expansion done here (Forcing to C unsconstrained to test it)
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
@@ -417,6 +432,10 @@ class SIRIUSLeafCohort : LeafCohort
     public double FractionSenescing(double TT)
     {
         //Calculate fraction of leaf area senessing based on age and shading.  This is used to to calculate change in leaf area and Nreallocation supply.
+
+        //if (DroughtInducedSenAcceleration.Value > 1.0)
+        //    TT = TT * DroughtInducedSenAcceleration.Value;
+        
         if (IsInitialised)
         {
             double FracSenAge = 0;
@@ -447,17 +466,15 @@ class SIRIUSLeafCohort : LeafCohort
             if (MaxLiveArea < LiveArea)
                 MaxLiveArea = LiveArea;
 
-            double _FracSenShade = 0;
-            //if (CoverAbove >= CriticalCover)
-            //    _FracSenShade = FracSenShade;
+            double FracSenShade = 0;
             if ((CoverAbove >= CriticalCover) && (LiveArea > 0))
-                _FracSenShade = Math.Min(MaxLiveArea * FracSenShade, LiveArea) / LiveArea;
+                FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
+
+            double FracSenDrought = 0;
+            //if ((DroughtInducedSenRateFunction != null) && (LiveArea > 0))
+            //    FracSenDrought = Math.Min(MaxLiveArea * DroughtInducedSenRateFunction.Value, LiveArea) / LiveArea;
             
-            return Math.Max(FracSenAge, _FracSenShade);
-
-
-
-            //return FracSenAge;
+            return Math.Max(FracSenAge, Math.Max(FracSenShade, FracSenDrought));
         }
         else
             return 0;

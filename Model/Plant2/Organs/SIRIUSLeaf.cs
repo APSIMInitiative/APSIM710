@@ -14,9 +14,6 @@ public class SIRIUSLeaf : Leaf, AboveGround
     [Link]
     Function ExpansionStress = null;
 
-
-
-
  #region Outputs Variables
     [Output]
     double[] CohortSize
@@ -225,7 +222,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
            _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
            DeltaNodeNumber = 0;
            if (NodeAppearanceRate.Value > 0)
-               DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+               DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
+               //DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
            NodeNo += DeltaNodeNumber;
            NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
            _JuvDev = FinalNodeNumber.JuvDev(); //This is temporary until I can get linking between unrelated childern working
@@ -233,7 +231,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
        else
        {
            if (NodeAppearanceRate.Value > 0)
-               DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+               //DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
+               DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
        }
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
@@ -262,7 +261,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
 
         foreach (LeafCohort L in Leaves)
         {
-            L.DoPotentialGrowth(ThermalTime.Value);
+            L.DoPotentialGrowth(_ThermalTime);
+            //L.DoPotentialGrowth(ThermalTime.Value);
         }
 
     }
@@ -272,7 +272,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
         //base.DoActualGrowth();
         foreach (LeafCohort L in Leaves)
         {
-            L.DoActualGrowth(ThermalTime.Value);
+            //L.DoActualGrowth(ThermalTime.Value);
+            L.DoActualGrowth(_ThermalTime);
         }
         //if (Leaves.Count > 0)
         //    if (Leaves[Leaves.Count].Finished)
@@ -643,5 +644,13 @@ public class SIRIUSLeaf : Leaf, AboveGround
     }
  #endregion 
 
+    [EventHandler]
+    public void OnNewMet(NewMetType NewMet)
+    {
+        if ((DroughtInducedSenAcceleration != null) && (DroughtInducedSenAcceleration.Value > 1.0))
+            _ThermalTime = ThermalTime.Value * DroughtInducedSenAcceleration.Value;
+        else _ThermalTime = ThermalTime.Value;
+    }
+        
 }
    

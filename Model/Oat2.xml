@@ -130,7 +130,7 @@
           <Start>StartGrainFill</Start>
           <End>EndGrainFill</End>
           <Constant name="Target">
-            <Value>545</Value>
+            <Value type="text" description="Value">545</Value>
           </Constant>
           <TemperatureFunction name="ThermalTime">
             <XYPairs>
@@ -189,7 +189,7 @@
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>1000 25000</XY>
+            <XY>1000 40000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="MaxNConcDailyGrowth">
@@ -312,17 +312,10 @@
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="PostEmergence">
-            <Start>Emergence</Start>
-            <End>Flowering</End>
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">Maturity</End>
             <Constant name="Function">
-              <Value>30</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="PostFlowering">
-            <Start>Flowering</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value>0</Value>
+              <Value type="text" description="Value">30</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -462,7 +455,7 @@
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>1 1</XY>
+            <XY>0.6 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <FinalNodeNumber>
@@ -497,7 +490,7 @@
         </FinalNodeNumber>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
-            <Value type="text" description="Value">1.65</Value>
+            <Value type="text" description="Value">1.5</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
@@ -527,9 +520,8 @@
           <LinearInterpolationFunction name="FW">
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
-              <XY>1 1</XY>
-              <XY>1.5 1</XY>
+              <XY>0 0</XY>
+              <XY>0.3 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <RUECO2Function name="Fco2">
@@ -579,9 +571,9 @@
           </XYPairs>
         </TemperatureFunction>
         <RelativeToFinalNodeFunction name="MaxArea">
-          <InitialSize type="text" description="InitialSize">300</InitialSize>
-          <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">200</EarlyStageSizeIncrement>
-          <SizeOfLargest type="text" description="SizeOfLargest">5000</SizeOfLargest>
+          <InitialSize type="text" description="InitialSize">150</InitialSize>
+          <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">150</EarlyStageSizeIncrement>
+          <SizeOfLargest type="text" description="SizeOfLargest">6000</SizeOfLargest>
           <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
           <SizeAtFinalNode type="text" description="SizeAtFinalNode">3500</SizeAtFinalNode>
           <ChangeStage type="text" description="Stage code when rate change occurs">3.8</ChangeStage>
@@ -600,24 +592,27 @@
         <LinearInterpolationFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 600</XY>
-            <XY>10 600</XY>
+            <XY>1 400</XY>
+            <XY>4 400</XY>
+            <XY>6 800</XY>
+            <XY>8 800</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>5 800</XY>
-            <XY>30 800</XY>
+            <XY>1 700</XY>
+            <XY>4 700</XY>
+            <XY>6 700</XY>
+            <XY>8 700</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>2 0</XY>
-            <XY>3 1</XY>
             <XY>4 0</XY>
-            <XY>7 0</XY>
+            <XY>5 1</XY>
+            <XY>6 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
@@ -628,13 +623,13 @@
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.5</Value>
+          <Value type="text" description="Value">.7</Value>
         </Constant>
         <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.98</Value>
+          <Value type="text" description="Value">.7</Value>
         </Constant>
         <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">.15</Value>
+          <Value type="text" description="Value">.03</Value>
           <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
         </Constant>
         <Constant name="MaximumNConc">
@@ -646,11 +641,48 @@
         <Constant name="MinimuMNConc">
           <Value type="text" description="Value">.01</Value>
         </Constant>
-        <Constant name="SpecificLeafAreaMax">
-          <Value type="text" description="Value">45000</Value>
+        <Constant name="xSpecificLeafAreaMax">
+          <Value type="text" description="Value">35000</Value>
         </Constant>
-        <Constant name="SpecificLeafAreaMin">
-          <Value type="text" description="Value">30000</Value>
+        <Constant name="xSpecificLeafAreaMin">
+          <Value type="text" description="Value">10000</Value>
+        </Constant>
+        <AddFunction name="DroughtInducedSenAcceleration">
+          <Memo>Sum the values of the children of this node</Memo>
+          <Constant name="One">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <MultiplyFunction name="Stress">
+            <Memo>Multiplies the values of the children of this node</Memo>
+            <Constant name="StressResponseCoefficient">
+              <Value type="text" description="Value">2</Value>
+            </Constant>
+            <LinearInterpolationFunction name="StressFactor">
+              <XProperty>WaterSupplyDemandRatio</XProperty>
+              <XYPairs>
+                <XY>0 1</XY>
+                <XY>0.5 0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </MultiplyFunction>
+        </AddFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 20000</XY>
+            <XY>4 35000</XY>
+            <XY>10 35000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMin">
+          <XProperty>Leaf.NodeNo</XProperty>
+          <XYPairs>
+            <XY>1 10000</XY>
+            <XY>10 20000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <Constant name="NonStructuralFraction">
+          <Value type="text" description="Value">.2</Value>
         </Constant>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
@@ -665,7 +697,7 @@
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.5</Value>
+          <Value type="text" description="Value">.5</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
         </Constant>
         <LinearInterpolationFunction name="MaximumNConc">
@@ -696,14 +728,14 @@
           <Memo>sets the proportion of Non-Structural N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <Constant name="DMRetranslocationFactor">
-          <Value type="text" description="Value">1</Value>
+          <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
         <MultiplyFunction name="InternodeDemand">
           <Memo>Multiplies the values of the children of this node</Memo>
           <RelativeToFinalNodeFunction name="PotentialInternodeWt">
-            <InitialSize type="text" description="InitialSize">0.001</InitialSize>
-            <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">0.001</EarlyStageSizeIncrement>
+            <InitialSize type="text" description="InitialSize">0</InitialSize>
+            <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">0.0005</EarlyStageSizeIncrement>
             <SizeOfLargest type="text" description="SizeOfLargest">.4</SizeOfLargest>
             <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
             <SizeAtFinalNode type="text" description="SizeAtFinalNode">.3</SizeAtFinalNode>

@@ -58,6 +58,9 @@ public class Leaf : BaseOrgan, AboveGround
     [Link]
     Function ExpansionStress = null;
 
+    [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
+    public Function DroughtInducedSenAcceleration;
+
     [Input]
     protected int Day = 0;
     [Input]
@@ -109,6 +112,7 @@ public class Leaf : BaseOrgan, AboveGround
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
     protected bool CohortsInitialised = false;
     public double _JuvDev = 0; //This is temporary until I can get linking between unrelated childern working
+    public double _ThermalTime = 0;
  #endregion
 
  #region Outputs

@@ -4,7 +4,10 @@ using System.Text;
 using System.Reflection;
 
 /// <summary>
-/// Calculates the maximum leaf size (mm2/leaf) given its node position (Elings, 2000 - Agronomy Journal 92, 436-444)
+/// Calculates the size of recuring node or internode parts in three stages.  
+/// The first stage is a juvenile stage where organ size increases linearly until the specified phenlolgical stage is reached
+/// The 2nd stage is when organ size is increasing up to a maximum size
+/// The 3rd stage is when organ size is decreasing down to the final size
 /// </summary>
 public class RelativeToFinalNodeFunction : Function
 {
@@ -38,36 +41,36 @@ public class RelativeToFinalNodeFunction : Function
     Leaf Leaf = null;
 
     public bool FirstNonJuvenileLeafMarker = false;
-    public double LastJuvenileLeaf = 0;
-    public double LastJuvenileLeafSize = 0;
+    public double LastJuvenileNode = 0;
+    public double LastJuvenileOrganSize = 0;
 
    
     public override double Value
     {
         get
         {
-            double LeafSizePerNode = 0; // Current Size of a leaf at a given node position (mm2/leaf)
+            double SizePerNode = 0; // Current Size of a leaf at a given node position (mm2/leaf)
 
             double LeafNo = (int)Leaf.NodeNo;
 
             if ((FirstNonJuvenileLeafMarker == false) && (StageCode.Value >= ChangeStage))//(TerminateFinalNodeNumber.JuvenileDevelopmentIndex >= 1.0))
             {
                 FirstNonJuvenileLeafMarker = true;
-                LastJuvenileLeaf = (int)Leaf.NodeNo - 1;
-                LastJuvenileLeafSize = InitialSize + (LeafNo - 2) * EarlyStageSizeIncrement;
+                LastJuvenileNode = (int)Leaf.NodeNo - 1;
+                LastJuvenileOrganSize = InitialSize + (LeafNo - 2) * EarlyStageSizeIncrement;
             }
             
             if (Leaf.JuvDev < 0.8) //(TerminateFinalNodeNumber.JuvenileDevelopmentIndex < 1.0)
-                LeafSizePerNode = InitialSize + (LeafNo - 1) * EarlyStageSizeIncrement;
+                SizePerNode = InitialSize + (LeafNo - 1) * EarlyStageSizeIncrement;
             else if (LeafNo == (int)Leaf.FinalLeafNo)
-                LeafSizePerNode = SizeAtFinalNode;
+                SizePerNode = SizeAtFinalNode;
             else if (LeafNo == ((int)Leaf.FinalLeafNo - PositionOfLargest))
-                LeafSizePerNode = SizeOfLargest;
+                SizePerNode = SizeOfLargest;
             else if (LeafNo > ((int)Leaf.FinalLeafNo - PositionOfLargest))
-                LeafSizePerNode = SizeOfLargest - (Leaf.FinalLeafNo - LeafNo) * (SizeOfLargest - SizeAtFinalNode) / (Leaf.FinalLeafNo - PositionOfLargest);
-            else LeafSizePerNode = SizeOfLargest - (Leaf.FinalLeafNo - PositionOfLargest - LeafNo) * (SizeOfLargest - LastJuvenileLeafSize) / (Leaf.FinalLeafNo - PositionOfLargest - LastJuvenileLeaf);
+                SizePerNode = SizeOfLargest - (Leaf.FinalLeafNo - LeafNo) * (SizeOfLargest - SizeAtFinalNode) / (Leaf.FinalLeafNo - PositionOfLargest);
+            else SizePerNode = SizeOfLargest - (Leaf.FinalLeafNo - PositionOfLargest - LeafNo) * (SizeOfLargest - LastJuvenileOrganSize) / (Leaf.FinalLeafNo - PositionOfLargest - LastJuvenileNode);
 
-            return LeafSizePerNode;
+            return SizePerNode;
         }
     }
 }

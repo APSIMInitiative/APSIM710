@@ -15,8 +15,10 @@ Title                  = RS_Oats_9899_NILL
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
    Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component         "Leaf Cohort Analysis" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component               "ClimateControl" = %apsim%\Model\Manager.dll
@@ -51,7 +53,7 @@ Paddock:
      Output frequency:
         post
      Output variables:
-        dd/mmm/yyyy
+        dd/mmm/yyyy as Date
         AccumTtemerg
         StageCodeValue
         no3()
@@ -140,15 +142,6 @@ Paddock:
         LeafFw
         LeafPhotosynthesisFtValue
         LeafPhotosynthesisFvpdValue
-        LeafTotalNo
-        LeafGreenNo
-        LeafExpandingNodeNo
-        LeafCohortNo
-        LeafBranchNo
-        LeafDeadNodeNo
-        LeafNodeNo
-        LeafSenescingNodeNo
-        LeafLeafNo
         sw
         no3
         LeafPartitionFractionValue
@@ -186,8 +179,66 @@ Paddock:
         LeafLiveMetabolicWt
         RootNUptakeSupply
         ArbitratorNDemand
+        LeafFullyExpandedNodeNo
+        LeafTotalNo
+        LeafGreenNo
+        LeafExpandingNodeNo
+        LeafCohortNo
+        LeafBranchNo
+        LeafDeadNodeNo
+        LeafNodeNo
+        LeafSenescingNodeNo
+        LeafLeafNo
+        LeafPrimordiaNo
+        LeafFinalNodeNo
+        LeafPhotoPeriodValue
+        PhenologyVernalisationIndexValue
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationIndex as VernalisationIndex
+        LeafFinalNodeNumberTerminateFinalNodeNumberVernalisationFinalNodeNumber as VFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberPhotoperiodFinalNodeNumber as PPFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberCommitPrimordia as Commit
+        LeafFinalNodeNumberTerminateFinalNodeNumberTerminatedFinalNodeNumber as TFNN
+        LeafFinalNodeNumberTerminateFinalNodeNumberTargetFinalNodeNumber as FLN
+        MaxT
+        MinT
+        maxt_soil_surface
+        mint_soil_surface
+        LeafThermalTimeValue
+        LeafFinalLeafNo
+        sw
+        LeafSpecificArea
+        HuskLiveWt
+        RachisLiveWt
 
      Output file = RS_Oats_9899_NILL Outputs.out
+     Format = normal
+
+------- Leaf Cohort Analysis Initialisation -----------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as Date
+        LeafCohortLiveStructuralWt
+        LeafCohortLiveNonStructuralWt
+        LeafCohortLiveMetabolicWt
+        LeafCohortLiveStructuralN
+        LeafCohortLiveMetabolicN
+        LeafCohortLiveNonStructuralN
+        LeafCohortStructuralFrac
+        LeafStructuralFractionValue
+        LeafCohortLiveStructuralNConc
+        LeafCohortLiveMetabolicNconc
+        LeafCohortLiveNconc
+        LeafMaximumNConcValue
+        LeafMinimumNConcValue
+        LeafCohortSLA
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafCohortSize
+        LeafCohortArea
+        LeafCohortDeadArea
+
+     Output file = RS_Oats_9899_NILL Leaf Cohort Analysis.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -351,13 +402,13 @@ Paddock:
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
             0.-  200.  0.050  0.100  0.320  0.419  0.320  1.311  0.856  0.900*******
-          200.-  400.  0.050  0.100  0.300  0.405  0.300  1.524  0.135  0.500389.229
+          200.-  400.  0.140  0.140  0.300  0.405  0.300  1.524  0.135  0.500389.229
           400.-  600.  0.149  0.149  0.280  0.342  0.280  1.650  0.009  0.600 16.362
-          600.-  800.  0.129  0.129  0.255  0.322  0.255  1.601  0.000  0.400 97.995
-          800.- 1000.  0.155  0.155  0.288  0.348  0.288  1.601  0.000  0.400 97.995
-         1000.- 1200.  0.149  0.149  0.280  0.342  0.280  1.601  0.000  0.900 97.995
-         1200.- 1400.  0.053  0.053  0.107  0.307  0.107  1.601  0.000  0.900 97.995
-         1400.- 1600.  0.061  0.061  0.122  0.309  0.122  1.601  0.000  0.900 97.995
+          600.-  800.  0.100  0.100  0.240  0.322  0.240  1.601  0.000  0.400 97.995
+          800.- 1000.  0.140  0.140  0.230  0.348  0.230  1.601  0.000  0.400 97.995
+         1000.- 1200.  0.160  0.160  0.230  0.342  0.230  1.601  0.000  0.900 97.995
+         1200.- 1400.  0.090  0.090  0.130  0.307  0.130  1.601  0.000  0.900 97.995
+         1400.- 1600.  0.061  0.061  0.170  0.309  0.170  1.601  0.000  0.900 97.995
         ---------------------------------------------------------------------
      
      
@@ -369,15 +420,15 @@ Paddock:
                             mm        mm          mm         mm
           ---------------------------------------------------------
             0.-  200.      20.00      44.00      44.00      19.80
-          200.-  400.      20.00      40.00      40.00      21.00
+          200.-  400.      28.00      32.00      32.00      21.00
           400.-  600.      29.80      26.20      26.20      12.40
-          600.-  800.      25.80      25.20      25.20      13.40
-          800.- 1000.      31.00      26.60      26.60      12.00
-         1000.- 1200.      29.80      26.20      26.20      12.40
-         1200.- 1400.      10.60      10.80      10.80      40.00
-         1400.- 1600.      12.20      12.20      12.20      37.40
+          600.-  800.      20.00      28.00      28.00      16.40
+          800.- 1000.      28.00      18.00      18.00      23.60
+         1000.- 1200.      32.00      14.00      14.00      22.40
+         1200.- 1400.      18.00       8.00       8.00      35.40
+         1400.- 1600.      12.20      21.80      21.80      27.80
           ---------------------------------------------------------
-               Totals     179.20     211.20     211.20     168.40
+               Totals     188.00     192.00     192.00     178.80
           ---------------------------------------------------------
      
      
@@ -454,7 +505,7 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     6.00  2.49  130.05    3.00    0.00
+             1     6.00  2.49  530.20    3.00    0.00
              2     6.00  0.92   15.00    2.00    0.00
              3     6.00  0.32   15.00    1.00    0.00
              4     6.00  0.28   10.00    1.00    0.00
@@ -463,7 +514,7 @@ Paddock:
              7     6.00  0.20    5.00    1.00    0.00
              8     6.00  0.20    5.00    1.00    0.00
           ------------------------------------------------
-           Totals              190.05   11.00    0.00
+           Totals              590.21   11.00    0.00
           ------------------------------------------------
      
      
@@ -491,17 +542,7 @@ Paddock:
      Manager sending message :- oat2 sow  population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      Manager creating a new local real variable : initialsoilomn = 12642.57813
      Manager creating a new local real variable : initialsurfaceomn = 5.00000
-     Manager creating a new local real variable : initialmineraln = 201.04895
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "fertiliser".
-     Variables should have a value before they are used in an expression.
-     Component name: Diagnostic variables
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     Manager creating a new local real variable : fertiliser = 0.00000
+     Manager creating a new local real variable : initialmineraln = 601.20282
 30/09/1998 - Germination
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
@@ -509,25 +550,25 @@ Paddock:
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 27/10/1998 - FloralInitiation
-                            LAI = 0.40 (m^2/m^2)
-           Above Ground Biomass = 23.86 (g/m^2)
-12/12/1998 - FlagLeaf
-                            LAI = 6.11 (m^2/m^2)
-           Above Ground Biomass = 459.20 (g/m^2)
-20/12/1998 - Flowering
-                            LAI = 6.05 (m^2/m^2)
-           Above Ground Biomass = 457.52 (g/m^2)
-20/12/1998 - StartGrainFill
-                            LAI = 6.05 (m^2/m^2)
-           Above Ground Biomass = 457.52 (g/m^2)
-19/01/1999 - EndGrainFill
-                            LAI = 3.40 (m^2/m^2)
-           Above Ground Biomass = 608.51 (g/m^2)
-22/01/1999 - Maturity
-                            LAI = 2.99 (m^2/m^2)
-           Above Ground Biomass = 618.69 (g/m^2)
-22/01/1999 - HarvestRipe
-                            LAI = 2.99 (m^2/m^2)
-           Above Ground Biomass = 618.69 (g/m^2)
+                            LAI = 0.17 (m^2/m^2)
+           Above Ground Biomass = 14.28 (g/m^2)
+1/12/1998 - FlagLeaf
+                            LAI = 4.85 (m^2/m^2)
+           Above Ground Biomass = 504.41 (g/m^2)
+11/12/1998 - Flowering
+                            LAI = 4.07 (m^2/m^2)
+           Above Ground Biomass = 709.21 (g/m^2)
+11/12/1998 - StartGrainFill
+                            LAI = 4.07 (m^2/m^2)
+           Above Ground Biomass = 709.21 (g/m^2)
+12/01/1999 - EndGrainFill
+                            LAI = 0.82 (m^2/m^2)
+           Above Ground Biomass = 1234.48 (g/m^2)
+13/01/1999 - Maturity
+                            LAI = 0.61 (m^2/m^2)
+           Above Ground Biomass = 1240.96 (g/m^2)
+13/01/1999 - HarvestRipe
+                            LAI = 0.61 (m^2/m^2)
+           Above Ground Biomass = 1240.96 (g/m^2)
 1 April 1999(Day of year=91), clock: 
      Simulation is terminating due to end criteria being met.
