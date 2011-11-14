@@ -141,6 +141,7 @@ public class ApsimToSim
       {
       // Replace all occurrences of [Dll] with the name of the model dll.
       string Dll = Types.Instance.MetaData(ApsimComponent.Type, "dll");
+      Dll = Dll.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
       Dll = Configuration.AddMacros(Dll);
       return ApsimToSimContents.Replace("[dll]", Dll);
       }
@@ -168,6 +169,7 @@ public class ApsimToSim
                       XmlDocument IniComponent = new XmlDocument();
                       IniComponent.LoadXml(Child.Contents);
                       string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
+                      ModelFileName = ModelFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
 
                       if (Path.GetExtension(ModelFileName) == ".xml")
                       {
