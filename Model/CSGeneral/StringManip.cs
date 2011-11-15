@@ -349,7 +349,22 @@ namespace CSGeneral
         public static string ParentName(string Name)
         {
             int PosLastPeriod = Name.LastIndexOf('.');
-            return Name.Substring(0, PosLastPeriod);
+            string ReturnName = Name.Substring(0, PosLastPeriod);
+            if (ReturnName == "")
+                ReturnName = ".";
+            return ReturnName;
+        }
+
+        /// <summary>
+        /// A helper function for building a string from an array of values.
+        /// Format specifies the level of precision written e.g. "f2"
+        /// </summary>
+        public static string BuildString(double[] Values, string Format)
+        {
+            string ReturnString = "";
+            foreach (double Value in Values)
+                ReturnString += "   " + Value.ToString(Format);
+            return ReturnString;
         }
     }
 }

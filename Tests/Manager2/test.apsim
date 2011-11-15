@@ -26,6 +26,8 @@
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="C" />
+          <variable name="cn2_bare" />
+          <variable name="cn_cov" />
         </variables>
         <events name="Reporting Frequency">
           <event name="daily" />
@@ -435,6 +437,7 @@
         <text>
 using System;
 using ModelFramework;
+using CSGeneral;
 
 public class Script
    {
@@ -450,6 +453,12 @@ public class Script
    [Link]
    public ModelEnvironment ModelEnvironment;
 
+   [Link]
+   public Outputfile Report;
+   
+   [Event]
+   public event NullTypeDelegate Do_output;
+   
    [EventHandler] 
    public void OnInitialised()
    {
@@ -462,7 +471,7 @@ public class Script
    
    [EventHandler] 
    public void OnProcess()
-      {
+   {
       // Make sure the [Param] has worked.
       if (A != 2.6)
          throw new Exception("Incorrect value for A: " + A.ToString());
@@ -482,11 +491,11 @@ public class Script
          Console.WriteLine("   " + ChildName);
       
       Console.WriteLine("Paddock children:");
-      foreach (string ChildName in ModelEnvironment.ChildNames(".MasterPM.paddock"))
+      foreach (string ChildName in ModelEnvironment.ChildNames(".paddock"))
          Console.WriteLine("   " + ChildName);
      
       Console.WriteLine("Simulation children:");
-      foreach (string ChildName in ModelEnvironment.ChildNames(".MasterPM"))
+      foreach (string ChildName in ModelEnvironment.ChildNames("."))
          Console.WriteLine("   " + ChildName);
       
       // ========================================================================
@@ -496,22 +505,78 @@ public class Script
       if (ScriptChild == null)
          throw new Exception("Cannot find ScriptChild");
 
-      ScriptChild ScriptChild2 = ModelEnvironment.Link&lt;ScriptChild&gt;(".MasterPM.paddock.Script.ScriptChild");
+      ScriptChild ScriptChild2 = ModelEnvironment.Link&lt;ScriptChild&gt;(".paddock.Script.ScriptChild");
       if (ScriptChild2 == null)
-         throw new Exception("Cannot find .MasterPM.paddock.Script.ScriptChild");
+         throw new Exception("Cannot find .paddock.Script.ScriptChild");
       
       SoilWat SoilWat = ModelEnvironment.Link&lt;SoilWat&gt;("Soil Water");
       if (SoilWat == null)
          throw new Exception("Cannot find Soil Water");
       
-      SoilWat SoilWat2 = ModelEnvironment.Link&lt;SoilWat&gt;(".MasterPM.paddock.Soil Water");
+      SoilWat SoilWat2 = ModelEnvironment.Link&lt;SoilWat&gt;(".paddock.Soil Water");
       if (SoilWat2 == null)
-         throw new Exception("Cannot find .MasterPM.paddock.Soil Water");      
+         throw new Exception("Cannot find .paddock.Soil Water");      
 
       SoilWat SoilWat3 = ModelEnvironment.Link&lt;SoilWat&gt;();
       if (SoilWat3 == null)
          throw new Exception("Cannot find ModelEnvironment.Link&lt;SoilWat&gt;()");      
-   
+
+      // ========================================================================
+      // ModelEnvironment.Get
+      // ========================================================================
+      // Test using scoping to find a variable in top level simulation.
+      double Latitude;
+      ModelEnvironment.Get("Latitude", out Latitude);
+      if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
+         throw new Exception("Incorrect latitude: " + Latitude.ToString());
+      
+      // Test using a full address to variable.
+      ModelEnvironment.Get(".Met.Latitude", out Latitude);
+      if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
+         throw new Exception("Incorrect latitude2: " + Latitude.ToString());      
+      
+      // Test getting a double array from current paddock
+      double[] dlayer;
+      ModelEnvironment.Get("dlayer", out dlayer);
+      if (!MathUtility.AreEqual(dlayer, new double[] {100, 100, 250, 250, 350, 450}))
+         throw new Exception("Incorrect dlayer: " + StringManip.BuildString(dlayer, "f2"));      
+
+      // Test getting a child variable value
+      int ChildVariable;
+      bool ok = ModelEnvironment.Get("ScriptChild.A", out ChildVariable);
+      if (!ok)
+         throw new Exception("Cannot find child variable");
+      if (ChildVariable != 12345)
+         throw new Exception("Incorrect child variable value: " + ChildVariable.ToString());
+
+      // ========================================================================
+      // ModelEnvironment.Set
+      // ========================================================================
+      // Test using scoping to set a variable. These values should be in output file
+      if (!ModelEnvironment.Set("cn2_bare", 90))
+         throw new Exception("Cannot set cn2_bare");
+
+      // Test using scoping to set a variable. These values should be in output file
+      if (!ModelEnvironment.Set(".paddock.Soil water.cn_cov", 0.888))
+         throw new Exception("Cannot set .paddock.Soil water.cn_cov");
+
+      // Test that "set" returns false when trying to set an invalid variable.
+      //if (ModelEnvironment.Set("asdf", 89))
+      //   throw new Exception("The set method wrongly returned true");
+
+      // ========================================================================
+      // ModelEnvironment.Warning
+      // ========================================================================
+      ModelEnvironment.Warning("This is a warning");
+      
+      
+      // ========================================================================
+      // Call a method of a [Link]
+      // ========================================================================
+      Report.DoOutput();
+      
+      
+      
       }
    }
 
@@ -519,7 +584,8 @@ public class Script
 
 public class ScriptChild
 {
-
+   [Output]
+   public int A = 12345;
 }
     </text>
       </manager2>

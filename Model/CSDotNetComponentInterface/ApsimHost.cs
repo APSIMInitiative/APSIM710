@@ -21,6 +21,7 @@ public class TAPSIMHost : TBaseComp
     private int tickID;
     const int smEXECUTE = 1;
     private int drvCOMPCLASS = -1;
+    private bool SetSuccess;
 
     protected ApsimComponent Comp;
     protected Dictionary<String, List<TIDSpec>> entityInfoList; //<searchstring, entityinfo list>
@@ -491,6 +492,32 @@ public class TAPSIMHost : TBaseComp
         }
         return eventID;
     }
+
+
+    //=========================================================================
+    /// <summary>
+    /// Send a set message. Returns true on success.
+    /// </summary>
+    //=========================================================================
+    public bool doSet(string sPropFQN, string sDDML, TTypedValue value)
+    {
+        SetSuccess = false;
+        sendRequestSet(sPropFQN, sDDML, value);
+        return SetSuccess;
+    }
+
+    //=========================================================================
+    /// <summary>
+    /// Capture the notify set message so that we can store the success flag.
+    /// </summary>
+    //=========================================================================
+    protected override void processNotifySet(uint msgFrom, int propertyID, bool bSuccess)
+    {
+        base.processNotifySet(msgFrom, propertyID, bSuccess);
+        SetSuccess = bSuccess;
+
+    }
+
     public String CompClass
     {
         set { FType = value; }

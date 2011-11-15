@@ -10,6 +10,8 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     Plant Plant = null;
 
     private double Uptake = 0;
+    private string CurrentPaddockName;
+    private string OurName;
 
     public override double DMDemand { get { return 0; } }
     public override double DMSupply { get { return 0; } }
@@ -74,13 +76,18 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         get
         {
-            string CurrentPaddockName = StringManip.ParentName(Plant.FullName);
+            CurrentPaddockName = StringManip.ParentName(Plant.FullName);
+            OurName = CurrentPaddockName;
+            if (OurName != ".")
+                OurName += ".";
+            OurName += Plant.Name;
+
 
             SoilWater = GetWaterModule();
             if (SoilWater != null)
             {
                 double[] SWSupply;
-                ModelEnvironment.Get(CurrentPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
+                ModelEnvironment.Get(OurName + "Root.SWSupply", out SWSupply);
                 return MathUtility.Sum(SWSupply);
             }
             else
@@ -106,10 +113,9 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override void DoWaterUptake(double Amount)
     {
         Uptake = Amount;
-        string CurrentPaddockName = StringManip.ParentName(Plant.FullName);
         SoilWater = GetWaterModule();
         if (SoilWater != null)
-            ModelEnvironment.Set(CurrentPaddockName + "." + Plant.Name + "Root.SWUptake", Amount);
+            ModelEnvironment.Set(OurName + "Root.SWUptake", Amount);
 
         else
         {

@@ -46,7 +46,7 @@ public class ModelEnvironment
         {
             string SystemName = In.ParentComponent().Name;
             SystemName = SystemName.Remove(SystemName.LastIndexOf('.'));  // remove instance name
-            return SystemName + "." + In.InstanceName;
+            return RemoveMasterPM(SystemName + "." + In.InstanceName);
         }
     }
 
@@ -67,6 +67,7 @@ public class ModelEnvironment
     /// <returns></returns>
     public string[] ChildNames(string SystemPath)
     {
+        SystemPath = AddMasterPM(SystemPath);
         Instance Obj = (Instance) LinkField.FindInstanceObject(In, SystemPath, "Instance");
         if (Obj != null)
             return ChildNamesForInstance(Obj);
@@ -74,80 +75,19 @@ public class ModelEnvironment
         {
             List<string> ReturnNames = new List<string>();
 
-            string SearchName = SystemPath + ".*";    //search comp.*
-
+            string SearchName;
+            if (SystemPath.Length > 0 && SystemPath[SystemPath.Length - 1] == '.')
+                SearchName = SystemPath + "*";    //search comp.*
+            else
+                SearchName = SystemPath + ".*";    //search comp.*
             List<TComp> comps = new List<TComp>();
             In.ParentComponent().Host.queryCompInfo(SearchName, TypeSpec.KIND_COMPONENT, ref comps);
             for (int i = 0; i < comps.Count; i++)
             {
-                ReturnNames.Add(comps[i].name);
+                ReturnNames.Add(RemoveMasterPM(comps[i].name));
             }
             return ReturnNames.ToArray();
         }
-    }
-
-    /// <summary>
-    /// Returns a list of fully qualified child model names for the specified system path. 
-    /// The returned list may be zero length but will never be null.
-    /// </summary>
-    /// <returns></returns>
-    private static string[] ChildNamesForInstance(object Obj)
-    {
-        string[] Names;
-        if (Obj is Instance)
-        {
-            Instance I = (Instance)Obj;
-            if (I.Children.Count > 0)
-            {
-                Names = new string[I.Children.Count];
-                for (int i = 0; i < I.Children.Count; i++)
-                {
-                    if (I.Children[i] is Instance)
-                    {
-                        Instance Child = (Instance)I.Children[i];
-
-                        // To get the fqn right we need to remove the left most bit of the child.InstanceName
-                        // because it duplicates the right most bit of I.ParentComponent().Name.
-                        string ChildName = Child.Name;
-                        if (ChildName.Contains('.'))
-                            ChildName.Remove(0, ChildName.IndexOf('.'));
-
-                        Names[i] = I.ParentComponent().Name + "." + ChildName;
-                    }
-                    else
-                        throw new Exception("Invalid child found: " + I.Children[i].Name);
-                }
-            }
-            else
-            {
-                string sSearchName = I.ParentComponent().Name + ".*";    //search comp.*
-
-                List<TComp> comps = new List<TComp>();
-                I.ParentComponent().Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-                Names = new string[comps.Count];
-                for (int i = 0; i < comps.Count; i++)
-                    Names[i] = comps[i].name;
-            }
-            return Names;
-        }
-        else
-            return new string[0];
-    }
-
-    public delegate void NullFunction ();
-    public void Subscribe(string EventPath, NullFunction F)
-    {
-        RuntimeEventHandler.NullFunction Fn = new RuntimeEventHandler.NullFunction(F);
-        RuntimeEventHandler Event = new RuntimeEventHandler(EventPath, Fn);
-        In.ParentComponent().Subscribe(Event);
-    }
-
-
-    public void Publish(string EventPath, ApsimType Data = null)
-    {
-        if (Data == null)
-            Data = new NullType();
-        In.ParentComponent().Publish(EventPath, Data);
     }
 
     /// <summary>
@@ -159,6 +99,7 @@ public class ModelEnvironment
     /// </summary>
     public T Link<T>(string NamePath)
     {
+        NamePath = AddMasterPM(NamePath);
         object E = FindInternalEntity(NamePath, In);
         if (E != null)
         {
@@ -189,10 +130,55 @@ public class ModelEnvironment
     /// </summary>
     public T Link<T>()
     {
-        return (T)LinkField.FindApsimObject(typeof(T).Name, null, StringManip.ParentName(In.ParentComponent().InstanceName),
+        return (T)LinkField.FindApsimObject(typeof(T).Name, null, 
+                                            StringManip.ParentName(In.ParentComponent().InstanceName),
                                             In.ParentComponent());
     }
-    
+
+    #region Get methods
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
+    public bool Get(string NamePath, out int Data)
+    {
+        WrapBuiltInVariable<int> Value = new WrapBuiltInVariable<int>();
+        if (GetInternal<int>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = Int32.MaxValue;
+            return false;
+        }
+    }
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
+    public bool Get(string NamePath, out float Data)
+    {
+        WrapBuiltInVariable<float> Value = new WrapBuiltInVariable<float>();
+        if (GetInternal<float>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = Single.NaN;
+            return false;
+        }
+    }
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
     public bool Get(string NamePath, out double Data)
     {
         WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
@@ -207,7 +193,11 @@ public class ModelEnvironment
             return false;
         }
     }
-
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
     public bool Get(string NamePath, out string Data)
     {
         WrapBuiltInVariable<string> Value = new WrapBuiltInVariable<string>();
@@ -222,7 +212,49 @@ public class ModelEnvironment
             return false;
         }
     }
-
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
+    public bool Get(string NamePath, out int[] Data)
+    {
+        WrapBuiltInVariable<int[]> Value = new WrapBuiltInVariable<int[]>();
+        if (GetInternal<int[]>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = null;
+            return false;
+        }
+    }
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
+    public bool Get(string NamePath, out float[] Data)
+    {
+        WrapBuiltInVariable<float[]> Value = new WrapBuiltInVariable<float[]>();
+        if (GetInternal<float[]>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = null;
+            return false;
+        }
+    }
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
     public bool Get(string NamePath, out double[] Data)
     {
         WrapBuiltInVariable<double[]> Value = new WrapBuiltInVariable<double[]>();
@@ -237,8 +269,219 @@ public class ModelEnvironment
             return false;
         }
     }
+    /// <summary>
+    /// Attempts to find and return the value of a variable that matches the specified name path. 
+    /// The method will return true if found or false otherwise. The value of the variable will be 
+    /// returned through the out parameter.
+    /// </summary>
+    public bool Get(string NamePath, out string[] Data)
+    {
+        WrapBuiltInVariable<string[]> Value = new WrapBuiltInVariable<string[]>();
+        if (GetInternal<string[]>(NamePath, Value))
+        {
+            Data = Value.Value;
+            return true;
+        }
+        else
+        {
+            Data = null;
+            return false;
+        }
+    }
+    #endregion
 
-    
+    #region Set methods
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, int Data)
+    {
+        return SetInternal<int>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, float Data)
+    {
+        return SetInternal<float>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, double Data)
+    {
+        return SetInternal<double>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, string Data)
+    {
+        return SetInternal<string>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, int[] Data)
+    {
+        return SetInternal<int[]>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, float[] Data)
+    {
+        return SetInternal<float[]>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, double[] Data)
+    {
+        return SetInternal<double[]>(NamePath, Data);
+    }
+    /// <summary>
+    /// Attempts to set the value of a variable that matches the specified name path. 
+    /// The method will return true if the set was successful or false otherwise.
+    /// </summary>
+    public bool Set(string NamePath, string[] Data)
+    {
+        return SetInternal<string[]>(NamePath, Data);
+    }
+    #endregion
+
+    #region Event methods
+    public delegate void NullFunction();
+    /// <summary>
+    /// Subscribes to the specified event name. Assumes no data will be passed with the event. 
+    /// If EventPath contains no path information then all broadcast events matching the name 
+    /// EventPath will be  trapped. If EventPath does contain path information then only 
+    /// matching events from the specific model will be trapped.  
+    /// </summary>
+    public void Subscribe(string EventPath, NullFunction F)
+    {
+        EventPath = AddMasterPM(EventPath);
+        RuntimeEventHandler.NullFunction Fn = new RuntimeEventHandler.NullFunction(F);
+        RuntimeEventHandler Event = new RuntimeEventHandler(EventPath, Fn);
+        In.ParentComponent().Subscribe(Event);
+    }
+
+    /// <summary>
+    /// Publishes the specified event name with the specified data. If EventPath contains 
+    /// no path information then the event will be broadcast to all models in scope. 
+    /// If EventPath does contain path information then the event will be directed to a specific model. 
+    /// There is no guarantee that any model receives the event.
+    /// </summary>
+    public void Publish(string EventPath, object Data = null)
+    {
+        EventPath = AddMasterPM(EventPath);
+        if (Data == null)
+            Data = new NullType();
+        if (Data is ApsimType)
+            In.ParentComponent().Publish(EventPath, Data as ApsimType);
+        else
+            throw new Exception("The data passed with an event must be derived from ApsimType");
+        
+    }
+    #endregion
+
+    /// <summary>
+    /// Send a warning message.
+    /// </summary>
+    public void Warning(string Message)
+    {
+        In.ParentComponent().Warning(Message);
+    }
+
+    /// <summary>
+    /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
+    /// the model. The ModelAssembly contains the model.
+    /// </summary>
+    public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
+    {
+        In.ParentComponent().BuildObjects(ModelDescription, ModelAssembly);
+    }
+
+
+    #region Private methods
+
+    /// <summary>
+    /// Add in .MasterPM to the front of the specified St
+    /// </summary>
+    private static string AddMasterPM(string St)
+    {
+        if (St.Length > 0 && St[0] == '.' && !St.Contains(".MasterPM"))
+            return ".MasterPM" + St;
+        else
+            return St;
+    }
+
+    /// <summary>
+    /// Remove .MasterPM from the front of the specified St
+    /// </summary>
+    private static string RemoveMasterPM(string St)
+    {
+        if (St.Contains(".MasterPM"))
+            return St.Remove(0, 9);
+        else
+            return St;
+    }
+
+    /// <summary>
+    /// Returns a list of fully qualified child model names for the specified system path. 
+    /// The returned list may be zero length but will never be null.
+    /// </summary>
+    /// <returns></returns>
+    private static string[] ChildNamesForInstance(object Obj)
+    {
+        string[] Names;
+        if (Obj is Instance)
+        {
+            Instance I = (Instance)Obj;
+            if (I.Children.Count > 0)
+            {
+                Names = new string[I.Children.Count];
+                for (int i = 0; i < I.Children.Count; i++)
+                {
+                    if (I.Children[i] is Instance)
+                    {
+                        Instance Child = (Instance)I.Children[i];
+
+                        // To get the fqn right we need to remove the left most bit of the child.InstanceName
+                        // because it duplicates the right most bit of I.ParentComponent().Name.
+                        string ChildName = Child.Name;
+                        if (ChildName.Contains('.'))
+                            ChildName.Remove(0, ChildName.IndexOf('.'));
+
+                        Names[i] = RemoveMasterPM(I.ParentComponent().Name + "." + ChildName);
+                    }
+                    else
+                        throw new Exception("Invalid child found: " + I.Children[i].Name);
+                }
+            }
+            else
+            {
+                string sSearchName = I.ParentComponent().Name + ".*";    //search comp.*
+
+                List<TComp> comps = new List<TComp>();
+                I.ParentComponent().Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
+                Names = new string[comps.Count];
+                for (int i = 0; i < comps.Count; i++)
+                    Names[i] = RemoveMasterPM(comps[i].name);
+            }
+            return Names;
+        }
+        else
+            return new string[0];
+    }
+
     /// <summary>
     /// Locate a variable that matches the specified path and return its value. Returns null
     /// if not found. e.g. NamePath:
@@ -246,9 +489,9 @@ public class ModelEnvironment
     ///     "Phenology.CurrentPhase" - relative path specified so look for matching child
     ///     ".met.maxt" - absolute path specified so look for exact variable.
     /// </summary>    
-    
     private bool GetInternal<T>(string NamePath, WrapBuiltInVariable<T> Data)
     {
+        NamePath = AddMasterPM(NamePath);
         if (NamePath.Length > 0 && NamePath[0] == '.')
         {
             // absolute path.
@@ -293,17 +536,10 @@ public class ModelEnvironment
     /// <summary>
     /// Set the value of a variable.
     /// </summary>
-    public bool Set(string NamePath, double Data)
-    {
-        return SetInternal<double>(NamePath, Data);
-    }
-
-
-    /// <summary>
-    /// Set the value of a variable.
-    /// </summary>
     private bool SetInternal<T>(string NamePath, T Value)
     {
+        NamePath = AddMasterPM(NamePath);
+
         WrapBuiltInVariable<T> Data = new WrapBuiltInVariable<T>();
         Data.Value = Value;
         if (NamePath.Length > 0 && NamePath[0] == '.')
@@ -342,7 +578,7 @@ public class ModelEnvironment
 
     }
 
-    class Entity
+    private class Entity
     {
         public MemberInfo MI;
         public object Obj;
@@ -448,14 +684,6 @@ public class ModelEnvironment
         // If we get this far then we've found a match.
         return RelativeTo;
     }
-
-    /// <summary>
-    /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
-    /// the model. The ModelAssembly contains the model.
-    /// </summary>
-    public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
-    {
-        In.ParentComponent().BuildObjects(ModelDescription, ModelAssembly);
-    }
+    #endregion
 
 }

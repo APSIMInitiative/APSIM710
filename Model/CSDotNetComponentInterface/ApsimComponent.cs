@@ -451,7 +451,7 @@ namespace ModelFramework
         /// <param name="PropertyName">Name of the property</param>
         /// <param name="Data">The value data</param>
         // ----------------------------------------------
-        public void Set(String PropertyName, ApsimType Data)
+        public bool Set(String PropertyName, ApsimType Data)
         {
             //a list here might be used to cache the DDMLValue and avoid re-parsing.
             //this would be useful to speed it up if Set() is used frequently
@@ -459,7 +459,7 @@ namespace ModelFramework
             byte[] msgData;
             Data.pack(out msgData);
             dataVal.setData(msgData, msgData.Length, 0);
-            Host.sendRequestSet(PropertyName, Data.DDML(), dataVal);    //checks for previously registered setters
+            return Host.doSet(PropertyName, Data.DDML(), dataVal);    //checks for previously registered setters
         }
         // ----------------------------------------------
         /// <summary>
