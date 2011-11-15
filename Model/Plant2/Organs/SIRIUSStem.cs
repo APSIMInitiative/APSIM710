@@ -15,7 +15,7 @@ class SIRIUSStem : SIRIUSGenericOrgan, AboveGround
     {
         get
         {
-            StructuralDMDemand = (Leaf.DeltaNodeNumber * Leaf.BranchNo * InterNodeWt.Value) * _StructuralFraction;
+            StructuralDMDemand = (Leaf.DeltaNodeNumber * Leaf.BranchNo * InterNodeWt.Value) * StructuralFractionFunction.Value;
             return StructuralDMDemand;
         }
     }

@@ -105,6 +105,7 @@ public class Leaf : BaseOrgan, AboveGround
     //[Description("Final Node Number")]
     protected double FinalNodeNoEstimate = 0;
     public double DeltaNodeNumber = 0;
+    public double PotentialHeightYesterday = 0;
     public double StemPopulation = 0;
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;

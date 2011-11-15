@@ -14,6 +14,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
     [Link]
     Function ExpansionStress = null;
 
+    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
+    Function HeightExpansionStress = null;
+
  #region Outputs Variables
     [Output]
     double[] CohortSize
@@ -206,7 +209,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-
+        
        if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
@@ -269,20 +272,18 @@ public class SIRIUSLeaf : Leaf, AboveGround
 
     public override void DoActualGrowth()
     {
-        //base.DoActualGrowth();
         foreach (LeafCohort L in Leaves)
         {
             //L.DoActualGrowth(ThermalTime.Value);
             L.DoActualGrowth(_ThermalTime);
         }
-        //if (Leaves.Count > 0)
-        //    if (Leaves[Leaves.Count].Finished)
-        //    {
-                // All leaves are dead
-        //        ZeroLeaves();
-        //    }
 
-        Height = Math.Max(Height, HeightModel.Value);
+        double Stress = 1;
+        if (HeightExpansionStress != null)  //
+               Stress = HeightExpansionStress.Value; 
+        double PotentialHeightIncrement = HeightModel.Value - PotentialHeightYesterday;
+        Height += PotentialHeightIncrement * Stress;
+        PotentialHeightYesterday = HeightModel.Value;
 
         PublishNewCanopyEvent();
 

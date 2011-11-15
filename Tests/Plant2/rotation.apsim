@@ -1,7 +1,7 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Maize_Wheat_Potato_Wheat">
     <metfile name="met">
-      <filename name="filename">%apsim%\Tests\Plant2\Waikato_base.met</filename>
+      <filename name="filename" input="yes">%apsim%\Tests\Plant2\Waikato_base.met</filename>
     </metfile>
     <micromet name="Micromet">
       <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
@@ -46,9 +46,7 @@ if (date_within('[date1], [date2]') = 1) then
       <start_date type="date" description="Enter the start date of the simulation">01/01/1972</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1992</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Rotation Sample.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <surfaceom name="surface organic matter">
         <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
@@ -1224,6 +1222,8 @@ endif   </text>
       <wheat2 />
       <potato2 />
       <outputfile>
+        <filename output="yes">Maize_Wheat_Potato_Wheat.out</filename>
+        <title>Maize_Wheat_Potato_Wheat</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="rotation_counter" />

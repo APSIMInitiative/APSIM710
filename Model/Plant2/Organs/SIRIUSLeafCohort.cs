@@ -10,11 +10,10 @@ class SIRIUSLeafCohort : LeafCohort
 
     //Leaf coefficients
     private double StructuralFraction = 0;
+    private double NonStructuralFraction = 0;
     private double NReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
-    private double SpecificLeafAreaMin = 0;
-    //Local variables
     private double SenescedFrac = 0;
     public double PotentialSize = 0;
     private double FunctionalNConc = 0;
@@ -70,9 +69,6 @@ class SIRIUSLeafCohort : LeafCohort
     [Link(NamePath = "ExpansionStress")]
     public Function ExpansionStressFunction = null;
 
-    [Link(NamePath = "SpecificLeafAreaMin")]
-    public Function SpecificLeafAreaMinFunction = null;
-
     [Link(NamePath = "CriticalNConc")]
     public Function CriticalNConcFunction = null;
 
@@ -86,10 +82,10 @@ class SIRIUSLeafCohort : LeafCohort
     public Function ShadeInducedSenRateFunction = null;
 
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
-    public Function DroughtInducedSenAcceleration;
+    public Function DroughtInducedSenAcceleration = null;
 
     [Link(NamePath = "NonStructuralFraction", IsOptional = true)]
-    public Function NonStructuralFraction;
+    public Function NonStructuralFractionFunction = null;
 
  #endregion
    
@@ -101,8 +97,8 @@ class SIRIUSLeafCohort : LeafCohort
         {
             if (IsGrowing)
             {
-                //StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
-                StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
+                StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
+                //StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
                 MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
             }
@@ -116,8 +112,8 @@ class SIRIUSLeafCohort : LeafCohort
        {
            if (IsNotSenescing)
            {
-               double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
-               //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction.Value);
+               //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
+               double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction);
                return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
            }
            else
@@ -290,7 +286,7 @@ class SIRIUSLeafCohort : LeafCohort
     {
         base.DoInitialisation();
         
-        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
+        //SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
         SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         StructuralNConc = MinimumNConc;
         FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFractionFunction.Value)) * (1 / (1 - StructuralFractionFunction.Value));
@@ -303,6 +299,9 @@ class SIRIUSLeafCohort : LeafCohort
         Live.NonStructuralN = 0;
         NReallocationFactor = NReallocationFactorFunction.Value;
         NRetranslocationFactor = NRetranslocationFactorFunction.Value;
+        if (NonStructuralFractionFunction != null)
+            NonStructuralFraction = NonStructuralFractionFunction.Value;
+        else NonStructuralFraction = 0;
         if (DMRetranslocationFactorFunction != null)
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
         else DMRetranslocationFactor = 0;
@@ -378,9 +377,9 @@ class SIRIUSLeafCohort : LeafCohort
         {
             //Growing leaf area after DM allocated
 
-            //double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
-            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
-            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
+            double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
+            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
+            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
             double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); // FIXME-EIT - Choice between carbon limited LAI expansion done here (Forcing to C unsconstrained to test it)
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
             
@@ -471,9 +470,7 @@ class SIRIUSLeafCohort : LeafCohort
                 FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
 
             double FracSenDrought = 0;
-            //if ((DroughtInducedSenRateFunction != null) && (LiveArea > 0))
-            //    FracSenDrought = Math.Min(MaxLiveArea * DroughtInducedSenRateFunction.Value, LiveArea) / LiveArea;
-            
+             
             return Math.Max(FracSenAge, Math.Max(FracSenShade, FracSenDrought));
         }
         else

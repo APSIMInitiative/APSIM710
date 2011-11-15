@@ -8,7 +8,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
 
  #region Optional IDE input field
     [Link(IsOptional=true)]
-    protected Function SenescenceRate = null;
+    protected Function SenescenceRateFunction = null;
     [Link(IsOptional=true)]
     protected Function NReallocationFactor = null;
     [Link(IsOptional=true)]
@@ -17,18 +17,20 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function NitrogenDemandSwitch = null;
     [Link(IsOptional=true)]
     protected Function DMRetranslocationFactor = null;
-    [Link(IsOptional=true)]
-    new protected Function StructuralFraction = null;
+    [Link(NamePath = "StructuralFraction", IsOptional=true)]
+    protected Function StructuralFractionFunction = null;
     [Link(IsOptional = true)]
     protected Function PopulationBasedDemand = null;
+    [Link(NamePath = "ExpansionStress", IsOptional = true)]
+    protected Function ExpansionStressFunction = null;
     [Link(IsOptional = true)]
     protected Function InternodeDemand = null;
     
  #endregion
 
  #region Class data members
-    private double _SenescenceRate = 0;
-    protected double _StructuralFraction = 1;
+    private double SenescenceRate = 0;
+    new double StructuralFraction = 1;
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
     private double StartNonStructuralN = 0;
@@ -38,6 +40,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     private double StartStructuralWt = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
+    private double ExpansionStress = 1;
 
     //[Link]
     //Leaf Leaf = null;
@@ -53,12 +56,15 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
  #region Organ functions
     public override void DoPotentialGrowth()
     {
-        _SenescenceRate = 0;
-        if (SenescenceRate != null) //Default of zero means no senescence
-            _SenescenceRate = SenescenceRate.Value;
-        _StructuralFraction = 1;
-        if (StructuralFraction != null) //Default of 1 means all biomass is structural
-            _StructuralFraction = StructuralFraction.Value;
+        SenescenceRate = 0;
+        if (SenescenceRateFunction != null) //Default of zero means no senescence
+            SenescenceRate = SenescenceRateFunction.Value;
+        StructuralFraction = 1;
+        if (StructuralFractionFunction != null) //Default of 1 means all biomass is structural
+            StructuralFraction = StructuralFractionFunction.Value;
+        ExpansionStress = 1;
+        if (ExpansionStressFunction != null)
+            ExpansionStress = ExpansionStressFunction.Value;
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
         StartStructuralWt = Live.StructuralWt;
@@ -70,10 +76,10 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         base.DoActualGrowth();
 
-        Live.StructuralWt *= (1.0 - _SenescenceRate);
-        Live.NonStructuralWt *= (1.0 - _SenescenceRate);
-        Live.StructuralN *= (1.0 - _SenescenceRate);
-        Live.NonStructuralN *= (1.0 - _SenescenceRate);
+        Live.StructuralWt *= (1.0 - SenescenceRate);
+        Live.NonStructuralWt *= (1.0 - SenescenceRate);
+        Live.StructuralN *= (1.0 - SenescenceRate);
+        Live.NonStructuralN *= (1.0 - SenescenceRate);
     }
  #endregion
 
@@ -84,17 +90,17 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         {
             if (PopulationBasedDemand != null)
             {
-                StructuralDMDemand = PopulationBasedDemand.Value * _StructuralFraction;
+                StructuralDMDemand = PopulationBasedDemand.Value * StructuralFraction * ExpansionStress;
                 return StructuralDMDemand;
             }
             else if (InternodeDemand != null)
             {
-                StructuralDMDemand = InternodeDemand.Value * _StructuralFraction;
+                StructuralDMDemand = InternodeDemand.Value * StructuralFraction;
                 return StructuralDMDemand;
             }
             else
             {
-                StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * _StructuralFraction;
+                StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * StructuralFraction;
                 return StructuralDMDemand;
             }
         }
@@ -103,7 +109,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-           double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1/_StructuralFraction;
+           double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1/StructuralFraction;
            MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartStructuralWt - StartNonStructuralWt);
         }
@@ -147,7 +153,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             double _NReallocationFactor = 0;
             if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
                 _NReallocationFactor = NReallocationFactor.Value;
-            return _SenescenceRate * StartNonStructuralN * _NReallocationFactor; 
+            return SenescenceRate * StartNonStructuralN * _NReallocationFactor; 
         }
     }
     public override double NRetranslocationSupply
