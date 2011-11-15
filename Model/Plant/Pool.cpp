@@ -56,12 +56,12 @@ void Pool::CheckBounds()
    const float ctz = -0.00001;
 
    if (NonStructuralDM() < ctz)
-      cout << endl << "     *** " << PartName + "." + Name << "DM Non Structural Biomass is negative! " << ftoa(NonStructuralDM(),6) << endl << endl;
+      throw std::runtime_error( PartName + "." + Name + " Non Structural DM pool is negative! " + ftoa(NonStructuralDM(),6));
    if (DM() < ctz)
-      cout << endl << "     *** " << PartName + "." + Name << "DM Biomass is negative! " << ftoa(DM(),6) << endl << endl;
+      throw std::runtime_error( PartName + "." + Name + " DM pool is negative! " + ftoa(DM(),6));
    if (N() < ctz)
-      cout << endl << "     *** " << PartName + "." + Name << "N Biomass is negative! " << ftoa(N(),6) << endl<< endl;
+      throw std::runtime_error( PartName + "." + Name + " N pool is negative! " + ftoa(N(),6));
    if (P() < ctz)
-      cout << endl << "     *** " << PartName + "." + Name << "P Biomass is negative! " << ftoa(P(),6) << endl<< endl;
+      throw std::runtime_error( PartName + "." + Name + " P pool is negative! " + ftoa(P(),6));
    }
 

@@ -103,11 +103,11 @@ Biomass Biomass::operator * (float Fraction)
 
 Biomass& Biomass::operator = (const Biomass& Biomass2)
    {
-   privateNonStructuralDM = Biomass2.NonStructuralDM();
-   privateN = Biomass2.N();
-   privateP = Biomass2.P();
+   privateNonStructuralDM = l_bound(Biomass2.NonStructuralDM(), 0.0);
+   privateN = l_bound(Biomass2.N(), 0.0);
+   privateP = l_bound(Biomass2.P(), 0.0);
 
-   privateStructuralDM = Biomass2.StructuralDM();
+   privateStructuralDM = l_bound(Biomass2.StructuralDM(), 0.0);
 
    CheckBounds();
    return *this;
