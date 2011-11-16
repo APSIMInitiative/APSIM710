@@ -51,7 +51,8 @@ class SIRIUSLeafCohort : LeafCohort
     private double MetabolicNAllocation = 0;
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
-    private double CoverAbove = 0;
+    public double CoverAbove = 0;
+    private double ShadeSenRate = 0;
     private double ShadeInducedSenRate = 0;
     
     [Link(NamePath = "Leaf")]
@@ -80,6 +81,9 @@ class SIRIUSLeafCohort : LeafCohort
 
     [Link(NamePath = "ShadeInducedSenRate", IsOptional = true)]
     public Function ShadeInducedSenRateFunction = null;
+
+    [Link(NamePath = "ShadeInducedSenescenceRate", IsOptional = true)]
+    public Function ShadeInducedSenescenceRateFunction = null;
 
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
     public Function DroughtInducedSenAcceleration = null;
@@ -324,6 +328,8 @@ class SIRIUSLeafCohort : LeafCohort
             DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
 
             CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
+            if (ShadeInducedSenescenceRateFunction != null)
+                ShadeSenRate = ShadeInducedSenescenceRateFunction.Value;
             SenescedFrac = FractionSenescing(TT);
 
             // Doing leaf mass growth in the cohort
@@ -431,20 +437,12 @@ class SIRIUSLeafCohort : LeafCohort
     public double FractionSenescing(double TT)
     {
         //Calculate fraction of leaf area senessing based on age and shading.  This is used to to calculate change in leaf area and Nreallocation supply.
-
-        //if (DroughtInducedSenAcceleration.Value > 1.0)
-        //    TT = TT * DroughtInducedSenAcceleration.Value;
-        
         if (IsInitialised)
         {
             double FracSenAge = 0;
             double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);
             if (TTInSenPhase > 0)
             {
-
-                if (Rank == 10)  //FIX ME, work out what this does???
-                { }
-
                 double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration;
                 double RemainingTT = Math.Max(0, LeafDuration - Age);
 
