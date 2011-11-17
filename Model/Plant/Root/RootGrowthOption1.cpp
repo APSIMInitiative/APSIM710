@@ -30,9 +30,9 @@ void rootGrowthOption1::root_length_growth (void)
    rlv_factor_tot = 0.0;
    for(int layer = 0; layer <= deepest_layer; layer++)
       {
-      rld = divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
+      rld = (float)divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
 
-      plant_rld = divide (rld, plant->population().Density(), 0.0);
+      plant_rld = (float)divide (rld, plant->population().Density(), 0.0);
 
       branching_factor = rel_root_rate.value(plant_rld);
 
@@ -42,7 +42,7 @@ void rootGrowthOption1::root_length_growth (void)
                      divide((*soil[0]).dlayer[layer],      // space weighting
                             root_depth, 0.0);                            //       factor
 
-      rlv_factor[layer] = l_bound(rlv_factor[layer], 1e-6);
+      rlv_factor[layer] = l_bound(rlv_factor[layer], 1e-6f);
       rlv_factor_tot += rlv_factor[layer];
       }
 

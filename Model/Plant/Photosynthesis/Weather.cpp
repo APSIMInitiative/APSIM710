@@ -448,7 +448,7 @@ float CWeather::DewPeriodLastNight(float fDewPointTemp, float fLatitude, float f
 	float fSunriseTime   = SunriseTime(fLatitude);
 
         if (fBeginDewTime<24.0)
-           fDewPeriod = 24.0 - fBeginDewTime + fSunriseTime;
+           fDewPeriod = 24.0f - fBeginDewTime + fSunriseTime;
         else
            fDewPeriod = max((float)0, fSunriseTime - fBeginDewTime);
 
@@ -487,7 +487,7 @@ float CWeather::RH80TempFromVapourPressureAt0900()
 
 float CWeather::DewPointTemperature()
 {
-	float vVap9     = 100.0*m_fVaporPressure;  //hPa
+	float vVap9     = 100.0f * m_fVaporPressure;  //hPa
 	float vDewPoint = 0.0;
 
         if (vVap9 <= 0.0)
@@ -515,7 +515,7 @@ float CWeather::DewPointTemperature(float fVapourPressure)
 
 float CWeather::ActualVapourPressure()
 {
-	float vVap9  = 100.0*m_fVaporPressure;  //Pa
+	float vVap9  = 100.0f * m_fVaporPressure;  //Pa
 
         if (vVap9 >0.0)
            return vVap9;
@@ -1027,7 +1027,7 @@ float DailyMeanTemperature(float fTmax,float fTmin,float fLatitude,int nDay, flo
 				           fTmaxPrev, fTminPrev, fTminNext);
                  fSum = fSum + fTemp;
                  }
-            fTemp = fSum/24.0;
+            fTemp = fSum/24.0f;
 
             }
 
@@ -1056,7 +1056,7 @@ float DaytimeMeanTemperature(float fTmax,float fTmin,float fLatitude,int nDay, f
 				           fTmaxPrev, fTminPrev, fTminNext);
                  fSum = fSum + fTemp;
                  }
-            fTemp = fSum/12.0;
+            fTemp = fSum/12.0f;
 
             }
 

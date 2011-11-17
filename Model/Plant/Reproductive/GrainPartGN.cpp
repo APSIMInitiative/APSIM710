@@ -209,15 +209,15 @@ void fruitGrainPartGN::doDMDemandGrain(void)
        // check that grain growth will not result in daily n conc below minimum conc
        // for daily grain growth
       float nfact_grain_conc = plant->getNfactGrainConc();
-      float nfact_grain_fill = min(1.0, nfact_grain_conc*cPotential_grain_n_filling_rate/cMinimum_grain_n_filling_rate);
+      float nfact_grain_fill = (float)min(1.0, nfact_grain_conc*cPotential_grain_n_filling_rate/cMinimum_grain_n_filling_rate);
       gDlt_dm_grain_demand = gDlt_dm_grain_demand * nfact_grain_fill;
 
 
 
       // Check that growth does not exceed maximum grain size
       float max_grain = gGrain_no * pMaxGrainSize;
-      float max_dlt = max (max_grain - mealPart->Green.DM(), 0.0);
-      gDlt_dm_grain_demand = min (gDlt_dm_grain_demand, max_dlt);
+      float max_dlt = (float)max (max_grain - mealPart->Green.DM(), 0.0);
+      gDlt_dm_grain_demand = (float)min (gDlt_dm_grain_demand, max_dlt);
 
       mealPart->doDMDemandGrain(gDlt_dm_grain_demand);
       }
@@ -267,7 +267,7 @@ void fruitGrainPartGN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
          //! grain filling has stopped - stop n flow as well
          gN_grain_demand = 0.0;
          }
-      float dailyNconc = divide(gN_grain_demand,(mealPart->Growth.DM() + mealPart->Retranslocation.DM()),1.0);
+      float dailyNconc = (float)divide(gN_grain_demand,(mealPart->Growth.DM() + mealPart->Retranslocation.DM()),1.0);
       if (dailyNconc > cGrainMaxDailyNConc) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*cGrainMaxDailyNConc;
       }
 

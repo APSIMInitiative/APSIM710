@@ -47,13 +47,13 @@ void accumulate (float value,             //  (INPUT) value to add to array
          new_index = (int) (p_index + min (1.0, dlt_index));
          if (reals_are_equal(fmod((double)p_index,(double)1.0),0.0))
             {
-            fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = 1.0f - divide(index_devel - 1.0, dlt_index, 0.0);
             portion_in_old = fract_in_old * (value + array[current_index])-
                                  array[current_index];
             }
          else
             {
-            fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = 1.0f - divide(index_devel - 1.0, dlt_index, 0.0);
             portion_in_old = fract_in_old * value;
             }
          portion_in_new = value - portion_in_old;
@@ -173,7 +173,7 @@ float linear_interp_real (float x, const float *x_cord, const float *y_cord, int
                {
                float y_part = y_cord[indx] - y_cord[indx - 1];
                float x_part = x_cord[indx] - x_cord[indx - 1];
-               y = divide (y_part, x_part, 0.0) * (x - x_cord[indx - 1] ) +
+               y = (float)divide (y_part, x_part, 0.0) * (x - x_cord[indx - 1] ) +
                      y_cord[indx- 1];
                }
             }

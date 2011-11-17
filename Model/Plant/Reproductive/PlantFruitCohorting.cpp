@@ -159,7 +159,7 @@ void PlantFruitCohorting::doSiteNumber(void)
     float fruit_tt_target = plant->phenology().TTTargetInPhase("fruiting") * p.cutout_fract;
     float fruit_tt_cum = plant->phenology().TTInPhase("fruiting");
 
-    float metabolic_fact = divide (fruit_tt_cum, fruit_tt_target, 0.0);
+    float metabolic_fact = (float)divide (fruit_tt_cum, fruit_tt_target, 0.0);
     metabolic_fact = bound (metabolic_fact, 0.0, 1.0);
 
     float temp_fac = rel_fruit_site.value(plant->environment().meant());
@@ -176,9 +176,9 @@ void PlantFruitCohorting::doFlowerNumber (void)
    {
     float flower_no_potential;
     if (setting_fruit)
-       flower_no_potential = divide (dltDM.average(), p.dm_fruit_set_min, 0.0);
+       flower_no_potential = (float)divide (dltDM.average(), p.dm_fruit_set_min, 0.0);
     else
-       flower_no_potential = divide (dltDM.average(), p.dm_fruit_set_crit, 0.0);
+       flower_no_potential = (float)divide (dltDM.average(), p.dm_fruit_set_crit, 0.0);
 
     float dlt_flower_no_potential = flower_no_potential - flowerNo();
     dlt_flower_no_potential = l_bound(dlt_flower_no_potential, 0.0);

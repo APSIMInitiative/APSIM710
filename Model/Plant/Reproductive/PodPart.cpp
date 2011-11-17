@@ -338,7 +338,7 @@ void fruitPodPart::doDmPotRUE (void )                    // (OUTPUT) potential d
    double stress_factor = min(min(min(plant->getTempStressPhoto(), plant->getNfactPhoto())
                                   , plant->getOxdefPhoto()), plant->getPfactPhoto());
 
-   dlt.dm_pot_rue = (radiationInterceptedGreen * cRue_pod) * stress_factor * co2Modifier->rue();
+   dlt.dm_pot_rue = (float)((radiationInterceptedGreen * cRue_pod) * stress_factor * co2Modifier->rue());
 }
 
 

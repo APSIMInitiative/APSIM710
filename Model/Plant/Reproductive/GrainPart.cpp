@@ -78,7 +78,7 @@ void fruitGrainPart::get_n_conc_grain(protocol::Component *system, protocol::Que
 void fruitGrainPart::get_grain_protein(protocol::Component *system, protocol::QueryValueData &qd)
    //===========================================================================
 {
-   float gp = nConcPercent() * 5.71;
+   float gp = nConcPercent() * 5.71f;
    system->sendVariable(qd, gp);
 }
 
@@ -127,7 +127,7 @@ void fruitGrainPart::readCultivarParameters (protocol::Component *system, const 
       (*part)->readCultivarParameters(system, cultivar);
 }
 
-void fruitGrainPart::writeCultivarInfo (protocol::Component */* system*/)
+void fruitGrainPart::writeCultivarInfo (protocol::Component *x/* system*/)
    //===========================================================================
 {
 }

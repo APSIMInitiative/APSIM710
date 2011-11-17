@@ -272,15 +272,15 @@ float Soil::pesw(int depth)
 //=======================================================================================
 // Calculate plant extractable soil water at the given depth.
    {
-   int layerNo = find_layer_no(depth);
-   return divide (sw_dep[layerNo] - ll_dep[layerNo], dlayer[layerNo], 0.0);
+   int layerNo = find_layer_no((float)depth);
+   return (float)divide (sw_dep[layerNo] - ll_dep[layerNo], dlayer[layerNo], 0.0);
    }
 float Soil::fasw(int depth)
 //=======================================================================================
 // calculate the fraction of available soil water at the given depth (mm)
    {
-   int layerNo = find_layer_no(depth);
-   float fasw = divide (sw_dep[layerNo] - ll_dep[layerNo],
+   int layerNo = find_layer_no((float)depth);
+   float fasw = (float)divide (sw_dep[layerNo] - ll_dep[layerNo],
                         dul_dep[layerNo] - ll_dep[layerNo], 0.0);
    return bound (fasw, 0.0, 1.0);
    }
@@ -289,7 +289,7 @@ float Soil::layer_fasw(int layerNo)
 //=======================================================================================
 // calculate the fraction of available soil water at the given depth (mm)
    {
-   float fasw = divide (sw_dep[layerNo] - ll_dep[layerNo],
+   float fasw = (float)divide (sw_dep[layerNo] - ll_dep[layerNo],
                         dul_dep[layerNo] - ll_dep[layerNo], 0.0);
    return bound (fasw, 0.0, 1.0);
    }
@@ -361,7 +361,7 @@ float Soil::root_proportion (int layer, float root_depth)
    depth_to_layer_bottom = sum_real_array(dlayer, layer+1);
    depth_to_layer_top = depth_to_layer_bottom - dlayer[layer];
    depth_to_root  = min(depth_to_layer_bottom, root_depth);
-   depth_of_root_in_layer = max(0.0, depth_to_root-depth_to_layer_top);
+   depth_of_root_in_layer = (float)max(0.0, depth_to_root-depth_to_layer_top);
 
    return (divide (depth_of_root_in_layer, dlayer[layer], 0.0));
    }
@@ -433,9 +433,9 @@ void Soil::crop_check_sw(
    num_layers = count_of_real_vals (dlayer, max_layer);  //XX index_of_real_vals
    for(layer = 0; layer <= num_layers; layer++)
       {
-      sw = divide (sw_dep[layer], dlayer[layer], 0.0);
-      dul = divide (dul_dep[layer], dlayer[layer], 0.0);
-      ll = divide (ll_dep[layer], dlayer[layer], 0.0);
+      sw = (float)divide (sw_dep[layer], dlayer[layer], 0.0);
+      dul = (float)divide (dul_dep[layer], dlayer[layer], 0.0);
+      ll = (float)divide (ll_dep[layer], dlayer[layer], 0.0);
 
       if (ll < minsw)
          {
@@ -628,7 +628,7 @@ void Soil::doWaterUptakeInternal (float sw_demand, float root_depth)
          // distribute demand proportionately in all layers.
          for(int layer = 0; layer <= deepest_layer; layer++)
             {
-            dlt_sw_dep[layer] = -1 * divide (sw_supply[layer], sw_supply_sum, 0.0) * sw_demand;
+            dlt_sw_dep[layer] = -1.0f * divide (sw_supply[layer], sw_supply_sum, 0.0) * sw_demand;
             }
          }
       else
@@ -719,7 +719,7 @@ float Soil::WFPS(int layer)
 //
    {
    float wfps;
-   wfps = divide(sw_dep[layer] - ll15_dep[layer],
+   wfps = (float)divide(sw_dep[layer] - ll15_dep[layer],
                 sat_dep[layer] - ll15_dep[layer], 0.0);
    wfps = bound (wfps, 0.0, 1.0);
    return wfps;

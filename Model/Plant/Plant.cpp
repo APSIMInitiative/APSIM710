@@ -551,7 +551,7 @@ void Plant::onRemoveCropBiomass(protocol::RemoveCropBiomassType& dmRemoved)
          for (unsigned int part = 0; part < dmRemoved.dm[pool].part.size(); part++)
             {
             msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)" << endl;
-            dmTotal +=  dmRemoved.dm[pool].dlt[part];
+            dmTotal +=  (float)dmRemoved.dm[pool].dlt[part];
             }
          }
       msg << endl << "   dm total = " << dmTotal << " (g/m2)" << endl << ends;
@@ -608,7 +608,7 @@ void Plant::onDetachCropBiomass(float detachRate)
          for (unsigned int part = 0; part < dmRemoved.dm[pool].part.size(); part++)
             {
             msg << "   dm " << dmRemoved.dm[pool].pool << " " << dmRemoved.dm[pool].part[part] << " = " << dmRemoved.dm[pool].dlt[part] << " (g/m2)" << endl;
-            dmTotal +=  dmRemoved.dm[pool].dlt[part];
+            dmTotal += (float)dmRemoved.dm[pool].dlt[part];
             }
           }
       msg << endl << "   dm total = " << dmTotal << " (g/m2)" << endl << ends;
@@ -732,7 +732,7 @@ void Plant::plant_cleanup (void)
         g.n_fixed_tops = Tops().Growth.N() * divide (g.n_fix_uptake,plant.Growth.N(),0.0);
 
     else
-        g.n_fixed_tops = g.n_fixed_tops + Tops().Growth.N() * divide (g.n_fix_uptake, plant.Growth.N() ,0.0);
+        g.n_fixed_tops = (float)g.n_fixed_tops + Tops().Growth.N() * divide (g.n_fix_uptake, plant.Growth.N() ,0.0);
     g.lai_max = max(g.lai_max, leaf().getLAI());             //FIXME - should be returned from leafPart method
 
     if (g.plant_status == alive && phenologyEventToday != "")
@@ -762,10 +762,10 @@ void Plant::plant_update(void)
    // Let me register my surprise at how this is done on the next few lines
    // - why intrinsically limit processes to leaf etc right here!!! - NIH
    float n_senesced_trans = leaf().dltNSenescedTrans();
-   leaf().giveNGreen(-1.0*n_senesced_trans);
+   leaf().giveNGreen(-1.0f*n_senesced_trans);
    stem().giveNGreen(n_senesced_trans);
 
-   leaf().giveNGreen(-1.0*plant.dltNSenescedRetrans());
+   leaf().giveNGreen(-1.0f*plant.dltNSenescedRetrans());
    root().updateOthers();    // send off detached roots before root structure is updated by plant death
 
    plant.update();
@@ -844,15 +844,15 @@ void Plant::plant_harvest_update(protocol::HarvestType &Harvest)
 
    // determine the new stem density
    // ==============================
-   temp = Harvest.Plants;
+   temp = (float)Harvest.Plants;
    if (temp != 0)
        population().SetPlants(temp);
 
-   remove_fr = Harvest.Remove;
+   remove_fr = (float)Harvest.Remove;
    bound_check_real_var(scienceAPI,remove_fr, 0.0, 1.0, "remove");
 
    // determine the cutting height
-   height = Harvest.Height;
+   height = (float)Harvest.Height;
    bound_check_real_var(scienceAPI,height, 0.0, 1000.0, "height");
 
    vector<string> dm_type;
@@ -971,7 +971,7 @@ void Plant::plant_remove_biomass_update (protocol::RemoveCropBiomassType dmRemov
 
    // Update biomass and N pools.  Different types of plant pools are affected in different ways.
    // Calculate Root Die Back
-   float chop_fr_green_leaf = divide(leaf().GreenRemoved.DM(), leaf().Green.DM(), 0.0);
+   float chop_fr_green_leaf = (float)divide(leaf().GreenRemoved.DM(), leaf().Green.DM(), 0.0);
 
    root().removeBiomass2(chop_fr_green_leaf);
    float biomassGreenTops    = Tops().Green.DM();
@@ -982,7 +982,7 @@ void Plant::plant_remove_biomass_update (protocol::RemoveCropBiomassType dmRemov
    Tops().removeBiomass();
 
    if (c.remove_biomass_affects_phenology)
-      g.remove_biom_pheno = divide (dmRemovedGreenTops, biomassGreenTops, 0.0);
+      g.remove_biom_pheno = (float)divide (dmRemovedGreenTops, biomassGreenTops, 0.0);
 
    if (c.remove_biomass_report)
       {
@@ -1448,7 +1448,7 @@ void Plant::plant_harvest_report (void)
 // Report the state of the crop at harvest time
     {
     //+  Constant Values
-    const float  plant_c_frac = 0.4;    // fraction of c in resiudes
+    const float  plant_c_frac = 0.4f;    // fraction of c in resiudes
 
 
     //+  Local Variables
@@ -1470,7 +1470,7 @@ void Plant::plant_harvest_report (void)
        yield = plant.GrainTotal.DM() * gm2kg / sm2ha;
        yield_wet = plant.dmGrainWetTotal() * gm2kg / sm2ha;
        grain_wt = plant.grainWt();
-       plant_grain_no = divide (plant.grainNo(), population().Density(), 0.0);
+       plant_grain_no = (float)divide (plant.grainNo(), population().Density(), 0.0);
        n_grain = plant.GrainTotal.N() * gm2kg/sm2ha;
 
 
@@ -1484,10 +1484,10 @@ void Plant::plant_harvest_report (void)
     n_total = n_grain + n_stover;
 
     float stoverTot = Tops().VegetativeTotal.DM();
-    float DMRrootShootRatio = divide(dmRoot, Tops().Total.DM() * gm2kg / sm2ha, 0.0);
-    float HarvestIndex      = divide(yield, Tops().Total.DM() * gm2kg / sm2ha, 0.0);
-    float StoverCNRatio     = divide(stoverTot* gm2kg / sm2ha*plant_c_frac, n_stover, 0.0);
-    float RootCNRatio       = divide(dmRoot*plant_c_frac, nRoot, 0.0);
+    float DMRrootShootRatio = (float)divide(dmRoot, Tops().Total.DM() * gm2kg / sm2ha, 0.0);
+    float HarvestIndex      = (float)divide(yield, Tops().Total.DM() * gm2kg / sm2ha, 0.0);
+    float StoverCNRatio     = (float)divide(stoverTot* gm2kg / sm2ha*plant_c_frac, n_stover, 0.0);
+    float RootCNRatio       = (float)divide(dmRoot*plant_c_frac, nRoot, 0.0);
 
     parent->writeString ("");
 
@@ -1682,9 +1682,9 @@ void Plant::get_effective_rue(protocol::Component *system, protocol::QueryValueD
 {
    float erue;
    if (plant.Respiration()>0.)   // SPASS model used
-      erue = divide(plant.Growth.DM()-plant.Respiration()-root().Growth.DM(),environment().radn()*Tops().coverGreen(),0.0);
+      erue = (float)divide(plant.Growth.DM()-plant.Respiration()-root().Growth.DM(),environment().radn()*Tops().coverGreen(),0.0);
    else
-      erue = divide(plant.Growth.DM()-plant.Respiration(),environment().radn()*Tops().coverGreen(),0.0);
+      erue = (float)divide(plant.Growth.DM()-plant.Respiration(),environment().radn()*Tops().coverGreen(),0.0);
     //erue = divide(Tops().Growth.DM(),environment().radn()*Tops().coverGreen(),0.0);
     system->sendVariable(qd, erue);
 }
@@ -1739,13 +1739,13 @@ void Plant::get_green_biomass_n(protocol::Component *system, protocol::QueryValu
 // plant nitrogen
 void Plant::get_n_conc_stover(protocol::Component *system, protocol::QueryValueData &qd)
 {
-    float n_conc = divide (Tops().Vegetative.N(), Tops().Vegetative.DM(), 0.0) * fract2pcnt;
+    float n_conc = (float)divide (Tops().Vegetative.N(), Tops().Vegetative.DM(), 0.0) * fract2pcnt;
     system->sendVariable(qd, n_conc);
 }
 
 void Plant::get_n_conc_crit(protocol::Component *system, protocol::QueryValueData &qd)
 {
-    float n_conc = divide ((leaf().n_conc_crit()*leaf().Green.DM()
+    float n_conc = (float)divide ((leaf().n_conc_crit()*leaf().Green.DM()
                            + stem().n_conc_crit()*stem().Green.DM())
                           , (leaf().Green.DM() + stem().Green.DM())
                           , 0.0) * fract2pcnt;
@@ -1754,7 +1754,7 @@ void Plant::get_n_conc_crit(protocol::Component *system, protocol::QueryValueDat
 
 void Plant::get_n_conc_min(protocol::Component *system, protocol::QueryValueData &qd)
 {
-    float n_conc = divide ((leaf().n_conc_min() * leaf().Green.DM()
+    float n_conc = (float)divide ((leaf().n_conc_min() * leaf().Green.DM()
                             + stem().n_conc_min() * stem().Green.DM())
                           , (leaf().Green.DM() + stem().Green.DM())
                           , 0.0) * fract2pcnt;
@@ -1815,7 +1815,7 @@ void Plant::get_green_biomass_p(protocol::Component *systemInterface, protocol::
 //NIH up to here
 void Plant::get_p_conc_stover(protocol::Component *systemInterface, protocol::QueryValueData &qd)
 {
-    float p_conc_stover = divide (Tops().Vegetative.P(), Tops().Vegetative.DM(), 0.0) * fract2pcnt ;
+    float p_conc_stover = (float)divide (Tops().Vegetative.P(), Tops().Vegetative.DM(), 0.0) * fract2pcnt ;
     systemInterface->sendVariable(qd, p_conc_stover);  //()
 }
 

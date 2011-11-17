@@ -110,7 +110,7 @@ float Leaf::DMSupply(void)
 float Leaf::coverTotal(void)
 //=======================================================================================
 {
-   return 1.0 - (1.0 - coverLeaf.green) * (1.0 - coverLeaf.sen);
+   return 1.0f - (1.0f - coverLeaf.green) * (1.0f - coverLeaf.sen);
 }
 
 float Leaf::coverGreen(void)

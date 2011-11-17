@@ -40,6 +40,6 @@ void Phase::calcPhaseDevelopment(int /*das*/,
    {
    dlt_tt_phenol = TT() * stress();
 
-   phase_devel = divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
+   phase_devel = (float)divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
    }
 

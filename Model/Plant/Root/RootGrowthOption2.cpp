@@ -39,13 +39,13 @@ void rootGrowthOption2::root_length_growth (void)
 
    for (int layer = 0; layer <= deepest_layer; layer++)
       {
-      cum_depth +=  0.5 * (*soil[0]).dlayer[layer];
-      rwf       = divide (cum_depth, cum_layer_depth, 0.0) ;
-      rwf       = pow((double)(1.0 - rwf), (double)rootDistributionPattern);
+      cum_depth +=  0.5f * (*soil[0]).dlayer[layer];
+      rwf       = (float)divide (cum_depth, cum_layer_depth, 0.0) ;
+      rwf       = (float)pow((double)(1.0 - rwf), (double)rootDistributionPattern);
 
-      rld       = divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
+      rld       = (float)divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
 
-      plant_rld = divide (rld, plant->population().Density(), 0.0);
+      plant_rld = (float)divide (rld, plant->population().Density(), 0.0);
 
       branching_factor = rel_root_rate.value(plant_rld);
 
@@ -55,7 +55,7 @@ void rootGrowthOption2::root_length_growth (void)
                              divide((*soil[0]).dlayer[layer], root_depth, 0.0) *
                               rwf;
 
-      rlv_factor[layer] = l_bound(rlv_factor[layer], 1e-6);
+      rlv_factor[layer] = l_bound(rlv_factor[layer], 1e-6f);
       rlv_factor_tot += rlv_factor[layer];
       }
 

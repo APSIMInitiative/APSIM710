@@ -7,7 +7,7 @@
 #include "../Population.h"
 using namespace std;
 
-const float  tolerance_lai = 1.0e-4 ;
+const float  tolerance_lai = 1.0e-4f ;
 
 
 // Read Constants
@@ -56,8 +56,8 @@ void GenericLeaf::readSpeciesParameters (protocol::Component *system, vector<str
 
    if (LAIOptionFound)
        cLAIRatePhoto.read(scienceAPI                                                 //    LAI expansion rate
-                        , "x_lai_exp_rate_photo",  "()", 5.0, 24.0
-                        , "y_lai_exp_rate", "()", 0.0, 0.05);
+                        , "x_lai_exp_rate_photo",  "()", 5.0f, 24.0f
+                        , "y_lai_exp_rate", "()", 0.0f, 0.05f);
    else
        cLAIExpModelOption = "default";
 
@@ -266,7 +266,7 @@ void GenericLeaf::initialiseAreas(void)
    fill_real_array (gLeafNoSen, 0.0, max_node);
 
    int   leaf_no_emerged = (int) cLeafNumberAtEmerg;
-   float leaf_emerging_fract = fmod((double)cLeafNumberAtEmerg, (double)1.0);
+   float leaf_emerging_fract = (float)fmod((double)cLeafNumberAtEmerg, (double)1.0);
    for (int leaf = 0; leaf < leaf_no_emerged; leaf++)
       {
       gLeafNo[leaf] = 1.0;
@@ -274,7 +274,7 @@ void GenericLeaf::initialiseAreas(void)
    gLeafNo[leaf_no_emerged] = leaf_emerging_fract;
 
    fill_real_array (gLeafArea, 0.0, max_node);
-   float avg_leaf_area = divide (cInitialTPLA, cLeafNumberAtEmerg, 0.0);
+   float avg_leaf_area = (float)divide (cInitialTPLA, cLeafNumberAtEmerg, 0.0);
    for (int leaf = 0; leaf < leaf_no_emerged; leaf++)
       {
       gLeafArea[leaf] = avg_leaf_area * plant->population().Density();
@@ -377,7 +377,7 @@ void GenericLeaf::leaf_area_actual_pp(void)                 // Purpose: Set actu
 void GenericLeaf::leaf_no_actual (void)
    {
    //ratio of actual to potential lai
-   float lai_ratio = divide (dltLAI, dltLAI_stressed, 0.0);
+   float lai_ratio = (float)divide (dltLAI, dltLAI_stressed, 0.0);
 
    //ratio of actual to potential leaf appearance
    float leaf_no_frac= cLeafNoFrac.value(lai_ratio);
@@ -413,11 +413,11 @@ void GenericLeaf::leaf_death (float  g_nfact_expansion, float  g_dlt_tt)
 
    leaf_per_node = leaf_no_now * cFrLeafSenRate;
 
-   node_sen_rate = divide( cNodeSenRate
+   node_sen_rate = (float)divide( cNodeSenRate
                           , 1.0 + cNFactLeafSenRate * (1.0 - g_nfact_expansion)
                           , 0.0);
 
-   leaf_death_rate = divide (node_sen_rate, leaf_per_node, 0.0);
+   leaf_death_rate = (float)divide (node_sen_rate, leaf_per_node, 0.0);
 
    if (plant->phenology().inPhase("harvest_ripe"))
        {
@@ -429,7 +429,7 @@ void GenericLeaf::leaf_death (float  g_nfact_expansion, float  g_dlt_tt)
    else if (plant->phenology().inPhase("leaf_senescence"))
 //   else if (plant->phenology().stageNum() > )
        {
-       dltLeafNoSen = divide (g_dlt_tt, leaf_death_rate, 0.0);
+       dltLeafNoSen = (float)divide (g_dlt_tt, leaf_death_rate, 0.0);
 
        // Ensure minimum leaf area remains
        tpla_now = sum_real_array (gLeafArea, max_node) ;
@@ -609,10 +609,10 @@ void GenericLeaf::update(void)
 {
     SimplePart::update();
     // need to account for truncation of partially developed leaf (add 1)
-    float node_no = 1.0 + gNodeNo;
+    float node_no = 1.0f + gNodeNo;
 
     float dlt_leaf_area = dltLAI * sm2smm;
-    accumulate (dlt_leaf_area, gLeafArea, node_no-1.0, dltNodeNo);
+    accumulate (dlt_leaf_area, gLeafArea, node_no-1.0f, dltNodeNo);
 
     // Area senescence is calculated apart from plant number death
     // so any decrease in plant number will mean an increase in average
@@ -624,7 +624,7 @@ void GenericLeaf::update(void)
     //    fill_real_array(gLeafArea, 0.0, max_node);
     //    }
 
-    accumulate (dltLeafNo, gLeafNo, node_no-1.0, dltNodeNo);
+    accumulate (dltLeafNo, gLeafNo, node_no-1.0f, dltNodeNo);
 
     float leaf_no_sen_tot = sum_real_array(gLeafNoSen, max_node) + dltLeafNoSen;
 
@@ -696,7 +696,7 @@ void GenericLeaf::remove_detachment (float dlt_slai_detached, float dlt_lai_remo
    // calc new node number
    for (int node = max_node - 1; node >= 0; node--)
       {
-      if (!reals_are_equal(gLeafArea[node], 0.0, 1.0E-4))    // Slop?
+      if (!reals_are_equal(gLeafArea[node], 0.0, 1.0E-4f))    // Slop?
          {
          gNodeNo = (float)node;  //FIXME - need adjustment for leafs remaining in for this node
          break;
@@ -715,8 +715,8 @@ void GenericLeaf::remove_detachment (float dlt_slai_detached, float dlt_lai_remo
 void GenericLeaf::removeBiomass(void)
 // (Re)-Initialise plant leaf area from deltas
     {
-    float chop_fr_green = divide(GreenRemoved.DM(), Green.DM(), 0.0);
-    float chop_fr_sen   = divide(SenescedRemoved.DM(), Senesced.DM(), 0.0);
+    float chop_fr_green = (float)divide(GreenRemoved.DM(), Green.DM(), 0.0);
+    float chop_fr_sen   = (float)divide(SenescedRemoved.DM(), Senesced.DM(), 0.0);
 
     float dlt_lai = gLAI * chop_fr_green;
     float dlt_slai = gSLAI * chop_fr_sen;

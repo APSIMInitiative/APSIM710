@@ -76,9 +76,9 @@ void fruitMealPart::doNConcGrainLimits(float n_min_grain, float n_crit_grain, fl
 {
    float dm_meal;                                // meal mass (g/m2)
    dm_meal = (Green.DM() + Growth.DM() + Retranslocation.DM());
-   g.n_conc_crit = divide (n_crit_grain, dm_meal, 0.0);
-   g.n_conc_max = divide (n_max_grain, dm_meal, 0.0);
-   g.n_conc_min = divide (n_min_grain, dm_meal, 0.0);
+   g.n_conc_crit = (float)divide (n_crit_grain, dm_meal, 0.0);
+   g.n_conc_max = (float)divide (n_max_grain, dm_meal, 0.0);
+   g.n_conc_min = (float)divide (n_min_grain, dm_meal, 0.0);
 
 }
 

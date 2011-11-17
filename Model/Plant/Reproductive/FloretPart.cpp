@@ -159,7 +159,7 @@ void FloretPart::doCover (PlantSpatial &spatial)
    if (gPai > 0.0)
       {
       coverA = 1.0 - exp(-cExtinctionCoeffFloret * gPai*spatial.canopyFac());
-      cover = divide (coverA, spatial.canopyFac(), 0.0);
+      cover = (float)divide (coverA, spatial.canopyFac(), 0.0);
       }
    else
       cover = 0.0;
@@ -207,7 +207,7 @@ void FloretPart::doDmPotRUE (void )                    // (OUTPUT) potential dry
    double stress_factor = min(min(min(plant->getTempStressPhoto(), plant->getNfactPhoto())
                                   , plant->getOxdefPhoto()), plant->getPfactPhoto());
 
-   dlt.dm_pot_rue = (radiationInterceptedGreen * cRue_Floret) * stress_factor * plant->getCo2Modifier()->rue();
+   dlt.dm_pot_rue = (float)((radiationInterceptedGreen * cRue_Floret) * stress_factor * plant->getCo2Modifier()->rue());
 }
 
 void FloretPart::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop water demand (mm)

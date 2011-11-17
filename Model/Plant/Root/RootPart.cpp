@@ -152,24 +152,24 @@ void RootPart::read()
    scienceAPI.read("root_die_back_fr", rootDieBackFraction, 0.0f, 0.99f);
 
    rel_root_rate.read(scienceAPI,
-                         "x_plant_rld", "()", 0.0, 0.1,
-                         "y_rel_root_rate", "()", 0.001, 1.0);
+                         "x_plant_rld", "()", 0.0f, 0.1f,
+                         "y_rel_root_rate", "()", 0.001f, 1.0f);
 
    sw_fac_root.read(scienceAPI,
-                         "x_sw_ratio", "()", 0.0, 100.,
-                         "y_sw_fac_root", "()", 0.0, 100.0);
+                         "x_sw_ratio", "()", 0.0f, 100.0f,
+                         "y_sw_fac_root", "()", 0.0f, 100.0f);
 
    rel_root_advance.read(scienceAPI,
-                         "x_temp_root_advance", "(oc)", -10.0, 60.,
-                         "y_rel_root_advance", "()", 0.0, 1.0);
+                         "x_temp_root_advance", "(oc)", -10.0f, 60.0f,
+                         "y_rel_root_advance", "()", 0.0, 1.0f);
 
    root_depth_rate.read(scienceAPI,
-                         "stage_code_list", "()", 0.0, 100.0,
-                         "root_depth_rate", "(mm/day)", 0.0, 1000.0);
+                         "stage_code_list", "()", 0.0, 100.0f,
+                         "root_depth_rate", "(mm/day)", 0.0, 1000.0f);
 
    ws_root_fac.read(scienceAPI,
-                         "x_ws_root", "()", 0.0, 1.0,
-                         "y_ws_root_fac", "()", 0.0, 1.0);
+                         "x_ws_root", "()", 0.0, 1.0f,
+                         "y_ws_root_fac", "()", 0.0, 1.0f);
 
 // NIH This really should be inherited from simple part.
     c.MaintenanceCoefficient.readOptional(scienceAPI
@@ -234,7 +234,7 @@ void RootPart::onEmergence(void)
    float initial_root_length = Green.DM() / sm2smm * specificRootLength;
 
    // initial root length density (mm/mm^3)
-   float rld = divide (initial_root_length, root_depth, 0.0);
+   float rld = (float)divide (initial_root_length, root_depth, 0.0);
 
    int deepest_layer = (*soil[0]).find_layer_no (root_depth);
 
@@ -305,7 +305,7 @@ void RootPart::plant_root_depth (void)
    {
    const Environment *e = &plant->environment();
    //Temperature factor
-   float avg_temp = (e->mint() + e->maxt())/2.0;
+   float avg_temp = (e->mint() + e->maxt())/2.0f;
    float temp_factor = rel_root_advance.value(avg_temp);
 
    //Water stress factor
@@ -322,7 +322,7 @@ void RootPart::plant_root_depth (void)
 
    rootdepth_in_layer = bound (rootdepth_in_layer, 0.0, (*soil[0]).dlayer[layer]);
 
-   float weighting_factor = divide (rootdepth_in_layer, (*soil[0]).dlayer[layer], 0.0);
+   float weighting_factor = (float)divide (rootdepth_in_layer, (*soil[0]).dlayer[layer], 0.0);
 
    int next_layer = min(layer+1, deepest_layer);
 
@@ -330,10 +330,10 @@ void RootPart::plant_root_depth (void)
 
    float fasw2 = (*soil[0]).layer_fasw(next_layer);
 
-   fasw1 = min(1.0,max(0.0, fasw1));
-   fasw2 = min(1.0,max(0.0, fasw2));
+   fasw1 = (float)min(1.0,max(0.0, fasw1));
+   fasw2 = (float)min(1.0,max(0.0, fasw2));
 
-   float fasw = weighting_factor * fasw2 + (1.0 - weighting_factor) * fasw1;
+   float fasw = weighting_factor * fasw2 + (1.0f - weighting_factor) * fasw1;
 
    float sw_avail_factor = sw_fac_root.value(fasw);
 
@@ -593,7 +593,7 @@ void RootPart::redistribute(const vector<float> &dlayer_old,        //  old soil
 
       // calculate the fractional reduction in total profile depth
       // ---------------------------------------------------------
-   pro_red_fr = divide (root_depth_new, root_depth, 0.0);
+   pro_red_fr = (float)divide (root_depth_new, root_depth, 0.0);
 
       // build interpolation pairs based on 'squashed' original root profile
       // -------------------------------------------------------------------
@@ -649,7 +649,7 @@ void RootPart::get_rlv(protocol::Component *system, protocol::QueryValueData &qd
     float rlv[max_layer];
     for (int layer = 0; layer < (*soil[0]).num_layers; layer++)
        {
-       rlv[layer] = divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
+       rlv[layer] = (float)divide (root_length[layer], (*soil[0]).dlayer[layer], 0.0);
        }
     system->sendVariable(qd, std::vector<float>(rlv,rlv+(*soil[0]).num_layers));
 }
@@ -996,6 +996,6 @@ float RootPart::sw_avail_ratio(int layer)  //(INPUT) soil profile layer number
 
    pesw = (*soil[0]).sw_dep[layer] - (*soil[0]).ll_dep[layer];
    pesw_capacity = (*soil[0]).dul_dep[layer] - (*soil[0]).ll_dep[layer];
-   sw_avail_ratio = divide (pesw, pesw_capacity, 10.0);
+   sw_avail_ratio = (float)divide (pesw, pesw_capacity, 10.0);
    return sw_avail_ratio;
    }

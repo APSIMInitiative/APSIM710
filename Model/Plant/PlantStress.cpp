@@ -139,9 +139,9 @@ float PStress::PlantP_Pfact (vector<plantPart *> &allParts)
 
          }
 
-      act_p_conc = divide(act_p, determinants_wt, 0.0);
-      max_p_conc = divide(max_p, determinants_wt, 0.0);
-      min_p_conc = divide(min_p, determinants_wt, 0.0);
+      act_p_conc = (float)divide(act_p, determinants_wt, 0.0);
+      max_p_conc = (float)divide(max_p, determinants_wt, 0.0);
+      min_p_conc = (float)divide(min_p, determinants_wt, 0.0);
 
       if ((determinants_wt <= 0.0) || (act_p <= 0.0))
       {
@@ -194,7 +194,7 @@ void PStress::get_pstress_photo(protocol::Component *systemInterface, protocol::
 {
     float pstress_photo;
     if (pFact.photo > 0.0)
-       pstress_photo = 1.0 - pFact.photo;
+       pstress_photo = 1.0f - pFact.photo;
     else
        pstress_photo = 0.0;
     systemInterface->sendVariable(qd, pstress_photo);  //()
@@ -204,7 +204,7 @@ void PStress::get_pstress_pheno(protocol::Component *systemInterface, protocol::
 {
     float pstress_pheno;
     if (pFact.pheno > 0.0)
-       pstress_pheno = 1.0 - pFact.pheno;
+       pstress_pheno = 1.0f - pFact.pheno;
     else
        pstress_pheno = 0.0;
     systemInterface->sendVariable(qd, pstress_pheno);  //()
@@ -214,7 +214,7 @@ void PStress::get_pstress_expansion(protocol::Component *systemInterface, protoc
 {
     float pstress_expansion;
     if (pFact.expansion > 0.0)
-       pstress_expansion = 1.0 - pFact.expansion;
+       pstress_expansion = 1.0f - pFact.expansion;
     else
        pstress_expansion = 0.0;
     systemInterface->sendVariable(qd, pstress_expansion);  //()
@@ -224,7 +224,7 @@ void PStress::get_pstress_grain(protocol::Component *systemInterface, protocol::
 {
     float pstress_grain;
     if (pFact.grain > 0.0)
-       pstress_grain = 1.0 - pFact.grain;
+       pstress_grain = 1.0f - pFact.grain;
     else
        pstress_grain = 0.0;
     systemInterface->sendVariable(qd, pstress_grain);  //()
@@ -351,21 +351,21 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
 
    if (dm > 0.0)
       {
-      float N_conc = divide (N, dm, 0.0);
+      float N_conc = (float)divide (N, dm, 0.0);
 
       // calculate critical N concentrations
       float N_crit = 0.0;
       for (part = parts.begin(); part != parts.end(); part++)
           N_crit += (*part)->nCrit();
 
-      float N_conc_crit = divide (N_crit, dm, 0.0);
+      float N_conc_crit = (float)divide (N_crit, dm, 0.0);
 
       // calculate minimum N concentrations
       float N_min = 0.0;
       for (part = parts.begin(); part != parts.end(); part++)
          N_min += (*part)->nMin();
 
-      float N_conc_min = divide (N_min, dm, 0.0);
+      float N_conc_min = (float)divide (N_min, dm, 0.0);
 
       //calculate shortfall in N concentrations
       float dividend =  N_conc - N_conc_min;
@@ -382,7 +382,7 @@ void NStress::get_nstress_pheno(protocol::Component *systemInterface, protocol::
 {
     float nstress_pheno;
     if (nFact.pheno > 0.0)
-       nstress_pheno = 1.0 - nFact.pheno;
+       nstress_pheno = 1.0f - nFact.pheno;
     else
        nstress_pheno = 0.0;
     systemInterface->sendVariable(qd, nstress_pheno);  //()
@@ -392,7 +392,7 @@ void NStress::get_nstress_photo(protocol::Component *systemInterface, protocol::
 {
     float nstress_photo;
     if (nFact.photo > 0.0)
-       nstress_photo = 1.0 - nFact.photo;
+       nstress_photo = 1.0f - nFact.photo;
     else
        nstress_photo = 0.0;
     systemInterface->sendVariable(qd, nstress_photo);  //()
@@ -402,7 +402,7 @@ void NStress::get_nstress_expan(protocol::Component *systemInterface, protocol::
 {
     float nstress_expan;
     if (nFact.expansion > 0.0)
-       nstress_expan = 1.0 - nFact.expansion;
+       nstress_expan = 1.0f - nFact.expansion;
     else
        nstress_expan = 0.0;
     systemInterface->sendVariable(qd, nstress_expan);  //()
@@ -412,7 +412,7 @@ void NStress::get_nstress_grain(protocol::Component *systemInterface, protocol::
 {
     float nstress_grain;
     if (nFact.grain > 0.0)
-       nstress_grain = 1.0 - nFact.grain;
+       nstress_grain = 1.0f - nFact.grain;
     else
        nstress_grain = 0.0;
     systemInterface->sendVariable(qd, nstress_grain);  //()
@@ -469,7 +469,7 @@ void TempStress::get_tstress_photo(protocol::Component *systemInterface, protoco
 {
     float tstress_photo;
     if (tFact.photo > 0.0)
-       tstress_photo = 1.0 - tFact.photo;
+       tstress_photo = 1.0f - tFact.photo;
     else
        tstress_photo = 0.0;
     systemInterface->sendVariable(qd, tstress_photo);  //()
@@ -573,7 +573,7 @@ float SWStress::SWDefExpansion(float sw_demand)
    if (sw_demand > 0.0)
       {
       // get potential water that can be taken up when profile is full
-      float sw_demand_ratio = divide (rootPart->swSupply(), sw_demand, 10.0);
+      float sw_demand_ratio = (float)divide (rootPart->swSupply(), sw_demand, 10.0);
       return cSwwDefExpansion.value(sw_demand_ratio);
       }
    else
@@ -588,7 +588,7 @@ float SWStress::SWDefPhoto(float sw_demand)
    if (sw_demand > 0.0)
       {
       //get potential water that can be taken up when profile is full
-      float sw_demand_ratio = divide (rootPart->waterUptake(), sw_demand, 1.0);
+      float sw_demand_ratio = (float)divide (rootPart->waterUptake(), sw_demand, 1.0);
       return bound (sw_demand_ratio , 0.0, 1.0);
       }
    else
@@ -604,7 +604,7 @@ float SWStress::SWDefPheno(interpolationFunction& cSwDefPheno)
    {
    if (rootPart->swAvailablePotential() > 0.0)
       {
-      float sw_avail_ratio = divide (rootPart->swAvailable(), rootPart->swAvailablePotential(), 1.0);
+      float sw_avail_ratio = (float)divide (rootPart->swAvailable(), rootPart->swAvailablePotential(), 1.0);
       sw_avail_ratio = bound (sw_avail_ratio , 0.0, 1.0);
       return cSwDefPheno.value(sw_avail_ratio);
       }
@@ -620,7 +620,7 @@ float SWStress::SWDefFixation(void)
    {
    if (rootPart->swAvailablePotential() > 0.0)
       {
-      float sw_avail_ratio = divide(rootPart->swAvailable(), rootPart->swAvailablePotential(), 1.0);
+      float sw_avail_ratio = (float)divide(rootPart->swAvailable(), rootPart->swAvailablePotential(), 1.0);
       sw_avail_ratio = bound(sw_avail_ratio , 0.0, 1.0);
       return cSwwDefFix.value(sw_avail_ratio);
       }
@@ -642,7 +642,7 @@ void SWStress::get_swstress_pheno(protocol::Component *systemInterface, protocol
 {
     float swstress_pheno;
     if (swDef.pheno > 0.0)
-       swstress_pheno = 1.0 - swDef.pheno;
+       swstress_pheno = 1.0f - swDef.pheno;
     else
        swstress_pheno = 0.0;
     systemInterface->sendVariable(qd, swstress_pheno);  //()
@@ -652,7 +652,7 @@ void SWStress::get_swstress_photo(protocol::Component *systemInterface, protocol
 {
     float swstress_photo;
     if (swDef.photo > 0.0)
-       swstress_photo = 1.0 - swDef.photo;
+       swstress_photo = 1.0f - swDef.photo;
     else
        swstress_photo = 0.0;
     systemInterface->sendVariable(qd, swstress_photo);  //()
@@ -662,7 +662,7 @@ void SWStress::get_swstress_expan(protocol::Component *systemInterface, protocol
 {
     float swstress_expan;
     if (swDef.expansion > 0.0)
-       swstress_expan = 1.0 - swDef.expansion;
+       swstress_expan = 1.0f - swDef.expansion;
     else
        swstress_expan = 0.0;
     systemInterface->sendVariable(qd, swstress_expan);  //()
@@ -672,7 +672,7 @@ void SWStress::get_swstress_fixation(protocol::Component *systemInterface, proto
 {
     float swstress_fixation;
     if (swDef.fixation > 0.0)
-       swstress_fixation = 1.0 - swDef.fixation;
+       swstress_fixation = 1.0f - swDef.fixation;
     else
        swstress_fixation = 0.0;
     systemInterface->sendVariable(qd, swstress_fixation);  //()

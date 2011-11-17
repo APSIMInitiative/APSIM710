@@ -62,14 +62,14 @@ float CWVernalPhase::crown_temp_nwheat (float maxt, float mint, float snow)
    // Calculate max crown temperature
    float cx;
    if (maxt < 0.)
-        cx = 2.0 + maxt * (0.4 + 0.0018 * pow(snow - 15., 2));
+        cx = (float)(2.0 + maxt * (0.4 + 0.0018 * pow(snow - 15., 2)));
    else
         cx = maxt;
 
    // Calculate min crown temperature
    float cn;
    if (mint < 0.)
-        cn = 2.0 + mint * (0.4 + 0.0018 * pow(snow - 15., 2));
+        cn = (float)(2.0 + mint * (0.4 + 0.0018 * pow(snow - 15., 2)));
    else
         cn = mint;
 
@@ -84,8 +84,8 @@ float CWVernalPhase::wheat_photoperiod_effect(float photoperiod, float p_photop_
 
     if (plant.phenology().inPhase("eme2ej"))
         {
-        float  photop_sen_factor = p_photop_sen * 0.002;
-        photop_eff = 1. - photop_sen_factor * pow(20. - photoperiod, 2);
+        float  photop_sen_factor = p_photop_sen * 0.002f;
+        photop_eff = (float)(1.0 - photop_sen_factor * pow(20.0 - photoperiod, 2));
         photop_eff = bound (photop_eff, 0.0, 1.0);
         }
     return photop_eff;

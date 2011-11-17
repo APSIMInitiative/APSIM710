@@ -23,9 +23,9 @@ void SowingPhase::calcPhaseDevelopment(int das, float& dlt_tt_phenol, float& pha
    // can't germinate on same day as sowing, because we would miss out on
    // day of sowing elsewhere.
    if (das > 0 && germinating())
-      phase_devel = 1.999;
+      phase_devel = 1.999f;
    else
-      phase_devel = 0.999;
+      phase_devel = 0.999f;
    dlt_tt_phenol = TT();
    }
 

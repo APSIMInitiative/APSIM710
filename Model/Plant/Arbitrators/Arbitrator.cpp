@@ -67,7 +67,7 @@ void Arbitrator::partitionDM()
       }
 
 
-   if (!reals_are_equal(dlt_dm_green_tot, DMSupply(), 1.0E-4))
+   if (!reals_are_equal(dlt_dm_green_tot, DMSupply(), 1.0E-4f))
        {
        string msg = "dlt_dm_green_tot mass balance is off: "
                     + ftoa(dlt_dm_green_tot, ".6")
@@ -85,7 +85,7 @@ float Arbitrator::RelativeGrowthRate(void)
 float Arbitrator::TotalPotentialGrowthRate(void)
    {
    // the dlt_dm_pot_rue is only tops, thus adjust it for roots.
-   return (1.0 + ratioRootShoot()) * plant.All().dltDmPotRue();
+   return (1.0f + ratioRootShoot()) * plant.All().dltDmPotRue();
    }
 
 void Arbitrator::doNRetranslocate(plantPart* fruitPart)

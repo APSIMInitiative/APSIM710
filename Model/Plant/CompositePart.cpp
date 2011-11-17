@@ -215,7 +215,7 @@ float CompositePart::n_conc_crit(void)
    float sum = 0.0;
    for (vector <plantPart * >::const_iterator part = myParts.begin(); part != myParts.end(); part++)
       sum += (*part)->n_conc_crit();
-   return divide (sum , myParts.size() , 0.0);           //unweighted mean
+   return (float)divide (sum , myParts.size() , 0.0);           //unweighted mean
 }
 
 
@@ -225,7 +225,7 @@ float CompositePart::n_conc_min(void)
    float sum = 0.0;
    for (vector <plantPart * >::const_iterator part = myParts.begin(); part != myParts.end(); part++)
       sum += (*part)->n_conc_min();
-   return divide (sum , myParts.size() , 0.0);           //unweighted mean
+   return (float)divide (sum , myParts.size() , 0.0);           //unweighted mean
 }
 
 
@@ -358,12 +358,12 @@ void CompositePart::doNPartition(float nSupply, float n_demand_sum, float n_capa
 
    if (n_excess>0.0)
       {
-      float plant_part_fract = divide (nCapacity(), n_capacity_sum, 0.0);
+      float plant_part_fract = (float)divide (nCapacity(), n_capacity_sum, 0.0);
       GrowthN = (nDemand() + n_excess * plant_part_fract);
       }
    else
       {
-      float plant_part_fract = divide (nDemand(), n_demand_sum, 0.0);
+      float plant_part_fract = (float)divide (nDemand(), n_demand_sum, 0.0);
       GrowthN=(nSupply * plant_part_fract);
       }
 
@@ -699,7 +699,7 @@ float CompositePart::coverTotal(void)
    float cover = 0.0;
    vector <plantPart *>::iterator part;
    for (part = myParts.begin(); part != myParts.end(); part++)
-      cover = add_covers (cover, (*part)->coverTotal());
+      cover = (float)add_covers (cover, (*part)->coverTotal());
    return cover;
 }
 
@@ -709,7 +709,7 @@ float CompositePart::coverGreen(void)
    float cover = 0.0;
    vector <plantPart *>::iterator part;
    for (part = myParts.begin(); part != myParts.end(); part++)
-      cover = add_covers (cover, (*part)->coverGreen());
+      cover = (float)add_covers (cover, (*part)->coverGreen());
    return cover;
 }
 
@@ -719,7 +719,7 @@ float CompositePart::coverSen(void)
    float cover = 0.0;
    vector <plantPart *>::iterator part;
    for (part = myParts.begin(); part != myParts.end(); part++)
-      cover = add_covers (cover, (*part)->coverSen());
+      cover = (float)add_covers (cover, (*part)->coverSen());
    return cover;
 }
 
@@ -910,7 +910,7 @@ void CompositePart::doRadnPartition()
    if (fractIncidentRadn <= 0.0)
       fractIncidentRadn = 1.0;
    else
-      fractIncidentRadn = divide (fractIncidentRadn, coverGreen(), 0.0);
+      fractIncidentRadn = (float)divide (fractIncidentRadn, coverGreen(), 0.0);
 
    float incomingSolarRadiation = plant->environment().radn() * fractIncidentRadn;
 
@@ -1026,12 +1026,12 @@ float CompositePart::giveDmGreen(float dmSupplied)
    float uptake = 0.0;
    for (vector<plantPart *>::iterator part = myParts.begin(); part != myParts.end(); part++)
       {
-      float partFrac =  divide((*part)->dmGreenDemand(), dmDemand, 0.0);
+      float partFrac =  (float)divide((*part)->dmGreenDemand(), dmDemand, 0.0);
       uptake += (*part)->giveDmGreen (dmSupplied * partFrac);
       }
 
    // do mass balance check
-   if (!reals_are_equal(uptake, dmSupplied, 1.0E-4))
+   if (!reals_are_equal(uptake, dmSupplied, 1.0E-4f))
        {
        string msg = myName + " giveDmGreen mass balance is off:\n"
                    + "uptake = " + ftoa(uptake, ".6")
@@ -1073,7 +1073,7 @@ void CompositePart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialT
        }
    // do mass balance check
 
-   if (!reals_are_equal(dltDmGreenRetransUptake (), dlt_dm_green_retrans, 1.0E-4))  // XX this is probably too much slop - try doubles XX
+   if (!reals_are_equal(dltDmGreenRetransUptake (), dlt_dm_green_retrans, 1.0E-4f))  // XX this is probably too much slop - try doubles XX
       {
       string msg = myName + " dlt_dm_green_retrans_tot mass balance is off: "
                    + ftoa(dltDmGreenRetransUptake (), ".6")
@@ -1151,7 +1151,7 @@ void CompositePart::doNRetranslocate( float N_supply, float g_grain_n_demand)
    // get actual grain N uptake by retransolcation
    // limit retranslocation to total available N
 
-   const float  tolerence = 0.001 ;
+   const float  tolerence = 0.001f ;
    for (vector <plantPart *>::iterator part = myParts.begin();
         part != myParts.end();
         part++)

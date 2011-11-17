@@ -177,12 +177,12 @@ void plantPart::doNPartition(float nSupply, float n_demand_sum, float n_capacity
 
    if (n_excess>0.0)
       {
-      float plant_part_fract = divide (nCapacity(), n_capacity_sum, 0.0);
+      float plant_part_fract = (float)divide (nCapacity(), n_capacity_sum, 0.0);
       Growth.SetN(nDemand() + n_excess * plant_part_fract);
       }
    else
       {
-      float plant_part_fract = divide (nDemand(), n_demand_sum, 0.0);
+      float plant_part_fract = (float)divide (nDemand(), n_demand_sum, 0.0);
       Growth.SetN(nSupply * plant_part_fract);
       }
 }

@@ -129,7 +129,7 @@ float Environment::DiffuseLightFactor (void)                    // This was orig
    float A1 = (0.05 - 0.96) / (X1 - 0.26);
    float A0 = 0.05 - A1*X1;
 
-   float Diffuse_fr = min(max(0.0, A0 + A1*T), 1.0);  //Taken from Roderick paper Ag For Met(?)
+   float Diffuse_fr = (float)min(max(0.0, A0 + A1*T), 1.0);  //Taken from Roderick paper Ag For Met(?)
    return DiffuseLightFactorTable.value(Diffuse_fr);
    }
 

@@ -76,9 +76,9 @@ void crop_dm_senescence0(const int num_part,              //(INPUT)  number of p
       {
       dm_green_leaf_today = dm_green[leaf] + dlt_dm_green[leaf]
                                 + dlt_dm_green_retrans[leaf]; // -ve outflow
-      sla_today = divide (lai_today, dm_green_leaf_today, 0.0);
+      sla_today = (float)divide (lai_today, dm_green_leaf_today, 0.0);
 
-      dlt_dm_senescing = divide (dlt_slai, sla_today, 0.0);
+      dlt_dm_senescing = (float)divide (dlt_slai, sla_today, 0.0);
       }
    else
       {
@@ -93,7 +93,7 @@ void crop_dm_senescence0(const int num_part,              //(INPUT)  number of p
      /* a proportion of senesced leaf dry matter may be
         retranslocated to the stem */
 
-   dlt_dm_sen_retrans[leaf]= dlt_dm_senescing * (1.0 - dm_leaf_sen_frac);
+   dlt_dm_sen_retrans[leaf]= dlt_dm_senescing * (1.0f - dm_leaf_sen_frac);
    dlt_dm_green_retrans[stem] = dlt_dm_green_retrans[stem]
                                + dlt_dm_sen_retrans[leaf];
    }
@@ -228,7 +228,7 @@ void cproc_bio_yieldpart_demand1(float G_current_stage,             // (INPUT)  
       {
       stress_sum = sum_between (Start_stress_stage-1, Start_grainfill_stage-1, G_dm_stress_max);
       days_sum = sum_between (Start_stress_stage-1, Start_grainfill_stage-1, G_days_tot);
-      ave_stress = divide (stress_sum, days_sum, 1.0);
+      ave_stress = (float)divide (stress_sum, days_sum, 1.0);
       hi_max_pot = linear_interp_real(ave_stress,
                                       P_x_hi_max_pot_stress,
                                       P_y_hi_max_pot,
@@ -237,7 +237,7 @@ void cproc_bio_yieldpart_demand1(float G_current_stage,             // (INPUT)  
       // effective grain filling period
       dm_tops = sum_real_array (G_dm_green, Max_part) - G_dm_green[Root_part] +
                   sum_real_array (G_dm_senesced, Max_part) - G_dm_senesced[Root_part];
-      harvest_index = divide (G_dm_green[Yield_part], dm_tops, 0.0);
+      harvest_index = (float)divide (G_dm_green[Yield_part], dm_tops, 0.0);
       dm_tops_new = dm_tops + G_dlt_dm;
 
 
@@ -365,7 +365,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 */
    {
    // Constant Values
-   float PI  = 3.14159;
+   float PI  = 3.14159f;
 
 
    //  Local Variable

@@ -298,7 +298,7 @@ float day_length (int dyoyr,      // (INPUT) day of year number
    // now get the hour angle and the hours of light
    hrangl = acos (coshra);
    hrlt = hrangl*rdn2hr*2.0;
-   return hrlt;
+   return (float)hrlt;
 }
 
 //     ===========================================================

@@ -149,7 +149,7 @@ void fruitGrainPartHI::doDMDemandGrain(void)
       // effective grain filling period
       float dm_green_yield_parts = mealPart->Green.DM() + oilPart->Green.DM();
 
-      harvest_index = divide (dm_green_yield_parts, plant->Tops().Total.DM(), 0.0);
+      harvest_index = (float)divide (dm_green_yield_parts, plant->Tops().Total.DM(), 0.0);
       dm_tops_new = plant->Tops().Total.DM() + plant->arbitrator().DMSupply();    // unadjusted for Grain Energy in dlt_dm
 
       harvest_index_new = u_bound (harvest_index + hi_incr, hi_max_pot);

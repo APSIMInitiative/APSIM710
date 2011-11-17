@@ -222,7 +222,7 @@ void FruitCohortFN::doDmDemand (float /*dlt_dm_supply_by_veg*/)
                {                                                            //pod dm demand - pod stuff
                // we are in flowering phase                                 //pod dm demand - pod stuff
                float tt_fruit_age_max = fruitPhenology->TTTargetInPhase("fruiting");
-               float dlt_fruit_age = divide(plant->phenology().TT()                     //pod dm demand - pod stuff
+               float dlt_fruit_age = (float)divide(plant->phenology().TT()                     //pod dm demand - pod stuff
                                            , tt_fruit_age_max, 0.0);               //pod dm demand - pod stuff
                float dm_max = p.dm_fruit_max                                      //pod dm demand - pod stuff
                             * rel_grainfill.value(plant->environment().meant())                                            //pod dm demand - pod stuff

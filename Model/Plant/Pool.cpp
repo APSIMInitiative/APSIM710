@@ -53,7 +53,7 @@ Biomass& Pool::operator = (const Biomass& Pool2)
 void Pool::CheckBounds()
    {
    // Now check nothing is negative
-   const float ctz = -0.00001;
+   const float ctz = -0.00001f;
 
    if (NonStructuralDM() < ctz)
       throw std::runtime_error( PartName + "." + Name + " Non Structural DM pool is negative! " + ftoa(NonStructuralDM(),6));

@@ -22,8 +22,8 @@ void crop_lai_equilib_light ( float radn_int,
    float trans_crit;             //critical transmission (0-1)
    //Implementation
 
-   radn_canopy = divide (radn_int, cover_green, 0.0);
-   trans_crit = divide (sen_radn_crit, radn_canopy, 0.0);
+   radn_canopy = (float)divide (radn_int, cover_green, 0.0);
+   trans_crit = (float)divide (sen_radn_crit, radn_canopy, 0.0);
 
    if (trans_crit > 0.0)
       {
@@ -96,7 +96,7 @@ void crop_leaf_area_sen_water2(int   day_of_year,                //(INPUT)  day 
 
    deepest_layer = find_layer_no (root_depth, dlayer, num_layer);
    sw_supply_sum = sum_real_array (sw_supply, deepest_layer+1);
-   sw_demand_ratio = divide (sw_supply_sum, sw_demand, 1.0);
+   sw_demand_ratio = (float)divide (sw_supply_sum, sw_demand, 1.0);
 
    if (sw_demand_ratio < sen_threshold)
       {
@@ -266,7 +266,7 @@ float crop_leaf_area_sen_water1 (float sen_rate_water,    //(INPUT)  slope in li
    //Implementation Section ----------------------------------
 
    // drought stress factor
-   slai_water_fac = sen_rate_water * (1.0 - swdef_photo);
+   slai_water_fac = sen_rate_water * (1.0f - swdef_photo);
    dlt_slai_water = lai * slai_water_fac;
    min_lai = min_tpla * plants * smm2sm;
    max_sen = l_bound (lai - min_lai, 0.0);
@@ -388,7 +388,7 @@ void cproc_canopy_height (float g_canopy_height,          // (INPUT)  canopy hei
    float dm_stem_plant;          //dry matter of stem (g/plant)
    float new_height;             //new plant height (mm)
 
-   dm_stem_plant = divide (g_dm_green[stem], g_plants, 0.0);
+   dm_stem_plant = (float)divide (g_dm_green[stem], g_plants, 0.0);
    new_height = linear_interp_real(dm_stem_plant, pXStemWt, pYHeight,
                                     p_num_stem_wt);
 
@@ -400,7 +400,7 @@ void cproc_canopy_height (float g_canopy_height,          // (INPUT)  canopy hei
 void cproc_leaf_no_init1 (float c_leaf_no_at_emerg,       //(INPUT)  leaf number at emergence ()
                           float g_current_stage,          //(INPUT)  current phenological stage
                           int   emerg,                    //(INPUT)  emergence stage no
-                          float */* g_days_tot*/,               //(INPUT)  duration of each phase (days)
+                          float *x/* g_days_tot*/,               //(INPUT)  duration of each phase (days)
                           float *leaf_no,                  //(OUTPUT) initial leaf number
                           float *node_no)                  //(OUTPUT) initial node number
 //===========================================================================
@@ -596,7 +596,7 @@ void cproc_leaf_no_pot2 (float *c_x_node_no_app,       //(INPUT)
                          int start_node_app,          //(INPUT)  stage of start of leaf appeara
                          int end_node_app,            //(INPUT)  stage of end of leaf appearanc
                          int emerg,                   //(INPUT)  emergence stage
-                         float */* g_days_tot*/,            //(INPUT)  duration of each phase (days)
+                         float *x/* g_days_tot*/,            //(INPUT)  duration of each phase (days)
                          float g_dlt_tt,              //(INPUT)  daily thermal time (growing de
                          float *g_node_no,             //(INPUT)  number of fully expanded nodes
                          float *dlt_leaf_no_pot,       //(OUTPUT) new fraction of oldest expanding leaf
@@ -683,7 +683,7 @@ void cproc_leaf_area_pot_tpla (int  begin_stage,                 // (INPUT)  sta
                                int  now,                         // (INPUT)  stage number now = max_stage + 1
                                float *g_phase_tt,                // (INPUT)  required thermal time between stages
                                float *g_tt_tot,                  // (INPUT)  elapsed thermal time between stages
-                               float */* g_days_tot*/,                // (INPUT)  elapsed days between stages
+                               float *x/* g_days_tot*/,                // (INPUT)  elapsed days between stages
                                float  g_current_stage,           // (INPUT)  current stage
                                float  c_initial_tpla,            // (INPUT)  initial total plant area (mm2)
                                float  tpla_max,                  // (INPUT)  maximum total plant area (mm2)

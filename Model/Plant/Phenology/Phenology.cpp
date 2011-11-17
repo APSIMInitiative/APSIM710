@@ -130,9 +130,9 @@ void Phenology::initialise()
          if (bracketedValue != "")
             {
             if (p == 0)
-               startFraction = atof(bracketedValue.c_str());
+               startFraction = (float)atof(bracketedValue.c_str());
             else if (p == compositeNames.size()-1)
-               endFraction = atof(bracketedValue.c_str());
+               endFraction = (float)atof(bracketedValue.c_str());
             else
                throw runtime_error("A composite phase can only have a fraction on the first or last phase");
             }
@@ -419,7 +419,7 @@ void Phenology::onSow(protocol::SowType& Sow)
    // Respond to a sow request
    // --------------------------------------------------------------------------
 
-   float sowing_depth = Sow.sowing_depth;
+   float sowing_depth = (float)Sow.sowing_depth;
    if (sowing_depth == 0)
       throw std::invalid_argument("sowing_depth not specified");
    bound_check_real_var(scienceAPI, sowing_depth, 0.0, 100.0, "sowing_depth");
@@ -495,11 +495,11 @@ void Phenology::process()
          {
          // now we need to divvy
          new_index = (int) (p_index + min (1.0, dlt_index));
-         if (new_index >= phases.size())
+         if ((unsigned)new_index >= phases.size())
             throw runtime_error("The phenology class in " + plant.Name() + " has tried to move to phase number " +
                                 itoa(new_index+1) + " but there aren't that many phases in the model.");
 
-         if (reals_are_equal(fmod((double)p_index,(double)1.0),0.0))
+         if (reals_are_equal((float)fmod((double)p_index,(double)1.0),0.0))
             {
             fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
             portion_in_old = fract_in_old * (value + phases[current_index]->getTT())-
@@ -512,7 +512,7 @@ void Phenology::process()
             }
          portion_in_new = value - portion_in_old;
          phases[current_index]->add(fract_in_old, portion_in_old);
-         phases[new_index]->add(1.0-fract_in_old, portion_in_new);
+         phases[new_index]->add(1.0f-fract_in_old, portion_in_new);
          }
       else
          {
@@ -525,7 +525,7 @@ void Phenology::process()
       phases[i]->addToAfter(1, dlt_tt_phenol);
 
    if (phase_devel >= 1.0)
-      currentStage = floor(currentStage + 1.0);
+      currentStage = (float)floor(currentStage + 1.0);
    else
       currentStage = new_stage;
 
@@ -586,7 +586,7 @@ void Phenology::onRemoveBiomass(float removeBiomPheno)
             // Return fraction of thermal time we are through the current
             // phenological phase (0-1)
             const Phase *current = phases[(int) currentStage];
-            float frac = divide(current->getTT(), current->getTTTarget(), 0.0);
+            float frac = (float)divide(current->getTT(), current->getTTTarget(), 0.0);
             if (frac > 0.0 && frac < 1.0)  // Don't skip out of this stage - some have very low targets, eg 1.0 in "maturity"
                currentStage = frac + floor(currentStage);
 
@@ -621,7 +621,7 @@ float Phenology::doLookup(const std::vector<float>& f)
    // --------------------------------------------------------------------------
    int idx = int(currentStage)-1;
    if (idx < 0) idx = 0;
-   if (idx >= f.size()) idx = f.size() - 1;
+   if (idx >= (int)f.size()) idx = (int)f.size() - 1;
    return f[idx];
    }
 

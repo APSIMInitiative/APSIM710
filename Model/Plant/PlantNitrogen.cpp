@@ -31,7 +31,7 @@ void legnew_n_senescence1
     // first we zero all plant component deltas
     for (part = 0; part < num_part; part++)
        {
-       green_n_conc = divide (g_n_green[part]
+       green_n_conc = (float)divide (g_n_green[part]
        ,g_dm_green[part]
        ,0.0);
 
@@ -162,7 +162,7 @@ float crop_n_dlt_grain_conc(const int grain,
                                        // uptake
    float ave_temp;                     // mean temperature (oC)
 
-   ave_temp = (maxt + mint) / 2.0;
+   ave_temp = (maxt + mint) / 2.0f;
 
    //!!!!!!!!!! return to orig cm
    N_grain_temp_fac = temp_fac_min + tfac_slope * ave_temp;
@@ -256,7 +256,7 @@ void cproc_n_senescence1 (const int num_part,         //(INPUT) number of plant 
     // first we zero all plant component deltas
    for(part = 0; part < num_part; part++)
       {
-      green_n_conc = divide (g_n_green[part],g_dm_green[part],0.0);
+      green_n_conc = (float)divide (g_n_green[part],g_dm_green[part],0.0);
       sen_n_conc = min (c_n_sen_conc[part], green_n_conc);
       dlt_N_senesced[part] = g_dlt_dm_senesced[part] * sen_n_conc;
       dlt_N_senesced[part] = u_bound (dlt_N_senesced[part],g_n_green[part]);
@@ -353,7 +353,7 @@ void cproc_n_uptake1(float C_no3_diffn_const,   //(INPUT)  time constant for upt
          throw std::invalid_argument("bad n supply preference in cproc_n_uptake1()");
          }
 
-      NO3gsm_diffn = divide (NO3gsm_diffn, C_no3_diffn_const, 0.0);
+      NO3gsm_diffn = (float)divide (NO3gsm_diffn, C_no3_diffn_const, 0.0);
 
       }
 
@@ -365,9 +365,9 @@ void cproc_n_uptake1(float C_no3_diffn_const,   //(INPUT)  time constant for upt
                // Find proportion of nitrate uptake to be taken from layer
                // by diffusion and mass flow
 
-      mflow_fract = divide(G_no3gsm_mflow_avail[layer],NO3gsm_mflow_supply, 0.0);
+      mflow_fract = (float)divide(G_no3gsm_mflow_avail[layer],NO3gsm_mflow_supply, 0.0);
 
-      diffn_fract = divide(NO3gsm_diffn_avail[layer], NO3gsm_diffn_supply, 0.0);
+      diffn_fract = (float)divide(NO3gsm_diffn_avail[layer], NO3gsm_diffn_supply, 0.0);
 
                // now find how much nitrate the plant removes from
                // the layer by both processes
@@ -446,7 +446,7 @@ void crop_n_mass_flow1(const int num_layer,          // (INPUT)  number of layer
    for(layer = 0; layer <= deepest_layer; layer++)
       {
       // get  NO3 concentration
-      NO3_conc = divide(no3gsm[layer], sw_dep[layer], 0.0);
+      NO3_conc = (float)divide(no3gsm[layer], sw_dep[layer], 0.0);
       // get potential uptake by mass flow
       NO3gsm_mflow = NO3_conc * (-1 * dlt_sw_dep[layer]);
       temp1 = no3gsm[layer] - no3gsm_min[layer];
@@ -494,7 +494,7 @@ void crop_n_diffusion1 (const int num_layer,      // (INPUT)  number of layers i
    deepest_layer = find_layer_no(root_depth, dlayer, num_layer);
    for(layer = 0; layer <= deepest_layer; layer++)
       {
-      sw_avail_fract = divide(sw_avail[layer], sw_avail_pot[layer], 0.0);
+      sw_avail_fract = (float)divide(sw_avail[layer], sw_avail_pot[layer], 0.0);
       sw_avail_fract = bound(sw_avail_fract, 0.0, 1.0);
 
       // get extractable NO3
@@ -575,7 +575,7 @@ void cproc_n_demand1(const int max_part,          // (INPUT)
             // need to calculate dm using potential rue not affected by
             // N and temperature
 
-      part_fract = divide (G_dlt_dm_green[part], G_dlt_dm, 0.0);
+      part_fract = (float)divide (G_dlt_dm_green[part], G_dlt_dm, 0.0);
       dlt_dm_pot = G_dlt_dm_pot_rue * part_fract;
       dlt_dm_pot = bound (dlt_dm_pot, 0.0, G_dlt_dm_pot_rue);
       if (G_dm_green[part] > 0.0)
@@ -713,7 +713,7 @@ void cproc_n_uptake3
 
     if (n_demand > ngsm_supply)
         {
-        scalef = 0.99999  ;                       // avoid taking it all up as it can
+        scalef = 0.99999f  ;                       // avoid taking it all up as it can
                                                   // cause rounding errors to take
                                                   // no3 below zero.
         }
@@ -783,7 +783,7 @@ void cproc_n_supply3 (
                      ,0.0);
          umax=l_bound(umax,0.0);
                                                        //**2
-         swfac = divide(g_sw_avail[layer],g_sw_avail_pot[layer],0.0) ;
+         swfac = (float)divide(g_sw_avail[layer],g_sw_avail_pot[layer],0.0) ;
          swfac = bound(swfac,0.0,1.0);
 
          g_no3gsm_uptake_pot[layer] = umax
@@ -810,7 +810,7 @@ void cproc_n_supply3 (
              }
        }
      total_n_uptake_pot = sum_real_array(g_no3gsm_uptake_pot,deepest_layer+1);
-     scalef = divide(c_total_n_uptake_max, total_n_uptake_pot,0.0);
+     scalef = (float)divide(c_total_n_uptake_max, total_n_uptake_pot,0.0);
      scalef = bound(scalef,0.0,1.0);
      for (layer = 0; layer <= deepest_layer; layer++)
          {
@@ -859,10 +859,10 @@ void cproc_n_supply4 (float* g_dlayer    //! (INPUT)
          {
          for (layer = 0; layer <= deepest_layer; layer++)
             {
-            no3ppm = g_no3gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0);
-            nh4ppm = g_nh4gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0);
+            no3ppm = (float)(g_no3gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0));
+            nh4ppm = (float)(g_nh4gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0));
 
-           swfac = divide(g_sw_avail[layer],g_sw_avail_pot[layer],0.0); //**2
+           swfac = (float)divide(g_sw_avail[layer],g_sw_avail_pot[layer],0.0); //**2
            swfac = bound (swfac,0.0,1.0);
 
            g_no3gsm_uptake_pot[layer] = g_no3gsm[layer]
@@ -888,8 +888,8 @@ void cproc_n_supply4 (float* g_dlayer    //! (INPUT)
 
         for (layer = 0; layer <= deepest_layer; layer++)
            {
-            no3ppm = g_no3gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0);
-            nh4ppm = g_nh4gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0);
+            no3ppm = (float)(g_no3gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0));
+            nh4ppm = (float)(g_nh4gsm[layer] * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0));
 
 
            if (c_kno3>0 && no3ppm>c_no3ppm_min)
@@ -906,7 +906,7 @@ void cproc_n_supply4 (float* g_dlayer    //! (INPUT)
 
       total_n_uptake_pot = sum_real_array(g_no3gsm_uptake_pot, deepest_layer+1)
                          + sum_real_array(g_nh4gsm_uptake_pot, deepest_layer+1);
-      scalef = divide(c_total_n_uptake_max, total_n_uptake_pot,0.0);
+      scalef = (float)divide(c_total_n_uptake_max, total_n_uptake_pot,0.0);
       scalef = bound(scalef,0.0,1.0);
       for (layer = 0; layer <= deepest_layer; layer++)
            {

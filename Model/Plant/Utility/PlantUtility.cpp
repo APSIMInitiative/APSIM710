@@ -70,7 +70,7 @@ float crop_running_ave(int day_of_year,
                                       day_of_year,
                                       -1 * number_of_days);
 
-   return divide(sum_part_of_real(array, start_day, day_of_year, 366)
+   return (float)divide(sum_part_of_real(array, start_day, day_of_year, 366)
                 , float(abs(number_of_days))
                 , 0.0);
    }

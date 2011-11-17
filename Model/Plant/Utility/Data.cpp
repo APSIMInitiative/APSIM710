@@ -91,11 +91,11 @@ double divide (double dividend, double divisor, double default_value)
    double quotient;
 
    //Implementation
-   if(reals_are_equal(divisor, 0.0))  //dividing by 0
+   if(reals_are_equal((float)divisor, 0.0f))  //dividing by 0
       {
       quotient = default_value;
       }
-   else if(reals_are_equal(dividend, 0.0))      //multiplying by 0
+   else if(reals_are_equal((float)dividend, 0.0f))      //multiplying by 0
       {
       quotient = 0.0;
       }

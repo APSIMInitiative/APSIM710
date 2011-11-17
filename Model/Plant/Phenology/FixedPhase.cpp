@@ -30,7 +30,7 @@ float FixedPhase::stress()
    {
    if (plant.root().swAvailablePotential() > 0.0 && stressFunction.isInitialised())
       {
-      float sw_avail_ratio = divide (plant.root().swAvailable(), plant.root().swAvailablePotential(), 1.0);
+      float sw_avail_ratio = (float)divide (plant.root().swAvailable(), plant.root().swAvailablePotential(), 1.0);
       sw_avail_ratio = bound (sw_avail_ratio , 0.0, 1.0);
       return stressFunction.value(sw_avail_ratio);
       }

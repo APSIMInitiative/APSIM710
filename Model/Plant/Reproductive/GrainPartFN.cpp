@@ -249,7 +249,7 @@ void fruitGrainPartFN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
       // during grain C filling period so make sure that C filling is still
       // going on otherwise stop putting N in now
 
-      grain_growth = divide((mealPart->Growth.DM() + mealPart->Retranslocation.DM())
+      grain_growth = (float)divide((mealPart->Growth.DM() + mealPart->Retranslocation.DM())
                             , gGrain_no
                             , 0.0);
       if (grain_growth < cCrit_grainfill_rate)
@@ -257,8 +257,8 @@ void fruitGrainPartFN::doNDemandGrain (float nfact_grain_conc      //   (INPUT)
          //! grain filling has stopped - stop n flow as well
          gN_grain_demand = 0.0;
          }
-      float dailyNconc = divide(gN_grain_demand,(mealPart->Growth.DM() + mealPart->Retranslocation.DM()),1.0);
-      if (dailyNconc > 0.03) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*0.03;
+      float dailyNconc = (float)divide(gN_grain_demand,(mealPart->Growth.DM() + mealPart->Retranslocation.DM()),1.0);
+      if (dailyNconc > 0.03) gN_grain_demand = (mealPart->Growth.DM() + mealPart->Retranslocation.DM())*0.03f;
       }
 
 }

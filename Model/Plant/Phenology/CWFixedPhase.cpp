@@ -26,7 +26,7 @@ void CWFixedPhase::calcPhaseDevelopment(int /*das*/,
    {
    dlt_tt_phenol = TT() * stress();
 
-   phase_devel = divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
+   phase_devel = (float)divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
    }
 
 float CWFixedPhase::stress()
@@ -37,7 +37,7 @@ float CWFixedPhase::stress()
    {
    if (plant.root().swAvailablePotential() > 0.0 && stressFunction.isInitialised())
       {
-      float sw_avail_ratio = divide (plant.root().swAvailable(), plant.root().swAvailablePotential(), 1.0);
+      float sw_avail_ratio = (float)divide (plant.root().swAvailable(), plant.root().swAvailablePotential(), 1.0);
       sw_avail_ratio = bound (sw_avail_ratio , 0.0, 1.0);
       return stressFunction.value(sw_avail_ratio);
       }

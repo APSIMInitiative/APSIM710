@@ -13,10 +13,10 @@ void Stem::onHarvest(float cutting_height, float remove_fr,
 //=======================================================================================
 // Quite stem specific...
    {
-   float fractToResidue = 1.0 - remove_fr;
+   float fractToResidue = 1.0f - remove_fr;
 
    // Some biomass is removed according to harvest height
-   float fr_height = divide (cutting_height,Height, 0.0);
+   float fr_height = (float)divide (cutting_height,Height, 0.0);
 
    float retain_fr_green, retain_fr_sen;
    if (c.fr_remain.isInitialised())
@@ -26,8 +26,8 @@ void Stem::onHarvest(float cutting_height, float remove_fr,
 
    retain_fr_sen  = retain_fr_green;
 
-   float chop_fr_green = (1.0 - retain_fr_green);
-   float chop_fr_sen = (1.0 - retain_fr_sen);
+   float chop_fr_green = (1.0f - retain_fr_green);
+   float chop_fr_sen = (1.0f - retain_fr_sen);
 
    float dlt_dm_harvest = Green.DM() * chop_fr_green
                         + Senesced.DM() * chop_fr_sen;
@@ -54,7 +54,7 @@ void Stem::removeBiomass2(float )
 //=======================================================================================
    {
    float dm_plant;               // dry matter of part (g/plant)
-   dm_plant = divide (Green.DM(), plant->population().Density(), 0.0);
+   dm_plant = (float)divide (Green.DM(), plant->population().Density(), 0.0);
 
    if (c.height.isInitialised())
       Height = c.height.value(dm_plant);       // new plant height (mm)

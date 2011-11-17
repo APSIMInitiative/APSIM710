@@ -81,7 +81,7 @@ void fruitOilPart::doBioGrainOil (void)    // for seed energy content (>= 1.0)
 //=======================================================================================
 //  Calculate grain oil factors
    {
-   gGrain_energy = 1.0 + cGrain_oil_conc * (cCarbo_oil_conv_ratio - 1.0);
+   gGrain_energy = 1.0f + cGrain_oil_conc * (cCarbo_oil_conv_ratio - 1.0);
    bound_check_real_var (scienceAPI, gGrain_energy, 1.0, 2.0, "grain_energy");
    }
 
@@ -128,7 +128,7 @@ void fruitOilPart::doDMDemandGrain (float dlt_dm_grain_demand)
 //=======================================================================================
    {
    float dltDmOil = removeEnergy (dlt_dm_grain_demand) * cGrain_oil_conc;
-   float dltDmOilConversion =  removeEnergy (dlt_dm_grain_demand) * (gGrain_energy - 1.0);
+   float dltDmOilConversion =  removeEnergy (dlt_dm_grain_demand) * (gGrain_energy - 1.0f);
    DMGreenDemand = max(0.0, dltDmOil + dltDmOilConversion);
    if (isnan(DMGreenDemand)) {throw new runtime_error("DMGreenDemand is NAN in fruitOilPart::doDMDemandGrain");};
    }
@@ -136,7 +136,7 @@ void fruitOilPart::doDMDemandGrain (float dlt_dm_grain_demand)
 float fruitOilPart::giveDmGreen(float delta)
 //=======================================================================================
    {
-   float d = divide (delta, cCarbo_oil_conv_ratio, 0.0);
+   float d = (float)divide (delta, cCarbo_oil_conv_ratio, 0.0);
    Growth.AddStructuralDM(d);
    return delta;
    }

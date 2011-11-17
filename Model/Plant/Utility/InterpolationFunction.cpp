@@ -75,7 +75,7 @@ float interpolationFunction::value(float v)
    if(sector == x.size())return y[y.size()-1];
    if(isEqual(v,x[sector]))return y[sector]; // prevent roundoff errors
    // y = mx + c
-   float slope =  divide(y[sector]-y[sector-1],
+   float slope =  (float)divide(y[sector]-y[sector-1],
                          x[sector]-x[sector-1],
                          y[sector]);
 
@@ -117,7 +117,7 @@ float interpolationFunction::integral(float v1, float v2)
       else
          xend = min(x[s],v2);
 
-      I = I + (xend-xstart)*(value(xend)+value(xstart))/2.0;
+      I = I + (xend-xstart)*(value(xend)+value(xstart))/2.0f;
       }
    return I;
    }

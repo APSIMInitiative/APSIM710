@@ -42,7 +42,7 @@ float WholePlantSeasonalArbitrator::TotalPotentialGrowthRate(void)
 
 float WholePlantSeasonalArbitrator::ratioRootPlant(void)
    {
-   float TsoilTairRatio = divide (plant.environment().rootActivityTemperature(), plant.environment().meant(),0.0);
+   float TsoilTairRatio = (float)divide (plant.environment().rootActivityTemperature(), plant.environment().meant(),0.0);
    return ratioRootPlantTable.value(TsoilTairRatio);
    }
 

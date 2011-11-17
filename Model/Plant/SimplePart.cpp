@@ -380,7 +380,7 @@ void SimplePart::morphology(void)
 //=======================================================================================
    {
    float dm_plant;               // dry matter of part (g/plant)
-   dm_plant = divide (Green.DM(), plant->population().Density(), 0.0);
+   dm_plant = (float)divide (Green.DM(), plant->population().Density(), 0.0);
 
    if (c.height.isInitialised())
       {
@@ -430,7 +430,7 @@ void SimplePart::update(void)
    Green = Green + Retranslocation;
 
    Green = Green + Biomass(0,dlt.n_senesced_retrans, 0,0);
-   relativeGrowthRate = divide (Growth.DM(), plant->All().Growth.DM(), 0.0);
+   relativeGrowthRate = (float)divide (Growth.DM(), plant->All().Growth.DM(), 0.0);
 
 
    float dying_fract_plants = plant->population().DyingFractionPlants();
@@ -456,7 +456,7 @@ void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool
 //=======================================================================================
 // deltas have been given from an external module; update states.
 {
-    float error_margin = 1.0e-6 ;
+    float error_margin = 1.0e-6f ;
 
     for (unsigned int pool = 0; pool < dmRemoved.dm.size(); pool++)
     {
@@ -464,13 +464,13 @@ void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool
        {
           if (Str_i_Eq(dmRemoved.dm[pool].pool, "green"))
           {
-             if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmGreenRemoved(dmRemoved.dm[pool].dlt[part]); }
+             if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmGreenRemoved((float)dmRemoved.dm[pool].dlt[part]); }
              else {  /* not my part */ }
           }
 
           else if (Str_i_Eq(dmRemoved.dm[pool].pool, "senesced"))
           {
-             if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmSenescedRemoved(dmRemoved.dm[pool].dlt[part]); }
+             if (Str_i_Eq(dmRemoved.dm[pool].part[part], myName))       {giveDmSenescedRemoved((float)dmRemoved.dm[pool].dlt[part]); }
              else { /* not my part */ }
           }
 
@@ -566,7 +566,7 @@ void SimplePart::doNDemand1(float dlt_dm               //   Whole plant the dail
 //=======================================================================================
 //     Return plant nitrogen demand for this plant component
    {
-   float part_fract = divide (Growth.DM(), dlt_dm, 0.0);
+   float part_fract = (float)divide (Growth.DM(), dlt_dm, 0.0);
    float dlt_dm_pot = dlt_dm_pot_rue * part_fract;         // potential dry weight increase (g/m^2)
    dlt_dm_pot = bound(dlt_dm_pot, 0.0, dlt_dm_pot_rue);
 
@@ -617,7 +617,7 @@ void SimplePart::doNDemand2(float dlt_dm               // (INPUT)  Whole plant t
 //           is broken. - NIH
 
    {
-   float part_fract = divide (Growth.DM(), dlt_dm, 0.0);
+   float part_fract = (float)divide (Growth.DM(), dlt_dm, 0.0);
    float dlt_dm_pot = dlt_dm_pot_rue * part_fract;         // potential dry weight increase (g/m^2)
    dlt_dm_pot = bound(dlt_dm_pot, 0.0, dlt_dm_pot_rue);
 
@@ -695,7 +695,7 @@ void SimplePart::doPDemand(void)
  // FIXME - remove following 4 lines after P demand corrections above are activated
    float rel_growth_rate = plant->arbitrator().RelativeGrowthRate();
    float p_conc_max = plant->phenology().doInterpolation(c.y_p_conc_max);
-   deficit = p_conc_max * Green.DM() * (1.0 + rel_growth_rate) - Green.P();
+   deficit = p_conc_max * Green.DM() * (1.0f + rel_growth_rate) - Green.P();
    PDemand = l_bound(deficit, 0.0);
    }
 
@@ -777,7 +777,7 @@ float SimplePart::nDemandDifferential(void)
 void SimplePart::doNSenescence(void)
 //=======================================================================================
    {
-   float green_n_conc = divide (Green.N(), Green.DM(), 0.0);
+   float green_n_conc = (float)divide (Green.N(), Green.DM(), 0.0);
 
    float dlt_n_in_senescing_part = Senescing.DM() * green_n_conc;
 
@@ -866,13 +866,13 @@ void SimplePart::onHarvest_GenericAboveGroundPart( float remove_fr,
 //=======================================================================================
 // Generic harvest method for above ground parts that lose all dm to residue (eg leaf & stem, not grain..)
 {
-   float fractToResidue = 1.0 - remove_fr;
+   float fractToResidue = 1.0f - remove_fr;
 
    float dm_init = u_bound (c.dm_init * plant->population().Density(), Green.DM());
    float n_init  = u_bound (  dm_init * SimplePart::c.n_init_conc, Green.N());
    float p_init  = u_bound (  dm_init * SimplePart::c.p_init_conc, Green.P());
 
-   float retain_fr_green = divide(dm_init, Green.DM(), 0.0);
+   float retain_fr_green = (float)divide(dm_init, Green.DM(), 0.0);
    float retain_fr_sen   = 0.0;
 
    float dlt_dm_harvest = Green.DM() + Senesced.DM() - dm_init;
@@ -999,12 +999,12 @@ void SimplePart::doNPartition(float nSupply, float n_demand_sum, float n_capacit
 
    if (n_excess>0.0)
       {
-      float plant_part_fract = divide (nCapacity(), n_capacity_sum, 0.0);
+      float plant_part_fract = (float)divide (nCapacity(), n_capacity_sum, 0.0);
       Growth.SetN(nDemand() + n_excess * plant_part_fract);
       }
    else
       {
-      float plant_part_fract = divide (nDemand(), n_demand_sum, 0.0);
+      float plant_part_fract = (float)divide (nDemand(), n_demand_sum, 0.0);
       Growth.SetN(nSupply * plant_part_fract);
       }
 }
@@ -1068,19 +1068,19 @@ void SimplePart::doPRetranslocate(float total_p_supply, float total_p_demand)
    if (p_supply > 0.0)
       {
       double fraction = divide(total_p_demand, total_p_supply, 0.0);
-      fraction = bound(fraction, 0.0, 1.0);
+      fraction = bound((float)fraction, 0.0, 1.0);
       P = -p_supply * fraction;
       }
    else if (p_demand > 0.0)
       {
       double fraction = divide(total_p_supply, total_p_demand, 0.0);
-      fraction = bound(fraction, 0.0, 1.0);
+      fraction = bound((float)fraction, 0.0, 1.0);
       P = p_demand * fraction;
       }
    else
       P = 0.0;// this part is not involved
 
-   Retranslocation.SetP(P);
+   Retranslocation.SetP((float)P);
    }
 
 
@@ -1156,13 +1156,13 @@ float SimplePart::Respiration(void)
 	//Temperature effect
 	double Q10 = 2.0;
 	float fTempRef=(float)25.0;
-	float fTmpAve = (plant->environment().maxt()+plant->environment().mint())/2.0;
-	float fTempEf=(float)pow(Q10,(double)(fTmpAve-fTempRef)/10.0);
+	float fTmpAve = (plant->environment().maxt()+plant->environment().mint())/2.0f;
+	float fTempEf=(float)pow(Q10,(double)(fTmpAve-fTempRef)/10.0f);
 
-   float nfac = divide((Green.NconcPercent() - nConcMin()),(nConcCrit()-nConcMin()),1.0);
+   float nfac = (float)divide((Green.NconcPercent() - nConcMin()),(nConcCrit()-nConcMin()),1.0);
    //if (nfac > 1.) cout << "NFAC---------"<<nfac<<endl;
    //if (nfac < 0.) cout << myName<<" NFAC---------"<<nfac<<endl;
-   nfac = min(max(nfac,0.),1.);
+   nfac = (float)min(max(nfac,0.),1.0f);
    nfac = 1.0;  // turn this off for now!!!!!
 
 //   return min(Green.DM(),DMPlantMin*plant->getPlants())
@@ -1182,7 +1182,7 @@ float SimplePart::giveDmGreen(float delta)
    float SFrac = plant->phenology().doInterpolation(c.GrowthStructuralFraction);
 
    Growth.AddStructuralDM(delta*SFrac);
-   Growth.AddNonStructuralDM(delta*(1.0-SFrac));
+   Growth.AddNonStructuralDM(delta*(1.0f-SFrac));
    return delta;
    }
 
@@ -1203,10 +1203,10 @@ float SimplePart::giveDmGreenRemoved (float delta)
 //=======================================================================================
 // addXXX: something is removing some XXX. return the delta.
    {
-   float fraction = divide(delta,Green.DM(), 0.0);
+   float fraction = (float)divide(delta,Green.DM(), 0.0);
    GreenRemoved = Green * fraction;
 
-   float error_margin = 1.0e-6 ;
+   float error_margin = 1.0e-6f ;
    if (delta > Green.DM() + error_margin)
    {
        ostringstream msg;
@@ -1220,9 +1220,9 @@ float SimplePart::giveDmGreenRemoved (float delta)
 float SimplePart::giveDmSenescedRemoved (float delta)
 //=======================================================================================
    {
-   float fraction = divide(delta,Senesced.DM(),0.0);
+   float fraction = (float)divide(delta,Senesced.DM(),0.0);
    SenescedRemoved = Senesced * fraction;
-   float error_margin = 1.0e-6 ;
+   float error_margin = 1.0e-6f ;
    if (delta > Senesced.DM() + error_margin)
    {
        ostringstream msg;

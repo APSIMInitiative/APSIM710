@@ -144,7 +144,7 @@ float Population::CropFailureGermination()
           << days_germ_limit
           << " days of sowing" << endl;
       scienceAPI.write(out.str());
-      return -1.0 * plants;
+      return -1.0f * plants;
       }
    return 0.0;
    }
@@ -157,7 +157,7 @@ float Population::CropFailureEmergence()
    if (Plant.phenology().TTInPhase("germination") > tt_emerg_limit)
       {
       scienceAPI.write(" failed emergence due to deep planting");
-      return -1.0 * plants;
+      return -1.0f * plants;
       }
    return 0.0;
    }
@@ -169,19 +169,19 @@ float Population::CropFailurePhenDelay()
       {
       scienceAPI.write("Crop failure because of prolonged"
                        "phenology delay through water stress.");
-      return -1.0 * plants;
+      return -1.0f * plants;
       }
   return 0.0;
   }
 float Population::CropFailureLeafSen()
    {
    // Determine plant population death from leaf area senescing
-   float leaf_area = divide (Plant.leaf().getLAI(), plants, 0.0); // leaf area per plant
+   float leaf_area = (float)divide (Plant.leaf().getLAI(), plants, 0.0); // leaf area per plant
 
-   if (reals_are_equal (leaf_area, 0.0, 1.0e-6))
+   if (reals_are_equal (leaf_area, 0.0, 1.0e-6f))
       {
       scienceAPI.write("Crop failure because of total leaf senescence.");
-      return -1.0 * plants;
+      return -1.0f * plants;
       }
    return 0.0;
    }
@@ -294,7 +294,7 @@ void Population::OnKillCrop(protocol::KillCropType& Kill)
 
 float Population::DyingFractionPlants(void)
    {
-   float dying_fract_plants = divide (-dlt_plants, plants, 0.0);
+   float dying_fract_plants = (float)divide (-dlt_plants, plants, 0.0);
    dying_fract_plants = bound (dying_fract_plants, 0.0, 1.0);
    return dying_fract_plants;
    }
