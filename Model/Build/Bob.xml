@@ -29,10 +29,14 @@
 			<WorkingDirectory>%Apsim%/Model/RunTime</WorkingDirectory>
 			<CommandLine>..\Build\RunMake.bat %Apsim%/Model/RunTime</CommandLine>
 		</Job>
-		<Job name="Remove all .out and .sum files" wait="yes">
-			<WorkingDirectory>%Apsim%</WorkingDirectory>
+		<Job name="Remove all .out and .sum files from Examples folder" wait="yes">
+			<WorkingDirectory>%Apsim%\Examples</WorkingDirectory>
 			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
 		</Job>
+		<Job name="Remove all .out and .sum files from Tests folder">
+			<WorkingDirectory>%Apsim%\Tests</WorkingDirectory>
+			<CommandLine>%Apsim%\Model\Build\RemoveOutAndSumFiles.bat</CommandLine>
+		</Job>		
 		<Job name="Delete the apsim.xml file in Bobs profile">
 			<WorkingDirectory>%Apsim%\Model\Build</WorkingDirectory>
 			<CommandLine>DeleteFileIfExists.bat %APPDATA%\Apsim</CommandLine>
