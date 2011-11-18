@@ -61,6 +61,9 @@ public class Leaf : BaseOrgan, AboveGround
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
     public Function DroughtInducedSenAcceleration;
 
+    [Link(NamePath = "DroughtPhenologyAcelleration", IsOptional = true)]
+    public Function DroughtPhenologyAcelleration;
+
     [Input]
     protected int Day = 0;
     [Input]

@@ -240,7 +240,7 @@ public class SIRIUSLeaf : Leaf, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo + 0.01 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
+        if (NodeNo + 0.001 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
@@ -274,8 +274,8 @@ public class SIRIUSLeaf : Leaf, AboveGround
     {
         foreach (LeafCohort L in Leaves)
         {
-            //L.DoActualGrowth(ThermalTime.Value);
             L.DoActualGrowth(_ThermalTime);
+            //L.DoActualGrowth(ThermalTime.Value);
         }
 
         double Stress = 1;
@@ -648,8 +648,9 @@ public class SIRIUSLeaf : Leaf, AboveGround
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
-        if ((DroughtInducedSenAcceleration != null) && (DroughtInducedSenAcceleration.Value > 1.0))
-            _ThermalTime = ThermalTime.Value * DroughtInducedSenAcceleration.Value;
+        //This is a fudge until we get around to making canopy temperature drive phenology dirrectly.
+        if ((DroughtPhenologyAcelleration != null) && (DroughtPhenologyAcelleration.Value > 1.0))
+            _ThermalTime = ThermalTime.Value * DroughtPhenologyAcelleration.Value;
         else _ThermalTime = ThermalTime.Value;
     }
         

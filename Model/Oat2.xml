@@ -462,7 +462,7 @@
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>0.6 1</XY>
+            <XY>0.9 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <FinalNodeNumber>
@@ -594,8 +594,8 @@
         <LinearInterpolationFunction name="LagDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 400</XY>
-            <XY>4 400</XY>
+            <XY>1 800</XY>
+            <XY>4 800</XY>
             <XY>6 800</XY>
             <XY>8 800</XY>
           </XYPairs>
@@ -603,10 +603,10 @@
         <LinearInterpolationFunction name="SenescenceDuration">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
-            <XY>1 700</XY>
-            <XY>4 700</XY>
-            <XY>6 700</XY>
-            <XY>8 700</XY>
+            <XY>1 900</XY>
+            <XY>4 900</XY>
+            <XY>6 900</XY>
+            <XY>8 900</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="BranchingRate">
@@ -688,6 +688,25 @@
             <XY>1 0.1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <AddFunction name="DroughtPhenologyAcelleration">
+          <Memo>Sum the values of the children of this node</Memo>
+          <Constant name="One">
+            <Value type="text" description="Value">1</Value>
+          </Constant>
+          <MultiplyFunction name="Stress">
+            <Memo>Multiplies the values of the children of this node</Memo>
+            <Constant name="StressResponseCoefficient">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+            <LinearInterpolationFunction name="StressFactor">
+              <XProperty>WaterSupplyDemandRatio</XProperty>
+              <XYPairs>
+                <XY>0 0.5</XY>
+                <XY>1 0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </MultiplyFunction>
+        </AddFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

@@ -321,16 +321,21 @@ class SIRIUSLeafCohort : LeafCohort
     {
         if (IsInitialised)
         {
+            //Acellerate thermal time accumulation if crop is water stressed.
+            double _ThermalTime;
+            if ((DroughtInducedSenAcceleration != null) && (IsFullyExpanded))
+                _ThermalTime = TT * DroughtInducedSenAcceleration.Value;
+            else _ThermalTime = TT;
 
             //Leaf area growth parameters
             _ExpansionStress = SIRIUSLeaf.ExpansionStressValue;  //Get daily expansion stress value
-            DeltaPotentialArea = PotentialAreaGrowthFunction(TT); //Calculate delta leaf area in the absence of water stress
+            DeltaPotentialArea = PotentialAreaGrowthFunction(_ThermalTime); //Calculate delta leaf area in the absence of water stress
             DeltaWaterConstrainedArea = DeltaPotentialArea * _ExpansionStress; //Reduce potential growth for water stress
 
             CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             if (ShadeInducedSenescenceRateFunction != null)
                 ShadeSenRate = ShadeInducedSenescenceRateFunction.Value;
-            SenescedFrac = FractionSenescing(TT);
+            SenescedFrac = FractionSenescing(_ThermalTime);
 
             // Doing leaf mass growth in the cohort
             
@@ -381,6 +386,12 @@ class SIRIUSLeafCohort : LeafCohort
     {
         if (IsInitialised)
         {
+            //Acellerate thermal time accumulation if crop is water stressed.
+            double _ThermalTime;
+            if ((DroughtInducedSenAcceleration != null) && (IsFullyExpanded))
+                _ThermalTime = TT * DroughtInducedSenAcceleration.Value;
+            else _ThermalTime = TT;
+            
             //Growing leaf area after DM allocated
 
             double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
@@ -430,9 +441,9 @@ class SIRIUSLeafCohort : LeafCohort
 
             Live.NonStructuralWt -= Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
-                        
-            Age = Age + TT;
-        }
+
+            Age = Age + _ThermalTime;
+         }
     }
     public double FractionSenescing(double TT)
     {
