@@ -1040,8 +1040,8 @@ namespace ApsimFile
             }
 
             if (ParentNodes.Count > 1)
-                throw new Exception("Found variable " + VariableName + " " + ParentNodes.Count.ToString() +
-                                    " times in soil " + XmlHelper.Name(SoilNode) + ". Only expecting 1 occurrence.");
+                throw new Exception("Found variable \"" + VariableName + "\" " + ParentNodes.Count.ToString() +
+                                    " times in soil \"" + XmlHelper.Name(SoilNode) + "\". Only expecting 1 occurrence.");
             else if (ParentNodes.Count == 0)
                 return null;
             else
@@ -1052,7 +1052,7 @@ namespace ApsimFile
         {
             XmlNode Parent = FindVariableParentOptional(SoilNode, VariableName, CreateCropVariablesIfNecessary, Find.PreferSample);
             if (Parent == null)
-                throw new Exception("Invalid soil variable " + VariableName + " in soil " + XmlHelper.Name(SoilNode));
+                throw new Exception("Invalid soil variable \"" + VariableName + "\" in soil \"" + XmlHelper.Name(SoilNode) + "\"");
             else
                 return Parent;
         }
