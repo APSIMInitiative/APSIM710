@@ -6,7 +6,7 @@
       <Documentation>%apsim%\Documentation\4 Module Reference\Micromet.pdf</Documentation>
       <LargeIcon>%apsim%\UserInterface\Images\thermometer32.png</LargeIcon>
       <SmallIcon>%apsim%\UserInterface\Images\thermometer16.png</SmallIcon>
-      <dll>%apsim%\Model\Micromet.dll</dll>
+      <dll>%apsim%/Model/MicroMet.%dllext%</dll>
       <drops>
          <drop>toolbox</drop>
          <drop>area</drop>
@@ -16,7 +16,7 @@
       </drops>
       <ApsimToSim>
          <component name="[MicroMet.name]" executable="[dll]" class="MicroMet">
-            <executable>[dll]</executable>
+            <executable name="[dll]" version="1.0"/>
             <initdata>
                [Model]
                <soil_albedo>[micromet.soilalbedo]</soil_albedo>
@@ -45,7 +45,8 @@
       Search order for each plant type
       ================================
       -->
-      <crop>CropType base_class</crop>
+      <barley>CropType base_class</barley>
+	  <crop>CropType base_class</crop>
       <broccoli>CropType base_class</broccoli>
       <tree>TreeType base_class</tree>
       <fababean>CropType base_class</fababean>
@@ -53,25 +54,28 @@
       <globulus>TreeType base_class</globulus>
       <camaldulensis>TreeType base_class</camaldulensis>
       <grass>GrassType base_class</grass>
-      <wheat>CropType2 base_class</wheat>
+      <wheat>CropType base_class</wheat>
+	  <canola>CropType base_class</canola>
+	  <raphanus_raphanistrum>CropType base_class</raphanus_raphanistrum>
+      <chickpea>CropType base_class</chickpea>
       <weed>CropType base_class</weed>
-      <oats>CropType base_class</oats>
+      <oats>Crop2Type base_class</oats>
+      <chickpea>CropType base_class</chickpea>
+	  <fieldpea>CropType base_class</fieldpea>
       <sugar>CropType base_class</sugar>
-      <potato>CropType base_class</potato>
+      <potato>Crop2Type base_class</potato>
       <frenchbean>CropType base_class</frenchbean>
       <bambatsi>C4grassType base_class</bambatsi>
       <lucerne>CropType base_class</lucerne>
+      <maize>CropType base_class</maize>
       <banksia>TreeType base_class</banksia>
       <understorey>CropType base_class</understorey>
       <ryegrass>GrassType base_class</ryegrass>
       <vine>CropType base_class</vine>
+      <saltbush>TreeType base_class</saltbush>
       <sorghum>CropType base_class</sorghum>
       <danthonia>GrassType base_class</danthonia>
       <nativepasture>C4GrassType base_class</nativepasture>
-	  <barley>CropType base_class</barley>
-	  <canola>CropType base_class</canola>
-	  <fieldpea>CropType base_class</fieldpea>
-	  <barleySWIM>CropType base_class</barleySWIM>
       <base_class>
          <albedo>0.15</albedo>
          <gsmax>0.010</gsmax>
@@ -82,11 +86,13 @@
          <albedo>0.26</albedo>
          <gsmax>0.03</gsmax>
       </CropType>
-	  <CropType2>
-         <albedo>0.26</albedo>
+	  <Crop2Type>
          <gsmax>0.03</gsmax>
-      </CropType2>
-	  
+		    <!-- gsmax for potatotype set to 0.03 based on Amer KH, Hatfield JL (2004) Canopy resistance as affected by 
+			          soil and meteorological factors in potato. Agronomy Journal 96(4), 978-985. and supported by results from NZ and Scottland -->
+		    <!-- based on analysis from Lincoln Rain out shelter for oats, barley and wheat.  A gsmax of 0.03 was necessary to get realistic water use.
+			     This has only been implemented for plant2 crop models so it can be tested more extensively as we go. -->
+      </Crop2Type>
       <GrassType>
          <albedo>0.23</albedo>
          <!-- gsmax = 0.08 ! From Kelliher et al Fig 3

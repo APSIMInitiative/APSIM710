@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-public class ObligateVernalisationPhase : Phase
+public class FacultativeVernalisationPhase : Phase
 {
     [Link]
     Function JuvenileDevelopmentIndex = null;
