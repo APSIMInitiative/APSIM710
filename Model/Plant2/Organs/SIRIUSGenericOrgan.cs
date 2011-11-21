@@ -25,6 +25,8 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function ExpansionStressFunction = null;
     [Link(IsOptional = true)]
     protected Function InternodeDemand = null;
+    [Link(IsOptional = true)]
+    protected Function DMDemandFunction = null;
     
  #endregion
 
@@ -96,6 +98,11 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
             else if (InternodeDemand != null)
             {
                 StructuralDMDemand = InternodeDemand.Value * StructuralFraction;
+                return StructuralDMDemand;
+            }
+            else if (DMDemandFunction != null)
+            {
+                StructuralDMDemand = DMDemandFunction.Value * StructuralFraction;
                 return StructuralDMDemand;
             }
             else

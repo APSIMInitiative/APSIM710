@@ -6,13 +6,13 @@ using CSGeneral;
 public class SIRIUSLeaf : Leaf, AboveGround
 {
     [Link]
-    Function CriticalNConc = null;
+    public Function CriticalNConc = null;
 
     [Link]
-    Function StructuralFraction = null;
+    public Function StructuralFraction = null;
 
     [Link]
-    Function ExpansionStress = null;
+    public Function ExpansionStress = null;
 
     [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
     Function HeightExpansionStress = null;

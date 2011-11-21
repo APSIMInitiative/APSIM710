@@ -27,8 +27,12 @@ public class LinearInterpolationFunction : Function
             string ArraySpec = StringManip.SplitOffBracketedValue(ref PropertyName, '(', ')');
             double XValue;
             if (ArraySpec == "")
-                XValue = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, XProperty));
-
+            {
+                object v = ExpressionFunction.Evaluate(Plant, XProperty);
+                if (v == null)
+                    throw new Exception("Cannot find value for "+ Name +" XProperty: " + XProperty);
+                XValue = Convert.ToDouble(v);
+            }
             else
             {
                 string[] ArraySpecBits = ArraySpec.Split("=".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

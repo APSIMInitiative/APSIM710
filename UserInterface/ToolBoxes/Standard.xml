@@ -279,7 +279,7 @@
     <wheat />
     <WF_Millet />
      <canopy>
-       <intercrop type="text" description="Enter crop names to intercrop">maize weed</intercrop>
+       <intercrop type="text" description="Enter crop names to intercrop">maize wheat</intercrop>
      </canopy>
   </folder>
     <folder name="Soil related">
@@ -1973,7 +1973,7 @@ public class Script : Instance
      </manager2>
 	</folder>
 	<folder name="Weed management">
-         <manager name="Weed control">
+         <manager name="Weed sowing">
           <ui>
             <category type="category" description="Sowing criteria" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-may</date1>
@@ -1981,58 +1981,97 @@ public class Script : Instance
             <must_sow type="yesno" description="Must sow? : ">no</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
+            <daysLastCohort type="text" description="Days since last cohort:">0</daysLastCohort>
             <category type="category" description="Sowing parameters" />
             <weed type="crop" description="Enter name of weed to sow : ">raphanus_raphanistrum</weed>
-            <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">6</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">PacN145</cultivar>
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">250</row_spacing>
-            <category type="category" description="Control parameters stage 1" />
-            <killdate type="ddmmmdate" description="Enter date to apply control   -OR-" />
-            <killdoe type="text" description="Enter number of days after emergence to apply">10</killdoe>
-            <amount type="text" description="Enter fraction to kill (between 0 and 1)">0.9</amount>
-            <category type="category" description="Control parameters stage 2" />
-            <killdate2 type="ddmmmdate" description="Enter date to apply control   -OR-" />
-            <killdoe2 type="text" description="Enter number of days after emergence to apply">10</killdoe2>
-            <amount2 description="Enter fraction to kill (between 0 and 1)">0</amount2>
+            <thisCohort type="text" description="Enter cohort number">1</thisCohort>
           </ui>
           <script>
-            <text>if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[weed]')) then
-   if (date_within('[date1], [date2]') = 1) then
-      if (rain[[rainnumdays]] &gt;= [raincrit]) THEN
-         ChooseNextCrop = 'yes'   ! for rotations
-         [weed] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+            <text>if (date_within('[date1], [date2]') = 1 AND cohort = [thisCohort] - 1 AND timeFrom1st - lastCohort &gt;= [daysLastCohort]) THEN
+   if (rain[[rainnumdays]] &gt;= [raincrit]) THEN
+      ChooseNextCrop = 'yes'   ! for rotations
+      [weed] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+      cohort = cohort + 1
+      
+      if ([thisCohort] = 1) THEN
+         firstSown = 1
+         timeFrom1st = 0
       endif
-      if today = date('[date2]') then
+      
+      lastCohort = timeFrom1st  
+   endif
+   
+   if today = date('[date2]') THEN
          ChooseNextCrop = 'yes'
-      endif
    endif
 endif
-
-if (today = date('[killdate]')) then
-   [weed] kill_crop plants_kill_fraction = [amount]
-elseif ('[killdoe]' &lt;&gt; '') then
-   if (daysafteremergence = [killdoe]) then
-      [weed] kill_crop plants_kill_fraction = [amount]
-   endif
-endif
-
-if (today = date('[killdate2]')) then
-   [weed] kill_crop plants_kill_fraction = [amount2]
-elseif ('[killdoe2]' &lt;&gt; '') then
-   if (daysafteremergence = [killdoe2]) then
-      [weed] kill_crop plants_kill_fraction = [amount2]
-   endif
-endif </text>
+   
+if ([thisCohort] = 1 ) THEN
+   timeFrom1st = timeFrom1st + 1
+endif</text>
             <event>start_of_day</event>
           </script>
           <script>
-            <text>nextcrop = 0
-fallowin = 0</text>
+            <text>cohort = 0
+lastCohort = 0
+timeFrom1st = 0
+firstSown = 0</text>
             <event>init</event>
           </script>
+          <script>
+            <text>if [weed].StageName = 'harvest_ripe' or [weed].plant_status = 'dead' then
+  [weed]  harvest
+  [weed]  end_crop
+  firstSown = 0
+endif</text>
+            <event>end_of_day</event>
+          </script>
         </manager>
+  <manager name="Weed control by date">
+    <ui>
+      <category type="category" description="Control parameters" />
+      <killdate type="ddmmmdate" description="Enter date to apply control  " />
+      <amount type="text" description="Enter fraction to kill (0 - 1)">0</amount>
+      <weed type="crop" description="Choose weed to kill" />
+    </ui>
+    <script>
+      <text>if (today = date('[killdate]')) then
+   [weed] kill_crop plants_kill_fraction = [amount]
+endif
+</text>
+      <event>start_of_day</event>
+    </script>
+    <script>
+      <text>nextcrop = 0
+fallowin = 0</text>
+      <event>init</event>
+    </script>
+  </manager>
+  <manager name="Weed control by days after emergence">
+    <ui>
+      <category type="category" description="Control parameters" />
+      <killdoe type="text" description="Enter number of days after emergence to apply">10</killdoe>
+      <amount type="text" description="Enter fraction to kill (between 0 and 1)">0</amount>
+      <weed type="crop" description="Choose weed to kill" />
+    </ui>
+    <script>
+      <text>if (daysafteremergence = [killdoe]) then
+   [weed] kill_crop plants_kill_fraction = [amount]
+endif
+</text>
+      <event>start_of_day</event>
+    </script>
+    <script>
+      <text>nextcrop = 0
+fallowin = 0</text>
+      <event>init</event>
+    </script>
+  </manager>
 	</folder>
 	<folder name="African and Indian specialisations">
       <folder name="Phosphorus and Manure">
