@@ -81,7 +81,7 @@ void fruitOilPart::doBioGrainOil (void)    // for seed energy content (>= 1.0)
 //=======================================================================================
 //  Calculate grain oil factors
    {
-   gGrain_energy = 1.0f + cGrain_oil_conc * (cCarbo_oil_conv_ratio - 1.0);
+   gGrain_energy = 1.0f + cGrain_oil_conc * (cCarbo_oil_conv_ratio - 1.0f);
    bound_check_real_var (scienceAPI, gGrain_energy, 1.0, 2.0, "grain_energy");
    }
 
@@ -145,7 +145,7 @@ void fruitOilPart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTo
 //=======================================================================================
    {
    float dltDM = DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0);
-   Retranslocation.SetNonStructuralDM(divide (dltDM, cCarbo_oil_conv_ratio, 0.0));
+   Retranslocation.SetNonStructuralDM((float)divide (dltDM, cCarbo_oil_conv_ratio, 0.0));
    dmOil_conv_retranslocate = dltDM - Retranslocation.DM();
    }
 

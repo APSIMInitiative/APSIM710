@@ -716,7 +716,7 @@ void legnew_bio_yieldpart_demand2(
     float tav;
 
         // we are in grain filling stage
-        tav = (g_maxt+g_mint)/2.0;
+        tav = (float)((g_maxt+g_mint)/2.0);
 
         *g_dlt_dm_grain_demand = g_grain_no
                     * p_potential_grain_filling_rate

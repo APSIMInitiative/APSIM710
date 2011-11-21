@@ -719,7 +719,7 @@ void cproc_n_uptake3
         }
     else
         {
-        scalef = divide (n_demand
+        scalef = (float)divide (n_demand
                          ,ngsm_supply
                          ,0.0);
         }
@@ -775,20 +775,20 @@ void cproc_n_supply3 (
        {
        for (layer = 0; layer<= deepest_layer; layer++)
          {
-         no3ppm = (g_no3gsm[layer] - g_no3gsm_min[layer])
-            * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0);
-         umax = c_no3_uptake_max *
+         no3ppm = (float)((g_no3gsm[layer] - g_no3gsm_min[layer])
+            * divide (1000.0, g_bd[layer]*g_dlayer[layer], 0.0));
+         umax = (float)(c_no3_uptake_max *
               divide(no3ppm
                      ,no3ppm + c_no3_conc_half_max
-                     ,0.0);
+                     ,0.0));
          umax=l_bound(umax,0.0);
                                                        //**2
          swfac = (float)divide(g_sw_avail[layer],g_sw_avail_pot[layer],0.0) ;
          swfac = bound(swfac,0.0,1.0);
 
-         g_no3gsm_uptake_pot[layer] = umax
+         g_no3gsm_uptake_pot[layer] = (float)(umax
                 * g_root_length[layer] * 1e6
-                * swfac;                                      //mm2 to m2
+                * swfac);                                      //mm2 to m2
 
          g_no3gsm_uptake_pot[layer] =
                     u_bound(g_no3gsm_uptake_pot[layer]

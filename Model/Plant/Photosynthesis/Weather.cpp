@@ -716,7 +716,7 @@ float ExtraTerrestrialRadiation(float fLatitude, int nDay, float fHour)
 
 float ExtraTerrestrialRadiationDailyTotal(float fLatitude, int nDay)
 {
-	double SINLD,COSLD,TANSQ,vLatitude,vDay,vDec,RAD;
+	double SINLD,COSLD,/*TANSQ,*/vLatitude,vDay,vDec,RAD;
 	double PI	  = 3.1415926;
 	double vSolar = 1370.0;		//W/m2 - the solar constant
 	

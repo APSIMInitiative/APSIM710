@@ -199,7 +199,7 @@ extern "C" EXPORT void STDCALL crop_radn_int1(float *extinction_coef, float *fr_
             // this equation implies that leaf interception of
             // solar radiation obeys Beer's law
 
-      cover = 1.0 - exp (- 1 * *extinction_coef * *lai);
+      cover = (float)(1.0 - exp (- 1 * *extinction_coef * *lai));
       *radn_int = cover * *radn;
       }
 

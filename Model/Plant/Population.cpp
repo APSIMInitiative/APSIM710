@@ -215,9 +215,9 @@ float Population::DeathHighTemperature()
    int Yesterday = 1;
    int DayBefore = 2;
 
-   float weighted_temp = 0.25 * SoilTemp[DayBefore]
+   float weighted_temp = (float)(0.25 * SoilTemp[DayBefore]
                        + 0.50 * SoilTemp[Yesterday]
-                       + 0.25 * SoilTemp[Today];
+                       + 0.25 * SoilTemp[Today]);
 
    return PlantDeathTemperature.value(weighted_temp);
    }

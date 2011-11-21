@@ -501,13 +501,13 @@ void Phenology::process()
 
          if (reals_are_equal((float)fmod((double)p_index,(double)1.0),0.0))
             {
-            fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = (float)(1.0 - divide(index_devel - 1.0, dlt_index, 0.0));
             portion_in_old = fract_in_old * (value + phases[current_index]->getTT())-
                                  phases[current_index]->getTT();
             }
          else
             {
-            fract_in_old = 1.0 - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = (float)(1.0 - divide(index_devel - 1.0, dlt_index, 0.0));
             portion_in_old = fract_in_old * value;
             }
          portion_in_new = value - portion_in_old;

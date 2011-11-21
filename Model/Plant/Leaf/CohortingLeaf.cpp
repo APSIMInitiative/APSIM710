@@ -202,10 +202,10 @@ void CohortingLeaf::get_node_no_sen(protocol::Component *system, protocol::Query
    else
       for (unsigned int cohort = 1; cohort != gLeafArea.size(); cohort++)
          {
-         if (reals_are_equal(gLeafArea[cohort-1], 0.0, 1.0E-4)&&gLeafArea[cohort]>0.0)
+         if (reals_are_equal(gLeafArea[cohort-1], 0.0, 1.0E-4f)&&gLeafArea[cohort]>0.0)
             {
             // This is the senescing node
-            node_no_sen = cohort-1+1+divide(gLeafAreaSen[cohort],gLeafAreaMax[cohort],0.0);
+            node_no_sen = cohort-1+1+ (float)divide(gLeafAreaSen[cohort],gLeafAreaMax[cohort],0.0);
             break;
             }
          }
@@ -468,7 +468,7 @@ void CohortingLeaf::leaf_no_actual (void)
 //   Simulate actual leaf & tiller number increase as limited by dry matter production.
    {
    //ratio of actual to potential lai
-   float lai_ratio = divide (dltLAI, dltLAI_stressed, 0.0);
+   float lai_ratio = (float)divide (dltLAI, dltLAI_stressed, 0.0);
 
    //ratio of actual to potential leaf appearance
    float leaf_no_frac= cLeafNoFrac[lai_ratio];
@@ -566,7 +566,7 @@ void CohortingLeaf::Detachment (void)
                                , getSLAI()
                                , &dltSLAI_detached);
 
-   float area_detached = divide(dltSLAI_detached,  plant->population().Density(), 0.0) * sm2smm;
+   float area_detached = (float)divide(dltSLAI_detached,  plant->population().Density(), 0.0) * sm2smm;
 
    for (unsigned int cohort = 0; cohort != gLeafArea.size(); cohort++)
       {
@@ -601,8 +601,8 @@ void CohortingLeaf::leaf_area_sen(float swdef_photo)
 //             dltSLA_age[cohort] = gLeafAreaMax[cohort];
 //          else
 //             dltSLA_age[cohort] = qq;
-          float tt_remaining = max(0.0,cGrowthPeriod[cohort+1] + cLagPeriod[cohort+1] + cSenescingPeriod[cohort+1] - gLeafAge[cohort]);
-          float senfr = min(1.0,divide(dltTT,tt_remaining,0.0));
+          float tt_remaining = (float)max(0.0,cGrowthPeriod[cohort+1] + cLagPeriod[cohort+1] + cSenescingPeriod[cohort+1] - gLeafAge[cohort]);
+          float senfr = (float)min(1.0,divide(dltTT,tt_remaining,0.0));
           dltSLA_age[cohort] = gLeafArea[cohort]*senfr;
           }
 
@@ -656,7 +656,7 @@ void CohortingLeaf::update(void)
        {
        for (cohort = 0; cohort != gLeafArea.size(); cohort++)
           {
-          float fract = divide(gDltLeafAreaPot[cohort], sum(gDltLeafAreaPot), 0.0);
+          float fract = (float)divide(gDltLeafAreaPot[cohort], sum(gDltLeafAreaPot), 0.0);
           gLeafArea[cohort] += fract * dltLeafArea;
           }
        }
@@ -675,7 +675,7 @@ void CohortingLeaf::update(void)
     if (dltSLAI_light > 0.0)
        {
        // bottom up (shading)
-       float dltLeafArea = divide (dltSLAI_light, plant->population().Density(), 0.0) * sm2smm;
+       float dltLeafArea = (float)divide (dltSLAI_light, plant->population().Density(), 0.0) * sm2smm;
        for (cohort = 0; cohort != gLeafArea.size() && dltLeafArea > 0.0; cohort++)
           {
           float dlt = (dltLeafArea > gLeafArea[cohort]) ? gLeafArea[cohort] : dltLeafArea;
@@ -687,7 +687,7 @@ void CohortingLeaf::update(void)
     if (dltSLAI_water > 0.0)
        {
        // bottom up
-       float dltLeafArea = divide (dltSLAI_water, plant->population().Density(), 0.0) * sm2smm;
+       float dltLeafArea = (float)divide (dltSLAI_water, plant->population().Density(), 0.0) * sm2smm;
        for (cohort = 0; cohort != gLeafArea.size(); cohort++)
           {
           float dlt = (dltLeafArea > gLeafArea[cohort]) ? gLeafArea[cohort] : dltLeafArea;
@@ -699,7 +699,7 @@ void CohortingLeaf::update(void)
     if (dltSLAI_frost > 0.0)
        {
        // top down
-       float dltLeafArea = divide (dltSLAI_frost, plant->population().Density(), 0.0) * sm2smm;
+       float dltLeafArea = (float)divide (dltSLAI_frost, plant->population().Density(), 0.0) * sm2smm;
        for (int cohort = (int)gLeafArea.size()-1; cohort >= 0 && dltLeafArea > 0.0; cohort--)
           {
           float dlt = (dltLeafArea > gLeafArea[cohort]) ? gLeafArea[cohort] : dltLeafArea;
@@ -743,12 +743,12 @@ void CohortingLeaf::update(void)
 void CohortingLeaf::removeBiomass(void)
    {
    unsigned int cohort;
-   float chop_fr_green = bound(divide(GreenRemoved.DM(), Green.DM(), 0.0), 0.0, 1.0);
+   float chop_fr_green = bound((float)divide(GreenRemoved.DM(), Green.DM(), 0.0), 0.0, 1.0f);
    if (chop_fr_green > 0.0)
        for (cohort = 0; cohort != gLeafArea.size(); cohort++)
           gLeafArea[cohort] *= chop_fr_green;
 
-   float chop_fr_sen   = divide(SenescedRemoved.DM(), Senesced.DM(), 0.0);
+   float chop_fr_sen   = (float)divide(SenescedRemoved.DM(), Senesced.DM(), 0.0);
    if (chop_fr_sen > 0.0)
        for (cohort = 0; cohort != gLeafArea.size(); cohort++)
           gLeafAreaSen[cohort] *= chop_fr_sen;

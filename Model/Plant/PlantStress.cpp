@@ -150,7 +150,7 @@ float PStress::PlantP_Pfact (vector<plantPart *> &allParts)
       }
       else
       {
-         pfact = divide(act_p_conc - min_p_conc
+         pfact = (float)divide(act_p_conc - min_p_conc
                        , max_p_conc - min_p_conc
                        , 1.0);
       }
@@ -370,7 +370,7 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
       //calculate shortfall in N concentrations
       float dividend =  N_conc - N_conc_min;
       float divisor =   N_conc_crit - N_conc_min;
-      float result = multiplier * divide (dividend, divisor, 1.0);
+      float result = (float)(multiplier * divide (dividend, divisor, 1.0));
       result = bound (result, 0.0, 1.0);
       return (result);
       }

@@ -287,7 +287,7 @@ float SUCROSModel::LeafLightUseEfficiency(float fTemp, float fCO2)
 
 //   fEffPAR   = fMaxLUE*(fCO2-fCO2PhotoCmp)/(fCO2+2*fCO2PhotoCmp);
 //   fEffPAR = fMaxLUE*(1.0 - exp(-0.00305*fCO2-0.222))/(1.0 - exp(-0.00305*340.0-0.222));
-   float Ft = 0.6667 - 0.0067*fTemp;
+   float Ft = (float)(0.6667 - 0.0067*fTemp);
    fEffPAR = Ft*(1.0 - exp(-0.00305*fCO2-0.222))/(1.0 - exp(-0.00305*340.0-0.222));
 
    return fEffPAR;

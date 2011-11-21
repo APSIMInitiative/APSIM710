@@ -36,11 +36,11 @@ void rootGrowthOption1::root_length_growth (void)
 
       branching_factor = rel_root_rate.value(plant_rld);
 
-      rlv_factor[layer] = sw_fac_root.value(sw_avail_ratio(layer)) *
+      rlv_factor[layer] = (float)(sw_fac_root.value(sw_avail_ratio(layer)) *
                  branching_factor *                                      // branching factor
                    (*soil[0]).xf [layer]  *                                       // growth factor
                      divide((*soil[0]).dlayer[layer],      // space weighting
-                            root_depth, 0.0);                            //       factor
+                            root_depth, 0.0));                            //       factor
 
       rlv_factor[layer] = l_bound(rlv_factor[layer], 1e-6f);
       rlv_factor_tot += rlv_factor[layer];
@@ -50,8 +50,8 @@ void rootGrowthOption1::root_length_growth (void)
 
    for(int layer = 0; layer <= deepest_layer; layer++)
       {
-      dltRootLength[layer] = dlt_length_tot *
-                              divide (rlv_factor[layer], rlv_factor_tot, 0.0);
+      dltRootLength[layer] = (float)(dlt_length_tot *
+                              divide (rlv_factor[layer], rlv_factor_tot, 0.0));
       }
 
 }

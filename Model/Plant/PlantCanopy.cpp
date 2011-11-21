@@ -338,7 +338,7 @@ void cproc_leaf_area_sen1 (int emergence,                 // (INPUT)  emergence 
 void cproc_leaf_area_init1 (float c_initial_tpla,     //(INPUT)  initial plant leaf area (mm^2)
                             int   init_stage,         //(INPUT)  initialisation stage
                             float g_current_stage,    //(INPUT)  current phenological stage
-                            float */* g_days_tot*/,        // (INPUT)  duration of each phase (days)
+                            float *x /* g_days_tot*/,        // (INPUT)  duration of each phase (days)
                             float  g_plants,          // (INPUT)  Plant density (plants/m^2)
                             float *lai)               //(OUTPUT) total plant leaf area
 //===========================================================================
@@ -920,7 +920,7 @@ void legnew_cover (
 
         lai_canopy = g_lai * canopy_fac;          // lai in hedgerow
                                                   // interception on row area basis
-        cover_green_leaf_canopy = 1.0 - exp(-extinct_coef*lai_canopy) ;
+        cover_green_leaf_canopy = (float)(1.0 - exp(-extinct_coef*lai_canopy)) ;
         *g_cover_green = divide (cover_green_leaf_canopy, canopy_fac
         , 0.0)             ;                      // interception on ground area basis
 
@@ -967,7 +967,7 @@ float legnew_node_no_from_area
 
     node_area_whole = sum_real_array (g_leaf_area, node_no);
     node_area_part = pla - node_area_whole;
-    node_fract = divide (node_area_part, g_leaf_area[node_no], 0.0);
+    node_fract = (float)divide (node_area_part, g_leaf_area[node_no], 0.0);
 
     result = (float) (node_no - 1) + node_fract;
     return (result);
@@ -1001,7 +1001,7 @@ float legnew_leaf_no_from_area (
 
     node_area_whole = sum_real_array (g_leaf_area, node_no-1);
     node_area_part = pla - node_area_whole;
-    node_fract = divide (node_area_part, g_leaf_area[node_no-1], 0.0);
+    node_fract = (float)divide (node_area_part, g_leaf_area[node_no-1], 0.0);
 
     result = sum_real_array (g_leaf_no,node_no) + node_fract * g_leaf_no[node_no-1];
 //     fprintf(stdout, "%d,%.9f,%.9f,%.9f,%.9f,%.9f\n",
@@ -1048,19 +1048,19 @@ void legnew_canopy_fac (
 
 
     row_spacing_effective = g_row_spacing * g_skip_row_fac;
-    plant_space = divide (sm2smm
+    plant_space = (float)divide (sm2smm
        , row_spacing_effective * g_plants * g_skip_plant_fac
        , 0.0);
     plant_spacing_effective = plant_space * g_skip_plant_fac;
-    radius_intra_row_solid = min(plant_space * 0.5
+    radius_intra_row_solid = (float)min(plant_space * 0.5
       , g_canopy_width * 0.5);
-    radius_intra_row_skip = min(plant_space * (g_skip_plant_fac - 0.5)
+    radius_intra_row_skip = (float)min(plant_space * (g_skip_plant_fac - 0.5)
       , g_canopy_width * 0.5);
 
     width_intra_row = radius_intra_row_skip + radius_intra_row_solid;
 
-    radius_inter_row_solid = min(g_row_spacing * 0.5, g_canopy_width * 0.5);
-    radius_inter_row_skip = min(g_row_spacing * (g_skip_row_fac - 0.5), g_canopy_width * 0.5);
+    radius_inter_row_solid = (float)min(g_row_spacing * 0.5, g_canopy_width * 0.5);
+    radius_inter_row_skip = (float)min(g_row_spacing * (g_skip_row_fac - 0.5), g_canopy_width * 0.5);
     width_inter_row = radius_inter_row_solid + radius_inter_row_skip;
 
     area_avail = plant_spacing_effective * row_spacing_effective;
@@ -1090,7 +1090,7 @@ void plant_canopy_width
     float dm_stem_plant;                          // dry matter of stem (g/plant)
     float new_width;                              // new plant width (mm)
 
-    dm_stem_plant = divide (g_dm_green[stem], g_plants, 0.0);
+    dm_stem_plant = (float)divide (g_dm_green[stem], g_plants, 0.0);
     new_width = linear_interp_real(dm_stem_plant
                                   ,p_x_stem_wt
                                   ,p_y_width

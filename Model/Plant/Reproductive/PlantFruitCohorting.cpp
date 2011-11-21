@@ -164,9 +164,9 @@ void PlantFruitCohorting::doSiteNumber(void)
 
     float temp_fac = rel_fruit_site.value(plant->environment().meant());
 
-    dlt_site_no = dlt_site_no_pot
+    dlt_site_no = (float)(dlt_site_no_pot
                 * (1.0 - metabolic_fact)
-                * temp_fac;
+                * temp_fac);
  }
 
 // Purpose

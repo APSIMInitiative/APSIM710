@@ -71,7 +71,7 @@ void fruitPodPartFN::doDmDemand(float dlt_dm_supply)
 void fruitPodPartFN::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================
    {
-   Retranslocation.AddNonStructuralDM(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
+   Retranslocation.AddNonStructuralDM((float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0)));
    }
 
 float fruitPodPartFN::dltDmRetranslocateSupply(float DemandDifferential)

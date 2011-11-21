@@ -125,9 +125,9 @@ float Environment::DiffuseLightFactor (void)                    // This was orig
    {
    float Q = Q0(latitude, day_of_year);
    float T = radn()/Q;
-   float X1 = 0.80 - 0.0017 * latitude + 0.000044*latitude*latitude;
-   float A1 = (0.05 - 0.96) / (X1 - 0.26);
-   float A0 = 0.05 - A1*X1;
+   float X1 = (float)(0.80 - 0.0017 * latitude + 0.000044*latitude*latitude);
+   float A1 = (float)((0.05 - 0.96) / (X1 - 0.26));
+   float A0 = (float)(0.05 - A1*X1);
 
    float Diffuse_fr = (float)min(max(0.0, A0 + A1*T), 1.0);  //Taken from Roderick paper Ag For Met(?)
    return DiffuseLightFactorTable.value(Diffuse_fr);
@@ -135,9 +135,9 @@ float Environment::DiffuseLightFactor (void)                    // This was orig
 
 float Environment::Q0(float lat, int day) 						// (PFR)
    {
-   float DEC = 23.45 * sin(2. * 3.14159265 / 365.25 * (day - 79.25));
-   float DECr = DEC * 2. * 3.14159265 / 360.;
-   float LATr =    lat * 2. * 3.14159265 / 360.;
+   float DEC = (float)(23.45 * sin(2. * 3.14159265 / 365.25 * (day - 79.25)));
+   float DECr = (float)(DEC * 2. * 3.14159265 / 360.0);
+   float LATr =    (float)(lat * 2. * 3.14159265 / 360.0);
    float HS = acos(-tan(LATr) * tan(DECr));
 
    return  86400. * 1360. * (HS * sin(LATr) * sin(DECr) + cos(LATr) * cos(DECr) * sin(HS)) / 3.14159265 / 1000000.;

@@ -12,46 +12,46 @@ using namespace std;
  *     Globally used conversion constants
  */
 // WEIGHT conversion
-const float gm2kg = 1.0/1000.0;           // constant to convert g to kg
+const float gm2kg = (float)(1.0/1000.0);   // constant to convert g to kg
 const float kg2gm = 1000.0f;               // conversion of kilograms to grams
-const float mg2gm = 1.0/1000.0;           // conversion of mg to grams
-const float t2g = 1000.0*1000.0;          // tonnes to grams
-const float g2t = 1.0/ t2g;               // grams to tonnes
+const float mg2gm = (float)(1.0/1000.0);   // conversion of mg to grams
+const float t2g = (float)(1000.0*1000.0);  // tonnes to grams
+const float g2t = (float)(1.0/ t2g);       // grams to tonnes
 const float t2kg = 1000.0f;                // tonnes to kilograms
-const float kg2t = 1.0/ t2kg;             // kilograms to tonnes
+const float kg2t = (float)(1.0/ t2kg);     // kilograms to tonnes
 
 // AREA conversion
-const float ha2scm = 10000.0*10000.0;     // ha to sq cm
+const float ha2scm = (float)(10000.0*10000.0); // ha to sq cm
 const float ha2sm = 10000.0f;              // conversion of hectares to sq metres
-const float sm2ha = 1.0/10000.0;          // constant to convert m^2 to hectares
+const float sm2ha = (float)(1.0/10000.0);  // constant to convert m^2 to hectares
 const float sm2smm = 1000000.0f;           // conversion of square metres to square mm
-const float smm2sm = 1.0/1000000.0;       // conversion factor of mm^2 to m^2
+const float smm2sm = (float)(1.0/1000000.0); // conversion factor of mm^2 to m^2
 const float scm2smm = 100.0f;              // conversion factor of cm^2 to mm^2
 
 // PRESSURE and related conversion
-const float g2mm = 1.0e3/1.0e6;           // convert g water/m^2 to mm water
+const float g2mm = (float)(1.0e3/1.0e6);  // convert g water/m^2 to mm water
                                           // 1 g water = 1,000 cubic mm and
                                           // 1 sq m = 1,000,000 sq mm
-const float mb2kpa = 100.0/1000.0;        // convert pressure mbar to kpa
+const float mb2kpa = (float)(100.0/1000.0);  // convert pressure mbar to kpa
                                           // 1000 mbar = 100 kpa
 
 // LENGTH conversion
 const float cm2mm = 10.0f;                 // cm to mm
-const float mm2cm = 1.0/10.0;             // conversion of mm to cm
-const float mm2m = 1.0/1000.0;            // conversion of mm to m
+const float mm2cm = (float)(1.0/10.0);     // conversion of mm to cm
+const float mm2m = (float)(1.0/1000.0);    // conversion of mm to m
 const float km2m  = 1000.0f;               // conversion of km to metres
 
 // VOLUME conversion
-const float cmm2cc = 1.0/1000.0;          // conversion of cubic mm to cubic cm
+const float cmm2cc = (float)(1.0/1000.0);     // conversion of cubic mm to cubic cm
 const float conv_gmsm2kgha = 100.0f;       // convert g/sm -> kg/ha
 const float conv_pc2fr = 0.01f;            // convert %age to fraction
-const float pcnt2fract = 1.0/100.0;       // convert percent to fraction
+const float pcnt2fract = (float)(1.0/100.0);  // convert percent to fraction
 const float fract2pcnt = 100.0f;           // convert fraction to percent
 const float mm2lpsm = 1.0f;                // mm depth to litres per sq m
 const float lpsm2mm = 1.0f;                // litres per sq m to mm depth
 const float day2hr  = 24.0f;               // days to hours
-const float hr2s    = 60.0*60.0;          // hours to seconds
-const float s2hr    = 1.0/hr2s;           // seconds to hours
+const float hr2s    = (float)(60.0*60.0);  // hours to seconds
+const float s2hr    = (float)(1.0/hr2s);   // seconds to hours
 
 
 void stageSubject::update() {
@@ -135,10 +135,10 @@ float temp_3hr (float tmax, float tmin, int period)
       throw std::invalid_argument("3 hr. period number is above 8");
 
    period_no = float(period);
-   t_range_fract = 0.92105
+   t_range_fract = (float)(0.92105
                    + 0.1140  * period_no
                    - 0.0703  * pow(period_no,2)
-                   + 0.0053  * pow(period_no,3);
+                   + 0.0053  * pow(period_no,3));
 
    diurnal_range = tmax - tmin;
    t_deviation = t_range_fract * diurnal_range;

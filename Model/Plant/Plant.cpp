@@ -503,9 +503,9 @@ void Plant::onKillStem(protocol::KillStemType &KillStem)
 
       // determine the new stem density
       // ==============================
-      float temp;
+      //float temp;
       if (KillStem.Plants != 0)
-        population().SetPlants(KillStem.Plants);
+        population().SetPlants((float)KillStem.Plants);
 
       // Update biomass and N pools.
       plant.onKillStem();
@@ -729,10 +729,10 @@ void Plant::plant_cleanup (void)
     plant.checkBounds();
 
     if (phenology().onDayOf("sowing"))
-        g.n_fixed_tops = Tops().Growth.N() * divide (g.n_fix_uptake,plant.Growth.N(),0.0);
+        g.n_fixed_tops = (float)(Tops().Growth.N() * divide (g.n_fix_uptake,plant.Growth.N(),0.0));
 
     else
-        g.n_fixed_tops = (float)g.n_fixed_tops + Tops().Growth.N() * divide (g.n_fix_uptake, plant.Growth.N() ,0.0);
+        g.n_fixed_tops = (float)(g.n_fixed_tops + Tops().Growth.N() * divide (g.n_fix_uptake, plant.Growth.N() ,0.0));
     g.lai_max = max(g.lai_max, leaf().getLAI());             //FIXME - should be returned from leafPart method
 
     if (g.plant_status == alive && phenologyEventToday != "")
@@ -1145,12 +1145,12 @@ void Plant::plant_start_crop(protocol::SowType& Sow)
            read();
 
            // get other sowing criteria
-           float temp;
+//           float temp;
            if (Sow.plants == 0)
                {
                throw std::invalid_argument("plant density ('plants') not specified");
                }
-           population().SetPlants(Sow.plants);
+           population().SetPlants((float)Sow.plants);
 
            parent->writeString ("   ------------------------------------------------");
            sprintf (msg, "   %s%s",  "cultivar                   = ", g.cultivar.c_str());
@@ -1372,9 +1372,9 @@ void Plant::UpdateCanopy()
 // Tell APSIM system that our canopy has changed to a new state.
    {
 
-    float cover_tot = 1.0
+    float cover_tot = (float)(1.0
         - (1.0 - plant.coverGreen())
-        * (1.0 - plant.coverSen());
+        * (1.0 - plant.coverSen()));
 
    protocol::NewCanopyType NewCanopy;
    NewCanopy.height = stem().height();
@@ -1662,9 +1662,9 @@ void Plant::get_width(protocol::Component *system, protocol::QueryValueData &qd)
 
 void Plant::get_cover_tot(protocol::Component *system, protocol::QueryValueData &qd)
 {
-    float cover_tot = 1.0
+    float cover_tot = (float)(1.0
         - (1.0 - plant.coverGreen())
-        * (1.0 - plant.coverSen());
+        * (1.0 - plant.coverSen()));
 
     system->sendVariable(qd, cover_tot);
 }

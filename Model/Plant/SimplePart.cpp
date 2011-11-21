@@ -747,7 +747,7 @@ void SimplePart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTota
 //=======================================================================================
    {
       // All retrans comes out of the nonstructural pool
-   Retranslocation.SetNonStructuralDM(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
+   Retranslocation.SetNonStructuralDM((float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0)));
    }
 
 float SimplePart::dmDemandDifferential(void)
