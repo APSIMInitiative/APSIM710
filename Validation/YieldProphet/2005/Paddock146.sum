@@ -1,0 +1,1509 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Paddock146
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                   "PatchInput" = %apsim%\Model\PatchInput.dll
+Paddock:
+   Component                       "Yearly" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "GrossMargin" = %apsim%\Model\Manager.dll
+   Component                        "Reset" = %apsim%\Model\Manager.dll
+   Component                          "Sow" = %apsim%\Model\Manager.dll
+   Component               "Sowing tillage" = %apsim%\Model\Manager.dll
+   Component                      "Harvest" = %apsim%\Model\Manager.dll
+   Component    "Yield moisture correction" = %apsim%\Model\Manager.dll
+   Component                          "Hay" = %apsim%\Model\Manager.dll
+   Component                    "MildFrost" = %apsim%\Model\Manager.dll
+   Component                "ModerateFrost" = %apsim%\Model\Manager.dll
+   Component                  "SevereFrost" = %apsim%\Model\Manager.dll
+   Component                "MildHeatShock" = %apsim%\Model\Manager.dll
+   Component            "ModerateHeatShock" = %apsim%\Model\Manager.dll
+   Component              "SevereHeatShock" = %apsim%\Model\Manager.dll
+   Component                    "Fertilise" = %apsim%\Model\Manager.dll
+   Component                    "Constants" = %apsim%\Model\Manager.dll
+   Component                       "Script" = %apsim%\Model\Manager.dll
+   Component                "CanolaOilConc" = %apsim%\Model\Manager.dll
+   Component                   "Fertilise1" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                      "Erosion" = %apsim%\Model\Erosion.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                        "Wheat" = %apsim%\Model\Plant.dll
+   Component                      "Tracker" = %apsim%\Model\Tracker.dll
+   Component                       "YPCalc" = %apsim%\Model\YieldProphet.dll
+
+------- Clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Using start date from the met file.
+     Using end date from the met file.
+     Simulation start date =  1/01/2005
+     Simulation end date   =  1/03/2006
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: 79075.met
+
+------- PatchInput Initialisation ---------------------------------------------
+     Sparse data is allowed
+     INPUT File name: teasdale^Dunlops 200.rain
+
+------- Yearly Initialisation -------------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        sow_year
+        DaysAfterSowing
+        simulation_end_date format dd/mm/yyyy
+        biomass
+        wetyield
+        Grain_protein
+        grain_n
+        grain_no
+        oil_conc
+        leaf_no
+        sw_stress_expan
+        sw_stress_photo
+        n_stress_expan
+        n_stress_photo
+        Hay
+        Z
+        Zadok11Das
+        Zadok12Das
+        Zadok13Das
+        Zadok14Das
+        Zadok15Das
+        Zadok16Das
+        Zadok30Das
+        Zadok31Das
+        Zadok32Das
+        Zadok37Das
+        Zadok39Das
+        Zadok45Das
+        Zadok55Das
+        Zadok65Das
+        Zadok75Das
+        flowering_das
+        maturity_das
+        root_depth
+        Bank
+        TwoTimesCost 
+        CurrentFallow
+        MildFrostCount
+        ModerateFrostCount
+        SevereFrostCount
+        MildHeatShockCount
+        ModerateHeatShockCount
+        SevereHeatShockCount
+        InCropRain
+        InCropIrrigation
+        rain
+        runoff
+        SumRunoffToSowing
+        drain
+        es
+        ep
+        sw_dep()
+        AvailableWater
+        AmountWaterAboveCLL
+        AvailableWaterAtSowing
+        AmountWaterLeft
+        ll_dep()
+        no3() format 3
+        nh4() format 3
+        Nitrogen
+        NitrogenAtSowing
+        NUptakeKgHa
+        soil_loss
+        SumSoilLossToSowing
+        dlt_n_min_tot() format 3
+        dnit() format 3
+        leach_no3 format 3
+        NInPlant
+        NToday
+        CLLToday
+        DulToday
+        SwToday
+        CritSWToday
+        SowDate format dd/mmm
+        AustState
+        plants
+        TopDressFertiliser
+        PreSowingFertiliser
+        SowingFertiliser
+        GSR
+        pawc
+        CumNStressExpan
+        CumNStressPhoto
+        TotalNUptake
+        TotalES
+        TotalEP
+        MildHeatShockAdditiveCount 
+        ModerateHeatShockAdditiveCount 
+        MildFrostAdditiveCount 
+        ModerateFrostAdditiveCount 
+        NumWaterLoggingEventsFor1OrMoreDays
+        NumWaterLoggingEventsFor2OrMoreDays
+        NumWaterLoggingEventsFor3OrMoreDays
+        NumWaterLoggingEventsFor4OrMoreDays
+        NumWaterLoggingEventsFor5OrMoreDays
+        NumWaterLoggingEventsFor6OrMoreDays
+        NInGrain
+        InCropMineralisation format 3
+        InCropNitrification format 3
+        InCropNLeaching format 3
+        CumSWStressExpan
+        CumSWStressPhoto
+        CumSWStressPhotoSowToFI
+        CumSWStressPhotoFIToFlowering
+        CumSWStressPhotoFloweringToHarvesting
+        CumNStressPhotoSowToFI
+        CumNStressPhotoFIToFlowering
+        CumNStressPhotoFloweringToHarvesting
+        FloweringDate format dd/mm/yyyy
+        CropBiomass 
+        HayGrossMargin 
+        GrainGrossMargin 
+        RainToMaturity
+        HayBiomass
+
+     Output file = Paddock146 Yearly.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- GrossMargin Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (resetbank = 1 or today = met_start_date) then
+           bank = 0
+           resetbank = 0
+           twotimescost = 0
+        endif
+        if (fertiliser > 0)then
+           cost = 1.2 * fertiliser + 15
+           bank = bank - cost
+           if scenarioapplication = 'yes' then
+              twotimescost = twotimescost + 2 * cost
+           endif
+        endif
+        if (irrig_tot > 0)then
+           cost = 0 * (irrig_tot / 100)
+           bank = bank - cost
+           if scenarioapplication = 'yes' then
+              twotimescost = twotimescost + 2 * cost
+           endif
+        endif
+        if stagename = 'harvest_ripe' or plant_status = 'dead' then
+           if (grain_protein > 10.5) then
+              fullprice = 140 + (grain_protein - 10.5) * 2 * 2
+           else
+              fullprice = 140
+           endif
+           bank = bank + fullprice * wetyield
+           resetbank = 1
+        endif
+     
+     SECTION:- init
+           bank = 0
+           resetbank = 0
+           twotimescost = 0
+           scenarioapplication = 'no'
+     END of rules
+     
+     Manager creating a new local real variable : bank = 0.00000
+     Manager creating a new local real variable : resetbank = 0.00000
+     Manager creating a new local real variable : twotimescost = 0.00000
+     Manager creating a new local string variable : scenarioapplication = no
+
+------- Reset Initialisation --------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        doreset = 0
+        if (date('01-apr')> sowdate) then
+           if (today = date('01-apr') or (today = sowdate and resetdate - sowdate < 90)) then
+              doreset = 1
+           endif
+        elseif (today = date('01-apr')) then
+              doreset = 1
+        endif
+        if (doreset = 1) then
+           resetwater = 'yes'
+           resetnitrogen  = 'yes'
+           resetsurfaceom = 'yes'
+           if (resetwater = 'yes') then
+               'soil water' reset
+           endif
+           if (resetnitrogen = 'yes') then
+               'soil nitrogen' reset
+           endif
+           if (resetsurfaceom = 'yes') then
+               'surfaceom' reset
+           endif
+           act_mods reseting
+        endif
+     END of rules
+     
+
+------- Sow Initialisation ----------------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        cropsown  = 'wheat'
+        if (today = date('24-jun') then
+           sow_year = year
+           if ('no' = 'yes') then
+              skiprow = (4 * (( - 0.2)^2) + 3 * (( - 0.2)^2) ) / (1 + (( - ) * )^2)
+              wheat sow plants =100, sowing_depth = 30, cultivar = rosella, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid, skiprow = skiprow
+           else
+              wheat sow plants =100, sowing_depth = 30, cultivar = rosella, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1 (), skip = solid
+           endif
+        endif
+     
+     SECTION:- init
+        sow_year = 0
+     END of rules
+     
+     Manager creating a new local real variable : sow_year = 0.00000
+
+------- Sowing tillage Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- sowing
+              'surfaceom' tillage type =  planter, f_incorp = 0.1 (), tillage_depth = 50
+     END of rules
+     
+
+------- Harvest Initialisation ------------------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+       wheat  harvest
+       wheat  end_crop
+       harvesttoday = 1
+                else
+       harvesttoday = 0
+                endif
+     END of rules
+     
+
+------- Yield moisture correction Initialisation ------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        if cropsown = 'canola' then
+           moisturecontent = 8
+        else
+           moisturecontent = 12
+        endif
+        wetyield = yield / (1 - moisturecontent/100) / 1000
+     END of rules
+     
+
+------- Hay Initialisation ----------------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        cropbiomass =  (biomass / (1 - 13/100) / 1000)
+        haybiomasspercent = 70
+        if (biomass >= 2000 and biomass <= 12000) then
+           haybiomasspercent = 70 + (biomass-2000) / (12000-2000) * 5
+        elseif (biomass > 12000) then
+           haybiomasspercent = 75 + (biomass-12000) / (25000-12000) * 5
+        endif
+        haybiomass = (haybiomasspercent / 100) * cropbiomass
+        haygrossmargin = haybiomass * 100 - 120 - (0 * haybiomass)
+        graingrossmargin = wetyield * 200 - 30
+     
+     SECTION:- init
+           bank = 0
+           resetbank = 0
+           twotimescost = 0
+           scenarioapplication = 'no'
+     END of rules
+     
+
+------- MildFrost Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           mildfrostcount = 0
+        endif
+               if (z >= 60 and
+       z <= 69.99 and
+       mint >= 0 and
+       mint < 2) then
+      act_mods mildfrost
+      mildfrostcount =  mildfrostcount +1
+               endif
+     END of rules
+     
+
+------- ModerateFrost Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           moderatefrostcount = 0
+        endif
+               if (z >= 60 and
+       z <= 75.99 and
+       mint >= -2 and
+       mint < 0) then
+      act_mods moderatefrost
+      moderatefrostcount =  moderatefrostcount +1
+               endif
+     END of rules
+     
+
+------- SevereFrost Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           severefrostcount = 0
+        endif
+               if (z >= 60 and
+       z <= 79.99 and
+       mint >= -100 and
+       mint < -2) then
+      act_mods severefrost
+      severefrostcount =  severefrostcount +1
+               endif
+     END of rules
+     
+
+------- MildHeatShock Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           mildheatshockcount = 0
+        endif
+               if (z >= 70 and
+       z <= 79.99 and
+       maxt >= 32 and
+       maxt < 34) then
+      act_mods mildheatshock
+      mildheatshockcount =  mildheatshockcount +1
+               endif
+     END of rules
+     
+
+------- ModerateHeatShock Initialisation --------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           moderateheatshockcount = 0
+        endif
+               if (z >= 70 and
+       z <= 79.99 and
+       maxt >= 34 and
+       maxt < 36) then
+      act_mods moderateheatshock
+      moderateheatshockcount =  moderateheatshockcount +1
+               endif
+     END of rules
+     
+
+------- SevereHeatShock Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (daysaftersowing = 1) then
+           severeheatshockcount = 0
+        endif
+               if (z >= 70 and
+       z <= 79.99 and
+       maxt >= 36 and
+       maxt < 100) then
+      act_mods severeheatshock
+      severeheatshockcount =  severeheatshockcount +1
+               endif
+     END of rules
+     
+
+------- Fertilise Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        if (today = date('24-jun') then
+           scenarioapplication = 'no'
+           fertiliser apply amount = 6 (kg/ha), depth = 20 (mm), type = no3_n ()
+        endif
+     END of rules
+     
+
+------- Constants Initialisation ----------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     todaydate = 0
+     todaydatefull = 0
+     startseasondate = 0
+     startseasondatefull = 0
+     resetdate = 0
+     resetdatefull = 0
+     sowdatefull = 0
+     sowdate = 0
+     
+     SECTION:- start_of_day
+     todaydate=date('02-jul')
+     todaydatefull=date('02/07/2008')
+     startseasondate=date('01-apr')
+     startseasondatefull=date('01/04/2008')
+     resetdate=date('23-may')
+     resetdatefull=date('23/05/2008')
+     sowdatefull=date('06/05/2008')
+     sowdate=date('06-may')
+     END of rules
+     
+     Manager creating a new local real variable : todaydate = 0.00000
+     Manager creating a new local real variable : todaydatefull = 0.00000
+     Manager creating a new local real variable : startseasondate = 0.00000
+     Manager creating a new local real variable : startseasondatefull = 0.00000
+     Manager creating a new local real variable : resetdate = 0.00000
+     Manager creating a new local real variable : resetdatefull = 0.00000
+     Manager creating a new local real variable : sowdatefull = 0.00000
+     Manager creating a new local real variable : sowdate = 0.00000
+
+------- Script Initialisation -------------------------------------------------
+     Manager rules:
+     
+     SECTION:- post
+        if (cropsown = 'sorghum') then
+           if (daysaftersowing < 3) then
+              sw_stress_expan = 0
+              sw_stress_photo = 0
+              n_stress_expan = 0
+              n_stress_photo = 0
+           else
+              sw_stress_expan = 1 - swdef_expan
+              sw_stress_photo = 1 - swdef_photo
+              n_stress_expan = 1 - nfact_expan
+              n_stress_photo = 1 - nfact_photo
+           endif
+           leaf_no = leafno
+           grain_no = grainno
+           grain_n = graingreenn
+           flowering_das = floweringdas
+           maturity_das = maturitydas
+        endif
+        if (startdailydate = 0) then
+           if (startseasondatefull <= sowdatefull and startseasondatefull <= resetdatefull) then
+              startdailydate = startseasondatefull)
+           elseif (sowdatefull <= resetdatefull) then
+              startdailydate = sowdatefull
+           else
+              startdailydate = resetdatefull
+           endif
+        endif
+        if (today >= startdailydate) then
+           act_mods ondailyoutput
+           if (daysaftersowing > 0) then
+              currentcropfound = 1
+           endif
+           if (currentcropfound = 1 and daysaftersowing = 0) then
+              currentfallow = 1
+           endif
+        endif
+        if (today = startseasondate) then
+           deciledate = startseasondatefull
+           dodecileoutput = 1
+        elseif (start_month = 1) then
+           deciledate = add_months('deciledate, 1')
+        endif
+        if (dodecileoutput = 1 and today < startseasondatefull and start_month = 1) then
+           act_mods ondecileoutput
+        endif
+        if (today = date('1-apr')) then
+           act_mods gsrstart
+        endif
+        if (today = date('31-oct')) then
+           act_mods gsrend
+        endif
+        if (sow_year > 0 and month = month(todaydatefull)) then
+           act_mods thismonth
+           threemonthstimedate = today + 90
+        endif
+        if (today = threemonthstimedate) then
+           act_mods threemonthstime
+        endif
+        if (zadok_stage < 30) then
+           z = node_no + 9
+           if (z > 16) then
+              z = 16
+           endif
+        else
+           z = zadok_stage
+        endif
+        if (stationnumber <= 013999 ) then
+           auststate = 'wa'
+        elseif (stationnumber <= 015999) then
+           auststate = 'nt'
+        elseif (stationnumber <= 026999) then
+           auststate = 'sa'
+        elseif (stationnumber <= 045999) then
+           auststate = 'qld'
+        elseif (stationnumber <= 075999) then
+           auststate = 'nsw/act'
+        elseif (stationnumber <= 090999) then
+           auststate = 'vic'
+        elseif (stationnumber <= 099999) then
+           auststate = 'tas'
+        else
+           auststate = 'unknown'
+        endif
+        if (today = sowdate) then
+           sowingfertiliser = fertiliser
+        endif
+        if (today = sowdate) then
+           sowingfertiliser = fertiliser
+        endif
+        if (daysaftersowing = 0) then
+           presowingfertiliser = presowingfertiliser + fertiliser
+        elseif (harvesttoday = 1) then
+           presowingfertiliser = 0
+        endif
+        mildheatshockadditivecount = mildheatshockcount + moderateheatshockcount + severeheatshockcount
+        moderateheatshockadditivecount = moderateheatshockcount + severeheatshockcount
+        mildfrostadditivecount = mildfrostcount + moderatefrostcount + severefrostcount
+        moderatefrostadditivecount = moderatefrostcount + severefrostcount
+        if (runoff > 0 and daysaftersowing > 0 and today >= todaydate) then
+           numconsecwaterloggeddays = numconsecwaterloggeddays + 1
+        else
+           if (numconsecwaterloggeddays >= 1) then
+              act_mods waterlog1ormore
+           endif
+           if (numconsecwaterloggeddays >= 2) then
+              act_mods waterlog2ormore
+           endif
+           if (numconsecwaterloggeddays >= 3) then
+              act_mods waterlog3ormore
+           endif
+           if (numconsecwaterloggeddays >= 4) then
+              act_mods waterlog4ormore
+           endif
+           if (numconsecwaterloggeddays >= 5) then
+              act_mods waterlog5ormore
+           endif
+           if (numconsecwaterloggeddays >= 6) then
+              act_mods waterlog6ormore
+           endif
+           numconsecwaterloggeddays = 0
+        endif
+     
+     SECTION:- end_of_day
+        avtemp = (maxt + mint) / 2
+        amountwaterleft = swtoday - critswtoday
+        amountwaterabovecll = swtoday - clltoday
+        if (amountwaterabovecll < 0) then
+           amountwaterabovecll = 0
+        endif
+        nitrogen = no3() + nh4()
+        nitrogenavailtoroots = ntoday
+        availablewater = sw_dep() - ll_dep()
+        pawc = dul_dep() - ll_dep()
+        nuptakekgha = no3_uptake() * -1
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ningrain = graintotaln * 10
+        if (daysaftersowing = 1) then
+           zadok11das = 0
+           zadok12das = 0
+           zadok13das = 0
+           zadok14das = 0
+           zadok15das = 0
+           zadok16das = 0
+           zadok30das = 0
+           zadok31das = 0
+           zadok32das = 0
+           zadok37das = 0
+           zadok39das = 0
+           zadok45das = 0
+           zadok55das = 0
+           zadok65das = 0
+           zadok75das = 0
+        endif
+        if (z >= 11 and zadok11das = 0) then
+           zadok11das = daysaftersowing
+        elseif (z >= 12 and zadok12das = 0) then
+           zadok12das = daysaftersowing
+        elseif (z >= 13 and zadok13das = 0) then
+           zadok13das = daysaftersowing
+        elseif (z >= 14 and zadok14das = 0) then
+           zadok14das = daysaftersowing
+        elseif (z >= 15 and zadok15das = 0) then
+           zadok15das = daysaftersowing
+        elseif (z >= 16 and zadok16das = 0) then
+           zadok16das = daysaftersowing
+        elseif (z >= 30 and zadok30das = 0) then
+           zadok30das = daysaftersowing
+        elseif (z >= 31 and zadok31das = 0) then
+           zadok31das = daysaftersowing
+        elseif (z >= 32 and zadok32das = 0) then
+           zadok32das = daysaftersowing
+        elseif (z >= 37 and zadok37das = 0) then
+           zadok37das = daysaftersowing
+        elseif (z >= 39 and zadok39das = 0) then
+           zadok39das = daysaftersowing
+        elseif (z >= 45 and zadok45das = 0) then
+           zadok45das = daysaftersowing
+        elseif (z >= 55 and zadok55das = 0) then
+           zadok55das = daysaftersowing
+        elseif (z >= 65 and zadok65das = 0) then
+           zadok65das = daysaftersowing
+        elseif (z >= 75 and zadok75das = 0) then
+           zadok75das = daysaftersowing
+        endif
+     
+     SECTION:- sowing
+        avtemp = (maxt + mint) / 2
+        amountwaterleft = swtoday - critswtoday
+        amountwaterabovecll = swtoday - clltoday
+        if (amountwaterabovecll < 0) then
+           amountwaterabovecll = 0
+        endif
+        nitrogen = no3() + nh4()
+        nitrogenavailtoroots = ntoday
+        availablewater = sw_dep() - ll_dep()
+        pawc = dul_dep() - ll_dep()
+        nuptakekgha = no3_uptake() * -1
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ningrain = graintotaln * 10
+        if (daysaftersowing = 1) then
+           zadok11das = 0
+           zadok12das = 0
+           zadok13das = 0
+           zadok14das = 0
+           zadok15das = 0
+           zadok16das = 0
+           zadok30das = 0
+           zadok31das = 0
+           zadok32das = 0
+           zadok37das = 0
+           zadok39das = 0
+           zadok45das = 0
+           zadok55das = 0
+           zadok65das = 0
+           zadok75das = 0
+        endif
+        if (z >= 11 and zadok11das = 0) then
+           zadok11das = daysaftersowing
+        elseif (z >= 12 and zadok12das = 0) then
+           zadok12das = daysaftersowing
+        elseif (z >= 13 and zadok13das = 0) then
+           zadok13das = daysaftersowing
+        elseif (z >= 14 and zadok14das = 0) then
+           zadok14das = daysaftersowing
+        elseif (z >= 15 and zadok15das = 0) then
+           zadok15das = daysaftersowing
+        elseif (z >= 16 and zadok16das = 0) then
+           zadok16das = daysaftersowing
+        elseif (z >= 30 and zadok30das = 0) then
+           zadok30das = daysaftersowing
+        elseif (z >= 31 and zadok31das = 0) then
+           zadok31das = daysaftersowing
+        elseif (z >= 32 and zadok32das = 0) then
+           zadok32das = daysaftersowing
+        elseif (z >= 37 and zadok37das = 0) then
+           zadok37das = daysaftersowing
+        elseif (z >= 39 and zadok39das = 0) then
+           zadok39das = daysaftersowing
+        elseif (z >= 45 and zadok45das = 0) then
+           zadok45das = daysaftersowing
+        elseif (z >= 55 and zadok55das = 0) then
+           zadok55das = daysaftersowing
+        elseif (z >= 65 and zadok65das = 0) then
+           zadok65das = daysaftersowing
+        elseif (z >= 75 and zadok75das = 0) then
+           zadok75das = daysaftersowing
+        endif
+     
+     SECTION:- harvesting
+        avtemp = (maxt + mint) / 2
+        amountwaterleft = swtoday - critswtoday
+        amountwaterabovecll = swtoday - clltoday
+        if (amountwaterabovecll < 0) then
+           amountwaterabovecll = 0
+        endif
+        nitrogen = no3() + nh4()
+        nitrogenavailtoroots = ntoday
+        availablewater = sw_dep() - ll_dep()
+        pawc = dul_dep() - ll_dep()
+        nuptakekgha = no3_uptake() * -1
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ningrain = graintotaln * 10
+        if (daysaftersowing = 1) then
+           zadok11das = 0
+           zadok12das = 0
+           zadok13das = 0
+           zadok14das = 0
+           zadok15das = 0
+           zadok16das = 0
+           zadok30das = 0
+           zadok31das = 0
+           zadok32das = 0
+           zadok37das = 0
+           zadok39das = 0
+           zadok45das = 0
+           zadok55das = 0
+           zadok65das = 0
+           zadok75das = 0
+        endif
+        if (z >= 11 and zadok11das = 0) then
+           zadok11das = daysaftersowing
+        elseif (z >= 12 and zadok12das = 0) then
+           zadok12das = daysaftersowing
+        elseif (z >= 13 and zadok13das = 0) then
+           zadok13das = daysaftersowing
+        elseif (z >= 14 and zadok14das = 0) then
+           zadok14das = daysaftersowing
+        elseif (z >= 15 and zadok15das = 0) then
+           zadok15das = daysaftersowing
+        elseif (z >= 16 and zadok16das = 0) then
+           zadok16das = daysaftersowing
+        elseif (z >= 30 and zadok30das = 0) then
+           zadok30das = daysaftersowing
+        elseif (z >= 31 and zadok31das = 0) then
+           zadok31das = daysaftersowing
+        elseif (z >= 32 and zadok32das = 0) then
+           zadok32das = daysaftersowing
+        elseif (z >= 37 and zadok37das = 0) then
+           zadok37das = daysaftersowing
+        elseif (z >= 39 and zadok39das = 0) then
+           zadok39das = daysaftersowing
+        elseif (z >= 45 and zadok45das = 0) then
+           zadok45das = daysaftersowing
+        elseif (z >= 55 and zadok55das = 0) then
+           zadok55das = daysaftersowing
+        elseif (z >= 65 and zadok65das = 0) then
+           zadok65das = daysaftersowing
+        elseif (z >= 75 and zadok75das = 0) then
+           zadok75das = daysaftersowing
+        endif
+     
+     SECTION:- reseting
+        avtemp = (maxt + mint) / 2
+        amountwaterleft = swtoday - critswtoday
+        amountwaterabovecll = swtoday - clltoday
+        if (amountwaterabovecll < 0) then
+           amountwaterabovecll = 0
+        endif
+        nitrogen = no3() + nh4()
+        nitrogenavailtoroots = ntoday
+        availablewater = sw_dep() - ll_dep()
+        pawc = dul_dep() - ll_dep()
+        nuptakekgha = no3_uptake() * -1
+        ninplant = (biomass_n * 10) + (rootgreenn * 10)
+        ningrain = graintotaln * 10
+        if (daysaftersowing = 1) then
+           zadok11das = 0
+           zadok12das = 0
+           zadok13das = 0
+           zadok14das = 0
+           zadok15das = 0
+           zadok16das = 0
+           zadok30das = 0
+           zadok31das = 0
+           zadok32das = 0
+           zadok37das = 0
+           zadok39das = 0
+           zadok45das = 0
+           zadok55das = 0
+           zadok65das = 0
+           zadok75das = 0
+        endif
+        if (z >= 11 and zadok11das = 0) then
+           zadok11das = daysaftersowing
+        elseif (z >= 12 and zadok12das = 0) then
+           zadok12das = daysaftersowing
+        elseif (z >= 13 and zadok13das = 0) then
+           zadok13das = daysaftersowing
+        elseif (z >= 14 and zadok14das = 0) then
+           zadok14das = daysaftersowing
+        elseif (z >= 15 and zadok15das = 0) then
+           zadok15das = daysaftersowing
+        elseif (z >= 16 and zadok16das = 0) then
+           zadok16das = daysaftersowing
+        elseif (z >= 30 and zadok30das = 0) then
+           zadok30das = daysaftersowing
+        elseif (z >= 31 and zadok31das = 0) then
+           zadok31das = daysaftersowing
+        elseif (z >= 32 and zadok32das = 0) then
+           zadok32das = daysaftersowing
+        elseif (z >= 37 and zadok37das = 0) then
+           zadok37das = daysaftersowing
+        elseif (z >= 39 and zadok39das = 0) then
+           zadok39das = daysaftersowing
+        elseif (z >= 45 and zadok45das = 0) then
+           zadok45das = daysaftersowing
+        elseif (z >= 55 and zadok55das = 0) then
+           zadok55das = daysaftersowing
+        elseif (z >= 65 and zadok65das = 0) then
+           zadok65das = daysaftersowing
+        elseif (z >= 75 and zadok75das = 0) then
+           zadok75das = daysaftersowing
+        endif
+     
+     SECTION:- start_of_day
+        if (today = startseasondate-1) then
+           act_mods endseason
+        elseif (today = startseasondate) then
+           act_mods startseason
+        endif
+        if (today = todaydate or today = simulation_start_date) then
+           act_mods currentday
+        endif
+        if (today = date('1-jan')) then
+           act_mods startofyear
+        endif
+     
+     SECTION:- init
+           currentfallow = 0
+           z = 0
+           zadok11das = 0
+           zadok12das = 0
+           zadok13das = 0
+           zadok14das = 0
+           zadok15das = 0
+           zadok16das = 0
+           zadok30das = 0
+           zadok31das = 0
+           zadok32das = 0
+           zadok37das = 0
+           zadok39das = 0
+           zadok45das = 0
+           zadok55das = 0
+           zadok65das = 0
+           zadok75das = 0
+           startdailydate = 0
+           currentcropfound = 0
+           deciledate  = 0
+           dodecileoutput  = 0
+           threemonthstimedate  = 0
+           presowingfertiliser = 0
+           nitrogen = 0
+           floweringdate = 0
+        numconsecwaterloggeddays = 0
+     
+     SECTION:- flowering
+     floweringdate = sowdatefull + daysaftersowing
+     END of rules
+     
+     Manager creating a new local real variable : currentfallow = 0.00000
+     Manager creating a new local real variable : z = 0.00000
+     Manager creating a new local real variable : zadok11das = 0.00000
+     Manager creating a new local real variable : zadok12das = 0.00000
+     Manager creating a new local real variable : zadok13das = 0.00000
+     Manager creating a new local real variable : zadok14das = 0.00000
+     Manager creating a new local real variable : zadok15das = 0.00000
+     Manager creating a new local real variable : zadok16das = 0.00000
+     Manager creating a new local real variable : zadok30das = 0.00000
+     Manager creating a new local real variable : zadok31das = 0.00000
+     Manager creating a new local real variable : zadok32das = 0.00000
+     Manager creating a new local real variable : zadok37das = 0.00000
+     Manager creating a new local real variable : zadok39das = 0.00000
+     Manager creating a new local real variable : zadok45das = 0.00000
+     Manager creating a new local real variable : zadok55das = 0.00000
+     Manager creating a new local real variable : zadok65das = 0.00000
+     Manager creating a new local real variable : zadok75das = 0.00000
+     Manager creating a new local real variable : startdailydate = 0.00000
+     Manager creating a new local real variable : currentcropfound = 0.00000
+     Manager creating a new local real variable : deciledate = 0.00000
+     Manager creating a new local real variable : dodecileoutput = 0.00000
+     Manager creating a new local real variable : threemonthstimedate = 0.00000
+     Manager creating a new local real variable : presowingfertiliser = 0.00000
+     Manager creating a new local real variable : nitrogen = 0.00000
+     Manager creating a new local real variable : floweringdate = 0.00000
+     Manager creating a new local real variable : numconsecwaterloggeddays = 0.00000
+
+------- CanolaOilConc Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        if (daysaftersowing = 1) then
+           cum_temp = 0
+           cum_swdef = 0
+           cum_days = 0
+        elseif (stagename = 'start_grain_fill' or
+         stagename = 'end_grain_fill' or
+         stagename = 'maturity' or
+         stagename = 'harvest_ripe') then
+           cum_temp = cum_temp + (maxt + mint) / 2
+           cum_swdef = cum_swdef + swdef_photo
+           cum_days = cum_days + 1
+        endif
+        if (cum_days > 0) then
+           avg_temp = cum_temp / cum_days
+           avg_swdef = cum_swdef / cum_days
+           if (avg_temp <= 14) then
+              oil_conc =  47
+           else
+              oil_conc = (47 - ((avg_temp - 14)*1.21)) - (1.91*(1 - avg_swdef^2))
+           endif
+        else
+           oil_conc = 0
+        endif
+     
+     SECTION:- end_of_day
+     
+     SECTION:- init
+           cum_temp = 0
+           cum_swdef = 0
+           cum_days = 0
+     END of rules
+     
+     Manager creating a new local real variable : cum_temp = 0.00000
+     Manager creating a new local real variable : cum_swdef = 0.00000
+     Manager creating a new local real variable : cum_days = 0.00000
+
+------- Fertilise1 Initialisation ---------------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+        if (today = date('03-sep') then
+           scenarioapplication = 'no'
+           fertiliser apply amount = 16 (kg/ha), depth = 20 (mm), type = no3_n ()
+        endif
+     END of rules
+     
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.110  0.210  0.430  0.112  1.400  0.613  0.400
+          100.-  400.  0.080  0.140  0.260  0.440  0.189  1.400  0.378  0.400
+          400.-  700.  0.095  0.140  0.260  0.440  0.200  1.400  0.009  0.300
+          700.- 1000.  0.130  0.161  0.310  0.420  0.280  1.450  0.000  0.300
+         1000.- 1500.  0.170  0.188  0.370  0.410  0.370  1.500  0.000  0.200
+         1500.- 2000.  0.170  0.188  0.370  0.400  0.370  1.550  0.000  0.100
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      11.00       0.20      10.00      22.00
+          100.-  400.      42.00      14.70      36.00      54.00
+          400.-  700.      42.00      18.00      36.00      54.00
+          700.- 1000.      48.30      35.70      44.70      33.00
+         1000.- 1500.      94.00      91.00      91.00      20.00
+         1500.- 2000.      94.00      91.00      91.00      15.00
+          ---------------------------------------------------------
+               Totals     331.30     250.60     308.70     198.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              68.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            2.00 (mm^0.5)
+            CONA:                     2.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- Erosion Initialisation ------------------------------------------------
+      Initialising:
+     
+        - Reading Parameters
+     
+     
+     
+                      Erosion Parameters
+          -----------------------------------------------
+           Profile reduction:                     off
+           Freebairn cover-sediment concentration model
+     
+           LS factor:                             0.0650
+     
+           K factor:                              0.4000
+     
+           P factor:                              1.0000
+     
+          -----------------------------------------------
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.81  1.15   23.80    0.00    0.00
+             2     9.47  0.50   33.18    0.00    0.00
+             3     9.91  0.25   13.02    0.00    0.00
+             4     9.10  0.15    4.35    0.87    0.00
+             5     9.10  0.10    7.50    1.50    0.00
+             6     8.80  0.10    3.10    0.62    0.00
+          ------------------------------------------------
+           Totals               84.95    2.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15847.5  1267.8   252.5    31.6   241.6     5.4
+             2      20855.9  1668.5   144.1    18.0   154.0     3.4
+             3      10483.4   838.7    16.6     2.1    98.2     2.2
+             4       6521.6   521.7     3.4     0.4    62.6     1.4
+             5       7496.3   599.7     3.7     0.5    29.6     0.7
+             6       7746.2   619.7     3.8     0.5    14.0     0.3
+          ---------------------------------------------------------
+           Totals   68950.9  5516.1   424.1    53.0   600.0    13.3
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- Tracker Initialisation ------------------------------------------------
+     Tracker variables:
+        sum of unpatched_rain on start_of_day from StartSeason to EndSeason as SeasonalRainUnPatched
+        sum of unpatched_rain on start_of_day from ThisMonth to ThreeMonthsTime as RainInComingMonths
+        value of HayBiomass on flowering as Hay
+        sum of runoff on end_of_day from CurrentDay to sowing as SumRunoffToSowing
+        sum of soil_loss on end_of_day  from CurrentDay to sowing as SumSoilLossToSowing
+        value of AvailableWater on sowing as AvailableWaterAtSowing
+        value of Nitrogen on sowing as NitrogenAtSowing
+        sum of rain on end_of_day from sowing to harvesting as InCropRain
+        sum of irrigation on end_of_day from sowing to harvesting as InCropIrrigation
+        sum of fertiliser on end_of_day from emergence to harvesting as TopDressFertiliser
+        sum of rain on end_of_day from GSRStart to GSREnd as GSR
+        sum of n_stress_expan on end_of_day from sowing to harvesting as CumNStressExpan
+        sum of n_stress_photo on end_of_day from sowing to harvesting as CumNStressPhoto
+        sum of NUptakeKgHa on end_of_day from sowing to harvesting as TotalNUptake
+        sum of es on end_of_day from sowing to harvesting as TotalES
+        sum of ep on end_of_day from sowing to harvesting as TotalEP
+        sum of rain on end_of_day from startofyear to endofyear as AnnualRain
+        count of WaterLog1OrMore from sowing to harvesting as NumWaterLoggingEventsFor1OrMoreDays
+        count of WaterLog2OrMore from sowing to harvesting as NumWaterLoggingEventsFor2OrMoreDays
+        count of WaterLog3OrMore from sowing to harvesting as NumWaterLoggingEventsFor3OrMoreDays
+        count of WaterLog4OrMore from sowing to harvesting as NumWaterLoggingEventsFor4OrMoreDays
+        count of WaterLog5OrMore from sowing to harvesting as NumWaterLoggingEventsFor5OrMoreDays
+        count of WaterLog6OrMore from sowing to harvesting as NumWaterLoggingEventsFor6OrMoreDays
+        sum of dlt_n_min_tot() on end_of_day from sowing to harvesting as InCropMineralisation
+        sum of dnit() on end_of_day from sowing to harvesting as InCropNitrification
+        sum of leach_no3 on end_of_day from sowing to harvesting as InCropNLeaching
+        sum of sw_stress_expan on end_of_day from sowing to harvesting as CumSWStressExpan
+        sum of sw_stress_photo on end_of_day from sowing to harvesting as CumSWStressPhoto
+        sum of sw_stress_photo on end_of_day from sowing to floral_initiation as CumSWStressPhotoSowToFI
+        sum of sw_stress_photo on end_of_day from floral_initiation to flowering as CumSWStressPhotoFIToFlowering
+        sum of sw_stress_photo on end_of_day from flowering to harvesting as CumSWStressPhotoFloweringToHarvesting
+        sum of n_stress_photo on end_of_day from sowing to floral_initiation as CumNStressPhotoSowToFI
+        sum of n_stress_photo on end_of_day from floral_initiation to flowering as CumNStressPhotoFIToFlowering
+        sum of n_stress_photo on end_of_day from flowering to harvesting as CumNStressPhotoFloweringToHarvesting
+        sum of rain on end_of_day from CurrentDay to harvesting as RainToMaturity
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : doreset = 0.00000
+     Manager creating a new local string variable : cropsown = wheat
+     Manager creating a new local real variable : moisturecontent = 12.00000
+     Manager creating a new local real variable : wetyield = 0.00000
+     Manager creating a new local real variable : oil_conc = 0.00000
+     Manager creating a new local real variable : harvesttoday = 0.00000
+     Manager creating a new local real variable : cropbiomass = 0.00000
+     Manager creating a new local real variable : haybiomasspercent = 70.00000
+     Manager creating a new local real variable : haybiomass = 0.00000
+     Manager creating a new local real variable : haygrossmargin = -120.00000
+     Manager creating a new local real variable : graingrossmargin = -30.00000
+1 January 2005(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "stationnumber".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : stationnumber = 0.00000
+     Manager creating a new local string variable : auststate = wa
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "mildheatshockcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : mildheatshockcount = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "moderateheatshockcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : moderateheatshockcount = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "severeheatshockcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : severeheatshockcount = 0.00000
+     Manager creating a new local real variable : mildheatshockadditivecount = 0.00000
+     Manager creating a new local real variable : moderateheatshockadditivecount = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "mildfrostcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : mildfrostcount = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "moderatefrostcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : moderatefrostcount = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "severefrostcount".
+     Variables should have a value before they are used in an expression.
+     Component name: Script
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : severefrostcount = 0.00000
+     Manager creating a new local real variable : mildfrostadditivecount = 0.00000
+     Manager creating a new local real variable : moderatefrostadditivecount = 0.00000
+     Manager creating a new local real variable : avtemp = 22.00000
+     Manager creating a new local real variable : amountwaterleft = 0.00000
+     Manager creating a new local real variable : amountwaterabovecll = 0.00000
+     Manager creating a new local real variable : nitrogenavailtoroots = 0.00000
+     Manager creating a new local real variable : availablewater = 14.81830
+     Manager creating a new local real variable : pawc = 73.00000
+     Manager creating a new local real variable : nuptakekgha = -0.00000
+     Manager creating a new local real variable : ninplant = 0.00000
+     Manager creating a new local real variable : ningrain = 0.00000
+1 April 2005(Day of year=91), Reset: 
+     Manager creating a new local string variable : resetwater = yes
+     Manager creating a new local string variable : resetnitrogen = yes
+     Manager creating a new local string variable : resetsurfaceom = yes
+1 April 2005(Day of year=91), Soil Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+1 April 2005(Day of year=91), Soil Nitrogen: 
+     
+        - Reading Parameters
+     
+        - Reading Constants
+1 April 2005(Day of year=91), SurfaceOM: 
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+6 May 2005(Day of year=126), Script: 
+     Manager creating a new local real variable : sowingfertiliser = 0.00000
+24 June 2005(Day of year=175), Sow: 
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = rosella, row_spacing = 250, crop_class = plant, tiller_no_fertile = 1, skip = solid
+24 June 2005(Day of year=175), Wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = rosella
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.110       1.000
+         300.0     0.050          0.140       1.000
+         300.0     0.040          0.200       1.000
+         300.0     0.040          0.280       0.400
+         500.0     0.020          0.370       0.000
+         500.0     0.020          0.370       0.000
+         -----------------------------------------------
+         Extractable SW:    73mm in  2000mm total depth (  4%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            175   30.0  100.0  250.0   0.0   0.0 rosella
+         ------------------------------------------------
+     
+24 June 2005(Day of year=175), Fertilise: 
+     Manager sending message :- fertiliser apply  amount = 6 (kg/ha), depth = 20 (mm), type = no3_n
+24 June 2005(Day of year=175), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.00 of N as nitrate (no3_n)
+                                         added at depth   20.00 (layer   1)
+24 June 2005(Day of year=175), Sowing tillage: 
+     Manager sending message :- surfaceom tillage  type = planter, f_incorp = 0.1, tillage_depth = 50
+24 June 2005(Day of year=175), SurfaceOM: 
+     Residue removed using planter
+                                             Fraction Incorporated =     0.10
+                                             Incorporated Depth    =    50.00
+24 June 2005(Day of year=175), GrossMargin: 
+     Manager creating a new local real variable : cost = 22.20000
+25 June 2005(Day of year=176), Wheat: 
+      stage 2.0 germination
+4 July 2005(Day of year=185), Wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   43.45 (mm)
+5 July 2005(Day of year=186), Wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   43.11 (mm)
+3 September 2005(Day of year=246), Fertilise1: 
+     Manager sending message :- fertiliser apply  amount = 16 (kg/ha), depth = 20 (mm), type = no3_n
+3 September 2005(Day of year=246), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        16.00 of N as nitrate (no3_n)
+                                         added at depth   20.00 (layer   1)
+27 September 2005(Day of year=270), Wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         297.00 (g/m^2)   lai          =   3.676 (m^2/m^2)
+                     stover N conc =     1.87 (%)    extractable sw =   68.29 (mm)
+25 October 2005(Day of year=298), Wheat: 
+      stage 6.0 flowering
+                     biomass =         629.52 (g/m^2)   lai          =   3.021 (m^2/m^2)
+                     stover N conc =     0.92 (%)    extractable sw =   74.84 (mm)
+1 November 2005(Day of year=305), Wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         736.25 (g/m^2)   lai          =   2.559 (m^2/m^2)
+                     stover N conc =     0.64 (%)    extractable sw =   71.61 (mm)
+2 November 2005(Day of year=306), CanolaOilConc: 
+     Manager creating a new local real variable : avg_temp = 26.50000
+     Manager creating a new local real variable : avg_swdef = 0.55493
+2 December 2005(Day of year=336), Wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         843.40 (g/m^2)   lai          =   0.634 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   63.80 (mm)
+4 December 2005(Day of year=338), Wheat: 
+      stage 9.0 maturity
+                     biomass =         843.54 (g/m^2)   lai          =   0.560 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   63.79 (mm)
+5 December 2005(Day of year=339), Wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         843.54 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   63.54 (mm)
+5 December 2005(Day of year=339), GrossMargin: 
+     Manager creating a new local real variable : fullprice = 140.00000
+5 December 2005(Day of year=339), Harvest: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  298                           stover (kg/ha)         =     5778.3
+      maturity day           =  338                           grain yield (kg/ha)    =     2657.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3036.7
+      grain wt (g)           =    0.031                       grains/m^2             =     8483.7
+      grains/plant           =   84.8                         maximum lai            =      3.821
+      total above ground biomass (kg/ha)    =     8435.4
+      live above ground biomass (kg/ha)     =     8435.4
+      green above ground biomass (kg/ha)    =     6627.9
+      senesced above ground biomass (kg/ha) =     1807.5
+      number of leaves       =     49.5
+      DM Root:Shoot ratio    =     0.18                       Harvest Index          =       0.31
+      Stover C:N ratio       =   110.09                       Root C:N ratio         =      42.98
+      grain N percent        =     1.53                       total N content (kg/ha)=      61.52
+      grain N uptake (kg/ha) =    40.53                       senesced N content (kg/ha)=    9.04
+      green N content (kg/ha)=    11.96
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.144        0.144
+         floral_initiation    to flowering               0.016        0.022        0.177        0.177
+         flowering            to start_grain_fill        0.024        0.034        0.167        0.167
+         start_grain_fill     to end_grain_fill          0.026        0.035        0.281        0.281
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5778.3                     0.0
+                          N  (kg/ha) =                  20.99                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2657.1                     0.0
+                          N  (kg/ha) =                  40.53                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   63.54 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1526.1
+                          N  (kg/ha) =                   0.00                   14.20
+     
+1 March 2006(Day of year=60), Clock: 
+     Simulation is terminating due to end criteria being met.

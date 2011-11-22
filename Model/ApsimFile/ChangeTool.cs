@@ -99,7 +99,8 @@ namespace ApsimFile
                || Child.Name.ToLower() == "data"
                || Child.Name.ToLower() == "tclmanager"
                || Child.Name.ToLower() == "farmmanager"
-               || Child.Name.ToLower() == "paddockmanager")
+               || Child.Name.ToLower() == "paddockmanager"
+               || Child.Name.ToLower() == "paddock" )
                Upgrade(Child, Upgrader);  // recurse
             }
          }

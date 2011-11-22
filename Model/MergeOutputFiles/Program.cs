@@ -63,7 +63,7 @@ namespace Tools
                   Title = ConstantLine.Substring(8);
                }
 
-            const int TitleFieldSize = 60;
+            const int TitleFieldSize = 80;
             if (First)
                {
                Out.WriteLine(new string(' ', TitleFieldSize - 8) + "FileName" + HeadingLines[0]);
