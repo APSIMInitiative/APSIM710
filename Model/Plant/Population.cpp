@@ -231,10 +231,11 @@ float Population::DeathDrought()
 
    float killfr;                                 // fraction of crop population to kill
    float dlt_plants = 0.0;                       // population to kill
+   float epsilon =  numeric_limits<float>::epsilon();
 
    if (Plant.getLeafNo() < leaf_no_crit
        && Plant.getCumSwdefPhoto() > swdf_photo_limit
-        && Plant.getSwdefPhoto() < 1.0)
+        && (1.0 - Plant.getSwdefPhoto()) > epsilon )
       {
       killfr = swdf_photo_rate * (Plant.getCumSwdefPhoto() - swdf_photo_limit);
       killfr = bound (killfr, 0.0, 1.0);
