@@ -202,7 +202,7 @@
          double precision psix(MV)
          
          double precision CN_runoff
-         
+         double precision DELk(4)         
       End Type APSwimGlobals
 ! =====================================================================
 !     APSWIM Parameters
@@ -1725,6 +1725,8 @@ cnh      slbp0 = 0d0
          p%P(counter) = 0d0
          p%k(counter) = 0d0
          p%c(counter) = 0d0
+         g%swf(counter) = 0.0
+         g%SubSurfaceInFlow(counter) = 0.0
   211 continue
       p%Kdul = 0d0
       p%Psidul = 0d0
@@ -1839,14 +1841,14 @@ c      eqr0 = 0d0
 * =====================================================================
 
       do 41 vegnum = 1, MV
+         do 39 solnum=1,nsol
+            g%slup (vegnum,solnum) = 0d0
+   39    continue
          do 40 node = 0,M
             g%rld(node,vegnum) = 0d0
             g%rc (node,vegnum) = 0d0
             g%qr (node,vegnum) = 0d0
             g%qrpot (node,vegnum) = 0d0
-            do 39 solnum=1,nsol
-               g%slup (vegnum,solnum) = 0d0
-   39       continue
    40    continue
          g%rtp (vegnum) = 0d0
          g%rt  (vegnum) = 0d0
@@ -1868,10 +1870,39 @@ c      eqr0 = 0d0
          g%cover_tot(vegnum) = 0d0
          do 101 solnum=1,nsol
             g%solute_demand(vegnum,solnum) = 0d0
+            g%demand_is_met(vegnum,solnum) = .false.
   101    continue
   102 continue
 
       g%crops_found = .false.
+      g%start_year = 0
+      g%start_day = 0
+      g%num_crops = 0
+      g%nveg = 0
+      g%potet = 0.0
+      g%rain = 0.0
+      g%mint = 0.0
+      g%maxt = 0.0
+      g%radn = 0.0
+
+      g%SWIMRainNumPairs = 0 
+      g%SWIMEvapNumPairs = 0
+      g%work = 0d0
+      g%psim = 0d0
+      g%residue_cover = 0d0
+      g%cover_green_sum = 0d0
+      g%CN_runoff = 0d0
+      g%t = 0d0
+      g%cover_surface_runoff = 0.0
+
+      do 50 vegnum = 1,MV
+         g%psimin(vegnum) = 0d0
+         g%root_radius(vegnum) = 0d0
+         g%root_conductance(vegnum) = 0d0
+         g%crop_names(vegnum) = ''
+         g%crop_owners(vegnum) = ''
+         g%crop_in(vegnum) = .false.
+   50 continue
 
       return
       end subroutine
@@ -2250,27 +2281,27 @@ c   50    continue
 *+  Local Variables
       double precision S
       double precision Sdul,logpsi
-      double precision DELk(4),Mk(4),Y,Y0,Y1,T,m0,M1,alpha,beta,phi,tau
+      double precision Mk(4),Y,Y0,Y1,T,m0,M1,alpha,beta,phi,tau
       
 *- Implementation Section ----------------------------------
-      DELk(1) = (p%dul(layer) - p%sat(layer)) / (Log10(-p%psid(layer)))
-      DELk(2) = (p%ll15(layer) - p%dul(layer)) 
+      g%DELk(1) = (p%dul(layer) - p%sat(layer))/(Log10(-p%psid(layer)))
+      g%DELk(2) = (p%ll15(layer) - p%dul(layer)) 
      :        / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
-      DELk(3) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
-      DELk(4) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
+      g%DELk(3) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
+      g%DELk(4) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
       Mk(1) = 0d0
-      Mk(2) = (DELk(1) + DELk(2)) / 2d0
-      Mk(3) = (DELk(2) + DELk(3)) / 2d0
-      Mk(4) = DELk(4)
+      Mk(2) = (g%DELk(1) + g%DELk(2)) / 2d0
+      Mk(3) = (g%DELk(2) + g%DELk(3)) / 2d0
+      Mk(4) = g%DELk(4)
 
       ! First bit might not be monotonic so check and adjust
-      alpha = Mk(1) / DELk(1)
-      beta = Mk(2) / DELk(1)
+      alpha = Mk(1) / g%DELk(1)
+      beta = Mk(2) / g%DELk(1)
       phi = alpha-((2*alpha+beta-3)**2 /(3*(alpha + beta - 2)))
       If (phi .le.0) Then
          tau = 3 / ((alpha**2 + beta**2)**0.5)
-         Mk(1) = tau * alpha * DELk(1)
-         Mk(2) = tau * beta * DELk(1)
+         Mk(1) = tau * alpha * g%DELk(1)
+         Mk(2) = tau * beta * g%DELk(1)
       EndIf
 
       if (psi.ge.-1d0) then
@@ -4700,6 +4731,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       else
       endif
 
+      time = ''
       call get_char_var_optional (
      :           unknown_module,
      :           'rain_time',
@@ -5238,6 +5270,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
          ! calculate evaporation for entire timestep
 
+         time = ''
          call get_char_var_optional (
      :           unknown_module,
      :           'eo_time',

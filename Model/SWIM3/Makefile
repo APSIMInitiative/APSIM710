@@ -16,5 +16,6 @@ LIBS = FortranComponentInterface
 
 APSIMMODEL = Yes
 PROJECTTYPE = dll
+EXTRACOMPILEFLAGS = -ffloat-store
 
 include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
