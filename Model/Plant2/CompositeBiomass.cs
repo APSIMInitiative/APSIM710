@@ -11,9 +11,6 @@ public class CompositeBiomass : Biomass
     [Link]
     Plant Plant = null;
 
-    [Link]
-    ModelEnvironment ModelEnvironment = null;
-
     [Param]
     private string[] Propertys = null;
 
@@ -25,7 +22,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".NonStructuralN");
+                Value += Plant.GetObject(PropertyName + ".NonStructuralN");
             return Value;
         }
 
@@ -42,7 +39,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".StructuralN");
+                Value += Plant.GetObject(PropertyName + ".StructuralN");
             return Value;
         }
         set { throw new Exception("Cannot set StructuralN in CompositeBiomass"); }
@@ -55,7 +52,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".NonStructuralWt");
+                Value += Plant.GetObject(PropertyName + ".NonStructuralWt");
             return Value;
         }
         set { throw new Exception("Cannot set NonStructuralWt in CompositeBiomass"); }
@@ -68,7 +65,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".StructuralWt");
+                Value += Plant.GetObject(PropertyName + ".StructuralWt");
             return Value;
         }
         set { throw new Exception("Cannot set StructuralWt in CompositeBiomass"); }
@@ -81,7 +78,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".MetabolicN");
+                Value += Plant.GetObject(PropertyName + ".MetabolicN");
             return Value;
         }
 
@@ -95,7 +92,7 @@ public class CompositeBiomass : Biomass
         {
             double Value = 0;
             foreach (string PropertyName in Propertys)
-                Value += GetValue(PropertyName + ".MetabolicWt");
+                Value += Plant.GetObject(PropertyName + ".MetabolicWt");
             return Value;
         }
 
@@ -105,75 +102,6 @@ public class CompositeBiomass : Biomass
     override public void Clear()
     {
         // This is called in OnCut - for now do nothing.
-    }
-
-    private double GetValue(string PropertyName)
-    {
-        int PosBracket = PropertyName.IndexOf('[');
-        if (PosBracket == -1)
-            return Convert.ToDouble(ExpressionFunction.Evaluate(Plant, PropertyName));
-        else
-        {
-            object ArrayObject = ModelEnvironment.Link<object>(Plant.FullName + "." + PropertyName.Substring(0, PosBracket));
-            if (ArrayObject != null)
-            {
-                string RemainderOfPropertyName = PropertyName;
-                string ArraySpecifier = StringManip.SplitOffBracketedValue(ref RemainderOfPropertyName, '[', ']');
-                int PosRemainder = PropertyName.IndexOf("].");
-                if (PosRemainder == -1)
-                    throw new Exception("Invalid name path found in CompositeBiomass. Path: " + PropertyName);
-                RemainderOfPropertyName = PropertyName.Substring(PosRemainder + 2);
-
-                IList Array = (IList)ArrayObject;
-                int ArrayIndex;
-                if (int.TryParse(ArraySpecifier, out ArrayIndex))
-                    return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[ArrayIndex]));
-                
-                else
-                {
-                    double Sum = 0.0;
-                    for (int i = 0; i < Array.Count; i++)
-                    {
-                        object Obj = GetValueOfField(RemainderOfPropertyName, Array[i]);
-                        if (Obj == null)
-                            throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
-
-                        if (ArraySpecifier == "" || Utility.IsOfType(Array[i].GetType(), ArraySpecifier))
-                        {
-                            Sum += Convert.ToDouble(Obj);
-                        }
-                    }
-                    return Sum;
-                }
-            }
-        return 0;
-        }
-    }
-
-
-    /// <summary>
-    /// Return the value (using Reflection) of the specified property on the specified object.
-    /// Returns null if not found.
-    /// </summary>
-    private static object GetValueOfField(string PropertyName, object I)
-    {
-        string[] Bits = PropertyName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < Bits.Length; i++)
-        {
-
-            FieldInfo FI = I.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            if (FI == null)
-            {
-                PropertyInfo PI = I.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                if (PI == null)
-                    return null;
-                else
-                    I = PI.GetValue(I, null);
-            }
-            else
-                I = FI.GetValue(I);
-        }
-        return I;
     }
 }
  

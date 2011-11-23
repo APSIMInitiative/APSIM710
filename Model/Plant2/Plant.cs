@@ -4,6 +4,8 @@ using System.Text;
 using ModelFramework;
 using VBMet;
 using CSGeneral;
+using System.Reflection;
+using System.Collections;
 
 [Model]
 public class Plant
@@ -163,6 +165,95 @@ public class Plant
         return ValueFromGet;
 
     }
+
+    /// <summary>
+    /// Return an internal plant object. PropertyName can use dot and array notation (square brackets).
+    /// e.g. Leaf.MinT
+    ///      Leaf.Leaves[].Live.Wt              - sums all live weights of all objects in leaves array.
+    ///      Leaf.Leaves[1].Live.               - returns the live weight of the 2nd element of the leaves array.
+    ///      Leaf.Leaves[Leaf.NodeNo].Live.Wt)  - returns the live weight of the leaf as specified by Leaf.NodeNo
+    /// </summary>
+    public double GetObject(string PropertyName)
+    {
+        int PosBracket = PropertyName.IndexOf('[');
+        if (PosBracket == -1)
+            return Convert.ToDouble(ExpressionFunction.Evaluate(this, PropertyName));
+        else
+        {
+            object ArrayObject = ModelEnvironment.Link<object>(FullName + "." + PropertyName.Substring(0, PosBracket));
+            if (ArrayObject != null)
+            {
+                string RemainderOfPropertyName = PropertyName;
+                string ArraySpecifier = StringManip.SplitOffBracketedValue(ref RemainderOfPropertyName, '[', ']');
+                int PosRemainder = PropertyName.IndexOf("].");
+                if (PosRemainder == -1)
+                    throw new Exception("Invalid name path found in CompositeBiomass. Path: " + PropertyName);
+                RemainderOfPropertyName = PropertyName.Substring(PosRemainder + 2);
+
+                IList Array = (IList)ArrayObject;
+                int ArrayIndex;
+                if (int.TryParse(ArraySpecifier, out ArrayIndex))
+                    return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[ArrayIndex]));
+                
+                else if (ArraySpecifier.Contains("."))
+                {
+                    object I = GetPlantVariable(ArraySpecifier);
+                    if (I != null)
+                    {
+                        int Index = Convert.ToInt32(I);
+                        if (Index < 0 || Index >= Array.Count)
+                            throw new Exception("Invalid index of " + Index.ToString() + " found while indexing into variable: " + PropertyName);
+                        return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[Index]));
+                    }
+                }
+                else
+                {
+                    double Sum = 0.0;
+                    for (int i = 0; i < Array.Count; i++)
+                    {
+                        object Obj = GetValueOfField(RemainderOfPropertyName, Array[i]);
+                        if (Obj == null)
+                            throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
+
+                        if (ArraySpecifier == "" || Utility.IsOfType(Array[i].GetType(), ArraySpecifier))
+                        {
+                            Sum += Convert.ToDouble(Obj);
+                        }
+                    }
+                    return Sum;
+                }
+            }
+        return 0;
+        }
+    }
+
+
+    /// <summary>
+    /// Return the value (using Reflection) of the specified property on the specified object.
+    /// Returns null if not found.
+    /// </summary>
+    private static object GetValueOfField(string PropertyName, object I)
+    {
+        string[] Bits = PropertyName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < Bits.Length; i++)
+        {
+
+            FieldInfo FI = I.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            if (FI == null)
+            {
+                PropertyInfo PI = I.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                if (PI == null)
+                    return null;
+                else
+                    I = PI.GetValue(I, null);
+            }
+            else
+                I = FI.GetValue(I);
+        }
+        return I;
+    }
+
+
  #endregion
 
  #region Event handlers and publishers
