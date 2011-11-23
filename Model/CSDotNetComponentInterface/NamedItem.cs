@@ -74,7 +74,7 @@ public class NamedList<T> : List<T> where T : NamedItem
 // --------------------------------------------------------------------------
 public abstract class TypedItem
 {
-    public abstract bool IsOfType(String TypeNameToMatch);
+    internal abstract bool IsOfType(String TypeNameToMatch);
 }
 // --------------------------------------------------------------------------
 /// <summary>
@@ -83,21 +83,21 @@ public abstract class TypedItem
 /// </summary>
 /// <typeparam name="T"></typeparam>
 // --------------------------------------------------------------------------
-public class TypedList<T> : List<T> where T : TypedItem
-{
-    public T this[String TypeName]
-    {
-        get
-        {
-            foreach (T Obj in this)
-            {
-                if (Obj.IsOfType(TypeName))
-                    return Obj;
-            }
-            throw new Exception("Cannot find component of type: " + TypeName);
-        }
-    }
-}
+//public class TypedList<T> : List<T> where T : TypedItem
+//{
+//    public T this[String TypeName]
+//    {
+//        get
+//        {
+//            foreach (T Obj in this)
+//            {
+//                if (Obj.IsOfType(TypeName))
+//                    return Obj;
+//            }
+//            throw new Exception("Cannot find component of type: " + TypeName);
+//        }
+//    }
+//}
 /// --------------------------------------------------------------------------
 /// <summary>
 /// This class allows the developer to index into a component collection

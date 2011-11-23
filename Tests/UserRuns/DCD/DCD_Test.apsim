@@ -116,8 +116,7 @@ Imports ModelFramework
 'This manager applies dcd at the amount and depth specified (it also can repeat the application periodically)
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
-Public Class Script 
-   Inherits Instance
+Public Class Script
    
    'Parameter variables:
    &lt;param&gt; Private ApplyDCD_start_date As String
@@ -130,8 +129,9 @@ Public Class Script
    &lt;Input&gt; Private dd_mmm_yyyy As String
    &lt;Input&gt; Private dlayer As Single()
    &lt;Input&gt; Private dcd As Single()
-   &lt;Link&gt;  Private MyPaddock As Paddock
-
+   
+      
+   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -161,8 +161,6 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -188,16 +186,16 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            ModelEnvironment.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
       End If            
       
    End Sub
-
+   
 End Class
-    </text>
+</text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -222,9 +220,8 @@ Imports ModelFramework
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
 Public Class Script 
-   Inherits Instance
 
-   &lt;Link&gt;  Private MyPaddock As Paddock
+   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -325,19 +322,21 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
-      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
+      Dim SoilWater As Single()  = Nothing       'Soil water content ()
+      Dim SoilCarb_tot As Single() = Nothing     'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
+      
+      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
+      ModelEnvironment.Get("sw", SoilWater)
+      ModelEnvironment.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = Nothing
+         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -375,9 +374,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
-      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MySoilN.dlt_urea = delta_urea
+      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
+      ModelEnvironment.Set("dlt_dcd", delta_dcd)
+      ModelEnvironment.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -415,7 +414,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim SoilWaterComp As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
@@ -935,9 +934,6 @@ Imports ModelFramework
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
 Public Class Script
-   Inherits Instance
-   
-   &lt;Link&gt;  Private MyPaddock As Paddock
    
    'Parameter variables:
    &lt;param&gt; Private ApplyDCD_start_date As String
@@ -950,6 +946,9 @@ Public Class Script
    &lt;Input&gt; Private dd_mmm_yyyy As String
    &lt;Input&gt; Private dlayer As Single()
    &lt;Input&gt; Private dcd As Single()
+   
+      
+   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -979,8 +978,6 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -1006,16 +1003,16 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            ModelEnvironment.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
       End If            
       
    End Sub
-
+   
 End Class
-    </text>
+</text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -1040,9 +1037,8 @@ Imports ModelFramework
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
 Public Class Script 
-   Inherits Instance
 
-   &lt;Link&gt; Private MyPaddock As Paddock
+   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -1060,7 +1056,7 @@ Public Class Script
    'Variables read from other modules
    &lt;Input&gt; Private dlayer As Single()
    &lt;Input&gt; Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
-   &lt;Input(IsOptional:=True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+   &lt;Input(IsOptional := True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
 
    'Output variables
    &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
@@ -1143,19 +1139,21 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
-      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
+      Dim SoilWater As Single()  = Nothing       'Soil water content ()
+      Dim SoilCarb_tot As Single() = Nothing     'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
+      
+      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
+      ModelEnvironment.Get("sw", SoilWater)
+      ModelEnvironment.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = Nothing
+         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -1193,9 +1191,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
-      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MySoilN.dlt_urea = delta_urea
+      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
+      ModelEnvironment.Set("dlt_dcd", delta_dcd)
+      ModelEnvironment.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -1233,10 +1231,9 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
-      
-      Dim SAT As Single() = MySoilW.sat                       'Soil water content at saturation ()
-      Dim WP As Single() = MySoilW.ll15                       'Soil water content at lower limit/wilting point ()
+      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
+      Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
+      Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
       
       For z As Integer = 0 To SoilWater.Length - 1
@@ -1750,9 +1747,6 @@ Imports ModelFramework
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
 Public Class Script
-   Inherits Instance
-
-   &lt;Link&gt; Private MyPaddock As Paddock
    
    'Parameter variables:
    &lt;param&gt; Private ApplyDCD_start_date As String
@@ -1765,6 +1759,9 @@ Public Class Script
    &lt;Input&gt; Private dd_mmm_yyyy As String
    &lt;Input&gt; Private dlayer As Single()
    &lt;Input&gt; Private dcd As Single()
+   
+      
+   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -1794,8 +1791,6 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
       Dim delta_dcd As Single()
 
       'Re-set variables
@@ -1821,16 +1816,16 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            MyDCD.Variable("dlt_dcd").Set(delta_dcd)
+            ModelEnvironment.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
       End If            
       
    End Sub
-
+   
 End Class
-    </text>
+</text>
         </manager2>
         <manager2 name="DCD_action">
           <ui>
@@ -1855,9 +1850,8 @@ Imports ModelFramework
 'It also calculated the nitrification inhibiton factor and DCD degradation following functions given in the UI
 
 Public Class Script 
-   Inherits Instance
-   
-   &lt;Link&gt; Private MyPaddock As Paddock
+
+   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -1875,7 +1869,7 @@ Public Class Script
    'Variables read from other modules
    &lt;Input&gt; Private dlayer As Single()
    &lt;Input&gt; Private dcd As Single()                    'Amount of dcd in the soil, per layer (kg/ha)
-   &lt;Input(IsOptional:=True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
+   &lt;Input(IsOptional := True)&gt; Private ave_soil_temp As Single()    'Soil temperature for each layer (oC)
 
    'Output variables
    &lt;Output&gt;&lt;Units(" ")&gt; Public dcd_inhibition_effect As Single()  'The nitrification inhibition factor due to the presence of DCD
@@ -1958,19 +1952,21 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilN As SoilNui = MyPaddock.ComponentByType("SoilNui")
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
-      Dim MyDCD As Component = MyPaddock.ComponentByType("Solute")
-      Dim SoilWater As Single() = MySoilW.sw                         'Soil water content ()
-      Dim SoilCarb_tot As Single() = MySoilN.carbon_tot           'Total soil carbon (kg/ha)
-      Dim SoilDensity As Single() = MySoilW.bd                       'Soil bulk density (g/cm3)
+      Dim SoilWater As Single()  = Nothing       'Soil water content ()
+      Dim SoilCarb_tot As Single() = Nothing     'Total soil carbon (kg/ha)
+      Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
+      
+      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
+      ModelEnvironment.Get("sw", SoilWater)
+      ModelEnvironment.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
-         Dim st As Single() = MySoilN.st   'Soil temperature from SoilN (oC)
+         Dim st As Single() = Nothing
+         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -2008,9 +2004,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      MySoilN.Variable("nitrification_inhibition").Set(dcd_inhibition_effect)
-      MyDCD.Variable("dlt_dcd").Set(delta_dcd)
-      MySoilN.dlt_urea = delta_urea
+      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
+      ModelEnvironment.Set("dlt_dcd", delta_dcd)
+      ModelEnvironment.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -2048,9 +2044,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-
-      Dim SoilWaterComp As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
-      
+      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single

@@ -32,6 +32,7 @@ Public Class Farm
     Private EnableCutting As Boolean = True
     Private DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
     Public myAverageCover As MovingAverage = New MovingAverage(7)
+    Private ModelEnvironment As ModelEnvironment
 
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
@@ -39,7 +40,7 @@ Public Class Farm
         myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
     End Sub
 
-    Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
+    Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double, _ModelEnvironment As ModelEnvironment)
         If (DebugLevel > 0) Then
             Console.WriteLine("DDRules.Farm.Init()")
             Console.WriteLine("   MasterPM = " + MasterPM.ToString())
@@ -60,7 +61,7 @@ Public Class Farm
         Dim SpecifiedArea As Double = 0
         Dim TempList As New Dictionary(Of String, Double)
         'How do we get the area of indervidual paddocks?
-
+        ModelEnvironment = _ModelEnvironment
         MyFarmArea = FarmArea
         Dim j As Integer = 0
         'If (DebugLevel > 0) Then
@@ -120,7 +121,6 @@ Public Class Farm
         For Each SubPaddock As Paddock In MasterPM.SubPaddocks
             If (DebugLevel > 0) Then
                 Console.WriteLine(SubPaddock.Name)
-                Console.WriteLine(SubPaddock.TypeName)
             End If
             i += 1
             Dim TempArea As Double = DefaultArea
@@ -130,7 +130,7 @@ Public Class Farm
             '    myPaddocks.Add(myLaneways)
             '    MyFarmArea -= myLaneways.Area
             'Else
-            Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea)
+            Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea, ModelEnvironment)
             myPaddocks.Add(pdk)
             'End If
 

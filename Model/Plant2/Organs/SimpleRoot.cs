@@ -12,6 +12,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     private double Uptake = 0;
     private string CurrentPaddockName;
     private string OurName;
+    private bool TalkDirectlyToRoot;
 
     public override double DMDemand { get { return 0; } }
     public override double DMSupply { get { return 0; } }
@@ -26,31 +27,6 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override double NAllocation { set { } }
     public override double NUptake { set { } }
     public override double WaterDemand { get { return 0; } }
-
-    [Link]
-    private Paddock MyPaddock;
-
-    Component SoilWater = null;
-
-
-    private Component GetWaterModule()
-      {
-      string Name;
-      foreach (Component Comp in MyPaddock.ComponentList)
-         {
-         Name = Comp.TypeName.ToLower();
-         if  ((Name == "soilwat") || (Name == "soilwater"))
-            {
-            return Comp;
-            }
-         }
-      //Console.WriteLine("The SimpleRoot Organ of the Plant2 module can not find either a SoilWat or a SoilWater module in the simulation");
-      return null;
-      }
-
-
-
-
 
     [Output]
     [Units("mm")]
@@ -70,6 +46,16 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
         }
     }
 
+    private bool RootModelExists
+    {
+        get
+        {
+            if (ModelEnvironment.Link<ModelFramework.Root>(Plant.Name + "Root") != null)
+                return true;
+            else
+                return false;
+        }
+    }
 
     [Output]
     public override double WaterSupply
@@ -82,22 +68,22 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
                 OurName += ".";
             OurName += Plant.Name;
 
+            TalkDirectlyToRoot = RootModelExists;
 
-            SoilWater = GetWaterModule();
-            if (SoilWater != null)
+            double[] SWSupply;
+            if (TalkDirectlyToRoot)
             {
-                double[] SWSupply;
                 ModelEnvironment.Get(OurName + "Root.SWSupply", out SWSupply);
                 return MathUtility.Sum(SWSupply);
             }
+
             else
             {
                 double Total = 0;
                 foreach (string SubPaddockName in ModelEnvironment.ChildNames(CurrentPaddockName))
                 {
-                    if (SubPaddockName.ToLower().Contains("paddock")) 
+                    if (SubPaddockName.ToLower().Contains("paddock"))
                     {
-                        double[] SWSupply;
                         ModelEnvironment.Get(SubPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
                         Total += MathUtility.Sum(SWSupply);
                     }
@@ -113,8 +99,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override void DoWaterUptake(double Amount)
     {
         Uptake = Amount;
-        SoilWater = GetWaterModule();
-        if (SoilWater != null)
+        if (TalkDirectlyToRoot)
             ModelEnvironment.Set(OurName + "Root.SWUptake", Amount);
 
         else

@@ -13,6 +13,8 @@ using ModelFramework;
  
 public class SoilWater : Instance
    {
+    [Link]
+    ModelEnvironment ModelEnvironment;
 
 
 #region Constants
@@ -1391,9 +1393,9 @@ public class SoilWater : Instance
 
          if (au.ci(i) <= max_crops) 
             {
-            covgreen = Comp.Variable("cover_green").ToDouble() ;
-            covtot = Comp.Variable("cover_tot").ToDouble();
-            height = Comp.Variable("height").ToDouble();
+             ModelEnvironment.Get(Comp.FullName + ".cover_green", out covgreen);
+             ModelEnvironment.Get(Comp.FullName + ".cover_tot", out covtot);
+             ModelEnvironment.Get(Comp.FullName + ".height", out height);
 
             ////must have at least these three variables to be considered a "crop" component.
             //if (covgreen == null) && covtot && height.Exists() && !Comp.IsOfType("outputfile"))
@@ -1558,10 +1560,10 @@ public class SoilWater : Instance
                   SoilNModel.dlt_urea = temp_dlt_solute;
                   break;
                case "cl":
-                 ClModel.Variable("dlt_cl").Set(temp_dlt_solute);
+                  ModelEnvironment.Set(ClModel.FullName + ".dlt_cl", temp_dlt_solute);
                   break;
                case "br":
-                  BrModel.Variable("dlt_br").Set(temp_dlt_solute);
+                  ModelEnvironment.Set(BrModel.FullName + ".dlt_br", temp_dlt_solute);
                   break;
                default:
                   throw new Exception("SoilWater cannot alter the change in solute (due to solute movement with water) for solute: " + solute_names[solnum] + " SoilWater does not know what module owns this solute.");            

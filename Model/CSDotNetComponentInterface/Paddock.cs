@@ -11,7 +11,7 @@ namespace ModelFramework
 
     public class Paddock : Component
     {
-        public Dictionary<uint, TComp> ChildComponents;
+        private Dictionary<uint, TComp> ChildComponents;
         // --------------------------------------------------------------------
         /// <summary>
         /// Encapsulates an APSIM paddock in a simulation.
@@ -110,7 +110,7 @@ namespace ModelFramework
         /// Returns a reference to a variable.
         /// <param name="VariableName"></param>
         /// </summary>
-        public override Variable Variable(String VariableName)
+        protected override Variable Variable(String VariableName)
         {
             return new Variable(HostComponent, VariableName);
         }
@@ -120,7 +120,7 @@ namespace ModelFramework
         /// associated with it. This event is broadcast to all components within scope.
         /// </summary>
         //=========================================================================
-        public override void Publish(String EventName)
+        protected override void Publish(String EventName)
         {
             HostComponent.Publish(EventName, null);
         }
@@ -131,7 +131,7 @@ namespace ModelFramework
         /// <param name="EventName"></param>
         /// <param name="Data"></param>
         //=========================================================================
-        public override void Publish(String EventName, ApsimType Data)
+        protected override void Publish(String EventName, ApsimType Data)
         {
             HostComponent.Publish(EventName, Data);
         }

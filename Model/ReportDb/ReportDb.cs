@@ -19,6 +19,9 @@ public class ReportDb : Instance
     private int SimulationID = -1;
     private SQLiteTransaction InsertTransaction = null;
 
+    [Link]
+    ModelEnvironment ModelEnvironmnet = null;
+
     [Input]
     private DateTime Today;
 
@@ -238,17 +241,17 @@ public class ReportDb : Instance
         Values.Add(new KeyValuePair<string, object>("Date", Today));
         for (int i = 0; i < Variables.Length; i++)
         {
-            Variable V = Paddock.Variable(Variables[i]);
-            ConvertVariableToValues(V, Values);
+            string Value;
+            ModelEnvironmnet.Get(Variables[i], out Value);
+            ConvertVariableToValues(Variables[i], Value, Values);
         }
         return Values;
     }
 
-    private void ConvertVariableToValues(Variable Variable, List<KeyValuePair<string, object>> Values)
+    private void ConvertVariableToValues(string VariableName, string StringValue, List<KeyValuePair<string, object>> Values)
     {
-        if (Variable.Exists())
+        if (StringValue != "")
         {
-            string StringValue = Variable.ToString();
             string[] Bits = StringValue.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             List<double> DoubleValues = new List<double>();
             foreach (string Bit in Bits)
@@ -257,7 +260,7 @@ public class ReportDb : Instance
                 if (!Double.TryParse(Bit, out D))
                 {
                     // Must be a string.
-                    Values.Add(new KeyValuePair<string, object>(Variable.Name, StringValue));
+                    Values.Add(new KeyValuePair<string, object>(VariableName, StringValue));
                     return;
                 }
                 DoubleValues.Add(D);
@@ -265,19 +268,19 @@ public class ReportDb : Instance
 
             // If we got this far then we have either a scalar double or an array of scalars.
             if (DoubleValues.Count == 1)
-                Values.Add(new KeyValuePair<string, object>(Variable.Name, DoubleValues[0]));
+                Values.Add(new KeyValuePair<string, object>(VariableName, DoubleValues[0]));
             else
             {
                 // Array of doubles. Create an entry in Values for each array member.
                 for (int i = 0; i < DoubleValues.Count; i++)
                 {
-                    string VariableName = Variable.Name + "(" + (i + 1).ToString() + ")";
-                    Values.Add(new KeyValuePair<string, object>(VariableName, DoubleValues[i]));
+                    string VariableNameFull = VariableName + "(" + (i + 1).ToString() + ")";
+                    Values.Add(new KeyValuePair<string, object>(VariableNameFull, DoubleValues[i]));
                 }
             }
         }
         else
-            Values.Add(new KeyValuePair<string, object>(Variable.Name, null));
+            Values.Add(new KeyValuePair<string, object>(VariableName, null));
     }
 
     private void EnsureDataTableHasCorrectFields(List<KeyValuePair<string, object>> Variables)

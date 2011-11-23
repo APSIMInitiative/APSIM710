@@ -12,6 +12,7 @@ public class ModelEnvironment
 {
 
     private Instance In;
+    private List<TComp> Siblings = null;
 
     /// <summary>
     /// Constructor - created by LinkRef
@@ -507,11 +508,16 @@ public class ModelEnvironment
             object E = FindInternalEntity(NamePath, In);
             if (E != null && E is Entity)
             {
-                Data.setValue( (E as Entity).Get());
+                Data.setValue((E as Entity).Get());
                 return true;
             }
             else
-                return false;
+            {
+                if (IsComponentASibling(StringManip.ParentName(NamePath)))
+                    return In.ParentComponent().Get(NamePath, Data, true);
+                else
+                    return false;
+            }
         }
         else
         {
@@ -529,8 +535,6 @@ public class ModelEnvironment
                 return In.ParentComponent().Get(NamePath, Data, true);
             }
         }
-
-        return false;
     }
 
     /// <summary>
@@ -683,6 +687,17 @@ public class ModelEnvironment
 
         // If we get this far then we've found a match.
         return RelativeTo;
+    }
+
+    private bool IsComponentASibling(string ComponentName)
+    {
+        foreach (KeyValuePair<uint, TComp> Sibling in In.ParentComponent().SiblingComponents)
+        {
+            string SiblingShortName = Sibling.Value.name.Substring(Sibling.Value.name.LastIndexOf('.') + 1);
+            if (SiblingShortName.ToLower() == ComponentName.ToLower())
+                return true;
+        }
+        return false;
     }
     #endregion
 

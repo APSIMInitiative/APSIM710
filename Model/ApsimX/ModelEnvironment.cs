@@ -134,3 +134,13 @@ public class ModelEnvironment : ModelAPIInterface
         throw new NotImplementedException();
     }
 }
+
+
+// Here temporarily to satisfy SimpleRoot.cs in Plant2.
+namespace ModelFramework
+{
+    public class Root
+    {
+
+    }
+}

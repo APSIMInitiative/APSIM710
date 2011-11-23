@@ -114,7 +114,7 @@ public class LinkField
     public static Object FindApsimObject(String TypeToFind, String NameToFind, string SystemName, ApsimComponent Comp)
     {
         Object ReferencedObject;
-        if (NameToFind != null && NameToFind.Contains("."))
+        if (NameToFind != null && NameToFind.Contains(".") && !NameToFind.Contains("*"))
             ReferencedObject = GetSpecificApsimComponent(NameToFind, TypeToFind, Comp);
         else
             ReferencedObject = FindApsimComponent(NameToFind, TypeToFind, SystemName, Comp);
@@ -209,6 +209,8 @@ public class LinkField
 
         //Get a list of siblings.
         String sSearchName = SystemName + ".*";    //search parent.*
+        if (NameToFind != null && NameToFind.Contains("*"))
+            sSearchName = NameToFind;
         List<TComp> comps = new List<TComp>();
         Comp.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
 
@@ -257,7 +259,7 @@ public class LinkField
                 if (SiblingType.ToLower() == compClass.ToLower())
                 {
                     SiblingShortName = unQualifiedName(pair.name).ToLower();
-                    if (NameToFind == null || NameToFind.ToLower() == SiblingShortName)
+                    if (NameToFind == null || NameToFind.Contains("*") || NameToFind.ToLower() == SiblingShortName)
                         return CreateDotNetProxy(unQualifiedName(TypeToFind), pair.name, Comp);
                 }
             }

@@ -1,4 +1,4 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Defoliated Wheat">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/lincoln.met</filename>
@@ -7,9 +7,7 @@
       <start_date type="date" description="Enter the start date of the simulation">01/03/2000</start_date>
       <end_date type="date" description="Enter the end date of the simulation">01/03/2001</end_date>
     </clock>
-    <summaryfile>
-      <filename output="yes">Defoliated Wheat.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -1129,7 +1127,7 @@ endif</text>
 using System;
 using ModelFramework;
 
-public class Script : Instance
+public class Script
    {
    [Param()] private string DefoliationDateString;
    [Param()] private double ResidualStem;
@@ -1137,7 +1135,8 @@ public class Script : Instance
    [Param()] private string Crop2Defoliate;
    
    [Link()]
-   public Paddock MyPaddock;
+   public ModelEnvironment ModelEnvironment;
+   
    [Input()] private DateTime Today;
    
    private double GreenLeaf = 0.0;
@@ -1149,7 +1148,7 @@ public class Script : Instance
    [Output()]
    private DateTime DefoliationDate;
    
-   public override void Initialised()
+   [EventHandler] public void OnInitialised()
    {
       DefoliationDate = DateTime.ParseExact(DefoliationDateString, "d/M/yyyy", null);
    }
@@ -1159,8 +1158,8 @@ public class Script : Instance
       if ((Today &gt;= DefoliationDate) &amp;&amp; (Grazed == 0))   
          {
             Grazed = 1;
-            GreenLeaf = MyPaddock.ComponentByName(Crop2Defoliate).Variable("leafgreenwt").ToDouble();
-            GreenStem = MyPaddock.ComponentByName(Crop2Defoliate).Variable("stemgreenwt").ToDouble();
+            ModelEnvironment.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
+            ModelEnvironment.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
 
             dlt_GreenLeaf = Math.Max(0, GreenLeaf - ResidualLeaf);
             dlt_GreenStem = Math.Max(0, GreenStem - ResidualStem);
@@ -1177,7 +1176,7 @@ public class Script : Instance
         
             MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };
          
-            MyPaddock.ComponentByName(Crop2Defoliate).Publish("remove_crop_biomass", MyRemoveCropDM);
+            ModelEnvironment.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);
          
          Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
          Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
@@ -1208,7 +1207,8 @@ public class Script : Instance
    [Param()] private string Crop2Defoliate;
    
    [Link()]
-   public Paddock MyPaddock;
+   public ModelEnvironment ModelEnvironment;
+
    [Input()] private DateTime Today;
    
    private double GreenLeaf = 0.0;
@@ -1220,7 +1220,7 @@ public class Script : Instance
    [Output()]
    private DateTime DefoliationDate;
    
-   public override void Initialised()
+   [EventHandler] public void OnInitialised()
    {
       DefoliationDate = DateTime.ParseExact(DefoliationDateString, "d/M/yyyy", null);
    }
@@ -1230,8 +1230,8 @@ public class Script : Instance
       if ((Today &gt;= DefoliationDate) &amp;&amp; (Grazed == 0))   
          {
             Grazed = 1;
-            GreenLeaf = MyPaddock.ComponentByName(Crop2Defoliate).Variable("leafgreenwt").ToDouble();
-            GreenStem = MyPaddock.ComponentByName(Crop2Defoliate).Variable("stemgreenwt").ToDouble();
+            ModelEnvironment.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
+            ModelEnvironment.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
 
             dlt_GreenLeaf = Math.Max(0, GreenLeaf - ResidualLeaf);
             dlt_GreenStem = Math.Max(0, GreenStem - ResidualStem);
@@ -1248,7 +1248,7 @@ public class Script : Instance
         
             MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };
          
-            MyPaddock.ComponentByName(Crop2Defoliate).Publish("remove_crop_biomass", MyRemoveCropDM);
+            ModelEnvironment.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);
          
          Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
          Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
@@ -1263,6 +1263,7 @@ public class Script : Instance
       </folder>
       <outputfile>
         <filename output="yes">Defoliated Wheat.out</filename>
+        <title>Defoliated Wheat</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="biomass" />

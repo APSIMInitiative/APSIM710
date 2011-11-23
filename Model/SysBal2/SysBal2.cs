@@ -1,14 +1,14 @@
 ﻿using System;
 using ModelFramework;
 
-public class SysBal2 : Instance
+public class SysBal2
 {
     [Link]
     SurfaceOM SurfaceOM;
     [Link]
     SoilN SoilN;
     [Link]
-    Paddock MyPaddock;
+    ModelEnvironment ModelEnvironment;
     [Input]
     double[] sw_dep;
     [Input]
@@ -51,13 +51,21 @@ public class SysBal2 : Instance
     public void OnPost()
     {
         //Carbon and Nitrogen balance; reset variables
-        CarbonBalance = SoilN.Variable("CarbonBalance").ToDouble() + SurfaceOM.Variable("CarbonBalance").ToDouble();
-        NitrogenBalance = SoilN.Variable("NitrogenBalance").ToDouble() - leach_no3 + fertiliser + SurfaceOM.Variable("NitrogenBalance").ToDouble();
+        CarbonBalance = SoilN.carbonbalance + SurfaceOM.carbonbalance;
+        NitrogenBalance = SoilN.nitrogenbalance - leach_no3 + fertiliser + SurfaceOM.nitrogenbalance;
 
-        foreach (Component Crop in MyPaddock.Crops)
+        foreach (string ChildName in ModelEnvironment.ChildNames())
         {
-            CarbonBalance += Crop.Variable("CarbonBalance").ToDouble(); // variable has not been added to crops yet
-            cropTotal += Crop.Variable("ep").ToDouble();  //does not work with Plant2 modules
+            double ChildCarbonBalance;
+            if (ModelEnvironment.Get(ChildName + ".CarbonBalance", out ChildCarbonBalance))
+            {
+                CarbonBalance += ChildCarbonBalance;
+            }
+
+            double EP;
+            if (ModelEnvironment.Get("ep", out EP))   //does not work with Plant2 modules
+                cropTotal += EP;  
+
         }
         if (Math.Abs(CarbonBalance) > 0.05) // catch FP precision issues
         {

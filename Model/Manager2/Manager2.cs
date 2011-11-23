@@ -76,7 +76,7 @@ public class Manager2
     private Assembly CompileTextToAssembly()
     {
         string Text = XmlHelper.Value(Manager2Xml, "text");
-        bool VB = Text.IndexOf("Inherits ") != -1;
+        bool VB = Text.IndexOf("Imports System") != -1;
         string Language;
         if (VB)
             Language = CodeDomProvider.GetLanguageFromExtension(".vb");

@@ -21,7 +21,7 @@ namespace ModelFramework
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
 
-        public String TypeName
+        private String TypeName
         {
             get { return FTypeName; }
         }
@@ -32,7 +32,7 @@ namespace ModelFramework
         /// <param name="TypeNameToMatch"></param>
         /// <returns></returns>
         // --------------------------------------------------------------------
-        public override bool IsOfType(String TypeNameToMatch)
+        internal override bool IsOfType(String TypeNameToMatch)
         {
             string matchString = TypeNameToMatch.ToLower();
             // If the search name is compound (e.g., plant2.wheat),
@@ -41,7 +41,7 @@ namespace ModelFramework
             {
                 return TypeName.ToLower() == matchString;
             }
-            else 
+            else
             // Search name is not compound
             {
                 int dotPos = TypeName.IndexOf('.');
@@ -101,24 +101,7 @@ namespace ModelFramework
             else
                 FTypeName = this.GetType().Name;
         }
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// Return a list of all sibling components to caller.
-        /// </summary>
-        // --------------------------------------------------------------------
-        public TypedList<Component> ComponentList
-        {
-            get
-            {
-                TypedList<Component> Children = new TypedList<Component>();
-                foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
-                {
-                    Component C = new Component(pair.Value.name, HostComponent);
-                    Children.Add(C);
-                }
-                return Children;
-            }
-        }
+
         // --------------------------------------------------------------------
         /// <summary>
         /// Returns a reference to a variable.
@@ -126,7 +109,7 @@ namespace ModelFramework
         /// <param name="VariableName"></param>
         /// <returns></returns>
         // --------------------------------------------------------------------
-        public virtual Variable Variable(String VariableName)
+        protected virtual Variable Variable(String VariableName)
         {
             return new Variable(HostComponent, FQN + '.' + VariableName);
         }
@@ -137,7 +120,7 @@ namespace ModelFramework
         /// <param name="EventName"></param>
         /// </summary>
         // --------------------------------------------------------------------
-        public virtual void Publish(String EventName)
+        protected virtual void Publish(String EventName)
         {
             HostComponent.Publish(FQN + "." + EventName, null);
         }
@@ -148,7 +131,7 @@ namespace ModelFramework
         /// <param name="EventName"></param>
         /// <param name="Data"></param>
         // --------------------------------------------------------------------
-        public virtual void Publish(String EventName, ApsimType Data)
+        protected virtual void Publish(String EventName, ApsimType Data)
         {
             HostComponent.Publish(FQN + "." + EventName, Data);
         }
@@ -159,7 +142,7 @@ namespace ModelFramework
         /// <param name="EventName"></param>
         /// <param name="F"></param>
         // --------------------------------------------------------------------
-        public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
+        protected virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
         {
             RuntimeEventHandler Event = new RuntimeEventHandler(EventName, F);
             HostComponent.Subscribe(Event);
@@ -175,18 +158,6 @@ namespace ModelFramework
         }
         // --------------------------------------------------------------------
         /// <summary>
-        /// Static helper function for getting a component name (eg. wheat) from a fully
-        /// qualified component name (eg. .MasterPM.paddock1.wheat)
-        /// </summary>
-        /// <param name="fqn"></param>
-        /// <returns>Unqualified name</returns>
-        // --------------------------------------------------------------------
-        public static String ComponentName(String fqn)
-        {
-            return TRegistrar.unQualifiedName(fqn);
-        }
-        // --------------------------------------------------------------------
-        /// <summary>
         /// Fully qualified name of component eg. .MasterPM.paddock1.wheat
         /// </summary>
         // --------------------------------------------------------------------
@@ -196,16 +167,6 @@ namespace ModelFramework
             {
                 return FQN;
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fqn"></param>
-        /// <returns></returns>
-        public void BuildObjects(XmlNode ScriptNode, Assembly A)
-        {
-            HostComponent.BuildObjects(ScriptNode, A);
         }
  
     }

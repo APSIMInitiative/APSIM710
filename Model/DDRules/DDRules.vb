@@ -45,6 +45,9 @@ Public Class DDRules
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
+    <Link()>
+    Public ModelEnvironment As ModelEnvironment
+
     <Input()> Public end_week As Boolean
     <Input()> Public Start_week As Boolean
 
@@ -99,7 +102,7 @@ Public Class DDRules
             End If
         End If
 
-        myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea)
+        myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea, ModelEnvironment)
         myFarm.setEffluentPaddocks(strEffluentPaddocks)
         myFarm.setLanewayPaddocks(strLanewayPaddocks)
 
@@ -298,8 +301,10 @@ Public Class DDRules
             Return
         End If
 
-        Dim UI_StockRate As Double = FarmSim.Variable("UI_StockRate").ToDouble
-        Dim UI_SuppType As String = FarmSim.Variable("UI_SuppType").ToString
+        Dim UI_StockRate As Double
+        ModelEnvironment.Get("UI_StockRate", UI_StockRate)
+        Dim UI_SuppType As String = Nothing
+        ModelEnvironment.Get("UI_SuppType", UI_SuppType)
 
         'BaseStockingRate = UI_StockRate
         'StockingRate = BaseStockingRate
