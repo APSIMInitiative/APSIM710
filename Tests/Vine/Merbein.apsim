@@ -649,7 +649,7 @@
           </ui>
           <script name="start_of_day">
             <text><![CDATA[
-        if (today = date('[date]') and [crop].PlantStatus <> 'in') then
+        if (today = date('[date]') and [crop].Plant_Status = 'out') then
 !        if (today = date('[date]') ) then
               [crop] sow Population =[density], depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class], maxcover=[maxcover], budnumber=[BudNo]
          endif
@@ -680,7 +680,7 @@
           </ui>
           <script>
             <text>
-        if (today = date('[date]') and [crop].PlantStatus = 'in') then
+        if (today = date('[date]') and [crop].Plant_Status &lt;&gt; 'out') then
               [crop] prune budnumber = 100
          endif
                </text>
@@ -1161,7 +1161,7 @@
           </ui>
           <script name="start_of_day">
             <text><![CDATA[
-        if (today = date('[date]') and [crop].PlantStatus <> 'in') then
+        if (today = date('[date]') and [crop].Plant_Status = 'out') then
 !        if (today = date('[date]') ) then
               [crop] sow Population =[density], depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class], maxcover=[maxcover], budnumber=[BudNo]
          endif
@@ -1179,7 +1179,7 @@
           </ui>
           <script>
             <text>
-        if (today = date('[date]') and [crop].PlantStatus = 'in') then
+        if (today = date('[date]') and [crop].Plant_Status &lt;&gt; 'out') then
               [crop] prune budnumber = 900
          endif
                </text>

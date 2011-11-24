@@ -199,7 +199,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-             if (today = date('13-may') and vine.plantstatus <> 'in') then
+             if (today = date('13-may') and vine.plant_status = 'out') then
        vine sow population =0.1344, depth = 50, cultivar = shiraz, row_spacing = 3100, crop_class = plant, maxcover=0.5, budnumber=92
               endif
      END of rules
@@ -219,7 +219,7 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-             if (today = date('12-may') and vine.plantstatus = 'in') then
+             if (today = date('12-may') and vine.plant_status <> 'out') then
        vine prune budnumber = 100
               endif
      END of rules

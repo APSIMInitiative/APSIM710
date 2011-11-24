@@ -31,7 +31,8 @@ namespace ModelFramework
         public uint ComponentID;
         //private String Name;
         private String DllFileName;
-        private Dictionary<int, FactoryProperty> RegistrationsProp;
+        private Dictionary<int, TPropertyInfo> RegistrationsPropStatic;     //component properties (for plant2 they are 'static' properties and will not be deregistered)
+        private Dictionary<int, FactoryProperty> RegistrationsProp;         //component instance properties
         private Dictionary<int, FactoryProperty> RegistrationsDriver;
         private Dictionary<FactoryProperty, int> ReverseRegDriver;
         private Dictionary<int, ApsimType> RegistrationsDriverExtra;
@@ -71,6 +72,7 @@ namespace ModelFramework
             instanceNumber = instancenumber;
             modelAssembly = ModelAssembly;
             DllFileName = ModelAssembly.Location;
+            RegistrationsPropStatic = new Dictionary<int, TPropertyInfo>();
             RegistrationsProp = new Dictionary<int, FactoryProperty>();
             RegistrationsDriver = new Dictionary<int, FactoryProperty>();
             ReverseRegDriver = new Dictionary<FactoryProperty, int>();
@@ -174,6 +176,13 @@ namespace ModelFramework
                         registerEvent(null, "EndCrop", "<type/>", ENDCROPINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                         POSTINDEX = SOWINDEX + 2;
                         registerEvent(null, "Post", "<type/>", POSTINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
+                        //need a 'static' property here so other components know something of plant
+                        int propertyID = RegisterProperty("plant_status", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead");
+                        TPropertyInfo staticProperty;
+                        if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
+                        {
+                            staticProperty.setValue("out"); //default to no crop in
+                        }
                     }
                     else
                     {
@@ -322,6 +331,31 @@ namespace ModelFramework
         }
         // ----------------------------------------------
         /// <summary>
+        /// Add an owned property to this component. This will 
+        /// exist in a list that is not deregistered when Plant2
+        /// deregisters it's properties at endcrop.
+        /// See onQueryValue() for accessing this value.
+        /// </summary>
+        /// <param name="sName"></param>
+        /// <param name="sDDML"></param>
+        /// <param name="read"></param>
+        /// <param name="write"></param>
+        /// <param name="init"></param>
+        /// <param name="sDescr"></param>
+        /// <param name="sFullDescr"></param>
+        // ----------------------------------------------
+        public int RegisterProperty(String sName, String sDDML, Boolean read, Boolean write, Boolean init, String sDescr, String sFullDescr)
+        {
+            int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
+            TPropertyInfo property = new TPropertyInfo(sDDML, sDescr, sFullDescr, "");
+            property.Name = sName;
+            RegistrationsPropStatic.Add(RegistrationIndex, property);
+            Host.addProperty(sName, RegistrationIndex, true, false, false, sDDML, sDescr, sFullDescr);
+
+            return RegistrationIndex;
+        }
+        // ----------------------------------------------
+        /// <summary>
         /// Look for all properties and register them.
         /// </summary>
         /// <param name="F"></param>
@@ -331,7 +365,7 @@ namespace ModelFramework
             for (int i = 0; i != F.Properties.Count; i++)
             {
                 FactoryProperty Property = F.Properties[i];
-                if (Property.IsOutput)
+                if (Property.IsOutput && String.Compare(Property.Name, "plant_status", true) != 0)
                 {
                     int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
                     RegistrationsProp.Add(RegistrationIndex, Property);
@@ -764,8 +798,8 @@ namespace ModelFramework
         /// <summary>
         /// Handler for all QueryValue messages.
         /// </summary>
-        /// <param name="propertyID"></param>
-        /// <param name="requestorID"></param>
+        /// <param name="propertyID">Registration ID of the property</param>
+        /// <param name="requestorID">Requesting entity</param>
         /// <param name="aValue">Return value is stored here.</param>
         /// <returns></returns>
         // -----------------------------------------------------------------------
@@ -777,6 +811,61 @@ namespace ModelFramework
             {
                 Property.pack(aValue);
                 result = true;
+            }
+            else
+            {
+                //the propertyID wasn't found in the model instance's registered list so search the list
+                //of 'static' properties that may have been registered in this class.
+                TPropertyInfo staticProperty;
+                if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
+                {
+                    result = ReadStaticProperty("plant_status", staticProperty, aValue);
+                }
+            }
+            return result;
+        }
+        // -----------------------------------------------------------------------
+        /// <summary>
+        /// When requesting a value of an owned property in onQueryValue() and it is not found in the 
+        /// normally registered list of model instance properties, this function will attempt to set it
+        /// from a local value in the RegistrationsPropStatic list after firstly checking the
+        /// model instance.fact list of properties. Plant2 is stopped from registering plant_status.
+        /// </summary>
+        /// <param name="sName">Name of the property</param>
+        /// <param name="staticProperty">The local property found in RegistrationsPropStatic list</param>
+        /// <param name="value">The return value is stored here.</param>
+        /// <returns>True if the return value has been set.</returns>
+        // -----------------------------------------------------------------------
+        protected Boolean ReadStaticProperty(String sName, TPropertyInfo staticProperty, TPropertyInfo value)
+        {
+            Boolean result = false;
+            if (String.Compare(staticProperty.Name, sName, true) == 0)
+            {
+                Boolean found = false;
+                if (ModelInstance != null)                                              //if the instance exists (plant2)
+                {
+                    //attempt to find a matching property in the instance
+                    int i = 0;
+                    while (!found && (i != Fact.Properties.Count))
+                    {
+                        if ((String.Compare(Fact.Properties[i].Name, sName, true) == 0) && (Fact.Properties[i].IsOutput))
+                        {
+                            Fact.Properties[i].pack(value);
+                            result = true;
+                            found = true;
+                        }
+                        i++;
+                    }
+                }
+                else
+                {
+                    //use a local value for this property
+                    if (!found)
+                    {
+                        value.setValue(staticProperty);
+                        result = true;
+                    }
+                }
             }
             return result;
         }
@@ -898,7 +987,6 @@ namespace ModelFramework
                     if (St != "")
                         Desc.Append(St);
                 }
-
                 List<String> EventsAlreadyProcessed = new List<String>();
 
                 // get description for all events.

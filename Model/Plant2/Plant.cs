@@ -39,10 +39,15 @@ public class Plant
     [Output]
     private double WaterSupplyDemandRatio = 0;
     [Output]
-    public string PlantStatus
+    public string plant_status
     {
         get
-        { return "in"; }
+        {
+            // What should be returned here?
+            // The old "plant" component returned either "out", "alive"
+            // How to determine "dead"?
+            return "alive";
+        }
     }
     [Output]
     [Units("mm")]
