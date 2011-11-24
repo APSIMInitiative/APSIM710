@@ -328,7 +328,7 @@
         </PhaseBasedSwitch>
       </SIRIUSRoot>
       <SIRIUSGenericOrgan name="Husk">
-        <PopulationBasedDemand>
+        <PopulationBasedDemandFunction name="DMDemandFunction">
           <StartStage type="text" description="StartStage">5.2</StartStage>
           <GrowthDuration type="text" description="GrowthDuration">120</GrowthDuration>
           <MaximumOrganWt type="text" description="MaximumOrganWt">.133</MaximumOrganWt>
@@ -340,7 +340,10 @@
               <XY>40 0</XY>
             </XYPairs>
           </TemperatureFunction>
-        </PopulationBasedDemand>
+		  <Constant name="ExpansionStress">
+	        <Value>1</Value>
+		  </Constant>		  
+        </PopulationBasedDemandFunction>
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -372,7 +375,7 @@
         </Constant>
       </SIRIUSGenericOrgan>
       <SIRIUSGenericOrgan name="Rachis">
-        <PopulationBasedDemand>
+        <PopulationBasedDemandFunction name="DMDemandFunction">
           <StartStage type="text" description="StartStage">5</StartStage>
           <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
           <MaximumOrganWt type="text" description="MaximumOrganWt">.11</MaximumOrganWt>
@@ -384,7 +387,10 @@
               <XY>40 0</XY>
             </XYPairs>
           </TemperatureFunction>
-        </PopulationBasedDemand>
+		  <Constant name="ExpansionStress">
+	        <Value>1</Value>
+		  </Constant>		  
+        </PopulationBasedDemandFunction>
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation

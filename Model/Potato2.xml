@@ -55,7 +55,7 @@
           <XY>36 60</XY>
         </XYPairs>
       </Override>
-      <Override name="Stem.InterNodeWt">
+      <Override name="Stem.DMDemandFunction.InterNodeWt">
         <XYPairs>
           <XY>0 0.6</XY>
           <XY>7 0.6</XY>
@@ -215,7 +215,7 @@
           </TemperatureFunction>
         </EndPhase>
       </Phenology>
-      <SIRIUSTuber name="Tuber">
+      <SIRIUSGenericOrgan name="Tuber">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Memo>This organ inherits from SIRIUSGeneric organ so has the same 6 optional paramaters and default values for these paramaters.
@@ -225,6 +225,22 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           <Value type="text" description="Value">1</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
         </Constant>
+        <RelativeGrowthRateDemandFunction name="DMDemandFunction">
+          <InitialWt>500.0</InitialWt>
+		  <InitialStageName>TuberInitiation</InitialStageName>
+			<LinearInterpolationFunction name="RelativeGrowthRate">
+			  <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+			  <XYPairs>
+				<XY>3 0</XY>
+				<XY>4 0</XY>
+				<XY>4.1 0.075</XY>
+				<XY>4.7 0.075</XY>
+				<XY>5.4 0.003</XY>
+				<XY>6 0</XY>
+			  </XYPairs>
+			  <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
+			</LinearInterpolationFunction>
+        </RelativeGrowthRateDemandFunction>		
         <LinearInterpolationFunction name="NitrogenDemandSwitch">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
@@ -234,18 +250,6 @@ In addition this organ has a relative growth rate variable and a tubers per stem
             <XY>10 1</XY>
           </XYPairs>
           <Memo>This turns of N demand after the canopy has fully senesed to stop the tubers from taking up N after canopy death</Memo>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="RelativeGrowthRate">
-          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 0</XY>
-            <XY>4 0</XY>
-            <XY>4.1 0.075</XY>
-            <XY>4.7 0.075</XY>
-            <XY>5.4 0.003</XY>
-            <XY>6 0</XY>
-          </XYPairs>
-          <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
         </LinearInterpolationFunction>
         <Constant name="TubersPerStem">
           <Value type="text" description="Value">6</Value>
@@ -287,7 +291,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </LinearInterpolationFunction>
-      </SIRIUSTuber>
+      </SIRIUSGenericOrgan>
       <SIRIUSRoot name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
@@ -641,7 +645,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.2</Value>
         </Constant>
       </SIRIUSLeaf>
-      <SIRIUSStem name="Stem">
+      <SIRIUSGenericOrgan name="Stem">
         <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -652,15 +656,17 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
 </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="InterNodeWt">
-          <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
-          <XYPairs>
-            <XY>0 0.45</XY>
-            <XY>7 0.45</XY>
-            <XY>8 0.6</XY>
-          </XYPairs>
-          <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
-        </LinearInterpolationFunction>
+		<InternodeDemandFunction name="DMDemandFunction">
+			<LinearInterpolationFunction name="InterNodeWt">
+			  <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
+			  <XYPairs>
+				<XY>0 0.45</XY>
+				<XY>7 0.45</XY>
+				<XY>8 0.6</XY>
+			  </XYPairs>
+			  <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
+			</LinearInterpolationFunction>			
+		</InternodeDemandFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
@@ -696,19 +702,23 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-      </SIRIUSStem>
+      </SIRIUSGenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Planting Peeping Emergence TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
         <Values type="text" description="Values">1           2                       3                 4                    5                 6              7                 </Values>
       </StageBasedInterpolation>
       <Summary />
       <CompositeBiomass name="AboveGround">
-        <Property>Organs[AboveGround].Live</Property>
-        <Property>Organs[AboveGround].Dead</Property>
+        <Property>Leaf.Live</Property>
+        <Property>Leaf.Dead</Property>
+        <Property>Stem.Live</Property>
+        <Property>Stem.Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="BelowGround">
-        <Property>Organs[BelowGround].Live</Property>
-        <Property>Organs[BelowGround].Dead</Property>
+        <Property>Tuber.Live</Property>
+        <Property>Tuber.Dead</Property>
+        <Property>Root.Live</Property>
+        <Property>Root.Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="Total">
         <Property>Organs[].Live</Property>

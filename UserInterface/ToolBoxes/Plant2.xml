@@ -740,8 +740,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
       </LinearInterpolationFunction>
     </SIRIUSSimpleLeaf>
-
-
     <SIRIUSStem>
       <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
@@ -1226,6 +1224,60 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </PhaseJumpFunction>
   </folder>
   <folder name="Functions">
+    <folder name="DMDemand Functions">
+      <AllometricDemandFunction>
+        <Power type="text" description="Power term in allometric power function">1.0</Power>
+        <XProperty type="text" description="Value from which demand is calculated">AboveGroundWt</XProperty>
+        <YProperty type="text" description="DM pool for which demand is calculated">Stem.TotalWt</YProperty>
+        <Const type="text" description="Constant term in allometric power function">0.5</Const>
+        <Memo> Plant allometry is often described using a simple power function (y=kX^p).  
+			This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
+			</Memo>
+      </AllometricDemandFunction>
+      <RelativeGrowthRateDemandFunction>
+        <InitialWt>500.0</InitialWt>
+        <InitialStageName>TuberInitiation</InitialStageName>
+        <LinearInterpolationFunction name="RelativeGrowthRate">
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>3 0</XY>
+            <XY>4 0</XY>
+            <XY>4.1 0.075</XY>
+            <XY>4.7 0.075</XY>
+            <XY>5.4 0.003</XY>
+            <XY>6 0</XY>
+          </XYPairs>
+          <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
+        </LinearInterpolationFunction>
+      </RelativeGrowthRateDemandFunction>
+      <InternodeDemandFunction>
+        <LinearInterpolationFunction name="InterNodeWt">
+          <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
+          <XYPairs>
+            <XY>0 0.45</XY>
+            <XY>7 0.45</XY>
+            <XY>8 0.6</XY>
+          </XYPairs>
+          <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
+        </LinearInterpolationFunction>
+      </InternodeDemandFunction>
+      <PopulationBasedDemandFunction>
+        <StartStage type="text" description="StartStage">5</StartStage>
+        <GrowthDuration type="text" description="GrowthDuration">300</GrowthDuration>
+        <MaximumOrganWt type="text" description="MaximumOrganWt">.11</MaximumOrganWt>
+        <TemperatureFunction name="ThermalTime">
+          <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>30 30</XY>
+            <XY>40 0</XY>
+          </XYPairs>
+        </TemperatureFunction>
+        <Constant name="ExpansionStress">
+          <Value>1</Value>
+        </Constant>
+      </PopulationBasedDemandFunction>
+    </folder>
     <PopulationBasedDemandFunction>
       <StartStage>5.0</StartStage>
       <GrowthDuration>120</GrowthDuration>
@@ -1241,15 +1293,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         </XYPairs>
       </TemperatureFunction>
     </PopulationBasedDemandFunction>
-    <AllometricDemandFunction>
-      <Power type="text" description="Power term in allometric power function">1.0</Power>
-      <XProperty type="text" description="Value from which demand is calculated">AboveGroundWt</XProperty>
-      <YProperty type="text" description="DM pool for which demand is calculated">Stem.TotalWt</YProperty>
-      <Const type="text" description="Constant term in allometric power function">0.5</Const>
-      <Memo> Plant allometry is often described using a simple power function (y=kX^p).  
-      	This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
-        </Memo>
-    </AllometricDemandFunction>
     <FinalNodeNumber>
       <MaxNodeNo type="text" description="MaximumNodeNo">50</MaxNodeNo>
       <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>

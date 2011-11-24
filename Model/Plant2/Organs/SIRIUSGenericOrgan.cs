@@ -21,8 +21,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function StructuralFractionFunction = null;
     [Link(IsOptional = true)]
     protected Function PopulationBasedDemand = null;
-    [Link(NamePath = "ExpansionStress", IsOptional = true)]
-    protected Function ExpansionStressFunction = null;
     [Link(IsOptional = true)]
     protected Function InternodeDemand = null;
     [Link(IsOptional = true)]
@@ -64,9 +62,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         StructuralFraction = 1;
         if (StructuralFractionFunction != null) //Default of 1 means all biomass is structural
             StructuralFraction = StructuralFractionFunction.Value;
-        ExpansionStress = 1;
-        if (ExpansionStressFunction != null)
-            ExpansionStress = ExpansionStressFunction.Value;
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
         StartStructuralWt = Live.StructuralWt;
@@ -90,12 +85,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            if (PopulationBasedDemand != null)
-            {
-                StructuralDMDemand = PopulationBasedDemand.Value * StructuralFraction * ExpansionStress;
-                return StructuralDMDemand;
-            }
-            else if (InternodeDemand != null)
+            if (InternodeDemand != null)
             {
                 StructuralDMDemand = InternodeDemand.Value * StructuralFraction;
                 return StructuralDMDemand;
