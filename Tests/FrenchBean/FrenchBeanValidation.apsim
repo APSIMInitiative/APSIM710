@@ -1,17 +1,15 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <shared name="shared" />
   <folder name="Gatton">
     <simulation name="GattonOct08">
       <metfile name="met">
-        <filename name="filename">Gatton0809.met</filename>
+        <filename name="filename" input="yes">Gatton0809.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">1/10/2008</start_date>
         <end_date type="date" description="Enter the end date of the simulation">30/5/2009</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
           <Country />
@@ -329,8 +327,10 @@
           <d_interception type="text" description="d_interception">0</d_interception>
         </micromet>
         <outputfile>
+          <filename output="yes">GattonOct08.out</filename>
+          <title>GattonOct08</title>
           <variables name="Variables">
-            <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+            <variable name="dd/mm/yyyy as Date" />
             <variable name="esw" />
             <variable name="LeafLAI" />
             <variable name="LeafNodeNo" />
@@ -348,7 +348,7 @@
             <variable name="cover_green" />
             <variable name="PodLiveWt" />
             <variable name="LeafLiveWt" />
-            <variable name="PhenologyThermalTimeValue" array="No" />
+            <variable name="PhenologyThermalTimeValue" />
             <variable name="StageCodeValue" />
             <variable name="sw_dep()" />
             <variable name="sw" />
@@ -371,6 +371,14 @@
             <variable name="RootWaterSupply" />
             <variable name="pan" />
             <variable name="PodNumber" />
+            <variable name="LeafSpecificArea" />
+            <variable name="LeafFn" />
+            <variable name="StemLiveN" />
+            <variable name="LeafLiveN" />
+            <variable name="PodLiveN" />
+            <variable name="RootLiveN" />
+            <variable name="ArbitratorDMSupply" />
+            <variable name="TotalLiveN" />
           </variables>
           <events name="Reporting Frequency">
             <event name="end_step" />
@@ -410,17 +418,80 @@
           <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
           <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
           <allocation type="text" description="Allocation in ML">0</allocation>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
         </irrigation>
+        <Graph name="NodeNo">
+          <Plot name="Predicted">
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>Date</X>
+            <Y>LeafNodeNo</Y>
+            <Y>LeafTotalNo</Y>
+            <Y>LeafDeadNodeNo</Y>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+          <Plot name="Observed">
+            <colour>
+            </colour>
+            <X>Date</X>
+            <PointType>Circle</PointType>
+            <SeriesType>No line</SeriesType>
+            <Y>NodeNo</Y>
+            <Y>LeafNoTot</Y>
+            <Y>NodeNoSen</Y>
+            <GDFilter name="Filter">
+              <Filter>
+              </Filter>
+              <GDApsimFileReader name="ApsimFileReader">
+                <FileName>c:\apsim\Tests\FrenchBean\Observed\GattonLeaf.txt</FileName>
+              </GDApsimFileReader>
+            </GDFilter>
+          </Plot>
+        </Graph>
+        <Graph name="NodeNo1">
+          <Plot name="Predicted">
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>LeafNodeNo</X>
+            <Y>StemLiveN</Y>
+            <Y>LeafLiveN</Y>
+            <Y>PodLiveN</Y>
+            <Y>RootLiveN</Y>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
+        <Graph name="NodeNo11">
+          <Plot name="Predicted">
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <colour>
+            </colour>
+            <X>LeafNodeNo</X>
+            <Y>TotalLiveN</Y>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
+            </GDApsimFileReader>
+          </Plot>
+        </Graph>
       </area>
     </simulation>
     <simulation name="GattonDec08" shortcut="/simulations/Gatton/GattonOct08">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met">
+        <filename shortcut="/simulations/Gatton/GattonOct08/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/Gatton/GattonOct08/clock" />
       <summaryfile shortcut="/simulations/Gatton/GattonOct08/summaryfile" />
       <area name="paddock" shortcut="/simulations/Gatton/GattonOct08/paddock">
@@ -462,7 +533,9 @@
           <manager name="Harvesting rule" shortcut="/simulations/Gatton/GattonOct08/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonOct08/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonDec08.out</filename>
+          <title>GattonDec08</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/StressGraph">
@@ -476,7 +549,9 @@
       </area>
     </simulation>
     <simulation name="GattonJan09" shortcut="/simulations/Gatton/GattonOct08">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met">
+        <filename shortcut="/simulations/Gatton/GattonOct08/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/Gatton/GattonOct08/clock" />
       <summaryfile shortcut="/simulations/Gatton/GattonOct08/summaryfile" />
       <area name="paddock" shortcut="/simulations/Gatton/GattonOct08/paddock">
@@ -518,7 +593,9 @@
           <manager name="Harvesting rule" shortcut="/simulations/Gatton/GattonOct08/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonOct08/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonJan09.out</filename>
+          <title>GattonJan09</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/StressGraph">
@@ -532,7 +609,9 @@
       </area>
     </simulation>
     <simulation name="GattonROS1" shortcut="/simulations/Gatton/GattonROS4">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met">
+        <filename shortcut="/simulations/Gatton/GattonROS4/met/filename" input="yes" />
+      </metfile>
       <patchinput name="PatchTemp" shortcut="/simulations/Gatton/GattonROS4/PatchTemp" />
       <patchinput name="PatchRadn" shortcut="/simulations/Gatton/GattonROS4/PatchRadn" />
       <patchinput name="PatchRain" shortcut="/simulations/Gatton/GattonROS4/PatchRain" />
@@ -611,7 +690,9 @@
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonROS4/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonROS1.out</filename>
+          <title>GattonROS1</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Graph">
@@ -638,7 +719,9 @@
       </area>
     </simulation>
     <simulation name="GattonROS2" shortcut="/simulations/Gatton/GattonROS4">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met">
+        <filename shortcut="/simulations/Gatton/GattonROS4/met/filename" input="yes" />
+      </metfile>
       <patchinput name="PatchTemp" shortcut="/simulations/Gatton/GattonROS4/PatchTemp" />
       <patchinput name="PatchRadn" shortcut="/simulations/Gatton/GattonROS4/PatchRadn" />
       <patchinput name="PatchRain" shortcut="/simulations/Gatton/GattonROS4/PatchRain" />
@@ -745,7 +828,9 @@
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonROS4/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonROS2.out</filename>
+          <title>GattonROS2</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Graph">
@@ -772,7 +857,9 @@
       </area>
     </simulation>
     <simulation name="GattonROS3" shortcut="/simulations/Gatton/GattonROS4">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonROS4/met">
+        <filename shortcut="/simulations/Gatton/GattonROS4/met/filename" input="yes" />
+      </metfile>
       <patchinput name="PatchTemp" shortcut="/simulations/Gatton/GattonROS4/PatchTemp" />
       <patchinput name="PatchRadn" shortcut="/simulations/Gatton/GattonROS4/PatchRadn" />
       <patchinput name="PatchRain" shortcut="/simulations/Gatton/GattonROS4/PatchRain" />
@@ -863,7 +950,9 @@
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonROS4/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonROS3.out</filename>
+          <title>GattonROS3</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonROS4/paddock/outputfile/Graph">
@@ -890,7 +979,9 @@
       </area>
     </simulation>
     <simulation name="GattonROS4" shortcut="/simulations/Gatton/GattonOct08">
-      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met">
+        <filename shortcut="/simulations/Gatton/GattonOct08/met/filename" input="yes" />
+      </metfile>
       <patchinput name="PatchTemp">
         <filename name="filename">ROSPatchTempVP.met</filename>
       </patchinput>
@@ -1015,7 +1106,9 @@
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonOct08/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonROS4.out</filename>
+          <title>GattonROS4</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/StressGraph">
@@ -1045,7 +1138,9 @@
       <memo>Possible salt burning after irrigation event on 25 March
 Some visible salt damage on photo from 29-apr
 </memo>
-      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met" />
+      <metfile name="met" shortcut="/simulations/Gatton/GattonOct08/met">
+        <filename shortcut="/simulations/Gatton/GattonOct08/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/Gatton/GattonOct08/clock" />
       <summaryfile shortcut="/simulations/Gatton/GattonOct08/summaryfile" />
       <area name="paddock" shortcut="/simulations/Gatton/GattonOct08/paddock">
@@ -1125,7 +1220,9 @@ Some visible salt damage on photo from 29-apr
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Gatton/GattonOct08/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">GattonMar09.out</filename>
+          <title>GattonMar09</title>
           <variables name="Variables" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/Gatton/GattonOct08/paddock/outputfile/StressGraph">
@@ -1254,7 +1351,7 @@ Some visible salt damage on photo from 29-apr
         <X>Date</X>
         <PointType>Circle</PointType>
         <SeriesType>No line</SeriesType>
-        <Y>AboveGroundWt</Y>
+        <Y>AboveGroundDM</Y>
         <GDFilter name="Filter">
           <Filter>
           </Filter>
@@ -1835,15 +1932,13 @@ Some visible salt damage on photo from 29-apr
   <folder name="RedlandBay">
     <simulation name="RBExp1_15">
       <metfile name="met">
-        <filename name="filename">Redlands7980.met</filename>
+        <filename name="filename" input="yes">Redlands7980.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">1/03/1979</start_date>
         <end_date type="date" description="Enter the end date of the simulation">30/12/1979</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
           <Country />
@@ -2578,6 +2673,8 @@ Some visible salt damage on photo from 29-apr
           <d_interception type="text" description="d_interception">0</d_interception>
         </micromet>
         <outputfile>
+          <filename output="yes">RBExp1_15.out</filename>
+          <title>RBExp1_15</title>
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
             <variable name="esw" />
@@ -2632,7 +2729,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp1_30" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2674,7 +2773,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp1_30.out</filename>
+          <title>RBExp1_30</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2688,7 +2789,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp1_60" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2730,7 +2833,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp1_60.out</filename>
+          <title>RBExp1_60</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2744,7 +2849,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp1_100" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2786,7 +2893,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp1_100.out</filename>
+          <title>RBExp1_100</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2828,7 +2937,9 @@ Some visible salt damage on photo from 29-apr
       </Plot>
     </Graph>
     <simulation name="RBExp2_15" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2870,7 +2981,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp2_15.out</filename>
+          <title>RBExp2_15</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2884,7 +2997,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp2_25" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2926,7 +3041,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp2_25.out</filename>
+          <title>RBExp2_25</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2940,7 +3057,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp2_40" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -2982,7 +3101,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp2_40.out</filename>
+          <title>RBExp2_40</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -2996,7 +3117,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp2_65" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -3038,7 +3161,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp2_65.out</filename>
+          <title>RBExp2_65</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -3052,7 +3177,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="RBExp2_100" shortcut="/simulations/RedlandBay/RBExp1_15">
-      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met" />
+      <metfile name="met" shortcut="/simulations/RedlandBay/RBExp1_15/met">
+        <filename shortcut="/simulations/RedlandBay/RBExp1_15/met/filename" input="yes" />
+      </metfile>
       <clock shortcut="/simulations/RedlandBay/RBExp1_15/clock" />
       <summaryfile shortcut="/simulations/RedlandBay/RBExp1_15/summaryfile" />
       <area name="paddock" shortcut="/simulations/RedlandBay/RBExp1_15/paddock">
@@ -3094,7 +3221,9 @@ Some visible salt damage on photo from 29-apr
           <manager name="Harvesting rule" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Manager folder/Harvesting rule" />
         </folder>
         <micromet name="Micromet" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/Micromet" />
-        <outputfile shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">RBExp2_100.out</filename>
+          <title>RBExp2_100</title>
           <variables name="Variables" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Reporting Frequency" />
           <Graph shortcut="/simulations/RedlandBay/RBExp1_15/paddock/outputfile/Graph">
@@ -3139,15 +3268,13 @@ Some visible salt damage on photo from 29-apr
   <folder name="Yanco">
     <simulation name="Yanco">
       <metfile name="met">
-        <filename name="filename">Yanco0809.met</filename>
+        <filename name="filename" input="yes">Yanco0809.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">9/2/2009</start_date>
         <end_date type="date" description="Enter the end date of the simulation">30/4/2009</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
           <Country />
@@ -3793,6 +3920,8 @@ Some visible salt damage on photo from 29-apr
           <d_interception type="text" description="d_interception">0</d_interception>
         </micromet>
         <outputfile>
+          <filename output="yes">Yanco.out</filename>
+          <title>Yanco</title>
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
             <variable name="es" />
@@ -3859,7 +3988,7 @@ Some visible salt damage on photo from 29-apr
           <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
           <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
           <allocation type="text" description="Allocation in ML">0</allocation>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
@@ -4127,15 +4256,13 @@ Some visible salt damage on photo from 29-apr
   <folder name="Griffith">
     <simulation name="Griffith76T">
       <metfile name="met">
-        <filename name="filename">Griffith7679.met</filename>
+        <filename name="filename" input="yes">Griffith7679.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">1/12/1976</start_date>
         <end_date type="date" description="Enter the end date of the simulation">10/02/1977</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <soil name="Soil">
           <Country />
@@ -4825,6 +4952,8 @@ Some visible salt damage on photo from 29-apr
           <d_interception type="text" description="d_interception">0</d_interception>
         </micromet>
         <outputfile>
+          <filename output="yes">Griffith76T.out</filename>
+          <title>Griffith76T</title>
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
             <variable name="esw" />
@@ -4867,7 +4996,9 @@ Some visible salt damage on photo from 29-apr
       </area>
     </simulation>
     <simulation name="Griffith77T" shortcut="/simulations/Griffith/Griffith76T">
-      <metfile name="met" shortcut="/simulations/Griffith/Griffith76T/met" />
+      <metfile name="met" shortcut="/simulations/Griffith/Griffith76T/met">
+        <filename shortcut="/simulations/Griffith/Griffith76T/met/filename" input="yes" />
+      </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">11/11/1977</start_date>
         <end_date type="date" description="Enter the end date of the simulation">20/01/1978</end_date>
@@ -4903,7 +5034,9 @@ Some visible salt damage on photo from 29-apr
           </operations>
         </folder>
         <micromet name="Micromet" shortcut="/simulations/Griffith/Griffith76T/paddock/Micromet" />
-        <outputfile shortcut="/simulations/Griffith/Griffith76T/paddock/outputfile">
+        <outputfile>
+          <filename output="yes">Griffith77T.out</filename>
+          <title>Griffith77T</title>
           <variables name="Variables" shortcut="/simulations/Griffith/Griffith76T/paddock/outputfile/Variables" />
           <events name="Reporting Frequency" shortcut="/simulations/Griffith/Griffith76T/paddock/outputfile/Reporting Frequency" />
         </outputfile>

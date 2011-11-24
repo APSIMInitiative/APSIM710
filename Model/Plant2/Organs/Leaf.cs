@@ -774,7 +774,7 @@ public class Leaf : BaseOrgan, AboveGround
 
  #region Event handlers and publishers
     [EventHandler]
-    private void OnPrune(PruneType Prune)
+    public void OnPrune(PruneType Prune)
     {
         PrimaryBudNo = Prune.BudNumber;
         ZeroLeaves();
@@ -807,7 +807,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [EventHandler]
-    private void OnKillLeaf(KillLeafType KillLeaf)
+    public void OnKillLeaf(KillLeafType KillLeaf)
     {
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);
@@ -824,7 +824,7 @@ public class Leaf : BaseOrgan, AboveGround
 
     }
     [EventHandler]
-    private void OnCut()
+    public void OnCut()
     {
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);

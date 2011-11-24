@@ -104,7 +104,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
 
     #region Event handlers
     [EventHandler]
-    private void OnPrune(PruneType Prune)
+    public void OnPrune(PruneType Prune)
     {
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);
@@ -118,7 +118,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
         Dead.Clear();
     }
     [EventHandler]
-    private void OnCut()
+    public void OnCut()
     {
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);

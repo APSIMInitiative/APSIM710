@@ -57,6 +57,25 @@
             <XY>30 30</XY>
             <XY>40 0</XY>
           </XYPairs>
+          <AddFunction name="DroughtPhenologyAcelleration">
+            <Memo>Sum the values of the children of this node</Memo>
+            <Constant name="One">
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+            <MultiplyFunction name="Stress">
+              <Memo>Multiplies the values of the children of this node</Memo>
+              <Constant name="StressResponseCoefficient">
+                <Value type="text" description="Value">1</Value>
+              </Constant>
+              <LinearInterpolationFunction name="StressFactor">
+                <XProperty>WaterSupplyDemandRatio</XProperty>
+                <XYPairs>
+                  <XY>0 0.5</XY>
+                  <XY>1 0</XY>
+                </XYPairs>
+              </LinearInterpolationFunction>
+            </MultiplyFunction>
+          </AddFunction>
         </TemperatureFunction>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
@@ -67,14 +86,7 @@
           <End>Emergence</End>
           <ShootLag units="oCd" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
           <ShootRate units="oCd/mm" description="Growing deg day increase with depth for coleoptile">1.50</ShootRate>
-          <TemperatureFunction name="ThermalTime">
-            <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
         <FacultativeVernalisationPhase name="Inductive">
           <Start>Emergence</Start>
@@ -90,13 +102,7 @@
           <Start>FloralInitiation</Start>
           <End>FlagLeaf</End>
           <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </LeafAppearancePhase>
         <GenericPhase name="FlagLeafToFlowering">
           <Start>FlagLeaf</Start>
@@ -104,13 +110,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">120</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="FloweringToGrainFilling">
           <Start>Flowering</Start>
@@ -118,12 +118,19 @@
           <Constant name="Target">
             <Value type="text" description="Value">0</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+            <AddFunction name="DroughtPhenologyAcelleration" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration">
+              <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Memo" />
+              <Constant name="One" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/One" />
+              <MultiplyFunction name="Stress" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress">
+                <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/Memo" />
+                <Constant name="StressResponseCoefficient" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressResponseCoefficient" />
+                <LinearInterpolationFunction name="StressFactor" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor/XYPairs" />
+                </LinearInterpolationFunction>
+              </MultiplyFunction>
+            </AddFunction>
           </TemperatureFunction>
         </GenericPhase>
         <GenericPhase name="GrainFilling">
@@ -132,13 +139,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">650</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Maturing">
           <Start>EndGrainFill</Start>
@@ -146,13 +147,7 @@
           <Constant name="Target">
             <Value>36</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="MaturityToHarvestRipe">
           <Start>Maturity</Start>
@@ -160,24 +155,12 @@
           <Constant name="Target">
             <Value>1</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start>HarvestRipe</Start>
           <End>Unused</End>
-          <TemperatureFunction name="ThermalTime">
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
       <SIRIUSGrain name="Grain">
@@ -456,14 +439,6 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime">
-          <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>30 30</XY>
-            <XY>40 0</XY>
-          </XYPairs>
-        </TemperatureFunction>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
@@ -499,7 +474,7 @@
               <Twilight type="text" description="Twilight">-6</Twilight>
             </PhotoperiodFunction>
           </TerminateFinalNodeNumber>
-          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Leaf/ThermalTime" />
+          <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </FinalNodeNumber>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
@@ -694,25 +669,7 @@
             <XY>1 0.1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <AddFunction name="DroughtPhenologyAcelleration">
-          <Memo>Sum the values of the children of this node</Memo>
-          <Constant name="One">
-            <Value type="text" description="Value">1</Value>
-          </Constant>
-          <MultiplyFunction name="Stress">
-            <Memo>Multiplies the values of the children of this node</Memo>
-            <Constant name="StressResponseCoefficient">
-              <Value type="text" description="Value">1</Value>
-            </Constant>
-            <LinearInterpolationFunction name="StressFactor">
-              <XProperty>WaterSupplyDemandRatio</XProperty>
-              <XYPairs>
-                <XY>0 0.5</XY>
-                <XY>1 0</XY>
-              </XYPairs>
-            </LinearInterpolationFunction>
-          </MultiplyFunction>
-        </AddFunction>
+        <TemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

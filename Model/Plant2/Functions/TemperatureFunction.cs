@@ -17,11 +17,11 @@ public class TemperatureFunction : Function
 
     [Link]
     Phenology Phenology = null;
-
-
+    
     [Input(IsOptional = true)]
     [Units("oC")]
     private double maxt_soil_surface = -99.0;
+    
     [Input(IsOptional = true)]
     [Units("oC")]
     private double mint_soil_surface = -99.0;
@@ -33,12 +33,13 @@ public class TemperatureFunction : Function
     [Units("deg.day")]
     public override double Value
     {
+        
         get
         {
+            double TempValue = 0;
             double Max = MaxT;
             double Min = MinT;
-
-             if (SoilTemperaturePhases != null)
+            if (SoilTemperaturePhases != null)
              {
                  Phase P = Phenology.CurrentPhase;
                  for (int i = 0; i < SoilTemperaturePhases.Length; i++)
@@ -55,7 +56,20 @@ public class TemperatureFunction : Function
                      }
                  }
              }
-         return Linint3hrlyTemp(MaxT, MinT, XYPairs);
+             
+            TempValue = Linint3hrlyTemp(MaxT, MinT, XYPairs);
+             
+            foreach (string ChildName in ModelEnvironment.ChildNames())
+             {
+                 string ShortChildName = ChildName.Substring(ChildName.LastIndexOf('.') + 1); 
+                 if (ShortChildName != "XYPairs")
+                 {
+                     Function F = ModelEnvironment.Link<Function>(ChildName);
+                     TempValue = TempValue * F.Value;
+                 }
+             }
+             
+            return TempValue;
         }
     }
     static public double Linint3hrlyTemp(double tmax, double tmin, XYPairs ttFn)

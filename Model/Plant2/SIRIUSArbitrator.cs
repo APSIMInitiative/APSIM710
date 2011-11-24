@@ -11,7 +11,10 @@ public class SIRIUSArbitrator : Arbitrator
     [Param]
     [Description("Select method used for Arbitration")]
     protected string ArbitrationOption = "";
-
+    [Param(IsOptional = true)]
+    [Description("Select method used for DMArbitration")]
+    protected string DMArbitrationOption = "";
+    
     private void Or(bool p)
     {
         throw new NotImplementedException();
@@ -114,31 +117,69 @@ public class SIRIUSArbitrator : Arbitrator
         //  Allocate to meet Organs demands
         double TotalWtAllocated = 0;
         double TotalWtNotAllocatedSinkLimitation = 0;
+        double DMNotAllocated = TotalFreshDMSupply;
         //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
-        for (int i = 0; i < Organs.Count; i++)
-        {
-            double proportion = 0.0;
-            if (DMDemand[i] > 0.0)
-            {
-                proportion = DMDemand[i] / TotalDMDemand;
-                DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
-                TotalWtAllocated += DMAllocation[i];
-            }
-        }
-        
-        // Anything not required by organs structural and metabolic demand is allocated to organs Non-structural capacity.  Once this is full any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
-        double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
-        if (DMNotAllocated > 0)
-        {
+        if (string.Compare(DMArbitrationOption, "", true) == 0)
+        {//relative allocation based on sink strength
             for (int i = 0; i < Organs.Count; i++)
             {
                 double proportion = 0.0;
-                if (DMSinkCapacity[i] > 0.0)
+                if (DMDemand[i] > 0.0)
                 {
-                    proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
-                    double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
-                    DMExcessAllocation[i] += DMExcess;
-                    TotalWtAllocated += DMExcess;
+                    proportion = DMDemand[i] / TotalDMDemand;
+                    DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
+                    TotalWtAllocated += DMAllocation[i];
+                }
+            }
+        }
+        else
+        {//priority based allocation
+            for (int i = 0; i < Organs.Count; i++)
+            {
+                if ((DMDemand[i] > 0.0) && (DMNotAllocated > 0))
+                {
+                    double DMAllocated = Math.Min(DMNotAllocated, DMDemand[i]);
+                    DMAllocation[i] = DMAllocated;
+                    TotalWtAllocated += DMAllocated;
+                    DMNotAllocated -= DMAllocated;
+                }
+            }
+        }
+        // Anything not required by organs structural and metabolic demand is allocated to organs Non-structural capacity.  Once this is full any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
+        // double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
+        if (string.Compare(DMArbitrationOption, "", true) == 0)
+        { //relative allocation based on sink strength
+            DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
+            if (DMNotAllocated > 0)
+            {
+                for (int i = 0; i < Organs.Count; i++)
+                {
+                    double proportion = 0.0;
+                    if (DMSinkCapacity[i] > 0.0)
+                    {
+                        proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                        double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
+                        DMExcessAllocation[i] += DMExcess;
+                        TotalWtAllocated += DMExcess;
+                    }
+                }
+            }
+        }
+        else
+        {//priority based allocation
+            if (DMNotAllocated > 0)
+            {
+                for (int i = 0; i < Organs.Count; i++)
+                {
+                    //double proportion = 0.0;
+                    if (DMSinkCapacity[i] > 0.0)
+                    {
+                        //proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                        double DMExcess = Math.Min(DMNotAllocated, DMSinkCapacity[i]);
+                        DMExcessAllocation[i] += DMExcess;
+                        TotalWtAllocated += DMExcess;
+                        DMNotAllocated -= DMExcess;
+                    }
                 }
             }
         }
@@ -430,6 +471,19 @@ public class SIRIUSArbitrator : Arbitrator
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
  #endregion
 
+    }
+    private void RelativeDMAllocation(List<Organ> Organs, double TotalDMDemand, double TotalWtAllocated)
+    {
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            double proportion = 0.0;
+            if (DMDemand[i] > 0.0)
+            {
+                proportion = DMDemand[i] / TotalDMDemand;
+                DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
+                TotalWtAllocated += DMAllocation[i];
+            }
+        }
     }
 
     private void RelativeAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)

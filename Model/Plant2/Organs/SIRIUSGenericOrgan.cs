@@ -25,6 +25,10 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function InternodeDemand = null;
     [Link(IsOptional = true)]
     protected Function DMDemandFunction = null;
+    [Link(IsOptional = true)]
+    protected Function InitialWtFunction = null;
+    [Link(IsOptional = true)]
+    protected Function InitialStructuralFraction = null;
     
  #endregion
 
@@ -41,6 +45,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
     private double ExpansionStress = 1;
+    private double InitStutFraction = 1;
 
     //[Link]
     //Leaf Leaf = null;
@@ -62,6 +67,24 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
         StructuralFraction = 1;
         if (StructuralFractionFunction != null) //Default of 1 means all biomass is structural
             StructuralFraction = StructuralFractionFunction.Value;
+        InitialWt = 0; //Default of zero means no initial Wt
+        if (InitialWtFunction != null)
+            InitialWt = InitialWtFunction.Value;
+        InitStutFraction = 1.0; //Default of 1 means all initial DM is structural
+        if (InitialStructuralFraction != null)
+            InitStutFraction = InitialStructuralFraction.Value;
+        
+        //Initialise biomass and nitrogen
+        if (Live.Wt == 0)
+        {
+            double InitStructWt = InitialWt * InitStutFraction;
+            double InitNonStructWt = InitialWt * (1 - InitStutFraction);
+            Live.StructuralWt = InitStructWt;
+            Live.NonStructuralWt = InitNonStructWt;
+            Live.StructuralN = InitStructWt * MinimumNConc.Value;
+            Live.NonStructuralN = ((InitStructWt + InitNonStructWt) * MaximumNConc.Value) - (InitStructWt * MinimumNConc.Value);
+        }
+
         StartNonStructuralN = Live.NonStructuralN;
         StartNonStructuralWt = Live.NonStructuralWt;
         StartStructuralWt = Live.StructuralWt;

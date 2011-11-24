@@ -394,10 +394,10 @@ class SIRIUSLeafCohort : LeafCohort
             
             //Growing leaf area after DM allocated
 
-            double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
-            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
-            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
-            double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); // FIXME-EIT - Choice between carbon limited LAI expansion done here (Forcing to C unsconstrained to test it)
+            //double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
+            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
+            double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
+            double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); 
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
             
             //Senessing leaf area

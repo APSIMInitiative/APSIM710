@@ -92,7 +92,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
 
     [Output]
-    private int ReadyForHarvest
+    public int ReadyForHarvest
     {
         get
         {
@@ -109,7 +109,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     public event NullTypeDelegate Harvesting;
 
     [EventHandler]
-    private void OnHarvest()
+    public void OnHarvest()
     {
         Harvesting.Invoke();
 
@@ -135,7 +135,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
 
     [EventHandler]
-    private void OnCut()
+    public void OnCut()
     {
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);

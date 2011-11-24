@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Merbein SpurPruned">
     <metfile name="met">
-      <filename name="filename">Mildura.met</filename>
+      <filename name="filename" input="yes">Mildura.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">10/5/1994</start_date>
       <end_date type="date" description="Enter the end date of the simulation">10/6/1999</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="Paddock">
       <micromet name="Micromet">
         <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
@@ -664,7 +662,7 @@
             <category description="Harvesting criteria" type="category" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">vine</crop>
           </ui>
-          <script name="end_of_day">
+          <script>
             <text>
            if ([crop].BerryReadyForHarvest = 1) then
               [crop]  harvest
@@ -691,8 +689,10 @@
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">Merbein SpurPruned.out</filename>
+        <title>Merbein SpurPruned</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
+          <variable name="dd/mm/yyyy as Date" />
           <variable name="PhenologyCurrentPhaseName" />
           <variable name="LeafLiveWt" />
           <variable name="StemLiveWt" />
@@ -709,7 +709,7 @@
           <variable name="BerrySize" />
           <variable name="LeafBranchNo" />
           <variable name="LeafDMSupply" />
-          <variable name="radn" array="Solar Radiation (MJ/m2/day)" />
+          <variable name="radn" />
           <variable name="Cover_green" />
           <variable name="AboveGroundWt" />
           <variable name="TotalWt" />
@@ -724,6 +724,7 @@
           <variable name="LeafTranspiration" />
           <variable name="es" />
           <variable name="eo" />
+          <variable name="BerryReadyForHarvest" />
         </variables>
         <events name="Reporting Frequency">
           <event name="Daily" array="End of day" />
@@ -794,6 +795,8 @@
       </outputfile>
       <vine />
       <outputfile name="LeafOutput">
+        <filename output="yes">Merbein SpurPruned LeafOutput.out</filename>
+        <title>Merbein SpurPruned LeafOutput</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="LeafMaxSize" />
@@ -1119,7 +1122,9 @@
     </area>
   </simulation>
   <simulation name="Merbein MinimalPruned" shortcut="/simulations/Merbein SpurPruned">
-    <metfile name="met" shortcut="/simulations/Merbein SpurPruned/met" />
+    <metfile name="met" shortcut="/simulations/Merbein SpurPruned/met">
+      <filename shortcut="/simulations/Merbein SpurPruned/met/filename" input="yes" />
+    </metfile>
     <clock shortcut="/simulations/Merbein SpurPruned/clock" />
     <summaryfile shortcut="/simulations/Merbein SpurPruned/summaryfile" />
     <area name="Paddock" shortcut="/simulations/Merbein SpurPruned/Paddock">
@@ -1182,12 +1187,16 @@
           </script>
         </manager>
       </folder>
-      <outputfile shortcut="/simulations/Merbein SpurPruned/Paddock/outputfile">
+      <outputfile>
+        <filename output="yes">Merbein MinimalPruned.out</filename>
+        <title>Merbein MinimalPruned</title>
         <variables name="Variables" shortcut="/simulations/Merbein SpurPruned/Paddock/outputfile/Variables" />
         <events name="Reporting Frequency" shortcut="/simulations/Merbein SpurPruned/Paddock/outputfile/Reporting Frequency" />
       </outputfile>
       <vine shortcut="/simulations/Merbein SpurPruned/Paddock/vine" />
-      <outputfile name="LeafOutput" shortcut="/simulations/Merbein SpurPruned/Paddock/LeafOutput">
+      <outputfile name="LeafOutput">
+        <filename output="yes">Merbein MinimalPruned LeafOutput.out</filename>
+        <title>Merbein MinimalPruned LeafOutput</title>
         <variables name="Variables" shortcut="/simulations/Merbein SpurPruned/Paddock/LeafOutput/Variables" />
         <events name="Reporting Frequency" shortcut="/simulations/Merbein SpurPruned/Paddock/LeafOutput/Reporting Frequency" />
       </outputfile>
@@ -1468,6 +1477,8 @@
       <Y>Cover_green</Y>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
+      <colour>
+      </colour>
       <GDApsimFileReader name="PredictedMinimal">
         <FileName>C:\apsim\Tests\Vine\Merbein MinimalPruned.out</FileName>
       </GDApsimFileReader>
