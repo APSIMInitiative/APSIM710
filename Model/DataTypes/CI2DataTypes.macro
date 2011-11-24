@@ -685,29 +685,32 @@ module ScienceAPI2
    integer, parameter :: IsOptional = 1
 
    interface ReadParam
-      subroutine ReadInteger(Name, Units, OptionalFlag, Value)
+      subroutine ReadInteger(Name, Units, OptionalFlag, Value, lower, upper)
       ml_external ReadInteger
 !STDCALL(ReadInteger)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       integer           :: Value
+      integer           :: lower, upper
       end subroutine
-      subroutine ReadReal(Name, Units, OptionalFlag, Value)
+      subroutine ReadReal(Name, Units, OptionalFlag, Value, lower, upper)
       ml_external ReadReal
 !STDCALL(ReadReal)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       real              :: Value
+      real              :: lower, upper
       end subroutine
-      subroutine ReadDouble(Name, Units, OptionalFlag, Value)
+      subroutine ReadDouble(Name, Units, OptionalFlag, Value, lower, upper)
       ml_external ReadDouble
 !STDCALL(ReadDouble)
       character (len=*) :: Name
       character (len=*) :: Units
       integer           :: OptionalFlag
       double precision  :: Value
+      double precision  :: lower, upper
       end subroutine
       subroutine ReadString(Name, Units, OptionalFlag, Value)
       ml_external ReadString
@@ -1241,3 +1244,4 @@ SECTIONS {
   }
 }
 [endfile]
+
