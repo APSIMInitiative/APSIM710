@@ -14,6 +14,9 @@ public class SIRIUSArbitrator : Arbitrator
     [Param(IsOptional = true)]
     [Description("Select method used for DMArbitration")]
     protected string DMArbitrationOption = "";
+    [Param(IsOptional = true)]
+    [Description("List of organs that are priority for DM allocation")]
+    string[] PriorityOrgan = null;
     
     private void Or(bool p)
     {
@@ -21,6 +24,7 @@ public class SIRIUSArbitrator : Arbitrator
     }
 
     //  Class arrays
+    bool[] IsPriority = null;
     double[] DMFreshSupplyOrgan = null;
     double[] DMStoreSupplyOrgan = null;
     double[] DMDemand = null;
@@ -46,6 +50,8 @@ public class SIRIUSArbitrator : Arbitrator
     // Public Arbitrator variables
     private double TotalFreshDMSupply = 0;
     private double TotalStoreDMSupply = 0;
+    private double TotalPriorityDMDemand = 0;
+    private double TotalNonPriorityDMDemand = 0;
     private double StartWt = 0;
     private double EndWt = 0;
     [Output]
@@ -79,6 +85,7 @@ public class SIRIUSArbitrator : Arbitrator
     {
  #region Setup Biomass calculations
         //create organ specific variables
+        IsPriority = new bool[Organs.Count];
         DMFreshSupplyOrgan = new double[Organs.Count];
         DMStoreSupplyOrgan = new double[Organs.Count];
         DMDemand = new double[Organs.Count];
@@ -87,6 +94,13 @@ public class SIRIUSArbitrator : Arbitrator
         DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
                 
+        //Tag priority organs
+        if (PriorityOrgan != null)
+        {
+            for (int i = 0; i < Organs.Count; i++)
+                IsPriority[i] = Array.IndexOf(PriorityOrgan, Organs[i].Name) != -1;
+        }
+        
         // GET INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
         StartWt = 0;
         for (int i = 0; i < Organs.Count; i++)
@@ -109,6 +123,14 @@ public class SIRIUSArbitrator : Arbitrator
             DMAllocation[i] = 0;
             DMRetranslocation[i] = 0;
         }
+        TotalPriorityDMDemand = 0;
+        TotalNonPriorityDMDemand = 0;
+        for (int i = 0; i < Organs.Count; i++)
+            if (IsPriority[i] == true)
+                TotalPriorityDMDemand += Organs[i].DMDemand;
+            else
+                TotalNonPriorityDMDemand += Organs[i].DMDemand;
+
         double TotalDMDemand = MathUtility.Sum(DMDemand);
         double TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
  #endregion
@@ -119,70 +141,45 @@ public class SIRIUSArbitrator : Arbitrator
         double TotalWtNotAllocatedSinkLimitation = 0;
         double DMNotAllocated = TotalFreshDMSupply;
         //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
-        if (string.Compare(DMArbitrationOption, "", true) == 0)
-        {//relative allocation based on sink strength
+        
+        //First give biomass to priority organs
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            if ((IsPriority[i] == true) && (DMDemand[i] > 0.0))
+            {
+                double proportion = DMDemand[i] / TotalPriorityDMDemand;
+                double DMAllocated = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
+                DMAllocation[i] = DMAllocated;
+                TotalWtAllocated += DMAllocated;
+            }
+        }
+        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;         
+        //Then give the left overs to the non-priority organs
             for (int i = 0; i < Organs.Count; i++)
             {
-                double proportion = 0.0;
-                if (DMDemand[i] > 0.0)
+                if ((IsPriority[i] == false) && (DMDemand[i] > 0.0))
                 {
-                    proportion = DMDemand[i] / TotalDMDemand;
-                    DMAllocation[i] = Math.Min(TotalFreshDMSupply * proportion, DMDemand[i]);
+                    double proportion = DMDemand[i] / TotalNonPriorityDMDemand;
+                    DMAllocation[i] = Math.Min(DMNotAllocated * proportion, DMDemand[i] - DMAllocation[i]);
                     TotalWtAllocated += DMAllocation[i];
                 }
             }
-        }
-        else
-        {//priority based allocation
-            for (int i = 0; i < Organs.Count; i++)
-            {
-                if ((DMDemand[i] > 0.0) && (DMNotAllocated > 0))
-                {
-                    double DMAllocated = Math.Min(DMNotAllocated, DMDemand[i]);
-                    DMAllocation[i] = DMAllocated;
-                    TotalWtAllocated += DMAllocated;
-                    DMNotAllocated -= DMAllocated;
-                }
-            }
-        }
-        // Anything not required by organs structural and metabolic demand is allocated to organs Non-structural capacity.  Once this is full any further surples is Not allocated.  This represents down regulation of photosynthesis if there is limited sink size.
-        // double DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
-        if (string.Compare(DMArbitrationOption, "", true) == 0)
-        { //relative allocation based on sink strength
+        
+        //Anything left over after that goes to the sink organs
             DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
             if (DMNotAllocated > 0)
             {
                 for (int i = 0; i < Organs.Count; i++)
                 {
-                    double proportion = 0.0;
                     if (DMSinkCapacity[i] > 0.0)
                     {
-                        proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                        double proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
                         double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
                         DMExcessAllocation[i] += DMExcess;
                         TotalWtAllocated += DMExcess;
                     }
                 }
             }
-        }
-        else
-        {//priority based allocation
-            if (DMNotAllocated > 0)
-            {
-                for (int i = 0; i < Organs.Count; i++)
-                {
-                    //double proportion = 0.0;
-                    if (DMSinkCapacity[i] > 0.0)
-                    {
-                        //proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
-                        double DMExcess = Math.Min(DMNotAllocated, DMSinkCapacity[i]);
-                        DMExcessAllocation[i] += DMExcess;
-                        TotalWtAllocated += DMExcess;
-                        DMNotAllocated -= DMExcess;
-                    }
-                }
-            }
-        }
         TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalFreshDMSupply - TotalWtAllocated);
 
         // Then check it all adds up
