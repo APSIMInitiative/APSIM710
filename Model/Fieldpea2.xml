@@ -259,12 +259,6 @@
         </PhaseBasedSwitch>
       </SIRIUSGrain>
       <SIRIUSRoot name="Root">
-        <CompositeBiomass name="Live">
-           <Property>Root.LayerLive[]</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-           <Property>Root.LayerDead[]</Property>
-        </CompositeBiomass>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -272,6 +266,12 @@
         <SpecificRootLength type="text" description="SpecificRootLength">40000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.02</KNO3>
         <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
         <Memo>Optional paramaters
 
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
@@ -526,19 +526,6 @@
           </PhaseLookupValue>
           <TemperatureFunction shortcut="/FieldPea2/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
-        <LinearInterpolationFunction name="xNodeAppearanceRate">
-          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>2 50</XY>
-            <XY>3 40</XY>
-            <XY>4 30</XY>
-            <XY>5 30</XY>
-            <XY>5.5 25</XY>
-            <XY>6 100</XY>
-            <XY>7 1000</XY>
-          </XYPairs>
-          <Memo>Determines how quickly nodes appear</Memo>
-        </LinearInterpolationFunction>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start type="text" description="Start">Emergence</Start>
           <End type="text" description="End">EndGrainFill</End>
@@ -625,15 +612,6 @@ For Potato the potential branching rate is the branching pattern that would be o
           </XYPairs>
           <Memo>This is the amount of thermal time it takes for leaves to complete senesence in the absence of shading and N stress.</Memo>
         </LinearInterpolationFunction>
-        <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.9</Value>
-          <Memo>The cover overlying each cohort is calculated from the leaf area of overlying cohorts and the extinction coefficient.  If it exceeds this value the leaf will begin to seness at a rate set by ShadeInducedSenRate</Memo>
-        </Constant>
-        <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">0.2</Value>
-          <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-          <Memo name="Memo1">This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-        </Constant>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -757,6 +735,14 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <XY>0 0.0</XY>
           </XYPairs>
           <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.9 0</XY>
+            <XY>0.900001 0.2</XY>
+          </XYPairs>
         </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">

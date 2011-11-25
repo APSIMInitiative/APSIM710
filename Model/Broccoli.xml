@@ -216,14 +216,6 @@
           </PhaseLookupValue>
           <TemperatureFunction shortcut="/Broccoli/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
-        <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">1</Value>
-          <Memo>The cover overlying each cohort is calculated from the leaf area of overlying cohorts and the extinction coefficient.  If it exceeds this value the leaf will begin to seness at a rate set by ShadeInducedSenRate</Memo>
-        </Constant>
-        <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">0.2</Value>
-          <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-        </Constant>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 
@@ -406,6 +398,14 @@
           <Values type="text" description="Values">   0.02             0.02          0.02              0.02                0.02       .02</Values>
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
         </StageBasedInterpolation>
+        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.9 0</XY>
+            <XY>0.900001 0</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

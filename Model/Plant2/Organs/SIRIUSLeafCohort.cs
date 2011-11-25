@@ -20,7 +20,6 @@ class SIRIUSLeafCohort : LeafCohort
     private double LuxaryNConc = 0;
     private double _ExpansionStress = 0;
     public double SLA = 0.0;
-    private double CriticalCover = 0;
     //Leaf Initial status paramaters
     public double LeafStartNRetranslocationSupply = 0;
     public double LeafStartNReallocationSupply = 0;
@@ -52,7 +51,6 @@ class SIRIUSLeafCohort : LeafCohort
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
     public double CoverAbove = 0;
-    private double ShadeSenRate = 0;
     private double ShadeInducedSenRate = 0;
     
     [Link(NamePath = "Leaf")]
@@ -73,14 +71,8 @@ class SIRIUSLeafCohort : LeafCohort
     [Link(NamePath = "CriticalNConc")]
     public Function CriticalNConcFunction = null;
 
-    [Link(NamePath = "SenescenceInducingCover", IsOptional = true)]
-    public Function SenescenceInducingCoverFunction = null;
-
     [Link(NamePath = "DMRetranslocationFactor", IsOptional = true)]
     public Function DMRetranslocationFactorFunction = null;
-
-    [Link(NamePath = "ShadeInducedSenRate", IsOptional = true)]
-    public Function ShadeInducedSenRateFunction = null;
 
     [Link(NamePath = "ShadeInducedSenescenceRate", IsOptional = true)]
     public Function ShadeInducedSenescenceRateFunction = null;
@@ -135,7 +127,7 @@ class SIRIUSLeafCohort : LeafCohort
     {
         get
         {
-            if ((IsNotSenescing) && (CoverAbove < CriticalCover)) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
+            if ((IsNotSenescing) && (ShadeInducedSenRate == 0.0)) // Assuming a leaf will have no demand if it is senescing and will have no demand if it is is shaded conditions
             {
                StructuralNDemand = StructuralNConc * PotentialStructuralDMAllocation;
                MetabolicNDemand = FunctionalNConc * PotentialMetabolicDMAllocation;
@@ -309,18 +301,12 @@ class SIRIUSLeafCohort : LeafCohort
         if (DMRetranslocationFactorFunction != null)
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
         else DMRetranslocationFactor = 0;
-        if (SenescenceInducingCoverFunction != null)
-            CriticalCover = SenescenceInducingCoverFunction.Value;
-        else CriticalCover = 1.0;
-        if (ShadeInducedSenRateFunction != null)
-            ShadeInducedSenRate = ShadeInducedSenRateFunction.Value;
-        else ShadeInducedSenRate = 0;
-        //_ShadeInducedSenRateFunction = ShadeInducedSenRateFunction.Value;
     }
     public override void DoPotentialGrowth(double TT)
     {
         if (IsInitialised)
         {
+            Leaf.CurrentRank = Rank - 1; //Set currentRank variable in parent leaf for use in experssion functions
             //Acellerate thermal time accumulation if crop is water stressed.
             double _ThermalTime;
             if ((DroughtInducedSenAcceleration != null) && (IsFullyExpanded))
@@ -334,11 +320,10 @@ class SIRIUSLeafCohort : LeafCohort
 
             CoverAbove = SIRIUSLeaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             if (ShadeInducedSenescenceRateFunction != null)
-                ShadeSenRate = ShadeInducedSenescenceRateFunction.Value;
+               ShadeInducedSenRate = ShadeInducedSenescenceRateFunction.Value;
             SenescedFrac = FractionSenescing(_ThermalTime);
 
             // Doing leaf mass growth in the cohort
-            
             SLA = 0;
           
             if (Live.Wt > 0)
@@ -376,7 +361,7 @@ class SIRIUSLeafCohort : LeafCohort
             MetabolicNAllocation = 0;
             StructuralDMAllocation = 0;
             MetabolicDMAllocation = 0;
-}
+       }
     }
     /// <summary>
     /// Actual daily leaf area expansion ??? (units??? FIXME-EIT)
@@ -393,15 +378,11 @@ class SIRIUSLeafCohort : LeafCohort
             else _ThermalTime = TT;
             
             //Growing leaf area after DM allocated
-
-            //double SpreadableDM = Live.StructuralWt + Live.NonStructuralWt - (Live.StructuralWt + Live.NonStructuralWt) / SpecificLeafAreaMax;
-            //double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation + SpreadableDM) * SpecificLeafAreaMax;
             double DeltaCarbonConstrainedArea = (StructuralDMAllocation + MetabolicDMAllocation) * SpecificLeafAreaMax;
             double DeltaActualArea = Math.Min(DeltaWaterConstrainedArea, DeltaCarbonConstrainedArea); 
             LiveArea += DeltaActualArea; /// Integrates leaf area at each cohort? FIXME-EIT is this the one integrated at leaf.cs?
             
             //Senessing leaf area
-
             double AreaSenescing = LiveArea * SenescedFrac;
             double AreaSenescingN = 0;
             if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
@@ -443,7 +424,7 @@ class SIRIUSLeafCohort : LeafCohort
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
 
             Age = Age + _ThermalTime;
-         }
+          }
     }
     public double FractionSenescing(double TT)
     {
@@ -475,12 +456,12 @@ class SIRIUSLeafCohort : LeafCohort
                 MaxLiveArea = LiveArea;
 
             double FracSenShade = 0;
-            if ((CoverAbove >= CriticalCover) && (LiveArea > 0))
+            if (LiveArea > 0)
+            {
                 FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
-
-            double FracSenDrought = 0;
-             
-            return Math.Max(FracSenAge, Math.Max(FracSenShade, FracSenDrought));
+            }
+            
+            return Math.Max(FracSenAge, FracSenShade);
         }
         else
             return 0;

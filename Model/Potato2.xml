@@ -227,20 +227,20 @@ In addition this organ has a relative growth rate variable and a tubers per stem
         </Constant>
         <RelativeGrowthRateDemandFunction name="DMDemandFunction">
           <InitialWt>500.0</InitialWt>
-		  <InitialStageName>TuberInitiation</InitialStageName>
-			<LinearInterpolationFunction name="RelativeGrowthRate">
-			  <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-			  <XYPairs>
-				<XY>3 0</XY>
-				<XY>4 0</XY>
-				<XY>4.1 0.075</XY>
-				<XY>4.7 0.075</XY>
-				<XY>5.4 0.003</XY>
-				<XY>6 0</XY>
-			  </XYPairs>
-			  <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
-			</LinearInterpolationFunction>
-        </RelativeGrowthRateDemandFunction>		
+          <InitialStageName>TuberInitiation</InitialStageName>
+          <LinearInterpolationFunction name="RelativeGrowthRate">
+            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>3 0</XY>
+              <XY>4 0</XY>
+              <XY>4.1 0.075</XY>
+              <XY>4.7 0.075</XY>
+              <XY>5.4 0.003</XY>
+              <XY>6 0</XY>
+            </XYPairs>
+            <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
+          </LinearInterpolationFunction>
+        </RelativeGrowthRateDemandFunction>
         <LinearInterpolationFunction name="NitrogenDemandSwitch">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
@@ -644,6 +644,14 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Constant name="NonStructuralFraction">
           <Value type="text" description="Value">.2</Value>
         </Constant>
+        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.9 0</XY>
+            <XY>0.900001 0.12</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -656,17 +664,17 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
 </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-		<InternodeDemandFunction name="DMDemandFunction">
-			<LinearInterpolationFunction name="InterNodeWt">
-			  <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
-			  <XYPairs>
-				<XY>0 0.45</XY>
-				<XY>7 0.45</XY>
-				<XY>8 0.6</XY>
-			  </XYPairs>
-			  <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
-			</LinearInterpolationFunction>			
-		</InternodeDemandFunction>
+        <InternodeDemandFunction name="DMDemandFunction">
+          <LinearInterpolationFunction name="InterNodeWt">
+            <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
+            <XYPairs>
+              <XY>0 0.45</XY>
+              <XY>7 0.45</XY>
+              <XY>8 0.6</XY>
+            </XYPairs>
+            <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
+          </LinearInterpolationFunction>
+        </InternodeDemandFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>

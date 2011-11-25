@@ -553,13 +553,6 @@
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.9</Value>
-        </Constant>
-        <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">0.2</Value>
-          <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-        </Constant>
         <Constant name="MaximumNConc">
           <Value type="text" description="Value">.063</Value>
         </Constant>
@@ -575,6 +568,14 @@
         <Constant name="SpecificLeafAreaMin">
           <Value type="text" description="Value">20000</Value>
         </Constant>
+        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.9 0</XY>
+            <XY>0.900001 0.2</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Floret">
         <Biomass name="Live" />

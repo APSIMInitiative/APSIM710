@@ -8,6 +8,7 @@ using ModelFramework;
 public class Leaf : BaseOrgan, AboveGround
 {
  #region Class Data Members
+    public double CurrentRank = 0;
     protected double _WaterAllocation;
     protected double PEP = 0;
     protected double EP = 0;
