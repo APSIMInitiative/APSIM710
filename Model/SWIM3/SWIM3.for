@@ -202,7 +202,11 @@
          double precision psix(MV)
          
          double precision CN_runoff
-         double precision DELk(4)         
+         double precision DELk(0:M,4)
+         double precision Mk(0:M,4)         
+         double precision m0(0:M,5),M1(0:M,5),Y0(0:M,5),Y1(0:M,5)
+         double precision MicroP(0:M),MicroKs(0:M),Kdula(0:M)
+         double precision MacroP(0:M)
       End Type APSwimGlobals
 ! =====================================================================
 !     APSWIM Parameters
@@ -1977,6 +1981,7 @@ c      eqr0 = 0d0
       double precision fraction
       double precision hklg
       double precision hklgd
+      integer layer
       integer i                        ! simple counter variable
       integer j
       integer k
@@ -1990,7 +1995,10 @@ c      eqr0 = 0d0
 c      double precision tth
       double precision thetaj, thetak, dthetaj, dthetak
       double precision hklgj, hklgk, dhklgj, dhklgk
+      double precision alpha,beta,phi,tau
        integer          time_mins
+      double precision b
+      double precision Sdul
 
 *- Implementation Section ----------------------------------
       
@@ -2024,57 +2032,76 @@ c         p%dx(i) = 0.5*(p%x(i+1)-p%x(i-1))
 c   10 continue
 c      p%dx(p%n) = 0.5*(p%x(p%n)-p%x(p%n-1))
 
-* ----------------- Map Soil Properties -----------------------
-      
-c      call map_sw (p%num_dlayer_table,
-c     :             p%dlayer_table,
-c     :             p%sat_table, 
-c     :             p%n+1, 
-c     :             p%dlayer,
-c     :             p%sat)
 
-c      call map_sw (p%num_dlayer_table,
-c     :             p%dlayer_table,
-c     :             p%dul_table, 
-c     :             p%n+1, 
-c     :             p%dlayer,
-c     :             p%dul)
-
-c      call map_sw (p%num_dlayer_table,
-c     :             p%dlayer_table,
-c     :             p%ll15_table, 
-c     :             p%n+1, 
-c     :             p%dlayer,
-c     :             p%ll15)
-
-c      call map_sw (p%num_dlayer_table,
-c     :             p%dlayer_table,
-c     :             p%ks_table, 
-c     :             p%n+1, 
-c     :             p%dlayer,
-c     :             p%ks)
-
-c      call map_sw (p%num_dlayer_table,
-c     :             p%dlayer_table,
-c     :             p%bd_table, 
-c     :             p%n+1, 
-c     :             p%dlayer,
-c     :             p%rhob)
           
 * ------- IF USING SIMPLE SOIL SPECIFICATION CALCULATE PROPERTIES -----
 
-         do 26 i =0,p%n
-            p%psid(i) = p%Psidul !- (p%x(p%n) - p%x(i))
-c            Rll = (Log10(-psiad) - Log10(-psi_ll15)) 
-c     :          / (Log10(-psiad) - Log10(-p%psid(i)))
-c            p%P(i) = Log10((p%ll15(i)-p%air_dry(i)) 
-c     :                     / (p%dul(i)-p%air_dry(i))) / Log10(Rll)
-c            slope = -p%dul(i)/p%sat(i)* p%P(i) 
-c     :            / (Log10(-psiad)-Log10(-p%psid(i)))
-c            p%c(i) = slope * Log10(-p%psid(i)) / (p%dul(i)/p%sat(i)-1d0)
-c            p%k(i) = -1d0*slope 
-c     :              / (p%c(i) * Log10(-p%psid(i))**(p%c(i) - 1d0))
+         do 26 layer =0,p%n
+            p%psid(layer) = p%Psidul !- (p%x(p%n) - p%x(layer))
             
+            g%DELk(layer,1) = (p%dul(layer) - p%sat(layer))
+     :                /(Log10(-p%psid(layer)))
+            g%DELk(layer,2) = (p%ll15(layer) - p%dul(layer)) 
+     :        / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
+            g%DELk(layer,3) = -p%ll15(layer) 
+     :        / (Log10(-psi0) - Log10(-psi_ll15))
+            g%DELk(layer,4) = -p%ll15(layer) 
+     :        / (Log10(-psi0) - Log10(-psi_ll15))     
+     
+      g%Mk(layer,1) = 0d0
+      g%Mk(layer,2) = (g%DELk(layer,1) + g%DELk(layer,2)) / 2d0
+      g%Mk(layer,3) = (g%DELk(layer,2) + g%DELk(layer,3)) / 2d0
+      g%Mk(layer,4) = g%DELk(layer,4)
+
+      ! First bit might not be monotonic so check and adjust
+      alpha = g%Mk(layer,1) / g%DELk(layer,1)
+      beta = g%Mk(layer,2) / g%DELk(layer,1)
+      phi = alpha-((2*alpha+beta-3)**2 /(3*(alpha + beta - 2)))
+      If (phi .le.0) Then
+         tau = 3 / ((alpha**2 + beta**2)**0.5)
+         g%Mk(layer,1) = tau * alpha * g%DELk(layer,1)
+         g%Mk(layer,2) = tau * beta * g%DELk(layer,1)
+      EndIf
+
+         g%m0(layer,1) = 0
+         g%m1(layer,1) = 0
+         g%Y0(layer,1) = p%sat(layer)
+         g%Y1(layer,1) = p%sat(layer)
+
+         g%m0(layer,2) = g%Mk(layer,1) * (Log10(-p%psid(layer)) - 0d0)
+         g%M1(layer,2) = g%Mk(layer,2) * (Log10(-p%psid(layer)) - 0d0) 
+         g%Y0(layer,2) = p%sat(layer)
+         g%Y1(layer,2) = p%dul(layer)
+
+         g%m0(layer,3)=g%Mk(layer,2)
+     :                *(Log10(-psi_ll15)-Log10(-p%psid(layer)))
+         g%M1(layer,3)=g%Mk(layer,3)
+     :                *(Log10(-psi_ll15)-Log10(-p%psid(layer)))
+         g%Y0(layer,3) = p%dul(layer)
+         g%Y1(layer,3) = p%ll15(layer)
+
+         g%m0(layer,4) = g%Mk(layer,3)
+     :                 * (Log10(-psi0) - Log10(-psi_ll15))
+         g%M1(layer,4) = g%Mk(layer,4) 
+     ;                 * (Log10(-psi0) - Log10(-psi_ll15))
+         g%Y0(layer,4) = p%ll15(layer)
+         g%Y1(layer,4) = 0d0
+
+         g%m0(layer,5) = 0
+         g%M1(layer,5) = 0
+         g%Y0(layer,5) = 0
+         g%Y1(layer,5) = 0
+
+         b = -log(p%Psidul/psi_ll15)/log(p%dul(layer)/p%ll15(layer))
+         g%MicroP(layer) = b*2d0+3d0
+         g%Kdula(layer) = min(0.99*p%Kdul,p%Ks(layer))
+         g%MicroKs(layer) = g%Kdula(layer)/(p%dul(layer)/p%sat(layer))
+     :                                         **g%MicroP(layer)
+
+         Sdul = p%dul(layer)/p%sat(layer)
+         g%MacroP(layer)=Log10(g%Kdula(layer)/99d0
+     :                   /(p%Ks(layer)-g%MicroKs(layer)))/Log10(Sdul)
+                  
    26    continue
 
 * ---------- NOW SET THE ACTUAL WATER BALANCE STATE VARIABLES ---------
@@ -2115,41 +2142,6 @@ c   50    continue
       end subroutine
 
 * ====================================================================
-       subroutine map_sw (old_n, old_dlayer, old_sw, 
-     :                    new_n, new_dlayer, new_sw)
-* ====================================================================
-
-      implicit none
-      integer old_n, new_n
-       double precision old_dlayer(:),old_sw(:),new_dlayer(:),new_sw(:)
-       double precision cum_depth(M),cum_swdep(M)
-       double precision top, bottom, new_swdep
-       double precision accum
-       integer layer
-              
-     
-       accum = 0
-       cum_depth(1) = 0
-       cum_swdep(1) = 0
-       do layer = 1, old_n
-          cum_depth(layer+1) = sum(old_dlayer(1:layer))
-          accum = accum+old_dlayer(layer)*old_sw(layer)
-          cum_swdep(layer+1) = accum
-       enddo
-       top = 0
-       do layer = 1,new_n
-          bottom = sum(new_dlayer(1:layer))
-          new_swdep = dlinint (bottom, cum_depth, cum_swdep, old_n+1)
-     :              - dlinint (top, cum_depth, cum_swdep, old_n+1)
-          new_sw(layer) = new_swdep/new_dlayer(layer)
-
-          top = bottom
-       enddo
-       
-       return
-       end subroutine
-
-* ====================================================================
        subroutine apswim_interp (node,tpsi,tth,thd,hklg,hklgd)
 * ====================================================================
 
@@ -2167,17 +2159,6 @@ c   50    continue
 *+  Purpose
 *   interpolate water characteristics for given potential for a given
 *   node.
-
-*+  Notes
-*     code was adapted from the old swim V2 routine watvar which:-
-*
-*     calculates water variables from g%psi at grid point ix
-*     using cubic interpolation between given values of water content p%wc,
-*     log10 conductivity p%hkl, and their derivatives p%wcd, p%hkld with respect
-*     to log10 suction p%sl
-
-*+  Changes
-*      12-07-94 NIH - specified and programmed
 
 *+  Constant Values
       character myname*(*)               ! name of current procedure
@@ -2220,52 +2201,6 @@ c   50    continue
       end function
 
 * ====================================================================
-       double precision function Apswim_Simpletheta1 (layer, psi)
-* ====================================================================
-
-      implicit none
-
-*+  Sub-Program Arguments
-      integer layer
-      double precision    psi
-
-*+  Purpose
-*      Calculate Theta for a given node for a specified suction.
-
-*+  Constant Values
-
-      character*(*) myname               ! name of current procedure
-      parameter (myname = 'Apswim_Simpletheta')
-
-
-*+  Local Variables
-      double precision S
-      double precision Sdul,logpsi
-
-*- Implementation Section ----------------------------------
-
-      if (psi.ge.0d0) then
-
-         Apswim_Simpletheta1 = p%sat(layer)      
-      elseif (psi.le.psi0) then
-         apswim_Simpletheta1 = 0.0
-         
-      elseIf (psi.le.p%psid(layer)) Then
-
-         Apswim_Simpletheta1 = p%air_dry(layer)
-     :        + (p%dul(layer)-p%air_dry(layer))
-     :          * ((Log10(-psiad) - Log10(-psi)) 
-     :         / (Log10(-psiad) - Log10(-p%psid(layer))))**p%P(layer)
-      else
-
-         logpsi = max(Log10(-psi),0d0)
-         Apswim_Simpletheta1 = p%sat(layer) 
-     :       * (1d0 - p%k(layer) * logpsi**p%c(layer))
-      EndIf
-  
-      return
-      end function
-* ====================================================================
        double precision function Apswim_Simpletheta (layer, psi)
 * ====================================================================
 
@@ -2280,69 +2215,37 @@ c   50    continue
 
 *+  Local Variables
       double precision S
-      double precision Sdul,logpsi
-      double precision Mk(4),Y,Y0,Y1,T,m0,M1,alpha,beta,phi,tau
+      double precision logpsi
+      double precision Y,T
+      integer i
       
 *- Implementation Section ----------------------------------
-      g%DELk(1) = (p%dul(layer) - p%sat(layer))/(Log10(-p%psid(layer)))
-      g%DELk(2) = (p%ll15(layer) - p%dul(layer)) 
-     :        / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
-      g%DELk(3) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
-      g%DELk(4) = -p%ll15(layer) / (Log10(-psi0) - Log10(-psi_ll15))
-      Mk(1) = 0d0
-      Mk(2) = (g%DELk(1) + g%DELk(2)) / 2d0
-      Mk(3) = (g%DELk(2) + g%DELk(3)) / 2d0
-      Mk(4) = g%DELk(4)
 
-      ! First bit might not be monotonic so check and adjust
-      alpha = Mk(1) / g%DELk(1)
-      beta = Mk(2) / g%DELk(1)
-      phi = alpha-((2*alpha+beta-3)**2 /(3*(alpha + beta - 2)))
-      If (phi .le.0) Then
-         tau = 3 / ((alpha**2 + beta**2)**0.5)
-         Mk(1) = tau * alpha * g%DELk(1)
-         Mk(2) = tau * beta * g%DELk(1)
-      EndIf
 
       if (psi.ge.-1d0) then
-         m0 = 0
-         m1 = 0
-         Y0 = p%sat(layer)
-         Y1 = p%sat(layer)
+         i = 1
          T = 0    
       elseIf (psi .gt. p%psid(layer)) Then
-         m0 = Mk(1) * (Log10(-p%psid(layer)) - 0d0)
-         M1 = Mk(2) * (Log10(-p%psid(layer)) - 0d0) 
-         Y0 = p%sat(layer)
-         Y1 = p%dul(layer)
+         i = 2
          T = (Log10(-psi) - 0d0) / (Log10(-p%psid(layer)) - 0d0)
       ElseIf (psi .gt. psi_ll15) Then
-         m0 = Mk(2) * (Log10(-psi_ll15) - Log10(-p%psid(layer)))
-         M1 = Mk(3) * (Log10(-psi_ll15) - Log10(-p%psid(layer)))
-         Y0 = p%dul(layer)
-         Y1 = p%ll15(layer)
+         i = 3
          T = (Log10(-psi) - Log10(-p%psid(layer))) 
      :         / (Log10(-psi_ll15) - Log10(-p%psid(layer)))
          
       Elseif (psi .gt. psi0) then
-         m0 = Mk(3) * (Log10(-psi0) - Log10(-psi_ll15))
-         M1 = Mk(4) * (Log10(-psi0) - Log10(-psi_ll15))
-         Y0 = p%ll15(layer)
-         Y1 = 0d0
+         i = 4
          T = (Log10(-psi) - Log10(-psi_ll15)) 
      :        / (Log10(-psi0) - Log10(-psi_ll15))
       else
-         m0 = 0
-         M1 = 0
-         Y0 = 0
-         Y1 = 0
+         i = 5
          T = 0
       End If
 
-      Y = (2 * T**3 - 3 * T**2 + 1) * Y0 
-     :  + (T**3 - 2 * T**2 + T) * m0 
-     :  + (-2 * T**3 + 3 * T**2) * Y1 
-     :  + (T**3 - T**2) * M1
+      Y = (2 * T**3 - 3 * T**2 + 1) * g%Y0(layer,i) 
+     :  + (T**3 - 2 * T**2 + T) * g%m0(layer,i) 
+     :  + (-2 * T**3 + 3 * T**2) * g%Y1(layer,i) 
+     :  + (T**3 - T**2) * g%M1(layer,i)
 
       Apswim_Simpletheta = Y
       return
@@ -2373,19 +2276,8 @@ c   50    continue
 
 *+  Local Variables
       double precision S
-      double precision Sdul
-      double precision Ksa ! apparent Ks
-      double precision MacroP
-      double precision MicroP
-      double precision Kdula
       double precision MicroK
-      double precision MicroKs
       double precision MacroK
-      double precision dul
-      double precision ll
-      double precision sat
-      double precision b
-!      double precision PII
 
 *- Implementation Section ----------------------------------
 
@@ -2394,31 +2286,16 @@ c   50    continue
        if (S.le.0d0) then
           apswim_SimpleK = 1d-100
        else
-       
-         sat = p%sat(layer)  ! no need to recalc this one
-         Kdula = min(0.99*p%Kdul,p%Ks(layer))
+              
 
-         ! use Kdul at psidul rather than at field DUL
-c         dul = Apswim_Simpletheta(layer,p%psid(layer))
-         dul = Apswim_Simpletheta(layer,p%Psidul) 
+
+         MicroK = g%MicroKs(layer)*S**g%MicroP(layer)
          
-         Sdul = dul/sat
-         ll = Apswim_Simpletheta(layer,psi_ll15)
-c         ll = Apswim_Simpletheta(layer,-20000.d0)
-
-c         MicroP = log10(Kdula/Kll)/log10(dul/ll)
-         b = -log(p%Psidul/psi_ll15)/log(dul/ll)
-         MicroP = b*2d0+3d0
-
-         MicroKs = Kdula/(dul/sat)**MicroP
-
-         MicroK = MicroKs*S**MicroP
-         
-         if(MicroKs.ge.p%Ks(layer)) then
+         if(g%MicroKs(layer).ge.p%Ks(layer)) then
             apswim_SimpleK = MicroK
          else
-            MacroP=Log10(Kdula/99d0/(p%Ks(layer)-MicroKs))/Log10(Sdul)
-            MacroK = (p%Ks(layer)-MicroKs) * S**MacroP
+
+            MacroK = (p%Ks(layer)-g%MicroKs(layer))*S**g%MacroP(layer)
             apswim_SimpleK = (MicroK+MacroK)
          endif
       endif
