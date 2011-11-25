@@ -122,8 +122,8 @@
         <LinearInterpolationFunction name="NumberFunction">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
-            <XY>0 25</XY>
-            <XY>200 25</XY>
+            <XY>0 250</XY>
+            <XY>200 250</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <PhaseLookup name="Mortality">
@@ -190,7 +190,7 @@
             <End>Maturity</End>
             <TemperatureFunction name="Function">
               <XYPairs>
-                <XY>5  0.0014</XY>
+                <XY>5 0.0014</XY>
                 <XY>25 0.0014</XY>
                 <XY>30 0.0014</XY>
                 <XY>35 0.0014</XY>
@@ -210,7 +210,7 @@
         </Constant>
         <StageBasedInterpolation name="MinimumNConc">
           <Stages type="text" description="Stages">Flowering StartPodGrowth Maturity</Stages>
-          <Values type="text" description="Values">0.035           0.035          0.035       </Values>
+          <Values type="text" description="Values">0.02           0.02          0.02       </Values>
         </StageBasedInterpolation>
         <StageBasedInterpolation name="MaximumNConc">
           <Stages type="text" description="Stages"> Flowering StartPodGrowth Maturity</Stages>
@@ -284,7 +284,7 @@
           <Memo>is the proportion of LiveWt that is passed to Dead.Wt each day due to senesence</Memo>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">0.01</Value>
+          <Value type="text" description="Value">0.015</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </Constant>
         <Constant name="MinimumNConc">
@@ -307,6 +307,10 @@
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
           <Property>Leaf.Leaves[].Dead</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Total">
+          <Property type="text" description="Property">Leaf.Live</Property>
+          <Property type="text" description="Property">Leaf.Dead</Property>
         </CompositeBiomass>
         <ArrayBiomass name="CohortLive">
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
@@ -358,10 +362,6 @@
           </XYPairs>
           <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
         </LinearInterpolationFunction>
-        <Constant name="MinimumNConc">
-          <Value type="text" description="Value">0.03</Value>
-          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
-        </Constant>
         <Constant name="NReallocationFactor">
           <Value type="text" description="Value">0</Value>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
@@ -502,11 +502,16 @@
             <XY> 1.0 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <StageBasedInterpolation name="MaximumNConc">
-          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
-          <Values>  0.053         0.053      0.046    0.042         0.04 </Values>
-        </StageBasedInterpolation>
         <StageBasedInterpolation name="CriticalNConc" shortcut="/FrenchBean/Model/Plant/Leaf/MaximumNConc" />
+        <StageBasedInterpolation name="MaximumNConc">
+          <Stages type="text" description="Stages">Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Values type="text" description="Values">  0.06         0.06      0.03    0.025         0.02 </Values>
+        </StageBasedInterpolation>
+        <StageBasedInterpolation name="MinimumNConc">
+          <Stages type="text" description="Stages">Germination Emergence Flowering StartPodGrowth Maturity </Stages>
+          <Values type="text" description="Values">  0.02         0.02      0.01    0.01         0.01 </Values>
+          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+        </StageBasedInterpolation>
       </SIRIUSLeaf>
       <SIRIUSGenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -537,15 +542,23 @@
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
+        <StageBasedInterpolation name="XPartitionFraction">
           <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
           <Values>  0.00         0.30      0.40     0.48         0.60 </Values>
         </StageBasedInterpolation>
-        <StageBasedInterpolation name="MaximumNConc">
-          <Stages>Germination Emergence Flowering StartPodGrowth Maturity </Stages>
-          <Values>  0.035         0.035      0.022    0.022         0.022 </Values>
+        <StageBasedInterpolation name="MaximumNConc" shortcut="/FrenchBean/Model/Plant/Leaf/MaximumNConc" />
+        <StageBasedInterpolation name="MinimumNConc" shortcut="/FrenchBean/Model/Plant/Leaf/MinimumNConc">
+          <Memo shortcut="/FrenchBean/Model/Plant/Leaf/MinimumNConc/Memo" />
         </StageBasedInterpolation>
-        <StageBasedInterpolation name="MinimumNConc" shortcut="/FrenchBean/Model/Plant/Stem/MaximumNConc" />
+        <AllometricDemandFunction name="DMDemandFunction">
+          <Power type="text" description="Power term in allometric power function">1.35</Power>
+          <XProperty type="text" description="Value from which demand is calculated">Leaf.Total.Wt</XProperty>
+          <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
+          <Const type="text" description="Constant term in allometric power function">.12</Const>
+          <Memo> Plant allometry is often described using a simple power function (y=kX^p).  
+      	This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
+        </Memo>
+        </AllometricDemandFunction>
       </SIRIUSGenericOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">

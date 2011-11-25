@@ -14,7 +14,7 @@ Title                  = Lawes06P2Mild
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                        "Daily" = %apsim%\Model\Report.dll
+   Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "Final" = %apsim%\Model\Report.dll
    Component                   "LeafOutput" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
@@ -48,7 +48,7 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: DPI2006b.met
 
-------- Daily Initialisation --------------------------------------------------
+------- outputfile Initialisation ---------------------------------------------
      Output frequency:
         post
      Output variables:
@@ -57,9 +57,9 @@ Paddock:
         DAS
         PhenologyCurrentPhaseName
         PhenologyThermalTimeValue
-        broccoli.AboveGroundWt
+        broccoli.AboveGroundWt as Biomass
         broccoli.LeafCohortNo
-        LeafLAI
+        LeafLAI as LAI
         LeafTranspiration
         LeafWaterDemand
         RootWaterSupply
@@ -96,8 +96,13 @@ Paddock:
         Interception
         peta
         petr
+        broccoli.FloretLiveWt
+        broccoli.LeafFn
+        NO3()
+        broccoli.TotalN
+        broccoli.LeafTotalNo
 
-     Output file = Lawes06P2Mild Daily.out
+     Output file = Lawes06P2Mild.out
      Format = normal
 
 ------- Final Initialisation --------------------------------------------------
@@ -441,7 +446,7 @@ Paddock:
       Sending apply message to irrigation
 7/07/2006 - EndShock
                             LAI = 0.05 (m^2/m^2)
-           Above Ground Biomass = 3.97 (g/m^2)
+           Above Ground Biomass = 3.45 (g/m^2)
 8 July 2006(Day of year=189), operations: 
       Sending apply message to irrigation
 9 July 2006(Day of year=190), operations: 
@@ -509,8 +514,8 @@ Paddock:
 7 August 2006(Day of year=219), operations: 
       Sending apply message to irrigation
 7/08/2006 - FloralInitiation
-                            LAI = 0.75 (m^2/m^2)
-           Above Ground Biomass = 90.40 (g/m^2)
+                            LAI = 0.73 (m^2/m^2)
+           Above Ground Biomass = 70.66 (g/m^2)
 8 August 2006(Day of year=220), operations: 
       Sending apply message to irrigation
 9 August 2006(Day of year=221), operations: 
@@ -548,8 +553,8 @@ Paddock:
 24 August 2006(Day of year=236), operations: 
       Sending apply message to irrigation
 24/08/2006 - StartBudding
-                            LAI = 1.54 (m^2/m^2)
-           Above Ground Biomass = 221.69 (g/m^2)
+                            LAI = 1.71 (m^2/m^2)
+           Above Ground Biomass = 202.26 (g/m^2)
 25 August 2006(Day of year=237), operations: 
       Sending apply message to irrigation
 26 August 2006(Day of year=238), operations: 
@@ -571,8 +576,8 @@ Paddock:
 3 September 2006(Day of year=246), operations: 
       Sending apply message to irrigation
 3/09/2006 - Buttoning
-                            LAI = 2.16 (m^2/m^2)
-           Above Ground Biomass = 326.62 (g/m^2)
+                            LAI = 2.58 (m^2/m^2)
+           Above Ground Biomass = 329.43 (g/m^2)
 4 September 2006(Day of year=247), operations: 
       Sending apply message to irrigation
 5 September 2006(Day of year=248), operations: 
@@ -600,11 +605,6 @@ Paddock:
 15 September 2006(Day of year=258), operations: 
       Sending apply message to irrigation
       Sending harvest message to broccoli
-
-     15/09/2006  - Harvesting Floret from broccoli
-     --------------------------------------------------
-     Floret Yield DWt: 149.37 (g/m^2)
-
       Sending endcrop message to broccoli
 16 September 2006(Day of year=259), operations: 
       Sending apply message to irrigation

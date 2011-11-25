@@ -1,4 +1,4 @@
-<folder version="27" name="untitled">
+<folder version="28" name="untitled">
   <folder name="Lawes2006">
     <simulation name="Lawes06P1Wet">
       <clock>
@@ -6,11 +6,9 @@
         <end_date type="date" description="Select the end date of the simulation">3/07/2006</end_date>
       </clock>
       <log />
-      <summaryfile>
-        <filename name="filename">Lawes06.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <metfile name="met">
-        <filename name="filename">DPI2006b.met</filename>
+        <filename name="filename" input="yes">DPI2006b.met</filename>
       </metfile>
       <area name="Paddock">
         <micromet name="Micromet">
@@ -33,7 +31,7 @@
               <row_spacing type="text" description="Enter row spacing (mm) : ">600</row_spacing>
               <class type="text" description="Enter Crop Class:">transplant</class>
             </ui>
-            <script name="start_of_day">
+            <script>
               <text>
       if (today = date('[date]') then
                     [crop] sow population =[density], depth = [depth], cultivar = [cultivar], MaxCover = 1.0, BudNumber = 1, row_spacing = [row_spacing], crop_class = [class]
@@ -391,24 +389,24 @@
             </operation>
           </operations>
           <manager name="Calculations">
-            <script name="init">
+            <script>
               <text>TotalET = 0.0
 DAS = 0
 SW60 = 0
 </text>
               <event>init</event>
             </script>
-            <script name="start_of_day">
+            <script>
               <text>
               </text>
               <event>start_of_day</event>
             </script>
-            <script name="end_of_day">
-              <text><![CDATA[
+            <script>
+              <text>
 TotalET = broccoli.LeafTranspiration + es
 !TotalET = es
 
-if broccoli.LeafLAI > 0 then
+if broccoli.LeafLAI &gt; 0 then
   DAS = DAS + 1
 endif
 
@@ -416,7 +414,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
 
 
 
-]]></text>
+</text>
               <event>end_of_day</event>
             </script>
           </manager>
@@ -429,17 +427,18 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <cnr type="text" description="C:N ration of initial residue">80</cnr>
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
-        <outputfile name="Daily">
-          <filename name="filename">Lawes06 Planting1Wet.out</filename>
+        <outputfile>
+          <filename name="filename" output="yes">Lawes06P1Wet.out</filename>
+          <title>Lawes06P1Wet</title>
           <variables name="My Variables">
             <variable name="dd/mm/yyyy as Date" />
             <variable name="day" />
             <variable name="DAS" />
             <variable name="PhenologyCurrentPhaseName" />
             <variable name="PhenologyThermalTimeValue" />
-            <variable name="broccoli.AboveGroundWt" />
+            <variable name="broccoli.AboveGroundWt as Biomass" />
             <variable name="broccoli.LeafCohortNo" />
-            <variable name="LeafLAI" />
+            <variable name="LeafLAI as LAI" />
             <variable name="LeafTranspiration" />
             <variable name="LeafWaterDemand" />
             <variable name="RootWaterSupply" />
@@ -476,14 +475,32 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
             <variable name="Interception" />
             <variable name="peta" />
             <variable name="petr" />
+            <variable name="broccoli.FloretLiveWt" />
+            <variable name="broccoli.LeafFn" />
+            <variable name="NO3()" />
+            <variable name="broccoli.TotalN" />
+            <variable name="broccoli.LeafTotalNo" />
           </variables>
           <events name="My Variables Events">
             <event name="Daily" description="End of day" />
           </events>
+          <Graph name="LAI Graph">
+            <Plot name="PredictedP1">
+              <X>Date</X>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <Y>LeafCohortNo</Y>
+              <Y>LeafTotalNo</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
         </outputfile>
         <broccoli />
         <outputfile name="Final">
-          <filename name="filename">Lawes06 Planting1Wet final.out</filename>
+          <filename name="filename" output="yes">Lawes06P1Wet Final.out</filename>
+          <title>Lawes06P1Wet Final</title>
           <variables name="FinalVariables">
             <variable name="broccoli.sowing_date" array="?" description="sowing date" />
             <variable name="dd/mm/yyyy" array="?" description="Date (dd/mm/yyyy)" />
@@ -908,12 +925,13 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
           <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
           <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
         </irrigation>
         <outputfile name="LeafOutput">
-          <filename name="filename">Lawes06 Planting1Wet.out</filename>
+          <filename name="filename" output="yes">Lawes06P1Wet LeafOutput.out</filename>
+          <title>Lawes06P1Wet LeafOutput</title>
           <variables name="My Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
             <variable name="LeafMaxSize" />
@@ -925,7 +943,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
     <simulation name="Lawes06P1Mild" shortcut="/untitled/Lawes2006/Lawes06P1Wet">
       <clock shortcut="/untitled/Lawes2006/Lawes06P1Wet/clock" />
       <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
-      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met">
+        <filename shortcut="/untitled/Lawes2006/Lawes06P1Wet/met/filename" input="yes" />
+      </metfile>
       <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
         <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
         <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
@@ -1269,12 +1289,16 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </folder>
         <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
-        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
-          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
-          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        <outputfile>
+          <filename output="yes">Lawes06P1Mild.out</filename>
+          <title>Lawes06P1Mild</title>
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+        <outputfile name="Final">
+          <filename output="yes">Lawes06P1Mild Final.out</filename>
+          <title>Lawes06P1Mild Final</title>
           <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
           <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
         </outputfile>
@@ -1290,7 +1314,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <Sample name="Initial Nitrogen" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Initial nitrogen" />
         </Soil>
         <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
-        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+        <outputfile name="LeafOutput">
+          <filename output="yes">Lawes06P1Mild LeafOutput.out</filename>
+          <title>Lawes06P1Mild LeafOutput</title>
           <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
         </outputfile>
@@ -1299,7 +1325,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
     <simulation name="Lawes06P1Severe" shortcut="/untitled/Lawes2006/Lawes06P1Wet">
       <clock shortcut="/untitled/Lawes2006/Lawes06P1Wet/clock" />
       <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
-      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met">
+        <filename shortcut="/untitled/Lawes2006/Lawes06P1Wet/met/filename" input="yes" />
+      </metfile>
       <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
         <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
         <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
@@ -1643,12 +1671,16 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </folder>
         <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
-        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
-          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
-          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        <outputfile>
+          <filename output="yes">Lawes06P1Severe.out</filename>
+          <title>Lawes06P1Severe</title>
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+        <outputfile name="Final">
+          <filename output="yes">Lawes06P1Severe Final.out</filename>
+          <title>Lawes06P1Severe Final</title>
           <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
           <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
         </outputfile>
@@ -1664,7 +1696,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <Sample name="Initial Nitrogen" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Initial nitrogen" />
         </Soil>
         <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
-        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+        <outputfile name="LeafOutput">
+          <filename output="yes">Lawes06P1Severe LeafOutput.out</filename>
+          <title>Lawes06P1Severe LeafOutput</title>
           <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
         </outputfile>
@@ -1676,7 +1710,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <end_date type="date" description="Select the end date of the simulation">4/10/2006</end_date>
       </clock>
       <summaryfile shortcut="/untitled/Lawes2006/Lawes06P1Wet/summaryfile" />
-      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P1Wet/met">
+        <filename shortcut="/untitled/Lawes2006/Lawes06P1Wet/met/filename" input="yes" />
+      </metfile>
       <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock">
         <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Micromet" />
         <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Manager folder">
@@ -2045,12 +2081,16 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </folder>
         <fertiliser shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/surface organic matter" />
-        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily">
-          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables" />
-          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Daily/My Variables Events" />
+        <outputfile>
+          <filename output="yes">Lawes06P2Wet.out</filename>
+          <title>Lawes06P2Wet</title>
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final">
+        <outputfile name="Final">
+          <filename output="yes">Lawes06P2Wet Final.out</filename>
+          <title>Lawes06P2Wet Final</title>
           <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
           <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
         </outputfile>
@@ -2088,7 +2128,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <Sample name="Initial Nitrogen" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Initial nitrogen" />
         </Soil>
         <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Irrigation" />
-        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput">
+        <outputfile name="LeafOutput">
+          <filename output="yes">Lawes06P2Wet LeafOutput.out</filename>
+          <title>Lawes06P2Wet LeafOutput</title>
           <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables" />
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/LeafOutput/My Variables Events" />
         </outputfile>
@@ -2097,7 +2139,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
     <simulation name="Lawes06P2Mild" shortcut="/untitled/Lawes2006/Lawes06P2Wet">
       <clock shortcut="/untitled/Lawes2006/Lawes06P2Wet/clock" />
       <summaryfile shortcut="/untitled/Lawes2006/Lawes06P2Wet/summaryfile" />
-      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met">
+        <filename shortcut="/untitled/Lawes2006/Lawes06P2Wet/met/filename" input="yes" />
+      </metfile>
       <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock">
         <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Micromet" />
         <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder">
@@ -2433,12 +2477,16 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </folder>
         <fertiliser shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/surface organic matter" />
-        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily">
-          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables" />
-          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables Events" />
+        <outputfile>
+          <filename output="yes">Lawes06P2Mild.out</filename>
+          <title>Lawes06P2Mild</title>
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
-        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final">
+        <outputfile name="Final">
+          <filename output="yes">Lawes06P2Mild Final.out</filename>
+          <title>Lawes06P2Mild Final</title>
           <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
           <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
         </outputfile>
@@ -2454,7 +2502,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <Sample name="Initial Nitrogen" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Initial Nitrogen" />
         </Soil>
         <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Irrigation" />
-        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput">
+        <outputfile name="LeafOutput">
+          <filename output="yes">Lawes06P2Mild LeafOutput.out</filename>
+          <title>Lawes06P2Mild LeafOutput</title>
           <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables" />
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables Events" />
         </outputfile>
@@ -2463,7 +2513,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
     <simulation name="Lawes06P2Severe" shortcut="/untitled/Lawes2006/Lawes06P2Wet">
       <clock shortcut="/untitled/Lawes2006/Lawes06P2Wet/clock" />
       <summaryfile shortcut="/untitled/Lawes2006/Lawes06P2Wet/summaryfile" />
-      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met" />
+      <metfile name="met" shortcut="/untitled/Lawes2006/Lawes06P2Wet/met">
+        <filename shortcut="/untitled/Lawes2006/Lawes06P2Wet/met/filename" input="yes" />
+      </metfile>
       <area name="Paddock" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock">
         <micromet name="Micromet" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Micromet" />
         <folder name="Manager folder" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Manager folder">
@@ -2799,12 +2851,16 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </folder>
         <fertiliser shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/fertiliser" />
         <surfaceom name="surface organic matter" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/surface organic matter" />
-        <outputfile name="Daily" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily">
-          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables" />
-          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Daily/My Variables Events" />
+        <outputfile>
+          <filename output="yes">Lawes06P2Severe.out</filename>
+          <title>Lawes06P2Severe</title>
+          <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables" />
+          <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
-        <outputfile name="Final" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final">
+        <outputfile name="Final">
+          <filename output="yes">Lawes06P2Severe Final.out</filename>
+          <title>Lawes06P2Severe Final</title>
           <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
           <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
         </outputfile>
@@ -2820,51 +2876,14 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <Sample name="Initial Nitrogen" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Initial Nitrogen" />
         </Soil>
         <irrigation name="Irrigation" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Irrigation" />
-        <outputfile name="LeafOutput" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput">
+        <outputfile name="LeafOutput">
+          <filename output="yes">Lawes06P2Severe LeafOutput.out</filename>
+          <title>Lawes06P2Severe LeafOutput</title>
           <variables name="My Variables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables" />
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/LeafOutput/My Variables Events" />
         </outputfile>
       </area>
     </simulation>
-    <Graph name="LAI Graph">
-      <Plot name="PredictedP1">
-        <X>Date</X>
-        <Y>LeafLAI</Y>
-        <SeriesType>Solid line</SeriesType>
-        <PointType>None</PointType>
-        <colour>
-        </colour>
-        <GDApsimFileReader name="ApsimFileReader">
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Mild Daily.out</FileName>
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Severe Daily.out</FileName>
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Wet Daily.out</FileName>
-        </GDApsimFileReader>
-      </Plot>
-      <Plot name="PredictedP2">
-        <X>Date</X>
-        <Y>LeafLAI</Y>
-        <SeriesType>Solid line</SeriesType>
-        <PointType>None</PointType>
-        <colour>
-        </colour>
-        <GDApsimFileReader name="ApsimFileReader">
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Mild Daily.out</FileName>
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Severe Daily.out</FileName>
-          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Wet Daily.out</FileName>
-        </GDApsimFileReader>
-      </Plot>
-      <Plot name="Observed">
-        <SeriesType>No line</SeriesType>
-        <PointType>Circle</PointType>
-        <X>Date</X>
-        <Y>LAI</Y>
-        <colour>
-        </colour>
-        <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Observed\Gatton2006.txt</FileName>
-        </GDApsimFileReader>
-      </Plot>
-    </Graph>
     <Graph name="LeafAppearance">
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -2877,8 +2896,8 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafFinalNodeNo</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -2897,6 +2916,45 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </GDApsimFileReader>
       </Plot>
     </Graph>
+    <Graph name="LAI Graph">
+      <Plot name="PredictedP1">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LAI</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Mild.out</FileName>
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Severe.out</FileName>
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P1Wet.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="PredictedP2">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LAI</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Mild.out</FileName>
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Severe.out</FileName>
+          <FileName>%apsim%\Tests\Validation\Broccoli\Lawes06P2Wet.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <Y>LAI</Y>
+        <colour>
+        </colour>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>Observed\Gatton2006.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
     <Graph name="LeafWt">
       <Plot name="Predicted">
         <SeriesType>Solid line</SeriesType>
@@ -2906,12 +2964,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>LeafLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -2933,12 +2991,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <colour>
         </colour>
         <X>Date</X>
-        <Y>AboveGroundWt</Y>
+        <Y>Biomass</Y>
         <Y>FloretLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -2949,12 +3007,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <colour>
         </colour>
         <X>Date</X>
-        <Y>AboveGroundWt</Y>
+        <Y>Biomass</Y>
         <Y>FloretLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -2979,12 +3037,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>StemLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3008,9 +3066,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>sw_dep()</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3023,9 +3081,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>sw_dep()</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3051,9 +3109,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>SW60</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3066,9 +3124,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>Date</X>
         <Y>SW60</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3095,9 +3153,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>eo</Y>
         <Y>LeafWaterDemand</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3111,9 +3169,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>eo</Y>
         <Y>LeafWaterDemand</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3126,12 +3184,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>RootDepth</Y>
         <X>Date</X>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3148,7 +3206,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>sw(4)</Y>
         <Y>sw(5)</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3181,7 +3239,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>sw(4)</Y>
         <Y>sw(5)</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3214,7 +3272,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>sw(4)</Y>
         <Y>sw(5)</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Severe Daily.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3246,7 +3304,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>sw(3)</Y>
         <Y>sw(4)</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3273,12 +3331,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>PhenologyThermalTimeValue</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3291,12 +3349,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafSpecificArea</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3320,12 +3378,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafExpansionStressValue</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3338,12 +3396,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafFw</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3356,12 +3414,30 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafPhotosynthesisFtValue</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LeafPhotoNStress">
+      <Plot name="Predicted">
+        <X>Date</X>
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>LeafFn</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3377,7 +3453,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>Interception</Y>
         <Y>TotalET</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3393,7 +3469,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>Interception</Y>
         <Y>TotalET</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3408,7 +3484,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>AboveGroundWt</X>
         <Y>StemLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3421,7 +3497,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <X>AboveGroundWt</X>
         <Y>StemLiveWt</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3436,8 +3512,8 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>Height</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
         </GDApsimFileReader>
       </Plot>
       <Plot name="Observed">
@@ -3461,12 +3537,12 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>LeafPhotosynthesisFvpdValue</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
@@ -3480,7 +3556,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>petr</Y>
         <X>Date</X>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3494,7 +3570,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <Y>petr</Y>
         <X>Date</X>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P2Wet Daily.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
           <FileName>
           </FileName>
         </GDApsimFileReader>
@@ -3509,29 +3585,93 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </colour>
         <Y>RootWaterSupply</Y>
         <GDApsimFileReader name="ApsimFileReader">
-          <FileName>Lawes06P1Wet Daily.out</FileName>
-          <FileName>Lawes06P1Mild Daily.out</FileName>
-          <FileName>Lawes06P1Severe Daily.out</FileName>
-          <FileName>Lawes06P2Wet Daily.out</FileName>
-          <FileName>Lawes06P2Mild Daily.out</FileName>
-          <FileName>Lawes06P2Severe Daily.out</FileName>
+          <FileName>Lawes06P1Wet.out</FileName>
+          <FileName>Lawes06P1Mild.out</FileName>
+          <FileName>Lawes06P1Severe.out</FileName>
+          <FileName>Lawes06P2Wet.out</FileName>
+          <FileName>Lawes06P2Mild.out</FileName>
+          <FileName>Lawes06P2Severe.out</FileName>
         </GDApsimFileReader>
       </Plot>
     </Graph>
+    <Graph name="SoilN">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>NO3()</Y>
+        <YRight>TotalN</YRight>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <RegressionGraph name="Pre vs Obs LAI">
+      <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	</memo>
+      <Plot>
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Observed LAI</X>
+        <Y>Predicted LAI</Y>
+        <GDPredObs name="PredictedObserved">
+          <FieldsToMatch>Date</FieldsToMatch>
+          <FieldsToMatch>Title</FieldsToMatch>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+          </GDApsimFileReader>
+          <GDApsimFileReader name="Predicted" />
+        </GDPredObs>
+      </Plot>
+    </RegressionGraph>
+    <RegressionGraph name="Pre vs Obs Biomass">
+      <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	</memo>
+      <Plot>
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Observed Biomass</X>
+        <Y>Predicted Biomass</Y>
+        <GDPredObs name="PredictedObserved">
+          <FieldsToMatch>Date</FieldsToMatch>
+          <FieldsToMatch>Title</FieldsToMatch>
+          <GDApsimFileReader name="Observed">
+            <FileName>%apsim%\Tests\Validation\Broccoli\Observed\Gatton2006.txt</FileName>
+          </GDApsimFileReader>
+          <GDApsimFileReader name="Predicted" />
+        </GDPredObs>
+      </Plot>
+    </RegressionGraph>
   </folder>
   <folder name="Lawes2009">
     <simulation name="Lawes2009">
       <memo>This crop was grown in the lysimeter farm at the Gatton Research Farm.  Head quality was severely affected by high temperatures during August.  There was also a large amount of shooting from the base of the plant.  LAI measurements do not include this significant amount of leaf area and so late in the season will be an underestimate.</memo>
       <metfile name="met">
-        <filename name="filename">Gatton2009.met</filename>
+        <filename name="filename" input="yes">Gatton2009.met</filename>
       </metfile>
       <clock>
         <start_date type="date" description="Enter the start date of the simulation">20/7/2009</start_date>
         <end_date type="date" description="Enter the end date of the simulation">5/10/2009</end_date>
       </clock>
-      <summaryfile>
-        <filename name="filename">Continuous Wheat Simulation.sum</filename>
-      </summaryfile>
+      <summaryfile />
       <area name="paddock">
         <surfaceom name="surface organic matter">
           <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
@@ -3542,6 +3682,8 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         </surfaceom>
         <fertiliser />
         <outputfile>
+          <filename output="yes">Lawes2009.out</filename>
+          <title>Lawes2009</title>
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
             <variable name="biomass" array="?" description="Biomass" />

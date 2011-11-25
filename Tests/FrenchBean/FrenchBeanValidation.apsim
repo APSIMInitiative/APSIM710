@@ -66,13 +66,13 @@
               <Layer>
                 <Thickness>150</Thickness>
                 <LL>0.35</LL>
-                <KL>0.1</KL>
+                <KL>0.2</KL>
                 <XF>1</XF>
               </Layer>
               <Layer>
                 <Thickness>300</Thickness>
                 <LL>0.35</LL>
-                <KL>0.1</KL>
+                <KL>0.2</KL>
                 <XF>1</XF>
               </Layer>
             </SoilCrop>
@@ -290,7 +290,7 @@
               <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">200</fert_amount_sow>
               <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
             </ui>
-            <script name="[modulename].[eventname]">
+            <script>
               <text>
         [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
             </text>
@@ -371,14 +371,14 @@
             <variable name="RootWaterSupply" />
             <variable name="pan" />
             <variable name="PodNumber" />
-            <variable name="LeafSpecificArea" />
             <variable name="LeafFn" />
-            <variable name="StemLiveN" />
             <variable name="LeafLiveN" />
+            <variable name="StemLiveN" />
             <variable name="PodLiveN" />
             <variable name="RootLiveN" />
-            <variable name="ArbitratorDMSupply" />
+            <variable name="LeafDMSupply" />
             <variable name="TotalLiveN" />
+            <variable name="flow_no3(3)" />
           </variables>
           <events name="Reporting Frequency">
             <event name="end_step" />
@@ -406,6 +406,46 @@
               <Y>NO3()</Y>
               <Y>NH4()</Y>
               <Y>Urea()</Y>
+              <Y>Cumulative flow_no3(3)</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="DMSupply">
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>LeafDMSupply</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="PlantNGraph">
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>LeafLiveN</Y>
+              <Y>StemLiveN</Y>
+              <Y>PodLiveN</Y>
+              <Y>RootLiveN</Y>
+              <Y>TotalLiveN</Y>
+              <GDApsimFileReader name="ApsimFileReader" />
+            </Plot>
+          </Graph>
+          <Graph name="NO3 Leaching">
+            <Plot>
+              <SeriesType>Solid line</SeriesType>
+              <PointType>None</PointType>
+              <colour>
+              </colour>
+              <X>Date</X>
+              <Y>LeafFW</Y>
+              <Y>LeafPhotosynthesisFtValue</Y>
+              <Y>LeafFn</Y>
               <GDApsimFileReader name="ApsimFileReader" />
             </Plot>
           </Graph>
@@ -418,74 +458,13 @@
           <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
           <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
           <allocation type="text" description="Allocation in ML">0</allocation>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
         </irrigation>
-        <Graph name="NodeNo">
-          <Plot name="Predicted">
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>Date</X>
-            <Y>LeafNodeNo</Y>
-            <Y>LeafTotalNo</Y>
-            <Y>LeafDeadNodeNo</Y>
-            <GDApsimFileReader name="ApsimFileReader">
-              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
-            </GDApsimFileReader>
-          </Plot>
-          <Plot name="Observed">
-            <colour>
-            </colour>
-            <X>Date</X>
-            <PointType>Circle</PointType>
-            <SeriesType>No line</SeriesType>
-            <Y>NodeNo</Y>
-            <Y>LeafNoTot</Y>
-            <Y>NodeNoSen</Y>
-            <GDFilter name="Filter">
-              <Filter>
-              </Filter>
-              <GDApsimFileReader name="ApsimFileReader">
-                <FileName>c:\apsim\Tests\FrenchBean\Observed\GattonLeaf.txt</FileName>
-              </GDApsimFileReader>
-            </GDFilter>
-          </Plot>
-        </Graph>
-        <Graph name="NodeNo1">
-          <Plot name="Predicted">
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>LeafNodeNo</X>
-            <Y>StemLiveN</Y>
-            <Y>LeafLiveN</Y>
-            <Y>PodLiveN</Y>
-            <Y>RootLiveN</Y>
-            <GDApsimFileReader name="ApsimFileReader">
-              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
-            </GDApsimFileReader>
-          </Plot>
-        </Graph>
-        <Graph name="NodeNo11">
-          <Plot name="Predicted">
-            <SeriesType>Solid line</SeriesType>
-            <PointType>None</PointType>
-            <colour>
-            </colour>
-            <X>LeafNodeNo</X>
-            <Y>TotalLiveN</Y>
-            <GDApsimFileReader name="ApsimFileReader">
-              <FileName>%apsim%\Tests\FrenchBean\GattonOct08.out</FileName>
-            </GDApsimFileReader>
-          </Plot>
-        </Graph>
       </area>
     </simulation>
     <simulation name="GattonDec08" shortcut="/simulations/Gatton/GattonOct08">
@@ -1351,7 +1330,7 @@ Some visible salt damage on photo from 29-apr
         <X>Date</X>
         <PointType>Circle</PointType>
         <SeriesType>No line</SeriesType>
-        <Y>AboveGroundDM</Y>
+        <Y>AboveGroundWt</Y>
         <GDFilter name="Filter">
           <Filter>
           </Filter>
@@ -1926,6 +1905,107 @@ Some visible salt damage on photo from 29-apr
         <X>Date</X>
         <Y>RootWaterSupply</Y>
         <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="Nitrogen Stress">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafFn</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+    </Graph>
+    <Graph name="ROS StemWt">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>StemLiveWt</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1' or title = 'GattonROS2' or title = 'GattonROS3' or title = 'GattonROS4'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="ROS LeafWt">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>LeafLiveWt</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1' or title = 'GattonROS2' or title = 'GattonROS3' or title = 'GattonROS4'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </Plot>
+    </Graph>
+    <Graph name="ROS PodWt">
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>PodLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS1.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS2.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS3.out</FileName>
+          <FileName>c:\apsim\Tests\FrenchBean\GattonROS4.out</FileName>
+        </GDApsimFileReader>
+      </Plot>
+      <Plot name="Observed">
+        <colour>
+        </colour>
+        <X>Date</X>
+        <PointType>Circle</PointType>
+        <SeriesType>No line</SeriesType>
+        <Y>PodLiveWt</Y>
+        <GDFilter name="Filter">
+          <Filter>title = 'GattonROS1' or title = 'GattonROS2' or title = 'GattonROS3' or title = 'GattonROS4'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>c:\apsim\Tests\FrenchBean\Observed\Gatton.txt</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
       </Plot>
     </Graph>
   </folder>
@@ -3380,7 +3460,7 @@ Some visible salt damage on photo from 29-apr
                 <Thickness>300</Thickness>
                 <LL>0.148</LL>
                 <KL>0.2</KL>
-                <XF>0</XF>
+                <XF>1</XF>
               </Layer>
               <Layer>
                 <Thickness>300</Thickness>
@@ -3988,7 +4068,7 @@ Some visible salt damage on photo from 29-apr
           <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
           <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
           <allocation type="text" description="Allocation in ML">0</allocation>
-          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
+          <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
           <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
           <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
