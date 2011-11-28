@@ -1,16 +1,10 @@
-<Type version="24" name="lucerne2">
-  <Memo>This is a first prototype of lucerne 2 parameterized for Kaituna lucerne in New Zealand by John Hargreaves and Edmar Teixeira (PlantandFoodResearch)
-
-- Focus was to test new empirical functions to allocate biomass to roots and account for its desapearance (respiration+senescence) seasonally so we could use total RUE
-
-- LAI model is not satisfatory, needs to be revisited later for a proper parameterization. At the moment it was parameterizad to fit measurements.</Memo>
+<Type version="28" name="lucerne2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
-    <Image>%apsim%\UserInterface\Images\lucerne.jpg</Image>
-    <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation>%apsim%\Documentation\4 Module Reference\Lucerne.htm</Documentation>
+    <Image>%apsim%\UserInterface\Images\Lucerne.jpg</Image>
+    <Description>NOTE: Prototype only.  This module is not to be used in model applications.  Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
     <Documentation name="Generic plant documentation">%apsim%\Documentation\4 Module Reference\Plant.htm</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\lucerne32.png</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\lucerne16.png</SmallIcon>
@@ -21,15 +15,22 @@
       <drop>simulation</drop>
       <drop>folder</drop>
     </drops>
+    <variables link="%apsim%\Documentation\ModelInfo\Lucerne.xml" />
+    <events link="%apsim%\Documentation\ModelInfo\Lucerne.xml" />
     <ApsimToSim>
-      <component name="[lucerne2.name]" executable="[dll]" class="Plant2.Lucerne2">
-        <executable name="[dll]" version="1.0"/>
+      <component name="[InstanceName]" executable="[dll]" class="Plant2.Lucerne">
+        <executable name="[dll]" version="1.0" />
         <initdata>
                [Model]
                <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
       </component>
     </ApsimToSim>
   </MetaData>
+  <Memo>This is a first prototype of lucerne 2 parameterized for Kaituna lucerne in New Zealand by John Hargreaves and Edmar Teixeira (PlantandFoodResearch)
+
+- Focus was to test new empirical functions to allocate biomass to roots and account for its desapearance (respiration+senescence) seasonally so we could use total RUE
+
+- LAI model is not satisfatory, needs to be revisited later for a proper parameterization. At the moment it was parameterizad to fit measurements.</Memo>
   <Model>
     <Cultivar name="hunter_river">
       <Construct>Plant</Construct>
@@ -38,18 +39,42 @@
       <Construct type="text" description="Construct">Plant</Construct>
     </Cultivar>
     <Plant>
-      <CropType>lucerne</CropType>
+      <CropType type="text" description="CropType">Lucerne</CropType>
       <Population>
-        <Value type="text" description="Value">4</Value>
+        <Value>4</Value>
       </Population>
-      <AnnualPlantArbitrator name="Arbitrator">
-        <Constant name="DMSink">
-          <Value>Stem</Value>
+      <SIRIUSArbitrator name="Arbitrator">
+        <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+        <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
+	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
+	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
+	  Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
+	  The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
+	  
+	  N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
+      Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
+	  N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
+	  N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
+	  N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
+	  N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
+
+	
+      In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
+	  1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
+	  2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
+	  3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
+	  
+	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
+	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
+      
+	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
+		   
+        </Memo>
+        <Constant name="RetransWtNRatio">
+          <Value type="text" description="Value">0</Value>
         </Constant>
-        <Constant name="NSink">
-          <Value>Stem</Value>
-        </Constant>
-      </AnnualPlantArbitrator>
+      </SIRIUSArbitrator>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation            Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation   RGFlowering    EndRegrowth</Stages>
         <Values type="text" description="Values">   1               2                  3                  4                         5                            6                   7                    8                       4                       5                            6                        7       </Values>
@@ -192,87 +217,102 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 
 </Memo>
       </Phenology>
-      <Leaf>
+      <SIRIUSLeaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
-        <LeafCohort name="Leaves[1]">
-           <Rank>1</Rank>
-           <Area>1</Area>
-           <Age>0</Age>
-        </LeafCohort>        
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <SIRIUSLeafCohort name="Leaves[1]">
+          <Rank type="text" description="Rank">1</Rank>
+          <Area type="text" description="Area">1</Area>
+          <Age type="text" description="Age">0</Age>
+        </SIRIUSLeafCohort>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0</XY>
             <XY>0 0</XY>
           </XYPairs>
+          <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
         </LinearInterpolationFunction>
         <CompositeBiomass name="Live">
-           <Property>Leaf.Leaves[].Live</Property>
+          <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
-           <Property>Leaf.Leaves[].Dead</Property>
+          <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <FinalNodeNumber name = "FinalNodeNumber">
-		   <MaxNodeNo>150</MaxNodeNo>
-		   <InitialLeafPrimordia>6</InitialLeafPrimordia>
-		   <PhaseLookup name="NodeInitiationRate">
-             <PhaseLookupValue name="Juvenile">
-               <Start type="text" description="Start">Emergence</Start>
-               <End type="text" description="End">EndJuvenile</End>
-               <Constant name="Function">
-                 <Value type="text" description="Value">51</Value>
-               </Constant>
-             </PhaseLookupValue>
-             <PhaseLookupValue name="VegSeedling">
-               <Start type="text" description="Start">EndJuvenile</Start>
-               <End type="text" description="End">Flowering</End>
-               <OnEventFunction name="Target">
-                 <Event type="text" description="Event">EndJuvenile</Event>
-                 <LinearInterpolationFunction name="TemporaryTarget">
-                   <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-                   <XYPairs>
-                     <XY>10.5 51</XY>
-                     <XY>12.5 34</XY>
-                     <XY>24 34</XY>
-                   </XYPairs>
-                 </LinearInterpolationFunction>
-               </OnEventFunction>
-             </PhaseLookupValue>
-             <PhaseLookupValue name="RepSeedling">
-               <Start type="text" description="Start">Flowering</Start>
-               <End type="text" description="End">Maturity</End>
-               <Constant name="Function">
-                 <Value type="text" description="Value">51</Value>
-               </Constant>
-             </PhaseLookupValue>
-             <PhaseLookupValue name="VegRegrowth">
-               <Start type="text" description="Start">StartRegrowth</Start>
-               <End type="text" description="End">RGFlowering</End>
-               <OnEventFunction name="Target">
-                 <Event type="text" description="Event">StartRegrowth</Event>
-                 <LinearInterpolationFunction name="TemporaryTarget">
-                   <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-                   <XYPairs>
-                     <XY>10.5 51</XY>
-                     <XY>12.5 34</XY>
-                     <XY>24 34</XY>
-                   </XYPairs>
-                 </LinearInterpolationFunction>
-               </OnEventFunction>
-             </PhaseLookupValue>
-             <PhaseLookupValue name="RepRegrowth">
-               <Start type="text" description="Start">RGFlowering</Start>
-               <End type="text" description="End">EndRegrowth</End>
-               <Constant name="Function">
-                 <Value type="text" description="Value">51</Value>
-               </Constant>
-             </PhaseLookupValue>
-           </PhaseLookup>
-           <TemperatureFunction shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
-		</FinalNodeNumber>
+        <CompositeBiomass name="Total">
+          <Property type="text" description="Property">Leaf.Live</Property>
+          <Property type="text" description="Property">Leaf.Dead</Property>
+        </CompositeBiomass>
+        <ArrayBiomass name="CohortLive">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Live</Property>
+        </ArrayBiomass>
+        <ArrayBiomass name="CohortDead">
+          <ArraySize>Leaf.MaxNodeNo</ArraySize>
+          <Property>Leaf.Leaves[].Dead</Property>
+        </ArrayBiomass>
+        <FinalNodeNumber>
+          <MaxNodeNo>150</MaxNodeNo>
+          <InitialLeafPrimordia>6</InitialLeafPrimordia>
+          <PhaseLookup name="NodeInitiationRate">
+            <PhaseLookupValue name="Juvenile">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">EndJuvenile</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">51</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="VegSeedling">
+              <Start type="text" description="Start">EndJuvenile</Start>
+              <End type="text" description="End">Flowering</End>
+              <OnEventFunction name="Target">
+                <Event type="text" description="Event">EndJuvenile</Event>
+                <LinearInterpolationFunction name="TemporaryTarget">
+                  <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                  <XYPairs>
+                    <XY>10.5 51</XY>
+                    <XY>12.5 34</XY>
+                    <XY>24 34</XY>
+                  </XYPairs>
+                </LinearInterpolationFunction>
+              </OnEventFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="RepSeedling">
+              <Start type="text" description="Start">Flowering</Start>
+              <End type="text" description="End">Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">51</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="VegRegrowth">
+              <Start type="text" description="Start">StartRegrowth</Start>
+              <End type="text" description="End">RGFlowering</End>
+              <OnEventFunction name="Target">
+                <Event type="text" description="Event">StartRegrowth</Event>
+                <LinearInterpolationFunction name="TemporaryTarget">
+                  <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                  <XYPairs>
+                    <XY>10.5 51</XY>
+                    <XY>12.5 34</XY>
+                    <XY>24 34</XY>
+                  </XYPairs>
+                </LinearInterpolationFunction>
+              </OnEventFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="RepRegrowth">
+              <Start type="text" description="Start">RGFlowering</Start>
+              <End type="text" description="End">EndRegrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">51</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+            <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+          </TemperatureFunction>
+        </FinalNodeNumber>
         <PhaseLookup name="NodeAppearanceRate">
           <PhaseLookupValue name="Juvenile">
             <Start type="text" description="Start">Emergence</Start>
@@ -377,11 +417,19 @@ LAI expansion needs attention in the future.</Memo>
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
-            <XY>0 3000000</XY>
-            <XY>1 3000000</XY>
-            <XY>3 3000000</XY>
-            <XY>5 3000000</XY>
+            <XY>0 30000</XY>
+            <XY>1 30000</XY>
+            <XY>3 30000</XY>
+            <XY>5 30000</XY>
           </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SpecificLeafAreaMin">
+          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
+          <XYPairs>
+            <XY>1 30000</XY>
+            <XY>6 30000</XY>
+          </XYPairs>
+          <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Leaf.NodeNo</XProperty>
@@ -461,7 +509,7 @@ LAI expansion needs attention in the future.</Memo>
               <XY>50 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-		  		  <LinearInterpolationFunction name="FN">
+          <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
               <XY>0 0</XY>
@@ -532,91 +580,56 @@ LAI expansion needs attention in the future.</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="StructuralNConc">
-          <Value type="text" description="Value">0.0</Value>
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
-        <Constant name="InitialNConc">
-          <Value type="text" description="Value">0.01</Value>
+        <Constant name="NRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
-          <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-        </TemperatureFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">0.5</Value>
         </Constant>
-        <MultiplyFunction name="PartitionFraction">
-          <LinearInterpolationFunction name="LeafToShootFraction">
-            <XProperty type="text" description="XProperty">AboveGroundDM</XProperty>
-            <XYPairs>
-              <XY>0 0.7</XY>
-              <XY>50 0.53</XY>
-              <XY>100 0.41</XY>
-              <XY>200 0.34</XY>
-              <XY>1000 0.26</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <SubtractFunction name="ShootPartitionFraction">
-            <Constant name="One">
-              <Value type="text" description="Value">1</Value>
-            </Constant>
-            <SubtractFunction name="RootPartitionFraction">
-              <LinearInterpolationFunction name="BaseFraction">
-                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-                <XYPairs>
-                  <XY>10 0.1</XY>
-                  <XY>16.5 0.44</XY>
-                  <XY>24 0.44</XY>
-                </XYPairs>
-              </LinearInterpolationFunction>
-              <MultiplyFunction name="CorrectionFactor">
-                <Constant name="ScaleFactor">
-                  <Value type="text" description="Value">0.8</Value>
-                </Constant>
-                <PhotoperiodDeltaFunction>
-                  <Twilight type="text" description="Twilight">-6</Twilight>
-                </PhotoperiodDeltaFunction>
-              </MultiplyFunction>
-            </SubtractFunction>
-          </SubtractFunction>
-          <Memo>Here we assumed:
-
-- DM is partitioned to shoots seasonally as a function of photoperiod: this is an empirical way of decribing negligible partitionig of DM to roots during spring and a seasonal shift to intense partitioning during mid-summer/autumn. (ShootPartitionFraction)
-
-- Biomass once in shoot is partitioned between leaf and stem:  Leaf proportion in shoot declines with increase in shoot size allometrically (LeafToShootFraction)</Memo>
-        </MultiplyFunction>
-        <Constant name="One">
-          <Value type="text" description="Value">1</Value>
+        <Constant name="DMRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-      </Leaf>
-      <GenericOrgan name="Stem">
-        <Biomass name="Live" />
-        <Biomass name="Dead" />
-        <Constant name="NStructuralFraction">
-          <Value>1.0</Value>
-        </Constant>
-        <PhaseLookup name="StructuralFraction">
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.5</Value>
-            </Constant>
+        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
+          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>0.9 0</XY>
+            <XY>0.900001 0</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </TemperatureFunction>
+        <PhaseLookup name="CriticalNConc" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc">
+          <PhaseLookupValue name="Vegetative" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Vegetative">
+            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Vegetative/Function" />
           </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive">
-            <Start type="text" description="Start">StartPodGrowth</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">1</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Regrowth">
-            <Start type="text" description="Start">StartPodGrowth</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.5</Value>
-            </Constant>
+          <PhaseLookupValue name="Reproductive" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Reproductive">
+            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Reproductive/Function" />
           </PhaseLookupValue>
         </PhaseLookup>
+      </SIRIUSLeaf>
+      <SIRIUSGenericOrgan name="Stem">
+        <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
+1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
+2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
+3. NRetranslocationFactor.  Default value is 0 which means none of the nonstructuralN in this organ is available for retranslocation.  If retranslocation is required place a function on the organ named NRetranslocationFactor. It needs to be a number from 0 -1 that represents the proportion of non-structural N that can be removed from an organ on any day.
+4. NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
+5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
+6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
+         </Memo>
+        <Biomass name="Live" />
+        <Biomass name="Dead" />
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
+        </Constant>
         <PhaseLookup name="MaximumNConc">
           <PhaseLookupValue name="Vegetative">
             <Start type="text" description="Start">Emergence</Start>
@@ -633,67 +646,52 @@ LAI expansion needs attention in the future.</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <SubtractFunction name="PartitionFraction">
-          <Memo><![CDATA[The remaining of DM partitioned to leaves is allocated to stems (see memo in partitioning to leaves)
-
-Photoperiod is driving biomass allocation to roots, with max/min values in solstices but different values in equinoxes (autumn > spring). Teixeira E. I., Hargreaves J., Brown H., Moot D. J. (2010) Simulating perennial crops with the APSIM plant module ? a study with lucerne. Proceedings of the 15th ASA Conference, 15-19 November 2010, Lincoln, New Zealand. Web site www.agronomy.org.au.]]></Memo>
-          <Constant name="One">
-            <Value type="text" description="Value">1</Value>
-          </Constant>
-          <MultiplyFunction name="LeafPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction">
-            <LinearInterpolationFunction name="LeafToShootFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction">
-              <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/LeafToShootFraction/XYPairs" />
-            </LinearInterpolationFunction>
-            <SubtractFunction name="ShootPartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction">
-              <Constant name="One" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/One" />
-              <SubtractFunction name="PartitionFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction">
-                <LinearInterpolationFunction name="BaseFraction" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction">
-                  <XYPairs shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/BaseFraction/XYPairs" />
-                </LinearInterpolationFunction>
-                <MultiplyFunction name="CorrectionFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor">
-                  <Constant name="ScaleFactor" shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/ScaleFactor" />
-                  <PhotoperiodDeltaFunction shortcut="/lucerne2/Model/Plant/Leaf/PartitionFraction/ShootPartitionFraction/RootPartitionFraction/CorrectionFactor/PhotoperiodDeltaFunction" />
-                </MultiplyFunction>
-              </SubtractFunction>
-            </SubtractFunction>
-          </MultiplyFunction>
-          <SubtractFunction name="RootPartitionFraction">
-            <LinearInterpolationFunction name="BaseFraction">
-              <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-              <XYPairs>
-                <XY>10 0.1</XY>
-                <XY>16.5 0.44</XY>
-                <XY>24 0.44</XY>
-              </XYPairs>
-            </LinearInterpolationFunction>
-            <MultiplyFunction name="CorrectionFactor">
-              <Constant name="ScaleFactor">
-                <Value type="text" description="Value">0.8</Value>
-              </Constant>
-              <PhotoperiodDeltaFunction>
-                <Twilight type="text" description="Twilight">-6</Twilight>
-              </PhotoperiodDeltaFunction>
-            </MultiplyFunction>
-          </SubtractFunction>
-        </SubtractFunction>
-        <Constant name="StructuralNConc">
+        <Constant name="MinimumNConc">
           <Value type="text" description="Value">0.0</Value>
         </Constant>
-      </GenericOrgan>
-      <Root>
-        <CompositeBiomass name="Live">
-           <Property>Root.LayerLive[]</Property>
-        </CompositeBiomass>
-        <CompositeBiomass name="Dead">
-           <Property>Root.LayerDead[]</Property>
-        </CompositeBiomass>
+        <Constant name="NRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
+        </Constant>
+        <MultiplyFunction name="InternodeDemand">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <RelativeToFinalNodeFunction name="PotentialInternodeWt">
+            <InitialSize type="text" description="InitialSize">0</InitialSize>
+            <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">0.0005</EarlyStageSizeIncrement>
+            <SizeOfLargest type="text" description="SizeOfLargest">.4</SizeOfLargest>
+            <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
+            <SizeAtFinalNode type="text" description="SizeAtFinalNode">.3</SizeAtFinalNode>
+            <ChangeStage type="text" description="Stage code when rate change occurs">4.0</ChangeStage>
+          </RelativeToFinalNodeFunction>
+          <Variable name="NodesAppearing">
+            <VariableName type="text" description="Variable Name">Leaf.DeltaNodeNumber</VariableName>
+            <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+          </Variable>
+          <Variable name="Branches">
+            <VariableName type="text" description="Variable Name">Leaf.BranchNo</VariableName>
+            <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+          </Variable>
+        </MultiplyFunction>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
+      </SIRIUSGenericOrgan>
+      <SIRIUSRoot name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
-        <InitialWt type="text" description="InitialWt">0.002</InitialWt>
+        <InitialDM type="text" description="InitialDM">0.002</InitialDM>
         <SpecificRootLength type="text" description="SpecificRootLength">60000</SpecificRootLength>
         <KNO3 type="text" description="KNO3">0.02</KNO3>
-        <KNH4 type="text" description="KNH4">0.0</KNH4>
+        <KNH4 type="text" description="KNH4">0</KNH4>
+        <CompositeBiomass name="Live">
+          <Property>Root.LayerLive[]</Property>
+        </CompositeBiomass>
+        <CompositeBiomass name="Dead">
+          <Property>Root.LayerDead[]</Property>
+        </CompositeBiomass>
         <LinearInterpolationFunction name="KLModifier">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -731,9 +729,6 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <Constant name="SoilWaterEffect">
-          <Value>1.0</Value>
-        </Constant>        
         <TemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 0</XY>
@@ -745,36 +740,6 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
         </Constant>
-        <PhaseLookup name="StructuralFraction">
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.5</Value>
-            </Constant>
-            <PhaseLookupValue name="Vegetative">
-              <Start type="text" description="Start">Emergence</Start>
-              <End type="text" description="End">StartPodGrowth</End>
-              <Constant name="Function">
-                <Value type="text" description="Value">0.5</Value>
-              </Constant>
-            </PhaseLookupValue>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive">
-            <Start type="text" description="Start">StartPodGrowth</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Regrowth">
-            <Start type="text" description="Start">StartRegrowth</Start>
-            <End type="text" description="End">EndRegrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.5</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
         <PhaseLookup name="MaximumNConc">
           <PhaseLookupValue name="Vegetative">
             <Start type="text" description="Start">Emergence</Start>
@@ -853,47 +818,38 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
           <Depth type="text" description="Soil depth(mm)">10</Depth>
           <Memo>We've implemented that to retrieve Soil temperature. Attention on which module is being used. In New Zealand the .NET soil temperature module performs really well, better than the one from soilN.</Memo>
         </SoilTemperatureFunction>
-      </Root>
-      <GenericOrgan name="Pod">
+        <PhaseLookup name="MinimumNConc" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc">
+          <PhaseLookupValue name="Vegetative" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative">
+            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative/Function" />
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Reproductive" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Reproductive">
+            <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Reproductive/Function" />
+          </PhaseLookupValue>
+        </PhaseLookup>
+      </SIRIUSRoot>
+      <SIRIUSGenericOrgan name="Pod">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
         </Constant>
-        <Constant name="NStructuralFraction">
-          <Value>1.0</Value>
-        </Constant>
         <StageBasedInterpolation name="PartitionFraction">
           <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
           <Values type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Values>
         </StageBasedInterpolation>
-        <PhaseLookup name="StructuralFraction">
-          <PhaseLookupValue name="Vegetative">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Reproductive">
-            <Start type="text" description="Start">StartPodGrowth</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">1.0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Regrowth">
-            <Start type="text" description="Start">StartRegrowth</Start>
-            <End type="text" description="End">EndRegrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <Constant name="StructuralNConc">
-          <Value type="text" description="Value">0.0</Value>
+        <Constant name="NReallocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
-      </GenericOrgan>
+        <Constant name="NRetranslocationFactor">
+          <Value type="text" description="Value">0</Value>
+          <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
+        </Constant>
+        <Constant name="MinimumNConc" shortcut="/lucerne2/Model/Plant/Pod/MaximumNConc" />
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">1</Value>
+        </Constant>
+      </SIRIUSGenericOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>
@@ -908,11 +864,11 @@ Photoperiod is driving biomass allocation to roots, with max/min values in solst
         <Property>Organs[].Dead</Property>
       </CompositeBiomass>
       <CompositeBiomass name="TotalLive">
-          <Property>Organs[].Live</Property>
-      </CompositeBiomass>       
+        <Property>Organs[].Live</Property>
+      </CompositeBiomass>
       <CompositeBiomass name="TotalDead">
-          <Property>Organs[].Dead</Property>
-      </CompositeBiomass>      
+        <Property>Organs[].Dead</Property>
+      </CompositeBiomass>
     </Plant>
   </Model>
 </Type>
