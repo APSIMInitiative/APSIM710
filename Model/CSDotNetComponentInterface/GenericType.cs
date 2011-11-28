@@ -54,14 +54,13 @@ public class GenericType : TypeInterpreter
     /// <param name="MessageData">The packed data from this Generic type</param>
     public override void pack(out byte[] MessageData)
     {
-        MessageData = new byte[memorySize()];
-
         for (int i = 0; i < Fields.Count; i++)
         {
             byte[] msgData;
             Fields[i].pack(out msgData);
             DDMLValue.item((uint)i + 1).setData(msgData, msgData.Length);
         }
+        MessageData = new byte[memorySize()];
         DDMLValue.getData(ref MessageData);
     }
     /// <summary>

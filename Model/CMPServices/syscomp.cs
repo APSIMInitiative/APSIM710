@@ -180,6 +180,9 @@ namespace CMPServices
                                 msg.to = FParentID;  //redirect the message up the line
                                 sendMessage(msg);
                             }
+			                else if (toAck == 1) {
+				               sendComplete(msgFrom, msgID);	//send a complete anyway
+                            }
                         }
                         else
                             sendMessage(msg);

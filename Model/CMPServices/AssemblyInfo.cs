@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CSIRO")]
 [assembly: AssemblyProduct("CMP Support library")]
-[assembly: AssemblyCopyright("CSIRO 2008")]
+[assembly: AssemblyCopyright("CSIRO 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
