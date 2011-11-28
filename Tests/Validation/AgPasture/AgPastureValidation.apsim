@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="No2DairyNZ8292">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">30/06/1982</start_date>
       <end_date type="date" description="Enter the end date of the simulation">30/06/1992</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">Ruakura.met</filename>
+      <filename name="filename" input="yes">Ruakura.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="No2DairyNZ">
       <AgPasture name="ryegrass_clover_paspalum">
         <Nspecies type="text" description="Number of species">3</Nspecies>
@@ -896,7 +894,8 @@ n_som = 0
 n_urine = 0
 n_urine1 = 0
 n_urine2 = 0
-if (today = date('20/07/1981')) or
+if (year = 1981) then
+   if (today = date('20/07/1981')) or
  (today = date('15/09/1981')) or
  (today = date('30/09/1981')) or
  (today = date('28/10/1981')) or
@@ -915,7 +914,9 @@ if (today = date('20/07/1981')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('18/05/1982')) or
+  endif             
+elseif (year = 1982) then
+ if (today = date('18/05/1982')) or
  (today = date('17/06/1982')) or
  (today = date('15/07/1982')) or
  (today = date('12/08/1982')) or
@@ -937,7 +938,9 @@ elseif (today = date('18/05/1982')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n () 
-elseif (today = date('27/01/1983')) or
+  endif            
+elseif (year = 1983) or (year = 1984) then
+ if (today = date('27/01/1983')) or
  (today = date('24/02/1983')) or
  (today = date('24/03/1983')) or
  (today = date('21/04/1983')) or
@@ -976,7 +979,9 @@ elseif (today = date('27/01/1983')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n () 
-elseif (today = date('24/01/1985')) or
+  endif              
+elseif (year = 1985) or (year = 1986) then
+ if (today = date('24/01/1985')) or
  (today = date('20/02/1985')) or
  (today = date('21/03/1985')) or
  (today = date('18/04/1985')) or
@@ -1015,7 +1020,9 @@ elseif (today = date('24/01/1985')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('23/01/1987')) or
+  endif             
+elseif (year = 1987) or (year = 1988) then
+ if (today = date('23/01/1987')) or
  (today = date('20/02/1987')) or
  (today = date('19/03/1987')) or
  (today = date('16/04/1987')) or
@@ -1054,7 +1061,9 @@ elseif (today = date('23/01/1987')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif  (today = date('19/01/1989')) or
+  endif                
+elseif (year = 1989) or (year = 1990) then
+ if (today = date('19/01/1989')) or
  (today = date('16/02/1989')) or
  (today = date('16/03/1989')) or
  (today = date('13/04/1989')) or
@@ -1093,7 +1102,9 @@ elseif  (today = date('19/01/1989')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('17/01/1991')) or
+  endif                
+elseif (year = 1991) or (year = 1992) or (year = 1993) then
+ if (today = date('17/01/1991')) or
  (today = date('14/02/1991')) or
  (today = date('13/03/1991')) or
  (today = date('11/04/1991')) or
@@ -1141,6 +1152,7 @@ elseif (today = date('17/01/1991')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+  endif              
 endif </text>
           <event>end_of_day</event>
         </script>
@@ -1163,6 +1175,8 @@ endif </text>
         </script>
       </manager>
       <outputfile>
+        <filename output="yes">No2DairyNZ8292 No2DairyNZ.out</filename>
+        <title>No2DairyNZ8292 No2DairyNZ</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="year" array="No" />
@@ -1213,7 +1227,7 @@ endif </text>
           <variable name="PlantFixedN" array="No" description="Daily plant nitrogen fixation" />
           <variable name="PlantPotentialGrowthWt" array="No" description="Daily plant potential growth" />
           <variable name="PlantRemobilisedN" array="No" description="Plant N remobilisation" />
-          <variable name="PlantStatus" array="No" description="Plant status - live or dead" />
+          <variable name="plant_status" array="No" description="Plant status - alive or dead" />
           <variable name="RootSenescenceN" array="No" description="Daily plant root nitrogen deposition in senescent roots" />
           <variable name="RootSenescenceWt" array="No" description="Daily root senescence" />
           <variable name="SpeciesHarvestPct" array="No" description="Species - percentage in harvested plant material (%)" />
@@ -1309,11 +1323,9 @@ endif </text>
       <end_date type="date" description="Enter the end date of the simulation">30/06/2004</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">Winchmore.met</filename>
+      <filename name="filename" input="yes">Winchmore.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="PadDryland">
       <AgPasture name="ryegrass_clover">
         <Nspecies type="text" description="Number of species">2</Nspecies>
@@ -2156,7 +2168,8 @@ n_som = 0
 n_urine = 0
 n_urine1 = 0
 n_urine2 = 0
-if (today = date('12/01/1966')) or
+if (year = 1966) or (year = 1967) then
+  if (today = date('12/01/1966')) or
   (today = date('10/02/1966')) or
   (today = date('10/03/1966')) or
   (today = date('12/04/1966')) or
@@ -2188,7 +2201,9 @@ if (today = date('12/01/1966')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('5/01/1968')) or
+  endif
+elseif (year = 1968) or (year = 1969) then
+  if (today = date('5/01/1968')) or
   (today = date('31/01/1968')) or
   (today = date('6/03/1968')) or
   (today = date('8/04/1968')) or
@@ -2219,7 +2234,9 @@ elseif (today = date('5/01/1968')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('20/01/1970')) or
+  endif
+elseif (year = 1970) or (year = 1971) then
+  if (today = date('20/01/1970')) or
   (today = date('17/02/1970')) or
   (today = date('24/03/1970')) or
   (today = date('5/05/1970')) or
@@ -2250,8 +2267,9 @@ elseif (today = date('20/01/1970')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif
-  (today = date('10/01/1972')) or
+  endif
+elseif (year = 1972) or (year = 1973) then
+  if (today = date('10/01/1972')) or
   (today = date('14/02/1972')) or
   (today = date('15/03/1972')) or
   (today = date('20/04/1972')) or
@@ -2282,7 +2300,9 @@ elseif
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('18/01/1974')) or
+  endif
+elseif (year = 1974) or (year = 1975) then
+  if (today = date('18/01/1974')) or
   (today = date('14/02/1974')) or
   (today = date('21/03/1974')) or
   (today = date('2/05/1974')) or
@@ -2313,7 +2333,9 @@ elseif (today = date('18/01/1974')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('7/01/1976')) or
+  endif
+elseif (year = 1976) or (year = 1977) then
+  if (today = date('7/01/1976')) or
   (today = date('12/02/1976')) or
   (today = date('18/03/1976')) or
   (today = date('27/04/1976')) or
@@ -2343,7 +2365,9 @@ elseif (today = date('7/01/1976')) or
               'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif  (today = date('13/01/1978')) or
+  endif
+elseif  (year = 1978) or (year = 1979) then
+  if (today = date('13/01/1978')) or
   (today = date('13/02/1978')) or
   (today = date('23/03/1978')) or
   (today = date('30/05/1978')) or
@@ -2371,7 +2395,9 @@ elseif  (today = date('13/01/1978')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('8/01/1980')) or
+  endif
+elseif (year = 1980) or (year = 1981) then
+  if (today = date('8/01/1980')) or
   (today = date('7/02/1980')) or
   (today = date('13/03/1980')) or
   (today = date('1/05/1980')) or
@@ -2401,7 +2427,9 @@ elseif (today = date('8/01/1980')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('13/01/1982')) or
+  endif
+elseif (year = 1982) or (year = 1983) or (year = 1984) then
+  if (today = date('13/01/1982')) or
   (today = date('15/02/1982')) or
   (today = date('24/03/1982')) or
   (today = date('27/04/1982')) or
@@ -2429,7 +2457,9 @@ elseif (today = date('13/01/1982')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('24/01/1985')) or
+  endif
+elseif (year = 1985) or (year = 1986) then
+  if (today = date('24/01/1985')) or
   (today = date('27/02/1985')) or
   (today = date('29/03/1985')) or
   (today = date('29/05/1985')) or
@@ -2459,7 +2489,9 @@ elseif (today = date('24/01/1985')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('8/01/1987')) or
+  endif
+elseif (year &gt;= 1987) and (year &lt;= 1991) then
+  if (today = date('8/01/1987')) or
   (today = date('23/02/1987')) or
   (today = date('31/03/1987')) or
   (today = date('3/06/1987')) or
@@ -2507,7 +2539,9 @@ elseif (today = date('8/01/1987')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()             
-elseif (today = date('22/01/1992')) or
+  endif
+elseif (year = 1992) or (year = 1993) then
+  if (today = date('22/01/1992')) or
   (today = date('5/03/1992')) or
   (today = date('3/07/1992')) or
   (today = date('22/09/1992')) or
@@ -2534,7 +2568,9 @@ elseif (today = date('22/01/1992')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('1/02/1994')) or
+  endif
+elseif (year = 1994) or (year = 1995) then
+  if (today = date('1/02/1994')) or
   (today = date('6/04/1994')) or
   (today = date('11/10/1994')) or
   (today = date('14/11/1994')) or
@@ -2559,7 +2595,9 @@ elseif (today = date('1/02/1994')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('16/01/1996')) or
+  endif
+elseif (year = 1996) or (year = 1997) then
+  if (today = date('16/01/1996')) or
   (today = date('1/03/1996')) or
   (today = date('10/04/1996')) or
   (today = date('19/06/1996')) or
@@ -2588,7 +2626,9 @@ elseif (today = date('16/01/1996')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
- elseif (today = date('22/01/1998')) or
+  endif
+ elseif (year &gt;= 1998) and (year &lt;= 2000) then
+  if (today = date('22/01/1998')) or
   (today = date('10/03/1998')) or
   (today = date('19/08/1998')) or
   (today = date('15/10/1998')) or
@@ -2622,7 +2662,9 @@ elseif (today = date('16/01/1996')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
-elseif (today = date('24/01/2001')) or
+  endif
+elseif (year &gt;= 2001) and (year &lt;= 2004) then
+  if (today = date('24/01/2001')) or
   (today = date('27/02/2001')) or
   (today = date('17/05/2001')) or
   (today = date('13/09/2001')) or
@@ -2657,6 +2699,7 @@ elseif (today = date('24/01/2001')) or
                'Surface Organic Matter' add_surfaceom name = '[AgPasture]' , type =  grass, mass = dm_som (kg/ha), n = n_som (kg/ha)
               'fertiliser' apply amount =  n_urine1  (kg/ha), depth = 50  (mm), type = urea_n ()
               'fertiliser' apply amount =  n_urine2  (kg/ha), depth = 150 (mm), type = urea_n ()
+  endif
  endif</text>
           <event>end_of_day</event>
         </script>
@@ -2667,6 +2710,8 @@ elseif (today = date('24/01/2001')) or
         </script>
       </manager>
       <outputfile>
+        <filename output="yes">Winchmore1966 PadDryland.out</filename>
+        <title>Winchmore1966 PadDryland</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="year" array="No" />
@@ -2717,7 +2762,7 @@ elseif (today = date('24/01/2001')) or
           <variable name="PlantFixedN" array="No" description="Daily plant nitrogen fixation" />
           <variable name="PlantPotentialGrowthWt" array="No" description="Daily plant potential growth" />
           <variable name="PlantRemobiliedN" array="No" description="Plant N remobilisation" />
-          <variable name="PlantStatus" array="No" description="Plant status - live or dead" />
+          <variable name="plant_status" array="No" description="Plant status - alive or dead" />
           <variable name="RootSenescenceN" array="No" description="Daily plant root nitrogen deposition in senescent roots" />
           <variable name="RootSenescenceWt" array="No" description="Daily root senescence" />
           <variable name="SpeciesHarvestPct" array="No" description="Species - percentage in harvested plant material (%)" />
@@ -4746,6 +4791,8 @@ elseif (today = date('24/01/2001')) or
         </operation>
       </operations>
       <outputfile>
+        <filename output="yes">Winchmore1966 PadIrrigated.out</filename>
+        <title>Winchmore1966 PadIrrigated</title>
         <variables name="Variables" shortcut="/Simulations/Winchmore1966/PadDryland/outputfile/Variables" />
         <events name="Reporting Frequency">
           <event name="end_day" description="End of day" />

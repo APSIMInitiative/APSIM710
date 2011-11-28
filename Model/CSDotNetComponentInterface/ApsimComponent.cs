@@ -362,10 +362,14 @@ namespace ModelFramework
         // ----------------------------------------------
         public void RegisterAllProperties(Factory F)
         {
+            Boolean doReg = true;
             for (int i = 0; i != F.Properties.Count; i++)
             {
                 FactoryProperty Property = F.Properties[i];
-                if (Property.IsOutput && String.Compare(Property.Name, "plant_status", true) != 0)
+                doReg = true;
+                if (IsPlant && (String.Compare(Property.Name, "plant_status", true) == 0))  //don't (re)register plant_status for Plant2
+                    doReg = false;
+                if (Property.IsOutput && doReg)
                 {
                     int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
                     RegistrationsProp.Add(RegistrationIndex, Property);

@@ -1671,12 +1671,12 @@ public class AgPasture : Instance
 
     [Output]
     [Units("")]
-    public String PlantStatus
+    public String plant_status
     {
         get
         {
-            if (p_Live) return "Live";
-            else return "Dead";
+            if (p_Live) return "alive";
+            else return "dead";
         }
     }
     [Output]
