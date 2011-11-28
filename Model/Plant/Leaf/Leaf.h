@@ -74,6 +74,9 @@ class Leaf : public SimplePart {
 
    bool ExternalSWDemand;
    PhotosynthesisModel* Photosynthesis;
+   float TEFactor;
+   void onSetTEFactor(float Factor);   
+   
 };
 
 Leaf* constructLeafPart(ScienceAPI& scienceAPI, plantInterface *p, const string &type, const string &name);

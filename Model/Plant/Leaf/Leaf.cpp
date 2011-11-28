@@ -14,13 +14,20 @@ Leaf::Leaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
    : SimplePart(scienceAPI, p, name)
    {
    Photosynthesis=constructPhotosynthesisModel(scienceAPI, *p);
+   TEFactor = 1.0;
    }
 
 void Leaf::onInit1(protocol::Component *)
    {
    scienceAPI.subscribe("canopy_water_balance", CanopyWaterBalanceFunction(&Leaf::onCanopyWaterBalance));
+   scienceAPI.expose("TEFactor", "", "General Factor used to modify TE in plant model", TEFactor);
+   scienceAPI.exposeWritable("TEFactor", "", "TEFactor", FloatSetter(&Leaf::onSetTEFactor));   	
+   	
    }
-
+void Leaf::onSetTEFactor(float Factor)
+   {
+   	TEFactor = Factor;
+   }
 void Leaf::onEndCrop(vector<string> &dm_type,
                      vector<float> &dlt_crop_dm,
                      vector<float> &dlt_dm_n,
@@ -29,6 +36,9 @@ void Leaf::onEndCrop(vector<string> &dm_type,
 {
    SimplePart::onEndCrop(dm_type, dlt_crop_dm, dlt_dm_n, dlt_dm_p, fraction_to_residue);
    zeroAllGlobals();
+   Photosynthesis->ZeroAll();
+
+   TEFactor = 1.0;
 }
 
 void Leaf::onCanopyWaterBalance(protocol::CanopyWaterBalanceType &CWB)
@@ -82,6 +92,7 @@ void Leaf::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop water dem
                           , plant->phenology().doLookup(c.transpEffCf)
                           , plant->getCo2Modifier()->te()
                           , &transpEff);
+    transpEff = transpEff * TEFactor;
 
       cproc_sw_demand1 (dlt.dm_pot_rue - Respiration()
                         , transpEff

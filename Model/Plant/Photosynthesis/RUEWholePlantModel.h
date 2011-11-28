@@ -23,6 +23,7 @@ class RUEWholePlantModel : public PhotosynthesisModel {
   float PotentialDM (float radiationInterceptedGreen);
   void  Read (void);
   float getRUE (void);
+  void ZeroAll(void){};
 
   private:
   float cRUEWholePlant;

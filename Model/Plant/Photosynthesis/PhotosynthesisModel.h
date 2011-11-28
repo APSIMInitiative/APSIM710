@@ -24,6 +24,7 @@ class PhotosynthesisModel
 
    virtual float PotentialDM (float radiationInterceptedGreen) =0 ; // (PFR)
    virtual void  Read (void) = 0;
+   virtual void  ZeroAll (void){};   
   protected:
      ScienceAPI&     scienceAPI;
      plantInterface& plant;

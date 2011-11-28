@@ -22,6 +22,7 @@ class SUCROSModel : public PhotosynthesisModel {
   SUCROSModel(ScienceAPI& scienceAPI, plantInterface& p);
   float PotentialDM (float radiationInterceptedGreen);			// (PFR)
   void  Read (void);
+  void ZeroAll(void){};  
   private:
   float DailyCanopyGrossPhotosythesis(float fLAI, float fLatitude,int nDay,
                                         float fRad,float fTmpMax,float fTmpMin,float fCO2,
