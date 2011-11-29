@@ -21,8 +21,8 @@ namespace Test
           "      <end_date>31/01/1940</end_date>\r\n" +
           "    </clock>\r\n" +
           "    <outputfile>\r\n" +
-          "      <filename>blah</filename>\r\n" +
-          "      <title>blah2</title>\r\n" +
+          "      <filename output=\"yes\">My Sim.out</filename>\r\n" +
+          "      <title>My Sim</title>\r\n" +
           "      <variables>\r\n" +
           "        <variable>variable1</variable>\r\n" +
           "        <variable>variable2</variable>\r\n" +
@@ -38,8 +38,8 @@ namespace Test
           "      <end_date>31/04/1940</end_date>\r\n" +
           "    </clock>\r\n" +
           "    <outputfile>\r\n" +
-          "      <filename>blah3</filename>\r\n" +
-          "      <title>blah4</title>\r\n" +
+          "      <filename output=\"yes\">My Sim1.out</filename>\r\n" +
+          "      <title>My Sim1</title>\r\n" +
           "      <variables shortcut=\"/folder/My Sim/outputfile/variables\"/>\r\n" +
           "    </outputfile>\r\n" +
           "    <metfile shortcut=\"/folder/My Sim/metfile\"/>\r\n" +
@@ -102,7 +102,7 @@ namespace Test
          // tree. Ask ApsimFile for the contents of these nodes.
          // -------------------------------------------------------------
          Component ShortCutNode = Simulations.Find("/folder/My Sim1/outputfile");  Assert.IsNotNull(ShortCutNode);
-         Assert.AreEqual("<outputfile><filename>blah3</filename><title>blah4</title></outputfile>", ShortCutNode.Contents);
+         Assert.AreEqual("<outputfile><filename output=\"yes\">My Sim1.out</filename><title>My Sim1</title></outputfile>", ShortCutNode.Contents);
          Component NormalNode = Simulations.Find("/folder/My Sim1/DerivedClock");
          Assert.AreEqual(NormalNode.Contents, "<clock name=\"DerivedClock\">" +
                                                  "<start_date>1/02/1940</start_date>" +
