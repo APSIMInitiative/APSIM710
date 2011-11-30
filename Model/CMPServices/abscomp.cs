@@ -282,8 +282,14 @@ namespace CMPServices
     //==============================================================================
     public class TEventInfo : TSourcedInfo
     {
-        public uint destID;    //optional source component
-        public int iKind;      //published or subscribed
+        /// <summary>
+        /// Optional source component
+        /// </summary>
+        public uint destID;
+        /// <summary>
+        /// published or subscribed
+        /// </summary>
+        public int iKind;
         /// <summary>
         /// Short description
         /// </summary>
@@ -292,8 +298,18 @@ namespace CMPServices
         /// Full description
         /// </summary>
         public String sDescription;
+        /// <summary>
+        /// Flags whether the event information is an APSIM variant
+        /// </summary>
         public bool isVariant;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sDDMLType">Event type information, as DDML</param>
+        /// <param name="sShortDescr">Short description</param>
+        /// <param name="sFullDescr">Full description</param>
+        /// <param name="sBaseType">Base type</param>
         public TEventInfo(String sDDMLType, String sShortDescr, String sFullDescr, String sBaseType)
             : base(sDDMLType, sBaseType)
         {
@@ -344,6 +360,34 @@ namespace CMPServices
         /// </summary>
         public String sDescription;
     }
+
+    //==============================================================================
+    /// <summary>
+    /// Structure for holding compId, propId pairs
+    /// </summary>
+    //==============================================================================
+    public struct CompPropPair
+    {
+        /// <summary>
+        /// Component id
+        /// </summary>
+        public readonly uint compId;
+        /// <summary>
+        /// Property id
+        /// </summary>
+        public readonly uint propId;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="idComp">Component id</param>
+        /// <param name="idProp">Property id</param>
+        public CompPropPair(uint idComp, uint idProp)
+        {
+            compId = idComp;
+            propId = idProp;
+        }
+    }
+    
     //==============================================================================
     /// <summary>
     /// Base class for all components.
@@ -492,9 +536,9 @@ namespace CMPServices
         /// </summary>
         protected List<TQueryStore> queryList;       
         /// <summary>
-        /// ...
+        /// Cache DDMLvalues associated with property request-sets
         /// </summary>
-        protected List<TDDMLValue> resetList;       
+        protected Dictionary<CompPropPair, TDDMLValue> resetDict;
         /// <summary>
         /// Used to determine when property registration occurs
         /// </summary>
@@ -522,7 +566,7 @@ namespace CMPServices
             driverList = new List<TDriverInfo>();
             setPropertyList = new List<TSetterProperty>();
             queryList = new List<TQueryStore>();
-            resetList = new List<TDDMLValue>();
+            resetDict = new Dictionary<CompPropPair, TDDMLValue>();
 
             FName = "";
             FSystem = false;                    //descendent will set this if required

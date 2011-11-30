@@ -2078,8 +2078,8 @@ namespace CMPServices
         /// Returns TRUE i.f.f. the two unit strings have the same dimension and
         /// identical scale.
         /// </summary>
-        /// <param name="sUnit1">Unit name one.</param>
-        /// <param name="sUnit2">Unit name two.</param>
+        /// <param name="sUnitA">Unit name one.</param>
+        /// <param name="sUnitB">Unit name two.</param>
         /// <returns>True if matched.</returns>
         // N.B. this is a temporary implementation.
         // A.Moore

@@ -968,6 +968,7 @@ namespace CMPServices
             TPropertyInfo ownedValue;
             TDDMLValue resetValue;
             bool result;
+            CompPropPair dictKey = new CompPropPair(replyTo, propertyID);
 
             try
             {
@@ -990,23 +991,18 @@ namespace CMPServices
                         throw (new ApplicationException(errorMsg));
                     }
 
-                    while (resetList.Count <= (int)propertyID)                 //Make sure that we have a TTypedValue
-                        resetList.Add(null);                               //available for storing the reset
-                    if (resetList[(int)propertyID] != null)              //values. We can't use propertyList[]
-                        resetValue = resetList[(int)propertyID];    //   because the type need only be
-                    else
-                    {                                                     //   compatible, not identical
+                    // See whether we have a cached TDDMLvalue, to avoid the expense of parsing
+                    if (!resetDict.TryGetValue(dictKey, out resetValue))
+                    {
                         resetValue = new TDDMLValue(sDDML, "");
-                        /*
-                        if (!result && ownedValue.canAssignFrom(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
+                    /*    if (ownedValue.canAssignFrom(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
                         {
                             string errorMsg = string.Format("{0}: Attempt to write value of wrong type to property \" {1} \" in doResetProperty()", FName, ownedValue.Name);
                             throw (new TypeMisMatchException(errorMsg));
-                        }
-                        */
+                        } */
+                        resetDict.Add(dictKey, resetValue);
                     }
                     resetValue.setData(valPtr, (int)valSize, 0);               //Now carry out the reset
-                    resetList[(int)propertyID] = resetValue;
                     result = writeProperty((int)propertyID, resetValue);
                     sendReplySetValueSuccess(msgID, replyTo, result);     //sends the success? msg
                 }

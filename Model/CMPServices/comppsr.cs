@@ -94,8 +94,6 @@ namespace CMPServices
             FIsAPSRU = false;
             FVersion = "";
 
-            XmlNode childNode;
-
             anode = topElement;  //the top element is expected to be a component
             if (anode != null)
             {
