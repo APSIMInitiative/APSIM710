@@ -51,15 +51,17 @@
           <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start>BudBurst</Start>
-            <End>Veraison</End>
-            <Constant name="Function">
-              <Value>0.4</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start>BudBurst</Start>
+				<End>Veraison</End>
+				<Constant name="Function">
+				  <Value>0.4</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>	
         <Constant name="MaximumNConc">
           <Value>0.0001</Value>
         </Constant>
@@ -515,16 +517,18 @@
           <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start>BudBurst</Start>
-            <End>Veraison</End>
-            <Constant name="Function">
-              <Value>0.4</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <PhaseLookup name="StructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start>BudBurst</Start>
+				<End>Veraison</End>
+				<Constant name="Function">
+				  <Value>0.4</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>
+		<PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="PreFlowering">
             <Start>BudBurst</Start>
             <End>Flowering</End>

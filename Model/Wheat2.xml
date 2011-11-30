@@ -520,11 +520,13 @@
          </Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
-        <Constant name="StructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<StageBasedInterpolation name="PartitionFraction">
+			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+			  <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
+			</StageBasedInterpolation>
+        </PartitionFractionDemandFunction>
+		<Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
         <Constant name="MinimumNConc">
@@ -751,11 +753,13 @@
 5. DMRetranslocationFactor.  Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.
 6. StructuralFraction.  Derault value is 1 which means all biomass partitioned to this organ is put into the structrual pool.  If you wish this organ to have NonStructural DM that can be retranslocated set this to a value lower than 1 (between 0 - 1). Also note that making structural fraction less then 1 may influence the biomass partitioning to this organ because biomass is only partitioned to NonStructural Pools after the DM demand from other pools has been met.
          </Memo>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
-        <PhaseLookup name="StructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<StageBasedInterpolation name="PartitionFraction">
+			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+			  <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+			</StageBasedInterpolation>
+        </PartitionFractionDemandFunction>
+		<PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">
             <Start>Emergence</Start>
             <End>FlagLeaf</End>

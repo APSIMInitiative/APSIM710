@@ -516,23 +516,25 @@
       	This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
         </Memo>
         </AllometricDemandFunction>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start>Transplanting</Start>
-            <End>Buttoning</End>
-            <Constant name="Function">
-              <Value>0.0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="HeadGrowth">
-            <Start>Buttoning</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value>0.65</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <Constant name="MaximumNConc">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start>Transplanting</Start>
+				<End>Buttoning</End>
+				<Constant name="Function">
+				  <Value>0.0</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="HeadGrowth">
+				<Start>Buttoning</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value>0.65</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>
+		<Constant name="MaximumNConc">
           <Value type="text" description="Value">0.02</Value>
         </Constant>
         <Constant name="MinimumNConc">

@@ -390,30 +390,32 @@
           </XYPairs>
           <Memo>This is just here at the moment.  I have not set it to respond to a sensible x variable</Memo>
         </LinearInterpolationFunction>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">FloralInitiation</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.03</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Middle">
-            <Start type="text" description="Start">FloralInitiation</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.02</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
-        </PhaseLookup>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start type="text" description="Start">Emergence</Start>
+				<End type="text" description="End">FloralInitiation</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.03</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Middle">
+				<Start type="text" description="Start">FloralInitiation</Start>
+				<End type="text" description="End">StartPodGrowth</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.02</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Late">
+				<Start>StartPodGrowth</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
@@ -446,23 +448,25 @@
           <Value type="text" description="Value">0.1</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Flowering</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.1</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.2</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <Constant name="StructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start type="text" description="Start">Flowering</Start>
+				<End type="text" description="End">StartPodGrowth</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.1</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Late">
+				<Start>StartPodGrowth</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.2</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>
+		<Constant name="StructuralFraction">
           <Value type="text" description="Value">0.7</Value>
           <Memo>Sets the proporiton of DM allocation that is partitioned to the organ the is put into the structural pool         </Memo>
         </Constant>
@@ -764,37 +768,39 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">0.1</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Flowering</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.39</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="middle">
-            <Start type="text" description="Start">Flowering</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.45</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="PostMaturity">
-            <Start type="text" description="Start">Maturity</Start>
-            <End type="text" description="End">Unused</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.3</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
-        <PhaseLookup name="xStructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start type="text" description="Start">Emergence</Start>
+				<End type="text" description="End">Flowering</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.39</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="middle">
+				<Start type="text" description="Start">Flowering</Start>
+				<End type="text" description="End">StartPodGrowth</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.45</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Late">
+				<Start>StartPodGrowth</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="PostMaturity">
+				<Start type="text" description="Start">Maturity</Start>
+				<End type="text" description="End">Unused</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.3</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+        </PartitionFractionDemandFunction>
+		<PhaseLookup name="xStructuralFraction">
           <Memo>Sets the proporiton of DM allocation that is partitioned to the organ the is put into the structural pool         </Memo>
         </PhaseLookup>
         <Constant name="MaximumNConc">

@@ -586,11 +586,13 @@
         <Constant name="NRetranslocationRate">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
-        <Constant name="StructuralFraction">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<StageBasedInterpolation name="PartitionFraction">
+			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+			  <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
+			</StageBasedInterpolation>
+		</PartitionFractionDemandFunction>
+		<Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
         <Constant name="MinimumNConc">
@@ -619,10 +621,12 @@
         <Constant name="NRetranslocationRate">
           <Value type="text" description="Value">0.1</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-        </StageBasedInterpolation>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<StageBasedInterpolation name="PartitionFraction">
+			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+			  <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+			</StageBasedInterpolation>
+        </PartitionFractionDemandFunction>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">
             <Start>Emergence</Start>

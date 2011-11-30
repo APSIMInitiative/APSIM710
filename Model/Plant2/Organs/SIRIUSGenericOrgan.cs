@@ -19,11 +19,7 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function DMRetranslocationFactor = null;
     [Link(NamePath = "StructuralFraction", IsOptional=true)]
     protected Function StructuralFractionFunction = null;
-    [Link(IsOptional = true)]
-    protected Function PopulationBasedDemand = null;
-    [Link(IsOptional = true)]
-    protected Function InternodeDemand = null;
-    [Link(IsOptional = true)]
+    [Link]
     protected Function DMDemandFunction = null;
     [Link(IsOptional = true)]
     protected Function InitialWtFunction = null;
@@ -108,21 +104,8 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     {
         get
         {
-            if (InternodeDemand != null)
-            {
-                StructuralDMDemand = InternodeDemand.Value * StructuralFraction;
-                return StructuralDMDemand;
-            }
-            else if (DMDemandFunction != null)
-            {
-                StructuralDMDemand = DMDemandFunction.Value * StructuralFraction;
-                return StructuralDMDemand;
-            }
-            else
-            {
-                StructuralDMDemand = Arbitrator.DMSupply * PartitionFraction.Value * StructuralFraction;
-                return StructuralDMDemand;
-            }
+            StructuralDMDemand = DMDemandFunction.Value * StructuralFraction;
+            return StructuralDMDemand;
         }
     }
     public override double DMSinkCapacity

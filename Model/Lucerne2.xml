@@ -653,7 +653,7 @@ LAI expansion needs attention in the future.</Memo>
           <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
-        <MultiplyFunction name="InternodeDemand">
+        <MultiplyFunction name="DMDemandFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
           <RelativeToFinalNodeFunction name="PotentialInternodeWt">
             <InitialSize type="text" description="InitialSize">0</InitialSize>
@@ -833,11 +833,13 @@ LAI expansion needs attention in the future.</Memo>
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
         </Constant>
-        <StageBasedInterpolation name="PartitionFraction">
-          <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
-          <Values type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Values>
-        </StageBasedInterpolation>
-        <Constant name="NReallocationFactor">
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<StageBasedInterpolation name="PartitionFraction">
+			  <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation RGFlowering    EndRegrowth</Stages>
+			  <Values type="text" description="%Partition">    0                0                    0                 0              0                   0                     0                       0                        0                            0                   0                           0</Values>
+			</StageBasedInterpolation>
+        </PartitionFractionDemandFunction>			
+		<Constant name="NReallocationFactor">
           <Value type="text" description="Value">0</Value>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>

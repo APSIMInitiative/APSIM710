@@ -613,29 +613,31 @@
         <StageBasedInterpolation name="MinimumNConc" shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc">
           <Memo shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc/Memo" />
         </StageBasedInterpolation>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">Flowering</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.39</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="middle">
-            <Start type="text" description="Start">Flowering</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.45</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start type="text" description="Start">Emergence</Start>
+				<End type="text" description="End">Flowering</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.39</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="middle">
+				<Start type="text" description="Start">Flowering</Start>
+				<End type="text" description="End">StartPodGrowth</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.45</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Late">
+				<Start>StartPodGrowth</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+		</PartitionFractionDemandFunction>
       </SIRIUSGenericOrgan>
       <SIRIUSGenericOrgan name="Pod">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -670,22 +672,24 @@
         <StageBasedInterpolation name="MinimumNConc" shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc">
           <Memo shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc/Memo" />
         </StageBasedInterpolation>
-        <PhaseLookup name="PartitionFraction">
-          <PhaseLookupValue name="Early">
-            <Start type="text" description="Start">Flowering</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.1</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="Late">
-            <Start>StartPodGrowth</Start>
-            <End>Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">0.2</Value>
-            </Constant>
-          </PhaseLookupValue>
-        </PhaseLookup>
+        <PartitionFractionDemandFunction name="DMDemandFunction">
+			<PhaseLookup name="PartitionFraction">
+			  <PhaseLookupValue name="Early">
+				<Start type="text" description="Start">Flowering</Start>
+				<End type="text" description="End">StartPodGrowth</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.1</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			  <PhaseLookupValue name="Late">
+				<Start>StartPodGrowth</Start>
+				<End>Maturity</End>
+				<Constant name="Function">
+				  <Value type="text" description="Value">0.2</Value>
+				</Constant>
+			  </PhaseLookupValue>
+			</PhaseLookup>
+      </PartitionFractionDemandFunction>
       </SIRIUSGenericOrgan>
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>

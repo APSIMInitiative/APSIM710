@@ -1225,7 +1225,13 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
   </folder>
   <folder name="Functions">
     <folder name="DMDemand Functions">
-      <AllometricDemandFunction>
+	  <PartitionFractionDemandFunction name="DMDemandFunction">
+		<StageBasedInterpolation name="PartitionFraction">
+		  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+		  <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+		</StageBasedInterpolation>
+	  </PartitionFractionDemandFunction>
+	<AllometricDemandFunction>
         <Power type="text" description="Power term in allometric power function">1.0</Power>
         <XProperty type="text" description="Value from which demand is calculated">AboveGroundWt</XProperty>
         <YProperty type="text" description="DM pool for which demand is calculated">Stem.TotalWt</YProperty>
