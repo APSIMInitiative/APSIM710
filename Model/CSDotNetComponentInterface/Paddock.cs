@@ -5,13 +5,14 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using ModelFramework;
 using CMPServices;
+using CSGeneral;
 
 namespace ModelFramework
 {
 
     public class Paddock : Component
     {
-        private Dictionary<uint, TComp> ChildComponents;
+        
         // --------------------------------------------------------------------
         /// <summary>
         /// Encapsulates an APSIM paddock in a simulation.
@@ -22,8 +23,7 @@ namespace ModelFramework
         public Paddock(String Nam, ApsimComponent component)
             : base(Nam, component)
         {
-            ChildComponents = new Dictionary<uint, TComp>();
-            queryChildComponents(Nam);
+            NamePrefix = "";
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -34,46 +34,35 @@ namespace ModelFramework
         public Paddock(Instance In)
             : base(In)
         {
-
+            NamePrefix = "";
         }
-        public new String Name
+
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Return the parent paddock of this paddock or null if no parent found.
+        /// </summary>
+        // --------------------------------------------------------------------
+        public Paddock Parent
         {
             get
             {
-                return base.Name(); //name of the component (Paddock)
+                string ParentName = AddMasterPM(StringManip.ParentName(FullName));
+                return new Paddock(ParentName, HostComponent);
             }
         }
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="FQN"></param>
-        /// <returns></returns>
-        // --------------------------------------------------------------------
-        protected int queryChildComponents(String FQN)
-        {
-            String sSearchName = FQN + ".*";    //search comp.*
 
-            List<TComp> comps = new List<TComp>();
-            HostComponent.Host.queryCompInfo(sSearchName, TypeSpec.KIND_COMPONENT, ref comps);
-            ChildComponents.Clear();
-            for (int i = 0; i < comps.Count; i++)
-            {
-                ChildComponents.Add(comps[i].compID, comps[i]);
-            }
-            return ChildComponents.Count;
-        }
 
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child paddock components to caller.
         /// </summary>
         // --------------------------------------------------------------------
-        public TypedMultiList<Paddock> SubPaddocks
+        public List<Paddock> ChildPaddocks
         {
             get
             {
-                TypedMultiList<Paddock> Children = new TypedMultiList<Paddock>();
+                queryChildComponents();
+                List<Paddock> Children = new List<Paddock>();
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
                     if (pair.Value.CompClass.ToLower() == "paddock" || pair.Value.CompClass.ToLower() == "protocolmanager")
@@ -85,27 +74,28 @@ namespace ModelFramework
                 return Children;
             }
         }
-        //=========================================================================
+
+
+        // --------------------------------------------------------------------
         /// <summary>
-        /// Returns a component that is a child of the paddock
-        /// <param name="TypeToFind">The type to find. [Type.]ProxyClass</param>
+        /// Return a list of all child paddock components to caller.
         /// </summary>
-        //=========================================================================
-        public Component ComponentByType(String TypeToFind)
+        // --------------------------------------------------------------------
+        public override List<Component> Children
         {
-            return (Component)LinkField.FindApsimObject(TypeToFind, null, FQN, HostComponent);
+            get
+            {
+                List<Component> Children = new List<Component>();
+                queryChildComponents();
+                foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
+                {
+                    Component C = new Component(pair.Value.name, HostComponent);
+                    Children.Add(C);
+                }
+                return Children;
+            }
         }
-        //=========================================================================
-        /// <summary>
-        /// Return a child component of the paddock by unqualified name.
-        /// </summary>
-        /// <param name="NameToFind">Unqualified name</param>
-        /// <returns></returns>
-        //=========================================================================
-        public Component ComponentByName(String NameToFind)
-        {
-            return (Component)LinkField.FindApsimObject(null, NameToFind, FQN, HostComponent);
-        }
+
         /// <summary>
         /// Returns a reference to a variable.
         /// <param name="VariableName"></param>
@@ -114,27 +104,7 @@ namespace ModelFramework
         {
             return new Variable(HostComponent, VariableName);
         }
-        //=========================================================================
-        /// <summary>
-        /// Publish a notification event i.e. one that doesn't have any data 
-        /// associated with it. This event is broadcast to all components within scope.
-        /// </summary>
-        //=========================================================================
-        protected override void Publish(String EventName)
-        {
-            HostComponent.Publish(EventName, null);
-        }
-        //=========================================================================
-        /// <summary>
-        /// Publish an event that has associated data. This event is broadcast to all components within scope.
-        /// </summary>
-        /// <param name="EventName"></param>
-        /// <param name="Data"></param>
-        //=========================================================================
-        protected override void Publish(String EventName, ApsimType Data)
-        {
-            HostComponent.Publish(EventName, Data);
-        }
+
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child crops to caller.
@@ -146,7 +116,7 @@ namespace ModelFramework
             {
                 List<Component> Children = new List<Component>();
                 List<TIDSpec> entityList = new List<TIDSpec>();
-
+                queryChildComponents();
                 foreach (KeyValuePair<uint, TComp> pair in ChildComponents)
                 {
                     Component ChildComponent = new Component(pair.Value.name, HostComponent);
@@ -154,7 +124,7 @@ namespace ModelFramework
                     // Currently, all "crops" have cover_green as an output
                     // However, the AusFarm "Paddock" component also has this as an output. Might this be a problem?
                     // It shouldn't be, if we're looking only at children, and not descendants further down the tree
-                    String sSearchName = ChildComponent.FullName + ".cover_green";    
+                    String sSearchName = AddMasterPM(ChildComponent.FullName) + ".cover_green";    
                     HostComponent.Host.queryEntityInfo(sSearchName, TypeSpec.KIND_OWNED, ref entityList);
                     if (entityList.Count > 0)
                     {

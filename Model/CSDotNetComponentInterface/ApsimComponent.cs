@@ -21,7 +21,7 @@ namespace ModelFramework
     {
         private bool IsScript;
         private bool IsPlant;
-        private Instance ModelInstance;
+        public Instance ModelInstance;
         private StringBuilder Contents;
         private Assembly modelAssembly;
         private bool Init1;

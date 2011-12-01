@@ -3,7 +3,6 @@ Imports ModelFramework
 
 
 Public Class FarmSimGraze
-   Inherits Instance
 
    'these are to cope with the fact that AgPasture uses different conventions to the other crop modules - IRRITATING
    Public Variable4TotalDM As String = "topstotalwt"
@@ -12,7 +11,6 @@ Public Class FarmSimGraze
 
 
     <Link()> Public MyPaddock As Paddock
-    <Link()> Public ModelEnvironment As ModelEnvironment
 
    <Input()> Private UI_FarmType As String = ""
    <Input()> Private UI_BeefPercentage As Single   ' beef percentage on a per head basis
@@ -248,13 +246,13 @@ Public Class FarmSimGraze
 
     Private Function GetCropDM(ByVal Crop2Graze As String, ByVal Variable4TotalDM As String, ByVal UnitsMultiplier As Double) As Double
         Dim DM As Double
-        ModelEnvironment.Get(Crop2Graze + "." + Variable4TotalDM, DM)
+        MyPaddock.Get(Crop2Graze + "." + Variable4TotalDM, DM)
         Return DM * UnitsMultiplier
     End Function
 
     Private Function GetCropN(ByVal Crop2Graze As String, ByVal Variable4TotalN As String, ByVal UnitsMultiplier As Double) As Double
         Dim N As Double
-        ModelEnvironment.Get(Crop2Graze + "." + Variable4TotalN, N)
+        MyPaddock.Get(Crop2Graze + "." + Variable4TotalN, N)
         Return N * UnitsMultiplier
     End Function
 
@@ -276,10 +274,10 @@ Public Class FarmSimGraze
       Dim dlt_DeadLeaf As Double = 0.0
       Dim dlt_DeadStem As Double = 0.0
 
-        ModelEnvironment.Get(Crop2Graze + ".leafgreenwt", GreenLeaf)
-        ModelEnvironment.Get(Crop2Graze + ".stemgreenwt", GreenStem)
-        ModelEnvironment.Get(Crop2Graze + ".leafsenescedwt", DeadLeaf)
-        ModelEnvironment.Get(Crop2Graze + ".stemsenescedwt", DeadStem)
+        MyPaddock.Get(Crop2Graze + ".leafgreenwt", GreenLeaf)
+        MyPaddock.Get(Crop2Graze + ".stemgreenwt", GreenStem)
+        MyPaddock.Get(Crop2Graze + ".leafsenescedwt", DeadLeaf)
+        MyPaddock.Get(Crop2Graze + ".stemsenescedwt", DeadStem)
 
       dlt_GreenLeaf = PropDMRemoval * GreenLeaf
       dlt_GreenStem = PropDMRemoval * GreenStem
@@ -312,7 +310,7 @@ Public Class FarmSimGraze
       Else
             MyRemoveCropDM.dm = New RemoveCropBiomassdmType() {GreenRemoveCropDmDm}
       End If
-        ModelEnvironment.Publish(Crop2Graze + ".remove_crop_biomass", MyRemoveCropDM)
+        MyPaddock.Publish(Crop2Graze + ".remove_crop_biomass", MyRemoveCropDM)
 
 
 
@@ -325,7 +323,7 @@ Public Class FarmSimGraze
         ApplyUrineData.StockDensity = EffectiveStockDensity
         ApplyUrineData.StockType = AnimalType
         ApplyUrineData.InfiltrationShapeType = "" 'Still needs work
-        ModelEnvironment.Publish("ApplyUrine", ApplyUrineData)
+        MyPaddock.Publish("ApplyUrine", ApplyUrineData)
 
     End Sub
 
@@ -341,8 +339,8 @@ Public Class FarmSimGraze
       DungData.dlt_dm_p = New Single() {DungDM * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
       DungData.fraction_to_residue = New Single() {1.0}
 
-      Dim SOM As Component = MyPaddock.ComponentByType("surfaceom")
-        ModelEnvironment.Publish("BiomassRemoved", DungData)
+        Dim SOM As Component = MyPaddock.LinkByType("surfaceom")
+        SOM.Publish("BiomassRemoved", DungData)
 
    End Sub
 

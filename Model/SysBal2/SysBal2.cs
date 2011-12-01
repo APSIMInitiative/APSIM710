@@ -8,7 +8,7 @@ public class SysBal2
     [Link]
     SoilN SoilN;
     [Link]
-    ModelEnvironment ModelEnvironment;
+    Paddock Paddock;
     [Input]
     double[] sw_dep;
     [Input]
@@ -54,16 +54,17 @@ public class SysBal2
         CarbonBalance = SoilN.carbonbalance + SurfaceOM.carbonbalance;
         NitrogenBalance = SoilN.nitrogenbalance - leach_no3 + fertiliser + SurfaceOM.nitrogenbalance;
 
-        foreach (string ChildName in ModelEnvironment.ChildNames())
+        foreach (Component Child in Paddock.Children)
         {
+            string ChildName = Child.FullName;
             double ChildCarbonBalance;
-            if (ModelEnvironment.Get(ChildName + ".CarbonBalance", out ChildCarbonBalance))
+            if (Paddock.Get(ChildName + ".CarbonBalance", out ChildCarbonBalance))
             {
                 CarbonBalance += ChildCarbonBalance;
             }
 
             double EP;
-            if (ModelEnvironment.Get("ep", out EP))   //does not work with Plant2 modules
+            if (Paddock.Get("ep", out EP))   //does not work with Plant2 modules
                 cropTotal += EP;  
 
         }

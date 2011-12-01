@@ -45,9 +45,6 @@ Public Class DDRules
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
-    <Link()>
-    Public ModelEnvironment As ModelEnvironment
-
     <Input()> Public end_week As Boolean
     <Input()> Public Start_week As Boolean
 
@@ -90,7 +87,7 @@ Public Class DDRules
 
         ' ************* Farm testing **********************
         If (TotalFarmArea <= 0) Then
-            TotalFarmArea = MySimulation.SubPaddocks.Count 'default to one hectare paddocks if no area set
+            TotalFarmArea = MySimulation.ChildPaddocks.Count 'default to one hectare paddocks if no area set
         End If
 
         If (DebugLevel > 2) Then
@@ -102,7 +99,7 @@ Public Class DDRules
             End If
         End If
 
-        myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea, ModelEnvironment)
+        myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea)
         myFarm.setEffluentPaddocks(strEffluentPaddocks)
         myFarm.setLanewayPaddocks(strLanewayPaddocks)
 
@@ -296,15 +293,15 @@ Public Class DDRules
     End Property
 
     Sub SetupFarmSim(ByVal MyPaddock As Paddock)
-        Dim FarmSim As Component = MyPaddock.ComponentByType("FarmSimGraze")
+        Dim FarmSim As Component = MyPaddock.LinkByType("FarmSimGraze")
         If FarmSim Is Nothing Then
             Return
         End If
 
         Dim UI_StockRate As Double
-        ModelEnvironment.Get("UI_StockRate", UI_StockRate)
+        MySimulation.Get("UI_StockRate", UI_StockRate)
         Dim UI_SuppType As String = Nothing
-        ModelEnvironment.Get("UI_SuppType", UI_SuppType)
+        MySimulation.Get("UI_SuppType", UI_SuppType)
 
         'BaseStockingRate = UI_StockRate
         'StockingRate = BaseStockingRate

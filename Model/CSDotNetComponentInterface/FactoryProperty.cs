@@ -398,6 +398,8 @@ public class FactoryProperty : Instance, ApsimType
     }
     public virtual String DDML()
     {
+        if (DDMLValue == null)
+            DDMLValue = new TDDMLValue("<type/>", "");
         //need to ensure that the units for this property are set correctly
         DDMLValue.setUnits(Units);
         DDMLValue.Name = OutputName;

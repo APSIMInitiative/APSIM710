@@ -1,7 +1,7 @@
 Imports ModelFramework
 
 Public Class LocalPaddockType
-   Inherits Instance
+    Inherits Instance
     'Local paddock is the wrapper for the basic apsim paddock. It adds "worker" functions for processes such as
     ' nutrient grazing and returns.
 
@@ -22,9 +22,7 @@ Public Class LocalPaddockType
 
     <Link()> Private ApSim_SubPaddock As Paddock
 
-    Public ModelEnvironment As ModelEnvironment
-
-    <Input(IsOptional := True)> Public Area As Double = -1
+    <Input(IsOptional:=True)> Public Area As Double = -1
 
     Private myStatus As PaddockStatus
     'Homogeneous pasture cover
@@ -46,9 +44,8 @@ Public Class LocalPaddockType
     Private AgPastureInstance As AgPasture '<Link()> 
     Private UpdatedGrowth As Boolean = False
 
-    Public Sub New(ByVal index As Integer, ByRef paddock As Paddock, ByVal PaddockArea As Double, _ModelEnvironment As ModelEnvironment)
+    Public Sub New(ByVal index As Integer, ByRef paddock As Paddock, ByVal PaddockArea As Double)
         ApSim_SubPaddock = paddock                              'store a local pointer to the ApSim "Subpaddock" 
-        ModelEnvironment = _ModelEnvironment
         Me.Name = ApSim_SubPaddock.Name
 
         Area = PaddockArea
@@ -57,13 +54,13 @@ Public Class LocalPaddockType
 
         Grazable = True                               'paddock grazable at initilisation time
         Me.index = index                                        'sort origional paddock position in the simulation for sorting
-        UrinePatchComponent = ApSim_SubPaddock.ComponentByName("UrinePatch")
-        AgPastureInstance = CType(ApSim_SubPaddock.ComponentByType("AgPasture"), AgPasture)
+        UrinePatchComponent = ApSim_SubPaddock.LinkByName("UrinePatch")
+        AgPastureInstance = CType(ApSim_SubPaddock.LinkByType("AgPasture"), AgPasture)
         myAverageGrowthRate = New MovingAverage(MovingAverageSeriesLength)
     End Sub
 
-    Public Sub New(ByVal index As Integer, ByRef paddock As Paddock, _ModelEnvironment As ModelEnvironment)
-        Me.New(index, paddock, 1.0, _ModelEnvironment)
+    Public Sub New(ByVal index As Integer, ByRef paddock As Paddock)
+        Me.New(index, paddock, 1.0)
     End Sub
 
     Sub OnPrepare()
@@ -209,7 +206,7 @@ Public Class LocalPaddockType
                     Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
                 End If
 
-                MassRemoved = GrazePlant(crop.FullName, proportion * RemovedME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
+                MassRemoved = GrazePlant(crop, proportion * RemovedME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
                 result = result.Add(MassRemoved.Multiply(Area))
             Next
         End If
@@ -284,7 +281,7 @@ Public Class LocalPaddockType
                 Console.WriteLine("DDRules Error - Grazing proportions not calculated correctly")
             End If
 
-            MassRemoved = GrazePlant(crop.FullName, proportion * todayME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
+            MassRemoved = GrazePlant(crop, proportion * todayME / Area) 'bugger this is not going to work correctly with multiple plants (need to remove by proportion)
             If (MassRemoved.N_Total <= 0) Then
                 Console.WriteLine("DDRulues ERROR - What the....")
             End If
@@ -298,18 +295,17 @@ Public Class LocalPaddockType
         Return result
     End Function
 
-    Function GrazePlant(ByVal CropName As String, ByVal RemovedME As Double) As BioMass
-        Dim ShortCropName As String = CropName.Substring(CropName.LastIndexOf(".") + 1)
+    Function GrazePlant(ByVal Crop As Component, ByVal RemovedME As Double) As BioMass
         Dim result As BioMass = New BioMass
-        PastureMasses.TryGetValue(ShortCropName, result) 'this should really be checked, but it should never fail :)
+        PastureMasses.TryGetValue(Crop.Name, result) 'this should really be checked, but it should never fail :)
         Dim percentageRemoval As Double = RemovedME / result.getME_Total
         result = result.Multiply(percentageRemoval)
-        ModelEnvironment.Publish(CropName + ".remove_crop_biomass", result.toRemoveCropDmType)
+        Crop.Publish("remove_crop_biomass", result.toRemoveCropDmType)
 
         If Not (AgPastureInstance Is Nothing) Then
-            ModelEnvironment.Get(CropName + ".AboveGroundNPct", result.N_Conc)
+            Crop.Get("AboveGroundNPct", result.N_Conc)
             result.N_Conc = result.N_Conc / 100.0
-            ModelEnvironment.Get(CropName + ".DefoliatedDigestibility", result.digestibility)
+            Crop.Get("DefoliatedDigestibility", result.digestibility)
         Else
             result.N_Conc = Default_N_Conc
             result.digestibility = Default_Digestability
@@ -345,7 +341,7 @@ Public Class LocalPaddockType
                 'Console.WriteLine("     " & "DM  = " & tempRemovedMass.DM_Total)
                 'Console.WriteLine("     " & "N Conc  = " & tempRemovedMass.N_Conc)
                 'Console.WriteLine("     " & "N Total  = " & tempRemovedMass.N_Total)
-                ModelEnvironment.Publish(crop.FullName + ".remove_crop_biomass", tempRemovedMass.toRemoveCropDmType())
+                crop.Publish("remove_crop_biomass", tempRemovedMass.toRemoveCropDmType())
                 Dim lostDM As BioMass = tempRemovedMass.Multiply(loss)
                 tempRemovedMass = tempRemovedMass.Subtract(lostDM)
                 ReturnDMtoSOM(lostDM)
@@ -354,7 +350,7 @@ Public Class LocalPaddockType
                 PastureMasses.TryGetValue(crop.Name, tempBioMass) 'this should really be checked, it should never fail but...
                 If (DebugLevel > 1) Then
                     Dim biomass As Double
-                    ModelEnvironment.Get(crop.FullName + ".biomass", biomass)
+                    crop.Get("biomass", biomass)
                     Console.WriteLine("DDRules.Harvest - " & "Finish = " & biomass & " (includes stolons)")
                     Console.WriteLine("DDRules.Harvest - " & "Finish = " & tempBioMass.ToString())
                     Console.WriteLine("DDRules.Harvest - " & "Removed (ha) = " & RemovedMass.ToString())
@@ -371,8 +367,8 @@ Public Class LocalPaddockType
     ' Will be used as part of grazing event if trampling is to be included
     Public Sub ReturnDMtoSOM(ByVal Mass As BioMass)
         If (Mass.DM_Total > 0) Then
-            Dim SOM As SurfaceOM = ModelEnvironment.Link(Of SurfaceOM)(ApSim_SubPaddock.FullName + ".*")
-            ModelEnvironment.Publish(SOM.FullName + ".BiomassRemoved", Mass.toBiomassRemovedType(1.0))
+            Dim SOM As SurfaceOM = ApSim_SubPaddock.LinkByType("SurfaceOM")
+            SOM.Publish("BiomassRemoved", Mass.toBiomassRemovedType(1.0))
         End If
     End Sub
 
@@ -397,9 +393,9 @@ Public Class LocalPaddockType
             urine.StockDensity = StockingDensity
             urine.StockType = "DairyCow"
             urine.InfiltrationShapeType = ""
-            ModelEnvironment.Publish(UrinePatchComponent.FullName + ".ApplyUrine", urine)
+            UrinePatchComponent.Publish("ApplyUrine", urine)
         Else    ' use simple fertiliser and irrigation events
-            Dim FertiliserA As Fertiliser = CType(ApSim_SubPaddock.ComponentByType("Fertiliser"), Fertiliser)
+            Dim FertiliserA As Fertiliser = CType(ApSim_SubPaddock.LinkByType("Fertiliser"), Fertiliser)
             Dim FertData As New FertiliserApplicationType()
             FertData.Amount = kgN_ha
             FertData.Type = "urea_N"
@@ -407,7 +403,7 @@ Public Class LocalPaddockType
             FertiliserA.Apply(FertData)
 
             'Console.WriteLine("1 : Getting Irrigation Component")
-            Dim IrrigationA As Irrigation = CType(ApSim_SubPaddock.ComponentByType("Irrigation"), Irrigation)
+            Dim IrrigationA As Irrigation = CType(ApSim_SubPaddock.LinkByType("Irrigation"), Irrigation)
             Dim IrrData As New IrrigationApplicationType
             IrrData.Amount = vol_ha / 10000 ' 20107003 - converting litres/ha to mm/ha
             IrrData.source = New String() {} 'NB. can't be nothing
@@ -446,8 +442,8 @@ Public Class LocalPaddockType
         dung.dlt_dm_p = New Single() {kgDM_ha * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
         dung.fraction_to_residue = New Single() {1.0}
 
-        Dim SOM As Component = ApSim_SubPaddock.ComponentByType("SurfaceOM")
-        ModelEnvironment.Publish(SOM.FullName + ".BiomassRemoved", dung)
+        Dim SOM As Component = ApSim_SubPaddock.LinkByType("SurfaceOM")
+        SOM.Publish("BiomassRemoved", dung)
     End Sub
 #End Region
 
@@ -458,10 +454,10 @@ Public Class LocalPaddockType
         For Each Crop As Component In ApSim_SubPaddock.Crops 'counting all crops, this could cause issues with grazing allocation
             Dim mass As BioMass = New BioMass()
             mass.Name = Crop.Name
-            ModelEnvironment.Get(Crop.FullName + ".leafgreenwt", mass.gLeaf)
-            ModelEnvironment.Get(Crop.FullName + ".stemgreenwt", mass.gStem)
-            ModelEnvironment.Get(Crop.FullName + ".leafsenescedwt", mass.dLeaf)
-            ModelEnvironment.Get(Crop.FullName + ".stemsenescedwt", mass.dStem)
+            Crop.Get("leafgreenwt", mass.gLeaf)
+            Crop.Get("stemgreenwt", mass.gStem)
+            Crop.Get("leafsenescedwt", mass.dLeaf)
+            Crop.Get("stemsenescedwt", mass.dStem)
 
             mass.gLeaf = mass.gLeaf * 10 'convert from grams/m^2 to kg/ha
             mass.gStem = mass.gStem * 10
@@ -470,13 +466,13 @@ Public Class LocalPaddockType
 
             'Is it dangerous to assmue a single instance per paddock?
             If Not (AgPastureInstance Is Nothing) Then ' Note: this assumes AgPasture is the only crop model in the paddock
-                ModelEnvironment.Get(Crop.FullName + ".AboveGroundNPct", mass.N_Conc)
+                Crop.Get("AboveGroundNPct", mass.N_Conc)
                 mass.N_Conc = mass.N_Conc / 100.0
                 mass.N_Conc = (AgPastureInstance.LeafN + AgPastureInstance.StemN) / (AgPastureInstance.LeafWt + AgPastureInstance.StemWt)
                 mass.stolon = AgPastureInstance.StolonWt
                 If Not (UpdatedGrowth) Then
                     Dim GrowthRate As Double
-                    ModelEnvironment.Get(Crop.FullName + ".HerbageGrowthWt", GrowthRate)
+                    Crop.Get("HerbageGrowthWt", GrowthRate)
                     myAverageGrowthRate.Add(GrowthRate) 'this should only be called once a day
                     UpdatedGrowth = True
                 End If
@@ -618,7 +614,7 @@ Public Class LocalPaddockType
     End Function
 
     Sub Irrigate(ByVal data As IrrigationApplicationType)
-        Dim myIrrigation As Irrigation = CType(ApSim_SubPaddock.ComponentByType("Irrigation"), Irrigation)
+        Dim myIrrigation As Irrigation = CType(ApSim_SubPaddock.LinkByType("Irrigation"), Irrigation)
         'myIrrigation.irrigation_efficiency = myIrrigation_efficiency 'don't know how to do this!
         data.Crop_Area = Area
         'Console.WriteLine("Irrigation " + Name)
@@ -628,7 +624,7 @@ Public Class LocalPaddockType
     End Sub
 
     Sub Apply(ByVal data As FertiliserApplicationType)
-        Dim myFertiliser As Fertiliser = CType(ApSim_SubPaddock.ComponentByType("Fertiliser"), Fertiliser)
+        Dim myFertiliser As Fertiliser = CType(ApSim_SubPaddock.LinkByType("Fertiliser"), Fertiliser)
         'Console.WriteLine("Fertiliser " + Name)
         'Console.WriteLine("   kg/ha = " + data.Amount.ToString())
         'Console.WriteLine("   mm    = " + data.Depth.ToString())
@@ -638,7 +634,7 @@ Public Class LocalPaddockType
 
     Public Function PlantAvalibleWater(ByVal atDepth As Single) As Single
         Dim SoilWater As ModelFramework.SoilWat
-        SoilWater = CType(ApSim_SubPaddock.ComponentByType("SoilWat"), ModelFramework.SoilWat)
+        SoilWater = CType(ApSim_SubPaddock.LinkByType("SoilWat"), ModelFramework.SoilWat)
 
         'Dim esw As Single = SoilWater.esw '  ApSim_SubPaddock.Variable("esw").ToDoubleArray()
         Dim sw_dep As Single() = SoilWater.sw_dep ' ApSim_SubPaddock.Variable("sw_dep").ToDoubleArray()

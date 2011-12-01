@@ -12,7 +12,6 @@ public class ModelEnvironment
 {
 
     private Instance In;
-    private List<TComp> Siblings = null;
 
     /// <summary>
     /// Constructor - created by LinkRef

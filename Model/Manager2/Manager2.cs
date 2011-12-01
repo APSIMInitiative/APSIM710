@@ -18,7 +18,7 @@ public class Manager2
     XmlNode Manager2Xml = null;
 
     [Link]
-    ModelEnvironment ModelEnvironment = null;
+    Paddock MyPaddock = null;
 
     string DllFileName;
 
@@ -65,7 +65,7 @@ public class Manager2
 
         try
         {
-            ModelEnvironment.AddModel(ScriptNode, CompiledAssembly);
+            MyPaddock.AddModel(ScriptNode, CompiledAssembly);
         }
         catch (Exception err)
         {

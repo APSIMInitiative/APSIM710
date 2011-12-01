@@ -13,9 +13,6 @@ using ModelFramework;
  
 public class SoilWater : Instance
    {
-    [Link]
-    ModelEnvironment ModelEnvironment;
-
 
 #region Constants
 
@@ -1393,9 +1390,9 @@ public class SoilWater : Instance
 
          if (au.ci(i) <= max_crops) 
             {
-             ModelEnvironment.Get(Comp.FullName + ".cover_green", out covgreen);
-             ModelEnvironment.Get(Comp.FullName + ".cover_tot", out covtot);
-             ModelEnvironment.Get(Comp.FullName + ".height", out height);
+             MyPaddock.Get(Comp.FullName + ".cover_green", out covgreen);
+             MyPaddock.Get(Comp.FullName + ".cover_tot", out covtot);
+             MyPaddock.Get(Comp.FullName + ".height", out height);
 
             ////must have at least these three variables to be considered a "crop" component.
             //if (covgreen == null) && covtot && height.Exists() && !Comp.IsOfType("outputfile"))
@@ -1532,9 +1529,9 @@ public class SoilWater : Instance
          double[] temp_dlt_solute_double = new double[num_layers];
          float[] temp_dlt_solute = new float[num_layers]; 
 
-         SoilN SoilNModel = (SoilN)MyPaddock.ComponentByType("soiln");
-         Component ClModel = MyPaddock.ComponentByName("cl");
-         Component BrModel = MyPaddock.ComponentByName("br");
+         SoilN SoilNModel = (SoilN)MyPaddock.LinkByType("soiln");
+         Component ClModel = MyPaddock.LinkByName("Cl") as Component;
+         Component BrModel = MyPaddock.LinkByName("Br") as Component;
 
          for (int solnum=au.si; solnum<=au.ci(num_solutes); solnum++)
             {
@@ -1560,10 +1557,10 @@ public class SoilWater : Instance
                   SoilNModel.dlt_urea = temp_dlt_solute;
                   break;
                case "cl":
-                  ModelEnvironment.Set(ClModel.FullName + ".dlt_cl", temp_dlt_solute);
+                  MyPaddock.Set(ClModel.FullName + ".dlt_cl", temp_dlt_solute);
                   break;
                case "br":
-                  ModelEnvironment.Set(BrModel.FullName + ".dlt_br", temp_dlt_solute);
+                  MyPaddock.Set(BrModel.FullName + ".dlt_br", temp_dlt_solute);
                   break;
                default:
                   throw new Exception("SoilWater cannot alter the change in solute (due to solute movement with water) for solute: " + solute_names[solnum] + " SoilWater does not know what module owns this solute.");            

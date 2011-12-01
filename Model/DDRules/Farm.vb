@@ -32,7 +32,6 @@ Public Class Farm
     Private EnableCutting As Boolean = True
     Private DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
     Public myAverageCover As MovingAverage = New MovingAverage(7)
-    Private ModelEnvironment As ModelEnvironment
 
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
@@ -40,7 +39,7 @@ Public Class Farm
         myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
     End Sub
 
-    Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double, _ModelEnvironment As ModelEnvironment)
+    Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
         If (DebugLevel > 0) Then
             Console.WriteLine("DDRules.Farm.Init()")
             Console.WriteLine("   MasterPM = " + MasterPM.ToString())
@@ -61,7 +60,6 @@ Public Class Farm
         Dim SpecifiedArea As Double = 0
         Dim TempList As New Dictionary(Of String, Double)
         'How do we get the area of indervidual paddocks?
-        ModelEnvironment = _ModelEnvironment
         MyFarmArea = FarmArea
         Dim j As Integer = 0
         'If (DebugLevel > 0) Then
@@ -107,7 +105,7 @@ Public Class Farm
         End If
 
         Dim DefaultArea As Double = 0
-        Dim UnallocatedPaddocks As Integer = MasterPM.SubPaddocks.Count - TempList.Count
+        Dim UnallocatedPaddocks As Integer = MasterPM.ChildPaddocks.Count - TempList.Count
         If (UnallocatedPaddocks > 0) Then ' if zero then all paddock have a area attached to them. No calculations need to be done
             DefaultArea = UnallocatedArea / UnallocatedPaddocks
         End If
@@ -118,7 +116,7 @@ Public Class Farm
             Next
         End If
 
-        For Each SubPaddock As Paddock In MasterPM.SubPaddocks
+        For Each SubPaddock As Paddock In MasterPM.ChildPaddocks
             If (DebugLevel > 0) Then
                 Console.WriteLine(SubPaddock.Name)
             End If
@@ -130,7 +128,7 @@ Public Class Farm
             '    myPaddocks.Add(myLaneways)
             '    MyFarmArea -= myLaneways.Area
             'Else
-            Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea, ModelEnvironment)
+            Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea)
             myPaddocks.Add(pdk)
             'End If
 

@@ -114,7 +114,7 @@ public class LinkField
     public static Object FindApsimObject(String TypeToFind, String NameToFind, string SystemName, ApsimComponent Comp)
     {
         Object ReferencedObject;
-        if (NameToFind != null && NameToFind.Contains(".") && !NameToFind.Contains("*"))
+        if (TypeToFind != null && NameToFind != null && NameToFind.Contains(".") && !NameToFind.Contains("*"))
             ReferencedObject = GetSpecificApsimComponent(NameToFind, TypeToFind, Comp);
         else
             ReferencedObject = FindApsimComponent(NameToFind, TypeToFind, SystemName, Comp);
@@ -268,10 +268,11 @@ public class LinkField
         {
             //TypeToFind==null but the name is used. So then we can use the compClass 
             //that was found for the component using queryInfo before.
+            string ShortNameToFind = unQualifiedName(NameToFind);
             foreach (TComp pair in comps)                                   //for each sibling of this component
             {
                 SiblingShortName = unQualifiedName(pair.name).ToLower();
-                if (NameToFind.ToLower() == SiblingShortName)
+                if (ShortNameToFind.ToLower() == SiblingShortName)
                 {
                     compClass = unQualifiedName(pair.CompClass);
                     if (compClass.Length > 0)

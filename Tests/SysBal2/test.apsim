@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="test">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1970</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1970</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -1157,6 +1155,8 @@ public class Script : Instance
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">test.out</filename>
+        <title>test</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="WaterBalance" />

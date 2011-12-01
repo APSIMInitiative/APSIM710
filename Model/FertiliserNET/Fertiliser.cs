@@ -17,10 +17,10 @@ using CSGeneral;
  * needed in C# have been omitted.
  *************************************************************/
 
-public class Fertiliser : Instance
+public class Fertiliser
 {
     [Link]
-    ModelEnvironment ModelEnvironment = null;
+    Paddock MyPaddock = null;
 
     [Input(IsOptional = true)]
     int cropsta = 0;
@@ -93,7 +93,7 @@ public class Fertiliser : Instance
                         if (comp.components[i].ToLower().Equals("caco3") || comp.components[i].ToLower().Contains("_p"))
                             continue;
                     }
-                    catch (Exception e) { }
+                    catch (Exception ) { }
 
                     if (cropsta >= 4)
                         rice_crop_in = true;
@@ -104,7 +104,7 @@ public class Fertiliser : Instance
                     if (pondActive.Equals("yes") && rice_crop_in)
                     {
                         deltaArray[layer] = amount * comp.fraction[i];
-                        ModelEnvironment.Set("dlt_pond_" + comp.components[i], deltaArray);
+                        MyPaddock.Set("dlt_pond_" + comp.components[i], deltaArray);
                     }
                     else // Fertiliser added to soil
                     {
@@ -112,10 +112,10 @@ public class Fertiliser : Instance
 
                         // This variable is being tracked - send the delta to it
                         double[] V;
-                        if (ModelEnvironment.Get(dlt_name, out V))
+                        if (MyPaddock.Get(dlt_name, out V))
                         {
                             deltaArray[layer] = amount * comp.fraction[i]; // This is where the fertiliser
-                            ModelEnvironment.Set(dlt_name, deltaArray);    // is actually added.
+                            MyPaddock.Set(dlt_name, deltaArray);    // is actually added.
 
                             massBalanceChange.PoolClass = "soil";
                             massBalanceChange.FlowType = "gain";

@@ -1,37 +1,34 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="MultiPaddock">
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/MetFiles/Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/01/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/01/1940</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <manager2 name="Manager">
       <ui />
       <text>Imports System
 Imports ModelFramework
 
 Public Class Script
-   Inherits Instance
    
    &lt;Link()&gt; Dim MyPaddock As Paddock
    
    &lt;EventHandler()&gt; Public Sub OnPost()
 
       ' Loop through all child paddocks and change the soil water in each.
-      For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
-         Dim SoilWater As SoilWat = SubPaddock.ComponentByType("SoilWat")
+      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
+         Dim SoilWater As SoilWat = SubPaddock.LinkByType("SoilWat")
          Dim sw As Single() = SoilWater.sw
          Console.WriteLine(SubPaddock.FullName + "-" + sw(0).ToString())
          SoilWater.sw = sw
       Next
 
       ' Loop through all child paddocks and write the names and LAIs of all crops.
-      For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
+      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
          For Each Crop As Component In SubPaddock.Crops
             Console.WriteLine(Crop.Name)
          Next
@@ -39,9 +36,9 @@ Public Class Script
 
       ' Loop through all child paddocks and apply fertilier
       ' And irrigation to each paddock.
-      For Each SubPaddock As Paddock In MyPaddock.SubPaddocks
-         Dim Fertiliser As Fertiliser = SubPaddock.ComponentByType("Fertiliser")
-         Dim Irrigation As Irrigation = SubPaddock.ComponentByType("Irrigation")
+      For Each SubPaddock As Paddock In MyPaddock.ChildPaddocks
+         Dim Fertiliser As Fertiliser = SubPaddock.LinkByType("Fertiliser")
+         Dim Irrigation As Irrigation = SubPaddock.LinkByType("Irrigation")
          Dim fert As FertiliserApplicationType = New FertiliserApplicationType()
          fert.Amount = 50
          fert.Depth = 10
@@ -1217,6 +1214,8 @@ End Class
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">MultiPaddock paddock1.out</filename>
+        <title>MultiPaddock paddock1</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="biomass" array="?" description="Biomass" />
@@ -1274,7 +1273,9 @@ End Class
         <manager name="Sowing fertiliser" shortcut="/simulations/MultiPaddock/paddock1/Manager folder/Sowing fertiliser" />
         <manager name="Harvesting rule" shortcut="/simulations/MultiPaddock/paddock1/Manager folder/Harvesting rule" />
       </folder>
-      <outputfile shortcut="/simulations/MultiPaddock/paddock1/outputfile">
+      <outputfile>
+        <filename output="yes">MultiPaddock paddock2.out</filename>
+        <title>MultiPaddock paddock2</title>
         <variables name="Variables" shortcut="/simulations/MultiPaddock/paddock1/outputfile/Variables" />
         <events name="Reporting Frequency" shortcut="/simulations/MultiPaddock/paddock1/outputfile/Reporting Frequency" />
       </outputfile>

@@ -131,7 +131,7 @@ Public Class Script
    &lt;Input&gt; Private dcd As Single()
    
       
-   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt; Private MyPaddock As Paddock
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -186,7 +186,7 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            ModelEnvironment.Set("dlt_dcd", delta_dcd)
+            MyPaddock.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
@@ -221,7 +221,7 @@ Imports ModelFramework
 
 Public Class Script 
 
-   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt;  Private MyPaddock As Paddock
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -327,16 +327,16 @@ Public Class Script
       Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
-      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
-      ModelEnvironment.Get("sw", SoilWater)
-      ModelEnvironment.Get("bd", SoilDensity)      
+      MyPaddock.Get("carbon_tot", SoilCarb_tot)         
+      MyPaddock.Get("sw", SoilWater)
+      MyPaddock.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
          Dim st As Single() = Nothing
-         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
+         MyPaddock.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -374,9 +374,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
-      ModelEnvironment.Set("dlt_dcd", delta_dcd)
-      ModelEnvironment.Set("dlt_urea", delta_urea)
+      MyPaddock.Set("nitrification_inhibition", dcd_inhibition_effect)
+      MyPaddock.Set("dlt_dcd", delta_dcd)
+      MyPaddock.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -414,7 +414,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
+      Dim SoilWaterComp As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
@@ -475,7 +475,6 @@ End Class
 Imports ModelFramework
 
 Public Class Script 
-   Inherits Instance
    
    &lt;Link&gt;  Private MyPaddock As Paddock
    
@@ -532,7 +531,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim SoilWater As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       If (SoilWater Is Nothing) Then
          Console.WriteLine("asdf")
       End If
@@ -565,7 +564,7 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim SoilWater As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       
       Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
@@ -625,7 +624,7 @@ Public Class Script
 
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
-                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     Dim Irrigation As Irrigation = MyPaddock.LinkByType("Irrigation")
                      Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
                      irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
                      irrig.Duration = 0
@@ -948,7 +947,7 @@ Public Class Script
    &lt;Input&gt; Private dcd As Single()
    
       
-   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt; Private MyPaddock As Paddock
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -1003,7 +1002,7 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            ModelEnvironment.Set("dlt_dcd", delta_dcd)
+            MyPaddock.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
@@ -1038,7 +1037,7 @@ Imports ModelFramework
 
 Public Class Script 
 
-   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt;  Private MyPaddock As Paddock
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -1144,16 +1143,16 @@ Public Class Script
       Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
-      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
-      ModelEnvironment.Get("sw", SoilWater)
-      ModelEnvironment.Get("bd", SoilDensity)      
+      MyPaddock.Get("carbon_tot", SoilCarb_tot)         
+      MyPaddock.Get("sw", SoilWater)
+      MyPaddock.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
          Dim st As Single() = Nothing
-         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
+         MyPaddock.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -1191,9 +1190,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
-      ModelEnvironment.Set("dlt_dcd", delta_dcd)
-      ModelEnvironment.Set("dlt_urea", delta_urea)
+      MyPaddock.Set("nitrification_inhibition", dcd_inhibition_effect)
+      MyPaddock.Set("dlt_dcd", delta_dcd)
+      MyPaddock.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -1231,7 +1230,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
+      Dim SoilWaterComp As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
@@ -1292,7 +1291,6 @@ End Class
 Imports ModelFramework
 
 Public Class Script 
-   Inherits Instance
    
    &lt;Link&gt; Private MyPaddock As Paddock
    
@@ -1349,7 +1347,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim SoilWater As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       Dim sw_DUL As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_LL15 As Single() = SoilWater.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
@@ -1378,7 +1376,7 @@ Public Class Script
    End Sub
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
-      Dim SoilWater As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim SoilWater As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
 
       Dim sw_dul As Single() = SoilWater.dul_dep        'sw at DUL
       Dim sw_sw As Single() = SoilWater.sw_dep          'sw at LL 
@@ -1438,7 +1436,7 @@ Public Class Script
 
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
-                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     Dim Irrigation As Irrigation = MyPaddock.LinkByType("Irrigation")
                      Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
                      irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
                      irrig.Duration = 0
@@ -1761,7 +1759,7 @@ Public Class Script
    &lt;Input&gt; Private dcd As Single()
    
       
-   &lt;Link&gt; Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt; Private MyPaddock As Paddock
 
    'Output variables
    &lt;Output&gt;&lt;Units("kg/ha")&gt; Public dcd_added As Single       'The amount of dcd added
@@ -1816,7 +1814,7 @@ Public Class Script
          End If
 
          If TimeAfterApplication = 1 Then
-            ModelEnvironment.Set("dlt_dcd", delta_dcd)
+            MyPaddock.Set("dlt_dcd", delta_dcd)
             Console.WriteLine(Today_date.ToString("dd MMMM yyyy") + " (Day of year=" + today_date.DayOfYear.ToString + "), Apply_DCD:")
             Console.WriteLine("     DCD being applied. " + DCD_added.ToString + "kg/ha added at depth " + Depth_for_DCD.ToString + "mm")
          End If
@@ -1851,7 +1849,7 @@ Imports ModelFramework
 
 Public Class Script 
 
-   &lt;Link&gt;  Private ModelEnvironment As ModelEnvironment
+   &lt;Link&gt;  Private MyPaddock As Paddock
    
    'Parameter variables:   
    &lt;param&gt; Private dcd_x As String
@@ -1957,16 +1955,16 @@ Public Class Script
       Dim SoilDensity As Single() = Nothing      'Soil bulk density (g/cm3)
       Dim delta_urea As Single()
       
-      ModelEnvironment.Get("carbon_tot", SoilCarb_tot)         
-      ModelEnvironment.Get("sw", SoilWater)
-      ModelEnvironment.Get("bd", SoilDensity)      
+      MyPaddock.Get("carbon_tot", SoilCarb_tot)         
+      MyPaddock.Get("sw", SoilWater)
+      MyPaddock.Get("bd", SoilDensity)      
       
       Try
          ReDim SoilTemp(ave_soil_temp.Length - 1)
          ave_soil_temp.CopyTo(SoilTemp, 0) 
       Catch
          Dim st As Single() = Nothing
-         ModelEnvironment.Get("st", st)  'Soil temperature from SoilN (oC)
+         MyPaddock.Get("st", st)  'Soil temperature from SoilN (oC)
          ReDim SoilTemp(st.Length - 1)
          st.CopyTo(SoilTemp, 0) 
       End Try
@@ -2004,9 +2002,9 @@ Public Class Script
             dcd_degradation(z) = 0
          End If
       Next
-      ModelEnvironment.Set("nitrification_inhibition", dcd_inhibition_effect)
-      ModelEnvironment.Set("dlt_dcd", delta_dcd)
-      ModelEnvironment.Set("dlt_urea", delta_urea)
+      MyPaddock.Set("nitrification_inhibition", dcd_inhibition_effect)
+      MyPaddock.Set("dlt_dcd", delta_dcd)
+      MyPaddock.Set("dlt_urea", delta_urea)
 
    End Sub
    
@@ -2044,7 +2042,7 @@ Public Class Script
 
    
    Function CalcSW_Frac(ByVal SoilWater As Single()) As Single()
-      Dim SoilWaterComp As SWIM2ui = ModelEnvironment.Link(Of SWIM2ui)
+      Dim SoilWaterComp As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       Dim SAT As Single() = SoilWaterComp.sat                       'Soil water content at saturation ()
       Dim WP As Single() = SoilWaterComp.ll15                       'Soil water content at lower limit/wilting point ()
       Dim WFraction(SoilWater.Length -1) As Single
@@ -2162,7 +2160,7 @@ Public Class Script
       RainOnPrevious3Days = 0.0
       Array.Clear(RainOnPreviousDays, 0, RainOnPreviousDays.Length)
 
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim MySoilW As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       Dim sw_DUL As Single() = MySoilW.dul_dep        'sw at DUL
       Dim sw_LL15 As Single() = MySoilW.ll15_dep        'sw at LL15 
       Dim DepthFromSurface As Single = 0
@@ -2192,7 +2190,7 @@ Public Class Script
 
    &lt;EventHandler()&gt; Public Sub OnPrepare()
 
-      Dim MySoilW As SWIM2ui = MyPaddock.ComponentByType("SWIM2ui")
+      Dim MySoilW As SWIM2ui = MyPaddock.LinkByType("SWIM2ui")
       
       Dim sw_dul As Single() = MySoilW.dul_dep        'sw at DUL
       Dim sw_sw As Single() = MySoilW.sw_dep          'sw at LL 
@@ -2252,7 +2250,7 @@ Public Class Script
 
                   'Check whether soil needs irrigation
                   If SoilWaterDeficit &lt;= -IrrigDeficit Then
-                     Dim Irrigation As Irrigation = MyPaddock.ComponentByType("Irrigation")
+                     Dim Irrigation As Irrigation = MyPaddock.LinkByType("Irrigation")
                      Dim irrig As IrrigationApplicationType = New IrrigationApplicationType()
                      irrig.Amount = IrrigAmt / (IrrigEff * 0.01)
                      irrig.Duration = 0

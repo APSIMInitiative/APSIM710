@@ -19,9 +19,6 @@ public class ReportDb : Instance
     private int SimulationID = -1;
     private SQLiteTransaction InsertTransaction = null;
 
-    [Link]
-    ModelEnvironment ModelEnvironmnet = null;
-
     [Input]
     private DateTime Today;
 
@@ -242,7 +239,7 @@ public class ReportDb : Instance
         for (int i = 0; i < Variables.Length; i++)
         {
             string Value;
-            ModelEnvironmnet.Get(Variables[i], out Value);
+            Paddock.Get(Variables[i], out Value);
             ConvertVariableToValues(Variables[i], Value, Values);
         }
         return Values;

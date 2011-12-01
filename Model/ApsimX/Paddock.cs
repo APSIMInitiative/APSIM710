@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using ModelFramework;
+using System.Xml;
+using System.Reflection;
 
 namespace ModelFramework
 {
@@ -145,7 +147,15 @@ namespace ModelFramework
          set{throw new NotImplementedException();}
          }
 
-      
+        /// <summary>
+        /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
+        /// the model. The ModelAssembly contains the model.
+        /// </summary>
+        public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
+        {
+            throw new NotImplementedException();
+        }
+  
 
     }
 

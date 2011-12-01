@@ -451,7 +451,10 @@ public class Script
    public double C = 0;
    
    [Link]
-   public ModelEnvironment ModelEnvironment;
+   public Paddock MyPaddock;
+   
+   [Link]
+   public Component My;
 
    [Link]
    public Outputfile Report;
@@ -463,8 +466,8 @@ public class Script
    public void OnInitialised()
    {
       // Write out our name and our full name.
-      Console.WriteLine("Name: " + ModelEnvironment.Name);
-      Console.WriteLine("Full name: " + ModelEnvironment.FullName);
+      Console.WriteLine("Name: " + My.Name);
+      Console.WriteLine("Full name: " + My.FullName);
       
    }
    
@@ -484,71 +487,71 @@ public class Script
       C = 1234;
       
       // ========================================================================
-      // ModelEnvironment ChildNames
+      // Children method
       // ========================================================================
       Console.WriteLine("Script children:");
-      foreach (string ChildName in ModelEnvironment.ChildNames())
-         Console.WriteLine("   " + ChildName);
+      foreach (Component Child in My.Children)
+         Console.WriteLine("   " + Child.FullName);
       
       Console.WriteLine("Paddock children:");
-      foreach (string ChildName in ModelEnvironment.ChildNames(".paddock"))
-         Console.WriteLine("   " + ChildName);
+      foreach (Component Child in MyPaddock.Children)
+         Console.WriteLine("   " + Child.FullName);
      
       Console.WriteLine("Simulation children:");
-      foreach (string ChildName in ModelEnvironment.ChildNames("."))
-         Console.WriteLine("   " + ChildName);
+      foreach (Component Child in MyPaddock.Parent.Children)
+         Console.WriteLine("   " + Child.FullName);
       
       // ========================================================================
-      // ModelEnvironment.Link
+      // Link method
       // ========================================================================
-      ScriptChild ScriptChild = ModelEnvironment.Link&lt;ScriptChild&gt;("ScriptChild");
+      ScriptChild ScriptChild = MyPaddock.LinkByName("ScriptChild") as ScriptChild;
       if (ScriptChild == null)
          throw new Exception("Cannot find ScriptChild");
 
-      ScriptChild ScriptChild2 = ModelEnvironment.Link&lt;ScriptChild&gt;(".paddock.Script.ScriptChild");
+      ScriptChild ScriptChild2 = MyPaddock.LinkByName(".paddock.Script.ScriptChild") as ScriptChild;
       if (ScriptChild2 == null)
          throw new Exception("Cannot find .paddock.Script.ScriptChild");
       
-      SoilWat SoilWat = ModelEnvironment.Link&lt;SoilWat&gt;("Soil Water");
+      SoilWat SoilWat = MyPaddock.LinkByName("Soil Water") as SoilWat;
       if (SoilWat == null)
          throw new Exception("Cannot find Soil Water");
       
-      SoilWat SoilWat2 = ModelEnvironment.Link&lt;SoilWat&gt;(".paddock.Soil Water");
+      SoilWat SoilWat2 = MyPaddock.LinkByName(".paddock.Soil Water") as SoilWat;
       if (SoilWat2 == null)
-         throw new Exception("Cannot find .paddock.Soil Water");      
+         throw new Exception("Cannot find .paddock.Soil Water");
 
-      SoilWat SoilWat3 = ModelEnvironment.Link&lt;SoilWat&gt;();
+      SoilWat SoilWat3 = MyPaddock.LinkByType("SoilWat") as SoilWat;
       if (SoilWat3 == null)
-         throw new Exception("Cannot find ModelEnvironment.Link&lt;SoilWat&gt;()");      
+         throw new Exception("Cannot find a SoilWat type");
       
-      SoilWat SoilWat4 = ModelEnvironment.Link&lt;SoilWat&gt;(".paddock2.*");
+      SoilWat SoilWat4 = MyPaddock.LinkByName(".paddock2.Soil Water") as SoilWat;
       if (SoilWat4 == null)
-         throw new Exception("Cannot find .paddock2.*");      
+         throw new Exception("Cannot find .paddock2.Soil Water");      
       
 
       // ========================================================================
-      // ModelEnvironment.Get
+      // Paddock.Get
       // ========================================================================
       // Test using scoping to find a variable in top level simulation.
       double Latitude;
-      ModelEnvironment.Get("Latitude", out Latitude);
+      MyPaddock.Get("Latitude", out Latitude);
       if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
          throw new Exception("Incorrect latitude: " + Latitude.ToString());
       
       // Test using a full address to variable.
-      ModelEnvironment.Get(".Met.Latitude", out Latitude);
+      MyPaddock.Get(".Met.Latitude", out Latitude);
       if (!MathUtility.FloatsAreEqual(Latitude, -28.33))
          throw new Exception("Incorrect latitude2: " + Latitude.ToString());      
       
       // Test getting a double array from current paddock
       double[] dlayer;
-      ModelEnvironment.Get("dlayer", out dlayer);
+      MyPaddock.Get("dlayer", out dlayer);
       if (!MathUtility.AreEqual(dlayer, new double[] {100, 100, 250, 250, 350, 450}))
          throw new Exception("Incorrect dlayer: " + StringManip.BuildString(dlayer, "f2"));      
 
       // Test getting a child variable value
       int ChildVariable;
-      bool ok = ModelEnvironment.Get("ScriptChild.A", out ChildVariable);
+      bool ok = MyPaddock.Get("ScriptChild.A", out ChildVariable);
       if (!ok)
          throw new Exception("Cannot find child variable");
       if (ChildVariable != 12345)
@@ -556,30 +559,30 @@ public class Script
 
       // Test using a paddocj relative address to variable.
       double Yield;
-      ModelEnvironment.Get("wheat.yield", out Yield);
+      MyPaddock.Get("wheat.yield", out Yield);
       if (Yield != 0)
          throw new Exception("Cannot find yield");
       
       
       // ========================================================================
-      // ModelEnvironment.Set
+      // Paddock.Set
       // ========================================================================
       // Test using scoping to set a variable. These values should be in output file
-      if (!ModelEnvironment.Set("cn2_bare", 90))
+      if (!MyPaddock.Set("cn2_bare", 90))
          throw new Exception("Cannot set cn2_bare");
 
       // Test using scoping to set a variable. These values should be in output file
-      if (!ModelEnvironment.Set(".paddock.Soil water.cn_cov", 0.888))
+      if (!MyPaddock.Set(".paddock.Soil water.cn_cov", 0.888))
          throw new Exception("Cannot set .paddock.Soil water.cn_cov");
 
       // Test that "set" returns false when trying to set an invalid variable.
-      //if (ModelEnvironment.Set("asdf", 89))
+      //if (Paddock.Set("asdf", 89))
       //   throw new Exception("The set method wrongly returned true");
 
       // ========================================================================
-      // ModelEnvironment.Warning
+      // Paddock.Warning
       // ========================================================================
-      ModelEnvironment.Warning("This is a warning");
+      MyPaddock.Warning("This is a warning");
       
       
       // ========================================================================
