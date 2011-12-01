@@ -1,0 +1,507 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = Model_2_Efflux_200
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "Model Setting" = %apsim%\Model\Manager.dll
+   Component                 "Crop Manager" = %apsim%\Model\Manager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "surfaceom" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                   "Phosphorus" = %apsim%\Model\SoilP.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/04/2001
+     Simulation end date   = 31/12/2001
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Kingaroy.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        year
+        day
+        dd/mm/yyyy as date
+        zStage
+        zLAI
+        zBiomass
+        zGrainYield
+        zBiomass_n
+        zBiomass_p
+        zGrain_n
+        zGrain_p
+        labile_p
+        chelated_p
+        unavail_p
+        sp_rlv
+        pc_solution
+        banded_p
+        irrig_tot
+        irrigation
+        zLP10
+        zLP20
+        zLP30
+        zLPSum 
+        carbon_tot
+
+     Output file = Model_2_Efflux_200.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.80
+           depth for calculating available soil water =    1400.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Model Setting Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     p_uptake_model = 2
+     citrateefflux  = 200
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : p_uptake_model = 2.00000
+     Manager creating a new local real variable : citrateefflux = 200.00000
+
+------- Crop Manager Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     zcroptype = 'unknown'
+     zstagename = 'unknown'
+     maizesowdate = 0
+     peanutsowdate = 0
+     wheatsowdate = 0
+     soybeansowdate = 0
+     maizeharvestdate = 0
+     peanutharvestdate = 0
+     wheatharvestdate = 0
+     soybeanharvestdate = 0
+     zstage = 0
+     zlai = 0
+     zlaimax = 0
+     zbiomass = 0
+     zbiomass_n = 0
+     zbiomass_p = 0
+     zgrainyield = 0
+     zgrain_n = 0
+     zgrain_p = 0
+     zpet = 0
+     ztransp = 0
+     zevap = 0
+     zlai_f = 0
+     zbiomass_f = 0
+     zbiomass_n_f = 0
+     zbiomass_p_f = 0
+     nlevel1 = 100
+     nlevel2 = 75
+     plevel  = 0
+     
+     SECTION:- start_of_day
+       if today = date('18/06/2001') then
+          wheat sow plants = 200 (plants/m2), sowing_depth = 30 (mm), cultivar =hartog, row_spacing = 250 (mm) , crop_class = plant
+          wheatsowdate = today
+       endif
+        if today = wheatsowdate then
+            fertiliser apply amount = plevel  (kg/ha), depth = 50 (mm), type = broadcast_p
+            fertiliser apply amount = nlevel1 (kg/ha), depth = 50 (mm), type = urea_n
+        endif
+        if today = wheatsowdate + 50 then
+            fertiliser apply amount = nlevel2 (kg/ha), depth = 50 (mm), type = urea_n
+        endif
+          if wheat.plant_status = 'alive' then
+              zcroptype ='wheat'
+          endif
+       if (today = wheatsowdate) then
+          zsowdate = dd_mmm_yyyy
+          ztransp  = 0
+          zevap    = 0
+          zpet     = 0
+          zlaimax  = 0
+       endif
+        zdas        = wheat.daysaftersowing
+        zstage      = wheat.stage
+        zlai        = wheat.lai
+        zbiomass    = wheat.biomass
+        zbiomass_n  = wheat.biomass_n *10
+        zbiomass_p  = wheat.biomass_p *10
+        zgrainyield = wheat.yield
+        zgrain_n    = wheat.grain_n *10
+        zgrain_p    = wheat.grain_p *10
+        ztransp     =  ztransp + wheat.ep
+        zevap       =  zevap + es
+        zpet        = zpet + eo
+        if (zlai > zlaimax) then
+           zlaimax = zlai
+        endif
+        zlp10  = labile_p(1)/(bd(1)*dlayer(1))*10^2
+        zlp20  = labile_p(2)/(bd(2)*dlayer(2))*10^2
+        zlp30  = labile_p(3)/(bd(2)*dlayer(2))*10^2
+        zlpsum = zlp10 + zlp20 + zlp30
+       if (wheat.stage  = 6) then
+         zanthdate    =  dd_mmm_yyyy
+         zanthdas     = zdas
+         zlai_f       = zlai
+         zbiomass_f   = zbiomass
+         zbiomass_n_f = zbiomass_n
+         zbiomass_p_f = zbiomass_p
+         ztransp_f    = ztransp
+         zevap_f      = zevap
+         zpet_f       = zpet
+       endif
+       zstagename = wheat.stagename
+        if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
+              wheat  harvest
+              wheat end_crop
+              wheatharvestdate = today
+              zharvestdate = dd_mmm_yyyy
+              zstagename = ' harvest'
+              surfaceom tillage type = user_defined, f_incorp = 0.95 (), tillage_depth = 0
+              surfaceom tillage type = user_defined, f_incorp = 1(), tillage_depth = 200
+        endif
+       if ( today = wheatharvestdate+1 ) then
+          zlaimax = 0.0
+          zcroptype = 'unknown'
+       endif
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local string variable : zcroptype = unknown
+     Manager creating a new local string variable : zstagename = unknown
+     Manager creating a new local real variable : maizesowdate = 0.00000
+     Manager creating a new local real variable : peanutsowdate = 0.00000
+     Manager creating a new local real variable : wheatsowdate = 0.00000
+     Manager creating a new local real variable : soybeansowdate = 0.00000
+     Manager creating a new local real variable : maizeharvestdate = 0.00000
+     Manager creating a new local real variable : peanutharvestdate = 0.00000
+     Manager creating a new local real variable : wheatharvestdate = 0.00000
+     Manager creating a new local real variable : soybeanharvestdate = 0.00000
+     Manager creating a new local real variable : zstage = 0.00000
+     Manager creating a new local real variable : zlai = 0.00000
+     Manager creating a new local real variable : zlaimax = 0.00000
+     Manager creating a new local real variable : zbiomass = 0.00000
+     Manager creating a new local real variable : zbiomass_n = 0.00000
+     Manager creating a new local real variable : zbiomass_p = 0.00000
+     Manager creating a new local real variable : zgrainyield = 0.00000
+     Manager creating a new local real variable : zgrain_n = 0.00000
+     Manager creating a new local real variable : zgrain_p = 0.00000
+     Manager creating a new local real variable : zpet = 0.00000
+     Manager creating a new local real variable : ztransp = 0.00000
+     Manager creating a new local real variable : zevap = 0.00000
+     Manager creating a new local real variable : zlai_f = 0.00000
+     Manager creating a new local real variable : zbiomass_f = 0.00000
+     Manager creating a new local real variable : zbiomass_n_f = 0.00000
+     Manager creating a new local real variable : zbiomass_p_f = 0.00000
+     Manager creating a new local real variable : nlevel1 = 100.00000
+     Manager creating a new local real variable : nlevel2 = 75.00000
+     Manager creating a new local real variable : plevel = 0.00000
+
+------- Soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.100  0.200  0.300  0.510  0.250  1.200  0.613  0.300
+          100.-  200.  0.184  0.230  0.340  0.500  0.285  1.230  0.243  0.300
+          200.-  300.  0.260  0.260  0.360  0.490  0.310  1.270  0.096  0.300
+          300.-  500.  0.260  0.260  0.360  0.470  0.310  1.270  0.048  0.300
+          500.-  800.  0.260  0.260  0.370  0.450  0.315  1.320  0.000  0.300
+          800.- 1100.  0.260  0.260  0.380  0.430  0.320  1.390  0.000  0.300
+         1100.- 1400.  0.260  0.260  0.400  0.430  0.330  1.450  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      20.00       5.00      10.00      21.00
+          100.-  200.      23.00       5.50      11.00      16.00
+          200.-  300.      26.00       5.00      10.00      13.00
+          300.-  500.      52.00      10.00      20.00      22.00
+          500.-  800.      78.00      16.50      33.00      24.00
+          800.- 1100.      78.00      18.00      36.00      15.00
+         1100.- 1400.      78.00      21.00      42.00       9.00
+          ---------------------------------------------------------
+               Totals     355.00      81.00     162.00     120.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- surfaceom Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.19    0.28    0.23    0.00
+             2     8.50  1.01    0.88    0.60    0.00
+             3     8.60  0.45    0.90    0.37    0.00
+             4     8.60  0.45    1.41    0.74    0.00
+             5     8.60  0.30    1.56    1.15    0.00
+             6     7.40  0.20    1.21    1.21    0.00
+             7     5.30  0.16    0.92    1.26    0.00
+          ------------------------------------------------
+           Totals                7.16    5.55    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      13950.5   962.1   329.5    41.2   121.8     2.7
+             2      12325.6   850.0    97.4    12.2    98.3     2.2
+             3       5692.6   392.6    22.4     2.8    79.3     1.8
+             4      11385.2   785.2    44.8     5.6    51.7     1.1
+             5      11880.0   819.3     0.0     0.0    27.2     0.6
+             6       8340.0   575.2     0.0     0.0    14.3     0.3
+             7       6960.0   480.0     0.0     0.0     7.5     0.2
+          ---------------------------------------------------------
+           Totals   70533.8  4864.4   494.2    61.8   400.0     8.9
+          ---------------------------------------------------------
+
+------- Phosphorus Initialisation ---------------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+     
+     
+     
+                   Phosphorus Initial Data
+          ---------------------------------------------------------
+           Layer    Labile  Unavailable Banded     Rock    Sorption
+                    (kg/ha)   (kg/ha)   (kg/ha)   (kg/ha)     ()
+          ---------------------------------------------------------
+             1       12.0     120.0       0.0       0.0      50.0
+             2        7.4      73.8       0.0       0.0      50.0
+             3        4.4      44.5       0.0       0.0      50.0
+             4        2.5      25.4       0.0       0.0     300.0
+             5        2.0      19.8       0.0       0.0     300.0
+             6        2.1      20.9       0.0       0.0     300.0
+             7        2.2      21.8       0.0       0.0     300.0
+          ---------------------------------------------------------
+           Totals    32.6     326.1       0.0       0.0
+          ---------------------------------------------------------
+     
+     
+     
+           Dissolution rate of rock P :    0.00061   (/yr)
+           Root C:P :                    200.0
+
+------- wheat Initialisation --------------------------------------------------
+        - Module is set phosphorus aware
+     
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : zdas = 0.00000
+     Manager creating a new local real variable : zlp10 = 10.00000
+     Manager creating a new local real variable : zlp20 = 6.00000
+     Manager creating a new local real variable : zlp30 = 3.61382
+     Manager creating a new local real variable : zlpsum = 19.61382
+18 June 2001(Day of year=169), Crop Manager: 
+     Manager sending message :- wheat sow  plants = 200 (plants/m2), sowing_depth = 30 (mm), cultivar = hartog, row_spacing = 250 (mm), crop_class = plant
+18 June 2001(Day of year=169), wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.200       1.000
+         100.0     0.060          0.230       1.000
+         100.0     0.060          0.260       1.000
+         200.0     0.060          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.060          0.260       1.000
+         300.0     0.060          0.260       1.000
+         -----------------------------------------------
+         Extractable SW:   162mm in  1400mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            169   30.0  200.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+     Manager sending message :- fertiliser apply  amount = 0.00000 (kg/ha), depth = 50 (mm), type = broadcast_p
+     Manager sending message :- fertiliser apply  amount = 100.00000 (kg/ha), depth = 50 (mm), type = urea_n
+18 June 2001(Day of year=169), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+     Manager creating a new local string variable : zsowdate = 18_Jun_2001
+19 June 2001(Day of year=170), wheat: 
+      stage 2.0 germination
+26 June 2001(Day of year=177), wheat: 
+      stage 3.0 emergence
+                     biomass =           0.92 (g/m^2)   lai          =   0.040 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   18.60 (mm)
+27 June 2001(Day of year=178), wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           1.26 (g/m^2)   lai          =   0.046 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   18.59 (mm)
+7 August 2001(Day of year=219), Crop Manager: 
+     Manager sending message :- fertiliser apply  amount = 75.00000 (kg/ha), depth = 50 (mm), type = urea_n
+7 August 2001(Day of year=219), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        75.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+31 December 2001(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.

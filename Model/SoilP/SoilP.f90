@@ -41,8 +41,21 @@ module SoilPModule
 
       integer      num_crops            ! Number of crops in the system
       integer      nveg
+     !##########################################################################################
+     !ELW - ADDED NEW VARIABLES - GLOBAL
+      real     pc_solution (max_layer)
+      real     sp_rlv (max_layer)      !current crop RLD
+     
+      real     uptake_p_c_crop (max_crops, max_layer)
 
+      real     chelated_p (max_layer)   ! chelated P content for each layer (kg/ha)
 
+      
+      
+     !##########################################################################################
+
+           
+       
       real      labile_p (max_layer)   ! Labile P content for each layer (kg/ha)
       real      unavail_p (max_layer)  ! Unavailable P content for each layer (kg/ha)
       real      rock_p (max_layer)     ! Rock P content for each layer (kg/ha)
@@ -131,7 +144,8 @@ module SoilPModule
       real         sorption_coeff      ! exponent of Freundlich isotherm
       real         p_supply_factor (max_crops)
                                        !  factor to calc potential P supply from soil P status
-
+      real         crit_p_rlv (max_crops)
+                                       ! critical rlv above which p status is maximum
       real         lb_labile_p_ppm         ! lower bound for labile P (ppm)
       real         ub_labile_p_ppm         ! upper bound for labile P (ppm)
       real         lb_unavail_p        ! lower bound for unavailable P (kg/ha)
@@ -148,6 +162,19 @@ module SoilPModule
       real         fr_carb             ! fom fraction in carbon pool
       real         fr_cell             ! fom fraction in cellulose pool
       real         fr_lign             ! fom fraction in lignin pool
+      
+      
+      
+      !##############################################################################
+      !ELW - ADDITIONS
+      real      P_Uptake_Model                 !P uptake model: 0= original, 1= original with RLD impact, 2 = RLD and citrate with solublised P with sorption, 3 = RLD and citrate with solubilised P into soil solution
+      real      CitrateEfflux                  !The efflux of citrate release from roots (nmol/gFW/hr)
+      real      CitrateEfficiency              !The efficiency of citrate to solublise P in soil (mol P/mol citrate)
+      real      CitrateEfficiencySL            !The efficiency of citrate to solubilise P in soil and putting P into soil solution
+      real      RootFractionReleaseCitrate     !The fraction of roots that release citrate
+      real      Sorption_Set_Value             !To be used to replace the P sorption in soil for testing impact of citrate under given sorption level
+      
+      !##############################################################################
 
    end type SoilPConstants
 ! ====================================================================
@@ -353,14 +380,14 @@ subroutine soilp_zero_variables ()
    c%ub_banded_p             = 0.0
    c%lb_rock_p               = 0.0
    c%ub_rock_p               = 0.0
-
-
+ 
    call fill_real_array (g%labile_p, 0.0, max_layer)
    call fill_real_array (g%unavail_p, 0.0, max_layer)
    call fill_real_array (g%rock_p, 0.0, max_layer)
    call fill_real_array (g%banded_p, 0.0, max_layer)
    call fill_real_array (g%effective_p, 0.0, max_layer)
    call fill_real_array (p%sorption, 0.0, max_layer)
+   call fill_real_array (c%crit_p_rlv, 0.0, max_crops)
    call fill_real_array (c%p_supply_factor, 0.0, max_crops)
    call fill_real_array (g%dlt_fom_c_hum, 0.0, max_layer)
    call fill_real_array (g%dlt_fom_c_biom, 0.0, max_layer)
@@ -384,7 +411,29 @@ subroutine soilp_zero_variables ()
    c%eff_band = 0.0
    c%biom_cp = 0.0
    c%hum_cp = 0.0
+   
+ !##########################################################################################
+  !ELW - ADDED NEW VARIABLES - GLOBAL
+   call fill_real_array (g%pc_solution, 0.0, max_layer)
+   call fill_real_array (g%sp_rlv,      0.0, max_layer)
+   
+   call fill_real_array (g%chelated_p,  0.0, max_layer)
+   
+   
+   g%uptake_p_c_crop    = 0.0
 
+
+            
+   c%P_Uptake_Model      = 0.0
+   c%CitrateEfflux       = 0.0
+   c%CitrateEfficiency   = 1.0
+   c%CitrateEfficiencySL = 1.0
+   c%Sorption_Set_Value  = 0.0
+
+  !##########################################################################################
+    
+   
+   
    call pop_routine (myname)
    return
 end subroutine
@@ -428,6 +477,27 @@ subroutine soilp_Send_my_variable (Variable_name)
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name ,'(kg/ha)' , g%labile_p , num_layers)
 
+
+  !##########################################################################################
+  !ELW - ADDED NEW VARIABLES - GLOBAL
+      
+  elseif (variable_name .eq. 'pc_solution') then
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name ,'(kg/ha)' , g%pc_solution , num_layers)
+      
+  elseif (variable_name .eq. 'sp_rlv') then
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name ,'(-)' , g%sp_rlv , num_layers)
+
+  elseif (variable_name .eq. 'chelated_p') then
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name ,'(-)' , g%chelated_p , num_layers)
+      
+      
+            
+  !##########################################################################################
+      
+      
    elseif (variable_name .eq. 'unavail_p') then
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name ,'(kg/ha)' , g%unavail_p , num_layers)
@@ -529,7 +599,7 @@ end subroutine
 
 !     ===========================================================
 subroutine soilp_read_param ()
-!     ===========================================================
+!
    implicit none
 
 !+  Purpose
@@ -612,7 +682,6 @@ subroutine soilp_read_param ()
 
    ! Now change rate coefficients from fraction per year to fraction per day
    p%rate_loss_avail_p = - alog (1.0 - p%rate_loss_avail_p) / 365.0
-
    call read_real_var_optional (section_name, 'fraction_urine_added', '(0-1)', p%fraction_urine_added, numvals, 0.0, 1.0)
    if (numvals.le.0) p%fraction_urine_added = 0.5
    
@@ -738,7 +807,14 @@ subroutine soilp_set_my_variable (Variable_name)
 
       call add_real_array (Tarray, g%rock_p, Numvals)
       call bound_check_real_array (g%rock_p, 0.0, 1000.0, 'g%rock_p', Numvals)
+   elseif (Variable_name .eq. 'sorption') then
 
+      call collect_real_array &
+            (variable_name, max_layer, '(kg/ha)', Tarray, Numvals,-1000.0, 1000.0)
+
+      call add_real_array (Tarray, p%sorption, Numvals)
+      call bound_check_real_array (p%sorption, 0.0, 1000.0, 'p%sorption', Numvals)
+      
    else
       ! Don't know this variable name
       call Message_unused ()
@@ -747,8 +823,6 @@ subroutine soilp_set_my_variable (Variable_name)
    call pop_routine (myname)
    return
 end subroutine
-
-
 
 ! ====================================================================
 subroutine soilp_read_constants ()
@@ -801,11 +875,15 @@ subroutine soilp_read_constants ()
    c%rate_decr_placement = - alog (1 - c%rate_decr_placement) / 365.0
 
    !  read crop constants
-   call read_real_var ('parameters','sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
+      call read_real_var (section_name,'sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
 
    call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,num_crops_read)
 
    call read_real_array (section_name,'p_supply_factor',max_crops,'()',c%p_supply_factor,numvals,0.0,10.0)
+   if (num_crops_read .ne. numvals) then
+      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
+   endif
+   call read_real_array (section_name,'crit_p_rlv',max_crops,'()',c%crit_p_rlv,numvals,0.0,100.0)
    if (num_crops_read .ne. numvals) then
       call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
    endif
@@ -837,8 +915,6 @@ subroutine soilp_read_constants ()
    return
 end subroutine
 
-
-
 ! ====================================================================
 subroutine soilp_get_other_variables ()
 ! ====================================================================
@@ -857,12 +933,50 @@ subroutine soilp_get_other_variables ()
 
 !+  Local Variables
     integer numvals                 ! number of values returned
+    integer num_layers
+    integer layer
+               ! number of values returned
 !       real    temp_array(max_layer)   ! tempory array
 
 !- Implementation Section ----------------------------------
 
    call push_routine (myname)
+   
+   
+   
+   !##########################################################################################
+   !ELW - OUTPUT THE P CONCENTRATION IN SOIL SOLUTION 
+   !CALL get_real_var_optional(unknown_module, 'co2', '(ppm)', g%co2level, numvals,0.0, 1000.0)
+   !if (numvals .eq.0) g%co2level = c%co2level
 
+    call get_real_var_optional(unknown_module, 'P_Uptake_Model', '(-)', c%P_Uptake_Model, numvals,0.0, 1000.0)
+    if (numvals .eq. 0) c%P_Uptake_Model = 0.0
+   
+    call get_real_var_optional(unknown_module, 'CitrateEfflux', '(-)', c%CitrateEfflux, numvals,0.0, 3000.0)
+    if (numvals .eq. 0) c%CitrateEfflux = 0.0
+
+    call get_real_var_optional(unknown_module, 'CitrateEfficiency', '(-)', c%CitrateEfficiency, numvals,0.0, 1000.0)
+    if (numvals .eq. 0) c%CitrateEfficiency = 0.4
+
+    call get_real_var_optional(unknown_module, 'CitrateEfficiencySL', '(-)', c%CitrateEfficiencySL, numvals,0.0, 1000.0)
+    if (numvals .eq. 0) c%CitrateEfficiencySL = 0.015
+    
+    call get_real_var_optional(unknown_module, 'RootFractionReleaseCitrate', '(-)', c%RootFractionReleaseCitrate, numvals,0.0, 1000.0)
+    if (numvals .eq. 0) c%RootFractionReleaseCitrate = 1.0
+    
+    call get_real_var_optional(unknown_module, 'Sorption_Set', '(-)', c%Sorption_Set_Value, numvals,0.0, 5000.0)
+    if (numvals .eq. 0) then
+        c%Sorption_Set_Value = 0.0
+    else    
+        num_layers = count_of_real_vals (g%dlayer, max_layer)
+ 		do layer = 1, num_layers
+           p%sorption(layer) = c%Sorption_Set_Value
+        end do
+    endif     
+    
+
+    !##########################################################################################
+   
    call Get_real_array (unknown_module,'dlayer',max_layer,'(mm)',g%dlayer,numvals,0.0,1000.0)
 
    call Get_real_array (unknown_module,'st',max_layer,'()',g%soil_t,numvals,-20.0,50.0)
@@ -896,7 +1010,6 @@ subroutine soilp_get_other_variables ()
    call pop_routine (myname)
    return
 end subroutine
-
 
 
 ! ====================================================================
@@ -1258,9 +1371,9 @@ subroutine soilp_get_crop_variables ()
       else
          ! crop has been specified so end do
 
-!!JH What is rlv for? It doesn't appear to be used         call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
+ !!JH What is rlv for? It doesn't appear to be used        call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
 !!JH What is rlv for? It doesn't appear to be used
-!!JH What is rlv for? It doesn't appear to be used         if (numvals.gt.0) then
+!!JH What is rlv for? It doesn't appear to be used       if (numvals.gt.0) then
 !!JH What is rlv for? It doesn't appear to be used            do layer = 1,numvals
 !!JH What is rlv for? It doesn't appear to be used               g%rlv(vegnum,layer) = rlv(layer)
 !!JH What is rlv for? It doesn't appear to be used            end do
@@ -1329,50 +1442,250 @@ subroutine soilp_crop_p_uptake ()
     real p_layer                      ! temporary calculator
     real b_layer                      ! inverse of c%sorption_coeff
    character string*300
+   
+    !#########################################################################  
+    !ELW - ADDITIONS/MODIFICATIONS
+    real SolutionPc                      ! P concentration in soil solution
+    real CitrateEffluxEffect             ! effect of citrate release from roots
 
-!- Implementation Section ----------------------------------
-   call push_routine (myname)
-
+    real uptake_p_c_tot                 ! total plant P uptake
+    real status_c (max_layer)           ! soil layer P status
+    real status_c_profile               ! soil profile P status
+    
+    real Citrate_Efflux
+    real Chelation_P (max_layer)
+    real Chelation_P_Left (max_layer)
+    
+   
+    real fr_banded
+    real fr_chelated
+    
+    real dlt_pc_layer
+    real pc_layer
+    real SoilWaterContent
+    real eff_chelated_p
+    real fr_unavail
+    
+    real deficit_p
+    real p_deficiency_crop
+    real p_supply_demand_ratio
+    
+    real Chelation_P_Max
+    
+    real total_p_avail       
+    real total_p_avail_min   
+    real total_p             
+    real total_p_min     
+    
+    real total_p_unavail    
+    real total_p_unavail_min   
+    
+    real dlt_banded_p 
+    
+    real RLD_Efficiency
+    real RLD_Factor
+    
+    real RLD_EW
+    real cCitrateEfficiency
+    real cCitrateEfficiencySL
+    real cCitrateLossFractionPerDay
+    real cRootFractionReleaseCitrate
+    real cSpecificRootLength 
+    real cRootDryMatterRatio 
+    real Chelation_P_MM
+    real Chelation_P_SL
+    real Chelation_P_L
+	
    b_layer = divide(1.0,c%sorption_coeff, 0.0)
-
+   
+ !- Implementation Section ----------------------------------
+   call push_routine (myname)
+  
+   b_layer = divide(1.0,c%sorption_coeff, 0.0)
    num_layers = count_of_real_vals (g%dlayer, max_layer)
 
    do crop = 1, g%num_crops
+  
+     !###########################################################################################################################################  
+     !CALCULATION OF P UPTAKE BASED ON THE ORIGINAL MODEL TO ESTIMATE CROP P DEFICIENCY
+     status_profile    = 0.0
+     call fill_real_array (status, 0.0, max_layer)
 
-      status_profile = 0.0
-
-      do layer = 1, num_layers
+     do layer = 1, num_layers
+         g%sp_rlv(layer)    = g%rlv(crop,layer) 
          effective_p(layer) = g%labile_p (layer) + c%eff_band* g%banded_p (layer)
 
          ! mep/dsg 060302   p uptake modified
          ! mep/dsg 200302  convert effective_p from kg/ha to mg/kg for this calculation
-         p_layer = divide(effective_p(layer)* soilp_fac(layer),p%sorption (layer), 0.0)
-         p_layer = p_layer ** b_layer
-
-         ! mep/dsg 200302  Allow for soil depth in layer
-         status (layer) = p_layer* soilp_root_fac (crop, layer)* soilp_sw_fn (layer)* g%dlayer(layer)
-         status_profile = status_profile + status (layer)
+         p_layer        = divide(effective_p(layer)* soilp_fac(layer),p%sorption (layer), 0.0)
+         p_layer        = p_layer ** b_layer
+         status (layer) = soilp_root_fac (crop, layer)* p_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+         status_profile = status_profile   + status (layer)
+         
+         total_p_avail     = total_p_avail     + g%labile_p(layer)                  + g%banded_p(layer)
+         total_p_avail_min = total_p_avail_min + c%lb_labile_p_ppm/soilp_fac(layer) + c%lb_banded_p
       end do
 
       ! calculate potential p uptake
       crop_num = position_in_char_array (g%crop_names (crop),c%crop_table_name, max_crops)
       uptake_p_tot = status_profile *c%p_supply_factor(crop_num)
-      uptake_p_tot = bound (uptake_p_tot,0.0,g%crop_p_demand (crop))
+      uptake_p_tot = bound (uptake_p_tot, 0.0, g%crop_p_demand (crop))
+      uptake_p_tot = bound (uptake_p_tot, 0.0, total_p_avail - total_p_avail_min)
+     
+     !###########################################################################################################################################  
+     !ELW - ADDITIONS/MODIFICATIONS
+     !-----------------------------------------------------------------------------------------------------------------------------------------
+      !UNIT CONVERSION OF CITRATE CONCENTRATION
+      !pmol - picomole  = 10-12 mole
+      !nmol - nanomole  = 10-9  mole
+      !umol - micromole = 10-6  mole
+      !mmol - millimole = 10-3  mole 
+ 
+      !-----------------------------------------------------------------------------------------------------------------------------------------
+      !CONSTANT RATES USED/ASSUMED IN THE MODEL
+      cCitrateEfficiency          = 0.4        ! Efficiency of citrate for chelation, 0.45 mol of P will be released by one mole of citrate interacting in soil
+      cCitrateEfficiencySL        = 0.015      ! Efficiency of citrate for chelation, 0.015 mol of P will be added into soil solution by one mole of citrate interacting
+      cCitrateLossFractionPerDay  = 0.0   !0.5 ! Fraction of released citrate that is lost per day, assuming 50%
+      cRootFractionReleaseCitrate = 1.0   !0.5 ! fraction of root system that release citrate, assuming 50% 
+      cSpecificRootLength         = 10.5E4     ! = 10.5x10^4 mm/g rootDM for wheat (Ritchie et al, 1987; Loes and Gahoomia, 2004)
+      cRootDryMatterRatio         = 0.07       ! DM = 7%FW, i.e. dry matter is 7% of fresh root matter for wheat (Ryan et al, 2001)
+      
+      cCitrateEfficiency          = c%CitrateEfficiency          
+      cCitrateEfficiencySL        = c%CitrateEfficiencySL          
 
-      ! calculate p uptake from each layer
+      !-----------------------------------------------------------------------------------------------------------------------------------------
+      !CITRATE RELEASE INCREASED BY P DEFICIENCY OF THE PLANT (JONES, 1998; VANCE ET AL, 2003; RYAN ET AL, 2001)
+      p_supply_demand_ratio = divide(uptake_p_tot, g%crop_p_demand (crop), 1.0)
+      p_deficiency_crop     = 1.0 - p_supply_demand_ratio !** 2
+      Citrate_Efflux        = c%CitrateEfflux * p_deficiency_crop   !In the unit of nmol/gFW/h  (0~180 nmol/gFW/h)
+      
+      !OLD CALCULATIONS - NEED TO BE DELETED
+      !c%CitrateEfflux = 1.3-3.1 pmol/gFW/s ~ 4.6-11nmol/gFW/h ~ 112-267 nmol/gFW/d
+      !Citrate_Efflux  = Citrate_Efflux * 1E-12/(0.07 * 10.5E4)* 24.0* 3600.0 !in mole/mm root/day - calculation based on 1.3-3.1 pmol/gFW/s, DM = 7%FW, 1pmol = 10^(-6), 10.5x10^4 mm/g rootDM for wheat
+      
+      !-----------------------------------------------------------------------------------------------------------------------------------------
+      !CHANGE THE UNIT TO MOLE/MM ROOT/DAY
+      Citrate_Efflux  = Citrate_Efflux * 1E-9 * 24.0 /(cRootDryMatterRatio * cSpecificRootLength) !In unit of mole/mm root/day
+      !P FREED FROM CHELATION PROCESS PER MM OF ROOT LENGTH (IN THE UNIT OF G/MM)
+      Chelation_P_MM  = Citrate_Efflux * (1.0 - cCitrateLossFractionPerDay) * cCitrateEfficiency   * cRootFractionReleaseCitrate * 30.974 !P molecular weight = 30.974g 
+      Chelation_P_SL  = Citrate_Efflux * (1.0 - cCitrateLossFractionPerDay) * cCitrateEfficiencySL * cRootFractionReleaseCitrate * 30.974 !P molecular weight = 30.974g 
+
+      
+     !###########################################################################################################################################  
+     !CALCULATION OF P STATUS/SOLUBILISATION IN EACH OF THE SOIL LAYERS
+      status_profile   = 0.0
+      status_c_profile = 0.0
+      call fill_real_array (g%chelated_p, 0.0, max_layer)
+      call fill_real_array (Chelation_P,  0.0, max_layer)
+      call fill_real_array (status,       0.0, max_layer)
+      call fill_real_array (status_c,     0.0, max_layer)
+      call fill_real_array (effective_p,  0.0, max_layer)
+      
       do layer = 1, num_layers
-         g%uptake_p_crop (crop, layer) = uptake_p_tot *divide (status (layer), status_profile, 0.0)
+	           g%uptake_p_crop (crop, layer) = uptake_p_tot *divide (status (layer), status_profile, 0.0)
+         total_p     = g%labile_p(layer) + g%banded_p(layer) + g%unavail_p(layer)
+         total_p_min = c%lb_labile_p_ppm/soilp_fac(layer) + c%lb_banded_p + c%lb_unavail_p
 
-         ! modify p balance
+         effective_p(layer) = g%labile_p (layer) + c%eff_band* g%banded_p (layer)
+         p_layer            = divide(effective_p(layer)* soilp_fac(layer), p%sorption (layer), 0.0) ! mep/dsg 200302  convert effective_p from kg/ha to mg/kg for this calculation
+         p_layer            = p_layer ** b_layer
+
+         !RLD_Efficiency  = 20.0 * (4.0 - 30* bound(g%sp_rlv(layer), 0.0, 0.1))
+          RLD_Efficiency  = 20.0 * (1 + 4 *(1.0 - 10/0.5* bound(g%sp_rlv(layer), 0.0, 0.05))**3)
+         
+        !-----------------------------------------------------------------------------------------------------------------------------------------
+        !USE THE ORIGINAL MODEL - AS IN APSIM7.2 
+        if (c%P_Uptake_Model .eq. 0.0) then 
+	         ! mep/dsg 200302  Allow for soil depth in layer
+	         status (layer)      =  soilp_root_fac (crop, layer)* p_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+	         dlt_pc_layer        = 0.0
+             g%chelated_p(layer) = 0.0
+             
+        !-----------------------------------------------------------------------------------------------------------------------------------------
+        !USE THE RLD MODEL - TAKING INTO ACCOUNT OF ROOT LENGTH DENSITY DISTRIBUTION IN THE SOIL PROFILE
+	     elseif (c%P_Uptake_Model .eq. 1.0) then 
+	         status (layer)      = RLD_Efficiency * g%rlv(crop,layer)* p_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+	         dlt_pc_layer        = 0.0
+             g%chelated_p(layer) = 0.0
+	          
+        !-----------------------------------------------------------------------------------------------------------------------------------------
+        !USE THE ROA SORPTION MODEL - ASSUMING P FREED FROM SOLUBILISATION IS ADSORBED BY SOIL, THEN IN EQUILIBRIUM WITH P IN SOIL SOLUTION
+	     elseif (c%P_Uptake_Model .eq. 2.0) then 
+	         status (layer)     = RLD_Efficiency * g%rlv(crop,layer)* p_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+             eff_chelated_p     = 2 * c%eff_band  !200.0
+             Chelation_P(layer) = Chelation_P_MM * g%rlv(crop,layer) * g%dlayer(layer)* 1E7 ! In the unit of kgP/ha - 1E7 converts from g/mm2 to kg/ha
+             Chelation_P(layer) = bound(Chelation_P(layer), 0.0, g%unavail_p(layer) - c%lb_unavail_p) 
+            !Chelation_P(layer) = bound(Chelation_P(layer), 0.0, total_p - total_p_min) 
+             pc_layer           = divide((effective_p(layer)+ eff_chelated_p * Chelation_P(layer))* soilp_fac(layer),p%sorption(layer),0.0)
+             pc_layer           = pc_layer ** b_layer
+             dlt_pc_layer       = pc_layer - p_layer
+             g%chelated_p(layer)= Chelation_P(layer)
+	         status_c (layer)   = RLD_Efficiency * g%rlv(crop,layer)* dlt_pc_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+
+        !-----------------------------------------------------------------------------------------------------------------------------------------
+        !USE THE ROA NON SORPTION MODEL - ASSUMING P FREED GOES DIRECTLY INTO SOIL SOLUTION WITHOUT THROUGH THE ADSORPTION PROCESS        
+	     else       
+	         status (layer)      = RLD_Efficiency * g%rlv(crop,layer)* p_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+             Chelation_P(layer)  = Chelation_P_SL * g%rlv(crop,layer) * g%dlayer(layer)* 1E7  !In the unit of kgP/ha - 1E7 converts from g/mm2 to kg/ha
+             Chelation_P(layer) = bound(Chelation_P(layer), 0.0, g%unavail_p(layer) - c%lb_unavail_p) 
+            !Chelation_P(layer) = bound(Chelation_P(layer), 0.0, total_p - total_p_min) 
+             g%chelated_p(layer) = Chelation_P(layer)
+             Chelation_P_L       = Chelation_P(layer)/g%dlayer(layer) * 100.0        !In the unit of mgP/L i.e. per L of soil volume - 100/dalyer converts from kg/ha to mg/L
+             SoilWaterContent    = divide (g%sw_dep (layer), g%dlayer (layer), 0.0)  !Volumetric water content (L/L)
+             dlt_pc_layer        = divide(Chelation_P_L, SoilWaterContent, 0.0)      !In the unit of mgP per L of soil solution
+             status_c (layer)    = RLD_Efficiency * g%rlv(crop,layer)* dlt_pc_layer * g%dlayer(layer)* soilp_sw_fn (layer)
+         endif
+
+         status_profile   = status_profile   + status  (layer)
+         status_c_profile = status_c_profile + status_c(layer)
+
+         !g%pc_solution(layer) = (p_layer + dlt_pc_layer) * 1000.0
+      end do
+	       !###########################################################################################################################################  
+     !CALCULATION OF P UPTAKE BY CROPS AND P REMOVAL FROM EACH OF THE SOIL LAYERS
+     ! calculate potential p uptake
+      crop_num = position_in_char_array (g%crop_names (crop),c%crop_table_name, max_crops)
+      uptake_p_tot = status_profile * c%p_supply_factor(crop_num)
+      uptake_p_tot = bound (uptake_p_tot, 0.0, g%crop_p_demand (crop))
+      
+      !EXTRA P UPTAKE DUE TO CITRATE SOLUBILISATION - CAN NOT EXCEED CROP P DEMAND
+      uptake_p_c_tot = status_c_profile *c%p_supply_factor(crop_num)
+      uptake_p_c_tot = bound (uptake_p_c_tot, 0.0, g%crop_p_demand(crop)- uptake_p_tot )
+      
+      !-------------------------------------------------------------------------------------------------------------------------------------------
+      ! CALCULATE P UPTAKE FROM EACH SOIL LAYER
+      do layer = 1, num_layers
+         g%uptake_p_crop  (crop, layer) = uptake_p_tot   * divide (status  (layer), status_profile,   0.0)
+         g%uptake_p_c_crop(crop, layer) = uptake_p_c_tot * divide (status_c(layer), status_c_profile, 0.0)
+         
+         !Restrict normal crop P uptake to the amount of availale P in the layer (labile + banded)
+         total_p_avail = (g%labile_p(layer)- c%lb_labile_p_ppm/soilp_fac(layer)) + (g%banded_p(layer)- c%lb_banded_p)
+         g%uptake_p_crop(crop, layer) = bound(g%uptake_p_crop(crop, layer),0.0, total_p_avail)
+         
+         !Calculate p balances
          fr_labile = divide (g%labile_p (layer),effective_p(layer),0.0)
-         g%labile_p (layer) =  g%labile_p (layer) -g%uptake_p_crop (crop, layer) *fr_labile
-         g%banded_p (layer) =  g%banded_p (layer) -g%uptake_p_crop (crop, layer) *(1.0 - fr_labile)
+         g%labile_p (layer) =  g%labile_p (layer) - g%uptake_p_crop (crop, layer)* fr_labile
+         g%banded_p (layer) =  g%banded_p (layer) - g%uptake_p_crop (crop, layer)* (1.0 - fr_labile)
+         
+         !If banded P depleted, use lable P. 
+         if (g%banded_p (layer) .lt. c%lb_banded_p) then
+            g%labile_p(layer) = g%labile_p(layer) - (c%lb_banded_p - g%banded_p(layer))
+            g%banded_p(layer) = c%lb_banded_p
+         endif
+             
+         !RE-UPDATE - Chelation P is taken by crop, the rest sent to banded pool
+         g%uptake_p_c_crop(crop, layer) = bound(g%uptake_p_c_crop(crop, layer), 0.0, g%chelated_p(layer))
+         Chelation_P_Left(layer) = g%chelated_p(layer) -  g%uptake_p_c_crop (crop, layer)
+         g%banded_p (layer)      = g%banded_p (layer)  +  Chelation_P_Left(layer)
+         g%unavail_p(layer)      = g%unavail_p(layer)  -  g%chelated_p(layer)
+         
+         g%uptake_p_crop(crop, layer)  =  g%uptake_p_crop (crop, layer) + g%uptake_p_c_crop (crop, layer)  
       end do
 
       call soilp_bound_check (num_layers)
 
    end do
-
+   
    call pop_routine (myname)
    return
 end subroutine
