@@ -19,6 +19,9 @@ using CSGeneral;
 
 public class Fertiliser
 {
+    [Param]
+    XmlNode FertiliserNode = null;
+
     [Link]
     Paddock MyPaddock = null;
 
@@ -59,12 +62,8 @@ public class Fertiliser
 
         #region XML parameters
         // Read XML parameters
-        XPathDocument xmlDoc = new XPathDocument(AppDomain.CurrentDomain.BaseDirectory + "fertiliserNET.xml");
-        XPathNavigator xNav = xmlDoc.CreateNavigator();
+        XPathNavigator xNav = FertiliserNode.CreateNavigator();
         xNav.MoveToFirstChild();
-        xNav.MoveToFirstChild();
-        xNav.MoveToNext();//move to model node - probably a better way to do this...
-        xNav.MoveToFirstChild(); //move to models
         do
         {
             components.Insert(0, new FertComponent());
