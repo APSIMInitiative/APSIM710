@@ -4,7 +4,7 @@
 Keating, B.A., Robertson, M.J., Muchow, R.C. and Huth, N.I. (1999). Modelling sugarcane production systems I. Development and performance of the sugarcane module.
 Field Crops Research, 61: 253-271.
 </memo>
-  <simulation name="Old" enabled="no">
+  <simulation name="Old">
     <metfile name="met">
       <filename name="filename" input="yes">Ingham.met</filename>
     </metfile>
@@ -478,11 +478,7 @@ Field Crops Research, 61: 253-271.
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
-      <sugar>
-        <ini>
-          <filename>Sugar.xml</filename>
-        </ini>
-      </sugar>
+      <sugar />
       <manager name="Empty manager">
         <script>
           <text>
@@ -673,14 +669,14 @@ Field Crops Research, 61: 253-271.
           <variable name="dd/mm/yyyy as date" />
           <variable name="tt_tot()" />
           <variable name="stagename" />
-          <variable name="stage_code" />
+          <variable name="stage_code as stagecodevalue" />
           <variable name="leaf_no()" />
           <variable name="node_no_dead()" />
-          <variable name="lai" />
+          <variable name="lai as LeafLAI" />
           <variable name="leafgreenwt" />
           <variable name="senescedwt" />
           <variable name="cabbage_wt" />
-          <variable name="cane_wt" />
+          <variable name="cane_wt as stemlivewt" />
           <variable name="cabstem" />
           <variable name="rootgreenwt" />
           <variable name="biomass" />
@@ -690,10 +686,12 @@ Field Crops Research, 61: 253-271.
           <variable name="green_biomass_n" />
           <variable name="swdef_photo" />
           <variable name="nfact_photo" />
-          <variable name="root_depth" />
+          <variable name="root_depth as RootDepth" />
           <variable name="dlt_dm" />
           <variable name="slai" />
           <variable name="dlt_dm" />
+          <variable name="leaf_no() as LeafCohortNo" />
+          <variable name="node_no_dead() as LeafDeadNodeNo" />
         </variables>
         <events name="Reporting Frequency">
           <event name="Daily" />
@@ -934,8 +932,8 @@ endif
           <variable name="LeafGreenNo" />
           <variable name="LeafFullyExpandedNodeNo" />
           <variable name="LeafLAI" />
-          <variable name="LeafLiveWt2" />
-          <variable name="LeafDeadWt2" />
+          <variable name="LeafLiveWt" />
+          <variable name="LeafDeadWt" />
           <variable name="StemLiveWt" />
           <variable name="BelowGroundDM" />
           <variable name="AboveGroundDM" />
@@ -948,7 +946,6 @@ endif
           <variable name="LeafLAIDead" />
           <variable name="sla" />
           <variable name="leafspecificarea" />
-          <variable name="leafsize" />
           <variable name="leafdmsupply" />
           <variable name="leafphotosynthesisft" />
           <variable name="leafphotosynthesisfvpd" />
@@ -989,6 +986,61 @@ endif
         <d_interception name="d_interception">0.0</d_interception>
       </micromet>
     </area>
-    <log name="Diagnostic log file" />
   </simulation>
+  <Graph name="LAI">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>date</X>
+      <Y>LeafLAI</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Leaf Numbers">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>date</X>
+      <Y>LeafDeadNodeNo</Y>
+      <Y>LeafCohortNo</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="StemWt">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>date</X>
+      <Y>StemLiveWt</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="RootDepth">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>date</X>
+      <Y>RootDepth</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
+  <Graph name="Phenology">
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <colour>
+      </colour>
+      <X>date</X>
+      <Y>stagecodevalue</Y>
+      <GDApsimFileReader name="ApsimFileReader" />
+    </Plot>
+  </Graph>
 </folder>
