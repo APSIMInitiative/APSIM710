@@ -153,6 +153,11 @@ namespace CMPServices
         /// <seealso cref="TTypedValue">TTypedValue Class</seealso>
         public const int ctCOMP = 1;
         /// <summary>
+        /// Return value from TTypedValue.isSameType()
+        /// </summary>
+        /// <seealso cref="TTypedValue">TTypedValue Class</seealso>
+        public const int ctDODGY = 2;
+        /// <summary>
         /// Return value from TTypedValue.isSameType(). 
         /// </summary>
         /// <seealso cref="TTypedValue">TTypedValue Class</seealso>
@@ -324,7 +329,7 @@ namespace CMPServices
             FData = null;
             FDataSize = 0;
             childTemplate = null;
-            FUnit = "-";
+            FUnit = "";
 
             //Called in the derived classes because it calls virtual functions
             //buildType(szXML);
@@ -353,7 +358,7 @@ namespace CMPServices
             FData = null;
             FDataSize = 0;
             childTemplate = null;
-            FUnit = "-";
+            FUnit = "";
 
             //Called in the derived classes because it calls virtual functions
             //buildType(parentParser, baseNode);
@@ -378,7 +383,7 @@ namespace CMPServices
             //constructScalar(szName, iBaseType);  //create a scalar type of TTypedValue
             parser = null;
             childTemplate = null;
-            FUnit = "-";
+            FUnit = "";
         }
 
         //============================================================================
@@ -404,7 +409,7 @@ namespace CMPServices
             childTemplate = null;
 
             Name = sArrayName;
-            FUnit = "-";
+            FUnit = "";
             FIsScalar = false;
             FIsArray = true;
             FIsRecord = false;
@@ -435,7 +440,7 @@ namespace CMPServices
             FData = null;
             FDataSize = 0;
             childTemplate = null;
-            FUnit = "-";
+            FUnit = "";
         }
 
         //============================================================================
@@ -458,7 +463,7 @@ namespace CMPServices
             FDataSize = 0;
             parser = null; //won't be using a parser here
             childTemplate = null;
-            FUnit = "-";
+            FUnit = "";
 
             //Called in the derived classes because it calls virtual functions
             //initTypeCopy(typedValue)
@@ -589,7 +594,7 @@ namespace CMPServices
             //   FDataSize = 0;
 
             Name = sName;
-            setUnits("-");
+            setUnits("");
             FIsScalar = true;
             FIsArray = false;
             FIsRecord = false;
@@ -2016,6 +2021,9 @@ namespace CMPServices
                     result = ctCOMP;
                 else if ((srcValue.baseType() == TBaseType.ITYPE_STR) && (baseType() == TBaseType.ITYPE_WSTR))
                     result = ctCOMP;
+                // A sop to the old APSIM manager, which sends out all request-set values as strings
+                else if ((srcValue.baseType() == TBaseType.ITYPE_STR) || (baseType() == TBaseType.ITYPE_WSTR))
+                    result = ctDODGY;
                 else
                     result = ctBAD;
 

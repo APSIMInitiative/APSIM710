@@ -1483,5 +1483,104 @@ namespace CMPServices
             return true;
         }
 
+        //==============================================================================
+        /// <summary>
+        /// Used by a Sequencer service to start the simulation. Override in child class.
+        /// </summary>
+        /// <param name="msgID">Message ID</param>
+        //==============================================================================
+        public virtual void doCommence(uint msgID)
+        {
+        }
+
+        //==============================================================================
+        /// <summary>
+        /// Used by a Sequencer service to pause the simulation. Override in child class.
+        /// </summary>
+        /// <param name="msgFrom">Component source for this message.</param>
+        /// <param name="msgID">Message ID</param>
+        //==============================================================================
+        public virtual void doPause(uint msgFrom, uint msgID)
+        {
+        }
+
+        //==============================================================================
+        /// <summary>
+        /// Used by a Sequencer service to restart the simulation. Override in child class.
+        /// </summary>
+        /// <param name="msgID">Message ID</param>
+        //==============================================================================
+        public virtual void doResume(uint msgID)
+        {
+        }
+
+        //============================================================================
+        /// <summary>
+        /// Virtual function that the child class can override for cleanup tasks
+        /// when the component receives a terminate message.
+        /// </summary>
+        //============================================================================
+        public virtual void terminate()
+        {
+        }
+
+        //============================================================================
+        /// <summary>
+        /// Place holder for derived classes to implement a handler for returnInfo message.
+        /// </summary>
+        /// <param name="sReqName">Name of the entity requested.</param>
+        /// <param name="sReturnName">Name of the entity returned.</param>
+        /// <param name="ownerID">ID of the owning component of the entity.</param>
+        /// <param name="entityID">ID of the entity found.</param>
+        /// <param name="iKind">Kind of entity.</param>
+        /// <param name="sDDML">DDML type of the entity.</param>
+        //============================================================================
+        public virtual void processEntityInfo(string sReqName, string sReturnName, uint ownerID,
+                                              uint entityID, int iKind, string sDDML)
+        {
+
+        }
+
+        //============================================================================
+        /// <summary>
+        /// Initialises the value of a property.
+        /// You must override this function in the child class to ensure that the
+        /// system can initialise the value of an owned property. This is called
+        /// during the init 1 stage and is called before initialise(1) is called.
+        /// </summary>
+        /// <param name="propertyID">Local id of the property.</param>
+        /// <param name="aValue">Typed Value containing the definition and values.</param>
+        //============================================================================
+        public abstract void initProperty(int propertyID, TTypedValue aValue);
+
+        //============================================================================
+        /// <summary>
+        /// Allows the simulation system to set the value of a local property.
+        /// You must override this function in the child class to ensure that the system
+        /// can set the local property value.
+        /// </summary>
+        /// <param name="propertyID">Local ID of the property.</param>
+        /// <param name="aValue">Value to use</param>
+        /// <returns></returns>
+        //============================================================================
+        public virtual bool writeProperty(int propertyID, TTypedValue aValue)
+        {
+            return false;
+        }
+
+        //============================================================================
+        /// <summary>
+        /// Function that implements the storage of the checkpoint. This is the
+        /// place to write the checkpoint to a file.
+        /// Access the driver using: ((TDriverInfo)driverList[driverID]).asStr()
+        /// To be overridden in the child object.
+        /// </summary>
+        /// <param name="driverID">Driving property ID.</param>
+        //============================================================================
+        protected virtual void storeCheckPoint(int driverID)
+        {
+            //child object may write this driver value to a file.
+            //write this driver value to a file.
+        }
     }
 }

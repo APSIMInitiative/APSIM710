@@ -504,16 +504,6 @@ namespace CMPServices
                 sendError(errorMsg, true);
             }
         }
-        //==============================================================================
-        /// <summary>
-        /// Used by a Sequencer service to start the simulation. Override in child class.
-        /// </summary>
-        /// <param name="msgID">Message ID</param>
-        //==============================================================================
-        public virtual void doCommence(uint msgID)
-        {
-        }
-
         //============================================================================
         /// <summary>
         /// Handles the complete message that is sent via the wrapper prot.dll
@@ -919,16 +909,6 @@ namespace CMPServices
         }
         //==============================================================================
         /// <summary>
-        /// Used by a Sequencer service to pause the simulation. Override in child class.
-        /// </summary>
-        /// <param name="msgFrom">Component source for this message.</param>
-        /// <param name="msgID">Message ID</param>
-        //==============================================================================
-        public virtual void doPause(uint msgFrom, uint msgID)
-        {
-        }
-        //==============================================================================
-        /// <summary>
         /// Handles a querySet message.
         /// </summary>
         /// <param name="msg">Incoming querySet message.</param>
@@ -991,15 +971,14 @@ namespace CMPServices
                         throw (new ApplicationException(errorMsg));
                     }
 
-                    // See whether we have a cached TDDMLvalue, to avoid the expense of parsing
                     if (!resetDict.TryGetValue(dictKey, out resetValue))
                     {
                         resetValue = new TDDMLValue(sDDML, "");
-                    /*    if (ownedValue.canAssignFrom(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
+                        if (ownedValue.canAssignFrom(resetValue) == TTypedValue.ctBAD)    //Check for type compatibility 
                         {
                             string errorMsg = string.Format("{0}: Attempt to write value of wrong type to property \" {1} \" in doResetProperty()", FName, ownedValue.Name);
                             throw (new TypeMisMatchException(errorMsg));
-                        } */
+                        }
                         resetDict.Add(dictKey, resetValue);
                     }
                     resetValue.setData(valPtr, (int)valSize, 0);               //Now carry out the reset
@@ -1012,15 +991,6 @@ namespace CMPServices
                 string errorMsg = string.Format(FName + " doResetProperty(): {0} ", e.Message);
                 sendError(errorMsg, true);
             }
-        }
-        //==============================================================================
-        /// <summary>
-        /// Used by a Sequencer service to restart the simulation. Override in child class.
-        /// </summary>
-        /// <param name="msgID">Message ID</param>
-        //==============================================================================
-        public virtual void doResume(uint msgID)
-        {
         }
         //============================================================================
         /// <summary>
@@ -1407,27 +1377,6 @@ namespace CMPServices
 
             return result;
         }
-        //============================================================================
-        /// <summary>
-        /// Initialises the value of a property.
-        /// You must override this function in the child class to ensure that the
-        /// system can initialise the value of an owned property. This is called
-        /// during the init 1 stage and is called before initialise(1) is called.
-        /// </summary>
-        /// <param name="propertyID">Local id of the property.</param>
-        /// <param name="aValue">Typed Value containing the definition and values.</param>
-        //============================================================================
-        public abstract void initProperty(int propertyID, TTypedValue aValue);
-        //============================================================================
-        /// <summary>
-        /// Virtual function that the child class can override for cleanup tasks
-        /// when the component receives a terminate message.
-        /// </summary>
-        //============================================================================
-        public virtual void terminate()
-        {
-
-        }
         //==============================================================================
         /// <summary>
         /// Sends a replySetValueSuccess message.
@@ -1520,20 +1469,6 @@ namespace CMPServices
         }
         //============================================================================
         /// <summary>
-        /// Allows the simulation system to set the value of a local property.
-        /// You must override this function in the child class to ensure that the system
-        /// can set the local property value.
-        /// </summary>
-        /// <param name="propertyID">Local ID of the property.</param>
-        /// <param name="aValue">Value to use</param>
-        /// <returns></returns>
-        //============================================================================
-        public virtual bool writeProperty(int propertyID, TTypedValue aValue)
-        {
-            return false;
-        }
-        //============================================================================
-        /// <summary>
         /// The Simulation system uses this function to set the value of a driving property.
         /// You must override this function in the child class to ensure that the
         /// system can set the value of a predefined driving property.
@@ -1572,22 +1507,6 @@ namespace CMPServices
                 }
             }
         }
-        //============================================================================
-        /// <summary>
-        /// Place holder for derived classes to implement a handler for returnInfo message.
-        /// </summary>
-        /// <param name="sReqName">Name of the entity requested.</param>
-        /// <param name="sReturnName">Name of the entity returned.</param>
-        /// <param name="ownerID">ID of the owning component of the entity.</param>
-        /// <param name="entityID">ID of the entity found.</param>
-        /// <param name="iKind">Kind of entity.</param>
-        /// <param name="sDDML">DDML type of the entity.</param>
-        //============================================================================
-        public virtual void processEntityInfo(string sReqName, string sReturnName, uint ownerID,
-                                              uint entityID, int iKind, string sDDML)
-        {
-
-        }
         //==============================================================================
         /// <summary>
         /// Search the driver list for the driver specified by driverName.
@@ -1614,20 +1533,6 @@ namespace CMPServices
                     i++;
             }
             return driverFound;
-        }
-        //============================================================================
-        /// <summary>
-        /// Function that implements the storage of the checkpoint. This is the
-        /// place to write the checkpoint to a file.
-        /// Access the driver using: ((TDriverInfo)driverList[driverID]).asStr()
-        /// To be overridden in the child object.
-        /// </summary>
-        /// <param name="driverID">Driving property ID.</param>
-        //============================================================================
-        protected virtual void storeCheckPoint(int driverID)
-        {
-            //child object may write this driver value to a file.
-            //write this driver value to a file.
         }
         //============================================================================
         /// <summary>
