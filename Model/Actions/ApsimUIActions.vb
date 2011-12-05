@@ -236,76 +236,88 @@ Public Class ApsimUIActions
          Controller.ApsimData.ReloadFromFile()
          Directory.Delete(CheckPointFolder, True)
       End If
-   End Sub
+    End Sub
+
+    Public Shared Sub RemoveCheckpoint(ByVal Controller As BaseController)
+        If MessageBox.Show("Are you sure you want to remove the current checkpoint? This will delete all files in the checkpoint folder.", _
+                   "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.Yes Then
+
+            ' empty the checkpoint sub folder.
+            Dim CheckPointFolder As String = Path.GetDirectoryName(Controller.ApsimData.FileName) + "\CheckPoint"
+            If Directory.Exists(CheckPointFolder) Then
+                Directory.Delete(CheckPointFolder, True)
+            End If
+        End If
+    End Sub
 
 #End Region
 
-   Public Shared Sub ImportConFile(ByVal Controller As BaseController)
+    Public Shared Sub ImportConFile(ByVal Controller As BaseController)
         If (Not (BaseActions.FileSave(Controller))) Then Return
-      Dim F As New OpenFileDialog
-      F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*"
-      F.Title = "Select a .con file to import"
-      If F.ShowDialog() = DialogResult.OK Then
-         Dim NewXmlNode As XmlNode = ConToApsim.Converter.Go(F.FileName)
-         If Not IsNothing(NewXmlNode) Then
-            Controller.ApsimData.[New](NewXmlNode.OuterXml)
-         End If
-      End If
-   End Sub
+        Dim F As New OpenFileDialog
+        F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*"
+        F.Title = "Select a .con file to import"
+        If F.ShowDialog() = DialogResult.OK Then
+            Dim NewXmlNode As XmlNode = ConToApsim.Converter.Go(F.FileName)
+            If Not IsNothing(NewXmlNode) Then
+                Controller.ApsimData.[New](NewXmlNode.OuterXml)
+            End If
+        End If
+    End Sub
 
-   Public Shared Sub Plant2Documentation(ByVal Controller As BaseController)
-        If (Not (BaseActions.FileSave(Controller))) Then Return
-        Dim XmlFileName As String = Controller.ApsimData.FileName
-      'Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html" //removed from temp dir as Firefox can't handle abs dirs. JF
-      Dim HtmlFileName As String = "..\Documentation\Plant2Docs\" + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
-      Dim Arguments As String = StringManip.DQuote(XmlFileName) + " " + StringManip.DQuote(HtmlFileName)
-
-      'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
-      Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\Plant2Documentation.exe", Arguments, Path.GetDirectoryName(XmlFileName))
-      Utility.CheckProcessExitedProperly(P)
-      Process.Start(HtmlFileName)
-   End Sub
-
-   Public Shared Sub ProbeDLL(ByVal Controller As BaseController)
+    Public Shared Sub Plant2Documentation(ByVal Controller As BaseController)
         If (Not (BaseActions.FileSave(Controller))) Then Return
         Dim XmlFileName As String = Controller.ApsimData.FileName
+        'Dim HtmlFileName As String = Path.GetTempPath() + Path.GetFileNameWithoutExtension(XmlFileName) + ".html" //removed from temp dir as Firefox can't handle abs dirs. JF
+        Dim HtmlFileName As String = "..\Documentation\Plant2Docs\" + Path.GetFileNameWithoutExtension(XmlFileName) + ".html"
+        Dim Arguments As String = StringManip.DQuote(XmlFileName) + " " + StringManip.DQuote(HtmlFileName)
 
-      'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
-      Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\ProbeDLL.exe", XmlFileName, Path.GetDirectoryName(XmlFileName))
-      Utility.CheckProcessExitedProperly(P)
+        'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
+        Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\Plant2Documentation.exe", Arguments, Path.GetDirectoryName(XmlFileName))
+        Utility.CheckProcessExitedProperly(P)
+        Process.Start(HtmlFileName)
+    End Sub
 
-      MessageBox.Show("Finished writing to <info> section.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
-   End Sub
+    Public Shared Sub ProbeDLL(ByVal Controller As BaseController)
+        If (Not (BaseActions.FileSave(Controller))) Then Return
+        Dim XmlFileName As String = Controller.ApsimData.FileName
 
+        'Dim P As Process = Process.Start(Configuration.ApsimBinDirectory + "\Plant2Documentation", Arguments)
+        Dim P As Process = Utility.RunProcess(Configuration.ApsimBinDirectory + "\ProbeDLL.exe", XmlFileName, Path.GetDirectoryName(XmlFileName))
+        Utility.CheckProcessExitedProperly(P)
 
-   Public Shared Sub CreateDuplicates(ByVal Controller As BaseController)
-      Dim f As New UIBits.DuplicateForm
-      If f.ShowDialog = DialogResult.OK Then
-         Dim Comp As ApsimFile.Component = Controller.Selection
-
-         For i As Integer = 1 To f.NumDuplicates
-            Comp.Parent.Duplicate(Comp, f.DoLinkDuplicates)
-         Next
-
-      End If
-   End Sub
+        MessageBox.Show("Finished writing to <info> section.", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information)
+    End Sub
 
 
-   Public Shared Sub LinkWherePossible(ByVal Controller As BaseController)
-      Cursor.Current = Cursors.WaitCursor
-      Dim Base As ApsimFile.Component = Controller.Selection
-      Dim Siblings As New List(Of ApsimFile.Component)
-      Base.Parent.FindRecursively(Base.Type, Siblings)
+    Public Shared Sub CreateDuplicates(ByVal Controller As BaseController)
+        Dim f As New UIBits.DuplicateForm
+        If f.ShowDialog = DialogResult.OK Then
+            Dim Comp As ApsimFile.Component = Controller.Selection
 
-      For Each Sibling As ApsimFile.Component In Siblings
-         If Sibling.FullPath <> Base.FullPath Then
-            Sibling.ConvertToShortcutsUsingBase(Base)
-         End If
-      Next
-      Controller.ApsimData.PublishComponentChanged(Controller.ApsimData.RootComponent)
+            For i As Integer = 1 To f.NumDuplicates
+                Comp.Parent.Duplicate(Comp, f.DoLinkDuplicates)
+            Next
 
-      Cursor.Current = Cursors.Default
-   End Sub
+        End If
+    End Sub
+
+
+    Public Shared Sub LinkWherePossible(ByVal Controller As BaseController)
+        Cursor.Current = Cursors.WaitCursor
+        Dim Base As ApsimFile.Component = Controller.Selection
+        Dim Siblings As New List(Of ApsimFile.Component)
+        Base.Parent.FindRecursively(Base.Type, Siblings)
+
+        For Each Sibling As ApsimFile.Component In Siblings
+            If Sibling.FullPath <> Base.FullPath Then
+                Sibling.ConvertToShortcutsUsingBase(Base)
+            End If
+        Next
+        Controller.ApsimData.PublishComponentChanged(Controller.ApsimData.RootComponent)
+
+        Cursor.Current = Cursors.Default
+    End Sub
 End Class
 
 
