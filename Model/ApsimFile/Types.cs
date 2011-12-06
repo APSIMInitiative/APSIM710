@@ -115,8 +115,9 @@ public class Types
     {
         List<MetaDataInfo> Names = new List<MetaDataInfo>();
 
-        foreach (string DLLFileName in Dlls(TypeName))
+        foreach (string FileName in Dlls(TypeName))
         {
+            string DLLFileName = Configuration.RemoveMacros(FileName);
             string ClassName = ProxyClassName(TypeName, DLLFileName);
 
             Type T = GetProbeInfoAssembly().GetType("ModelFramework." + ClassName);

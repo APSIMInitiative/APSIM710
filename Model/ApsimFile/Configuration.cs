@@ -61,8 +61,6 @@ namespace ApsimFile
         }
         public void RevertToDefaults()
         {
-            string SettingsFile = Path.Combine(Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Apsim"), ApsimVersion()), "Apsim.xml");
             File.Delete(SettingsFile);
             Singleton = null;
         }
