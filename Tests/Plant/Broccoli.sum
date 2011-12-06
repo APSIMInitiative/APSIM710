@@ -87,10 +87,12 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-             if (broccoli.stagename = 'maturity') then
+           if (broccoli.plant_status <> 'out') then
+             if (broccoli.phenologycurrentstagename = 'maturity') then
              broccoli harvest
              broccoli end_crop
              endif
+           endif
      END of rules
      
 

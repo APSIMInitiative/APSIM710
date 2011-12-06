@@ -2681,12 +2681,14 @@
             <category description="Harvesting parameters" type="category" />
             <crop type="modulename" description="Enter name of crop to sow : ">broccoli</crop>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
-        if ([crop].StageName = '[stage]') then
+      if ([crop].plant_status &lt;&gt; 'out') then
+        if ([crop].PhenologyCurrentStageName = '[stage]') then
                     [crop] harvest
                     [crop] end_crop
         endif
+      endif
                </text>
             <event>start_of_day</event>
           </script>

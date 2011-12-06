@@ -403,11 +403,13 @@ SW60 = 0
             </script>
             <script>
               <text>
-TotalET = broccoli.LeafTranspiration + es
-!TotalET = es
+TotalET = es
+if broccoli.plant_status &lt;&gt; 'out' then
+TotalET = TotalET + broccoli.LeafTranspiration
 
 if broccoli.LeafLAI &gt; 0 then
   DAS = DAS + 1
+endif
 endif
 
 SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
@@ -4201,12 +4203,14 @@ SW60 = 0
             </script>
             <script name="end_of_day">
               <text><![CDATA[
-TotalET = broccoli.LeafTranspiration + es
-!TotalET = es
+TotalET = es
+if broccoli.plant_status <> 'out' then
+TotalET = TotalET + broccoli.LeafTranspiration
 
 if broccoli.LeafLAI > 0 then
   DAS = DAS + 1
 endif
+Endif
 
 SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
 

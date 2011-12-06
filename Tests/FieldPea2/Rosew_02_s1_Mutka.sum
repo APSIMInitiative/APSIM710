@@ -195,10 +195,13 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-     if fieldpea.daysaftersowing > 0 then
-        report do_output
-     endif
-     END of rules
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     No manager lines were found in any parameter file.
+     Component name: manager
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
      
 
 ------- Sow on a fixed date Initialisation ------------------------------------
@@ -242,7 +245,9 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  accumplantn - fieldpea2.rootnuptake
+     if fieldpea2.plant_status <> 'out' then
+       accumplantn =  accumplantn - fieldpea2.rootnuptake
+     endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -252,7 +257,9 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     accumep = accumep - fieldpea2.leaftranspiration
+     if fieldpea2.plant_status <> 'out' then
+       accumep = accumep - fieldpea2.leaftranspiration
+     endif
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -260,8 +267,10 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if fieldpea2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
+     if fieldpea2.plant_status <> 'out' then
+       if fieldpea2.stagecodevalue >= 3 then
+         accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
+       endif
      endif
      
      SECTION:- end_of_day
@@ -454,7 +463,6 @@ Paddock:
      Manager creating a new local real variable : initialsoilomn = 9012.82422
      Manager creating a new local real variable : initialsurfaceomn = 0.00000
      Manager creating a new local real variable : initialmineraln = 89.60001
-1 May 2002(Day of year=121): 
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------

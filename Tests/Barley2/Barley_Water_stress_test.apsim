@@ -25,11 +25,12 @@
           </ui>
           <script>
             <text>
-
+        if [crop].plant_status &lt;&gt; 'out' then
            if [crop].PhenologyCurrentPhaseName = 'maturity' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  endcrop
            endif
+        endif
 
             </text>
             <event>end_of_day</event>

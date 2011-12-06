@@ -1162,11 +1162,24 @@ C     Last change:  P    25 Oct 2000    9:26 am
             call Get_char_var_optional
      .           (modNameID, trim(Var_name), '()',
      .            Variable_value, Numvals)
+	 
+            if (numvals .eq. 0) then
+               str = 'The variable "' //
+     .          trim(variable_name) // '" could not be retrieved.'
+                call warning_error(ERR_user, str)
+            endif
+
             call str_to_real_var
      .           (Variable_value, value, io_result)
             valueIsReal = (io_result .eq. 0)
          else
             valueIsReal = .false.
+
+            str = 'The component "' //
+     .       trim(mod_name) // '" could not be found ' //
+     .       'in the simulation.'
+            call warning_error(ERR_user, str)
+
          endif
 
       else

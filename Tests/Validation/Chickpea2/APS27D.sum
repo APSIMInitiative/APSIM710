@@ -117,7 +117,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if (chickpea2.stagename = 'harvest_ripe' or chickpea2.plant_status = 'dead') then
+                if (chickpea2.phenologycurrentstagename = 'harvestripe' or chickpea2.plant_status = 'dead') then
        chickpea2  harvest
        chickpea2  end_crop
                 endif
@@ -276,6 +276,15 @@ Paddock:
      Manager creating a new local string variable : season = -y1995
      Manager creating a new local string variable : treatment = amethyst
      Manager creating a new local real variable : swtotal = 502.78793
+14 June 1995(Day of year=165): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "chickpea2.phenologycurrentstagename" could not be retrieved.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 15 June 1995(Day of year=166), Operations: 
       Sending sow message to chickpea2
 16/06/1995 - Germination
@@ -314,5 +323,15 @@ Paddock:
 28/10/1995 - HarvestRipe
                             LAI = 1.33 (m^2/m^2)
            Above Ground Biomass = 501.15 (g/m^2)
+28 October 1995(Day of year=301), Harvesting rule: 
+     Manager sending message :- chickpea2 harvest
+
+     28/10/1995  - Harvesting Grain from chickpea2
+     --------------------------------------------------
+     Grain Yield DWt: 145.52 (g/m^2)
+     Grain Size: 0.58 (g)
+     Grain Number: 250.00 (/m^2)
+
+     Manager sending message :- chickpea2 end_crop
 26 November 1995(Day of year=330), clock: 
      Simulation is terminating due to end criteria being met.

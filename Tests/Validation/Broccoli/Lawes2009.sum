@@ -126,9 +126,12 @@ Paddock:
      SECTION:- start_of_day
      
      SECTION:- end_of_day
-     totalet = broccoli.leaftranspiration + es
+     totalet = es
+     if broccoli.plant_status <> 'out' then
+     totalet = totalet + broccoli.leaftranspiration
      if broccoli.leaflai > 0 then
        das = das + 1
+     endif
      endif
      sw60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
      END of rules

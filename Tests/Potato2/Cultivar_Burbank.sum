@@ -269,7 +269,9 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  accumplantn - potato2.rootnuptake
+     if potato2.plant_status <> 'out' then
+       accumplantn =  accumplantn - potato2.rootnuptake
+     endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -279,7 +281,9 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     accumep = accumep - potato2.leaftranspiration
+     if potato2.plant_status <> 'out' then
+       accumep = accumep - potato2.leaftranspiration
+     endif
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -287,8 +291,10 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+     if potato2.plant_status <> 'out' then
+       if potato2.stagecodevalue >= 3 then
+         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
+       endif
      endif
      
      SECTION:- end_of_day

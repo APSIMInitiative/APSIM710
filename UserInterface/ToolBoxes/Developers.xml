@@ -629,7 +629,7 @@ public class Script : Instance
       <ui>
         <CropType type="crop" description="Select crop type to report variables for">potato2</CropType>
       </ui>
-      <script name="init">
+      <script>
         <text>SimDay = 1
 
 AccumPlantN = 0
@@ -652,7 +652,7 @@ AccumRainfall = 0
 SoilWaterDeficit = 0</text>
         <event>init</event>
       </script>
-      <script name="start_of_day">
+      <script>
         <text>if simday = 1 then
 InitialSoilOMN = biom_n() + fom_n() + hum_n()
 InitialSurfaceOMN = surfaceom_n
@@ -687,7 +687,7 @@ SoilWaterDeficit =  sw_dep() - dul_dep()
 </text>
         <event>start_of_day</event>
       </script>
-      <script name="end_of_day">
+      <script>
         <text>if SimDay = 1 then
 SimDay = 2
 Else SimDay = 2

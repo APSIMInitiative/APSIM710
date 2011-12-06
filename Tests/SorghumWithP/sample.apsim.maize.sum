@@ -204,7 +204,7 @@ Title                  =
      
      SECTION:- end_of_day
      p_below_ground = soilp.fom_p() + soilp.hum_p() + soilp.biom_p() + soilp.rock_p() + soilp.unavail_p() + soilp.labile_p()
-     p_above_ground = (sorghum.greenp + sorghum.senescedp + sorghum.p_dead)*10.0 + surfaceom.surfaceom_p
+     p_above_ground = (sorghum.greenp + sorghum.senescedp)*10.0 + surfaceom.surfaceom_p
      systemp = p_below_ground + p_above_ground
      dlt_systemp = systemp - systemp_yday
      if (systemp_yday >= 0.00001) then
@@ -214,7 +214,7 @@ Title                  =
          cum_error_systemp = 0.0
          dlt_residue_p = 0.0
      endif
-     p_plant = (sorghum.greenp + sorghum.senescedp + sorghum.p_dead)*10.0
+     p_plant = (sorghum.greenp + sorghum.senescedp)*10.0
      p_uptake_cum = p_uptake_cum + uptake_p_sorghum()
      p_pl_up_diff = p_plant - p_uptake_cum
      below_gnd_diff = p_below_ground - p_below_ground_yest

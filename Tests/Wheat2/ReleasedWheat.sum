@@ -76,10 +76,12 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
+             if wheat.plant_status <> 'out' then
                 if wheat.stagename = 'harvest_ripe' or wheat.plant_status = 'dead' then
        wheat  harvest
        wheat  end_crop
                 endif
+             endif
      END of rules
      
 

@@ -232,7 +232,7 @@ Paddock:
        if (fieldpea2.ozcot_status > 0) then
            fieldpea2 harvest
        endif
-                elseif (fieldpea2.stagename = 'harvest_ripe' or fieldpea2.plant_status = 'dead') then
+                elseif (fieldpea2.phenologycurrentstagename = 'harvestripe' or fieldpea2.plant_status = 'dead') then
        fieldpea2  harvest
        fieldpea2  end_crop
                 endif
@@ -275,7 +275,9 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
+     if fieldpea2.plant_status <> 'out' then
+       accumplantn =  (0 - fieldpea2.leafliven - fieldpea2.leafdeadn - fieldpea2.stemliven - fieldpea2.stemdeadn ) * 10
+     endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -285,7 +287,9 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     accumep = accumep - potato2.leaftranspiration
+     if fieldpea2.plant_status <> 'out' then
+       accumep = accumep - fieldpea2.leaftranspiration
+     endif
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -293,22 +297,21 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.leaflivewt > 0 then
-     leaflivenconc3 = (potato2.leafliven/potato2.leaflivewt)
+     if fieldpea2.plant_status <> 'out' then
+       if fieldpea2.leaflivewt > 0 then
+         leaflivenconc3 = (fieldpea2.leafliven/fieldpea2.leaflivewt)
+       endif
+       if fieldpea2.leafdeadwt > 0 then
+         leafdeadnconc3 = (fieldpea2.leafdeadn/fieldpea2.leafdeadwt)
+       endif
+       if fieldpea2.stemlivewt > 0 then
+         stemlivenconc3 = (fieldpea2.stemliven/fieldpea2.stemlivewt)
+       endif
+       if fieldpea2.stagecodevalue >= 3 then
+         accumttemerg = accumttemerg + fieldpea2.phenologythermaltimevalue
+       endif
+       leavesperstem = fieldpea2.leaftotalno / 3
      endif
-     if potato2.leafdeadwt > 0 then
-     leafdeadnconc3 = (potato2.leafdeadn/potato2.leafdeadwt)
-     endif
-     if potato2.tuberlivewt > 0 then
-     tuberlivenconc3 = (potato2.tuberliven/potato2.tuberlivewt)
-     endif
-     if potato2.stemlivewt > 0 then
-     stemlivenconc3 = (potato2.stemliven/potato2.stemlivewt)
-     endif
-     if potato2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-     endif
-     leavesperstem = potato2.leaftotalno / 3
      
      SECTION:- end_of_day
      if simday = 1 then

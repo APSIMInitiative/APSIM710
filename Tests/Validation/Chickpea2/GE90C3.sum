@@ -116,7 +116,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if (chickpea2.stagename = 'harvest_ripe' or chickpea2.plant_status = 'dead') then
+                if (chickpea2.phenologycurrentstagename = 'harvestripe' or chickpea2.plant_status = 'dead') then
        chickpea2  harvest
        chickpea2  end_crop
                 endif
@@ -274,6 +274,15 @@ Paddock:
      Manager creating a new local string variable : site = cp90gat
      Manager creating a new local string variable : season = -y1990
      Manager creating a new local string variable : treatment = amethyst
+20 May 1990(Day of year=140): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "chickpea2.phenologycurrentstagename" could not be retrieved.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 21 May 1990(Day of year=141), Operations: 
       Sending set message to soil water
       Sending sow message to chickpea2
@@ -310,5 +319,15 @@ Paddock:
 17/10/1990 - HarvestRipe
                             LAI = 0.06 (m^2/m^2)
            Above Ground Biomass = 181.55 (g/m^2)
+17 October 1990(Day of year=290), Harvesting rule: 
+     Manager sending message :- chickpea2 harvest
+
+     17/10/1990  - Harvesting Grain from chickpea2
+     --------------------------------------------------
+     Grain Yield DWt: 79.47 (g/m^2)
+     Grain Size: 0.32 (g)
+     Grain Number: 250.00 (/m^2)
+
+     Manager sending message :- chickpea2 end_crop
 31 December 1990(Day of year=365), clock: 
      Simulation is terminating due to end criteria being met.

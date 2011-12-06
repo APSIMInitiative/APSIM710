@@ -1358,14 +1358,14 @@
             <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">chickpea2</crop>
           </ui>
-          <script name="end_of_day">
+          <script>
             <text>
-
+        if [crop].plant_status &lt;&gt; 'out' then
            if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting'  then
               [crop]  Harvest
               [crop]  EndCrop
            endif
-
+        endif
             </text>
             <event>end_of_day</event>
           </script>

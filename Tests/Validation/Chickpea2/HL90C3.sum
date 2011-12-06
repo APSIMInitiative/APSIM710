@@ -113,7 +113,7 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-                if (chickpea2.stagename = 'harvest_ripe' or chickpea2.plant_status = 'dead') then
+                if (chickpea2.phenologycurrentstagename = 'harvestripe' or chickpea2.plant_status = 'dead') then
        chickpea2  harvest
        chickpea2  end_crop
                 endif
@@ -271,6 +271,24 @@ Paddock:
      Manager creating a new local string variable : site = cp90her
      Manager creating a new local string variable : season = -y1990
      Manager creating a new local string variable : treatment = amethyst
+18 August 1990(Day of year=230): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "chickpea2.phenologycurrentstagename" could not be retrieved.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 August 1990(Day of year=231): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "chickpea2.phenologycurrentstagename" could not be retrieved.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 20 August 1990(Day of year=232), Operations: 
       Sending sow message to chickpea2
 21/08/1990 - Germination
@@ -302,5 +320,15 @@ Paddock:
 8/12/1990 - HarvestRipe
                             LAI = 0.58 (m^2/m^2)
            Above Ground Biomass = 406.86 (g/m^2)
+8 December 1990(Day of year=342), Harvesting rule: 
+     Manager sending message :- chickpea2 harvest
+
+     8/12/1990  - Harvesting Grain from chickpea2
+     -------------------------------------------------
+     Grain Yield DWt: 123.08 (g/m^2)
+     Grain Size: 0.49 (g)
+     Grain Number: 250.00 (/m^2)
+
+     Manager sending message :- chickpea2 end_crop
 19 December 1990(Day of year=353), clock: 
      Simulation is terminating due to end criteria being met.

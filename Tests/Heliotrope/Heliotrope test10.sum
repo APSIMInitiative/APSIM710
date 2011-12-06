@@ -19,7 +19,6 @@ Paddock:
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                  "Sowing rule" = %apsim%\Model\Manager.dll
-   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                      "scripts" = %apsim%\Model\Manager.dll
    Component "fine sandy loam mod JW Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -113,17 +112,6 @@ Paddock:
      
      Manager creating a new local real variable : nextcrop = 0.00000
      Manager creating a new local real variable : fallowin = 0.00000
-
-------- Harvesting rule Initialisation ----------------------------------------
-     Manager rules:
-     
-     SECTION:- end_of_day
-                if canola.stagename = 'harvest_ripe' or canola.plant_status = 'dead' then
-       canola  harvest
-       canola  end_crop
-                endif
-     END of rules
-     
 
 ------- scripts Initialisation ------------------------------------------------
      Manager rules:

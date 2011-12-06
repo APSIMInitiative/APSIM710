@@ -1175,11 +1175,12 @@
           </ui>
           <script>
             <text>
-
+        if [crop].plant_status &lt;&gt; 'out' then
            if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
               [crop]  harvest
               [crop]  end_crop
            endif
+        endif
 
             </text>
             <event>end_of_day</event>
@@ -1353,11 +1354,12 @@ if (date_within('[date1], [date2]') = 1) then
           </ui>
           <script>
             <text>
-
+        if [crop].plant_status &lt;&gt; 'out' then
            if [crop].PhenologyCurrentPhaseName = 'ReadyForHarvesting' then
               [crop]  harvest
               [crop]  endcrop
            endif
+        endif
 
             </text>
             <event>end_of_day</event>

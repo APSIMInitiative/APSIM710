@@ -55,7 +55,7 @@ end_date=19/2/1993     ! dd/mm/yyyy
 
 [sorghum.manager.end_of_day]
 P_below_ground = soilp.fom_p() + soilp.hum_p() + soilp.biom_p() + soilp.rock_p() + soilp.unavail_p() + soilp.labile_p()
-P_above_ground = (sorghum.GreenP + sorghum.SenescedP + sorghum.p_dead)*10.0 + surfaceom.surfaceom_p
+P_above_ground = (sorghum.GreenP + sorghum.SenescedP)*10.0 + surfaceom.surfaceom_p
 systemP = P_below_ground + P_above_ground
 dlt_systemP = systemP - systemP_yday
 if (systemP_yday >= 0.00001) then
@@ -66,7 +66,7 @@ else
     dlt_residue_P = 0.0
 endif
 
-P_plant = (sorghum.GreenP + sorghum.SenescedP + sorghum.P_dead)*10.0
+P_plant = (sorghum.GreenP + sorghum.SenescedP)*10.0
 P_uptake_cum = P_uptake_cum + uptake_P_sorghum()
 P_pl_up_diff = P_plant - P_uptake_cum
 below_gnd_diff = P_below_ground - P_below_ground_yest

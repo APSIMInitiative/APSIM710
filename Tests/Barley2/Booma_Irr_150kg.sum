@@ -237,7 +237,8 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-     if   (wheat.stage >= 8)  or (barley.stage >= 8) or (fieldpea.stage >= 8) or (grassseed.stage >= 8) then
+     if barley2.plant_status <> 'out' then
+     if   (barley2.stagecodevalue >= 8) then
             head_drying_flag = 1
      else   head_drying_flag = 0
      endif
@@ -257,10 +258,11 @@ Paddock:
      elseif head_drying_flag = 0 then
        head_moisture = head_moisture_retention
      endif
-                if (barley.stagename = 'harvest_ripe') and (head_moisture = 0)  then
-       barley  harvest
-       barley  end_crop
+                if (barley2.phenologycurrentphasename = 'readyforharvesting') and (head_moisture = 0)  then
+       barley2  harvest
+       barley2  endcrop
                 endif
+     endif
      
      SECTION:- init
      head_drying_flag = 0
@@ -396,7 +398,9 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     accumplantn =  accumplantn - barley2.rootnuptake
+     if barley2.plant_status <> 'out' then
+       accumplantn =  accumplantn - barley2.rootnuptake
+     endif
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -406,7 +410,9 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     accumep = accumep - barley2.leaftranspiration
+     if barley2.plant_status <> 'out' then
+       accumep = accumep - barley2.leaftranspiration
+     endif
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -414,8 +420,10 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if barley2.stagecodevalue >= 3 then
-     accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
+     if barley2.plant_status <> 'out' then
+       if barley2.stagecodevalue >= 3 then
+         accumttemerg = accumttemerg + barley2.phenologythermaltimevalue
+       endif
      endif
      
      SECTION:- end_of_day
@@ -659,5 +667,15 @@ Paddock:
 5/02/2010 - HarvestRipe
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 745.53 (g/m^2)
+9 March 2010(Day of year=68), BarleyHarvesting: 
+     Manager sending message :- barley2 harvest
+
+     9/03/2010  - Harvesting Grain from barley2
+     -----------------------------------------------
+     Grain Yield DWt: 242.35 (g/m^2)
+     Grain Size: 0.02 (g)
+     Grain Number: 11089.08 (/m^2)
+
+     Manager sending message :- barley2 endcrop
 31 March 2010(Day of year=90), clock: 
      Simulation is terminating due to end criteria being met.

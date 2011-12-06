@@ -114,6 +114,7 @@ elseif (today=date('2-Dec') and
                reset_PT = 1
 endif
 
+if maize.plant_status &lt;&gt; 'out' then
 if           (rotation_counter = 1) and (maize.StageName = 'end_grain_fill' or maize.plant_status = 'dead' or today=date('31-may')) then
                outputfile do_output               
                maize harvest height = 0.1 (mm) , remove = 0.98 ()
@@ -121,6 +122,7 @@ if           (rotation_counter = 1) and (maize.StageName = 'end_grain_fill' or m
                rotation_counter = 2
                days_after_harvest = 0
                reset_PT = 1
+endif
 endif
 
 !!!!!!!!Greenfeed Crop!!!!!!!!!!!!!!
@@ -138,13 +140,15 @@ elseif  (today=date('2-jul') and
                reset_PT = 1
 endif
 
-if           (rotation_counter = 3) and (wheat.PhenologyCurrentPhaseName = 'ReadyForHarvesting' or wheat2.plant_status = 'dead' or today = date('23-Jul')) then
+if wheat2.plant_status &lt;&gt; 'out' then
+if           (rotation_counter = 3) and (wheat2.PhenologyCurrentPhaseName = 'ReadyForHarvesting' or wheat2.plant_status = 'dead' or today = date('23-Jul')) then
                outputfile do_output
                wheat2  harvest height = 0.1 (mm) , remove = 0.98 ()
                wheat2  endcrop
                rotation_counter = 4
                days_after_harvest = 0
                reset_PT = 1
+endif
 endif
 
 
@@ -165,6 +169,7 @@ elseif (today=date('2-dec') and
                reset_PT = 1
 endif
 
+if Potato2.plant_status &lt;&gt; 'out' then
 if           ((rotation_counter = 5) and (Potato2.PhenologyCurrentPhaseName = 'maturity' or Potato2.plant_status = 'dead')) then
                outputfile do_output
                potato2 harvest height = 0.1 (mm) , remove = 0.98 ()
@@ -175,7 +180,7 @@ rotation_counter = 6
                reset_PT_variables = 1
                reset_PT = 1
 endif
-
+endif
 
 !!!!!!!!Wheat Crop!!!!!!!!!!!!!!
 if          (today&lt;date('1-jun') and
@@ -192,13 +197,15 @@ elseif  (today=date('2-may') and
                reset_PT = 1
 endif
 
-if           (rotation_counter = 7) and (wheat.PhenologyCurrentPhaseName = 'ReadyForHarvesting' or wheat2.plant_status = 'dead' or today = date('1-May')) then
+if wheat2.plant_status &lt;&gt; 'out' then
+if           (rotation_counter = 7) and (wheat2.PhenologyCurrentPhaseName = 'ReadyForHarvesting' or wheat2.plant_status = 'dead' or today = date('1-May')) then
                outputfile do_output
                wheat2  harvest height = 0.1 (mm) , remove = 0.98 ()
                wheat2  endcrop
                rotation_counter = 0
                reset_PT = 1
                days_after_harvest = 0
+endif
 endif
 
 </text>
@@ -209,7 +216,6 @@ endif
 PTirrig = PTirrig + irrigation
 PTes = PTes + es
 PTeo = PTeo + eo
-PTep = PTep + wheat.ep + barley.ep + fieldpea.ep  + wmaize.ep + potato.ep +canola.ep
 PTrain = PTrain + rain
 PTrunoff = PTrunoff + runoff
 PTdrain = PTdrain + drain
@@ -220,7 +226,19 @@ PTleach = PTleach + no3_leach(7) + nh4_leach(7)
 PTmin = PTmin + dlt_n_min()
 PTmin_res = PTmin_res + dlt_n_min_res()
 PTdnit = PTdnit + dnit() 
- PTcropn = PTcropn + wheat.no3_uptake() + barley.no3_uptake() + fieldpea.no3_uptake() + canola.no3_uptake() + wmaize.no3_uptake() + potato.no3_uptake()
+
+if wheat2.plant_status &lt;&gt; 'out' then
+  PTep = PTep + wheat2.LeafTranspiration
+  PTcropn = PTcropn + wheat2.RootNuptake
+endif
+if maize.plant_status &lt;&gt; 'out' then
+  PTep = PTep + maize.ep
+  PTcropn = PTcropn + maize.no3_uptake
+endif
+if potato2.plant_status &lt;&gt; 'out' then
+  PTep = PTep + potato2.LeafTranspiration
+  PTcropn = PTcropn + potato2.RootNuptake
+endif
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Logic to trigger reset of phase totals !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 if          (reset_PT = 1) then
@@ -342,36 +360,26 @@ endif
 !!!! Rules to trigger N applications.  Field pea omitted because will not be fertilised  !!!!
 !!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!!
 
-if               (wheat.plant_status = 'alive')           and                             !!!! will only fertilise if living crop is present 
+if               (wheat2.plant_status = 'alive') then                            !!!! will only fertilise if living crop is present 
+  if               (N_available &lt; trigger_level)          and                             !!!! Soil N needs to be depleted to a given limit before N is applied
+                 (wheat2.stagecodevalue &gt; 3)                                 and                             !!!! will not fertilise until the crop has emerged.
+                 Fertilising_window = 1                        and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
+                 (wheat2.stagecodevalue &lt; 6)                                          then                    !!!! will not fertilise after flowering  to prevent excessive N uptake
+            fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+  endif
+elseif      (maize.plant_status = 'alive')           and                             !!!! will only fertilise if living crop is present 
                  (N_available &lt; trigger_level)          and                             !!!! Soil N needs to be depleted to a given limit before N is applied
-                 (wheat.stage &gt; 3)                                 and                             !!!! will not fertilise until the crop has emerged.
+                 (maize.stage &gt; 3)                                and                              !!!! will not fertilise until the crop has emerged.
                  Fertilising_window = 1                        and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
-                 (wheat.stage &lt; 6)                                          then                    !!!! will not fertilise after flowering  to prevent excessive N uptake
+                 (maize.stage &lt; 7)                                          then                            !!!! will not fertilise after flowering to prevent excessive N uptake
             fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
-elseif      (barley.plant_status = 'alive')          and                             !!!! will only fertilise if living crop is present 
-                 (N_available &lt; trigger_level)          and                             !!!! Soil N needs to be depleted to a given limit before N is applied
-                 (barley.stage &gt; 3)                                and                             !!!! will not fertilise until the crop has emerged.
+elseif      (potato2.plant_status = 'alive') then                             !!!! will only fertilise if living crop is present 
+  if               (N_available &lt; trigger_level)           and                             !!!! Soil N needs to be depleted to a given limit before N is applied
+                 (potato2.stagecodevalue &gt; 3)                                 and                            !!!! will not fertilise until the crop has emerged.
                  Fertilising_window = 1                        and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
-                 (barley.stage &lt; 6)                                         then                    !!!! will not fertilise after flowering  to prevent excessive N uptake
+                 (potato2.stagecodevalue &lt; 6.3)                                      then                    !!!! will not fertilise during grainfilling  to prevent excessive N uptake
             fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
-elseif      (wmaize.plant_status = 'alive')           and                             !!!! will only fertilise if living crop is present 
-                 (N_available &lt; trigger_level)          and                             !!!! Soil N needs to be depleted to a given limit before N is applied
-                 (wmaize.stage &gt; 3)                                and                              !!!! will not fertilise until the crop has emerged.
-                 Fertilising_window = 1                        and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
-                 (wmaize.stage &lt; 7)                                          then                            !!!! will not fertilise after flowering to prevent excessive N uptake
-            fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
-elseif      (canola.plant_status = 'alive')           and                             !!!! will only fertilise if living crop is present 
-                 (N_available &lt; trigger_level)            and                             !!!! Soil N needs to be depleted to a given limit before N is applied
-                 (canola.stage &gt; 3)                                and                             !!!! will not fertilise until the crop has emerged.
-                 Fertilising_window = 1                         and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
-                 (canola.stage &lt; 5)                                         then                    !!!! will not fertilise once crop reaches floral initiation
-            fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
-elseif      (potato.plant_status = 'alive')           and                             !!!! will only fertilise if living crop is present 
-                 (N_available &lt; trigger_level)           and                             !!!! Soil N needs to be depleted to a given limit before N is applied
-                 (potato.stage &gt; 3)                                 and                            !!!! will not fertilise until the crop has emerged.
-                 Fertilising_window = 1                        and                             !!!! prohibits N application during the winter to prevend the risk of leaching taking N out of the soil and triggering a fertiliser event
-                 (potato.stage &lt; 6.3)                                      then                    !!!! will not fertilise during grainfilling  to prevent excessive N uptake
-            fertiliser apply amount = N_application_amount (kg/ha), depth = 50 (mm), type = urea_n ()
+  endif
 endif   </text>
             <event>start_of_day</event>
           </script>

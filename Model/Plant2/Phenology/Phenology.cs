@@ -15,6 +15,7 @@ public class Phenology
     private Paddock MyPaddock = null;
 
     private List<Phase> Phases = new List<Phase>();
+    [Output]
     private int CurrentPhaseIndex;
     private string CurrentlyOnFirstDayOfPhase = "";
     private bool JustInitialised = true;
