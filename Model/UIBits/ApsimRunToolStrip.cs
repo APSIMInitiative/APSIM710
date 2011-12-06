@@ -55,7 +55,7 @@ public class ApsimRunToolStrip
         }
     }
 
-    public string GetSimulationWithError()
+    public String GetSimulationWithError()
     {
         // ----------------------------------------------------------
         // Return the nodepath of the first simulation with an error.
@@ -102,9 +102,55 @@ public class ApsimRunToolStrip
         PercentLabel.Text = "";
 
         // Get a list of simulations to run.
-        List<string> SimsToRun = new List<string>();
-        foreach (string SimulationPath in _SelectedPaths)
+        List<String> SimsToRun = new List<String>();
+        List<String> simNames = new List<String>();
+        List<String> simList = new List<String>();
+        foreach (String SimulationPath in _SelectedPaths)
+        {
             ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
+            simList.AddRange(ApsimFile.ApsimFile.GetSimsInApsimFile(_F.FileName));//new List<String>();
+        }
+        // JF 061211 - Added check for duplicate simulation names in different folders.
+        //Create a list of sim names
+        List<String> duplicates = new List<String>();
+        for (int i = 0; i < simList.Count; i++)
+        {
+            String[] split = simList[i].Split('/');
+            simNames.Add(split[split.Length - 1]);
+        }
+
+        //compare them
+        simNames.Sort();
+        for (int i = 0; i < simNames.Count - 1; i++)
+            if (simNames[i].ToLower().Equals(simNames[i + 1].ToLower()))
+                if (!duplicates.Contains(simNames[i]))
+                    duplicates.Add(simNames[i]);
+
+        //if duplicates are found, return with error message
+        if (duplicates.Count > 0)
+        {
+            simNames.Clear();
+            foreach (String dupe in duplicates)
+                foreach (String list in simList)
+                {
+                    String[] name = list.Split('/');
+                    if (name[name.Length - 1].Equals(dupe))
+                        simNames.Add(list);
+                }
+            String output = "";
+            foreach (String s in simNames)
+            {
+                output += s + "\n";
+            }
+            MessageBox.Show("Error: The following simulations have the same name: \n" + output);
+
+            //reset the menu bar
+            RunButton.Enabled = true;
+            StopButton.Enabled = false;
+            ErrorsButton.Visible = false;
+            PercentLabel.Text = "";
+            return;
+        }
 
         try
         {
@@ -115,7 +161,7 @@ public class ApsimRunToolStrip
             }
             else
             {
-                foreach (string SimulationPath in SimsToRun)
+                foreach (String SimulationPath in SimsToRun)
                 {
                     Component Simulation = _F.Find(SimulationPath);
 
@@ -127,7 +173,7 @@ public class ApsimRunToolStrip
                     }
                     else
                     {
-                        string SimFileName;
+                        String SimFileName;
                         SimFileName = ApsimToSim.WriteSimFile(Simulation);
 
                         RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
@@ -171,7 +217,7 @@ public class ApsimRunToolStrip
 
     public ApsimFile.ApsimFile CreateCopy(ApsimFile.ApsimFile apsimfile)
     {
-        string txt = apsimfile.RootComponent.FullXML();
+        String txt = apsimfile.RootComponent.FullXML();
         XmlDocument doc = new XmlDocument();
         doc.LoadXml(txt);
         XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
@@ -180,12 +226,12 @@ public class ApsimRunToolStrip
         tmpFile.New(doc.OuterXml);
         return tmpFile;
     }
-    public List<SimFactorItem> CreateFactorialSimulations(List<string> SimsToRun)
+    public List<SimFactorItem> CreateFactorialSimulations(List<String> SimsToRun)
     {
         List<SimFactorItem> SimFiles = new List<SimFactorItem>();
         //make a copy of the file - should avoid problems with changes being applied during the processing of the factorial nodes
         ApsimFile.ApsimFile tmpFile = CreateCopy(_F);
-        foreach (string SimulationPath in SimsToRun)
+        foreach (String SimulationPath in SimsToRun)
         {
             Factor.ProcessSimulationFactorials(SimFiles, tmpFile, tmpFile.FactorComponent, SimulationPath);
         }
@@ -218,10 +264,10 @@ public class ApsimRunToolStrip
         _SelectedPaths = Controller.SelectedPaths;
 
         // Get a list of simulations to run.
-        List<string> SimsToRun = new List<string>();
-        foreach (string SimulationPath in _SelectedPaths)
+        List<String> SimsToRun = new List<String>();
+        foreach (String SimulationPath in _SelectedPaths)
             ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
-        string UserMsg;
+        String UserMsg;
 
         if (SimsToRun.Count <= 0)
         {
@@ -251,12 +297,12 @@ public class ApsimRunToolStrip
             }
             else
             {
-                foreach (string SimulationPath in SimsToRun)
+                foreach (String SimulationPath in SimsToRun)
                 {
                     try
                     {
                         Component Simulation = _F.Find(SimulationPath);
-                        string SimFileName = ApsimToSim.WriteSimFile(Simulation);
+                        String SimFileName = ApsimToSim.WriteSimFile(Simulation);
                         UserMsg += "\n" + SimFileName;
                     }
                     catch (Exception err)
@@ -292,7 +338,7 @@ public class ApsimRunToolStrip
             RunButton.Enabled = true;
             StopButton.Enabled = false;
             _JobRunner.Stop();
-            string WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
+            String WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
             if (File.Exists(WavFileName))
             {
                 System.Media.SoundPlayer Player = new System.Media.SoundPlayer(WavFileName);
