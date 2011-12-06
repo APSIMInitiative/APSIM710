@@ -79,36 +79,36 @@ Public Class MetGraphControl
     'It can be modified using the Windows Form Designer.
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container
+        Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MetGraphControl))
         Me.TabImages = New System.Windows.Forms.ImageList(Me.components)
-        Me.TabControl = New System.Windows.Forms.TabControl
-        Me.TabPage1 = New System.Windows.Forms.TabPage
-        Me.YearPanel = New System.Windows.Forms.Panel
-        Me.Label5 = New System.Windows.Forms.Label
-        Me.Label4 = New System.Windows.Forms.Label
-        Me.YearStartBox = New System.Windows.Forms.NumericUpDown
-        Me.NumYearsBox = New System.Windows.Forms.NumericUpDown
-        Me.Label3 = New System.Windows.Forms.Label
-        Me.ContentsBox = New System.Windows.Forms.TextBox
-        Me.TabPage2 = New System.Windows.Forms.TabPage
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.RainfallLabel = New System.Windows.Forms.Label
-        Me.RainfallChart = New Steema.TeeChart.TChart
-        Me.RainfallBar = New Steema.TeeChart.Styles.Bar
-        Me.TabPage3 = New System.Windows.Forms.TabPage
-        Me.MonthlyRainfallChart = New Steema.TeeChart.TChart
-        Me.MonthlyRainfallBar = New Steema.TeeChart.Styles.Bar
-        Me.MonthlyEvaporationLine = New Steema.TeeChart.Styles.Line
-        Me.TabPage5 = New System.Windows.Forms.TabPage
-        Me.TemperatureChart = New Steema.TeeChart.TChart
-        Me.MaximumTemperatureLine = New Steema.TeeChart.Styles.Line
-        Me.MinimumTemperatureLine = New Steema.TeeChart.Styles.Line
-        Me.TabPage4 = New System.Windows.Forms.TabPage
-        Me.RadiationChart = New Steema.TeeChart.TChart
-        Me.RainfallBar2 = New Steema.TeeChart.Styles.Bar
-        Me.RadiationLine = New Steema.TeeChart.Styles.Line
-        Me.MaximumRadiationLine = New Steema.TeeChart.Styles.Line
+        Me.TabControl = New System.Windows.Forms.TabControl()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.YearPanel = New System.Windows.Forms.Panel()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.YearStartBox = New System.Windows.Forms.NumericUpDown()
+        Me.NumYearsBox = New System.Windows.Forms.NumericUpDown()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.ContentsBox = New System.Windows.Forms.TextBox()
+        Me.TabPage2 = New System.Windows.Forms.TabPage()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.RainfallLabel = New System.Windows.Forms.Label()
+        Me.RainfallChart = New Steema.TeeChart.TChart()
+        Me.RainfallBar = New Steema.TeeChart.Styles.Bar()
+        Me.TabPage3 = New System.Windows.Forms.TabPage()
+        Me.MonthlyRainfallChart = New Steema.TeeChart.TChart()
+        Me.MonthlyRainfallBar = New Steema.TeeChart.Styles.Bar()
+        Me.MonthlyEvaporationLine = New Steema.TeeChart.Styles.Line()
+        Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.TemperatureChart = New Steema.TeeChart.TChart()
+        Me.MaximumTemperatureLine = New Steema.TeeChart.Styles.Line()
+        Me.MinimumTemperatureLine = New Steema.TeeChart.Styles.Line()
+        Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.RadiationChart = New Steema.TeeChart.TChart()
+        Me.RainfallBar2 = New Steema.TeeChart.Styles.Bar()
+        Me.RadiationLine = New Steema.TeeChart.Styles.Line()
+        Me.MaximumRadiationLine = New Steema.TeeChart.Styles.Line()
         Me.TabControl.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.YearPanel.SuspendLayout()
@@ -153,10 +153,10 @@ Public Class MetGraphControl
         Me.TabPage1.Controls.Add(Me.YearPanel)
         Me.TabPage1.Controls.Add(Me.ContentsBox)
         Me.TabPage1.ImageIndex = 0
-        Me.TabPage1.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 25)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(1007, 681)
+        Me.TabPage1.Size = New System.Drawing.Size(1007, 679)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Raw data"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -180,7 +180,7 @@ Public Class MetGraphControl
         Me.Label5.AutoSize = True
         Me.Label5.Location = New System.Drawing.Point(3, 36)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(34, 13)
+        Me.Label5.Size = New System.Drawing.Size(42, 17)
         Me.Label5.TabIndex = 20
         Me.Label5.Text = "Show"
         '
@@ -189,7 +189,7 @@ Public Class MetGraphControl
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(3, 7)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(32, 13)
+        Me.Label4.Size = New System.Drawing.Size(42, 17)
         Me.Label4.TabIndex = 19
         Me.Label4.Text = "Year:"
         '
@@ -202,7 +202,7 @@ Public Class MetGraphControl
         Me.YearStartBox.Maximum = New Decimal(New Integer() {2200, 0, 0, 0})
         Me.YearStartBox.Minimum = New Decimal(New Integer() {1800, 0, 0, 0})
         Me.YearStartBox.Name = "YearStartBox"
-        Me.YearStartBox.Size = New System.Drawing.Size(64, 21)
+        Me.YearStartBox.Size = New System.Drawing.Size(64, 24)
         Me.YearStartBox.TabIndex = 16
         Me.YearStartBox.Value = New Decimal(New Integer() {2000, 0, 0, 0})
         '
@@ -215,7 +215,7 @@ Public Class MetGraphControl
         Me.NumYearsBox.Maximum = New Decimal(New Integer() {200, 0, 0, 0})
         Me.NumYearsBox.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumYearsBox.Name = "NumYearsBox"
-        Me.NumYearsBox.Size = New System.Drawing.Size(49, 21)
+        Me.NumYearsBox.Size = New System.Drawing.Size(49, 24)
         Me.NumYearsBox.TabIndex = 17
         Me.NumYearsBox.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
@@ -224,7 +224,7 @@ Public Class MetGraphControl
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(96, 36)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(74, 13)
+        Me.Label3.Size = New System.Drawing.Size(101, 17)
         Me.Label3.TabIndex = 18
         Me.Label3.Text = "year(s) of data"
         '
@@ -238,7 +238,7 @@ Public Class MetGraphControl
         Me.ContentsBox.Name = "ContentsBox"
         Me.ContentsBox.ReadOnly = True
         Me.ContentsBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.ContentsBox.Size = New System.Drawing.Size(1001, 675)
+        Me.ContentsBox.Size = New System.Drawing.Size(1001, 673)
         Me.ContentsBox.TabIndex = 0
         Me.ContentsBox.WordWrap = False
         '
@@ -248,10 +248,10 @@ Public Class MetGraphControl
         Me.TabPage2.Controls.Add(Me.RainfallLabel)
         Me.TabPage2.Controls.Add(Me.RainfallChart)
         Me.TabPage2.ImageIndex = 1
-        Me.TabPage2.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage2.Location = New System.Drawing.Point(4, 25)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(1007, 681)
+        Me.TabPage2.Size = New System.Drawing.Size(1007, 679)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "Rainfall chart"
         Me.TabPage2.UseVisualStyleBackColor = True
@@ -261,7 +261,7 @@ Public Class MetGraphControl
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(303, 11)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(72, 13)
+        Me.Label1.Size = New System.Drawing.Size(95, 17)
         Me.Label1.TabIndex = 16
         Me.Label1.Text = "Total Rainfall:"
         '
@@ -270,7 +270,7 @@ Public Class MetGraphControl
         Me.RainfallLabel.AutoSize = True
         Me.RainfallLabel.Location = New System.Drawing.Point(381, 11)
         Me.RainfallLabel.Name = "RainfallLabel"
-        Me.RainfallLabel.Size = New System.Drawing.Size(19, 13)
+        Me.RainfallLabel.Size = New System.Drawing.Size(24, 17)
         Me.RainfallLabel.TabIndex = 15
         Me.RainfallLabel.Text = "L1"
         '
@@ -279,8 +279,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Aspect.ElevationFloat = 345
-        Me.RainfallChart.Aspect.RotationFloat = 345
         Me.RainfallChart.Aspect.View3D = False
         '
         '
@@ -288,7 +286,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Axes.Bottom.Automatic = True
         '
         '
         '
@@ -296,27 +293,23 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Axes.Bottom.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.RainfallChart.Axes.Bottom.Grid.Visible = False
-        Me.RainfallChart.Axes.Bottom.Grid.ZPosition = 0
-        Me.RainfallChart.Axes.Bottom.Increment = 30
+        Me.RainfallChart.Axes.Bottom.Increment = 30.0R
         '
         '
         '
+        '
+        '
+        '
+        Me.RainfallChart.Axes.Bottom.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Bottom.Labels.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Bottom.Labels.CustomSize = 40
         Me.RainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Bottom.Labels.Font.Shadow.Visible = False
         Me.RainfallChart.Axes.Bottom.Labels.Font.Size = 11
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Bottom.Labels.Shadow.Visible = False
+        Me.RainfallChart.Axes.Bottom.Labels.Font.SizeFloat = 11.0!
         Me.RainfallChart.Axes.Bottom.MaximumOffset = 2
         '
         '
@@ -333,43 +326,37 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.RainfallChart.Axes.Bottom.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Bottom.Title.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Bottom.Title.Caption = "Date"
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Bottom.Title.Font.Shadow.Visible = False
         Me.RainfallChart.Axes.Bottom.Title.Font.Size = 11
+        Me.RainfallChart.Axes.Bottom.Title.Font.SizeFloat = 11.0!
         Me.RainfallChart.Axes.Bottom.Title.Lines = New String() {"Date"}
         '
         '
         '
-        Me.RainfallChart.Axes.Bottom.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Depth.Automatic = True
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Depth.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RainfallChart.Axes.Depth.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.RainfallChart.Axes.Depth.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Depth.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RainfallChart.Axes.Depth.Labels.Font.Shadow.Visible = False
         '
         '
         '
-        Me.RainfallChart.Axes.Depth.Labels.Shadow.Visible = False
+        Me.RainfallChart.Axes.Depth.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Depth.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -379,52 +366,19 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Axes.Depth.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Depth.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.DepthTop.Automatic = True
-        '
-        '
-        '
-        Me.RainfallChart.Axes.DepthTop.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RainfallChart.Axes.DepthTop.Grid.ZPosition = 0
+        Me.RainfallChart.Axes.DepthTop.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.DepthTop.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
+        Me.RainfallChart.Axes.DepthTop.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.DepthTop.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RainfallChart.Axes.DepthTop.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.DepthTop.Labels.Shadow.Visible = False
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.DepthTop.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.DepthTop.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Left.Automatic = True
         '
         '
         '
@@ -432,26 +386,22 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Axes.Left.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.RainfallChart.Axes.Left.Grid.Visible = False
-        Me.RainfallChart.Axes.Left.Grid.ZPosition = 0
         '
         '
         '
+        '
+        '
+        '
+        Me.RainfallChart.Axes.Left.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Left.Labels.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Left.Labels.CustomSize = 40
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Left.Labels.Font.Shadow.Visible = False
         Me.RainfallChart.Axes.Left.Labels.Font.Size = 11
+        Me.RainfallChart.Axes.Left.Labels.Font.SizeFloat = 11.0!
         Me.RainfallChart.Axes.Left.Labels.Separation = 20
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Left.Labels.Shadow.Visible = False
         '
         '
         '
@@ -467,95 +417,57 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.RainfallChart.Axes.Left.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Left.Title.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Left.Title.Caption = "Rainfall (mm)"
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Left.Title.Font.Shadow.Visible = False
         Me.RainfallChart.Axes.Left.Title.Font.Size = 11
+        Me.RainfallChart.Axes.Left.Title.Font.SizeFloat = 11.0!
         Me.RainfallChart.Axes.Left.Title.Lines = New String() {"Rainfall (mm)"}
         '
         '
         '
-        Me.RainfallChart.Axes.Left.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Automatic = True
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RainfallChart.Axes.Right.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Labels.Shadow.Visible = False
+        Me.RainfallChart.Axes.Right.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Right.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Right.Title.Shadow.Visible = False
+        Me.RainfallChart.Axes.Right.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Right.Title.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Right.Visible = False
         '
         '
         '
-        Me.RainfallChart.Axes.Top.Automatic = True
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Top.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RainfallChart.Axes.Top.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Top.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Top.Labels.Shadow.Visible = False
+        Me.RainfallChart.Axes.Top.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Top.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Top.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Axes.Top.Title.Shadow.Visible = False
+        Me.RainfallChart.Axes.Top.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Axes.Top.Title.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Axes.Top.Visible = False
         Me.RainfallChart.BackColor = System.Drawing.Color.Transparent
         Me.RainfallChart.Cursor = System.Windows.Forms.Cursors.Default
@@ -566,39 +478,25 @@ Public Class MetGraphControl
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Footer.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Footer.Shadow.Visible = False
+        Me.RainfallChart.Footer.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Footer.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.Header.Font.Shadow.Visible = False
+        Me.RainfallChart.Header.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Header.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Header.Lines = New String() {""}
         '
         '
         '
-        Me.RainfallChart.Header.Shadow.Visible = False
         '
         '
         '
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.RainfallChart.Legend.Font.Shadow.Visible = False
+        Me.RainfallChart.Legend.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Legend.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Legend.LegendStyle = Steema.TeeChart.LegendStyles.Series
         '
         '
@@ -614,19 +512,8 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Legend.Title.Font.Bold = True
-        '
-        '
-        '
-        Me.RainfallChart.Legend.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Legend.Title.Pen.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.Legend.Title.Shadow.Visible = False
+        Me.RainfallChart.Legend.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Legend.Title.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Legend.Visible = False
         Me.RainfallChart.Location = New System.Drawing.Point(3, 3)
         Me.RainfallChart.Name = "RainfallChart"
@@ -637,6 +524,8 @@ Public Class MetGraphControl
         '
         '
         Me.RainfallChart.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None
+        Me.RainfallChart.Panel.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Panel.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -645,42 +534,26 @@ Public Class MetGraphControl
         '
         '
         Me.RainfallChart.Panel.ImageBevel.Width = 1
-        Me.RainfallChart.Panel.MarginBottom = 1
-        Me.RainfallChart.Panel.MarginLeft = 1
-        '
-        '
-        '
-        Me.RainfallChart.Panel.Shadow.Visible = False
+        Me.RainfallChart.Panel.MarginBottom = 1.0R
+        Me.RainfallChart.Panel.MarginLeft = 1.0R
         Me.RainfallChart.Series.Add(Me.RainfallBar)
-        Me.RainfallChart.Size = New System.Drawing.Size(1001, 675)
+        Me.RainfallChart.Size = New System.Drawing.Size(1001, 673)
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.SubFooter.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.SubFooter.Shadow.Visible = False
+        Me.RainfallChart.SubFooter.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.SubFooter.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RainfallChart.SubHeader.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RainfallChart.SubHeader.Shadow.Visible = False
+        Me.RainfallChart.SubHeader.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.SubHeader.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.TabIndex = 14
         '
         '
@@ -688,35 +561,35 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RainfallChart.Walls.Back.AutoHide = False
         '
         '
         '
-        Me.RainfallChart.Walls.Back.Shadow.Visible = False
+        Me.RainfallChart.Walls.Back.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Walls.Back.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RainfallChart.Walls.Bottom.AutoHide = False
         '
         '
         '
-        Me.RainfallChart.Walls.Bottom.Shadow.Visible = False
+        Me.RainfallChart.Walls.Bottom.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Walls.Bottom.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RainfallChart.Walls.Left.AutoHide = False
         '
         '
         '
-        Me.RainfallChart.Walls.Left.Shadow.Visible = False
+        Me.RainfallChart.Walls.Left.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Walls.Left.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RainfallChart.Walls.Right.AutoHide = False
         '
         '
         '
-        Me.RainfallChart.Walls.Right.Shadow.Visible = False
+        Me.RainfallChart.Walls.Right.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallChart.Walls.Right.Bevel.StringColorTwo = "FF808080"
         Me.RainfallChart.Walls.Visible = False
         '
         'RainfallBar
@@ -725,29 +598,24 @@ Public Class MetGraphControl
         '
         '
         Me.RainfallBar.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.RainfallBar.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.RainfallBar.ColorEach = False
         '
         '
         '
         '
         '
         '
-        Me.RainfallBar.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.RainfallBar.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.RainfallBar.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.RainfallBar.Marks.Callout.Distance = 0
-        Me.RainfallBar.Marks.Callout.Draw3D = False
-        Me.RainfallBar.Marks.Callout.Length = 20
-        Me.RainfallBar.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
+        Me.RainfallBar.Marks.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallBar.Marks.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        Me.RainfallBar.Marks.Font.Shadow.Visible = False
+        Me.RainfallBar.Marks.Symbol.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallBar.Marks.Symbol.Bevel.StringColorTwo = "FF808080"
         Me.RainfallBar.Marks.Visible = False
         '
         '
@@ -769,10 +637,10 @@ Public Class MetGraphControl
         '
         Me.TabPage3.Controls.Add(Me.MonthlyRainfallChart)
         Me.TabPage3.ImageIndex = 1
-        Me.TabPage3.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage3.Location = New System.Drawing.Point(4, 25)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage3.Size = New System.Drawing.Size(1007, 681)
+        Me.TabPage3.Size = New System.Drawing.Size(1007, 679)
         Me.TabPage3.TabIndex = 2
         Me.TabPage3.Text = "Monthly rainfall chart"
         Me.TabPage3.UseVisualStyleBackColor = True
@@ -782,8 +650,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Aspect.ElevationFloat = 345
-        Me.MonthlyRainfallChart.Aspect.RotationFloat = 345
         Me.MonthlyRainfallChart.Aspect.View3D = False
         '
         '
@@ -791,7 +657,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Bottom.Automatic = True
         '
         '
         '
@@ -799,27 +664,23 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Bottom.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.MonthlyRainfallChart.Axes.Bottom.Grid.Visible = False
-        Me.MonthlyRainfallChart.Axes.Bottom.Grid.ZPosition = 0
-        Me.MonthlyRainfallChart.Axes.Bottom.Increment = 30
+        Me.MonthlyRainfallChart.Axes.Bottom.Increment = 30.0R
         '
         '
         '
+        '
+        '
+        '
+        Me.MonthlyRainfallChart.Axes.Bottom.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Bottom.Labels.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Bottom.Labels.CustomSize = 40
         Me.MonthlyRainfallChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Bottom.Labels.Font.Shadow.Visible = False
         Me.MonthlyRainfallChart.Axes.Bottom.Labels.Font.Size = 11
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Bottom.Labels.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Bottom.Labels.Font.SizeFloat = 11.0!
         Me.MonthlyRainfallChart.Axes.Bottom.MaximumOffset = 2
         '
         '
@@ -836,43 +697,37 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.MonthlyRainfallChart.Axes.Bottom.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Bottom.Title.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Bottom.Title.Caption = "Date"
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Bottom.Title.Font.Shadow.Visible = False
         Me.MonthlyRainfallChart.Axes.Bottom.Title.Font.Size = 11
+        Me.MonthlyRainfallChart.Axes.Bottom.Title.Font.SizeFloat = 11.0!
         Me.MonthlyRainfallChart.Axes.Bottom.Title.Lines = New String() {"Date"}
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Bottom.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Depth.Automatic = True
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Depth.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.MonthlyRainfallChart.Axes.Depth.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.MonthlyRainfallChart.Axes.Depth.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Depth.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Depth.Labels.Font.Shadow.Visible = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Depth.Labels.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Depth.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Depth.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -882,52 +737,19 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Depth.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Depth.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Automatic = True
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.MonthlyRainfallChart.Axes.DepthTop.Grid.ZPosition = 0
+        Me.MonthlyRainfallChart.Axes.DepthTop.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.DepthTop.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
+        Me.MonthlyRainfallChart.Axes.DepthTop.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.DepthTop.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Labels.Shadow.Visible = False
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.DepthTop.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Left.Automatic = True
         '
         '
         '
@@ -935,26 +757,22 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Left.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.MonthlyRainfallChart.Axes.Left.Grid.Visible = False
-        Me.MonthlyRainfallChart.Axes.Left.Grid.ZPosition = 0
         '
         '
         '
+        '
+        '
+        '
+        Me.MonthlyRainfallChart.Axes.Left.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Left.Labels.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Left.Labels.CustomSize = 40
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Left.Labels.Font.Shadow.Visible = False
         Me.MonthlyRainfallChart.Axes.Left.Labels.Font.Size = 11
+        Me.MonthlyRainfallChart.Axes.Left.Labels.Font.SizeFloat = 11.0!
         Me.MonthlyRainfallChart.Axes.Left.Labels.Separation = 20
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Left.Labels.Shadow.Visible = False
         '
         '
         '
@@ -970,95 +788,57 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.MonthlyRainfallChart.Axes.Left.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Left.Title.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Left.Title.Caption = "Rainfall and Evaporation (mm)"
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Left.Title.Font.Shadow.Visible = False
         Me.MonthlyRainfallChart.Axes.Left.Title.Font.Size = 11
+        Me.MonthlyRainfallChart.Axes.Left.Title.Font.SizeFloat = 11.0!
         Me.MonthlyRainfallChart.Axes.Left.Title.Lines = New String() {"Rainfall and Evaporation (mm)"}
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Left.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Automatic = True
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.MonthlyRainfallChart.Axes.Right.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Labels.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Right.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Right.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Right.Title.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Right.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Right.Title.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Right.Visible = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Axes.Top.Automatic = True
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Top.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.MonthlyRainfallChart.Axes.Top.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Top.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Top.Labels.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Top.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Top.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Top.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Axes.Top.Title.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Axes.Top.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Axes.Top.Title.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Axes.Top.Visible = False
         Me.MonthlyRainfallChart.BackColor = System.Drawing.Color.Transparent
         Me.MonthlyRainfallChart.Cursor = System.Windows.Forms.Cursors.Default
@@ -1069,29 +849,17 @@ Public Class MetGraphControl
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Footer.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Footer.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Footer.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Footer.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Header.Font.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Header.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Header.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Header.Lines = New String() {""}
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Header.Shadow.Visible = False
         '
         '
         '
@@ -1099,11 +867,13 @@ Public Class MetGraphControl
         '
         '
         '
+        Me.MonthlyRainfallChart.Legend.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Legend.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Legend.Font.Shadow.Visible = False
         Me.MonthlyRainfallChart.Legend.Font.Size = 11
+        Me.MonthlyRainfallChart.Legend.Font.SizeFloat = 11.0!
         Me.MonthlyRainfallChart.Legend.LegendStyle = Steema.TeeChart.LegendStyles.Series
         '
         '
@@ -1119,19 +889,8 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Legend.Title.Font.Bold = True
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Legend.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Legend.Title.Pen.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Legend.Title.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Legend.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Legend.Title.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Location = New System.Drawing.Point(3, 3)
         Me.MonthlyRainfallChart.Name = "MonthlyRainfallChart"
         '
@@ -1141,6 +900,8 @@ Public Class MetGraphControl
         '
         '
         Me.MonthlyRainfallChart.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None
+        Me.MonthlyRainfallChart.Panel.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Panel.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -1149,43 +910,27 @@ Public Class MetGraphControl
         '
         '
         Me.MonthlyRainfallChart.Panel.ImageBevel.Width = 1
-        Me.MonthlyRainfallChart.Panel.MarginBottom = 1
-        Me.MonthlyRainfallChart.Panel.MarginLeft = 1
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.Panel.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Panel.MarginBottom = 1.0R
+        Me.MonthlyRainfallChart.Panel.MarginLeft = 1.0R
         Me.MonthlyRainfallChart.Series.Add(Me.MonthlyRainfallBar)
         Me.MonthlyRainfallChart.Series.Add(Me.MonthlyEvaporationLine)
-        Me.MonthlyRainfallChart.Size = New System.Drawing.Size(1001, 675)
+        Me.MonthlyRainfallChart.Size = New System.Drawing.Size(1001, 673)
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.SubFooter.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.SubFooter.Shadow.Visible = False
+        Me.MonthlyRainfallChart.SubFooter.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.SubFooter.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.SubHeader.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.MonthlyRainfallChart.SubHeader.Shadow.Visible = False
+        Me.MonthlyRainfallChart.SubHeader.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.SubHeader.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.TabIndex = 15
         '
         '
@@ -1193,35 +938,35 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Back.AutoHide = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Back.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Walls.Back.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Walls.Back.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Bottom.AutoHide = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Bottom.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Walls.Bottom.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Walls.Bottom.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Left.AutoHide = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Left.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Walls.Left.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Walls.Left.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Right.AutoHide = False
         '
         '
         '
-        Me.MonthlyRainfallChart.Walls.Right.Shadow.Visible = False
+        Me.MonthlyRainfallChart.Walls.Right.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallChart.Walls.Right.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallChart.Walls.Visible = False
         '
         'MonthlyRainfallBar
@@ -1230,29 +975,24 @@ Public Class MetGraphControl
         '
         '
         Me.MonthlyRainfallBar.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.MonthlyRainfallBar.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.MonthlyRainfallBar.ColorEach = False
         '
         '
         '
         '
         '
         '
-        Me.MonthlyRainfallBar.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.MonthlyRainfallBar.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.MonthlyRainfallBar.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.MonthlyRainfallBar.Marks.Callout.Distance = 0
-        Me.MonthlyRainfallBar.Marks.Callout.Draw3D = False
-        Me.MonthlyRainfallBar.Marks.Callout.Length = 20
-        Me.MonthlyRainfallBar.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
+        Me.MonthlyRainfallBar.Marks.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallBar.Marks.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        Me.MonthlyRainfallBar.Marks.Font.Shadow.Visible = False
+        Me.MonthlyRainfallBar.Marks.Symbol.Bevel.StringColorOne = "FFFFFFFF"
+        Me.MonthlyRainfallBar.Marks.Symbol.Bevel.StringColorTwo = "FF808080"
         Me.MonthlyRainfallBar.Marks.Visible = False
         '
         '
@@ -1275,34 +1015,13 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MonthlyEvaporationLine.Brush.Color = System.Drawing.Color.Red
+        Me.MonthlyEvaporationLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.MonthlyEvaporationLine.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.MonthlyEvaporationLine.ColorEach = False
         '
         '
         '
-        Me.MonthlyEvaporationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MonthlyEvaporationLine.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.MonthlyEvaporationLine.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.MonthlyEvaporationLine.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.MonthlyEvaporationLine.Marks.Callout.Distance = 0
-        Me.MonthlyEvaporationLine.Marks.Callout.Draw3D = False
-        Me.MonthlyEvaporationLine.Marks.Callout.Length = 10
-        Me.MonthlyEvaporationLine.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MonthlyEvaporationLine.Marks.Font.Shadow.Visible = False
+        Me.MonthlyEvaporationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(41, Byte), Integer), CType(CType(61, Byte), Integer), CType(CType(98, Byte), Integer))
         '
         '
         '
@@ -1327,9 +1046,9 @@ Public Class MetGraphControl
         '
         Me.TabPage5.Controls.Add(Me.TemperatureChart)
         Me.TabPage5.ImageIndex = 2
-        Me.TabPage5.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage5.Location = New System.Drawing.Point(4, 25)
         Me.TabPage5.Name = "TabPage5"
-        Me.TabPage5.Size = New System.Drawing.Size(1007, 681)
+        Me.TabPage5.Size = New System.Drawing.Size(1007, 679)
         Me.TabPage5.TabIndex = 4
         Me.TabPage5.Text = "Temperature chart"
         Me.TabPage5.UseVisualStyleBackColor = True
@@ -1339,8 +1058,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Aspect.ElevationFloat = 345
-        Me.TemperatureChart.Aspect.RotationFloat = 345
         Me.TemperatureChart.Aspect.View3D = False
         '
         '
@@ -1348,7 +1065,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Axes.Bottom.Automatic = True
         '
         '
         '
@@ -1356,26 +1072,22 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Axes.Bottom.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.TemperatureChart.Axes.Bottom.Grid.Visible = False
-        Me.TemperatureChart.Axes.Bottom.Grid.ZPosition = 0
-        Me.TemperatureChart.Axes.Bottom.Increment = 30
+        Me.TemperatureChart.Axes.Bottom.Increment = 30.0R
         '
         '
         '
+        '
+        '
+        '
+        Me.TemperatureChart.Axes.Bottom.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Bottom.Labels.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Bottom.Labels.Font.Shadow.Visible = False
         Me.TemperatureChart.Axes.Bottom.Labels.Font.Size = 11
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Bottom.Labels.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Bottom.Labels.Font.SizeFloat = 11.0!
         '
         '
         '
@@ -1391,43 +1103,37 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.TemperatureChart.Axes.Bottom.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Bottom.Title.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Axes.Bottom.Title.Caption = "Date"
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Bottom.Title.Font.Shadow.Visible = False
         Me.TemperatureChart.Axes.Bottom.Title.Font.Size = 11
+        Me.TemperatureChart.Axes.Bottom.Title.Font.SizeFloat = 11.0!
         Me.TemperatureChart.Axes.Bottom.Title.Lines = New String() {"Date"}
         '
         '
         '
-        Me.TemperatureChart.Axes.Bottom.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Depth.Automatic = True
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Depth.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.TemperatureChart.Axes.Depth.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.TemperatureChart.Axes.Depth.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Depth.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Axes.Depth.Labels.Font.Shadow.Visible = False
         '
         '
         '
-        Me.TemperatureChart.Axes.Depth.Labels.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Depth.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Depth.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -1437,52 +1143,19 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Axes.Depth.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Depth.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.DepthTop.Automatic = True
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.DepthTop.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.TemperatureChart.Axes.DepthTop.Grid.ZPosition = 0
+        Me.TemperatureChart.Axes.DepthTop.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.DepthTop.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
+        Me.TemperatureChart.Axes.DepthTop.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.DepthTop.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Axes.DepthTop.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.DepthTop.Labels.Shadow.Visible = False
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.DepthTop.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.DepthTop.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Left.Automatic = True
         '
         '
         '
@@ -1490,25 +1163,21 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Axes.Left.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.TemperatureChart.Axes.Left.Grid.Visible = False
-        Me.TemperatureChart.Axes.Left.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.TemperatureChart.Axes.Left.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Left.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Axes.Left.Labels.Font.Shadow.Visible = False
         Me.TemperatureChart.Axes.Left.Labels.Font.Size = 11
+        Me.TemperatureChart.Axes.Left.Labels.Font.SizeFloat = 11.0!
         Me.TemperatureChart.Axes.Left.Labels.Separation = 20
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Left.Labels.Shadow.Visible = False
         '
         '
         '
@@ -1524,95 +1193,57 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.TemperatureChart.Axes.Left.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Left.Title.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Axes.Left.Title.Caption = "Temperature (oC)"
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Left.Title.Font.Shadow.Visible = False
         Me.TemperatureChart.Axes.Left.Title.Font.Size = 11
+        Me.TemperatureChart.Axes.Left.Title.Font.SizeFloat = 11.0!
         Me.TemperatureChart.Axes.Left.Title.Lines = New String() {"Temperature (oC)"}
         '
         '
         '
-        Me.TemperatureChart.Axes.Left.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Automatic = True
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.TemperatureChart.Axes.Right.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Labels.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Right.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Right.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Right.Title.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Right.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Right.Title.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Axes.Right.Visible = False
         '
         '
         '
-        Me.TemperatureChart.Axes.Top.Automatic = True
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Top.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.TemperatureChart.Axes.Top.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Top.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Top.Labels.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Top.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Top.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Top.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Axes.Top.Title.Shadow.Visible = False
+        Me.TemperatureChart.Axes.Top.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Axes.Top.Title.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Axes.Top.Visible = False
         Me.TemperatureChart.BackColor = System.Drawing.Color.Transparent
         Me.TemperatureChart.Cursor = System.Windows.Forms.Cursors.Default
@@ -1623,29 +1254,17 @@ Public Class MetGraphControl
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Footer.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Footer.Shadow.Visible = False
+        Me.TemperatureChart.Footer.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Footer.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.Header.Font.Shadow.Visible = False
+        Me.TemperatureChart.Header.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Header.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Header.Lines = New String() {""}
-        '
-        '
-        '
-        Me.TemperatureChart.Header.Shadow.Visible = False
         '
         '
         '
@@ -1653,11 +1272,13 @@ Public Class MetGraphControl
         '
         '
         '
+        Me.TemperatureChart.Legend.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Legend.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Legend.Font.Shadow.Visible = False
         Me.TemperatureChart.Legend.Font.Size = 11
+        Me.TemperatureChart.Legend.Font.SizeFloat = 11.0!
         Me.TemperatureChart.Legend.LegendStyle = Steema.TeeChart.LegendStyles.Series
         '
         '
@@ -1673,19 +1294,8 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Legend.Title.Font.Bold = True
-        '
-        '
-        '
-        Me.TemperatureChart.Legend.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Legend.Title.Pen.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.Legend.Title.Shadow.Visible = False
+        Me.TemperatureChart.Legend.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Legend.Title.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Location = New System.Drawing.Point(0, 0)
         Me.TemperatureChart.Name = "TemperatureChart"
         '
@@ -1695,6 +1305,8 @@ Public Class MetGraphControl
         '
         '
         Me.TemperatureChart.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None
+        Me.TemperatureChart.Panel.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Panel.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -1703,41 +1315,25 @@ Public Class MetGraphControl
         '
         '
         Me.TemperatureChart.Panel.ImageBevel.Width = 1
-        '
-        '
-        '
-        Me.TemperatureChart.Panel.Shadow.Visible = False
         Me.TemperatureChart.Series.Add(Me.MaximumTemperatureLine)
         Me.TemperatureChart.Series.Add(Me.MinimumTemperatureLine)
-        Me.TemperatureChart.Size = New System.Drawing.Size(1007, 681)
+        Me.TemperatureChart.Size = New System.Drawing.Size(1007, 679)
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.SubFooter.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.SubFooter.Shadow.Visible = False
+        Me.TemperatureChart.SubFooter.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.SubFooter.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.TemperatureChart.SubHeader.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.TemperatureChart.SubHeader.Shadow.Visible = False
+        Me.TemperatureChart.SubHeader.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.SubHeader.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.TabIndex = 16
         '
         '
@@ -1745,35 +1341,35 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.TemperatureChart.Walls.Back.AutoHide = False
         '
         '
         '
-        Me.TemperatureChart.Walls.Back.Shadow.Visible = False
+        Me.TemperatureChart.Walls.Back.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Walls.Back.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Walls.Bottom.AutoHide = False
         '
         '
         '
-        Me.TemperatureChart.Walls.Bottom.Shadow.Visible = False
+        Me.TemperatureChart.Walls.Bottom.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Walls.Bottom.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Walls.Left.AutoHide = False
         '
         '
         '
-        Me.TemperatureChart.Walls.Left.Shadow.Visible = False
+        Me.TemperatureChart.Walls.Left.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Walls.Left.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.TemperatureChart.Walls.Right.AutoHide = False
         '
         '
         '
-        Me.TemperatureChart.Walls.Right.Shadow.Visible = False
+        Me.TemperatureChart.Walls.Right.Bevel.StringColorOne = "FFFFFFFF"
+        Me.TemperatureChart.Walls.Right.Bevel.StringColorTwo = "FF808080"
         Me.TemperatureChart.Walls.Visible = False
         '
         'MaximumTemperatureLine
@@ -1781,34 +1377,13 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MaximumTemperatureLine.Brush.Color = System.Drawing.Color.Red
+        Me.MaximumTemperatureLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.MaximumTemperatureLine.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.MaximumTemperatureLine.ColorEach = False
         '
         '
         '
-        Me.MaximumTemperatureLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MaximumTemperatureLine.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.MaximumTemperatureLine.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.MaximumTemperatureLine.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.MaximumTemperatureLine.Marks.Callout.Distance = 0
-        Me.MaximumTemperatureLine.Marks.Callout.Draw3D = False
-        Me.MaximumTemperatureLine.Marks.Callout.Length = 10
-        Me.MaximumTemperatureLine.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MaximumTemperatureLine.Marks.Font.Shadow.Visible = False
+        Me.MaximumTemperatureLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(41, Byte), Integer), CType(CType(61, Byte), Integer), CType(CType(98, Byte), Integer))
         '
         '
         '
@@ -1834,34 +1409,13 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MinimumTemperatureLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.MinimumTemperatureLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(243, Byte), Integer), CType(CType(156, Byte), Integer), CType(CType(53, Byte), Integer))
+        Me.MinimumTemperatureLine.Color = System.Drawing.Color.FromArgb(CType(CType(243, Byte), Integer), CType(CType(156, Byte), Integer), CType(CType(53, Byte), Integer))
+        Me.MinimumTemperatureLine.ColorEach = False
         '
         '
         '
-        Me.MinimumTemperatureLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(115, Byte), Integer))
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MinimumTemperatureLine.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.MinimumTemperatureLine.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.MinimumTemperatureLine.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.MinimumTemperatureLine.Marks.Callout.Distance = 0
-        Me.MinimumTemperatureLine.Marks.Callout.Draw3D = False
-        Me.MinimumTemperatureLine.Marks.Callout.Length = 10
-        Me.MinimumTemperatureLine.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MinimumTemperatureLine.Marks.Font.Shadow.Visible = False
+        Me.MinimumTemperatureLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(146, Byte), Integer), CType(CType(94, Byte), Integer), CType(CType(32, Byte), Integer))
         '
         '
         '
@@ -1886,9 +1440,9 @@ Public Class MetGraphControl
         '
         Me.TabPage4.Controls.Add(Me.RadiationChart)
         Me.TabPage4.ImageIndex = 3
-        Me.TabPage4.Location = New System.Drawing.Point(4, 23)
+        Me.TabPage4.Location = New System.Drawing.Point(4, 25)
         Me.TabPage4.Name = "TabPage4"
-        Me.TabPage4.Size = New System.Drawing.Size(1007, 681)
+        Me.TabPage4.Size = New System.Drawing.Size(1007, 679)
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "Radiation chart"
         Me.TabPage4.UseVisualStyleBackColor = True
@@ -1898,8 +1452,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Aspect.ElevationFloat = 345
-        Me.RadiationChart.Aspect.RotationFloat = 345
         Me.RadiationChart.Aspect.View3D = False
         '
         '
@@ -1907,7 +1459,6 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Axes.Bottom.Automatic = True
         '
         '
         '
@@ -1915,26 +1466,22 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Axes.Bottom.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.RadiationChart.Axes.Bottom.Grid.Visible = False
-        Me.RadiationChart.Axes.Bottom.Grid.ZPosition = 0
-        Me.RadiationChart.Axes.Bottom.Increment = 30
+        Me.RadiationChart.Axes.Bottom.Increment = 30.0R
         '
         '
         '
+        '
+        '
+        '
+        Me.RadiationChart.Axes.Bottom.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Bottom.Labels.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Axes.Bottom.Labels.DateTimeFormat = "MMM yyyy"
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Bottom.Labels.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Bottom.Labels.Font.Size = 11
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Bottom.Labels.Shadow.Visible = False
+        Me.RadiationChart.Axes.Bottom.Labels.Font.SizeFloat = 11.0!
         '
         '
         '
@@ -1950,43 +1497,37 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.RadiationChart.Axes.Bottom.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Bottom.Title.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Axes.Bottom.Title.Caption = "Date"
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Bottom.Title.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Bottom.Title.Font.Size = 11
+        Me.RadiationChart.Axes.Bottom.Title.Font.SizeFloat = 11.0!
         Me.RadiationChart.Axes.Bottom.Title.Lines = New String() {"Date"}
         '
         '
         '
-        Me.RadiationChart.Axes.Bottom.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Depth.Automatic = True
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Depth.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RadiationChart.Axes.Depth.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.RadiationChart.Axes.Depth.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Depth.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Axes.Depth.Labels.Font.Shadow.Visible = False
         '
         '
         '
-        Me.RadiationChart.Axes.Depth.Labels.Shadow.Visible = False
+        Me.RadiationChart.Axes.Depth.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Depth.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -1996,52 +1537,19 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Axes.Depth.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Depth.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.DepthTop.Automatic = True
-        '
-        '
-        '
-        Me.RadiationChart.Axes.DepthTop.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RadiationChart.Axes.DepthTop.Grid.ZPosition = 0
+        Me.RadiationChart.Axes.DepthTop.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.DepthTop.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
+        Me.RadiationChart.Axes.DepthTop.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.DepthTop.Title.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Axes.DepthTop.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.DepthTop.Labels.Shadow.Visible = False
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.DepthTop.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.DepthTop.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Left.Automatic = True
         '
         '
         '
@@ -2049,25 +1557,21 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Axes.Left.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.RadiationChart.Axes.Left.Grid.Visible = False
-        Me.RadiationChart.Axes.Left.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.RadiationChart.Axes.Left.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Left.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Axes.Left.Labels.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Left.Labels.Font.Size = 11
+        Me.RadiationChart.Axes.Left.Labels.Font.SizeFloat = 11.0!
         Me.RadiationChart.Axes.Left.Labels.Separation = 20
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Left.Labels.Shadow.Visible = False
         '
         '
         '
@@ -2083,45 +1587,38 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.RadiationChart.Axes.Left.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Left.Title.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Axes.Left.Title.Caption = "Rainfall (mm)"
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Left.Title.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Left.Title.Font.Size = 11
+        Me.RadiationChart.Axes.Left.Title.Font.SizeFloat = 11.0!
         Me.RadiationChart.Axes.Left.Title.Lines = New String() {"Rainfall (mm)"}
         '
         '
         '
-        Me.RadiationChart.Axes.Left.Title.Shadow.Visible = False
         '
         '
         '
-        Me.RadiationChart.Axes.Right.Automatic = True
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Right.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
         Me.RadiationChart.Axes.Right.Grid.Visible = False
-        Me.RadiationChart.Axes.Right.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
+        Me.RadiationChart.Axes.Right.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Right.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Axes.Right.Labels.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Right.Labels.Font.Size = 11
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Right.Labels.Shadow.Visible = False
+        Me.RadiationChart.Axes.Right.Labels.Font.SizeFloat = 11.0!
         '
         '
         '
@@ -2137,57 +1634,37 @@ Public Class MetGraphControl
         '
         '
         '
+        '
+        '
+        '
+        Me.RadiationChart.Axes.Right.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Right.Title.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Axes.Right.Title.Caption = "Radiation (mJ/m2)"
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Right.Title.Font.Shadow.Visible = False
         Me.RadiationChart.Axes.Right.Title.Font.Size = 11
+        Me.RadiationChart.Axes.Right.Title.Font.SizeFloat = 11.0!
         Me.RadiationChart.Axes.Right.Title.Lines = New String() {"Radiation (mJ/m2)"}
         '
         '
         '
-        Me.RadiationChart.Axes.Right.Title.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Automatic = True
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Grid.Style = System.Drawing.Drawing2D.DashStyle.Dash
-        Me.RadiationChart.Axes.Top.Grid.ZPosition = 0
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Labels.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Labels.Shadow.Visible = False
+        Me.RadiationChart.Axes.Top.Labels.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Top.Labels.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Axes.Top.Title.Shadow.Visible = False
+        Me.RadiationChart.Axes.Top.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Axes.Top.Title.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Axes.Top.Visible = False
         Me.RadiationChart.BackColor = System.Drawing.Color.Transparent
         Me.RadiationChart.Cursor = System.Windows.Forms.Cursors.Default
@@ -2198,29 +1675,17 @@ Public Class MetGraphControl
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Footer.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Footer.Shadow.Visible = False
+        Me.RadiationChart.Footer.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Footer.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.Header.Font.Shadow.Visible = False
+        Me.RadiationChart.Header.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Header.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Header.Lines = New String() {""}
-        '
-        '
-        '
-        Me.RadiationChart.Header.Shadow.Visible = False
         '
         '
         '
@@ -2228,11 +1693,13 @@ Public Class MetGraphControl
         '
         '
         '
+        Me.RadiationChart.Legend.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Legend.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Legend.Font.Shadow.Visible = False
         Me.RadiationChart.Legend.Font.Size = 11
+        Me.RadiationChart.Legend.Font.SizeFloat = 11.0!
         Me.RadiationChart.Legend.LegendStyle = Steema.TeeChart.LegendStyles.Series
         '
         '
@@ -2249,19 +1716,8 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Legend.Title.Font.Bold = True
-        '
-        '
-        '
-        Me.RadiationChart.Legend.Title.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Legend.Title.Pen.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.Legend.Title.Shadow.Visible = False
+        Me.RadiationChart.Legend.Title.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Legend.Title.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Location = New System.Drawing.Point(0, 0)
         Me.RadiationChart.Name = "RadiationChart"
         '
@@ -2271,6 +1727,8 @@ Public Class MetGraphControl
         '
         '
         Me.RadiationChart.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None
+        Me.RadiationChart.Panel.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Panel.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
@@ -2279,42 +1737,26 @@ Public Class MetGraphControl
         '
         '
         Me.RadiationChart.Panel.ImageBevel.Width = 1
-        '
-        '
-        '
-        Me.RadiationChart.Panel.Shadow.Visible = False
         Me.RadiationChart.Series.Add(Me.RainfallBar2)
         Me.RadiationChart.Series.Add(Me.RadiationLine)
         Me.RadiationChart.Series.Add(Me.MaximumRadiationLine)
-        Me.RadiationChart.Size = New System.Drawing.Size(1007, 681)
+        Me.RadiationChart.Size = New System.Drawing.Size(1007, 679)
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.SubFooter.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.SubFooter.Shadow.Visible = False
+        Me.RadiationChart.SubFooter.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.SubFooter.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        '
-        '
-        '
-        Me.RadiationChart.SubHeader.Font.Shadow.Visible = False
-        '
-        '
-        '
-        Me.RadiationChart.SubHeader.Shadow.Visible = False
+        Me.RadiationChart.SubHeader.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.SubHeader.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.TabIndex = 16
         '
         '
@@ -2322,35 +1764,35 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationChart.Walls.Back.AutoHide = False
         '
         '
         '
-        Me.RadiationChart.Walls.Back.Shadow.Visible = False
+        Me.RadiationChart.Walls.Back.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Walls.Back.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Walls.Bottom.AutoHide = False
         '
         '
         '
-        Me.RadiationChart.Walls.Bottom.Shadow.Visible = False
+        Me.RadiationChart.Walls.Bottom.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Walls.Bottom.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Walls.Left.AutoHide = False
         '
         '
         '
-        Me.RadiationChart.Walls.Left.Shadow.Visible = False
+        Me.RadiationChart.Walls.Left.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Walls.Left.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
-        Me.RadiationChart.Walls.Right.AutoHide = False
         '
         '
         '
-        Me.RadiationChart.Walls.Right.Shadow.Visible = False
+        Me.RadiationChart.Walls.Right.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RadiationChart.Walls.Right.Bevel.StringColorTwo = "FF808080"
         Me.RadiationChart.Walls.Visible = False
         '
         'RainfallBar2
@@ -2359,29 +1801,24 @@ Public Class MetGraphControl
         '
         '
         Me.RainfallBar2.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.RainfallBar2.Color = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer))
+        Me.RainfallBar2.ColorEach = False
         '
         '
         '
         '
         '
         '
-        Me.RainfallBar2.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.RainfallBar2.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.RainfallBar2.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.RainfallBar2.Marks.Callout.Distance = 0
-        Me.RainfallBar2.Marks.Callout.Draw3D = False
-        Me.RainfallBar2.Marks.Callout.Length = 20
-        Me.RainfallBar2.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
+        Me.RainfallBar2.Marks.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallBar2.Marks.Bevel.StringColorTwo = "FF808080"
         '
         '
         '
         '
         '
         '
-        Me.RainfallBar2.Marks.Font.Shadow.Visible = False
+        Me.RainfallBar2.Marks.Symbol.Bevel.StringColorOne = "FFFFFFFF"
+        Me.RainfallBar2.Marks.Symbol.Bevel.StringColorTwo = "FF808080"
         Me.RainfallBar2.Marks.Visible = False
         '
         '
@@ -2404,34 +1841,13 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.RadiationLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(128, Byte), Integer))
+        Me.RadiationLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.RadiationLine.Color = System.Drawing.Color.FromArgb(CType(CType(68, Byte), Integer), CType(CType(102, Byte), Integer), CType(CType(163, Byte), Integer))
+        Me.RadiationLine.ColorEach = False
         '
         '
         '
-        Me.RadiationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(115, Byte), Integer), CType(CType(77, Byte), Integer))
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.RadiationLine.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.RadiationLine.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.RadiationLine.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.RadiationLine.Marks.Callout.Distance = 0
-        Me.RadiationLine.Marks.Callout.Draw3D = False
-        Me.RadiationLine.Marks.Callout.Length = 10
-        Me.RadiationLine.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.RadiationLine.Marks.Font.Shadow.Visible = False
+        Me.RadiationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(41, Byte), Integer), CType(CType(61, Byte), Integer), CType(CType(98, Byte), Integer))
         '
         '
         '
@@ -2458,34 +1874,13 @@ Public Class MetGraphControl
         '
         '
         '
-        Me.MaximumRadiationLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.MaximumRadiationLine.Brush.Color = System.Drawing.Color.FromArgb(CType(CType(243, Byte), Integer), CType(CType(156, Byte), Integer), CType(CType(53, Byte), Integer))
+        Me.MaximumRadiationLine.Color = System.Drawing.Color.FromArgb(CType(CType(243, Byte), Integer), CType(CType(156, Byte), Integer), CType(CType(53, Byte), Integer))
+        Me.MaximumRadiationLine.ColorEach = False
         '
         '
         '
-        Me.MaximumRadiationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(0, Byte), Integer), CType(CType(0, Byte), Integer))
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MaximumRadiationLine.Marks.Callout.ArrowHead = Steema.TeeChart.Styles.ArrowHeadStyles.None
-        Me.MaximumRadiationLine.Marks.Callout.ArrowHeadSize = 8
-        '
-        '
-        '
-        Me.MaximumRadiationLine.Marks.Callout.Brush.Color = System.Drawing.Color.Black
-        Me.MaximumRadiationLine.Marks.Callout.Distance = 0
-        Me.MaximumRadiationLine.Marks.Callout.Draw3D = False
-        Me.MaximumRadiationLine.Marks.Callout.Length = 10
-        Me.MaximumRadiationLine.Marks.Callout.Style = Steema.TeeChart.Styles.PointerStyles.Rectangle
-        '
-        '
-        '
-        '
-        '
-        '
-        Me.MaximumRadiationLine.Marks.Font.Shadow.Visible = False
+        Me.MaximumRadiationLine.LinePen.Color = System.Drawing.Color.FromArgb(CType(CType(146, Byte), Integer), CType(CType(94, Byte), Integer), CType(CType(32, Byte), Integer))
         '
         '
         '
@@ -2592,6 +1987,12 @@ Public Class MetGraphControl
         If MetData.Rows.Count > 0 Then
             YearlyData = DataTableUtility.FilterTableForYear(MetData, YearStartBox.Value, YearStartBox.Value + NumYearsBox.Value - 1)
 
+            'JF 061211 - Fix bug in max radiation for years that don't begin at day 1 by sending the starting day to QMax
+            Dim firstDay As Single
+            If (YearlyData.Count > 0) Then
+                firstDay = YearlyData.Item(0)("day")
+            End If
+
             If YearlyData.Table.Columns.IndexOf("Rain") <> -1 Then
                 Dim Rainfall As Double() = DataTableUtility.ColumnValues(YearlyData, "rain")
                 If NumYearsBox.Value = 1 Then
@@ -2604,7 +2005,7 @@ Public Class MetGraphControl
                 RainfallLabel.Text = ""
             End If
             MonthlyData = DataTableUtility.MonthlySums(YearlyData)
-            CalcQmax()
+            CalcQmax(firstDay)
             PopulateSeries(RainfallBar, YearlyData, "Rain")
             PopulateSeries(RainfallBar2, YearlyData, "Rain")
             PopulateSeries(MaximumTemperatureLine, YearlyData, "MaxT")
@@ -2642,7 +2043,7 @@ Public Class MetGraphControl
     End Sub
 
 
-    Private Sub CalcQmax()
+    Private Sub CalcQmax(ByVal firstDay As Single)
         ' ----------------------------------------------------------------------------------
         ' Add a calculated QMax column to the daily data.
         ' ----------------------------------------------------------------------------------
@@ -2657,7 +2058,7 @@ Public Class MetGraphControl
         Dim Latitude As Single = Metfile.Constant("latitude").Value
 
         ' Loop through all rows and calculate a QMax
-        Dim doy As Integer = 0
+        Dim doy As Integer = CType(firstDay, Integer)
         For Row As Integer = 0 To YearlyData.Count - 1
             doy = doy + 1
             If HaveVPColumn AndAlso Not Convert.IsDBNull(YearlyData(Row)("vp")) Then
@@ -2668,7 +2069,5 @@ Public Class MetGraphControl
         Next
 
     End Sub
-
-
 
 End Class
