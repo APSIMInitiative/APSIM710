@@ -10,7 +10,9 @@ public class Phenology
     [Event]
     public event NullTypeDelegate GrowthStage;
     [Link]
-    private ModelEnvironment ModelEnvironment = null;
+    private Component My = null;
+    [Link]
+    private Paddock MyPaddock = null;
 
     private List<Phase> Phases = new List<Phase>();
     private int CurrentPhaseIndex;
@@ -60,9 +62,9 @@ public class Phenology
     public void OnInitialised()
     {
         JustInitialised = true;
-        foreach (string ChildName in ModelEnvironment.ChildNames())
+        foreach (object ChildObject in My.ChildrenAsObjects)
         {
-            Phase Child = ModelEnvironment.Link<Phase>(ChildName);
+            Phase Child = ChildObject as Phase;
             if (Child != null)
                 Phases.Add(Child);
         }
@@ -151,8 +153,7 @@ public class Phenology
                 PhaseChangedData.OldPhaseName = OldPhaseName;
                 PhaseChangedData.NewPhaseName = CurrentPhase.Name;
                 PhaseChanged.Invoke(PhaseChangedData);
-                //MyPaddock is created when ApsimComponent Factory is created
-                ModelEnvironment.Publish(CurrentPhase.Start);
+                MyPaddock.Publish(CurrentPhase.Start);
             }
         }
     }

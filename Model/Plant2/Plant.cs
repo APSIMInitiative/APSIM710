@@ -17,9 +17,9 @@ public class Plant
     Arbitrator Arbitrator = null;
 
     [Link]
-    ModelEnvironment ModelEnvironment = null;
+    Component My = null;
 
-    public string Name { get { return ModelEnvironment.Name; } }
+    public string Name { get { return My.Name; } }
 
 
     private List<Organ> _Organs = new List<Organ>();
@@ -64,7 +64,7 @@ public class Plant
 
     public string FullName
     {
-        get { return ModelEnvironment.FullName; }
+        get { return My.FullName; }
     }
  #endregion
 
@@ -160,11 +160,8 @@ public class Plant
     }
     public object GetPlantVariable(string VariablePath)
     {
-        //object Value;
-        //Value = ModelEnvironment.Get(VariablePath);
-
         double ValueFromGet;
-        if (!ModelEnvironment.Get(VariablePath, out ValueFromGet) ||
+        if (!My.Get(VariablePath, out ValueFromGet) ||
             ValueFromGet == Double.NaN)
             return null;
         return ValueFromGet;
@@ -185,7 +182,7 @@ public class Plant
             return Convert.ToDouble(ExpressionFunction.Evaluate(this, PropertyName));
         else
         {
-            object ArrayObject = ModelEnvironment.Link<object>(FullName + "." + PropertyName.Substring(0, PosBracket));
+            object ArrayObject = My.LinkByName(PropertyName.Substring(0, PosBracket));
             if (ArrayObject != null)
             {
                 string RemainderOfPropertyName = PropertyName;
@@ -274,9 +271,9 @@ public class Plant
     public void OnSow(SowPlant2Type Sow)
     {
         // Go through all our children and find all organs.
-        foreach (string ChildName in ModelEnvironment.ChildNames())
+        foreach (object ChildObject in My.ChildrenAsObjects)
         {
-            Organ Child = ModelEnvironment.Link<Organ>(ChildName);
+            Organ Child = ChildObject as Organ;
             if (Child != null)
                 Organs.Add((Organ)Child);
         }

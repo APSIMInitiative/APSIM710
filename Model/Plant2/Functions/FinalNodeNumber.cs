@@ -9,7 +9,7 @@ public class FinalNodeNumber
 {
     //Class Linkages
     [Link]
-    protected TemperatureFunction ThermalTime = null;
+    protected Function ThermalTime = null;
     [Link(IsOptional=true)]
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
     [Link(IsOptional=true)]

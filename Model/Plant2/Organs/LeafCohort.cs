@@ -75,7 +75,7 @@ public class LeafCohort
     public Function InitialNConcFunction;
 
     [Link]
-    public ModelEnvironment ModelEnvironment;
+    public Paddock MyPaddock;
 #endregion
     
  #region arbitration methods
@@ -312,7 +312,7 @@ public class LeafCohort
     [EventHandler]
     public void OnInitialised()
     {
-        ModelEnvironment.Subscribe(Leaf.InitialiseStage, DoInitialisation);
+        MyPaddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
     }
 
    // virtual public void DoStartSet(double TT)

@@ -67,22 +67,22 @@
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>2 1</XY>
             <XY>20 1</XY>
             <XY>35 1</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
         <GenericPhase name="Growth">
           <Start type="text" description="Start">Planting</Start>
           <End type="text" description="End">Maturity</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
           <Constant name="Target">
             <Value type="text" description="Value">1e6</Value>
           </Constant>
@@ -90,9 +90,9 @@
         <EndPhase name="Maturity">
           <Start>Maturity</Start>
           <End>Unused</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
       <SIRIUSRoot name="Root">
@@ -225,9 +225,9 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">500</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>

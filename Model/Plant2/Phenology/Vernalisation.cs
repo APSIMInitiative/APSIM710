@@ -6,7 +6,7 @@ public class Vernalisation
     Phenology Phenology = null;
 
     [Link]
-    TemperatureFunction VDModel = null;
+    AirTemperatureFunction VDModel = null;
 
     [Param]
     private string StartStage = "";

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 
 abstract public class Phase
@@ -12,9 +13,9 @@ abstract public class Phase
     public string End;
 
     [Link]
-    public ModelEnvironment ModelEnvironment;
+    public Component My;
 
-    public string Name { get { return ModelEnvironment.Name; } }
+    public string Name { get { return My.Name; } }
 
     abstract public double DoTimeStep(double PropOfDayToUse);
     abstract public double FractionComplete { get; }

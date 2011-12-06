@@ -18,10 +18,10 @@ public class PowerFunction : Function
     {
         get
         {
-            string[] ChildNames = ModelEnvironment.ChildNames();
-            if (ChildNames.Length == 1)
+            List<object> Children = My.ChildrenAsObjects;
+            if (Children.Count == 1)
             {
-                Function F = ModelEnvironment.Link<Function>(ChildNames[0]);
+                Function F = Children[0] as Function;
                 return Math.Pow(F.Value, Exponent);
             }
             else

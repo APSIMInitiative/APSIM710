@@ -25,7 +25,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Link(IsOptional=true)]
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
-    protected TemperatureFunction ThermalTime = null;
+    protected Function ThermalTime = null;
     [Link]
     protected Population Population = null;
 

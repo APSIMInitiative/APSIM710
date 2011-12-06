@@ -40,7 +40,6 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     private double StartStructuralWt = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
-    private double ExpansionStress = 1;
     private double InitStutFraction = 1;
 
     //[Link]

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using ModelFramework;
 
 /// <summary>
 /// Sum the values of the child nodes of this node
@@ -16,9 +17,8 @@ public class AddFunction : Function
         {
             double returnValue = 0.0;
 
-            foreach (string ChildName in ModelEnvironment.ChildNames())
+            foreach (Function F in My.ChildrenAsObjects)
             {
-                Function F = ModelEnvironment.Link<Function>(ChildName);
                 returnValue = returnValue + F.Value;
             }
 

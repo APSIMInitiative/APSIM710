@@ -17,12 +17,12 @@ class PhaseJumpFunction
     [Param]
     private string Event = "";
     [Link]
-    private ModelEnvironment ModelEnvironment = null;
+    private Paddock MyPaddock = null;
 
     [EventHandler]
     public void OnInitialised()
     {
-        ModelEnvironment.Subscribe(Event, OnEvent);
+        MyPaddock.Subscribe(Event, OnEvent);
     }
 
     public void OnEvent()

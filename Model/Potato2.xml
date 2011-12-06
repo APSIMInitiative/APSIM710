@@ -143,22 +143,22 @@
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>2 0</XY>
             <XY>20 18</XY>
             <XY>35 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
         <GenericPhase name="Dormant">
           <Start type="text" description="Start">Planting</Start>
           <End type="text" description="End">Peeping</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
           <Constant name="Target">
             <Value type="text" description="Value">1</Value>
           </Constant>
@@ -168,16 +168,16 @@
           <End type="text" description="End Stage">Emergence</End>
           <ShootLag type="text" description="Thermal time lag before linear sprout growth starts (deg days)">72</ShootLag>
           <ShootRate type="text" description="Sprout extension rate (deg day/mm length)">1.35</ShootRate>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </EmergingPhase>
         <GenericPhase name="Vegetative">
           <Start type="text" description="Start">Emergence</Start>
           <End type="text" description="End">TuberInitiation</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
           <Constant name="Target">
             <Value type="text" description="Value">300</Value>
           </Constant>
@@ -186,16 +186,16 @@
           <Start type="text" description="Start stage name">TuberInitiation</Start>
           <End type="text" description="End stage name">FinalLeaf</End>
           <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </LeafAppearancePhase>
         <LeafDeathPhase name="LateTuber">
           <Start type="text" description="Start stage name">FinalLeaf</Start>
           <End type="text" description="End stage name">FullSenescence</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </LeafDeathPhase>
         <GenericPhase name="Senesced">
           <Start type="text" description="Start">FullSenescence</Start>
@@ -203,16 +203,16 @@
           <Constant name="Target">
             <Value type="text" description="Value">200</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <EndPhase name="Maturity">
           <Start>Maturity</Start>
           <End>Unused</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
       <SIRIUSGenericOrgan name="Tuber">
@@ -321,13 +321,13 @@ In addition this organ has a relative growth rate variable and a tubers per stem
         <Constant name="SoilWaterEffect">
           <Value>1.0</Value>
         </Constant>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
             <XY>26 1</XY>
             <XY>35 1</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="xMaxDailyNUptake">
           <Value type="text" description="Value">10</Value>
           <Memo>I the maximum amount of N that the root system can take up each day (kg/ha)</Memo>
@@ -438,9 +438,9 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>

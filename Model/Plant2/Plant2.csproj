@@ -40,6 +40,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSDotNetComponentInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSDotNetComponentInterface.dll</HintPath>
+    </Reference>
     <Reference Include="CSGeneral, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSGeneral.dll</HintPath>
@@ -61,6 +65,7 @@
     </Compile>
     <Compile Include="Arbitrator.cs" />
     <Compile Include="ArrayBiomass.cs" />
+    <Compile Include="Functions\SoilTemperatureFunction.cs" />
     <Compile Include="Functions\Demand Functions\AllometricDemandFunction.cs" />
     <Compile Include="Functions\Demand Functions\PartitionFractionDemandFunction.cs" />
     <Compile Include="Functions\Demand Functions\PopulationBasedDemandFunction.cs" />
@@ -88,7 +93,7 @@
     <Compile Include="Functions\ExpressionFunction.cs" />
     <Compile Include="Functions\MultiplyFunction.cs" />
     <Compile Include="Functions\PowerFunction.cs" />
-    <Compile Include="Functions\SoilTemperatureFunction.cs" />
+    <Compile Include="Functions\SoilTemperatureDepthFunction.cs" />
     <Compile Include="Functions\SubtractFunction.cs" />
     <Compile Include="Functions\Variable.cs" />
     <Compile Include="Functions\WeightedTemperatureFunction.cs" />
@@ -138,7 +143,7 @@
     <Compile Include="RUEModel.cs" />
     <Compile Include="Organs\GenericOrgan.cs" />
     <Compile Include="Summary.cs" />
-    <Compile Include="Functions\TemperatureFunction.cs" />
+    <Compile Include="Functions\AirTemperatureFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
@@ -149,10 +154,6 @@
     <ProjectReference Include="..\CMPServices\CMPServices.csproj">
       <Project>{4A1A4A3C-F937-488D-BE0B-F2435678FCEF}</Project>
       <Name>CMPServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CSDotNetComponentInterface\CSDotNetComponentInterface.csproj">
-      <Project>{F5238838-4CC7-4953-8745-312CF93BEBCE}</Project>
-      <Name>CSDotNetComponentInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

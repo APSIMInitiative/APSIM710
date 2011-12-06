@@ -8,8 +8,10 @@ class OnEventFunction : Function
     [Param]
     private string Event = "";
     private double _Value = 0;
+
+
     [Link]
-    private ModelEnvironment MyPaddock = null;
+    private Paddock MyPaddock = null;
 
     [EventHandler] 
     public void OnInitialised()
@@ -19,12 +21,12 @@ class OnEventFunction : Function
 
     public void OnEvent()
     {
-        string[] Children = MyPaddock.ChildNames();
+        List<object> Children = My.ChildrenAsObjects;
         
-        if (Children.Length == 0)
+        if (Children.Count == 0)
             throw new Exception("Cannot find function in function: " + Name);
 
-        Function F = MyPaddock.Link<Function>(Children[0]);
+        Function F = Children[0] as Function;
         _Value = F.Value;
     }
 

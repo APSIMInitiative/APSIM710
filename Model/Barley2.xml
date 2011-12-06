@@ -73,14 +73,30 @@
         </Memo>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
-          <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>30 30</XY>
-            <XY>40 0</XY>
-          </XYPairs>
-        </TemperatureFunction>
+        <PhaseLookup name="ThermalTime">
+          <PhaseLookupValue name="SoilTemperature">
+            <Start type="text" description="Start">Sowing</Start>
+            <End type="text" description="End">FloralInitiation</End>
+            <SoilTemperatureFunction name="ThermalTime">
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>30 30</XY>
+                <XY>40 0</XY>
+              </XYPairs>
+            </SoilTemperatureFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="AirTemperature">
+            <Start type="text" description="Start">FloralInitiation</Start>
+            <End type="text" description="End">HarvestRipe</End>
+            <AirTemperatureFunction name="ThermalTime">
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>30 30</XY>
+                <XY>40 0</XY>
+              </XYPairs>
+            </AirTemperatureFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
           <End>Germination</End>
@@ -90,14 +106,18 @@
           <End>Emergence</End>
           <ShootLag units="oCd" description="Time lag before linear coleoptile growth starts">40.0</ShootLag>
           <ShootRate units="oCd/mm" description="Growing deg day increase with depth for coleoptile">1.50</ShootRate>
-          <TemperatureFunction name="ThermalTime">
-            <SoilTemperaturePhases> Germinating Emerging Inductive </SoilTemperaturePhases>
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>30 30</XY>
-              <XY>40 0</XY>
-            </XYPairs>
-          </TemperatureFunction>
+          <PhaseLookup name="ThermalTime" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime">
+            <PhaseLookupValue name="SoilTemperature" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/SoilTemperature">
+              <SoilTemperatureFunction name="ThermalTime" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/SoilTemperature/ThermalTime">
+                <XYPairs shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/SoilTemperature/ThermalTime/XYPairs" />
+              </SoilTemperatureFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="AirTemperature" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/AirTemperature">
+              <AirTemperatureFunction name="ThermalTime" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/AirTemperature/ThermalTime">
+                <XYPairs shortcut="/Barley2/Model/Plant/Phenology/ThermalTime/AirTemperature/ThermalTime/XYPairs" />
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
         </EmergingPhase>
         <FacultativeVernalisationPhase name="Inductive">
           <Start>Emergence</Start>
@@ -113,13 +133,13 @@
           <Start>FloralInitiation</Start>
           <End>FlagLeaf</End>
           <RemainingLeaves type="text" description="RemainingLeaves">0</RemainingLeaves>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </LeafAppearancePhase>
         <GenericPhase name="FlagLeafToFlowering">
           <Start>FlagLeaf</Start>
@@ -127,13 +147,13 @@
           <Constant name="Target">
             <Value>333</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="FloweringToGrainFilling">
           <Start>Flowering</Start>
@@ -141,13 +161,13 @@
           <Constant name="Target">
             <Value>120</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="GrainFilling">
           <Start>StartGrainFill</Start>
@@ -155,13 +175,13 @@
           <Constant name="Target">
             <Value>545</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Maturing">
           <Start>EndGrainFill</Start>
@@ -169,13 +189,13 @@
           <Constant name="Target">
             <Value>36</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="MaturityToHarvestRipe">
           <Start>Maturity</Start>
@@ -183,24 +203,24 @@
           <Constant name="Target">
             <Value>1</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start>HarvestRipe</Start>
           <End>Unused</End>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0</XY>
               <XY>30 30</XY>
               <XY>40 0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
       <SIRIUSGrain name="Grain">
@@ -233,40 +253,40 @@
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
             <End>StartGrainFill</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0.0</XY>
                 <XY>26 0.001</XY>
                 <XY>30 0.001</XY>
                 <XY>35 0.001</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateGrainGrowth">
             <Start>StartGrainFill</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0.0</XY>
                 <XY>26 0.002</XY>
                 <XY>30 0.002</XY>
                 <XY>35 0.002</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <PhaseLookup name="NFillingRate">
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>25 5.5E-05</XY>
                 <XY>30 5.5E-05</XY>
                 <XY>35 5.5E-05</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <PhaseBasedSwitch name="NitrogenDemandSwitch">
@@ -301,13 +321,13 @@
         <Constant name="SoilWaterEffect">
           <Value>1.0</Value>
         </Constant>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
             <XY>26 1</XY>
             <XY>35 1</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="MaxDailyNUptake">
           <Value type="text" description="Value">20</Value>
         </Constant>
@@ -410,7 +430,7 @@
               </Constant>
             </DivideFunction>
           </PhaseLookupValue>
-          <TemperatureFunction shortcut="/Barley2/Model/Plant/Leaf/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Barley2/Model/Plant/Leaf/ThermalTime" />
           <TerminateFinalNodeNumber>
             <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">0.6</PhotoperiodSensitivity>
             <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
@@ -498,13 +518,13 @@
             <XY>6 1200</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>0 0</XY>
             <XY>26 26</XY>
             <XY>34 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.NodeNo</XProperty>
           <XYPairs>
@@ -587,12 +607,12 @@
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<StageBasedInterpolation name="PartitionFraction">
-			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-			  <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
-			</StageBasedInterpolation>
-		</PartitionFractionDemandFunction>
-		<Constant name="StructuralFraction">
+          <StageBasedInterpolation name="PartitionFraction">
+            <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+            <Values>    0.0       0.00      0.00             0.0       0.4         0.0         0.0           0.0     0.0 </Values>
+          </StageBasedInterpolation>
+        </PartitionFractionDemandFunction>
+        <Constant name="StructuralFraction">
           <Value>1.0</Value>
         </Constant>
         <Constant name="MinimumNConc">
@@ -622,10 +642,10 @@
           <Value type="text" description="Value">0.1</Value>
         </Constant>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<StageBasedInterpolation name="PartitionFraction">
-			  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-			  <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-			</StageBasedInterpolation>
+          <StageBasedInterpolation name="PartitionFraction">
+            <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+            <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+          </StageBasedInterpolation>
         </PartitionFractionDemandFunction>
         <PhaseLookup name="StructuralFraction">
           <PhaseLookupValue name="Early">

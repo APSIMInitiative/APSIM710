@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using CSGeneral;
+using ModelFramework;
 
 /// <summary>
 /// Returns the value of a nominated external APSIM numerical variable.
@@ -15,6 +16,9 @@ public class ExternalVariable : Function
     [Param]
     private string VariableName = "";
 
+    [Link]
+    private Paddock MyPaddock = null;
+
     [Output]
     public override double Value
     {
@@ -22,7 +26,7 @@ public class ExternalVariable : Function
         {
             double val;
 
-            if (ModelEnvironment.Get(VariableName, out val))
+            if (MyPaddock.Get(VariableName, out val))
                  return Convert.ToDouble(val);
             else 
                  throw new Exception(Name + ": External value for " + VariableName.Trim() + " not found");

@@ -38,13 +38,6 @@ namespace ModelFramework
         //    if (Types.Instance.TypeNames.Length == 0)
         //        PlugIns.LoadAll();
         //}
-        public new String Name
-        {
-            get
-            {
-                return base.Name(); //name of the component (Paddock)
-            }
-        }
         // --------------------------------------------------------------------
         /// <summary>
         /// 
@@ -62,7 +55,7 @@ namespace ModelFramework
         /// Return a list of all child paddock components to caller.
         /// </summary>
         // --------------------------------------------------------------------
-        public List<Paddock> SubPaddocks
+        public List<Paddock> ChildPaddocks
         {
             get
             {

@@ -7,6 +7,16 @@ using System.Reflection;
 
 namespace ModelFramework
 {
+	public class RuntimeEventHandler
+		{
+		// --------------------------------------------------------------------
+		// A class for representing an event handler that has been subscribed
+		// to at runtime. It is a wrapper around a method in an object.
+		// --------------------------------------------------------------------
+		public delegate void NullFunction();
+
+		private NullFunction F;
+		}
     /// <summary>
     /// --------------------------------------------------------------------
     /// Returns the singleton instance of a reflection class that is
@@ -116,37 +126,28 @@ namespace ModelFramework
         {
         throw new NotImplementedException();
         }
-        //// --------------------------------------------------------------------
-        ///// <summary>
-        ///// Publish an event that has associated data to this component only.
-        ///// </summary>
-        ///// <param name="EventName"></param>
-        ///// <param name="Data"></param>
-        //// --------------------------------------------------------------------
-        //public virtual void Publish(String EventName, ApsimType Data)
-        //{
-        //    HostComponent.Publish(FQN + "." + EventName, Data);
-        //}
-        //// --------------------------------------------------------------------
-        ///// <summary>
-        ///// Subscribe to a notification event ie. one without any data associated with it.
-        ///// </summary>
-        ///// <param name="EventName"></param>
-        ///// <param name="F"></param>
-        //// --------------------------------------------------------------------
-        //public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
-        //{
-        //    RuntimeEventHandler Event = new RuntimeEventHandler(EventName, F);
-        //    HostComponent.Subscribe(Event);
-        //}
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Subscribe to a notification event ie. one without any data associated with it.
+        /// </summary>
+        /// <param name="EventName"></param>
+        /// <param name="F"></param>
+        // --------------------------------------------------------------------
+        public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
+        {
+            throw new NotImplementedException();
+        }		
+		
         // --------------------------------------------------------------------
         /// <summary>
         /// </summary>
         /// <returns>Unqualified name of the component.</returns>
         // --------------------------------------------------------------------
-        public string Name()
+        public string Name
         {
+			get {
             throw new NotImplementedException();
+			}
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -160,6 +161,28 @@ namespace ModelFramework
         {
             throw new NotImplementedException();
         }
+		
+        //=========================================================================
+        /// <summary>
+        /// Returns a component that is a child of the paddock
+        /// <param name="TypeToFind">The type to find. [Type.]ProxyClass</param>
+        /// </summary>
+        //=========================================================================
+        public object LinkByType(String TypeToFind)
+        {
+            throw new NotImplementedException();
+        }
+        //=========================================================================
+        /// <summary>
+        /// Return a child component of the paddock by unqualified name.
+        /// </summary>
+        /// <param name="NameToFind">Unqualified name</param>
+        /// <returns></returns>
+        //=========================================================================
+        public object LinkByName(String NameToFind)
+			{
+            throw new NotImplementedException();
+			}
         // --------------------------------------------------------------------
         /// <summary>
         /// Fully qualified name of component eg. .MasterPM.paddock1.wheat
@@ -172,6 +195,13 @@ namespace ModelFramework
                 return FQN;
             }
         }
+		
+        public virtual List<object> ChildrenAsObjects
+				{
+				get {
+				throw new NotImplementedException();
+					}
+				}
 
         /// <summary>
         /// 
@@ -182,6 +212,145 @@ namespace ModelFramework
         {
             throw new NotImplementedException(); 
         }
+ 
+ 
+         /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out int Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out float Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out double Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out string Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out int[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out float[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out double[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out string[] Data)
+        {
+            throw new NotImplementedException();
+        }
+         /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, int Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, float Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, double Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, string Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, int[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, float[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, double[] Data)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// </summary>
+        public bool Set(string NamePath, string[] Data)
+        {
+            throw new NotImplementedException();
+        }
+
  
     }
 

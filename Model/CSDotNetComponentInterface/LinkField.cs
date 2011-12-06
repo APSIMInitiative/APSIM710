@@ -71,7 +71,10 @@ public class LinkField
             else
                 NameToFind = LinkAttr.NamePath;
 
-            if (TypeToFind == "ModelEnvironment")
+            if (NameToFind == "My")
+                ReferencedObject = new ModelFramework.Component(In);
+
+            else if (TypeToFind == "ModelEnvironment")
             {
                 ReferencedObject = new ModelEnvironment(In);
             }

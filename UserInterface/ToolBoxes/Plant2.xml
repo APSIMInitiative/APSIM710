@@ -54,15 +54,23 @@
         <Value type="text" description="Value">7</Value>
         <Memo>How much biomass is burned per g of N fixed.  Value taken from CropGro for soybean</Memo>
       </Constant>
-      <TemperatureFunction name="FT">
+      <AirTemperatureFunction>
         <XYPairs>
           <XY>5 0</XY>
           <XY>20 1</XY>
           <XY>30 1</XY>
           <XY>40 0</XY>
         </XYPairs>
-      </TemperatureFunction>
-      <LinearInterpolationFunction name="FW">
+      </AirTemperatureFunction>
+      <SoilTemperatureFunction>
+        <XYPairs>
+          <XY>5 0</XY>
+          <XY>20 1</XY>
+          <XY>30 1</XY>
+          <XY>40 0</XY>
+        </XYPairs>
+      </SoilTemperatureFunction>
+      <LinearInterpolationFunction>
         <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
         <XYPairs>
           <XY>0 0</XY>
@@ -70,7 +78,7 @@
           <XY>1.5 1</XY>
         </XYPairs>
       </LinearInterpolationFunction>
-      <LinearInterpolationFunction name="FWlog">
+      <LinearInterpolationFunction>
         <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
         <XYPairs>
           <XY>0 1</XY>
@@ -1225,13 +1233,13 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
   </folder>
   <folder name="Functions">
     <folder name="DMDemand Functions">
-	  <PartitionFractionDemandFunction name="DMDemandFunction">
-		<StageBasedInterpolation name="PartitionFraction">
-		  <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
-		  <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
-		</StageBasedInterpolation>
-	  </PartitionFractionDemandFunction>
-	<AllometricDemandFunction>
+      <PartitionFractionDemandFunction name="DMDemandFunction">
+        <StageBasedInterpolation name="PartitionFraction">
+          <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
+          <Values>    0.0       0.40      0.40             0.6       0.6         0.0         0.0           0.0     0.0 </Values>
+        </StageBasedInterpolation>
+      </PartitionFractionDemandFunction>
+      <AllometricDemandFunction>
         <Power type="text" description="Power term in allometric power function">1.0</Power>
         <XProperty type="text" description="Value from which demand is calculated">AboveGroundWt</XProperty>
         <YProperty type="text" description="DM pool for which demand is calculated">Stem.TotalWt</YProperty>

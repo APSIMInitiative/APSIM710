@@ -9,6 +9,9 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     [Link]
     Plant Plant = null;
 
+    [Link]
+    Paddock MyPaddock = null;
+
     private double Uptake = 0;
     private string CurrentPaddockName;
     private string OurName;
@@ -50,7 +53,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         get
         {
-            if (ModelEnvironment.Link<ModelFramework.Root>(Plant.Name + "Root") != null)
+            if (MyPaddock.LinkByName(Plant.Name + "Root") != null)
                 return true;
             else
                 return false;
@@ -62,7 +65,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         get
         {
-            CurrentPaddockName = StringManip.ParentName(Plant.FullName);
+            CurrentPaddockName = MyPaddock.FullName;
             OurName = CurrentPaddockName;
             if (OurName != ".")
                 OurName += ".";
@@ -73,20 +76,17 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
             double[] SWSupply;
             if (TalkDirectlyToRoot)
             {
-                ModelEnvironment.Get(OurName + "Root.SWSupply", out SWSupply);
+                MyPaddock.Get(OurName + "Root.SWSupply", out SWSupply);
                 return MathUtility.Sum(SWSupply);
             }
 
             else
             {
                 double Total = 0;
-                foreach (string SubPaddockName in ModelEnvironment.ChildNames(CurrentPaddockName))
+                foreach (Paddock SubPaddock in MyPaddock.ChildPaddocks)
                 {
-                    if (SubPaddockName.ToLower().Contains("paddock"))
-                    {
-                        ModelEnvironment.Get(SubPaddockName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
-                        Total += MathUtility.Sum(SWSupply);
-                    }
+                    MyPaddock.Get(SubPaddock.FullName + "." + Plant.Name + "Root.SWSupply", out SWSupply);
+                    Total += MathUtility.Sum(SWSupply);
                 }
                 return Total;
             }
@@ -100,22 +100,19 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     {
         Uptake = Amount;
         if (TalkDirectlyToRoot)
-            ModelEnvironment.Set(OurName + "Root.SWUptake", Amount);
+            MyPaddock.Set(OurName + "Root.SWUptake", Amount);
 
         else
         {
             List<string> ModelNames = new List<string>();
             List<double> Supply = new List<double>();
-            foreach (string SubPaddockName in ModelEnvironment.ChildNames(CurrentPaddockName))
+            foreach (Paddock SubPaddock in MyPaddock.ChildPaddocks)
             {
-                if (SubPaddockName.ToLower().Contains("paddock"))
-                {
-                    double[] SWSupply;
-                    string ModelName = SubPaddockName + "." + Plant.Name + "Root";
-                    ModelEnvironment.Get(ModelName + ".SWSupply", out SWSupply);
-                    Supply.Add(MathUtility.Sum(SWSupply));
-                    ModelNames.Add(ModelName);
-                }
+                double[] SWSupply;
+                string ModelName = SubPaddock.FullName + "." + Plant.Name + "Root";
+                MyPaddock.Get(ModelName + ".SWSupply", out SWSupply);
+                Supply.Add(MathUtility.Sum(SWSupply));
+                ModelNames.Add(ModelName);
             }
             double fraction = Amount / MathUtility.Sum(Supply);
             if (fraction > 1)
@@ -123,8 +120,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
             int i = 0;
             foreach (string ModelName in ModelNames)
             {
-                ModelEnvironment.Set(ModelName + ".SWUptake", 
-                                     Supply[i] * fraction);
+                MyPaddock.Set(ModelName + ".SWUptake", Supply[i] * fraction);
                 i++;
             }
 

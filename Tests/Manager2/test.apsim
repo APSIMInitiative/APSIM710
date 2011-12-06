@@ -500,6 +500,23 @@ public class Script
       Console.WriteLine("Simulation children:");
       foreach (Component Child in MyPaddock.Parent.Children)
          Console.WriteLine("   " + Child.FullName);
+    
+      // ========================================================================
+      // ChildrenAsObjects method
+      // ========================================================================
+      if (My.ChildrenAsObjects[0] is ScriptChild)
+      {
+         // All is good.
+      }
+      else
+         throw new Exception("My.ChildrenAsObjects failed");
+
+      // ========================================================================
+      // Paddock.Crops
+      // ========================================================================
+      Console.WriteLine("Paddock crops:");
+      foreach (Component Child in MyPaddock.Crops)
+         Console.WriteLine("   " + Child.FullName);
       
       // ========================================================================
       // Link method

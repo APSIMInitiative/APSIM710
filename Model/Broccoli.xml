@@ -74,30 +74,30 @@
         <Vernalisation>
           <StartStage>EndShock</StartStage>
           <EndStage>FloralInitiation</EndStage>
-          <TemperatureFunction name="VDModel">
+          <AirTemperatureFunction name="VDModel">
             <XYPairs>
               <XY> 0 0.0</XY>
               <XY> 2 1.0</XY>
               <XY>15 0.0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </Vernalisation>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY> 5 0.0</XY>
             <XY>25 20.0</XY>
             <XY>35 0.0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <GenericPhase name="Shock">
           <Start>Transplanting</Start>
           <End>EndShock</End>
           <Constant name="Target">
             <Value>80</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Juvenile">
           <Start>EndShock</Start>
@@ -109,17 +109,17 @@
               <XY> 30  0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <LeafAppearancePhase name="Vegetative">
           <Start type="text" description="Start">FloralInitiation</Start>
           <End type="text" description="End">StartBudding</End>
           <RemainingLeaves type="text" description="RemainingLeaves">22</RemainingLeaves>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </LeafAppearancePhase>
         <GenericPhase name="Budding">
           <Start>StartBudding</Start>
@@ -127,9 +127,9 @@
           <Constant name="Target">
             <Value>120</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Heading">
           <Start>Buttoning</Start>
@@ -137,16 +137,16 @@
           <Constant name="Target">
             <Value>180</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <EndPhase name="Mature">
           <Start>Maturity</Start>
           <End>Unused</End>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
       <SIRIUSLeaf name="Leaf">
@@ -197,13 +197,13 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>5 0</XY>
             <XY>25 20</XY>
             <XY>35 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">8</InitialLeafPrimordia>
@@ -214,7 +214,7 @@
               <Value>15.0</Value>
             </Constant>
           </PhaseLookupValue>
-          <TemperatureFunction shortcut="/Broccoli/Model/Plant/Leaf/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>
@@ -567,13 +567,13 @@
             <XY>3 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 0</XY>
             <XY>20 1</XY>
             <XY>32 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="PartitionFraction">
           <Value>0.2</Value>
         </Constant>

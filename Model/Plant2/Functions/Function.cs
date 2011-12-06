@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 abstract public class Function
 {
@@ -8,7 +9,7 @@ abstract public class Function
     virtual public string ValueString { get { return Value.ToString(); } }
 
     [Link]
-    public ModelEnvironment ModelEnvironment = null;
+    public Component My = null;
 
-    public string Name { get { return ModelEnvironment.Name; } }
+    public string Name { get { return My.Name; } }
 }

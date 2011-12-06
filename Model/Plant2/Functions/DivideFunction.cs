@@ -15,16 +15,16 @@ public class DivideFunction : Function
         get
         {
             double returnValue = 0.0;
-            string[] ChildNames = ModelEnvironment.ChildNames();
-            if (ChildNames.Length > 0)
+            List<object> Children = My.ChildrenAsObjects;
+            if (Children.Count > 0)
             {
-                Function F = ModelEnvironment.Link<Function>(ChildNames[0]);
+                Function F = Children[0] as Function;
                 returnValue = F.Value;
 
-                if (ChildNames.Length > 1)
-                    for (int i = 1; i < ChildNames.Length; i++)
+                if (Children.Count > 1)
+                    for (int i = 1; i < Children.Count; i++)
                     {
-                        F = ModelEnvironment.Link<Function>(ChildNames[i]);
+                        F = Children[i] as Function;
                         returnValue = returnValue / F.Value;
                     }
 

@@ -89,13 +89,13 @@
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>4.5 0</XY>
             <XY>30 25.5</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
@@ -108,7 +108,7 @@
           <End type="text" description="End">Emergence</End>
           <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
           <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">5</ShootRate>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
         <GenericPhase name="EmergenceToEndJuvenile">
           <Start type="text" description="Start">Emergence</Start>
@@ -116,7 +116,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">200</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="EndJuvenileToInitiation">
           <Start type="text" description="Start">EndJuvenile</Start>
@@ -128,7 +128,7 @@
               <XY>17 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="InitiationToFlowering">
           <Start type="text" description="Start">FloralInitiation</Start>
@@ -136,7 +136,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">33</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="FloweringToStartGrainFilling">
           <Start type="text" description="Start">Flowering</Start>
@@ -148,7 +148,7 @@
               <XY>24 450</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="PodFilling">
           <Start type="text" description="Start">StartPodGrowth</Start>
@@ -156,7 +156,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">690</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Maturing">
           <Start type="text" description="Start">EndGrainFill</Start>
@@ -164,7 +164,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">60</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="MaturityToHarvestRipe">
           <Start type="text" description="Start">Maturity</Start>
@@ -172,12 +172,12 @@
           <Constant name="Target">
             <Value type="text" description="Value">1</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <EndPhase name="ReadyForHarvesting">
           <Start type="text" description="Start">HarvestRipe</Start>
           <End type="text" description="End">Unused</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
       <SIRIUSGrain name="Grain">
@@ -214,40 +214,40 @@
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
             <End>StartPodGrowth</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>26 0.01</XY>
                 <XY>30 0.01</XY>
                 <XY>35 0.01</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateGrainGrowth">
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>26 0.02</XY>
                 <XY>30 0.02</XY>
                 <XY>35 0.02</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <PhaseLookup name="NFillingRate">
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>0 0</XY>
                 <XY>25 0.1</XY>
                 <XY>30 0.1</XY>
                 <XY>35 0.1</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <PhaseBasedSwitch name="NitrogenDemandSwitch">
@@ -284,13 +284,13 @@
             <XY>3 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
             <XY>26 1</XY>
             <XY>35 1</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
         </Constant>
@@ -365,14 +365,14 @@
           <Value type="text" description="Value">7</Value>
           <Memo>How much biomass is burned per g of N fixed.  Value taken from CropGro for soybean</Memo>
         </Constant>
-        <TemperatureFunction name="FT">
+        <AirTemperatureFunction name="FT">
           <XYPairs>
             <XY>5 0</XY>
             <XY>20 1</XY>
             <XY>30 1</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <LinearInterpolationFunction name="FW">
           <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
           <XYPairs>
@@ -510,13 +510,13 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>4.5 0</XY>
             <XY>30 25.5</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
@@ -528,7 +528,7 @@
             </Constant>
             <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
           </PhaseLookupValue>
-          <TemperatureFunction shortcut="/FieldPea2/Model/Plant/Leaf/ThermalTime" />
+          <AirTemperatureFunction shortcut="/FieldPea2/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start type="text" description="Start">Emergence</Start>

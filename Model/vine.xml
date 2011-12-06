@@ -116,28 +116,28 @@
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>7 0.0</XY>
             <XY>22 15.0</XY>
             <XY>30 15.0</XY>
             <XY>35 0.0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <GenericPhase name="Dormant">
           <Start>StartDormancy</Start>
           <End>EndDormancy</End>
           <Constant name="Target">
             <Value>30</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime">
+          <AirTemperatureFunction name="ThermalTime">
             <XYPairs>
               <XY>0 0.0</XY>
               <XY>1 1.0</XY>
               <XY>2 1.0</XY>
               <XY>15 0.0</XY>
             </XYPairs>
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Budding">
           <Start>EndDormancy</Start>
@@ -145,7 +145,7 @@
           <Constant name="Target">
             <Value>200</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="ShootGrowth">
           <Start>BudBurst</Start>
@@ -153,7 +153,7 @@
           <Constant name="Target">
             <Value>442</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="FlowerDevelopment">
           <Start>Flowering</Start>
@@ -161,7 +161,7 @@
           <Constant name="Target">
             <Value>150</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="BerryDevelopment">
           <Start>Set</Start>
@@ -169,7 +169,7 @@
           <Constant name="Target">
             <Value>600</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Ripening">
           <Start>Veraison</Start>
@@ -177,12 +177,12 @@
           <Constant name="Target">
             <Value>510</Value>
           </Constant>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <LeafDeathPhase name="Senescent">
           <Start>Ripe</Start>
           <End>LeafFall</End>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Phenology/ThermalTime" />
         </LeafDeathPhase>
         <GotoPhase name="Rewind">
           <Start>LeafFall</Start>
@@ -225,16 +225,16 @@
             </Constant>
             <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
           </PhaseLookupValue>
-          <TemperatureFunction shortcut="/Vine/Model/Plant/Leaf/ThermalTime" />
+          <AirTemperatureFunction shortcut="/Vine/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>7 0.0</XY>
             <XY>22 15.0</XY>
             <XY>30 15.0</XY>
             <XY>35 0.0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 
@@ -410,26 +410,26 @@
           <PhaseLookupValue name="EarlyBerryGrowth">
             <Start>Flowering</Start>
             <End>Veraison</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>7 0.0</XY>
                 <XY>22 0.00133</XY>
                 <XY>30 0.00133</XY>
                 <XY>35 0.0</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="LateBerryGrowth">
             <Start>Veraison</Start>
             <End>Ripe</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>7 0.0</XY>
                 <XY>22 0.0072</XY>
                 <XY>30 0.0072</XY>
                 <XY>35 0.0</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="NFillingRate">
@@ -481,13 +481,13 @@
         <Constant name="KLModifier">
           <Value>1.0</Value>
         </Constant>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 0.0</XY>
             <XY>26 1.0</XY>
             <XY>35 0.0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="RootFrontVelocity">
           <Value>10.0</Value>
         </Constant>

@@ -15,11 +15,8 @@ public class MultiplyFunction : Function
         {
             double returnValue = 1.0;
 
-            foreach (string ChildName in ModelEnvironment.ChildNames())
-            {
-                Function F = ModelEnvironment.Link<Function>(ChildName);
+            foreach (Function F in My.ChildrenAsObjects)
                 returnValue = returnValue * F.Value;
-            }
             return returnValue;
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 public interface AboveGround
    {
@@ -20,9 +21,9 @@ abstract public class Organ
     public Biomass Dead = null;
 
     [Link]
-    public ModelEnvironment ModelEnvironment = null;
+    public Component My = null;
 
-    public string Name { get { return ModelEnvironment.Name; } }
+    public string Name { get { return My.Name; } }
 
     //DryMatter methods
     abstract public double DMDemand { get; }

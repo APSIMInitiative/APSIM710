@@ -68,21 +68,21 @@
         </Constant>
       </SIRIUSArbitrator>
       <Phenology>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>5 0</XY>
             <XY>25 20</XY>
             <XY>35 20</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <GenericPhase name="Emergent">
           <Start>Germination</Start>
           <End>Emergence</End>
           <Constant name="Target">
             <Value>100</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Vegetative">
           <Start>Emergence</Start>
@@ -90,7 +90,7 @@
           <Constant name="Target">
             <Value>529</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Flowering">
           <Start>Flowering</Start>
@@ -98,7 +98,7 @@
           <Constant name="Target">
             <Value>185</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="PodFilling">
           <Start>StartPodGrowth</Start>
@@ -106,12 +106,12 @@
           <Constant name="Target">
             <Value>265</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <EndPhase name="HarvestRipe">
           <Start>Maturity</Start>
           <End>Unused</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
       <SIRIUSGrain name="Pod">
@@ -150,52 +150,52 @@
           <PhaseLookupValue name="EarlyPodGrowth">
             <Start>Flowering</Start>
             <End>StartPodGrowth</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>5 0.002</XY>
                 <XY>25 0.002</XY>
                 <XY>30 0.002</XY>
                 <XY>35 0.002</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="LatePodGrowth">
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>5 0.06</XY>
                 <XY>25 0.06</XY>
                 <XY>30 0.06</XY>
                 <XY>35 0.06</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <PhaseLookup name="NFillingRate">
           <PhaseLookupValue name="EarlyPodGrowth">
             <Start>Flowering</Start>
             <End>StartPodGrowth</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>5 7E-05</XY>
                 <XY>25 7E-05</XY>
                 <XY>30 7E-05</XY>
                 <XY>35 7E-05</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
           <PhaseLookupValue name="LatePodGrowth">
             <Start>StartPodGrowth</Start>
             <End>Maturity</End>
-            <TemperatureFunction name="Function">
+            <AirTemperatureFunction name="Function">
               <XYPairs>
                 <XY>5 0.0014</XY>
                 <XY>25 0.0014</XY>
                 <XY>30 0.0014</XY>
                 <XY>35 0.0014</XY>
               </XYPairs>
-            </TemperatureFunction>
+            </AirTemperatureFunction>
           </PhaseLookupValue>
         </PhaseLookup>
         <Constant name="NConc">
@@ -250,13 +250,13 @@
             <XY>3 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 1</XY>
             <XY>26 1</XY>
             <XY>35 1</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <PhaseLookup name="RootFrontVelocity">
           <PhaseLookupValue name="Early">
             <Start>Germination</Start>
@@ -320,13 +320,13 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>5 9</XY>
             <XY>25 16</XY>
             <XY>37 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
@@ -338,7 +338,7 @@
             </Constant>
             <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
           </PhaseLookupValue>
-          <TemperatureFunction shortcut="/FrenchBean/Model/Plant/Leaf/ThermalTime" />
+          <AirTemperatureFunction shortcut="/FrenchBean/Model/Plant/Leaf/ThermalTime" />
         </FinalNodeNumber>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>

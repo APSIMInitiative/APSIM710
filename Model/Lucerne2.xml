@@ -83,7 +83,7 @@
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
-        <TemperatureFunction name="ThermalTime">
+        <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
             <XY>1 0</XY>
             <XY>5 3</XY>
@@ -92,7 +92,7 @@
             <XY>30 25</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
           <End>Germination</End>
@@ -102,7 +102,7 @@
           <End type="text" description="End">Emergence</End>
           <ShootLag type="text" description="Time lag before linear coleoptile growth starts (deg days)">15</ShootLag>
           <ShootRate type="text" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2</ShootRate>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </EmergingPhase>
         <GenericPhase name="EmergenceToEndJuvenile">
           <Start type="text" description="Start">Emergence</Start>
@@ -110,12 +110,12 @@
           <Constant name="Target">
             <Value type="text" description="Value">300</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="EndJuvenileToInitiation">
           <Start type="text" description="Start">EndJuvenile</Start>
           <End type="text" description="End">FloralInitiation</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
             <Event type="text" description="Event">EndJuvenile</Event>
             <LinearInterpolationFunction name="TemporaryTarget">
@@ -136,7 +136,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">260</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="FloweringToStartPodGrowth">
           <Start type="text" description="Start">Flowering</Start>
@@ -144,7 +144,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">100</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="PodFilling">
           <Start type="text" description="Start">StartPodGrowth</Start>
@@ -152,7 +152,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">9900</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="Ripening">
           <Start type="text" description="Start">Maturity</Start>
@@ -160,7 +160,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">9400</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <PhaseJumpFunction name="JumpToRegrowth">
           <Start type="text" description="Start stage name:">Germination</Start>
@@ -171,7 +171,7 @@
         <GenericPhase name="RGVeg">
           <Start type="text" description="Start stage name">StartRegrowth</Start>
           <End type="text" description="End stage name">RGFloralInitiation</End>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
             <Event type="text" description="Event">StartRegrowth</Event>
             <LinearInterpolationFunction name="TemporaryTarget">
@@ -192,7 +192,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">260</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GenericPhase name="RGFloweringtoStartPodGrowth">
           <Start type="text" description="Start stage name">RGFlowering</Start>
@@ -200,7 +200,7 @@
           <Constant name="Target">
             <Value type="text" description="Value">100</Value>
           </Constant>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
         <GotoPhase>
           <Start type="text" description="Start stage name">EndRegrowth</Start>
@@ -309,9 +309,9 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
               </Constant>
             </PhaseLookupValue>
           </PhaseLookup>
-          <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+          <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
             <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </TemperatureFunction>
+          </AirTemperatureFunction>
         </FinalNodeNumber>
         <PhaseLookup name="NodeAppearanceRate">
           <PhaseLookupValue name="Juvenile">
@@ -603,9 +603,9 @@ LAI expansion needs attention in the future.</Memo>
             <XY>0.900001 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <TemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+        <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <PhaseLookup name="CriticalNConc" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc">
           <PhaseLookupValue name="Vegetative" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Vegetative">
             <Constant name="Function" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Vegetative/Function" />
@@ -729,14 +729,14 @@ LAI expansion needs attention in the future.</Memo>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
-        <TemperatureFunction name="TemperatureEffect">
+        <AirTemperatureFunction name="TemperatureEffect">
           <XYPairs>
             <XY>0 0</XY>
             <XY>8 1</XY>
             <XY>25 1</XY>
             <XY>40 0</XY>
           </XYPairs>
-        </TemperatureFunction>
+        </AirTemperatureFunction>
         <Constant name="MaxDailyNUptake">
           <Value>6.0</Value>
         </Constant>
@@ -814,10 +814,10 @@ LAI expansion needs attention in the future.</Memo>
             </SubtractFunction>
           </PhaseLookupValue>
         </PhaseLookup>
-        <SoilTemperatureFunction name="SoilTemp">
+        <SoilTemperatureDepthFunction name="SoilTemp">
           <Depth type="text" description="Soil depth(mm)">10</Depth>
           <Memo>We've implemented that to retrieve Soil temperature. Attention on which module is being used. In New Zealand the .NET soil temperature module performs really well, better than the one from soilN.</Memo>
-        </SoilTemperatureFunction>
+        </SoilTemperatureDepthFunction>
         <PhaseLookup name="MinimumNConc" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc">
           <PhaseLookupValue name="Vegetative" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative">
             <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Vegetative/Function" />

@@ -76,6 +76,7 @@ namespace ModelFramework
             In = _In;
 
             //get the name of the owner component of the Instance (e.g. Plant2)
+            NamePrefix = FQN + ".";
             FQN = In.ParentComponent().GetName();
             ParentCompName = "";
             if (FQN.LastIndexOf('.') > -1)
@@ -139,6 +140,29 @@ namespace ModelFramework
                 return Children;
             }
         }
+
+        // --------------------------------------------------------------------
+        /// <summary>
+        /// Return a list of all child paddock components to caller.
+        /// </summary>
+        // --------------------------------------------------------------------
+        public virtual List<object> ChildrenAsObjects
+        {
+            get
+            {
+                List<object> Children = new List<object>();
+                Instance Inst = In;
+                if (Inst == null)
+                    Inst = HostComponent.ModelInstance;
+                if (Inst != null)
+                {
+                    foreach (Instance Child in Inst.Children)
+                        Children.Add(Child.Model);
+                }
+                return Children;
+            }
+        }
+
         // --------------------------------------------------------------------
         /// <summary>
         /// Returns a reference to a variable.
@@ -159,7 +183,7 @@ namespace ModelFramework
         // --------------------------------------------------------------------
         public virtual void Publish(String EventName)
         {
-            HostComponent.Publish(NamePrefix + EventName, null);
+            HostComponent.Publish(NamePrefix + EventName, new NullType());
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -193,7 +217,7 @@ namespace ModelFramework
         {
             get
             {
-                return TRegistrar.unQualifiedName(FQN);
+                return TRegistrar.unQualifiedName(FullName);
             }
         }
         // --------------------------------------------------------------------
@@ -207,8 +231,12 @@ namespace ModelFramework
             {
                 string CompleteName = FQN;
                 if (In != null)
-                    FQN = FQN + "." + In.Name;
-                return RemoveMasterPM(FQN);
+                {
+                    if (In.Name.Contains("."))
+                        CompleteName = StringManip.ParentName(FQN);
+                    CompleteName += "." + In.Name;
+                }
+                return RemoveMasterPM(CompleteName);
             }
         }
 
@@ -548,10 +576,12 @@ namespace ModelFramework
                 }
                 else
                 {
-//                    if (IsComponentASibling(StringManip.ParentName(NamePath)))
+                    // NamePath might be Leaf.MinT (which doesn't exist anywhere in the simulation
+                    // If we pass this to HostComponent.Get, it will throw - we don't want that.
+                    if (IsComponentASibling(StringManip.ParentName(NamePath)))
                         return HostComponent.Get(NamePath, Data, true);
-  //                  else
-    //                    return false;
+                    else
+                        return false;
                 }
             }
             else
@@ -735,7 +765,7 @@ namespace ModelFramework
 
         private bool IsComponentASibling(string ComponentName)
         {
-            foreach (KeyValuePair<uint, TComp> Sibling in In.ParentComponent().SiblingComponents)
+            foreach (KeyValuePair<uint, TComp> Sibling in HostComponent.SiblingComponents)
             {
                 string SiblingShortName = Sibling.Value.name.Substring(Sibling.Value.name.LastIndexOf('.') + 1);
                 if (SiblingShortName.ToLower() == ComponentName.ToLower())
