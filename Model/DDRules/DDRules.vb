@@ -45,8 +45,8 @@ Public Class DDRules
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
 
-    <Input()> Public end_week As Boolean
-    <Input()> Public Start_week As Boolean
+    <Input()> Public is_end_week As Boolean
+    <Input()> Public is_start_week As Boolean
 
     Public dairyNZ_mg As Single() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
     Public dairyNZ_gr As Single() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
@@ -142,7 +142,7 @@ Public Class DDRules
             Console.WriteLine("        " & MyClock.simulation_days)
         End If
 
-        myFarm.Prepare(MyClock.year, MyClock.month, MyClock.day_of_month, end_week)
+        myFarm.Prepare(MyClock.year, MyClock.month, MyClock.day_of_month, is_end_week)
         'myFarm.StockingRate = BaseStockingRate
 
         If (DebugLevel > 0) Then
@@ -187,7 +187,7 @@ Public Class DDRules
             myFarm.CutToFeedWedge(GrazingResidual, 21)
         End If
 
-        myFarm.Process(Start_week)
+        myFarm.Process(is_start_week)
 
         'Dim cover = myFarm.AverageCover()
         ' ************* Farm testing **********************

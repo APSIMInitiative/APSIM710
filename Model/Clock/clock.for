@@ -377,27 +377,35 @@ C     Last change:  E     5 Dec 2000    8:52 am
      .                                 '(month)',
      .                                 thisdate(2))
 
-      else if (Variable_name .eq. 'start_week') then
+! Originally used "start_week", but this resulted in a name conflict with the
+! "start_week" event. Fixed by formally registering only the "is_*" forms,
+! but allowing the older notation to still work.
+      else if (Variable_name .eq. 'is_start_week' .or.
+     .    	   Variable_name .eq. 'start_week') then
          Logical_to_return = Start_week (g%day, g%year)
          call Respond2get_logical_var
      .       (variable_name, '(0-1)', Logical_to_return)
 
-      else if (Variable_name .eq. 'end_week') then
+      else if (Variable_name .eq. 'is_end_week' .or.
+     .    	   Variable_name .eq. 'end_week') then
          Logical_to_return = End_week (g%day, g%year)
          call Respond2get_logical_var
      .       (variable_name, '(0-1)', Logical_to_return)
 
-      else if (Variable_name .eq. 'start_month') then
+      else if (Variable_name .eq. 'is_start_month' .or.
+     .    	   Variable_name .eq. 'start_month') then
          Logical_to_return = Start_month (g%day, g%year)
          call Respond2get_logical_var
      .       (variable_name, '(0-1)', Logical_to_return)
 
-      else if (Variable_name .eq. 'end_month') then
+      else if (Variable_name .eq. 'is_end_month' .or.
+     .    	   Variable_name .eq. 'end_month') then
          Logical_to_return = End_month (g%day, g%year)
          call Respond2get_logical_var
      .       (variable_name, '(0-1)', Logical_to_return)
 
-      else if (Variable_name .eq. 'end_year') then
+      else if (Variable_name .eq. 'is_end_year' .or.
+     .    	   Variable_name .eq. 'end_year') then
          Logical_to_return = End_year (g%day, g%year)
          call Respond2get_logical_var
      .       (variable_name, '(0-1)', Logical_to_return)
@@ -459,12 +467,14 @@ C     Last change:  E     5 Dec 2000    8:52 am
          call Respond2get_char_var
      .        (variable_name, '()', Get_month_string(thisdate(2)))
 
-      else if (variable_name .eq. 'start_simulation') then
+      else if (Variable_name .eq. 'is_start_simulation' .or.
+     .    	   Variable_name .eq. 'start_simulation') then
          Logical_to_return = g%current_date .eq. g%start_date
          call respond2get_logical_var(Variable_name, '()', 
      .     Logical_to_return )
 
-      else if (variable_name .eq. 'end_simulation') then
+      else if (Variable_name .eq. 'is_end_simulation' .or.
+     .    	   Variable_name .eq. 'end_simulation') then
          Logical_to_return = g%current_date .eq. g%end_date
          call respond2get_logical_var(Variable_name, '()', 
      .     Logical_to_return )

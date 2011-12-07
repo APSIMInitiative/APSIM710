@@ -1,4 +1,4 @@
-<folder version="27" name="EGrandis">
+<folder version="28" name="EGrandis">
   <simulation name="Coffs">
     <clock>
       <start_date type="date">1/1/1953</start_date>
@@ -6,10 +6,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>coffs.met</filename>
+      <filename input="yes">coffs.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">Coffs report.out</filename>
+        <title>Coffs report</title>
         <variables>
           <variable name="day" />
           <variable name="year" />
@@ -93,7 +95,7 @@
             oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
             oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
             total_wt = egrandis.foliage_mass + egrandis.adm_green()
-            if end_year = 1 then
+            if is_end_year = 1 then
                report do_output
             endif
             </text>
@@ -658,10 +660,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>toolara8797.met</filename>
+      <filename input="yes">toolara8797.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">GympieControl report.out</filename>
+        <title>GympieControl report</title>
         <variables>
           <variable name="day" />
           <variable name="year" />
@@ -771,7 +775,7 @@
             oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
             oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
             volume = (adm_green(1) + adm_green(3) + foliage_mass)/1000. * 1000./500.
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
@@ -1356,10 +1360,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>toolara8797.met</filename>
+      <filename input="yes">toolara8797.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">GympieFertilized report.out</filename>
+        <title>GympieFertilized report</title>
         <variables>
           <variable name="day" />
           <variable name="year" />
@@ -1508,7 +1514,7 @@
             oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
             oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
             volume = (adm_green(1) + adm_green(3) + foliage_mass)/1000. * 1000./500.
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
@@ -2103,10 +2109,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>toolara8797.met</filename>
+      <filename input="yes">toolara8797.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">GympieIrrigated report.out</filename>
+        <title>GympieIrrigated report</title>
         <variables>
           <variable name="day" />
           <variable name="year" />
@@ -3803,7 +3811,7 @@
             oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
             oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
             volume = (adm_green(1) + adm_green(3) + foliage_mass)/1000. * 1000./500.
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
@@ -4395,10 +4403,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>toolara8797.met</filename>
+      <filename input="yes">toolara8797.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">GympieIrrigatedFertilized report.out</filename>
+        <title>GympieIrrigatedFertilized report</title>
         <variables>
           <variable name="day" />
           <variable name="year" />
@@ -6143,7 +6153,7 @@
             oc1 = (carbon_tot(1)/100)/(bd(1)*dlayer(1))
             oc2 = (carbon_tot(2)/100)/(bd(2)*dlayer(2))
             volume = (adm_green(1) + adm_green(3) + foliage_mass)/1000. * 1000./500.
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
@@ -6735,10 +6745,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>wwepp.met</filename>
+      <filename input="yes">wwepp.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">Wagga Effluent Irrigated E. grandis report.out</filename>
+        <title>Wagga Effluent Irrigated E. grandis report</title>
         <variables>
           <variable name="dd/mm/yyyy as date" />
           <variable name="day" />
@@ -6792,7 +6804,7 @@
         <script>
           <text>
             cum_litterfall = cum_litterfall + egrandis.dlt_foliage_mass_detached
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
@@ -7298,10 +7310,12 @@
     </clock>
     <summaryfile />
     <metfile name="met">
-      <filename>wodonga.met</filename>
+      <filename input="yes">wodonga.met</filename>
     </metfile>
     <area name="paddock">
       <outputfile name="report">
+        <filename output="yes">Grandis report.out</filename>
+        <title>Grandis report</title>
         <variables>
           <variable name="dd/mm/yyyy as date" />
           <variable name="day" />
@@ -7341,7 +7355,7 @@
                ! guess that this is about when they stopped irrigating ??
                irrigation.automatic_irrigation = 'off'
             endif
-            !if end_month = 1 then
+            !if is_end_month = 1 then
             !   fertiliser apply amount = 50 (kg/ha), depth = 5 (mm), type = no3_n
             !endif
             </text>
@@ -7349,7 +7363,7 @@
         <script>
           <event>end_of_day</event>
           <text>
-            if end_week = 1 then
+            if is_end_week = 1 then
                report do_output
             endif
             </text>
