@@ -108,10 +108,11 @@ public class ApsimRunToolStrip
         foreach (String SimulationPath in _SelectedPaths)
         {
             ApsimFile.ApsimFile.ExpandSimsToRun(_F.Find(SimulationPath), ref SimsToRun);
-            simList.AddRange(ApsimFile.ApsimFile.GetSimsInApsimFile(_F.FileName));//new List<String>();
+            
         }
         // JF 061211 - Added check for duplicate simulation names in different folders.
         //Create a list of sim names
+        simList.AddRange(ApsimFile.ApsimFile.GetSimsInApsimFile(_F.FileName));//new List<String>();
         List<String> duplicates = new List<String>();
         for (int i = 0; i < simList.Count; i++)
         {
