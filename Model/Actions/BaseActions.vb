@@ -99,7 +99,7 @@ Public Class BaseActions
                ' Now tell the base controller about the new selections.
                Controller.SelectedPath = Comp.FullPath
             Else
-               MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! in the name")
+                    MessageBox.Show("You can not use characters such as < > / \ ' "" ` : ? | * & = ! . or space in the name")
             End If
 
          End If

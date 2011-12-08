@@ -143,11 +143,15 @@ namespace CSGeneral
             }
         }
 
-
+        /// <summary>
+        /// Check for valid characters allowed in component names
+        /// </summary>
+        /// <param name="s">Test string</param>
+        /// <returns>True if an invalid character is found</returns>
         public static bool CheckForInvalidChars(string s)
         {
 
-            if ((s.Contains("/")) || (s.Contains("\\")) || (s.Contains("<")) || (s.Contains(">")) || (s.Contains("\"")) || (s.Contains("\'")) || (s.Contains("`")) || (s.Contains(":")) || (s.Contains("?")) || (s.Contains("|")) || (s.Contains("*")) || (s.Contains("&")) || (s.Contains("=")) || (s.Contains("!")))
+            if ((s.Contains(".")) || (s.Contains(" ")) || (s.Contains("/")) || (s.Contains("\\")) || (s.Contains("<")) || (s.Contains(">")) || (s.Contains("\"")) || (s.Contains("\'")) || (s.Contains("`")) || (s.Contains(":")) || (s.Contains("?")) || (s.Contains("|")) || (s.Contains("*")) || (s.Contains("&")) || (s.Contains("=")) || (s.Contains("!")))
             {
                 return true;
             }
