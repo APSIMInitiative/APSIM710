@@ -343,14 +343,10 @@ namespace ApsimFile
                         XmlHelper.SetName(InitNitrogenNode, "Initial nitrogen");
                         InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />" +
                                                      "<Layer>" +
-                                                     "   <Thickness>200</Thickness>" +
-                                                     "   <no3 units=\"kg/ha\">30</no3>" +
-                                                     "   <nh4 units=\"kg/ha\">5</nh4>" +
-                                                     "</Layer>" +
-                                                     "<Layer>" +
-                                                     "   <Thickness>1800</Thickness>" +
-                                                     "   <no3 units=\"kg/ha\">20</no3>" +
-                                                     "   <nh4 units=\"kg/ha\">1</nh4>" +
+                                                     "   <Thickness units=\"mm\">100</Thickness>" +
+                                                     "   <NO3 units=\"ppm\">0</NO3>" +
+                                                     "   <NH4 units=\"ppm\">0</NH4>" +
+                                                     "   <SW units=\"mm/mm\">0</SW>" +
                                                      "</Layer>";
 
                     }
