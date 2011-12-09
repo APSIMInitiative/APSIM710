@@ -544,16 +544,24 @@ public class DataProcessor
             NewData.Columns.Add(Col.ColumnName, Col.DataType);
 
         // copy all fields.
-        foreach (DataRow Row in Data.Select(FilterString))
+        try
         {
-            DataRow NewRow = NewData.NewRow();
+            foreach (DataRow Row in Data.Select(FilterString))
+            {
+                DataRow NewRow = NewData.NewRow();
 
-            for (int ColIndex = 0; ColIndex < Data.Columns.Count; ColIndex++)
-                NewRow[ColIndex] = Row[ColIndex];
+                for (int ColIndex = 0; ColIndex < Data.Columns.Count; ColIndex++)
+                    NewRow[ColIndex] = Row[ColIndex];
 
-            NewData.Rows.Add(NewRow);
+                NewData.Rows.Add(NewRow);
+            }
+            return NewData;
         }
-        return NewData;
+        catch (Exception e)
+        {
+            System.Windows.Forms.MessageBox.Show("Error in filter expression:\n" + e.Message);
+            return null;
+        }
     }
 
     private DataTable ProcessReportDb(XmlNode Node)
