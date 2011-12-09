@@ -53,11 +53,11 @@ namespace CSGeneral
 
                 // Move all attributes
                 while (Node.Attributes.Count > 0)
-                    NewNode.Attributes.Append(Node.Attributes[0]);
+                    NewNode.Attributes.Append(Node.Attributes.RemoveAt(0));
 
                 // Move all child nodes
                 while (Node.ChildNodes.Count > 0)
-                    NewNode.AppendChild(Node.ChildNodes[0]);
+                    NewNode.AppendChild(Node.RemoveChild(Node.ChildNodes[0]));
 
                 Node.ParentNode.ReplaceChild(NewNode, Node);
                 return NewNode;
