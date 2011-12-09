@@ -3830,39 +3830,39 @@ cpdev. One of these is right. I don't know which...
       elseif (variable_name .eq. 'dlt_dm') then
          call respond2get_real_var (
      :        'dlt_dm',
-     :        '(g/m2)', g%dlt_dm*kg2gm/ha2sm)
+     :        '(g/m^2)', g%dlt_dm*kg2gm/ha2sm)
 
       elseif (variable_name .eq. 'n_green') then
          temp(:) = 0.0
          temp(1:max_part) = g%N_green(1:max_part) *kg2gm/ha2sm
          call respond2get_real_array (
      :        'n_green',
-     :        '(g/m2)', temp, max_part)
+     :        '(g/m^2)', temp, max_part)
 
       elseif (variable_name .eq. 'n_dead') then
          temp(:) = 0.0
          temp(1:max_part) = g%N_dead(1:max_part) *kg2gm/ha2sm
          call respond2get_real_array (
      :        'n_dead',
-     :        '(g/m2)', temp, max_part)
+     :        '(g/m^2)', temp, max_part)
 
       elseif (variable_name .eq. 'dm_green') then
          temp(1:max_part) = g%dm_green(1:max_part) *kg2gm/ha2sm
          call respond2get_real_array (
      :        'dm_green',
-     :        '(g/m2)', temp, max_part)
+     :        '(g/m^2)', temp, max_part)
 
       elseif (variable_name .eq. 'dlt_dm_green') then
          temp(1:max_part) = g%dlt_dm_plant(1:max_part) *kg2gm/ha2sm
          call respond2get_real_array (
      :        'dlt_dm_green',
-     :        '(g/m2)', temp, max_part)
+     :        '(g/m^2)', temp, max_part)
 
       elseif (variable_name .eq. 'dm_senesced') then
          temp(1:max_part) = g%dm_dead(1:max_part) *kg2gm/ha2sm
          call respond2get_real_array (
      :        'dm_senesced',
-     :        '(g/m2)', temp, max_part)
+     :        '(g/m^2)', temp, max_part)
       elseif (variable_name .eq. 'green_root') then
          call respond2get_real_var (
      :        'green_root',
@@ -3884,7 +3884,7 @@ cpdev. One of these is right. I don't know which...
       elseif (variable_name .eq. 'stemgreenwt') then
          call respond2get_real_var (
      :        variable_name,
-     :        '(kg/ha)', g%dm_green(stem)* kg2gm / ha2sm)
+     :        '(g/m^2)', g%dm_green(stem)* kg2gm / ha2sm)
 
       elseif (variable_name .eq. 'green_pool') then
          call respond2get_real_var (
@@ -3908,7 +3908,7 @@ cpdev. One of these is right. I don't know which...
       elseif (variable_name .eq. 'leafsenescedwt') then
          call respond2get_real_var (
      :        variable_name,
-     :        '(kg/ha)', g%dm_dead(leaf) * kg2gm / ha2sm)
+     :        '(g/m^2)', g%dm_dead(leaf) * kg2gm / ha2sm)
 
       elseif (variable_name .eq. 'dead_stem') then
          call respond2get_real_var (
