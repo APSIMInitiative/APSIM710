@@ -22,7 +22,12 @@ class DLLProber
     static private string ProbeDLLForDescriptionXML(string TypeName, string DllFileName)
     {
         String descr = "";
-        DllFileName = Configuration.RemoveMacros(DllFileName).Replace("%dllext%", "dll");
+		DllFileName = Configuration.RemoveMacros(DllFileName);
+        DllFileName = DllFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+        if (Configuration.getArchitecture () == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
+          DllFileName = DllFileName.Replace("%dllext%", "so");
+		else
+          DllFileName = DllFileName.Replace("%dllext%", "dll");
         if (File.Exists(DllFileName))
         {
             string ModuleName = Path.GetFileNameWithoutExtension(DllFileName);

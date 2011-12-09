@@ -1064,8 +1064,12 @@ namespace ModelFramework
                     }
                 }
             }
-            MyAssembly = Assembly.LoadFrom(sAssemblyPath);  //Load the assembly from the specified path.
-
+			
+            if (sAssemblyPath != "")
+                MyAssembly = Assembly.LoadFrom(sAssemblyPath);  //Load the assembly from the specified path.
+            else
+                MyAssembly = null;
+			
             return MyAssembly;                              //Return the loaded assembly.
         }
     }
