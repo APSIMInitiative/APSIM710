@@ -259,12 +259,15 @@ class Program
 
         foreach (string FileNameInPatch in PatchFileNames)
         {
-            bool AreEqual;
             string RelativeFileName = FileNameInPatch.Replace(ApsimDirectoryName + "\\", "");
             string WindowsFileName = FileNameInPatch.Replace('/', '\\');
             Stream PatchContents = Zip.UnZipFile(PatchFileName, RelativeFileName, "");
 
-            AreEqual = FilesAreIdentical(PatchContents, WindowsFileName);
+            bool AreEqual;
+            if (Path.GetFileName(WindowsFileName) == "DotNetProxies.cs")
+                AreEqual = true;
+            else
+                AreEqual = FilesAreIdentical(PatchContents, WindowsFileName);
 
             // If the files are identical then remove it from the list of ModifiedFiles,
             // otherwise make sure it is in the list.

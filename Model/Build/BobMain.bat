@@ -48,6 +48,9 @@ for /f "tokens=1,2" %%i in ('%APSIM%\Model\JobSchedulerWaitForPatch.exe C:\Uploa
 if ERRORLEVEL 1 goto CleanUp
 echo Patch file: %PatchFileName%
 
+echo ----- JobSchedulerApplyPatch -----                                            >> %APSIM%\Model\Build\Bootstrap.xml
+%APSIM%\Model\JobSchedulerApplyPatch.exe %APSIM% "C:\inetpub\wwwroot\Files\Upload\%PatchFileName%.zip"   >> %APSIM%\Model\Build\Bootstrap.xml
+
 echo ----- Re-compile the JobScheduler -----                                       >> %APSIM%\Model\Build\Bootstrap.xml
 del /Q %APSIM%\Model\*.exe
 call %APSIM%\Model\Build\RunMake.bat %APSIM%\Model\JobScheduler                    >> %APSIM%\Model\Build\Bootstrap.xml
