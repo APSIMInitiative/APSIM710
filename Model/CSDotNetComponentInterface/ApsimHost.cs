@@ -23,7 +23,7 @@ public class TAPSIMHost : TBaseComp
     private int drvCOMPCLASS = -1;
     private bool SetSuccess;
 
-    protected ApsimComponent Comp;
+    internal ApsimComponent Comp;
     protected Dictionary<String, List<TIDSpec>> entityInfoList; //<searchstring, entityinfo list>
     protected Dictionary<String, List<TComp>> compInfoList;
 

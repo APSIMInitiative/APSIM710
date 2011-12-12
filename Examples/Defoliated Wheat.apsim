@@ -1200,7 +1200,7 @@ public class Script
 using System;
 using ModelFramework;
 
-public class Script : Instance
+public class Script
    {
    [Param()] private string DefoliationDateString;
    [Param()] private double ResidualStem;
@@ -1220,7 +1220,8 @@ public class Script : Instance
    [Output()]
    private DateTime DefoliationDate;
    
-   public override void Initialised()
+   [EventHandler]
+   public void OnInitialised()
    {
       DefoliationDate = DateTime.ParseExact(DefoliationDateString, "d/M/yyyy", null);
    }

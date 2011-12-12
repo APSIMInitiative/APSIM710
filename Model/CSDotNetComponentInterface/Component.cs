@@ -17,11 +17,11 @@ namespace ModelFramework
     /// </summary>
     public class Component : TypedItem
     {
-        protected ApsimComponent HostComponent;
+        ApsimComponent HostComponent;
         protected String FTypeName;
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
-        protected Instance In;
+        internal Instance In;
         protected Dictionary<uint, TComp> ChildComponents = null;
         protected string NamePrefix = "";
 
@@ -71,7 +71,7 @@ namespace ModelFramework
         /// </summary>
         /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
         // --------------------------------------------------------------------
-        public Component(Instance _In)
+        internal Component(Instance _In)
         {
             In = _In;
 
@@ -92,18 +92,18 @@ namespace ModelFramework
         /// <param name="_FullName">Name of the actual component</param>
         /// <param name="component">The apsim component that hosts this object</param>
         // --------------------------------------------------------------------
-        public Component(String _FullName, ApsimComponent component)
+        public Component(String _FullName, object component)
         {
             FQN = _FullName;
             NamePrefix = FQN + ".";
             ParentCompName = "";
             if (FQN.LastIndexOf('.') > -1)
                 ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.'));
-            HostComponent = component;
+            HostComponent = component as ApsimComponent;
             //get the type for this component
             List<TComp> comps = new List<TComp>();
-            if (_FullName != ".MasterPM") 
-                component.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
+            if (_FullName != ".MasterPM")
+                HostComponent.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
             if (comps.Count > 0)
                 FTypeName = comps[0].CompClass;
             else
@@ -297,6 +297,11 @@ namespace ModelFramework
         public void Warning(string Message)
         {
             HostComponent.Warning(Message);
+        }
+
+        public bool Override(Type aType, String targetName)
+        {
+            return In.Override(aType, targetName);
         }
 
         #region Get methods

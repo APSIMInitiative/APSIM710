@@ -21,7 +21,7 @@ public class LayeredList<T> : List<T>
 /// 
 /// </summary>
 //---------------------------------------------------------------
-public class Instance : NamedItem
+class Instance : NamedItem
 {
     private String MyFQN()
     {
@@ -35,7 +35,7 @@ public class Instance : NamedItem
     }
     private ApsimComponent Component;
 
-    protected virtual bool Override(Type aType, String targetName)
+    public virtual bool Override(Type aType, String targetName)
     {
         // Now look for parameter overrides and apply them as needed
         for (int i = 0; i != Children.Count; i++)
@@ -242,7 +242,7 @@ public class Instance : NamedItem
 /// 
 /// </summary>
 //---------------------------------------------------------------
-public class DerivedInstance : Instance
+class DerivedInstance : Instance
 {
     protected XmlNode xml;
     //---------------------------------------------------------------

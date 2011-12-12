@@ -11,7 +11,7 @@ using System.Data.SQLite;
 using System.Data;
 using ModelFramework;
 
-public class ReportDb : Instance
+public class ReportDb
 {
     private SQLiteConnection Connection;
     private SQLiteCommand InsertCommand;
@@ -60,7 +60,6 @@ public class ReportDb : Instance
     /// </summary>
     public void DoInitialisation()
     {
-        base.Initialised();
 
         Connection = new SQLiteConnection("Data Source=" + FileName + ";Version=3;New=False;Compress=True;");
         Connection.Open();

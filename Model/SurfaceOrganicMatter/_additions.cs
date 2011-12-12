@@ -5,22 +5,22 @@ using System.Xml;
 using System.Reflection;
 using System.Linq;
 
-public partial class SurfaceOM : Instance
+public partial class SurfaceOM
 {
     const double acceptableErr = 1e-4;
 
     #region Residue/Tillage Types
 
-    public class ResiduesType : Instance
+    public class ResiduesType
     {
         Dictionary<string, ResidueType> residues;
        
         [Param]
         XmlNode xe = null;
 
-        public override void Initialised()
+        [EventHandler]
+        public void OnInitialised()
         {
-            base.Initialised();
             residues = new Dictionary<string, ResidueType>();
 
             foreach (XmlNode xn in xe.ChildNodes)
@@ -149,9 +149,9 @@ public partial class SurfaceOM : Instance
         [Param]
         XmlNode xe = null;
 
-        public override void Initialised()
+        [EventHandler]
+        public void OnInitialised()
         {
-            base.Initialised();
             tillage_types = new Dictionary<string, float[]>();
             foreach (XmlNode xnc in xe.ChildNodes)
                 if (xnc.NodeType == XmlNodeType.Element)
@@ -165,7 +165,7 @@ public partial class SurfaceOM : Instance
         }
     }
 
-    public class BaseType : Instance
+    public class BaseType
     {
         protected float[] strToArr(string str)
         {

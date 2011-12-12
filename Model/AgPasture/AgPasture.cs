@@ -11,7 +11,7 @@ using CSGeneral;            //for MathUtility
 /// <summary>
 /// A multi-species pasture model 
 /// </summary>
-public class AgPasture : Instance
+public class AgPasture
 {
     private int Debug_Level = 0;
     private Species[] SP;
@@ -2965,7 +2965,7 @@ public class AgPasture : Instance
 
 //------------------------------------------------------------------------------
 
-public class LinearInterpolation : Instance
+public class LinearInterpolation 
 {
     [Param]
     public string[] XYs;
@@ -2973,9 +2973,9 @@ public class LinearInterpolation : Instance
     public double[] X;
     public double[] Y;
 
-    public override void Initialised()
+    [EventHandler]
+    public void OnInitialised()
     {
-        base.Initialised();
 
         X = new double[XYs.Length];
         Y = new double[XYs.Length];

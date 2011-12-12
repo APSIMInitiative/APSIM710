@@ -20,9 +20,9 @@ namespace ModelFramework
         /// </summary>
         /// <param name="component"></param>
         /// <param name="VariableName">FQN of the variable</param>
-        public Variable(ApsimComponent component, String VariableName)
+        public Variable(object component, String VariableName)
         {
-            Component = component;
+            Component = component as ApsimComponent;
             Name = VariableName;
         }
 

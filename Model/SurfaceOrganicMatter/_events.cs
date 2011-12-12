@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-public partial class SurfaceOM : Instance
+public partial class SurfaceOM
 {
 
     [Event]

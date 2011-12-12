@@ -1,7 +1,6 @@
 ﻿Imports ModelFramework
 
 Public Class Farm
-    Inherits Instance
     Private myDebugLevel As Integer = 0
     Private myPaddocks As List(Of LocalPaddockType)         ' Full list of apsim paddocks
     Private myPaddocks2 As Dictionary(Of String, LocalPaddockType)         ' Full list of apsim paddocks
@@ -564,7 +563,7 @@ Public Class Farm
         myPaddocks.Sort(LocalPaddockType.getSortListByCover())
         If (DebugLevel > 2) Then
             For Each lp As LocalPaddockType In myPaddocks
-                Console.Out.WriteLine(" By Cover ********* " + lp.index.ToString() + " - " + lp.Name() + " - " + lp.Cover().ToString("0"))
+                Console.Out.WriteLine(" By Cover ********* " + lp.index.ToString() + " - " + lp.Name + " - " + lp.Cover().ToString("0"))
             Next
             Console.Out.WriteLine()
         End If
@@ -574,7 +573,7 @@ Public Class Farm
         myPaddocks.Sort(LocalPaddockType.getSortListByIndex())
         If (DebugLevel > 2) Then
             For Each lp As LocalPaddockType In myPaddocks
-                Console.Out.WriteLine(" By Index ********* " + lp.index.ToString() + " - " + lp.Name() + " - " + lp.Cover().ToString("0"))
+                Console.Out.WriteLine(" By Index ********* " + lp.index.ToString() + " - " + lp.Name + " - " + lp.Cover().ToString("0"))
             Next
             Console.Out.WriteLine()
         End If

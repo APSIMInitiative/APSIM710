@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="PasturePaddock">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/07/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\lincoln.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\lincoln.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="pad">
       <AgPasture>
         <Nspecies type="text" description="Number of species">2</Nspecies>
@@ -853,6 +851,8 @@ if ( (today = date('[date1]')) or
         </script>
       </manager>
       <outputfile>
+        <filename output="yes">PasturePaddock pad.out</filename>
+        <title>PasturePaddock pad</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" />
           <variable name="AboveGroundLiveWt" />

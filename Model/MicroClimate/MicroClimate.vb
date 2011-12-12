@@ -2,6 +2,7 @@
 Imports System.Collections.Generic
 Imports System.Text
 Imports CSGeneral
+Imports ModelFramework
 
 ''' <remarks>
 ''' <para>
@@ -34,7 +35,9 @@ Imports CSGeneral
 ''' to VB via the converter in SharpDevelop.
 ''' </summary>
 Partial Public Class MicroMet
-    Inherits Instance
+    <Link()> Dim MyPaddock As Paddock
+    <Link()> Dim My As Component
+
 #Region "Parameters used to initialise the model"
 #Region "Parameters set in the GUI by the user"
     <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=10.0)> _
@@ -133,8 +136,8 @@ Partial Public Class MicroMet
     ' [Units("deg")]
     ''' private double latitude;
 
-   <Input(IsOptional:=True)> _
-    <Units("m/s")> _
+    <Input(IsOptional:=True)> _
+     <Units("m/s")> _
     Private windspeed As Double = 0.0
 
     <Input()> _
@@ -441,9 +444,7 @@ Partial Public Class MicroMet
         Console.WriteLine("        - Reading Constants")
         Console.WriteLine("     ")
         Console.WriteLine("        - Reading Parameters")
-        Dim val As New DoubleType()
-        ParentComponent().Get("latitude", val, False)
-        latitude = val.Value
+        MyPaddock.Get("latitude", latitude)
     End Sub
 
 
@@ -562,7 +563,7 @@ Partial Public Class MicroMet
         If Not todayHeaderWritten Then
             'Dim Today As New DateTime(year, 1, 1)
             'Today = Today.AddDays(day - 1)
-            Console.WriteLine(today.ToString("d MMMM yyyy") & "(Day of year=" & today.DayOfYear.ToString() & "), " & Name & ": ")
+            Console.WriteLine(today.ToString("d MMMM yyyy") & "(Day of year=" & today.DayOfYear.ToString() & "), " & My.Name & ": ")
             todayHeaderWritten = False
         End If
 
@@ -631,9 +632,9 @@ Partial Public Class MicroMet
         ComponentData(idx).Gsmax = Me.gsmax
 
         Dim cropType As New CropType()
-        For i As Integer = 0 To Children.Count - 1
-            If Children(i).[GetType]().Equals(cropType.[GetType]()) Then
-                cropType = DirectCast(Children(i), CropType)
+        For i As Integer = 0 To My.ChildrenAsObjects.Count - 1
+            If My.ChildrenAsObjects(i).[GetType]().Equals(cropType.[GetType]()) Then
+                cropType = DirectCast(My.ChildrenAsObjects(i), CropType)
                 If cropType.apply_to IsNot Nothing Then
                     For j As Integer = 0 To cropType.apply_to.Length - 1
                         If cropType.apply_to(j).ToLower() = targetType Then
@@ -835,7 +836,7 @@ Partial Public Class MicroMet
         If Not windspeed_checked Then
             Dim val As New DoubleType()
             val.Value = [Double].NaN ' Set to NaN so we can test for non-receipt of value
-            use_external_windspeed = ParentComponent().[Get]("windspeed", val, True) AndAlso (Not [Double].IsNaN(val.Value))
+            use_external_windspeed = MyPaddock.Get("windspeed", windspeed) AndAlso (Not [Double].IsNaN(windspeed))
             windspeed = val.Value
             windspeed_checked = True
         End If
@@ -920,7 +921,7 @@ Partial Public Class MicroMet
                 netRadiation = 1000000.0 * ((1.0 - albedo) * ComponentData(j).Rs(i) + _
                                                  ComponentData(j).Rl(i) + _
                                                  ComponentData(j).Rsoil(i))
-                                                 ' MJ/J
+                ' MJ/J
                 netRadiation = Math.Max(0.0, netRadiation)
 
                 ComponentData(j).PETr(i) = CalcPETr(netRadiation * dryleaffraction, mint, maxt, air_pressure, _
@@ -1001,7 +1002,8 @@ End Class
 ''' </summary>
 ''' <remarks></remarks>
 Public Class CropType
-    Inherits Instance
+
+
     <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
     <Units("0-1")> _
     <Description("")> _

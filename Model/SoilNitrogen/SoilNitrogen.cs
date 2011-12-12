@@ -4,13 +4,20 @@ using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
 using CSGeneral;
+using System.Xml;
 
 /// <summary>
 /// A more-or-less direct port of the Fortran SoilN model
 /// Ported by Eric Zurcher Sept/Oct 2010
 /// </summary>
-public class SoilN : Instance
+public class SoilN
 {
+    [Link]
+    Paddock MyPaddock = null;
+
+    [Link]
+    Component My = null;
+
 #region Parameters used to initialise the model
 
 #region Parameters we expect to see provided by the user
@@ -1467,10 +1474,10 @@ public class SoilN : Instance
            
 #endregion
 
-    public override void Initialised()
+    [EventHandler]
+    public void OnInitialised()
     {
-        base.Initialised();
-        soiltypeOverridden = Override(typeof(SoilTypeDefinition), soiltype);
+        soiltypeOverridden = My.Override(typeof(SoilTypeDefinition), soiltype);
     }
 
     private void ReadParam()  // Could do checking of the parameters here....
@@ -1481,27 +1488,19 @@ public class SoilN : Instance
         DoubleType val = new DoubleType();
         DoubleArrayType arrayVal = new DoubleArrayType();
 
-        use_external_st = ParentComponent().Get("ave_soil_temp", arrayVal, true) && (arrayVal.Value != null);
-        if (use_external_st)
-            st = arrayVal.Value;
-
-        else // only need to read these if soil temp is not external
+        use_external_st = MyPaddock.Get("ave_soil_temp", out st) && (st != null);
+        if (!use_external_st)
         {
-            val.Value = Double.NaN;
-            bool use_external_amp = ParentComponent().Get("amp", val, true);
-            use_external_amp = use_external_amp && (!Double.IsNaN(val.Value));
+            // only need to read these if soil temp is not external
+            bool use_external_amp = MyPaddock.Get("amp", out amp);
             if (use_external_amp)
             {
-                amp = val.Value;
                 if (amp < 0.0 || amp > 50.0)
                     throw new Exception("External value for amp out of range");
             }
-            val.Value = Double.NaN;
-            use_external_tav_amp = ParentComponent().Get("tav", val, true);
-            use_external_tav_amp = use_external_tav_amp && (!Double.IsNaN(val.Value));
+            use_external_tav_amp = MyPaddock.Get("tav", out tav);
             if (use_external_tav_amp)
             {
-                tav = val.Value;
                 if (tav < 0.0 || tav > 50.0)
                     throw new Exception("External value for tav out of range");
             }
@@ -1511,7 +1510,8 @@ public class SoilN : Instance
                 throw new Exception("External AMP with default TAV not permitted");
         }
 
-        use_external_ph = ParentComponent().Get("ph", arrayVal, true) && (arrayVal.Value != null);
+        double[] ph = null;
+        use_external_ph = MyPaddock.Get("ph", out ph) && (ph != null);
 
         // Check if all values supplied. If not use average C:N ratio in all pools
         if (root_cn_pool == null || root_cn_pool.Length < 3)
@@ -1836,11 +1836,8 @@ public class SoilN : Instance
         {
             // dsg 190508,  there is a pond, so POND module will decompose residues - not SoilN2
             // dsg 110708   Get the biom & hum C decomposed in the pond and add to soil - on advice of MEP
-            DoubleType value = new DoubleType();
-            ParentComponent().Get("pond_biom_C", value, false);
-            pond_biom_C = value.Value; // biom material from breakdown of residues in pond (if present)
-            ParentComponent().Get("pond_hum_C", value, false);
-            pond_hum_C = value.Value;  // humic material from breakdown of residues in pond (if present)
+            MyPaddock.Get("pond_biom_C", out pond_biom_C); // biom material from breakdown of residues in pond (if present)
+            MyPaddock.Get("pond_hum_C", out pond_hum_C);   // humic material from breakdown of residues in pond (if present)
 
             // increment the soiln2 hum and biom C pools in top soil layer
             hum_c[0] += pond_hum_C;
@@ -2333,15 +2330,11 @@ public class SoilN : Instance
     {
         if (dlayer == null)
         {
-            SingleArrayType dlayer_array = new SingleArrayType();
-            ParentComponent().Get("dlayer", dlayer_array, false);
-            dlayer = dlayer_array.Value;
+            MyPaddock.Get("dlayer", out dlayer);
         }
         if (bd == null)
         {
-            SingleArrayType bd_array = new SingleArrayType();
-            ParentComponent().Get("bd", bd_array, false);
-            bd = bd_array.Value;
+            MyPaddock.Get("bd", out bd);
         }
         if (bd == null || dlayer == null || bd.Length == 0 || dlayer.Length == 0) return 0.0;
         // Calculate conversion factor from kg/ha to ppm (mg/kg)
@@ -2365,9 +2358,7 @@ public class SoilN : Instance
         if (use_external_st)
         {
             // another module is supplying soil temperature
-            DoubleArrayType st_array = new DoubleArrayType();
-            ParentComponent().Get("ave_soil_temp", st_array, false);
-            st = st_array.Value;
+            MyPaddock.Get("ave_soil_temp", out st);
         }
         else
         {
@@ -3143,46 +3134,32 @@ public class SoilN : Instance
     private void GetSiteVariables()
     { // Not really needed. This will happen automagically once we're up and running,
       // but this helps ensure we'll have access to the values during init2
-        SingleType value = new SingleType();
-        ParentComponent().Get("latitude", value, false);
-        latitude = value.Value;
-        ParentComponent().Get("salb", value, false);
-        salb = value.Value;
+        MyPaddock.Get("latitude", out latitude);
+        MyPaddock.Get("salb", out salb);
     }
 
     private void GetOtherVariables()
     {
-        SingleArrayType sw_dep_array = new SingleArrayType();
-        ParentComponent().Get("sw_dep", sw_dep_array, false);
-        sw_dep = sw_dep_array.Value;
-        SingleArrayType dlayer_array = new SingleArrayType();
-        ParentComponent().Get("dlayer", dlayer_array, false);
-        dlayer = dlayer_array.Value;
+        MyPaddock.Get("sw_dep", out sw_dep);
+        MyPaddock.Get("dlayer", out dlayer);
 
         if (p_n_reduction) // ONLY need soil loss if profile reduction is on
         {
-            DoubleType value = new DoubleType();
-            value.Value = Double.NaN;
-            Boolean found = ParentComponent().Get("soil_loss", value, true);
-            if (found && (!Double.IsNaN(value.Value)))
-              soil_loss = value.Value;
+            MyPaddock.Get("soil_loss", out soil_loss);
         }
         
         if (use_external_ph)
         {
-            DoubleArrayType value = new DoubleArrayType();
-            Boolean found = ParentComponent().Get("ph", value, true);
-            if (found && (value.Value != null))
-              ph = value.Value;
+            MyPaddock.Get("ph", out ph);
         }
         CheckPond();
     }
 
     private void CheckPond()
     {
-        StringType stVal = new StringType();
-        Boolean found = ParentComponent().Get("pond_active", stVal, true);
-        if (!found || (stVal.Value == null))
+        string value;
+        Boolean found = MyPaddock.Get("pond_active", out value);
+        if (!found || (value == null))
             pond_active = "no";
     }
 
@@ -3332,7 +3309,7 @@ public class SoilN : Instance
                 Array.Resize(ref solute_names, 3);
 
             NewSoluteType data = new NewSoluteType();
-            data.sender_id = (int)ParentComponent().GetId();
+            //data.sender_id = (int)ParentComponent().GetId();
             data.solutes = solute_names;
 
           
@@ -3357,6 +3334,8 @@ public class SoilN : Instance
     }
 }
 
-public class SoilTypeDefinition : DerivedInstance
+public class SoilTypeDefinition
 {
+    [Param]
+    protected XmlNode SoilTypeDefinitionXML;
 }

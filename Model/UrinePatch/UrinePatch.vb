@@ -3,7 +3,6 @@ Imports ModelFramework
 
 
 Public Class UrinePatch
-   Inherits Instance
 
    <Link()> Public MyPaddock As Paddock
    <Link()> Public SoilWater As SoilWat

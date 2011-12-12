@@ -11,8 +11,11 @@ using CSGeneral;
 /// Ported by Eric Zurcher Feb 2011
 /// </summary>
 
-public class SoilErosion : Instance
+public class SoilErosion
 {
+    [Link]
+    private Paddock MyPaddock = null;
+
 #region Parameters used to initialise the model
   #region Parameters we expect to see provided by the user
 
@@ -302,9 +305,7 @@ public class SoilErosion : Instance
 
         if (dlayer == null)
         {
-            DoubleArrayType dlayer_array = new DoubleArrayType();
-            ParentComponent().Get("dlayer", dlayer_array, false);
-            dlayer = dlayer_array.Value;
+            MyPaddock.Get("dlayer", out dlayer);
         }
 
         if (bed_depth < MathUtility.Sum(dlayer))
@@ -439,9 +440,7 @@ public class SoilErosion : Instance
     {
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
         {
-            DoubleArrayType arrayVal = new DoubleArrayType();
-            arrayVal.Value = dlt_dlayer;
-            ParentComponent().Set("dlt_dlayer", arrayVal);
+            MyPaddock.Set("dlt_dlayer", dlt_dlayer);
         }
     }
 
@@ -528,14 +527,14 @@ public class SoilErosion : Instance
 
         // What happens when layer completely eroded?
         if (dlt_depth_mm > dlayer[0])
-            ParentComponent().Warning("Eroding more than top layer depth.\n This may affect SoilN loss");
+            MyPaddock.Warning("Eroding more than top layer depth.\n This may affect SoilN loss");
 
         dlt_depth_mm = MathUtility.Divide(top, bd[nLayers - 1], 0.0) * cm2mm;
 
         // What happens when layer completely eroded?
         if (dlt_depth_mm > dlayer[nLayers - 1])
         {
-            ParentComponent().Warning("Eroding more than bottom layer depth. (layer" +
+            MyPaddock.Warning("Eroding more than bottom layer depth. (layer" +
                nLayers.ToString() + ").\n" +
                "PAWC calculations may be incorrect if BD is different to layer above.");
         }

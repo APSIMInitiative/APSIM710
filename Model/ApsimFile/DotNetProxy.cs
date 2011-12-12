@@ -156,7 +156,7 @@ class DLLProber
                 ClassCode = "[ComponentType(\"" + compClass + "\")]\r\n";
             ClassCode += "public class $CLASSNAME$ : ModelFramework.Component\r\n" +
                          "   {\r\n" +
-                         "   public $CLASSNAME$(string _FullName, ModelFramework.ApsimComponent _Comp) : base (_FullName, _Comp) {}\r\n";
+                         "   public $CLASSNAME$(string _FullName, object _Comp) : base (_FullName, _Comp) {}\r\n";
 
             // Write all properties
             foreach (XmlNode Node in XmlHelper.ChildNodes(Doc.DocumentElement, "property"))

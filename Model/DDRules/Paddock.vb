@@ -1,7 +1,6 @@
 Imports ModelFramework
 
 Public Class LocalPaddockType
-    Inherits Instance
     'Local paddock is the wrapper for the basic apsim paddock. It adds "worker" functions for processes such as
     ' nutrient grazing and returns.
 
@@ -19,6 +18,7 @@ Public Class LocalPaddockType
     Public Shared MovingAverageSeriesLength As Integer = 7
     Public myAverageGrowthRate As MovingAverage = New MovingAverage(MovingAverageSeriesLength)
     Public Shared IncludeStolon As Boolean = False
+    Public Name As String
 
     <Link()> Private ApSim_SubPaddock As Paddock
 

@@ -10,7 +10,7 @@ using ModelFramework;
 /// 
 /// </summary>
 // --------------------------------------------------------------------
-public class Factory
+class Factory
 {
     private Instance _Root;
     private List<FactoryProperty> RegisteredProperties;
@@ -278,7 +278,7 @@ public class Factory
         bool HavePassedXMLToObj = false;
         foreach (FactoryProperty Property in RegisteredProperties)
         {
-            if ((Property.TypeName == "XmlNode") && (Property.OutputName.IndexOf(Node.Name) == 0))
+            if ((Property.TypeName == "XmlNode") && (Property.OutputName.Contains(Node.Name)))
             {
                 Property.SetObject(Node);
                 HavePassedXMLToObj = true;
@@ -313,7 +313,9 @@ public class Factory
                         }
 
                         else if ((Parameter != null) && (Parameter.IsParam && !Parameter.TypeName.Contains("System::")))
-                            Parameter.SetObject(ChildInstance);
+                        {
+                            Parameter.SetObject(ChildInstance.Model);
+                        }
 
                     }
                     else if (Child.Name == "Memo")

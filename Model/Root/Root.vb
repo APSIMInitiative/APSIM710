@@ -6,7 +6,6 @@ Imports CSGeneral
 
 
 Public Class Root
-    Inherits Instance
     <Output()> <Param()> Private xf As Double()
     <Output()> <Param()> Private kl As Double()
     <Output()> <Param()> Private ll As Double()

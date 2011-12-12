@@ -12,7 +12,8 @@ namespace ModelFramework
 
     public class Paddock : Component
     {
-        
+        ApsimComponent HostComponent;
+
         // --------------------------------------------------------------------
         /// <summary>
         /// Encapsulates an APSIM paddock in a simulation.
@@ -20,10 +21,11 @@ namespace ModelFramework
         /// <param name="Nam">Name of the paddock or system</param>
         /// <param name="component">The hosting component</param>
         // --------------------------------------------------------------------
-        public Paddock(String Nam, ApsimComponent component)
+        public Paddock(String Nam, object component)
             : base(Nam, component)
         {
             NamePrefix = "";
+            HostComponent = component as ApsimComponent;
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -31,10 +33,11 @@ namespace ModelFramework
         /// </summary>
         /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
         // --------------------------------------------------------------------
-        public Paddock(Instance In)
+        internal Paddock(Instance In)
             : base(In)
         {
             NamePrefix = "";
+            HostComponent = In.ParentComponent();
         }
 
         // --------------------------------------------------------------------
@@ -96,15 +99,6 @@ namespace ModelFramework
             }
         }
 
-        /// <summary>
-        /// Returns a reference to a variable.
-        /// <param name="VariableName"></param>
-        /// </summary>
-        protected override Variable Variable(String VariableName)
-        {
-            return new Variable(HostComponent, VariableName);
-        }
-
         // --------------------------------------------------------------------
         /// <summary>
         /// Return a list of all child crops to caller.
@@ -137,20 +131,4 @@ namespace ModelFramework
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class MyPaddock
-    {
-        private static Paddock _Singleton = null;
-        public Paddock this[String ComponentName]
-        {
-            get
-            {
-                if (_Singleton == null)
-                    _Singleton = new Paddock(ComponentName, null);
-                return _Singleton;
-            }
-        }
-    }
 }

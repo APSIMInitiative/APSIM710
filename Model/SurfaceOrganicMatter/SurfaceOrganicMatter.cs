@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using ModelFramework;
 
 
-public partial class SurfaceOM : Instance
+public partial class SurfaceOM
 {
+    [Link]
+    Paddock MyPaddock;
+
     //====================================================================
     //    SurfaceOM constants;
     //====================================================================
@@ -841,12 +845,12 @@ public partial class SurfaceOM : Instance
                 Console.Write("{0}\t", x);
             Console.WriteLine();
 
-            ParentComponent().Set("dlt_no3", new SingleArrayType() { Value = no3_incorp });
-            ParentComponent().Set("dlt_nh4", new SingleArrayType() { Value = nh4_incorp });
+            MyPaddock.Set("dlt_no3", no3_incorp);
+            MyPaddock.Set("dlt_nh4", nh4_incorp);
             deepest_layer = count_of_real_vals(g.dlayer, max_layer);
 
             if (g.phosphorus_aware)
-                ParentComponent().Set("dlt_labile_p", new SingleArrayType() { Value = po4_incorp });
+                MyPaddock.Set("dlt_labile_p", po4_incorp);
 
         }
 

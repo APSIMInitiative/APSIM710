@@ -5,7 +5,7 @@ using ModelFramework;
 using System.Linq;
 using CSGeneral;
 
-public partial class SurfaceOM : Instance
+public partial class SurfaceOM
 {
     [Link]
     Paddock mypaddock;

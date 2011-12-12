@@ -11,7 +11,7 @@ using ModelFramework;
 ///</summary> 
 
  
-public class SoilWater : Instance
+public class SoilWater
    {
 
 #region Constants

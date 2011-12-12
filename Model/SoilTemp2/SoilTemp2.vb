@@ -14,7 +14,6 @@ Imports ModelFramework
 ''' </summary>
 
 Public Class SoilTempdotNET
-    Inherits Instance
     '------------------------------------------------------------------------------------------------------------
     '-----------------------------------------------IMPORTANT NOTE-----------------------------------------------
     ' Due to FORTRAN's 'flexibility' with arrays there have been a few modifications to array sizes in this

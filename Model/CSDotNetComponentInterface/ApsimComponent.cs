@@ -17,7 +17,7 @@ namespace ModelFramework
     /// This is the main host for an Apsim component such as Plant2.
     /// </summary>
     // --------------------------------------------------------------------
-    public class ApsimComponent : Instance
+    class ApsimComponent : Instance
     {
         private bool IsScript;
         private bool IsPlant;

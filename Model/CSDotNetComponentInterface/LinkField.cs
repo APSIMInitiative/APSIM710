@@ -27,7 +27,7 @@ using ApsimFile;
 ///    [Link] Function ThermalTime;        // links to an object with type Function and name ThermalTime
 ///    [Link] Leaf Leaf;                   // links to an object with type Leaf and name Leaf
 /// <summary>
-public class LinkField
+class LinkField
 {
     private FieldInfo Field;
     private Link LinkAttr;
@@ -74,10 +74,6 @@ public class LinkField
             if (NameToFind == "My")
                 ReferencedObject = new ModelFramework.Component(In);
 
-            else if (TypeToFind == "ModelEnvironment")
-            {
-                ReferencedObject = new ModelEnvironment(In);
-            }
             else if (IsAPSIMType(TypeToFind))
             {
                 if (LinkAttr.NamePath == null)

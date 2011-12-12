@@ -5,7 +5,6 @@ Imports CSGeneral
 
 Partial Public Class MicroMet
 
-    Inherits Instance
     Private Function CalcDayLength(latitude As Double, day As Integer, sunAngle As Double) As Double
         Return MathUtility.DayLength(day, sunAngle, latitude)
     End Function

@@ -38,7 +38,6 @@ Imports ModelFramework
 
 
 Public Class DDRules
-    Inherits Instance
     Public myDebugLevel As Integer = 0
     <Link()> Public MySimulation As Paddock
     <Link()> Public MyClock As Clock
