@@ -1,0 +1,450 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = A16P1T4A
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                "output titles" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "chickpea" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 24/05/1993
+     Simulation end date   = 26/12/1993
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Tests\Validation\Chickpeas\met\cooper.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        day
+        Expcode as Title
+        Site
+        Season
+        Treatment
+        dd/mm/yyyy as Date
+        chickpea.Stage
+        chickpea.DaysAfterSowing
+        chickpea.TTAfterSowing
+        chickpea.yield
+        chickpea.biomass
+        chickpea.green_biomass
+        chickpea.dlt_dm
+        chickpea.RootGreenWt
+        chickpea.LeafGreenWt
+        chickpea.StemGreenWt
+        chickpea.PodGreenWt
+        chickpea.grain_wt
+        chickpea.stage
+        chickpea.Stage
+        chickpea.lai
+        chickpea.tlai
+        chickpea.slai
+        chickpea.leaf_no as leaf_no
+        chickpea.leaf_no_dead()
+        chickpea.root_depth
+        chickpea.grain_no
+        chickpea.swdef_pheno
+        chickpea.swdef_photo
+        chickpea.swdef_expan
+        chickpea.nfact_photo
+        chickpea.nfact_grain
+        chickpea.n_demand
+        chickpea.n_supply_soil
+        chickpea.n_supply
+        chickpea.n_fix_pot
+        chickpea.n_uptake
+        chickpea.n_uptake_grain as grain_n
+        chickpea.n_uptake_stover as stover_n
+        chickpea.n_conc_stover
+        no3()
+        sw_dep()
+
+     Output file = A16P1T4A.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Operations Initialisation ---------------------------------------------
+     Operations Schedule
+     ===================
+     25/05/1993  Prepare       'soil water' set sw = .413 .456 .408 .374 .327 .325 .371
+     25/05/1993  Prepare      chickpea sow plants = 18, row_spacing = 350, sowing_depth = 50, cultivar = amethyst
+     05/07/1993  Prepare      irrigation apply amount = 52.0
+
+------- irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.00
+           depth for calculating available soil water =       0.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- output titles Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     expcode='a16p1t4a'
+          site='cp93gat '
+          season='-y1993'
+          treatment='amethyst'
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- Harvesting rule Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if (chickpea.stagename = 'harvest_ripe' or chickpea.plant_status = 'dead') then
+       chickpea  harvest
+       chickpea  end_crop
+                endif
+     END of rules
+     
+
+------- soil Water Initialisation ---------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.180  0.384  0.434  0.384  1.380  0.762  0.400
+          150.-  300.  0.190  0.190  0.381  0.431  0.381  1.380  0.190  0.400
+          300.-  600.  0.200  0.200  0.440  0.490  0.440  1.320  0.048  0.400
+          600.-  900.  0.220  0.220  0.424  0.448  0.424  1.460  0.000  0.400
+          900.- 1200.  0.190  0.190  0.419  0.430  0.419  1.510  0.000  0.400
+         1200.- 1500.  0.170  0.170  0.376  0.426  0.376  1.490  0.000  0.400
+         1500.- 1800.  0.170  0.170  0.377  0.427  0.377  1.470  0.000  0.400
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      27.00      30.60      30.60       7.50
+          150.-  300.      28.50      28.65      28.65       7.50
+          300.-  600.      60.00      72.00      72.00      15.00
+          600.-  900.      66.00      61.20      61.20       7.20
+          900.- 1200.      57.00      68.70      68.70       3.30
+         1200.- 1500.      51.00      61.80      61.80      15.00
+         1500.- 1800.      51.00      62.10      62.10      15.00
+          ---------------------------------------------------------
+               Totals     340.50     385.05     385.05      70.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              72.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     2.00 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          unknown   wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- soil Nitrogen Initialisation ------------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  1.20   29.60    0.00    0.00
+             2     8.00  0.80   12.21    0.00    0.00
+             3     8.00  0.50    7.13    0.00    0.00
+             4     8.00  0.30    3.94    0.00    0.00
+             5     8.00  0.20    4.53    0.00    0.00
+             6     8.00  0.10    0.89    0.00    0.00
+             7     8.00  0.10    0.44    0.00    0.00
+          ------------------------------------------------
+           Totals               58.75    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24528.3  1691.6   311.7    39.0    69.4     0.9
+             2      16437.6  1133.6   122.4    15.3    54.1     0.7
+             3      19719.6  1360.0    80.4    10.0    32.8     0.4
+             4      13119.2   904.8    20.8     2.6    19.9     0.2
+             5       9042.1   623.6    17.9     2.2    12.1     0.2
+             6       4469.6   308.2     0.4     0.1     7.3     0.1
+             7       4409.6   304.1     0.4     0.1     4.4     0.1
+          ---------------------------------------------------------
+           Totals   91725.9  6325.9   554.1    69.3   200.0     2.5
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local string variable : expcode = a16p1t4a
+     Manager creating a new local string variable : site = cp93gat
+     Manager creating a new local string variable : season = -y1993
+     Manager creating a new local string variable : treatment = amethyst
+25 May 1993(Day of year=145), Operations: 
+      Sending set message to soil water
+25 May 1993(Day of year=145): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+      soil water of     0.456000      in layer   2
+              is above saturation of     0.431000
+     Component name: soil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+      Sending sow message to chickpea
+25 May 1993(Day of year=145), chickpea: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = amethyst
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       2 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     515     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.7      17 (h)
+              y_tt_end_of_juvenile       =     446       0 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      33      33 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     450     450 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =     690     690 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0100     0.0100
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.50
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.250       1.000
+         150.0     0.060          0.250       1.000
+         300.0     0.060          0.230       1.000
+         300.0     0.050          0.250       1.000
+         300.0     0.040          0.200       1.000
+         300.0     0.020          0.200       1.000
+         300.0     0.020          0.200       1.000
+         -----------------------------------------------
+         Extractable SW:   327mm in  1800mm total depth ( 18%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            145   50.0   18.0  350.0   0.0   0.0 amethyst
+         ------------------------------------------------
+     
+26 May 1993(Day of year=146), chickpea: 
+      stage 2.0 germination
+1 June 1993(Day of year=152), chickpea: 
+      stage 3.0 emergence
+                     biomass =           3.60 (g/m^2)   lai          =   0.002 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   14.98 (mm)
+5 July 1993(Day of year=186), Operations: 
+      Sending apply message to irrigation
+6 July 1993(Day of year=187), chickpea: 
+      stage 4.0 end_of_juvenile
+                     biomass =           5.51 (g/m^2)   lai          =   0.040 (m^2/m^2)
+                     stover N conc =     4.86 (%)    extractable sw =  167.50 (mm)
+29 July 1993(Day of year=210), chickpea: 
+      stage 5.0 floral_initiation
+                     biomass =          14.90 (g/m^2)   lai          =   0.260 (m^2/m^2)
+                     stover N conc =     3.75 (%)    extractable sw =  209.21 (mm)
+31 July 1993(Day of year=212), chickpea: 
+      stage 6.0 flowering
+                     biomass =          17.83 (g/m^2)   lai          =   0.326 (m^2/m^2)
+                     stover N conc =     3.43 (%)    extractable sw =  207.88 (mm)
+29 August 1993(Day of year=241), chickpea: 
+      stage 7.0 start_grain_fill
+                     biomass =         127.05 (g/m^2)   lai          =   1.525 (m^2/m^2)
+                     stover N conc =     1.81 (%)    extractable sw =  271.84 (mm)
+7 October 1993(Day of year=280), chickpea: 
+      stage 8.0 end_grain_fill
+                     biomass =         438.89 (g/m^2)   lai          =   2.052 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =  176.77 (mm)
+10 October 1993(Day of year=283), chickpea: 
+      stage 9.0 maturity
+                     biomass =         468.03 (g/m^2)   lai          =   1.901 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =  157.17 (mm)
+11 October 1993(Day of year=284), chickpea: 
+      stage 10.0 harvest_ripe
+                     biomass =         476.04 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.77 (%)    extractable sw =  151.22 (mm)
+11 October 1993(Day of year=284), Harvesting rule: 
+     Manager sending message :- chickpea harvest
+     
+      flowering day          =  212                           stover (kg/ha)         =     2820.2
+      maturity day           =  283                           grain yield (kg/ha)    =     1940.2
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2204.7
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.209
+      total above ground biomass (kg/ha)    =     4760.4
+      live above ground biomass (kg/ha)     =     4760.4
+      green above ground biomass (kg/ha)    =     3844.2
+      senesced above ground biomass (kg/ha) =      916.2
+      number of leaves       =    296.3
+      DM Root:Shoot ratio    =     0.13                       Harvest Index          =       0.41
+      Stover C:N ratio       =    23.77                       Root C:N ratio         =      26.35
+      grain N percent        =     3.60                       total N content (kg/ha)=     117.30
+      grain N uptake (kg/ha) =    69.85                       senesced N content (kg/ha)=   13.74
+      green N content (kg/ha)=    33.71
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2820.2                     0.0
+                          N  (kg/ha) =                  47.46                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1940.2                     0.0
+                          N  (kg/ha) =                  69.85                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- chickpea end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   608.8
+                          N  (kg/ha) =                   0.00                    9.24
+     
+26 December 1993(Day of year=360), clock: 
+     Simulation is terminating due to end criteria being met.
