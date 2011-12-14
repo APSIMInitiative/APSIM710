@@ -43,7 +43,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -74,7 +74,7 @@
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Sowing Germination Emergence  EndJuvenile FloralInitiation            Flowering   StartPodGrowth    Maturity         StartRegrowth      RGFloralInitiation   RGFlowering    EndRegrowth</Stages>
         <Values type="text" description="Values">   1               2                  3                  4                         5                            6                   7                    8                       4                       5                            6                        7       </Values>
@@ -217,16 +217,16 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 
 </Memo>
       </Phenology>
-      <SIRIUSLeaf name="Leaf">
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1</Area>
           <Age type="text" description="Age">0</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -614,8 +614,8 @@ LAI expansion needs attention in the future.</Memo>
             <Constant name="Function" shortcut="/lucerne2/Model/Plant/Leaf/MaximumNConc/Reproductive/Function" />
           </PhaseLookupValue>
         </PhaseLookup>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      </Leaf>
+      <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -677,8 +677,8 @@ LAI expansion needs attention in the future.</Memo>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
-      <SIRIUSRoot name="Root">
+      </GenericOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -826,8 +826,8 @@ LAI expansion needs attention in the future.</Memo>
             <Constant name="Function" shortcut="/lucerne2/Model/Plant/Root/MaximumNConc/Reproductive/Function" />
           </PhaseLookupValue>
         </PhaseLookup>
-      </SIRIUSRoot>
-      <SIRIUSGenericOrgan name="Pod">
+      </Root>
+      <GenericOrgan name="Pod">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="MaximumNConc">
@@ -851,7 +851,7 @@ LAI expansion needs attention in the future.</Memo>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>

@@ -2,47 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-class ReserveOrgan : BaseOrgan  //Neither above or below ground for now
-{
-    [Link]
-    Population Population = null;
-
-    [Param]
-    private double InitialDM = 0;
-
-    [Param]
-    private double DailyRetransFraction = 0;
-
-    public override void DoPotentialGrowth()
+class ReserveOrgan : GenericOrgan  //Neither above or below ground for now
+{   
+    //Blank event handlers overwrite action in generic organ that do not apply to reserve organs.
+    [EventHandler]
+    new private void OnPrune(PruneType Prune)
     {
-        base.DoPotentialGrowth();
-        if (Live.NonStructuralWt == 0)
-        {
-            Live.NonStructuralWt = InitialDM * Population.Value;
-        }
     }
-    public override double DMRetranslocationSupply
+    [EventHandler]
+    new private void OnCut()
     {
-        get
-        {
-            return Live.NonStructuralWt * DailyRetransFraction;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value > Live.NonStructuralWt)
-                throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
-            Live.NonStructuralWt -= value;
-        }
-    }
-    public override double DMAllocation
-    {
-        set
-        {
-            Live.NonStructuralWt += value;
-        }
     }
 }
    

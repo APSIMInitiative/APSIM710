@@ -31,7 +31,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityThenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -62,7 +62,7 @@
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -136,7 +136,7 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <SIRIUSGenericOrgan name="Tuber">
+      <GenericOrgan name="Tuber">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Memo>This organ inherits from SIRIUSGeneric organ so has the same 6 optional paramaters and default values for these paramaters.
@@ -223,8 +223,8 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </LinearInterpolationFunction>
-      </SIRIUSGenericOrgan>
-      <SIRIUSRoot name="Root">
+      </GenericOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -328,27 +328,27 @@ In addition this organ has a relative growth rate variable and a tubers per stem
             <XY>1 0.1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSRoot>
-      <SIRIUSLeaf name="Leaf">
+      </Root>
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>900</Area>
           <Age>30</Age>
-        </SIRIUSLeafCohort>
-        <SIRIUSLeafCohort name="Leaves[2]">
+        </LeafCohort>
+        <LeafCohort name="Leaves[2]">
           <Rank>2</Rank>
           <Area>600</Area>
           <Age>20</Age>
-        </SIRIUSLeafCohort>
-        <SIRIUSLeafCohort name="Leaves[3]">
+        </LeafCohort>
+        <LeafCohort name="Leaves[3]">
           <Rank>3</Rank>
           <Area>300</Area>
           <Age>10</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 
 Initial ages and initial areas are array fields so the size and age of multiple leaves can be entered, separated by a space.  The initial age is used to set how far through its expansion phase each leaf is on the day of planting.</Memo>
@@ -611,8 +611,8 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <XY>1 0.03</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      </Leaf>
+      <GenericOrgan name="Stem">
         <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -672,7 +672,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Planting Peeping Emergence TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
         <Values type="text" description="Values">1           2                       3                 4                    5                 6              7                 </Values>

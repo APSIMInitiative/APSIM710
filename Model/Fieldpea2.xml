@@ -56,7 +56,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption type="text" description="ArbitrationOption">PrioritythenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -87,7 +87,7 @@
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -180,7 +180,7 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
-      <SIRIUSGrain name="Grain">
+      <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.4</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -257,8 +257,8 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
-      </SIRIUSGrain>
-      <SIRIUSRoot name="Root">
+      </ReproductiveOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -352,7 +352,7 @@
           <Value type="text" description="Value">0.01</Value>
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
         </Constant>
-      </SIRIUSRoot>
+      </Root>
       <Nodule>
         <Biomass name="Live" />
         <Biomass name="Dead" />
@@ -429,7 +429,7 @@
           <Memo>is the proportion of LiveWt that is passed to Dead.Wt each day due to senesence</Memo>
         </Constant>
       </Nodule>
-      <SIRIUSGenericOrgan name="PodWall">
+      <GenericOrgan name="PodWall">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -485,17 +485,17 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
-      </SIRIUSGenericOrgan>
-      <SIRIUSLeaf name="Leaf">
+      </GenericOrgan>
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>100</Area>
           <Age>50</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -748,8 +748,8 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <XY>0.900001 0.2</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      </Leaf>
+      <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -822,7 +822,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">0.7</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Germination     Emergence      EndJuvenile     FloralInitiation   Flowering    StartPodGrowth      EndGrainFill      Maturity       HarvestRipe</Stages>
         <Values type="text" description="Values"> 1                     2                      3                      4                      5                  6                            7                       8                  9</Values>

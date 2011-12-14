@@ -14,7 +14,7 @@ public class Plant
     Phenology Phenology = null;
 
     [Link(IsOptional=true)]
-    Arbitrator Arbitrator = null;
+    BaseArbitrator Arbitrator = null;
 
     [Link]
     Component My = null;

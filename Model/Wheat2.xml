@@ -315,7 +315,7 @@
           </LinearInterpolationFunction>
         </EndPhase>
       </Phenology>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption>RelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -343,8 +343,8 @@
 	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
 		   
         </Memo>
-      </SIRIUSArbitrator>
-      <SIRIUSGrain name="Grain">
+      </Arbitrator>
+      <ReproductiveOrgan name="Grain">
         <MaximumSize>0.042</MaximumSize>
         <RipeStage>Ripe</RipeStage>
         <Biomass name="Live" />
@@ -410,8 +410,8 @@
           <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
           <Values type="text" description="Values">0.006           0.006          0.006             0.006      0.006       0.006            0.006          0.006    0.006</Values>
         </StageBasedInterpolation>
-      </SIRIUSGrain>
-      <SIRIUSRoot name="Root">
+      </ReproductiveOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -508,8 +508,8 @@
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
         </Constant>
-      </SIRIUSRoot>
-      <SIRIUSGenericOrgan name="Ear">
+      </Root>
+      <GenericOrgan name="Ear">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -535,17 +535,17 @@
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
-      <SIRIUSLeaf name="Leaf">
+      </GenericOrgan>
+      <Leaf name="Leaf">
         <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.5</KDead>
         <InitialiseStage>Emergence</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>200</Area>
           <Age>95</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -741,8 +741,8 @@
             <XY>0.900001 0.2</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      </Leaf>
+      <GenericOrgan name="Stem">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -790,7 +790,7 @@
           <Stages>Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe </Stages>
           <Values>   0.050     0.050      0.020            0.015    0.010       0.0075        0.005        0.005    0.005    </Values>
         </StageBasedInterpolation>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>
         <Values>   1               2              3            4             5            6            7             8           9      10</Values>

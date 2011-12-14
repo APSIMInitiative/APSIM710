@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-public class Nodule : SIRIUSGenericOrgan, BelowGround
+public class Nodule : GenericOrgan, BelowGround
 {
   #region Class Data Members
     public double RespiredWt = 0;

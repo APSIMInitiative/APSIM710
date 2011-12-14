@@ -64,14 +64,14 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption>RelativeAllocation</ArbitrationOption>
         <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
                1) it allocates N and DM along a hirachy of priorities
                2) it allocates potential DM then allocates N then limits DM below potential if there is insufficient N to meet Min N content
                3) it reallocates N from senessing leaves before taking N up from the soil, then takes N up from the soil then retranslocates to meet further demand			   
         </Memo>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <Phenology>
         <PhaseLookup name="ThermalTime">
           <PhaseLookupValue name="SoilTemperature">
@@ -223,7 +223,7 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <SIRIUSGrain name="Grain">
+      <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -296,8 +296,8 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
-      </SIRIUSGrain>
-      <SIRIUSRoot name="Root">
+      </ReproductiveOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -376,17 +376,17 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
-      </SIRIUSRoot>
-      <SIRIUSLeaf name="Leaf">
+      </Root>
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>500</Area>
           <Age>50</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -596,8 +596,8 @@
             <XY>0.900001 0.2</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Floret">
+      </Leaf>
+      <GenericOrgan name="Floret">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="NReallocationFactor">
@@ -631,8 +631,8 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
-      <SIRIUSGenericOrgan name="Stem">
+      </GenericOrgan>
+      <GenericOrgan name="Stem">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Constant name="NReallocationFactor">
@@ -689,7 +689,7 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">1</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <Summary />
       <StageBasedInterpolation name="StageCode">
         <Stages>Sowing      Germination     Emergence  FloralInitiation FlagLeaf Flowering  StartGrainFill EndGrainFill   Maturity  HarvestRipe </Stages>

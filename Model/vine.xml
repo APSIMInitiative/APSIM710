@@ -32,7 +32,7 @@
     </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">Vine</CropType>
-      <SIRIUSReserveOrgan name="Trunk">
+      <ReserveOrgan name="Trunk">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -78,11 +78,11 @@
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.00000001</Value>
         </Constant>
-      </SIRIUSReserveOrgan>
+      </ReserveOrgan>
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
         <PriorityOrgan type="text" description="Organs that recieve priority for biomass partitioning">Berry</PriorityOrgan>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
@@ -114,7 +114,7 @@
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -190,16 +190,16 @@
           <PhaseNameToGoto>Dormant</PhaseNameToGoto>
         </GotoPhase>
       </Phenology>
-      <SIRIUSLeaf name="Leaf">
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">.5</MaxCover>
         <KDead type="text" description="KDead">.5</KDead>
         <InitialiseStage type="text" description="InitialiseStage">BudBurst</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1000</Area>
           <Age type="text" description="Age">1</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
@@ -393,8 +393,8 @@
             <XY>0.900001 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGrain name="Berry">
+      </Leaf>
+      <ReproductiveOrgan name="Berry">
         <MaximumSize type="text" description="MaximumSize">0.68</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -448,8 +448,8 @@
         <Constant name="MinimumNConc">
           <Value>0.00</Value>
         </Constant>
-      </SIRIUSGrain>
-      <SIRIUSRoot name="Root">
+      </ReproductiveOrgan>
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -497,8 +497,8 @@
         <Constant name="MinimumNConc">
           <Value>0.0001</Value>
         </Constant>
-      </SIRIUSRoot>
-      <SIRIUSGenericOrgan name="Stem">
+      </Root>
+      <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -550,7 +550,7 @@
         <Constant name="MinimumNConc">
           <Value>0.0001</Value>
         </Constant>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">
         <Property type="text" description="Property">Berry.Live</Property>

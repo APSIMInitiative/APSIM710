@@ -34,7 +34,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <SIRIUSArbitrator name="Arbitrator">
+      <Arbitrator name="Arbitrator">
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityThenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -65,7 +65,7 @@
         <Constant name="RetransWtNRatio">
           <Value type="text" description="Value">0</Value>
         </Constant>
-      </SIRIUSArbitrator>
+      </Arbitrator>
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
@@ -95,7 +95,7 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <SIRIUSRoot name="Root">
+      <Root name="Root">
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -183,27 +183,27 @@
           <Value type="text" description="Value">1</Value>
           <Memo>Assume no temperature effect on root growth.</Memo>
         </Constant>
-      </SIRIUSRoot>
-      <SIRIUSLeaf name="Leaf">
+      </Root>
+      <Leaf name="Leaf">
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.01</KDead>
         <InitialiseStage type="text" description="InitialiseStage">Planting</InitialiseStage>
-        <SIRIUSLeafCohort name="Leaves[1]">
+        <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">900</Area>
           <Age type="text" description="Age">14</Age>
-        </SIRIUSLeafCohort>
-        <SIRIUSLeafCohort name="Leaves[2]">
+        </LeafCohort>
+        <LeafCohort name="Leaves[2]">
           <Rank type="text" description="Rank">2</Rank>
           <Area type="text" description="Area">600</Area>
           <Age type="text" description="Age">7</Age>
-        </SIRIUSLeafCohort>
-        <SIRIUSLeafCohort name="Leaves[3]">
+        </LeafCohort>
+        <LeafCohort name="Leaves[3]">
           <Rank type="text" description="Rank">3</Rank>
           <Area type="text" description="Area">300</Area>
           <Age type="text" description="Age">1</Age>
-        </SIRIUSLeafCohort>
+        </LeafCohort>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 
 Initial ages and initial areas are array fields so the size and age of multiple leaves can be entered, separated by a space.  The initial age is used to set how far through its expansion phase each leaf is on the day of planting.</Memo>
@@ -434,8 +434,8 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           </XYPairs>
           <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
         </LinearInterpolationFunction>
-      </SIRIUSLeaf>
-      <SIRIUSGenericOrgan name="Stem">
+      </Leaf>
+      <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -478,7 +478,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       	This function returns the demand for DM that would be required to return the size of a pool to that calculated using a good old fashioned allometric relationship using the standard power function (y=kx^p)
         </Memo>
         </AllometricDemandFunction>
-      </SIRIUSGenericOrgan>
+      </GenericOrgan>
       <Summary />
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>

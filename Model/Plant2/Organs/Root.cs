@@ -8,6 +8,12 @@ public class Root : BaseOrgan, BelowGround
     [Link]
     Plant Plant = null;
 
+    [Link(IsOptional=true)]
+    protected Function NitrogenDemandSwitch = null;
+
+    [Link(IsOptional=true)]
+    protected Function SenescenceRate = null;
+
     [Link]
     Population Population = null;
 
@@ -18,53 +24,54 @@ public class Root : BaseOrgan, BelowGround
     Function RootFrontVelocity = null;
 
     [Link]
-    Function SoilWaterEffect = null;
-
-    [Link]
-    Function SenescenceRate = null;
-
-    [Link]
-    Arbitrator Arbitrator = null;
-
-    [Link]
-    Function MaxDailyNUptake = null;
+    BaseArbitrator Arbitrator = null;
 
     [Link]
     Function PartitionFraction = null;
 
     [Link]
-    Function KLModifier = null;
-
-    [Link]
     Function MaximumNConc = null;
 
+    [Link]
+    Function MaxDailyNUptake = null;
 
-    #region Class Data Members
+    [Link]
+    Function MinimumNConc = null;
+
+    [Link]
+    Function KLModifier = null;
+
+
+ #region Class Data Members
     const double kgha2gsm = 0.1;
-
     private double[] SWSupply = null;
     private double[] Uptake = null;
     private double[] DeltaNH4;
     private double[] DeltaNO3;
-
+    
     public Biomass[] LayerLive;
     public Biomass[] LayerDead;
+    public Biomass[] LayerLengthDensity;
     private SowPlant2Type SowingInfo = null;
-
-    [Event]
-    public event FOMLayerDelegate IncorpFOM;
-    [Event]
-    public event WaterChangedDelegate WaterChanged;
-    [Event]
-    public event NitrogenChangedDelegate NitrogenChanged;
+    private double _SenescenceRate = 0;
+    private double _Nuptake = 0;
+    public double Length = 0;
+    
+    [Output]
+    [Units("kg/ha")]
+    public double Nuptake
+    {
+        get
+        {
+            return _Nuptake * 10;
+        }
+    }
     [Input]
     public double[] sw_dep = null;
     [Input]
     public double[] dlayer = null;
     [Input]
     public double[] bd = null;
-    [Input]
-    public double[] st = null;
     [Input]
     public double[] no3 = null;
     [Input]
@@ -74,75 +81,38 @@ public class Root : BaseOrgan, BelowGround
     [Input]
     public double[] ll15_dep = null;
     [Param]
-    [Description("")]
     public double[] ll = null;
     [Param]
-    [Description("")]
     public double[] kl = null;
     [Param]
-    [Description("")]
     public double[] xf = null;
     [Param]
-    [Description("Initial Root Weight")]
-    [Units("g/plant")]
-    public double InitialWt = 0;
+    private double InitialDM = 0;
     [Param]
-    [Description("Specific Root Length")]
-    public double SpecificRootLength = 0;
+    private double SpecificRootLength = 0;
     [Param]
-    [Description("Initial KNO3")]
-    public double KNO3 = 0;
+    private double KNO3 = 0;
     [Param]
-    [Description("Initial KNO4")]
-    public double KNH4 = 0;
+    private double KNH4 = 0;
+ #endregion
 
-    [Output]
-    [Units("mm")]
-    public double Depth = 0;
-    #endregion
-
-    [Output]
-    [Units("mm")]
-    double[] LLdep
-    {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = ll[i] * dlayer[i];
-            return value;
-        }
-    }
-
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
-    {
-        SowingInfo = Sow;
-        if (LayerLive == null)
-        {
-            LayerLive = new Biomass[dlayer.Length];
-            LayerDead = new Biomass[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-            {
-                LayerLive[i] = new Biomass();
-                LayerDead[i] = new Biomass();
-            }
-        }
-        DeltaNO3 = new double[dlayer.Length];
-        DeltaNH4 = new double[dlayer.Length];
-    }
-
+ #region Root functions and events
     public override void DoPotentialGrowth()
     {
+        _SenescenceRate = 0;
+        if (SenescenceRate != null) //Default of zero means no senescence
+            _SenescenceRate = SenescenceRate.Value; 
+        
         if (Live.Wt == 0)
         {
+            LayerLive[0].StructuralWt = InitialDM * Population.Value;
+            LayerLive[0].StructuralN = InitialDM * MaxNconc * Population.Value;
             Depth = SowingInfo.Depth;
-            double RtDensity = InitialWt * Population.Value / Depth;
-            int SowingLayer = LayerIndex(Depth);
-            for (int i = 0; i <= SowingLayer; i++)
-                LayerLive[i].StructuralWt = RtDensity * RootProportion(i, Depth) * dlayer[i];
-            //LayerLive[0].StructuralWt = InitialWt * Population.Value;
         }
+
+        Length = 0;
+        for (int layer = 0; layer < dlayer.Length; layer++)
+            Length += LengthDensity[layer];
 
         if (ll.Length != dlayer.Length)
             throw new Exception("Number of LL items does not match the number of soil layers.");
@@ -152,51 +122,13 @@ public class Root : BaseOrgan, BelowGround
             throw new Exception("Number of XF items does not match the number of soil layers.");
 
     }
-
-    [Output("RootFrontTemperature")]
-    public Double RootFrontTemperature
-    {
-        get
-        {
-            int RootFrontLayer = LayerIndex(Depth);
-            return st[RootFrontLayer];
-        }
-    }
-    [Output("RootFrontFASW")]
-    [Description("Fraction of Available Soil Water (between LL15 and DUL) at the plant root front")]
-    public Double RootFrontFASW
-    {
-        get
-        {
-            int RootFrontLayer = LayerIndex(Depth);
-            if (RootFrontLayer < dlayer.Length - 1)
-            {
-                double fasw1;
-                double fasw2;
-                fasw1 = (sw_dep[RootFrontLayer] - ll15_dep[RootFrontLayer]) / (dul_dep[RootFrontLayer] - ll15_dep[RootFrontLayer]);
-                fasw1 = Math.Min(1.0, Math.Max(0.0, fasw1));
-                fasw2 = (sw_dep[RootFrontLayer + 1] - ll15_dep[RootFrontLayer + 1]) / (dul_dep[RootFrontLayer + 1] - ll15_dep[RootFrontLayer + 1]);
-                fasw2 = Math.Min(1.0, Math.Max(0.0, fasw2));
-                double proportion = RootProportion(RootFrontLayer, Depth);
-                return proportion * fasw1 + (1 - proportion) * fasw2;
-            }
-            else
-            {
-                double fasw = (sw_dep[RootFrontLayer] - ll15_dep[RootFrontLayer]) / (dul_dep[RootFrontLayer] - ll15_dep[RootFrontLayer]);
-                fasw = Math.Min(1.0, Math.Max(0.0, fasw));
-                return fasw;
-            }
-        }
-    }
-
-
     public override void DoActualGrowth()
     {
         base.DoActualGrowth();
 
         // Do Root Front Advance
         int RootLayer = LayerIndex(Depth);
-        Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TemperatureEffect.Value * SoilWaterEffect.Value;
+        Depth = Depth + RootFrontVelocity.Value * xf[RootLayer] * TemperatureEffect.Value;
         double MaxDepth = 0;
         for (int i = 0; i < dlayer.Length; i++)
             if (xf[i] > 0)
@@ -209,12 +141,12 @@ public class Root : BaseOrgan, BelowGround
 
         for (int layer = 0; layer < dlayer.Length; layer++)
         {
-            double DM = LayerLive[layer].Wt * SenescenceRate.Value * 10.0;
-            double N = LayerLive[layer].StructuralN * SenescenceRate.Value * 10.0;
-            LayerLive[layer].StructuralWt *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].NonStructuralWt *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].StructuralN *= (1.0 - SenescenceRate.Value);
-            LayerLive[layer].NonStructuralN *= (1.0 - SenescenceRate.Value);
+            double DM = LayerLive[layer].Wt * _SenescenceRate * 10.0;
+            double N = LayerLive[layer].StructuralN * _SenescenceRate * 10.0;
+            LayerLive[layer].StructuralWt *= (1.0 - _SenescenceRate);
+            LayerLive[layer].NonStructuralWt *= (1.0 - _SenescenceRate);
+            LayerLive[layer].StructuralN *= (1.0 - _SenescenceRate);
+            LayerLive[layer].NonStructuralN *= (1.0 - _SenescenceRate);
 
 
 
@@ -237,109 +169,6 @@ public class Root : BaseOrgan, BelowGround
         FomLayer.Layer = FOMLayers;
         IncorpFOM.Invoke(FomLayer);
 
-    }
-    public override double DMDemand
-    {
-        get
-        {
-            return Arbitrator.DMSupply * PartitionFraction.Value;
-        }
-    }
-
-    [Output("rlv")]
-    double[] rlv
-    {
-        get
-        {
-            return LengthDensity;
-        }
-    }
-    [Output]
-    double[] LengthDensity
-    {
-        get
-        {
-            double[] value = new double[dlayer.Length];
-            for (int i = 0; i < dlayer.Length; i++)
-                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
-            return value;
-        }
-    }
-    [Output]
-    public override double DMAllocation
-    {
-        set
-        {
-            // Calculate Root Activity Values for water and nitrogen
-            double[] RAw = new double[dlayer.Length];
-            double[] RAn = new double[dlayer.Length];
-            double TotalRAw = 0;
-            double TotalRAn = 0;
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-                if (layer <= LayerIndex(Depth))
-                    if (LayerLive[layer].Wt > 0)
-                    {
-                        RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
-                                   * dlayer[layer]
-                                   * RootProportion(layer, Depth);
-                        RAw[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
-
-                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
-                                   * dlayer[layer]
-                                   * RootProportion(layer, Depth);
-                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
-
-
-
-                    }
-                    else
-                    {
-                        RAw[layer] = RAw[layer - 1];
-                        RAn[layer] = RAn[layer - 1];
-                    }
-                else
-                {
-                    RAw[layer] = 0;
-                    RAn[layer] = 0;
-                }
-                TotalRAw += RAw[layer];
-                TotalRAn += RAn[layer];
-            }
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-            {
-                if (TotalRAw > 0)
-
-                    LayerLive[layer].StructuralWt += value * RAw[layer] / TotalRAw;
-                else if (value > 0)
-                    throw new Exception("Error trying to partition root biomass");
-            }
-        }
-    }
-    [Output]
-    public override double WaterSupply
-    {
-        get
-        {
-            if (SWSupply == null || SWSupply.Length != dlayer.Length)
-                SWSupply = new double[dlayer.Length];
-
-            for (int layer = 0; layer < dlayer.Length; layer++)
-                if (layer <= LayerIndex(Depth))
-                    SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (sw_dep[layer] - ll[layer] * dlayer[layer]) * RootProportion(layer, Depth));
-                else
-                    SWSupply[layer] = 0;
-
-            return MathUtility.Sum(SWSupply);
-        }
-    }
-    [Output]
-    [Units("mm")]
-    public override double WaterUptake
-    {
-        get { return -MathUtility.Sum(Uptake); }
     }
     public override void DoWaterUptake(double Amount)
     {
@@ -383,7 +212,6 @@ public class Root : BaseOrgan, BelowGround
 
         return depth_of_root_in_layer / dlayer[layer];
     }
-
     private void SoilNSupply(double[] NO3Supply, double[] NH4Supply)
     {
         double[] no3ppm = new double[dlayer.Length];
@@ -408,98 +236,29 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
-    [Output]
-    public override double NUptakeSupply
+    [Event]
+    public event FOMLayerDelegate IncorpFOM;
+    [Event]
+    public event WaterChangedDelegate WaterChanged;
+    [Event]
+    public event NitrogenChangedDelegate NitrogenChanged;
+    [EventHandler]
+    public void OnSow(SowPlant2Type Sow)
     {
-        get
+        SowingInfo = Sow;
+        if (LayerLive == null)
         {
-            double[] no3supply = new double[dlayer.Length];
-            double[] nh4supply = new double[dlayer.Length];
-            SoilNSupply(no3supply, nh4supply);
-
-            double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
-            return Math.Min(Arbitrator.NDemand, NSupply);
-
-        }
-    }
-    public override double NUptake
-    {
-        set
-        {
-            double Uptake = value / kgha2gsm;
-            NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
-            NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
-            NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
-            DeltaNO3 = new double[dlayer.Length];
-            DeltaNH4 = new double[dlayer.Length];
-
-            double[] no3supply = new double[dlayer.Length];
-            double[] nh4supply = new double[dlayer.Length];
-
-            SoilNSupply(no3supply, nh4supply);
-            double NSupply = MathUtility.Sum(no3supply) + MathUtility.Sum(nh4supply);
-            if (Uptake > 0)
+            LayerLive = new Biomass[dlayer.Length];
+            LayerDead = new Biomass[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
             {
-                if (Uptake > NSupply + 0.001)
-                    throw new Exception("Request for N uptake exceeds soil N supply");
-                double fraction = 0;
-                if (NSupply > 0) fraction = Uptake / NSupply;
-
-                for (int layer = 0; layer <= dlayer.Length - 1; layer++)
-                {
-                    DeltaNO3[layer] = -no3supply[layer] * fraction;
-                    DeltaNH4[layer] = -nh4supply[layer] * fraction;
-                    NitrogenUptake.DeltaNO3[layer] = DeltaNO3[layer];
-                    NitrogenUptake.DeltaNH4[layer] = DeltaNH4[layer];
-
-                }
-                if (NitrogenChanged != null)
-                    NitrogenChanged.Invoke(NitrogenUptake);
-
+                LayerLive[i] = new Biomass();
+                LayerDead[i] = new Biomass();
             }
         }
+        DeltaNO3 = new double[dlayer.Length];
+        DeltaNH4 = new double[dlayer.Length];
     }
-    public override double NDemand
-    {
-        get
-        {
-            double Total = 0.0;
-            foreach (Biomass Layer in LayerLive)
-            {
-                double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                Total += NDeficit;
-            }
-            return Total;
-        }
-    }
-
-    public override double NAllocation
-    {
-        set
-        {
-            double Demand = NDemand;
-            double Supply = value;
-            double NAllocated = 0;
-
-            if (Demand == 0 && Supply > 0) { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
-            if (Demand > 0)
-            {
-                foreach (Biomass Layer in LayerLive)
-                {
-                    double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                    double fraction = NDeficit / Demand;
-                    double Allocation = fraction * Supply;
-                    Layer.StructuralN += Allocation;
-                    NAllocated += Allocation;
-                }
-            }
-            if (!MathUtility.FloatsAreEqual(NAllocated - Supply, 0.0))
-            {
-                throw new Exception("Error in N Allocation: " + Name);
-            }
-        }
-    }
-
     [EventHandler]
     public void OnWaterUptakesCalculated(WaterUptakesCalculatedType SoilWater)
     {
@@ -520,6 +279,319 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
+ #endregion
+
+ #region Arbitrator method calls
+    public override double DMDemand
+    {
+        get
+        {
+            return Arbitrator.DMSupply * PartitionFraction.Value;
+        }
+    }
+    public override double DMPotentialAllocation
+    {
+        set
+        {
+            if (DMDemand == 0)
+                if (value < 0.000000000001) { }//All OK
+                else
+                    throw new Exception("Invalid allocation of potential DM in" + Name);
+
+            // Calculate Root Activity Values for water and nitrogen
+            double[] RAw = new double[dlayer.Length];
+            double[] RAn = new double[dlayer.Length];
+            double TotalRAw = 0;
+            double TotalRAn = 0; ;
+
+            for (int layer = 0; layer < dlayer.Length; layer++)
+            {
+                if (layer <= LayerIndex(Depth))
+                    if (LayerLive[layer].Wt > 0)
+                    {
+                        RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
+                                   * dlayer[layer]
+                                   * RootProportion(layer, Depth);
+                        RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+
+                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
+                                       * dlayer[layer]
+                                       * RootProportion(layer, Depth);
+                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
+                    }
+                    else if (layer > 0)
+                    {
+                        RAw[layer] = RAw[layer - 1];
+                        RAn[layer] = RAn[layer - 1];
+                    }
+                else
+                {
+                    RAw[layer] = 0;
+                    RAn[layer] = 0;
+                }
+                TotalRAw += RAw[layer];
+                TotalRAn += RAn[layer];
+            }
+            double allocated = 0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+            {
+                if (TotalRAw > 0)
+
+                    LayerLive[layer].PotentialDMAllocation = value * RAw[layer] / TotalRAw;
+                else if (value > 0)
+                    throw new Exception("Error trying to partition potential root biomass");
+                allocated += value * RAw[layer] / TotalRAw;
+            }
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public override double DMAllocation
+    {
+        set
+        {
+            // Calculate Root Activity Values for water and nitrogen
+            double[] RAw = new double[dlayer.Length];
+            double[] RAn = new double[dlayer.Length];
+            double TotalRAw = 0;
+            double TotalRAn = 0;
+
+            for (int layer = 0; layer < dlayer.Length; layer++)
+            {
+                if (layer <= LayerIndex(Depth))
+                    if (LayerLive[layer].Wt > 0)
+                    {
+                        RAw[layer] = Uptake[layer] / LayerLive[layer].Wt
+                                   * dlayer[layer]
+                                   * RootProportion(layer, Depth);
+                        RAw[layer] = Math.Max(RAw[layer], 1e-20);  // Make sure small numbers to avoid lack of info for partitioning
+
+                        RAn[layer] = (DeltaNO3[layer] + DeltaNH4[layer]) / LayerLive[layer].Wt
+                                   * dlayer[layer]
+                                   * RootProportion(layer, Depth);
+                        RAn[layer] = Math.Max(RAw[layer], 1e-10);  // Make sure small numbers to avoid lack of info for partitioning
+
+                    }
+                    else if (layer > 0)
+                    {
+                        RAw[layer] = RAw[layer - 1];
+                        RAn[layer] = RAn[layer - 1];
+                    }
+                else
+                {
+                    RAw[layer] = 0;
+                    RAn[layer] = 0;
+                }
+                TotalRAw += RAw[layer];
+                TotalRAn += RAn[layer];
+            }
+            double allocated = 0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+            {
+                if (TotalRAw > 0)
+
+                    LayerLive[layer].StructuralWt += value * RAw[layer] / TotalRAw;
+                else if (value > 0)
+                    throw new Exception("Error trying to partition root biomass");
+                allocated += value * RAw[layer] / TotalRAw;
+            }
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public override double NDemand
+    {
+        get
+        {
+            //Calculate N demand based on amount of N needed to bring root N content in each layer up to maximum
+            double TotalDeficit = 0.0;
+            double _NitrogenDemandSwitch = 1;
+            if (NitrogenDemandSwitch != null) //Default of 1 means demand is always truned on!!!!
+                _NitrogenDemandSwitch = NitrogenDemandSwitch.Value;
+            foreach (Biomass Layer in LayerLive)
+            {
+                double NDeficit = Math.Max(0.0, MaximumNConc.Value * (Layer.Wt + Layer.PotentialDMAllocation) - Layer.N);
+                TotalDeficit += NDeficit;
+            }
+            return TotalDeficit * _NitrogenDemandSwitch;
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public override double NUptakeSupply
+    {
+        get
+        {
+            double[] no3supply = new double[dlayer.Length];
+            double[] nh4supply = new double[dlayer.Length];
+            SoilNSupply(no3supply, nh4supply);
+            double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
+            return NSupply;
+        }
+    }
+    [Output]
+    [Units("g/m2")]
+    public override double NUptake
+    {
+        set
+        {
+            _Nuptake = value;
+            double Uptake = value / kgha2gsm;
+            NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
+            NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
+            NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
+
+            double[] no3supply = new double[dlayer.Length];
+            double[] nh4supply = new double[dlayer.Length];
+            SoilNSupply(no3supply, nh4supply);
+            double NSupply = MathUtility.Sum(no3supply) + MathUtility.Sum(nh4supply);
+            if (Uptake > 0)
+            {
+                if (Uptake > NSupply + 0.001)
+                    throw new Exception("Request for N uptake exceeds soil N supply");
+                double fraction = 0;
+                if (NSupply > 0) fraction = Uptake / NSupply;
+
+                for (int layer = 0; layer <= dlayer.Length - 1; layer++)
+                {
+                    DeltaNO3[layer] = -no3supply[layer] * fraction;
+                    DeltaNH4[layer] = -nh4supply[layer] * fraction;
+                    NitrogenUptake.DeltaNO3[layer] = DeltaNO3[layer];
+                    NitrogenUptake.DeltaNH4[layer] = DeltaNH4[layer];
+                }
+                if (NitrogenChanged != null)
+                    NitrogenChanged.Invoke(NitrogenUptake);
+
+            }
+        }
+    }
+    public override double NAllocation
+    {
+        set
+        {
+            // Recalculate N defict following DM allocation for checking N allocation and partitioning N between layers   
+            double Demand = 0.0;
+            foreach (Biomass Layer in LayerLive)
+            {
+                double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
+                Demand += NDeficit;
+            }
+            double Supply = value;
+            double NAllocated = 0;
+            if ((Demand == 0) && (Supply > 0.0000000001))
+            { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
+
+            // Allocate N to each layer
+            if (Demand > 0)
+            {
+                foreach (Biomass Layer in LayerLive)
+                {
+                    double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
+                    double fraction = NDeficit / Demand;
+                    double Allocation = fraction * Supply;
+                    Layer.StructuralN += Allocation;
+                    NAllocated += Allocation;
+                }
+            }
+            if (!MathUtility.FloatsAreEqual(NAllocated - Supply, 0.0))
+            {
+                throw new Exception("Error in N Allocation: " + Name);
+            }
+        }
+    }
+    public override double MaxNconc
+    {
+        get
+        {
+            return MaximumNConc.Value;
+        }
+    }
+    public override double MinNconc
+    {
+        get
+        {
+            return MinimumNConc.Value;
+        }
+    }
+    [Output]
+    [Units("mm")]
+    public override double WaterSupply
+    {
+        get
+        {
+            if (SWSupply == null || SWSupply.Length != dlayer.Length)
+                SWSupply = new double[dlayer.Length];
+
+
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                if (layer <= LayerIndex(Depth))
+                    SWSupply[layer] = Math.Max(0.0, kl[layer] * KLModifier.Value * (sw_dep[layer] - ll[layer] * dlayer[layer]) * RootProportion(layer, Depth));
+                else
+                    SWSupply[layer] = 0;
+
+            return MathUtility.Sum(SWSupply);
+        }
+    }
+    [Output]
+    [Units("mm")]
+    public override double WaterUptake
+    {
+        get { return -MathUtility.Sum(Uptake); }
+    }
+ #endregion
+
+ #region Output Variables
+    [Output]
+    [Units("mm")]
+    double[] LLdep
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = ll[i] * dlayer[i];
+            return value;
+        }
+    }
+    [Output]
+    [Units("??mm/mm3")]
+    double[] LengthDensity
+    {
+        get
+        {
+            double[] value = new double[dlayer.Length];
+            for (int i = 0; i < dlayer.Length; i++)
+                value[i] = LayerLive[i].Wt * SpecificRootLength / 1000000 / dlayer[i];
+           return value;
+        }
+    }
+    [Output("rlv")]
+    [Units("??km/mm3")]
+    double[] rlv
+    {
+        get
+        {
+            return LengthDensity;
+        }
+    }
+    [Output]
+    [Units("mm")]
+    public double Depth = 0;
+    //[Output]
+    //[Units("mm")]
+   /* public double Length
+    {
+        get
+        {
+            double lengthSum = 0;
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                lengthSum += LengthDensity[layer];
+            return lengthSum;
+        }
+    } */
+
+
+ #endregion
 
 }
 
