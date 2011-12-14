@@ -26,85 +26,6 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Cultivar name="RussetBurbank">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="IlamHardy">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="MarisPiper">
-      <Construct type="text" description="Construct">Plant</Construct>
-      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">50</Override>
-      <Override name="Leaf.MaxArea">
-        <XYPairs>
-          <XY>1 3000</XY>
-          <XY>5 25000</XY>
-          <XY>10 50000</XY>
-          <XY>20 50000</XY>
-          <XY>50 50000</XY>
-        </XYPairs>
-      </Override>
-      <Override name="Leaf.LagDuration">
-        <value>500</value>
-      </Override>
-      <Override name="Leaf.NodeAppearanceRate.Phyllochron">
-        <XYPairs>
-          <XY>0 5</XY>
-          <XY>5 30</XY>
-          <XY>35 30</XY>
-          <XY>36 60</XY>
-        </XYPairs>
-      </Override>
-      <Override name="Stem.DMDemandFunction.InterNodeWt">
-        <XYPairs>
-          <XY>0 0.6</XY>
-          <XY>7 0.6</XY>
-          <XY>8 1.3</XY>
-        </XYPairs>
-      </Override>
-    </Cultivar>
-    <Cultivar name="Horizon">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="JerseyBenny">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Karaka">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Nooksac">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="RedRascal">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Rua">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Fianna">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="RussetRanger">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Nadine">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Coliban">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Moonlight">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Agria">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Bondi">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Crop39">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">Potato</CropType>
       <Population>
@@ -221,26 +142,58 @@
         <Memo>This organ inherits from SIRIUSGeneric organ so has the same 6 optional paramaters and default values for these paramaters.
 In addition this organ has a relative growth rate variable and a tubers per stem variable.  These are used to calculate DM demand in the tubers.  This differs from the generic organ that uses a pratitioning fraction to calculate DM demand.
       </Memo>
+        <PotentialSizeDemandFunction name="DMDemandFunction">
+          <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
+          <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
+          <LinearInterpolationFunction name="PotentialGrowthIncrement">
+            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>4 0.017</XY>
+              <XY>4.04 0.017</XY>
+              <XY>4.32 0.06</XY>
+              <XY>4.52 0.06</XY>
+              <XY>4.95 0.018</XY>
+              <XY>6.54 0</XY>
+            </XYPairs>
+            <Memo>This is potential growth rate of tubers in g/degree day</Memo>
+          </LinearInterpolationFunction>
+          <MultiplyFunction name="OrganNumber">
+            <Memo>Multiplies the values of the children of this node</Memo>
+            <Constant name="OrganNumberPerStem">
+              <Value type="text" description="Value">5</Value>
+            </Constant>
+            <Variable name="StemNumber">
+              <VariableName type="text" description="Variable Name">Leaf.MainStemPopulation</VariableName>
+            </Variable>
+          </MultiplyFunction>
+          <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime" />
+          <AccumulateFunction name="AccumThermalTime">
+            <StartStageName type="text" description="StartStageName">TuberInitiation</StartStageName>
+            <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
+            <Memo>Sum the values of the children of this node and accumulate daily between the start and end stages</Memo>
+            <Variable name="DailyThermalTimeValue">
+              <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+            </Variable>
+          </AccumulateFunction>
+        </PotentialSizeDemandFunction>
+        <LinearInterpolationFunction name="WaterContent">
+          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>3 0</XY>
+            <XY>4 0</XY>
+            <XY>4.1 0.1</XY>
+            <XY>4.7 0.16</XY>
+            <XY>5.4 0.2</XY>
+            <XY>6 0.22</XY>
+          </XYPairs>
+          <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
+        </LinearInterpolationFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
         </Constant>
-        <RelativeGrowthRateDemandFunction name="DMDemandFunction">
-          <InitialWt>500.0</InitialWt>
-          <InitialStageName>TuberInitiation</InitialStageName>
-          <LinearInterpolationFunction name="RelativeGrowthRate">
-            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-            <XYPairs>
-              <XY>3 0</XY>
-              <XY>4 0</XY>
-              <XY>4.1 0.075</XY>
-              <XY>4.7 0.075</XY>
-              <XY>5.4 0.003</XY>
-              <XY>6 0</XY>
-            </XYPairs>
-            <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
-          </LinearInterpolationFunction>
-        </RelativeGrowthRateDemandFunction>
         <LinearInterpolationFunction name="NitrogenDemandSwitch">
           <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
           <XYPairs>
@@ -251,10 +204,6 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
           <Memo>This turns of N demand after the canopy has fully senesed to stop the tubers from taking up N after canopy death</Memo>
         </LinearInterpolationFunction>
-        <Constant name="TubersPerStem">
-          <Value type="text" description="Value">6</Value>
-          <Memo>The number of tubers per stem is used along with stem number per plant and plant population and individual tuber growth to set tuber DM demand.  This Function needs to be improved to enable tuber number per stem to be predicted as a function of physiological ageing.</Memo>
-        </Constant>
         <LinearInterpolationFunction name="MaximumNConc">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
@@ -265,29 +214,12 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
           <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
         </LinearInterpolationFunction>
-        <Constant name="xMinimumNConc">
-          <Value type="text" description="Value">.008</Value>
-        </Constant>
-        <LinearInterpolationFunction name="aRelativeGrowthRate">
-          <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 0</XY>
-            <XY>4 0</XY>
-            <XY>5 0</XY>
-            <XY>5.3 0</XY>
-            <XY>5.7 0</XY>
-            <XY>6 0</XY>
-            <XY>6.5 0</XY>
-            <XY>7 0</XY>
-          </XYPairs>
-          <Memo>The relative growth rate is used to set the DM demand of each tuber</Memo>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="MinimumNConc">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
           <XYPairs>
             <XY>4 0.02</XY>
-            <XY>4.1 0.008</XY>
-            <XY>7 0.008</XY>
+            <XY>4.1 0.006</XY>
+            <XY>7 0.006</XY>
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </LinearInterpolationFunction>
@@ -444,17 +376,26 @@ Initial ages and initial areas are array fields so the size and age of multiple 
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
+          <LinearInterpolationFunction name="xPhotoperiodFactor">
+            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+            <XYPairs>
+              <XY>8 0.3</XY>
+              <XY>14 0.3</XY>
+              <XY>15 1</XY>
+              <XY>20 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
         </FinalNodeNumber>
         <PhaseLookupValue name="NodeAppearanceRate">
           <Start type="text" description="Start">Emergence</Start>
           <End type="text" description="End">FinalLeaf</End>
           <LinearInterpolationFunction name="Phyllochron">
-            <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+            <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
             <XYPairs>
               <XY>0 5</XY>
-              <XY>5 30</XY>
-              <XY>25 30</XY>
-              <XY>26 60</XY>
+              <XY>0.15 30</XY>
+              <XY>0.74 30</XY>
+              <XY>0.75 60</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <Memo>Determines how quickly nodes appear</Memo>
@@ -466,10 +407,10 @@ For Potato the potential branching rate is the branching pattern that would be o
             <XProperty>Leaf.NodeNo</XProperty>
             <XYPairs>
               <XY>0 0</XY>
-              <XY>12 0</XY>
-              <XY>13 1</XY>
-              <XY>16 1</XY>
-              <XY>17 0</XY>
+              <XY>7 0</XY>
+              <XY>8 0.5</XY>
+              <XY>13 0.5</XY>
+              <XY>14 0</XY>
               <XY>34 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
@@ -477,46 +418,59 @@ For Potato the potential branching rate is the branching pattern that would be o
             <XProperty type="text" description="XProperty">leaf.CoverGreen</XProperty>
             <XYPairs>
               <XY>0 1</XY>
-              <XY>0.5 1</XY>
-              <XY>0.75 0.4</XY>
+              <XY>0.4 1</XY>
+              <XY>0.55 0.45</XY>
               <XY>0.8 0</XY>
               <XY>1 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
         <LinearInterpolationFunction name="Growthduration">
-          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
           <XYPairs>
-            <XY>1 200</XY>
-            <XY>10 400</XY>
+            <XY>0 200</XY>
+            <XY>0.3 400</XY>
+            <XY>0.4 400</XY>
+            <XY>1 400</XY>
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="MaxArea">
-          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
           <XYPairs>
-            <XY>1 3000</XY>
-            <XY>5 25000</XY>
-            <XY>10 50000</XY>
-            <XY>20 50000</XY>
-            <XY>34 100</XY>
+            <XY>0 2000</XY>
+            <XY>0.15 18000</XY>
+            <XY>0.3 27000</XY>
+            <XY>0.44 15000</XY>
+            <XY>0.59 6000</XY>
+            <XY>0.73 1500</XY>
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
-        <Constant name="LagDuration">
-          <Value type="text" description="Value">150</Value>
-        </Constant>
-        <Constant name="SenescenceDuration">
-          <Value type="text" description="Value">100</Value>
-        </Constant>
-        <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.9</Value>
-          <Memo>The cover overlying each cohort is calculated from the leaf area of overlying cohorts and the extinction coefficient.  If it exceeds this value the leaf will begin to seness at a rate set by ShadeInducedSenRate</Memo>
-        </Constant>
-        <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">.12</Value>
-          <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-        </Constant>
+        <LinearInterpolationFunction name="LagDuration">
+          <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
+          <XYPairs>
+            <XY>0 350</XY>
+            <XY>0.15 350</XY>
+            <XY>0.3 350</XY>
+            <XY>0.4 350</XY>
+            <XY>0.73 350</XY>
+            <XY>1 20</XY>
+          </XYPairs>
+          <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="SenescenceDuration">
+          <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
+          <XYPairs>
+            <XY>0 350</XY>
+            <XY>0.15 350</XY>
+            <XY>0.3 350</XY>
+            <XY>0.4 350</XY>
+            <XY>0.73 350</XY>
+            <XY>1 100</XY>
+          </XYPairs>
+          <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
+        </LinearInterpolationFunction>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Quantifies the relationship between Leaf area index and radiation interception.  The PotentialExtinctionCoeff is the unstressed value and extinction coefficient declines in response to water stress as leaves wilt to reduce their radiation load</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -534,7 +488,7 @@ For Potato the potential branching rate is the branching pattern that would be o
           <Memo>Potential photosynthesis is set by the radiation use efficiency (RUE in gDM/MJ).  Stress and CO2 adjustments are applied as:
 Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Constant name="RUE">
-            <Value type="text" description="Value">1.44</Value>
+            <Value type="text" description="Value">1.2</Value>
           </Constant>
           <WeightedTemperatureFunction name="FT">
             <MaximumTemperatureWeighting>0.75</MaximumTemperatureWeighting>
@@ -573,10 +527,14 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <PhotosyntheticPathway>C3</PhotosyntheticPathway>
           </RUECO2Function>
         </RUEModel>
-        <Constant name="SpecificLeafAreaMax">
-          <Value type="text" description="Value">50000</Value>
-          <Memo>The Maximum SLA set the lowest density the leaves can become and is used to calculate Structural DM demand as DeltaPotentialArea / SpecificLeafAreaMax.  </Memo>
-        </Constant>
+        <LinearInterpolationFunction name="SpecificLeafAreaMax">
+          <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
+          <XYPairs>
+            <XY>0 40000</XY>
+            <XY>1 25000</XY>
+          </XYPairs>
+          <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
+        </LinearInterpolationFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.5</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 
@@ -606,7 +564,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.03</Value>
         </Constant>
         <Constant name="CriticalNConc">
-          <Value type="text" description="Value">.06</Value>
+          <Value type="text" description="Value">.05</Value>
         </Constant>
         <Constant name="MaximumNConc">
           <Value type="text" description="Value">.07</Value>
@@ -617,7 +575,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
         <Constant name="NRetranslocationFactor">
-          <Value type="text" description="Value">.05</Value>
+          <Value type="text" description="Value">.01</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <Constant name="DMRetranslocationFactor">
@@ -648,8 +606,9 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>0.9 0</XY>
-            <XY>0.900001 0.12</XY>
+            <XY>0.5 0</XY>
+            <XY>0.8 0</XY>
+            <XY>1 0.03</XY>
           </XYPairs>
         </LinearInterpolationFunction>
       </SIRIUSLeaf>
@@ -665,15 +624,18 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <InternodeDemandFunction name="DMDemandFunction">
-          <LinearInterpolationFunction name="InterNodeWt">
+          <LinearInterpolationFunction name="xInterNodeWt">
             <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
             <XYPairs>
-              <XY>0 0.45</XY>
-              <XY>7 0.45</XY>
-              <XY>8 0.6</XY>
+              <XY>0 0.2</XY>
+              <XY>7 0.2</XY>
+              <XY>8 0.2</XY>
             </XYPairs>
             <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
           </LinearInterpolationFunction>
+          <Constant name="InterNodeWt">
+            <Value type="text" description="Value">.2</Value>
+          </Constant>
         </InternodeDemandFunction>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">1</Value>
@@ -739,5 +701,98 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Organs[].Dead</Property>
       </CompositeBiomass>
     </Plant>
+    <Cultivar name="RussetBurbank">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="JerseyBenny">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">19</Override>
+      <Override name="Leaf.BranchingRate.Potential_Branching_Rate">
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>6 0</XY>
+          <XY>7 0.5</XY>
+          <XY>10 0.5</XY>
+          <XY>11 0</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Tuber.DMDemandFunction.OrganNumber.OrganNumberPerStem">
+        <Value type="text" description="Value">3</Value>
+      </Override>
+    </Cultivar>
+    <Cultivar name="IlamHardy">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="MarisPiper">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">50</Override>
+      <Override name="Leaf.BranchingRate.Potential_Branching_Rate">
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>7 0</XY>
+          <XY>8 1</XY>
+          <XY>9 0</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Stem.DMDemandFunction.InternodeWt">
+        <Value type="text" description="Value">0.4</Value>
+      </Override>
+      <Override name="Leaf.LagDuration">
+        <XYPairs>
+          <XY>0 500</XY>
+          <XY>0.15 500</XY>
+          <XY>0.3 500</XY>
+          <XY>0.4 500</XY>
+          <XY>0.73 500</XY>
+          <XY>1 20</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.Photosynthesis.RUE">
+        <Value type="text" description="Value">2.0</Value>
+      </Override>
+    </Cultivar>
+    <Cultivar name="Horizon">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Karaka">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Nooksac">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="RedRascal">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Rua">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Fianna">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="RussetRanger">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Nadine">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Coliban">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Moonlight">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Agria">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Bondi">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Crop39">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="RussetBurbankLong">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Leaf.FinalNodeNumber.MaxNodeNo">46</Override>
+    </Cultivar>
   </Model>
 </Type>

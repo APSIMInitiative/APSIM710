@@ -14,7 +14,7 @@ Title                  = Parilla_23Nov_medN
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component  "Plant2 diagnostic variables" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -48,12 +48,13 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: Lameroo.met
 
-------- Plant2 diagnostic variables Initialisation ----------------------------
+------- Outputs Initialisation ------------------------------------------------
      Output frequency:
         post
      Output variables:
         dd/mmm/yyyy
         AccumTtemerg
+        PhenologyCurrentPhaseName
         StageCodeValue
         no3()
         nh4()
@@ -102,30 +103,24 @@ Paddock:
         TuberLiveWt
         RootDeadWt
         RootLiveWt
-        GrainLIveWt
-        GrainDeadWt
-        FloretLIveWt
-        FloretDeadWt
         AboveGroundN
         BelowGroundN
         TotalN
-        RootLiveN
-        RootDeadN
+        TotalLiveN
+        TotalDeadN
         LeafDeadN
         LeafLiveN
         StemDeadN
         StemLiveN
         TuberDeadN
         TuberLiveN
-        GrainLiveN
-        GrainDeadN
-        FloretLiveN
-        FloretDeadN
-        GrainLiveNconc
-        FloretLiveNconc
-        TuberLiveNConc
+        RootLiveN
+        RootDeadN
         LeafLiveNConc
+        LeafDeadNConc
         StemLiveNConc
+        TuberLiveNConc
+        RootLiveNConc
         RootWaterSupply
         RootWaterUptake
         LeafTranspiration
@@ -142,33 +137,36 @@ Paddock:
         LeafPhotosynthesisFtValue
         LeafPhotosynthesisFvpdValue
         LeafTotalNo
+        LeafBranchNo
         LeafGreenNo
         LeafExpandingNodeNo
         LeafCohortNo
-        LeafBranchNo
         LeafDeadNodeNo
         LeafNodeNo
         LeafSenescingNodeNo
+        LeafLeafNo
         sw
         no3
-        LeafPartitionFractionValue
-        StemPartitionFractionValue
-        TuberPartitionFractionValue
-        GrainPartitionFractionValue
-        FloretPartitionFractionValue
-        RootPartitionFractionValue
-        GrainMinimumNConcValue
-        FloretMinimumNConcValue
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
-        GrainMaximumNConcValue
-        FloretMaximumNConcValue
+        RootMinimumNConcValue
         LeafMaximumNConcValue
         StemMaximumNConcValue
         TuberMaximumNConcValue
+        RootMaximumNConcValue
+        leavesPerStem
+        PhenologyEarlyTuberTargetValue
+        TotalLiveWt
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafSpecificArea
+        LeafDMSupply
+        ArbitratorDeltaWt
+        TotalDeadWt
+        LeafFullyExpandedNodeNo
 
-     Output file = Parilla_23Nov_medN Plant2 diagnostic variables.out
+     Output file = Parilla_23Nov_medN Outputs.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -353,12 +351,10 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if potato2.plant_status <> 'out' then
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
        potato2  endcrop
                 endif
-             endif
      END of rules
      
 
@@ -400,7 +396,6 @@ Paddock:
      accumirrigation = 0
      accumrainfall = 0
      soilwaterdeficit = 0
-     leaflivenconc = 0
      accumttemerg = 0
      
      SECTION:- start_of_day
@@ -409,9 +404,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if potato2.plant_status <> 'out' then
-       accumplantn =  (0 - potato2.leafliven - potato2.leafdeadn - potato2.stemliven - potato2.stemdeadn - potato2.tuberliven - potato2.tuberdeadn ) * 10
-     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -421,9 +414,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if potato2.plant_status <> 'out' then
-       accumep = accumep - potato2.leaftranspiration
-     endif
+     accumep = accumep - potato2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -431,15 +422,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.plant_status <> 'out' then
-       if potato2.leaflivewt > 0 then
-         leaflivenconc = (potato2.leafliven/potato2.leaflivewt)
-       endif
-     endif
-     if potato2.plant_status <> 'out' then
-       if potato2.stagecodevalue >= 3 then
-         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-       endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      
      SECTION:- end_of_day
@@ -468,7 +452,6 @@ Paddock:
      Manager creating a new local real variable : accumirrigation = 0.00000
      Manager creating a new local real variable : accumrainfall = 0.00000
      Manager creating a new local real variable : soilwaterdeficit = 0.00000
-     Manager creating a new local real variable : leaflivenconc = 0.00000
      Manager creating a new local real variable : accumttemerg = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
@@ -494,8 +477,8 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  100.  0.030  0.060  0.120  0.250  0.120  1.200  0.613  0.900
-          100.-  300.  0.050  0.060  0.120  0.250  0.120  1.200  0.340  0.900
+            0.-  100.  0.030  0.060  0.160  0.250  0.160  1.200  0.613  0.900
+          100.-  300.  0.050  0.060  0.160  0.250  0.160  1.200  0.340  0.900
           300.-  600.  0.060  0.060  0.120  0.250  0.120  1.200  0.048  0.900
           600.-  900.  0.060  0.060  0.120  0.250  0.120  1.200  0.000  0.900
           900.- 1200.  0.060  0.060  0.120  0.250  0.120  1.200  0.000  0.900
@@ -510,14 +493,14 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  100.       6.00       6.00       6.00      13.00
-          100.-  300.      12.00      12.00      12.00      26.00
+            0.-  100.       6.00      10.00      10.00       9.00
+          100.-  300.      12.00      20.00      20.00      18.00
           300.-  600.      18.00      18.00      18.00      39.00
           600.-  900.      18.00      18.00      18.00      39.00
           900.- 1200.      18.00      18.00      18.00      39.00
          1200.- 1500.      18.00      18.00      18.00      39.00
           ---------------------------------------------------------
-               Totals      90.00      90.00      90.00     195.00
+               Totals      90.00     102.00     102.00     183.00
           ---------------------------------------------------------
      
      
@@ -617,6 +600,39 @@ Paddock:
      Manager creating a new local real variable : initialsoilomn = 5584.82129
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
      Manager creating a new local real variable : initialmineraln = 81.20642
+22 November 2007(Day of year=326): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "potato2.rootnuptake" could not be retrieved.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "potato2.leaftranspiration" could not be retrieved.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "potato2.stagecodevalue" could not be retrieved.
+     Component name: Diagnostic variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     The variable "potato2.phenologycurrentphasename" could not be retrieved.
+     Component name: Harvesting rule
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
 23 November 2007(Day of year=327), operations: 
       Sending apply message to fertiliser
 23 November 2007(Day of year=327), fertiliser: 
@@ -758,8 +774,8 @@ Paddock:
 17 January 2008(Day of year=17), operations: 
       Sending apply message to irrigation
 17/01/2008 - TuberInitiation
-                            LAI = 0.79 (m^2/m^2)
-           Above Ground Biomass = 87.62 (g/m^2)
+                            LAI = 0.94 (m^2/m^2)
+           Above Ground Biomass = 61.00 (g/m^2)
 18 January 2008(Day of year=18), operations: 
       Sending apply message to irrigation
 20 January 2008(Day of year=20), operations: 
@@ -991,10 +1007,10 @@ Paddock:
 7 May 2008(Day of year=128), operations: 
       Sending apply message to irrigation
 9/05/2008 - FinalLeaf
-                            LAI = 0.33 (m^2/m^2)
-           Above Ground Biomass = 525.13 (g/m^2)
-1/06/2008 - FullSenescence
+                            LAI = 0.20 (m^2/m^2)
+           Above Ground Biomass = 297.89 (g/m^2)
+23/05/2008 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 525.13 (g/m^2)
+           Above Ground Biomass = 297.89 (g/m^2)
 1 June 2008(Day of year=153), clock: 
      Simulation is terminating due to end criteria being met.

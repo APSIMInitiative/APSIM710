@@ -128,6 +128,11 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     public double FinalLeafNo { get {return _FinalLeafNumber; } }
     [Output]
+    public double RelativeLeafApperance
+    {
+        get { return NodeNo / FinalLeafNo; }
+    }
+    [Output]
     public double RemainingNodeNo { get { return _FinalLeafNumber - NodeNo; } }
     [Output]
     public double PotentialGrowth { get { return DMDemand; } }
@@ -458,6 +463,12 @@ public class Leaf : BaseOrgan, AboveGround
         {
             return CoverGreen * Radn;
         }
+    }
+    [Output("MainStemPopulation")]
+    [Units("/m2")]
+    public double MainStemPopulation
+    {
+        get { return Population.Value * PrimaryBudNo; }
     }
  #endregion
 

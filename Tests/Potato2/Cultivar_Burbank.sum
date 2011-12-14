@@ -56,15 +56,6 @@ Paddock:
         AccumTtemerg
         PhenologyCurrentPhaseName
         StageCodeValue
-        no3()
-        nh4()
-        urea()
-        surfaceom_n
-        biom_n()
-        fom_n()
-        hum_n()
-        dnit()
-        leach_no3
         AccumPlantN
         AccumMineralisation
         AccumDenit
@@ -145,8 +136,6 @@ Paddock:
         LeafNodeNo
         LeafSenescingNodeNo
         LeafLeafNo
-        sw
-        no3
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
@@ -155,14 +144,10 @@ Paddock:
         StemMaximumNConcValue
         TuberMaximumNConcValue
         RootMaximumNConcValue
-        leavesPerStem
-        PhenologyEarlyTuberTargetValue
         TotalLiveWt
         StemLiveStructuralWt
         StemLiveNonStructuralWt
         LeafSpecificArea
-        LeafDMSupply
-        ArbitratorDeltaWt
         TotalDeadWt
         LeafFullyExpandedNodeNo
 
@@ -271,9 +256,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if potato2.plant_status <> 'out' then
-       accumplantn =  accumplantn - potato2.rootnuptake
-     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -283,9 +266,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if potato2.plant_status <> 'out' then
-       accumep = accumep - potato2.leaftranspiration
-     endif
+     accumep = accumep - potato2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -293,10 +274,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.plant_status <> 'out' then
-       if potato2.stagecodevalue >= 3 then
-         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-       endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      
      SECTION:- end_of_day
@@ -497,8 +476,8 @@ fertiliser:
 4 December 2003(Day of year=338), operations: 
       Sending apply message to irrigation
 10/12/2003 - TuberInitiation
-                            LAI = 1.65 (m^2/m^2)
-           Above Ground Biomass = 124.68 (g/m^2)
+                            LAI = 1.39 (m^2/m^2)
+           Above Ground Biomass = 82.73 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -516,13 +495,13 @@ fertiliser:
 27 February 2004(Day of year=58), operations: 
       Sending apply message to irrigation
 19/03/2004 - FinalLeaf
-                            LAI = 0.03 (m^2/m^2)
-           Above Ground Biomass = 606.33 (g/m^2)
-16/04/2004 - FullSenescence
+                            LAI = 0.28 (m^2/m^2)
+           Above Ground Biomass = 420.87 (g/m^2)
+2/04/2004 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 606.33 (g/m^2)
-7/05/2004 - Maturity
+           Above Ground Biomass = 420.87 (g/m^2)
+26/04/2004 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 606.33 (g/m^2)
+           Above Ground Biomass = 420.87 (g/m^2)
 23 May 2004(Day of year=144), clock: 
      Simulation is terminating due to end criteria being met.

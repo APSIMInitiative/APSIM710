@@ -15,6 +15,9 @@ public class RelativeGrowthRateDemandFunction : Function
     Function RelativeGrowthRate = null;
 
     [Link]
+    Function OrganNumber = null;
+
+    [Link]
     Phenology Phenology = null;
 
     [Link]
@@ -28,8 +31,9 @@ public class RelativeGrowthRateDemandFunction : Function
         {
             if (Phenology.OnDayOf(InitialStageName) && StartWt == 0)
                 StartWt = InitialWt;                                   //This is to initiate mass so relative growth rate can kick in
-            double CurrentWt = Math.Max(StartWt, Live.Wt);  
-            return CurrentWt * RelativeGrowthRate.Value;
+            double CurrentOrganWt = Math.Max(StartWt, Live.Wt/OrganNumber.Value);  
+            double OrganDemand = CurrentOrganWt * RelativeGrowthRate.Value;
+            return OrganDemand * OrganNumber.Value;
         }
     }
 

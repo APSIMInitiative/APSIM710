@@ -195,7 +195,7 @@ Paddock:
      SECTION:- start_of_day
      plant_population = 1/((770/1000)*(280/1000))
      if today = date('20/10/2003') then
-        potato2 sow population = plant_population, depth = 170, cultivar = redrascal, maxcover = 1.0, budnumber = 4.87, row_spacing = 770, crop_class = plant
+        potato2 sow population = plant_population, depth = 140, cultivar = redrascal, maxcover = 1.0, budnumber = 4.87, row_spacing = 770, crop_class = plant
      endif
      
      SECTION:- init
@@ -235,9 +235,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if potato2.plant_status <> 'out' then
-       accumplantn =  accumplantn - potato2.rootnuptake
-     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -247,9 +245,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if potato2.plant_status <> 'out' then
-       accumep = accumep - potato2.leaftranspiration
-     endif
+     accumep = accumep - potato2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -257,10 +253,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.plant_status <> 'out' then
-       if potato2.stagecodevalue >= 3 then
-         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-       endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      
      SECTION:- end_of_day
@@ -440,14 +434,14 @@ fertiliser:
    - Reading Fertiliser Type Parameters
        100.00 of N as urea (urea_n)
                                          added at depth   10.00 (layer   1)
-     Manager sending message :- potato2 sow  population = 4.63822, depth = 170, cultivar = redrascal, maxcover = 1.0, budnumber = 4.87, row_spacing = 770, crop_class = plant
+     Manager sending message :- potato2 sow  population = 4.63822, depth = 140, cultivar = redrascal, maxcover = 1.0, budnumber = 4.87, row_spacing = 770, crop_class = plant
      Manager creating a new local real variable : initialsoilomn = 18901.70703
      Manager creating a new local real variable : initialsurfaceomn = 10.00000
      Manager creating a new local real variable : initialmineraln = 201.38321
 20/10/2003 - Peeping
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-18/11/2003 - Emergence
+14/11/2003 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
 25 November 2003(Day of year=329), operations: 
@@ -461,9 +455,9 @@ fertiliser:
       Sending apply message to irrigation
 4 December 2003(Day of year=338), operations: 
       Sending apply message to irrigation
-15/12/2003 - TuberInitiation
-                            LAI = 3.10 (m^2/m^2)
-           Above Ground Biomass = 252.91 (g/m^2)
+12/12/2003 - TuberInitiation
+                            LAI = 2.66 (m^2/m^2)
+           Above Ground Biomass = 144.21 (g/m^2)
 16 December 2003(Day of year=350), operations: 
       Sending apply message to irrigation
 22 December 2003(Day of year=356), operations: 
@@ -480,14 +474,14 @@ fertiliser:
       Sending apply message to irrigation
 27 February 2004(Day of year=58), operations: 
       Sending apply message to irrigation
-25/03/2004 - FinalLeaf
-                            LAI = 0.02 (m^2/m^2)
-           Above Ground Biomass = 733.17 (g/m^2)
-22/04/2004 - FullSenescence
+22/03/2004 - FinalLeaf
+                            LAI = 0.17 (m^2/m^2)
+           Above Ground Biomass = 410.30 (g/m^2)
+5/04/2004 - FullSenescence
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 733.17 (g/m^2)
-15/05/2004 - Maturity
+           Above Ground Biomass = 410.30 (g/m^2)
+30/04/2004 - Maturity
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 733.17 (g/m^2)
+           Above Ground Biomass = 410.30 (g/m^2)
 23 May 2004(Day of year=144), clock: 
      Simulation is terminating due to end criteria being met.

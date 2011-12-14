@@ -194,12 +194,10 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if potato2.plant_status <> 'out' then
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
        potato2  endcrop
                 endif
-             endif
      END of rules
      
 
@@ -250,9 +248,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if potato2.plant_status <> 'out' then
-       accumplantn =  accumplantn - potato2.rootnuptake
-     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -262,9 +258,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if potato2.plant_status <> 'out' then
-       accumep = accumep - potato2.leaftranspiration
-     endif
+     accumep = accumep - potato2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -272,10 +266,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.plant_status <> 'out' then
-       if potato2.stagecodevalue >= 3 then
-         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-       endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      profile_sw = sw_dep(1) + sw_dep(2)+ sw_dep(3) + sw_dep(4) + sw_dep(5) + sw_dep(6) + sw_dep(7)
      
@@ -502,8 +494,8 @@ fertiliser:
 9 July 1986(Day of year=190), operations: 
       Sending apply message to irrigation
 10/07/1986 - TuberInitiation
-                            LAI = 4.47 (m^2/m^2)
-           Above Ground Biomass = 197.63 (g/m^2)
+                            LAI = 4.55 (m^2/m^2)
+           Above Ground Biomass = 195.95 (g/m^2)
 11 July 1986(Day of year=192), operations: 
       Sending apply message to irrigation
 15 July 1986(Day of year=196), operations: 

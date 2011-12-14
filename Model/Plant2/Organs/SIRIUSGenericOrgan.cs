@@ -25,7 +25,9 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     protected Function InitialWtFunction = null;
     [Link(IsOptional = true)]
     protected Function InitialStructuralFraction = null;
-    
+    [Link(IsOptional = true)]
+    protected Function WaterContent = null;
+
  #endregion
 
  #region Class data members
@@ -51,6 +53,18 @@ public class SIRIUSGenericOrgan : GenericOrgan, AboveGround
     [Link]
     protected Function MinimumNConc = null;
 
+    [Output]
+    [Units("g/m^2")]
+    public double LiveFWt
+    {
+        get
+        {
+            if (WaterContent != null)
+                return Live.Wt / (1 - WaterContent.Value);
+            else
+                return 0.0;
+        }
+    }
  #endregion
 
  #region Organ functions

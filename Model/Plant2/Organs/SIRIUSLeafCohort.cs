@@ -9,7 +9,7 @@ class SIRIUSLeafCohort : LeafCohort
 
 
     //Leaf coefficients
-    private double StructuralFraction = 0;
+    //private double StructuralFraction = 0;
     private double NonStructuralFraction = 0;
     private double NReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
@@ -56,8 +56,8 @@ class SIRIUSLeafCohort : LeafCohort
     [Link(NamePath = "Leaf")]
     public SIRIUSLeaf SIRIUSLeaf = null;
 
-    [Link(NamePath = "StructuralFraction")]
-    public Function StructuralFractionFunction = null;
+    //[Link(NamePath = "StructuralFraction")]
+    //public Function StructuralFractionFunction = null;
 
     [Link(NamePath = "NReallocationFactor")]
     public Function NReallocationFactorFunction = null;
@@ -93,9 +93,10 @@ class SIRIUSLeafCohort : LeafCohort
         {
             if (IsGrowing)
             {
-                StructuralDMDemand = DeltaPotentialArea / SpecificLeafAreaMax; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
+                double TotalDMDemand = DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2); 
+                StructuralDMDemand = TotalDMDemand * StructuralFraction; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
                 //StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
-                MetabolicDMDemand = (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
+                MetabolicDMDemand = TotalDMDemand * (1 - StructuralFraction);// (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
                 return StructuralDMDemand + MetabolicDMDemand;
             }
             else
@@ -108,8 +109,8 @@ class SIRIUSLeafCohort : LeafCohort
        {
            if (IsNotSenescing)
            {
-               //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
-               double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction);
+               double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
+               //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction);
                return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
            }
            else
@@ -284,20 +285,21 @@ class SIRIUSLeafCohort : LeafCohort
         
         //SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
         SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
+        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
         StructuralNConc = MinimumNConc;
-        FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFractionFunction.Value)) * (1 / (1 - StructuralFractionFunction.Value));
+        FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFraction)) * (1 / (1 - StructuralFraction));
         LuxaryNConc = (MaximumNConcFunction.Value - CriticalNConcFunction.Value);
-        StructuralFraction = StructuralFractionFunction.Value;
-        Live.MetabolicWt = (Live.StructuralWt / StructuralFractionFunction.Value) * (1 - StructuralFractionFunction.Value);
+        //StructuralFraction = StructuralFractionFunction.Value;
+        Live.MetabolicWt = (Live.StructuralWt  * 1 / StructuralFraction) - Live.StructuralWt;
         Live.NonStructuralWt = 0;
         Live.StructuralN = Live.StructuralWt * StructuralNConc;
         Live.MetabolicN = Live.MetabolicWt * FunctionalNConc;
         Live.NonStructuralN = 0;
         NReallocationFactor = NReallocationFactorFunction.Value;
         NRetranslocationFactor = NRetranslocationFactorFunction.Value;
-        if (NonStructuralFractionFunction != null)
-            NonStructuralFraction = NonStructuralFractionFunction.Value;
-        else NonStructuralFraction = 0;
+        //if (NonStructuralFractionFunction != null)
+        //    NonStructuralFraction = NonStructuralFractionFunction.Value;
+        //else NonStructuralFraction = 0;
         if (DMRetranslocationFactorFunction != null)
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
         else DMRetranslocationFactor = 0;

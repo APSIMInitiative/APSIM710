@@ -18,6 +18,7 @@ public class LeafCohort
     [Param]
     public double Area = 0;
 
+    protected double StructuralFraction = 0;
     protected double PotentialAreaGrowth = 0;
     protected double MaxLiveArea = 0;
     public Biomass Live = new Biomass();
@@ -27,6 +28,7 @@ public class LeafCohort
     protected double LagDuration = 0;
     protected double SenescenceDuration = 0;
     protected double SpecificLeafAreaMax = 0;
+    protected double SpecificLeafAreaMin = 0;
     protected double MaximumNConc = 0;
     protected double MinimumNConc = 0;
     protected double StructuralNConc = 0;
@@ -61,6 +63,12 @@ public class LeafCohort
 
     [Link(NamePath = "SpecificLeafAreaMax")]
     public Function SpecificLeafAreaMaxFunction;
+
+    [Link(NamePath = "SpecificLeafAreaMin")]
+    public Function SpecificLeafAreaMinFunction;
+
+    [Link(NamePath = "StructuralFraction")]
+    public Function StructuralFractionFunction = null;
 
     [Link(NamePath = "MaximumNConc")]
     public Function MaximumNConcFunction;
@@ -293,6 +301,7 @@ public class LeafCohort
         GrowthDuration = GrowthDurationFunction.Value;
         LagDuration = LagDurationFunction.Value;
         SenescenceDuration = SenescenceDurationFunction.Value;
+        StructuralFraction = StructuralFractionFunction.Value;
         SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         MaximumNConc = MaximumNConcFunction.Value;
         MinimumNConc = MinimumNConcFunction.Value;
@@ -304,7 +313,7 @@ public class LeafCohort
 
         Age = Area / MaxArea * GrowthDuration;
         LiveArea = Area * _Population;
-        Live.StructuralWt = LiveArea / SpecificLeafAreaMax;
+        Live.StructuralWt = LiveArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin)/2) * StructuralFraction;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
 
     }

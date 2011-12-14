@@ -535,7 +535,7 @@ public class SIRIUSArbitrator : Arbitrator
         ////First time round allocate to met priority demands of each organ
         for (int i = 0; i < Organs.Count; i++)
         {
-            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), NDemandOrgan[i]); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
+            double Requirement = Math.Min(Math.Max(0.0, DMAllocation[i] * Organs[i].MinNconc * NDemandFactor - NAllocated[i]), (NDemandOrgan[i]-NAllocated[i])); //N needed to get to Minimum N conc and satisfy structural and metabolic N demands
             double Allocation = 0.0;
             if (Requirement > 0.0)
             {

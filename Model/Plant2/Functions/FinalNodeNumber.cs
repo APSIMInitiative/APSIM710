@@ -14,7 +14,8 @@ public class FinalNodeNumber
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
     [Link(IsOptional=true)]
     protected Function NodeInitiationRate = null;
-
+    [Link(IsOptional = true)]
+    protected Function PhotoperiodFactor = null;
     //Class Parameters
     [Param]
     [Description("Maximum Final Leaf Number ")]
@@ -40,10 +41,13 @@ public class FinalNodeNumber
     public double FinalLeafNumber()
     {
         double FLN = 0;
-        if (TerminateFinalNodeNumber == null)
+        if (TerminateFinalNodeNumber != null)
+            FLN = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
+        else if (PhotoperiodFactor != null)
+            FLN = PhotoperiodFactor.Value * MaxNodeNo;
+        else
             FLN = Math.Min(_PrimordiaNumber, MaxNodeNo);
-        else FLN = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
-
+        
         return FLN;//Fixme  This needs to be cast to an interger but will cause colatoral damage so will fix later.
     }
 

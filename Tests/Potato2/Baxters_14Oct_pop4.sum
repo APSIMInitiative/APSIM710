@@ -41,7 +41,7 @@ Paddock:
         post
         end_step
      Simulation start date = 14/10/1998
-     Simulation end date   =  1/06/1999
+     Simulation end date   = 14/04/1999
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -54,16 +54,8 @@ Paddock:
      Output variables:
         dd/mmm/yyyy
         AccumTtemerg
+        PhenologyCurrentPhaseName
         StageCodeValue
-        no3()
-        nh4()
-        urea()
-        surfaceom_n
-        biom_n()
-        fom_n()
-        hum_n()
-        dnit()
-        leach_no3
         AccumPlantN
         AccumMineralisation
         AccumDenit
@@ -136,6 +128,7 @@ Paddock:
         LeafPhotosynthesisFtValue
         LeafPhotosynthesisFvpdValue
         LeafTotalNo
+        LeafBranchNo
         LeafGreenNo
         LeafExpandingNodeNo
         LeafCohortNo
@@ -143,8 +136,6 @@ Paddock:
         LeafNodeNo
         LeafSenescingNodeNo
         LeafLeafNo
-        sw
-        no3
         LeafMinimumNConcValue
         StemMinimumNConcValue
         TuberMinimumNConcValue
@@ -153,8 +144,12 @@ Paddock:
         StemMaximumNConcValue
         TuberMaximumNConcValue
         RootMaximumNConcValue
-        leavesPerStem
-        PhenologyEarlyTuberTargetValue
+        TotalLiveWt
+        StemLiveStructuralWt
+        StemLiveNonStructuralWt
+        LeafSpecificArea
+        TotalDeadWt
+        LeafFullyExpandedNodeNo
 
      Output file = Baxters_14Oct_pop4 Outputs.out
      Format = normal
@@ -193,12 +188,10 @@ Paddock:
      Manager rules:
      
      SECTION:- end_of_day
-             if potato2.plant_status <> 'out' then
                 if potato2.phenologycurrentphasename = 'maturity' or potato2.plant_status = 'dead' then
        potato2  harvest
        potato2  endcrop
                 endif
-             endif
      if stagecodevalue >=3 then
      tt_emerge = tt_emerge + phenologythermaltimevalue
      endif
@@ -211,7 +204,7 @@ Paddock:
      SECTION:- start_of_day
      plant_population = 1/((770/1000)*(300/1000))
      if today = date('14/10/1998') then
-        potato2 sow population = plant_population, depth = 200, cultivar = russetburbank, maxcover = 1.0, budnumber = 3, row_spacing = 770, crop_class = plant
+        potato2 sow population = plant_population, depth = 200, cultivar = russetburbanklong, maxcover = 1.0, budnumber = 3, row_spacing = 770, crop_class = plant
      endif
      
      SECTION:- init
@@ -251,9 +244,7 @@ Paddock:
      initialsurfaceomn = surfaceom_n
      initialmineraln = no3() + nh4() + urea()
      endif
-     if potato2.plant_status <> 'out' then
-       accumplantn =  accumplantn - potato2.rootnuptake
-     endif
+     accumplantn =  accumplantn - potato2.rootnuptake
      accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
      accumdenit = accumdenit - dnit()
      accumfert = accumfert + fertiliser
@@ -263,9 +254,7 @@ Paddock:
      deltasurfaceomn = surfaceom_n - initialsurfaceomn
      deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
      accumeo = accumeo - eo
-     if potato2.plant_status <> 'out' then
-       accumep = accumep - potato2.leaftranspiration
-     endif
+     accumep = accumep - potato2.leaftranspiration
      accumes = accumes - es
      accumdrainage = accumdrainage - drain
      accumrunoff = accumrunoff - runoff
@@ -273,10 +262,8 @@ Paddock:
      accumirrigation = accumirrigation + irrigation
      accumrainfall = accumrainfall + rain
      soilwaterdeficit =  sw_dep() - dul_dep()
-     if potato2.plant_status <> 'out' then
-       if potato2.stagecodevalue >= 3 then
-         accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
-       endif
+     if potato2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + potato2.phenologythermaltimevalue
      endif
      
      SECTION:- end_of_day
@@ -474,8 +461,8 @@ Paddock:
 16 November 1998(Day of year=320), Harvesting rule: 
      Manager creating a new local real variable : tt_emerge = 0.00000
 14/12/1998 - TuberInitiation
-                            LAI = 1.65 (m^2/m^2)
-           Above Ground Biomass = 154.35 (g/m^2)
+                            LAI = 1.51 (m^2/m^2)
+           Above Ground Biomass = 104.12 (g/m^2)
 15 December 1998(Day of year=349), operations: 
       Sending apply message to irrigation
 29 December 1998(Day of year=363), operations: 
@@ -498,29 +485,5 @@ Paddock:
       Sending apply message to irrigation
 9 March 1999(Day of year=68), operations: 
       Sending apply message to irrigation
-19/03/1999 - FinalLeaf
-                            LAI = 0.13 (m^2/m^2)
-           Above Ground Biomass = 843.72 (g/m^2)
-8/04/1999 - FullSenescence
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 843.72 (g/m^2)
-30/04/1999 - Maturity
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 843.72 (g/m^2)
-30 April 1999(Day of year=120), Harvesting rule: 
-     Manager sending message :- potato2 harvest
-     Manager sending message :- potato2 endcrop
-1 May 1999(Day of year=121): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     Uninitialised variable "stagecodevalue".
-     Variables should have a value before they are used in an expression.
-     Component name: Harvesting rule
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-1 May 1999(Day of year=121), Harvesting rule: 
-     Manager creating a new local real variable : stagecodevalue = 0.00000
-1 June 1999(Day of year=152), clock: 
+14 April 1999(Day of year=104), clock: 
      Simulation is terminating due to end criteria being met.
