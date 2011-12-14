@@ -29,12 +29,12 @@ LIBS:= -L$(APSIM)/Model $(foreach lib,$(LIBS),-l$(lib)) \
         $(XML2_LIBDIR) -lxml2 $(MONO_LIBDIR)
 
 ifeq ($(PROJECTTYPE),dll)
-LDFLAGS:= -Xlinker --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions  $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS) 
 LIBS := $(LIBS) -ldl
 endif
 
 ifeq ($(PROJECTTYPE),libdll)
-LDFLAGS:= -Xlinker --warn-common -Xlinker --export-dynamic $(LDFLAGS) 
+LDFLAGS:= -Xlinker --warn-common -Xlinker --export-dynamic -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions $(LDFLAGS) 
 LIBS := $(LIBS) -ldl
 endif
 

@@ -26,7 +26,7 @@ OBJS:=	$(OBJS:.f90=.o)
 OBJS:= $(OBJS:.cpp=.o)
 
 ifeq ($(PROJECTTYPE),libdll)
- LDFLAGS:= --export-dynamic 
+ LDFLAGS:= --export-dynamic -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 

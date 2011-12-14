@@ -51,8 +51,9 @@
       implicit none
       ml_external getDescription, getDescriptionInternal
 !STDCALL(getDescription)
+!STDCALL(FCI_getDescriptionInternal)
       integer InitScript, Description
-      call getDescriptionInternal(InitScript, Description)
+      call FCI_getDescriptionInternal(InitScript, Description)
       end subroutine
 
       subroutine getDescriptionLength(InitScript, Length)
@@ -60,8 +61,9 @@
       implicit none
       ml_external getDescriptionLength, getDescriptionLengthInternal
 !STDCALL(getDescriptionLength)
+!STDCALL(FCI_getDescriptionLengthInternal)
       integer InitScript, Length
-      call getDescriptionLengthInternal(InitScript, Length)
+      call FCI_getDescriptionLengthInternal(InitScript, Length)
       end subroutine
 
       subroutine Dispatch (Action, Data)

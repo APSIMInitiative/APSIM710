@@ -46,7 +46,7 @@ extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
+extern "C" void EXPORT STDCALL FCI_getDescriptionInternal(char* initScript,
                                                          char* description)
    {
    ApsimComponentData componentData(initScript);
@@ -71,12 +71,12 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
    ApsimRegistry::getApsimRegistry().reset();
    }
 
-extern "C" void EXPORT STDCALL getDescriptionLengthInternal(char* initScript, int* length)
+extern "C" void EXPORT STDCALL FCI_getDescriptionLengthInternal(char* initScript, int* length)
 //=======================================================================================
 // Return component description info.
    {
    char* buffer = new char[500000];
-   getDescriptionInternal(initScript, buffer);
+   FCI_getDescriptionInternal(initScript, buffer);
    *length = strlen(buffer);
    delete [] buffer;
    }

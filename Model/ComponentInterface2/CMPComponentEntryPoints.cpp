@@ -15,8 +15,8 @@ extern "C" void EXPORT STDCALL wrapperDLL(char* wrapperDll)
 // The following forward declarations are all in entrypoints.cpp
 // in the componentinterface.dll
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript, char* description);
-extern "C" void EXPORT STDCALL getDescriptionLengthInternal(char* initScript, char* description, int* length);
+extern "C" void EXPORT STDCALL CI2_getDescriptionInternal(char* initScript, char* description);
+extern "C" void EXPORT STDCALL CI2_getDescriptionLengthInternal(char* initScript, char* description, int* length);
 
 
 // ------------------------------------------------------------------
@@ -24,7 +24,7 @@ extern "C" void EXPORT STDCALL getDescriptionLengthInternal(char* initScript, ch
 // ------------------------------------------------------------------
 extern "C" void EXPORT STDCALL getDescription(char* initScript, char* description)
    {
-   getDescriptionInternal(initScript, description);
+   CI2_getDescriptionInternal(initScript, description);
    }
 
 extern "C" void EXPORT STDCALL getDescriptionLength(char* initScript, int* length)
@@ -32,7 +32,7 @@ extern "C" void EXPORT STDCALL getDescriptionLength(char* initScript, int* lengt
 // Return component description info.
    {
    char* buffer = new char[500000];
-   getDescriptionInternal(initScript, buffer);
+   CI2_getDescriptionInternal(initScript, buffer);
    *length = (int)strlen(buffer);
    delete [] buffer;
    }

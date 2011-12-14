@@ -90,7 +90,7 @@ extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
+extern "C" void EXPORT STDCALL FCI2_getDescriptionInternal(char* initScript,
                                                       char* description)
    {
    XMLDocument* Doc = new XMLDocument(initScript, XMLDocument::xmlContents);
@@ -123,11 +123,11 @@ extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL getDescriptionLengthInternal(char* initScript,
+extern "C" void EXPORT STDCALL FCI2_getDescriptionLengthInternal(char* initScript,
                                                             int* length)
    {
    char* buffer = new char[500000];
-   getDescriptionInternal(initScript, buffer);
+   FCI2_getDescriptionInternal(initScript, buffer);
    *length = strlen(buffer);
    delete [] buffer;
    }

@@ -55,7 +55,7 @@
       ml_external getDescription, getDescriptionInternal
 !STDCALL(getDescription)
       integer InitScript, Description
-      call getDescriptionInternal(InitScript, Description)
+      call FCI2_getDescriptionInternal(InitScript, Description)
       end subroutine
 
       subroutine getDescriptionLength(InitScript, Length)
@@ -64,7 +64,7 @@
       ml_external getDescriptionLength, getDescriptionLengthInternal
 !STDCALL(getDescriptionLength)
       integer InitScript, Length
-      call getDescriptionLengthInternal(InitScript, Length)
+      call FCI2_getDescriptionLengthInternal(InitScript, Length)
       end subroutine
 
       subroutine Dispatch (Action, Data)

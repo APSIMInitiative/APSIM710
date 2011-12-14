@@ -834,22 +834,37 @@ module ComponentInterfaceModule
        integer fast_index
        end function fast_index
 
-      subroutine getDescriptionInternal(InitScript, Description)
+      subroutine FCI_getDescriptionInternal(InitScript, Description)
       ml_external getDescriptionInternal
-!STDCALL(getDescriptionInternal)
+!STDCALL(FCI_getDescriptionInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
       integer                       :: add_registration
-      end subroutine getDescriptionInternal
+      end subroutine FCI_getDescriptionInternal
 	  
-      subroutine getDescriptionLengthInternal(InitScript, Description)
+      subroutine FCI_getDescriptionLengthInternal(InitScript, Description)
       ml_external getDescriptionLengthInternal
-!STDCALL(getDescriptionLengthInternal)
+!STDCALL(FCI_getDescriptionLengthInternal)
       integer, intent(in) :: InitScript
       integer, intent(in) :: Description
       integer                       :: add_registration
-      end subroutine getDescriptionLengthInternal
+      end subroutine FCI_getDescriptionLengthInternal
 
+      subroutine FCI2_getDescriptionInternal(InitScript, Description)
+      ml_external getDescriptionInternal
+!STDCALL(FCI2_getDescriptionInternal)
+      integer, intent(in) :: InitScript
+      integer, intent(in) :: Description
+      integer                       :: add_registration
+      end subroutine FCI2_getDescriptionInternal
+	  
+      subroutine FCI2_getDescriptionLengthInternal(InitScript, Description)
+      ml_external getDescriptionLengthInternal
+!STDCALL(FCI2_getDescriptionLengthInternal)
+      integer, intent(in) :: InitScript
+      integer, intent(in) :: Description
+      integer                       :: add_registration
+      end subroutine FCI2_getDescriptionLengthInternal
    end interface
 
 end module ComponentInterfaceModule

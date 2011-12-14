@@ -84,7 +84,7 @@ extern "C" void EXPORT STDCALL messageToLogic (unsigned* instanceNumber,
 // ------------------------------------------------------------------
 // Return component description info.
 // ------------------------------------------------------------------
-extern "C" void EXPORT STDCALL getDescriptionInternal(char* initScript,
+extern "C" void EXPORT STDCALL CI2_getDescriptionInternal(char* initScript,
                                                          char* description)
    {
    XMLDocument* Doc = new XMLDocument(initScript, XMLDocument::xmlContents);
