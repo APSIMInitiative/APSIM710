@@ -7,7 +7,7 @@ using CSGeneral;
 public class Arbitrator
 {
  #region Setup Class Members
-    // IDE set paramaters
+    // Input paramaters
     [Param]
     [Description("Select method used for Arbitration")]
     protected string ArbitrationOption = "";
@@ -80,27 +80,32 @@ public class Arbitrator
         }
     }
             
-            double TotalDMDemand = 0;
-            double TotalDMSinkCapacity = 0;
-            double TotalWtAllocated = 0;
-            double TotalWtNotAllocatedSinkLimitation = 0;
-            double DMNotAllocated = 0;
-            double DMBalanceError = 0;
-            double TotalStoreDMRetranslocated = 0;
-            double StartingN = 0;
-            double TotalNReallocationSupply = 0;
-            double TotalNUptakeSupply = 0;
-            double TotalNFixationSupply = 0;
-            double TotalNRetranslocationSupply = 0;
-            double NReallocationAllocated = 0;
-            double NUptakeAllocated = 0;
-            double NRetranslocationAllocated = 0;
-            double NFixationAllocated = 0;
-            double TotalFixationWtloss = 0;
-        
-            
+    //Local variables
+    private double TotalDMDemand = 0;
+    private double TotalDMSinkCapacity = 0;
+    private double TotalWtAllocated = 0;
+    private double TotalWtNotAllocatedSinkLimitation = 0;
+    private double DMNotAllocated = 0;
+    private double DMBalanceError = 0;
+    private double TotalStoreDMRetranslocated = 0;
+    private double StartingN = 0;
+    private double TotalNReallocationSupply = 0;
+    private double TotalNUptakeSupply = 0;
+    private double TotalNFixationSupply = 0;
+    private double TotalNRetranslocationSupply = 0;
+    private double NReallocationAllocated = 0;
+    private double NUptakeAllocated = 0;
+    private double NRetranslocationAllocated = 0;
+    private double NFixationAllocated = 0;
+    private double TotalFixationWtloss = 0;
+    private double NetWtLossFixation = 0;
+    private double NLimitatedWtAllocation = 0;
+    private double TotalWtLossNShortage = 0;
+    private double EndN = 0;
+    private double NBalanceError = 0;
  #endregion
 
+ #region Arbitration step functions
     virtual public void DoDMSetup(List<Organ> Organs)
     { 
         //create organ specific variables
@@ -370,40 +375,6 @@ public class Arbitrator
     {
         NFixationAllocated = 0;
         TotalFixationWtloss = 0;
-    }
-    virtual public void DoActualDMAllocation(List<Organ> Organs)
-    { }
-    virtual public void DoNutrientAllocation(List<Organ> Organs)
-    { }
-    virtual public void DoDM(List<Organ> Organs)
-    {
- #region Setup Biomass calculations
-        
- #endregion
-
- #region Allocate Biomass
-        
- #endregion
-
- #region Set up Nitorgen calculations
-
-
-#endregion
-
- #region Reallocate Senesced Nitrogen
-        
- #endregion
-
- #region Allocate Nitrogen Uptake
-
- #endregion
-
- #region Retranslocate Nitrogen
-
- #endregion
- 
- #region Determine Nitrogen Fixation
-
         if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands
@@ -429,32 +400,32 @@ public class Arbitrator
                 }
             }
         }
- #endregion
-
- #region Actual DM allocation
+    }
+    virtual public void DoActualDMAllocation(List<Organ> Organs)
+    {
         // Work out the amount of biomass (if any) lost due to the cost of N fixation
-        double NetWtLossFixation = 0;
+        NetWtLossFixation = 0;
         if (NFixationAllocated > 0.00000000001)
         {
             //First determine it the cost of N fixation can be met by potential biomass production that was surpless to growing organ demands
             NetWtLossFixation = Math.Max(0.0, TotalFixationWtloss - TotalWtNotAllocatedSinkLimitation);
             if (NetWtLossFixation > 0.00000000001)
-            {  
-            TotalWtAllocated -= NetWtLossFixation; //If not reduce biomass allocations to account for the cost of fixation
-            double WtLossNotAttributed = NetWtLossFixation;
-            for (int i = 0; i < Organs.Count; i++) //The reduce allocation to individual organs and don't constrain an organ if that will cause its N conc to exceed maximum (i.e constrain the growth of the organs in larger defict so they move closer to maxNconc)
-                {   
-                double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
-                double CurrentDM = Organs[i].Live.Wt + DMAllocation[i];
-                double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
-                DMAllocation[i] -= Math.Min(DMAllocation[i], Math.Min(Possibleloss, WtLossNotAttributed));
-                WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed); 
+            {
+                TotalWtAllocated -= NetWtLossFixation; //If not reduce biomass allocations to account for the cost of fixation
+                double WtLossNotAttributed = NetWtLossFixation;
+                for (int i = 0; i < Organs.Count; i++) //The reduce allocation to individual organs and don't constrain an organ if that will cause its N conc to exceed maximum (i.e constrain the growth of the organs in larger defict so they move closer to maxNconc)
+                {
+                    double MinposbileDM = (Organs[i].Live.N + NAllocated[i]) / Organs[i].MaxNconc;
+                    double CurrentDM = Organs[i].Live.Wt + DMAllocation[i];
+                    double Possibleloss = Math.Max(0.0, CurrentDM - MinposbileDM);
+                    DMAllocation[i] -= Math.Min(DMAllocation[i], Math.Min(Possibleloss, WtLossNotAttributed));
+                    WtLossNotAttributed -= Math.Min(Possibleloss, WtLossNotAttributed);
                 }
-            if (WtLossNotAttributed > 0.00000000001)
-                throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
+                if (WtLossNotAttributed > 0.00000000001)
+                    throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
             }
         }
-        
+
         // Calculate posible growth based on Minimum N requirement of organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -465,16 +436,16 @@ public class Arbitrator
         }
 
         // Reduce DM allocation below potential if insufficient N to reach Min n Conc or if DM was allocated to fixation
-        double NLimitatedWtAllocation = 0;
+        NLimitatedWtAllocation = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
             DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);
             NLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]);
         }
-        double TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation + TotalStoreDMRetranslocated;
- #endregion
-        
- #region Send arbitration results
+        TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation + TotalStoreDMRetranslocated;
+    }
+    virtual public void DoNutrientAllocation(List<Organ> Organs)
+    {
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -483,7 +454,7 @@ public class Arbitrator
             Organs[i].DMRespired = FixationWtLoss[i];
             Organs[i].DMRetranslocation = DMRetranslocation[i];
         }
-        
+
         // Send N allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -498,13 +469,12 @@ public class Arbitrator
             Organs[i].NRetranslocation = NRetranslocation[i];
             Organs[i].NAllocation = NAllocated[i];
         }
- #endregion
- 
- #region Mass balance checking
-        double EndN = 0;
+
+        //Finally Check Mass balance adds up
+        EndN = 0;
         for (int i = 0; i < Organs.Count; i++)
             EndN += Organs[i].Live.N + Organs[i].Dead.N;
-        double NBalanceError = (EndN - (StartingN + TotalNUptakeSupply + TotalNFixationSupply));
+        NBalanceError = (EndN - (StartingN + TotalNUptakeSupply + TotalNFixationSupply));
         if (NBalanceError > 0.000000001)
             throw new Exception("N Mass balance violated!!!!.  Daily Plant N increment is greater than N supply");
         NBalanceError = (EndN - (StartingN + NDemand));
@@ -519,9 +489,10 @@ public class Arbitrator
         DMBalanceError = (EndWt - (StartWt + TotalDMDemand + TotalDMSinkCapacity));
         if (DMBalanceError > 0.0001)
             throw new Exception("DM Mass Balance violated!!!!  Daily Plant Wt increment is greater than the sum of structural DM demand, metabolic DM demand and NonStructural DM capacity");
+    }
  #endregion
 
-    }
+ #region Arbitrator generic allocation functions
     private void RelativeDMAllocation(List<Organ> Organs, double TotalDMDemand, double TotalWtAllocated)
     {
         for (int i = 0; i < Organs.Count; i++)
@@ -535,7 +506,6 @@ public class Arbitrator
             }
         }
     }
-
     private void RelativeAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
     {
         for (int i = 0; i < Organs.Count; i++)
@@ -550,7 +520,6 @@ public class Arbitrator
             }
         }
     }
-
     private void PriorityAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
     {
         double NotAllocated = TotalSupply;
@@ -581,7 +550,6 @@ public class Arbitrator
             }
         }
     }
-
     private void PrioritythenRelativeAllocation(List<Organ> Organs, double TotalSupply, ref double TotalAllocated, double NDemandFactor, double DMretranslocationFactor)
     {
         double NotAllocated = TotalSupply;
@@ -613,4 +581,5 @@ public class Arbitrator
             }
         }
     }
+ #endregion
 }

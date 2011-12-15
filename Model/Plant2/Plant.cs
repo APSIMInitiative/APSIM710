@@ -154,11 +154,10 @@ public class Plant
             Arbitrator.DoNutrientSetup(Organs);
             Arbitrator.DoNutrientReAllocation(Organs);
             Arbitrator.DoNutrientUptake(Organs);
-            Arbitrator.DoNutrientFixation(Organs);
             Arbitrator.DoNutrientRetranslocation(Organs);
+            Arbitrator.DoNutrientFixation(Organs);
             Arbitrator.DoActualDMAllocation(Organs);
             Arbitrator.DoNutrientAllocation(Organs);
-            Arbitrator.DoDM(Organs);
         }
     }
     public void DoActualGrowth()
