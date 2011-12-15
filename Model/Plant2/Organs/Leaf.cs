@@ -7,79 +7,49 @@ using ModelFramework;
 [Description("Leaf Class")]
 public class Leaf : BaseOrgan, AboveGround
 {
- #region Class Data Members
-    public double CurrentRank = 0;
-    protected double _WaterAllocation;
-    protected double PEP = 0;
-    protected double EP = 0;
+ #region Class inputs
     [Param]
     public List<LeafCohort> Leaves;
-    protected double _FinalLeafNumber = 0;
-    protected double _PrimordiaNo = 0;
     [Link]
     protected Plant Plant = null;
     [Link]
     protected Phenology Phenology = null;
     [Link]
     protected RUEModel Photosynthesis = null;
-    [Link(IsOptional=true)]
+    [Link(IsOptional = true)]
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected Function ThermalTime = null;
     [Link]
     protected Population Population = null;
-
     [Link]
     protected Function MaximumNConc = null;
-
     [Link]
     protected Function MinimumNConc = null;
-
     [Link]
     protected Function ExtinctionCoeff = null;
-
     [Link]
     protected Function NodeAppearanceRate = null;
-
     [Link]
     protected Function FrostFraction = null;
-
     [Link]
     protected Function BranchingRate = null;
-
     [Link(NamePath = "Height")]
     protected Function HeightModel = null;
-
     [Link]
     protected BaseArbitrator Arbitrator = null;
-
     [Link]
     public Function ExpansionStress = null;
-
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
     public Function DroughtInducedSenAcceleration;
-
     [Link(NamePath = "DroughtPhenologyAcelleration", IsOptional = true)]
     public Function DroughtPhenologyAcelleration;
-
     [Input]
     protected int Day = 0;
     [Input]
     protected int Year = 0;
     [Input]
     protected double Radn = 0;
-    [Output]
-    public double NodeNo = 0;
-    [Output]
-    [Units("/stem")]
-    public double LeafNo
-    {
-        get { return TotalNo / PrimaryBudNo; }
-    }
-    [Output("Height")]
-    protected double Height = 0;
-    [Event]
-    public event NewCanopyDelegate New_Canopy;
     [Param]
     [Output]
     [Description("Max cover")]
@@ -93,17 +63,34 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Extinction Coefficient (Dead)")]
     protected double KDead = 0;
     [Output]
-    //[Param]
-    //[Description("Maximum Final Leaf Number ")]
-    //protected double MaxNodeNo = 0;
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
-    //[Param]
-    //[Description("Initial number of leaf primordia")]
-    //protected double InitialLeafPrimordia = 0;
-    //[Param]
-    //[Description("Final Node Number")]
+    [Link]
+    public Function CriticalNConc = null;
+    [Link]
+    public Function StructuralFraction = null;
+    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
+    Function HeightExpansionStress = null;
+ #endregion
+
+ #region Class Data Members
+    [Event]
+    public event NewCanopyDelegate New_Canopy;
+    public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
+    public double ExpansionStressValue
+    {
+        get
+        {
+            return ExpansionStress.Value;
+        }
+    }
+    public double CurrentRank = 0;
+    protected double _WaterAllocation;
+    protected double PEP = 0;
+    protected double EP = 0;
+    protected double _FinalLeafNumber = 0;
+    protected double _PrimordiaNo = 0;
     protected double FinalNodeNoEstimate = 0;
     public double DeltaNodeNumber = 0;
     public double PotentialHeightYesterday = 0;
@@ -111,23 +98,22 @@ public class Leaf : BaseOrgan, AboveGround
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;
     public double MaxNodeNo = 0;
-    public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
     protected bool CohortsInitialised = false;
     public double _JuvDev = 0; //This is temporary until I can get linking between unrelated childern working
     public double _ThermalTime = 0;
-
-    [Link]
-    public Function CriticalNConc = null;
-
-    [Link]
-    public Function StructuralFraction = null;
-
-    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
-    Function HeightExpansionStress = null;
-
  #endregion
 
  #region Outputs
+    [Output]
+    public double NodeNo = 0;
+    [Output]
+    [Units("/stem")]
+    public double LeafNo
+    {
+        get { return TotalNo / PrimaryBudNo; }
+    }
+    [Output("Height")]
+    protected double Height = 0;
     [Output]
     public double JuvDev { get { return _JuvDev; } }//This is temporary until I can get linking between unrelated childern working
     [Output]
@@ -478,7 +464,6 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get { return Population.Value * PrimaryBudNo; }
     }
-
     [Output]
     public double[] CohortSize
     {
@@ -640,7 +625,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-
  #endregion
 
  #region Leaf functions
@@ -757,16 +741,6 @@ public class Leaf : BaseOrgan, AboveGround
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
-
-    public double ExpansionStressValue
-    {
-        get
-        {
-            return ExpansionStress.Value;
-        }
-    }
-
-
     /// <summary>
     /// Fractional interception "above" a given node position 
     /// </summary>
@@ -782,7 +756,6 @@ public class Leaf : BaseOrgan, AboveGround
         }
         return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
-
  #endregion
 
  #region Arbitrator methods
@@ -825,6 +798,16 @@ public class Leaf : BaseOrgan, AboveGround
             return Capacity;
 
         } 
+    }
+    public override double DMRetranslocationSupply
+    {
+        get
+        {
+            double Supply = 0;
+            foreach (LeafCohort L in Leaves)
+                Supply += L.LeafStartDMRetranslocationSupply;
+            return Supply;
+        }
     }
     public override double DMPotentialAllocation
     {
@@ -915,6 +898,26 @@ public class Leaf : BaseOrgan, AboveGround
                     double Allocation = Math.Min(L.DMSinkCapacity * SinkFraction, value);
                     L.DMExcessAllocation = Allocation;
                 }
+            }
+        }
+    }
+    public override double DMRetranslocation
+    {
+        set
+        {
+            if (value - DMRetranslocationSupply > 0.0000000001)
+                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
+            if (value > 0)
+            {
+                double remainder = value;
+                foreach (LeafCohort L in Leaves)
+                {
+                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
+                    L.DMRetranslocation = Supply;
+                    remainder -= Supply;
+                }
+                if (remainder > 0.0000000001)
+                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
             }
         }
     }
@@ -1123,38 +1126,6 @@ public class Leaf : BaseOrgan, AboveGround
             return CriticalNConc.Value;
         }
     }
-
-    public override double DMRetranslocationSupply
-    {
-        get
-        {
-            double Supply = 0;
-            foreach (LeafCohort L in Leaves)
-                Supply += L.LeafStartDMRetranslocationSupply;
-            return Supply;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value - DMRetranslocationSupply > 0.0000000001)
-                throw new Exception(Name + " cannot supply that amount for DM retranslocation");
-            if (value > 0)
-            {
-                double remainder = value;
-                foreach (LeafCohort L in Leaves)
-                {
-                    double Supply = Math.Min(remainder, L.DMRetranslocationSupply);
-                    L.DMRetranslocation = Supply;
-                    remainder -= Supply;
-                }
-                if (remainder > 0.0000000001)
-                    throw new Exception(Name + " DM Retranslocation demand left over after processing.");
-            }
-        }
-    }
-
  #endregion 
 
  #region Event handlers and publishers
@@ -1250,7 +1221,6 @@ public class Leaf : BaseOrgan, AboveGround
             _ThermalTime = ThermalTime.Value * DroughtPhenologyAcelleration.Value;
         else _ThermalTime = ThermalTime.Value;
     }
-
  #endregion
 
 
