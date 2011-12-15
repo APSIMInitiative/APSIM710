@@ -8,16 +8,6 @@ using ModelFramework;
 
 //---------------------------------------------------------------
 /// <summary>
-/// This class allows the developer to index into the phase collection
-/// using an int key. 
-/// </summary>
-//---------------------------------------------------------------
-public class LayeredList<T> : List<T>
-{
-
-}
-//---------------------------------------------------------------
-/// <summary>
 /// 
 /// </summary>
 //---------------------------------------------------------------

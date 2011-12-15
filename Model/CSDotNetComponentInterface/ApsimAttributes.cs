@@ -8,6 +8,23 @@
 [AttributeUsage(AttributeTargets.Method)]
 public class EventHandler : Attribute
 {
+    private string _EventName;
+
+    public EventHandler()
+    {
+        _EventName = "";
+    }
+
+    public EventHandler(String eventName)
+    {
+        _EventName = eventName;
+    }
+
+    public string EventName
+    {
+        get { return _EventName; }
+        set { _EventName = EventName; }
+    }
 }
 
 [AttributeUsage(AttributeTargets.Event)]

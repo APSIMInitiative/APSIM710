@@ -72,8 +72,8 @@ public class FactoryEventHandler : EvntHandler
     private MethodInfo Method;
     private Object[] Parameters;
     private ApsimType Data;
-    public FactoryEventHandler(MethodInfo Method, Object Instance)
-        : base(Method.Name.Substring(2))
+    public FactoryEventHandler(MethodInfo Method, Object Instance, string EventName)
+        : base(EventName)
     {
         this.Method = Method;
         this.Obj = Instance;

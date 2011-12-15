@@ -237,11 +237,20 @@ class Factory
             Object[] Attributes = Method.GetCustomAttributes(false);
             foreach (Object Attr in Attributes)
             {
-
-                if ((Attr.GetType() == typeof(EventHandler)) &&
-                    Method.Name.Length > 2 &&
-                    Method.Name.Substring(0, 2) == "On")
-                    RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj.Model));
+                if (Attr.GetType() == typeof(EventHandler)) 
+                {
+                    string EventName;
+                    if ((Attr as EventHandler).EventName != "")
+                        EventName = (Attr as EventHandler).EventName;
+                    else if (Method.Name.Length > 2 && Method.Name.Substring(0, 2) == "On")
+                        EventName = Method.Name.Substring(2);
+                    else
+                        return;
+                        // I think it would be better to throw an exception when no event name is apparent,
+                        // rather than simply return, but this currently creates a problem with the UnitTests
+                        // throw new Exception("The event name was not properly specified for the EventHandler \"" + Method.Name + "\"");
+                    RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj.Model, EventName));
+                }
             }
         }
     }
