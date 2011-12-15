@@ -13,7 +13,6 @@
 #include "../Utility/InterpolationFunction.h"
 
 #include "../PlantInterface.h"
-#include "../Utility/PlantUtility.h"
 #include "PhotosynthesisModel.h"
 
 class SUCROSModel : public PhotosynthesisModel {

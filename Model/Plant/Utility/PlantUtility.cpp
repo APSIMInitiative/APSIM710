@@ -240,13 +240,3 @@ string itoa(int value, int width)
    return(string(buf));
    }
 
-string addUnitsToDDML(const string& ddml, const string& units)
-   {
-   string returnString = ddml;
-   unsigned pos = returnString.find("/>");
-   if (pos != string::npos)
-      returnString = returnString.substr(0, pos) + " unit=\"" + units + "\"/>";
-   return returnString;
-   }
-
-

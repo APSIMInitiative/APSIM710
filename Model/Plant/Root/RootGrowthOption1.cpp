@@ -2,7 +2,6 @@
 
 #include "RootPart.h"
 #include "RootGrowthOption1.h"
-#include "../Utility/PlantUtility.h"
 #include "../Population.h"
 
 using namespace std;
