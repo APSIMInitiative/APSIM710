@@ -37,7 +37,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Link(NamePath = "Height")]
     protected Function HeightModel = null;
     [Link]
-    protected BaseArbitrator Arbitrator = null;
+    protected Arbitrator Arbitrator = null;
     [Link]
     public Function ExpansionStress = null;
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]

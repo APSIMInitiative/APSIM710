@@ -24,7 +24,7 @@ public class Root : BaseOrgan, BelowGround
     Function RootFrontVelocity = null;
 
     [Link]
-    BaseArbitrator Arbitrator = null;
+    Arbitrator Arbitrator = null;
 
     [Link]
     Function PartitionFraction = null;

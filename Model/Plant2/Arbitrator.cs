@@ -4,7 +4,7 @@ using System.Text;
 using CSGeneral;
 
 
-public class Arbitrator : BaseArbitrator
+public class Arbitrator
 {
  #region Setup Class Members
     // IDE set paramaters
@@ -55,7 +55,7 @@ public class Arbitrator : BaseArbitrator
     private double StartWt = 0;
     private double EndWt = 0;
     [Output]
-    public override double DMSupply
+    public double DMSupply
     {
         get
         {
@@ -64,7 +64,7 @@ public class Arbitrator : BaseArbitrator
     }
     private double TotalNDemand = 0;
     [Output]
-    public override double NDemand
+    public double NDemand
     {
         get
         {
@@ -79,11 +79,30 @@ public class Arbitrator : BaseArbitrator
             return EndWt - StartWt;
         }
     }
+            
+            double TotalDMDemand = 0;
+            double TotalDMSinkCapacity = 0;
+            double TotalWtAllocated = 0;
+            double TotalWtNotAllocatedSinkLimitation = 0;
+            double DMNotAllocated = 0;
+            double DMBalanceError = 0;
+            double TotalStoreDMRetranslocated = 0;
+            double StartingN = 0;
+            double TotalNReallocationSupply = 0;
+            double TotalNUptakeSupply = 0;
+            double TotalNFixationSupply = 0;
+            double TotalNRetranslocationSupply = 0;
+            double NReallocationAllocated = 0;
+            double NUptakeAllocated = 0;
+            double NRetranslocationAllocated = 0;
+            double NFixationAllocated = 0;
+            double TotalFixationWtloss = 0;
+        
+            
  #endregion
 
-    public override void DoDM(List<Organ> Organs)
-    {
- #region Setup Biomass calculations
+    virtual public void DoDMSetup(List<Organ> Organs)
+    { 
         //create organ specific variables
         IsPriority = new bool[Organs.Count];
         DMFreshSupplyOrgan = new double[Organs.Count];
@@ -93,14 +112,14 @@ public class Arbitrator : BaseArbitrator
         DMAllocation = new double[Organs.Count];
         DMExcessAllocation = new double[Organs.Count];
         DMRetranslocation = new double[Organs.Count];
-                
+
         //Tag priority organs
         if (PriorityOrgan != null)
         {
             for (int i = 0; i < Organs.Count; i++)
                 IsPriority[i] = Array.IndexOf(PriorityOrgan, Organs[i].Name) != -1;
         }
-        
+
         // GET INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
         StartWt = 0;
         for (int i = 0; i < Organs.Count; i++)
@@ -131,17 +150,17 @@ public class Arbitrator : BaseArbitrator
             else
                 TotalNonPriorityDMDemand += Organs[i].DMDemand;
 
-        double TotalDMDemand = MathUtility.Sum(DMDemand);
-        double TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
- #endregion
-
- #region Allocate Biomass
+        TotalDMDemand = MathUtility.Sum(DMDemand);
+        TotalDMSinkCapacity = MathUtility.Sum(DMSinkCapacity);
+    }
+    virtual public void DoPotentialDMAllocation(List<Organ> Organs)
+    {
         //  Allocate to meet Organs demands
-        double TotalWtAllocated = 0;
-        double TotalWtNotAllocatedSinkLimitation = 0;
-        double DMNotAllocated = TotalFreshDMSupply;
+        TotalWtAllocated = 0;
+        TotalWtNotAllocatedSinkLimitation = 0;
+        DMNotAllocated = TotalFreshDMSupply;
         //Gives to each organ: the minimum between what the organ demands (if supply is plenty) or it's share of total demand (if supply is not enough) CHCK-EIT
-        
+
         //First give biomass to priority organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -153,42 +172,42 @@ public class Arbitrator : BaseArbitrator
                 TotalWtAllocated += DMAllocated;
             }
         }
-        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;         
+        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
         //Then give the left overs to the non-priority organs
+        for (int i = 0; i < Organs.Count; i++)
+        {
+            if ((IsPriority[i] == false) && (DMDemand[i] > 0.0))
+            {
+                double proportion = DMDemand[i] / TotalNonPriorityDMDemand;
+                DMAllocation[i] = Math.Min(DMNotAllocated * proportion, DMDemand[i] - DMAllocation[i]);
+                TotalWtAllocated += DMAllocation[i];
+            }
+        }
+
+        //Anything left over after that goes to the sink organs
+        DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
+        if (DMNotAllocated > 0)
+        {
             for (int i = 0; i < Organs.Count; i++)
             {
-                if ((IsPriority[i] == false) && (DMDemand[i] > 0.0))
+                if (DMSinkCapacity[i] > 0.0)
                 {
-                    double proportion = DMDemand[i] / TotalNonPriorityDMDemand;
-                    DMAllocation[i] = Math.Min(DMNotAllocated * proportion, DMDemand[i] - DMAllocation[i]);
-                    TotalWtAllocated += DMAllocation[i];
+                    double proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
+                    double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
+                    DMExcessAllocation[i] += DMExcess;
+                    TotalWtAllocated += DMExcess;
                 }
             }
-        
-        //Anything left over after that goes to the sink organs
-            DMNotAllocated = TotalFreshDMSupply - TotalWtAllocated;
-            if (DMNotAllocated > 0)
-            {
-                for (int i = 0; i < Organs.Count; i++)
-                {
-                    if (DMSinkCapacity[i] > 0.0)
-                    {
-                        double proportion = DMSinkCapacity[i] / TotalDMSinkCapacity;
-                        double DMExcess = Math.Min(DMNotAllocated * proportion, DMSinkCapacity[i]);
-                        DMExcessAllocation[i] += DMExcess;
-                        TotalWtAllocated += DMExcess;
-                    }
-                }
-            }
+        }
         TotalWtNotAllocatedSinkLimitation = Math.Max(0.0, TotalFreshDMSupply - TotalWtAllocated);
 
         // Then check it all adds up
-        double DMBalanceError = Math.Abs((TotalWtAllocated + TotalWtNotAllocatedSinkLimitation) - TotalFreshDMSupply);
+        DMBalanceError = Math.Abs((TotalWtAllocated + TotalWtNotAllocatedSinkLimitation) - TotalFreshDMSupply);
         if (DMBalanceError > 0.00001 & TotalDMDemand > 0)
             throw new Exception("Mass Balance Error in Photosynthesis DM Allocation");
 
         //Then if demand is not met by fresh DM supply retranslocate non-structural DM to meet demands
-        double TotalStoreDMRetranslocated = 0;
+        TotalStoreDMRetranslocated = 0;
         if ((TotalDMDemand - TotalWtAllocated) > 0)
         {
             for (int i = 0; i < Organs.Count; i++)
@@ -200,11 +219,11 @@ public class Arbitrator : BaseArbitrator
                     proportion = DMDemand[i] / TotalDMDemand;
                     Retrans = Math.Min(TotalStoreDMSupply * proportion, Math.Max(0.0, DMDemand[i] - DMAllocation[i]));
                     DMAllocation[i] += Retrans;
-                    TotalStoreDMRetranslocated += Retrans; 
+                    TotalStoreDMRetranslocated += Retrans;
                 }
             }
         }
-        
+
         //Partition retranslocation of DM between supplying organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -220,9 +239,9 @@ public class Arbitrator : BaseArbitrator
         {
             Organs[i].DMPotentialAllocation = DMAllocation[i];
         }
- #endregion
-
- #region Set up Nitorgen calculations
+    }
+    virtual public void DoNutrientSetup(List<Organ> Organs)
+    {
         // Create organ specific variables       
         NDemandOrgan = new double[Organs.Count];
         RelativeNDemand = new double[Organs.Count];
@@ -232,15 +251,15 @@ public class Arbitrator : BaseArbitrator
         NRetranslocationSupply = new double[Organs.Count];
         NReallocation = new double[Organs.Count];
         NReallocation = new double[Organs.Count];
-        NUptake = new double[Organs.Count]; 
+        NUptake = new double[Organs.Count];
         NFixation = new double[Organs.Count];
         NRetranslocation = new double[Organs.Count];
         FixationWtLoss = new double[Organs.Count];
         NLimitedGrowth = new double[Organs.Count];
         NAllocated = new double[Organs.Count];
-        
+
         // GET ALL INITIAL STATE VARIABLES FOR MASS BALANCE CHECKS
-        double StartingN = 0;
+        StartingN = 0;
         for (int i = 0; i < Organs.Count; i++)
             StartingN += Organs[i].Live.N + Organs[i].Dead.N;
 
@@ -256,22 +275,22 @@ public class Arbitrator : BaseArbitrator
             NUptake[i] = 0;
             NFixation[i] = 0;
             NRetranslocation[i] = 0;
-            NAllocated[i] = 0;            
+            NAllocated[i] = 0;
             FixationWtLoss[i] = 0;
         }
-               TotalNDemand = MathUtility.Sum(NDemandOrgan);
-        double TotalNReallocationSupply = MathUtility.Sum(NReallocationSupply);
-        double TotalNUptakeSupply = MathUtility.Sum(NUptakeSupply);
-        double TotalNFixationSupply = MathUtility.Sum(NFixationSupply);
-        double TotalNRetranslocationSupply = MathUtility.Sum(NRetranslocationSupply);
+        TotalNDemand = MathUtility.Sum(NDemandOrgan);
+        TotalNReallocationSupply = MathUtility.Sum(NReallocationSupply);
+        TotalNUptakeSupply = MathUtility.Sum(NUptakeSupply);
+        TotalNFixationSupply = MathUtility.Sum(NFixationSupply);
+        TotalNRetranslocationSupply = MathUtility.Sum(NRetranslocationSupply);
 
         //Set relative N demands of each organ
-        for (int i = 0; i< Organs.Count; i++)
+        for (int i = 0; i < Organs.Count; i++)
             RelativeNDemand[i] = NDemandOrgan[i] / TotalNDemand; 
-#endregion
-
- #region Reallocate Senesced Nitrogen
-        double NReallocationAllocated = 0;
+    }
+    virtual public void DoNutrientReAllocation(List<Organ> Organs) 
+    {
+        NReallocationAllocated = 0;
         if (TotalNReallocationSupply > 0.00000000001)
         {
             //Calculate how much reallocated N (and associated biomass) each demanding organ is allocated based on relative demands
@@ -294,10 +313,10 @@ public class Arbitrator : BaseArbitrator
                 }
             }
         }
- #endregion
-
- #region Allocate Nitrogen Uptake
-        double NUptakeAllocated = 0;
+    }
+    virtual public void DoNutrientUptake(List<Organ> Organs)
+    {
+        NUptakeAllocated = 0;
         if (TotalNUptakeSupply > 0.00000000001)
         {
             // Calculate how much uptake N each demanding organ is allocated based on relative demands
@@ -319,11 +338,11 @@ public class Arbitrator : BaseArbitrator
                     NUptake[i] += NUptakeAllocated * RelativeSupply;
                 }
             }
-         }
- #endregion
-
- #region Retranslocate Nitrogen
-        double NRetranslocationAllocated = 0;
+        }
+    }
+    virtual public void DoNutrientRetranslocation(List<Organ> Organs)
+    {
+        NRetranslocationAllocated = 0;
         if (TotalNRetranslocationSupply > 0.00000000001)
         {
             // Calculate how much retranslocation N (and associated biomass) each demanding organ is allocated based on relative demands
@@ -346,11 +365,45 @@ public class Arbitrator : BaseArbitrator
                 }
             }
         }
+    }
+    virtual public void DoNutrientFixation(List<Organ> Organs)
+    {
+        NFixationAllocated = 0;
+        TotalFixationWtloss = 0;
+    }
+    virtual public void DoActualDMAllocation(List<Organ> Organs)
+    { }
+    virtual public void DoNutrientAllocation(List<Organ> Organs)
+    { }
+    virtual public void DoDM(List<Organ> Organs)
+    {
+ #region Setup Biomass calculations
+        
+ #endregion
+
+ #region Allocate Biomass
+        
+ #endregion
+
+ #region Set up Nitorgen calculations
+
+
+#endregion
+
+ #region Reallocate Senesced Nitrogen
+        
+ #endregion
+
+ #region Allocate Nitrogen Uptake
+
+ #endregion
+
+ #region Retranslocate Nitrogen
+
  #endregion
  
  #region Determine Nitrogen Fixation
-        double NFixationAllocated = 0;
-        double TotalFixationWtloss = 0;
+
         if (TotalNFixationSupply > 0.00000000001 && TotalFreshDMSupply > 0.00000000001)
         {
             // Calculate how much fixation N each demanding organ is allocated based on relative demands

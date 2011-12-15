@@ -14,7 +14,7 @@ public class Plant
     Phenology Phenology = null;
 
     [Link(IsOptional=true)]
-    BaseArbitrator Arbitrator = null;
+    Arbitrator Arbitrator = null;
 
     [Link]
     Component My = null;
@@ -149,8 +149,16 @@ public class Plant
     {
         if (Arbitrator != null)
         {
+            Arbitrator.DoDMSetup(Organs);
+            Arbitrator.DoPotentialDMAllocation(Organs);
+            Arbitrator.DoNutrientSetup(Organs);
+            Arbitrator.DoNutrientReAllocation(Organs);
+            Arbitrator.DoNutrientUptake(Organs);
+            Arbitrator.DoNutrientFixation(Organs);
+            Arbitrator.DoNutrientRetranslocation(Organs);
+            Arbitrator.DoActualDMAllocation(Organs);
+            Arbitrator.DoNutrientAllocation(Organs);
             Arbitrator.DoDM(Organs);
-            Arbitrator.DoN(Organs);
         }
     }
     public void DoActualGrowth()

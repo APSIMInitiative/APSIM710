@@ -9,7 +9,7 @@ public class PartitionFractionDemandFunction : Function
     Function PartitionFraction = null;
 
     [Link]
-    BaseArbitrator Arbitrator = null;
+    Arbitrator Arbitrator = null;
 
     public override double Value
     {
