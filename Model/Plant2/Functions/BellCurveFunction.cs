@@ -21,7 +21,11 @@ public class BellCurveFunction : Function
     Function Skewness = null;
 
     [Link]
+    Function FirstLeafArea = null;  //Not in original formulation of Bell Shaped cureve.  Set to zero if not wanted
+    
+    [Link]
     Leaf Leaf = null;
+
 
     [Output]
     public override double Value
@@ -32,7 +36,7 @@ public class BellCurveFunction : Function
 
             double LeafNo = Leaf.NodeNo;
 
-            LeafSizePerNode = AreaMax.Value * Math.Exp(Breadth.Value * Math.Pow(LeafNo - LargestLeafPosition.Value, 2.0)
+            LeafSizePerNode = FirstLeafArea.Value + AreaMax.Value * Math.Exp(Breadth.Value * Math.Pow(LeafNo - LargestLeafPosition.Value, 2.0)
                               + Skewness.Value * (Math.Pow(LeafNo - LargestLeafPosition.Value, 3.0)));
 
             return LeafSizePerNode;

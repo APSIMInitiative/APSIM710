@@ -16,7 +16,7 @@ public class Leaf : BaseOrgan, AboveGround
     protected Phenology Phenology = null;
     [Link]
     protected RUEModel Photosynthesis = null;
-    [Link(IsOptional = true)]
+    [Link]
     protected FinalNodeNumber FinalNodeNumber = null;
     [Link]
     protected Function ThermalTime = null;
@@ -645,29 +645,20 @@ public class Leaf : BaseOrgan, AboveGround
             CohortsInitialised = true;
         }
 
-        if (FinalNodeNumber != null)
-        {
-            _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
-            FinalNodeNumber.UpdateFinalNodeVariables();
-            _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
-            DeltaNodeNumber = 0;
-            if (NodeAppearanceRate.Value > 0)
-                DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
-            //DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
-            NodeNo += DeltaNodeNumber;
-            NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
-            _JuvDev = FinalNodeNumber.JuvDev(); //This is temporary until I can get linking between unrelated childern working
-        }
-        else
-        {
-            if (NodeAppearanceRate.Value > 0)
-                //DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
-                DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
-        }
+        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
+        FinalNodeNumber.UpdateFinalNodeVariables();
+        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
+        DeltaNodeNumber = 0;
+        if (NodeAppearanceRate.Value > 0)
+            DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
+        NodeNo += DeltaNodeNumber;
+        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
+        _JuvDev = FinalNodeNumber.JuvDev(); //This is temporary until I can get linking between unrelated childern working
+        
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo + 0.001 > Leaves.Count + 1) //NodeNo + 0.01 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
+        if (NodeNo + 0.001 > Leaves.Count + 1) //NodeNo + 0.001 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
@@ -692,7 +683,6 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort L in Leaves)
         {
             L.DoPotentialGrowth(_ThermalTime);
-            //L.DoPotentialGrowth(ThermalTime.Value);
         }
     }
     public virtual void InitialiseCohorts()
@@ -715,11 +705,10 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort L in Leaves)
         {
             L.DoActualGrowth(_ThermalTime);
-            //L.DoActualGrowth(ThermalTime.Value);
         }
 
         double Stress = 1;
-        if (HeightExpansionStress != null)  //
+        if (HeightExpansionStress != null)
             Stress = HeightExpansionStress.Value;
         double PotentialHeightIncrement = HeightModel.Value - PotentialHeightYesterday;
         Height += PotentialHeightIncrement * Stress;
