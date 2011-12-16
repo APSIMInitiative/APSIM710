@@ -87,7 +87,7 @@ class Factory
 
         for (int i = 0; i < EventHandlers.Count; i++)
         {
-            if (EventHandlers[i].EventName == "Initialised")
+            if (String.Compare(EventHandlers[i].EventName, "Initialised", true) == 0)
                 EventHandlers[i].Invoke(null);
         }
     }

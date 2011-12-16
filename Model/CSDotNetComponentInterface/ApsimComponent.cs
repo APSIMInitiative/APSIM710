@@ -203,7 +203,7 @@ namespace ModelFramework
                     for (int i = 0; i != Fact.EventHandlers.Count; i++)
                     {
                         EvntHandler Event = Fact.EventHandlers[i];
-                        if (String.Compare(Event.EventName, "Init1") == 0)
+                        if (String.Compare(Event.EventName, "Init1", true) == 0)
                         {
                             Event.Invoke(null);
                         }
@@ -276,7 +276,7 @@ namespace ModelFramework
                     for (int i = 0; i != Fact.EventHandlers.Count; i++)
                     {
                         EvntHandler Event = Fact.EventHandlers[i];
-                        if (String.Compare(Event.EventName, "Init2") == 0)
+                        if (String.Compare(Event.EventName, "Init2", true) == 0)
                         {
                             GetAllInputs();
                             Event.Invoke(messageData);
@@ -702,7 +702,7 @@ namespace ModelFramework
                 for (int i = 0; i != Fact.EventHandlers.Count; i++)
                 {
                     EvntHandler Event = Fact.EventHandlers[i];
-                    if (String.Compare(Event.EventName, EventName) == 0)
+                    if (String.Compare(Event.EventName, EventName, true) == 0)
                         Event.Invoke(Data);
                 }
             }
