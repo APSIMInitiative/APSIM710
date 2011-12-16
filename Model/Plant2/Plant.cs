@@ -149,14 +149,26 @@ public class Plant
     {
         if (Arbitrator != null)
         {
+            //Work out how much each organ would grow in the absence of nutirent limitaiton
             Arbitrator.DoDMSetup(Organs);
             Arbitrator.DoPotentialDMAllocation(Organs);
+            //Work out how much nutrient can be allocated to each organ
             Arbitrator.DoNutrientSetup(Organs);
             Arbitrator.DoNutrientReAllocation(Organs);
             Arbitrator.DoNutrientUptake(Organs);
             Arbitrator.DoNutrientRetranslocation(Organs);
             Arbitrator.DoNutrientFixation(Organs);
+            //Work out how much DM can be assimilated based on the most limiting nutrient
             Arbitrator.DoActualDMAllocation(Organs);
+            //Work out how much nutrient is allocated to each organ based on Actual DM allocation according to most limiting nutrient
+            if ((Arbitrator.PAware) || (Arbitrator.KAware))
+            {   //Repeat nutrient allocation routines using actual DM allocation 
+                Arbitrator.DoNutrientSetup(Organs);
+                Arbitrator.DoNutrientReAllocation(Organs);
+                Arbitrator.DoNutrientUptake(Organs);
+                Arbitrator.DoNutrientRetranslocation(Organs);
+                Arbitrator.DoNutrientFixation(Organs);  //Note for legumes the cost of N fixiation will be over predicted if growth is limited by another nutrient.  Need to check this cost is not being counted twice and over estimating the effect of nutrient shortage on DM pdn
+            }
             Arbitrator.DoNutrientAllocation(Organs);
         }
     }

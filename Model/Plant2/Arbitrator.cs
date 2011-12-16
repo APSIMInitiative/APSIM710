@@ -6,7 +6,7 @@ using CSGeneral;
 
 public class Arbitrator
 {
- #region Setup Class Members
+ #region Class Members
     // Input paramaters
     [Param]
     [Description("Select method used for Arbitration")]
@@ -17,7 +17,17 @@ public class Arbitrator
     [Param(IsOptional = true)]
     [Description("List of organs that are priority for DM allocation")]
     string[] PriorityOrgan = null;
-    
+    [Param(IsOptional = true)]
+    [Description("List of nutrients that the arbitrator will consider")]
+    string[] NutrientDrivers = null;
+
+    [EventHandler]
+    public void OnInit()
+    { 
+        PAware = Array.Exists(NutrientDrivers, element => element == "Phosphorus");
+        KAware = Array.Exists(NutrientDrivers, element => element == "Potasium"); 
+    }
+
     private void Or(bool p)
     {
         throw new NotImplementedException();
@@ -48,12 +58,6 @@ public class Arbitrator
     double[] NAllocated = null;
     
     // Public Arbitrator variables
-    private double TotalFreshDMSupply = 0;
-    private double TotalStoreDMSupply = 0;
-    private double TotalPriorityDMDemand = 0;
-    private double TotalNonPriorityDMDemand = 0;
-    private double StartWt = 0;
-    private double EndWt = 0;
     [Output]
     public double DMSupply
     {
@@ -62,7 +66,6 @@ public class Arbitrator
             return TotalFreshDMSupply;
         }
     }
-    private double TotalNDemand = 0;
     [Output]
     public double NDemand
     {
@@ -79,8 +82,18 @@ public class Arbitrator
             return EndWt - StartWt;
         }
     }
-            
+    
+    public bool PAware = false;
+    public bool KAware = false;
+
     //Local variables
+    private double TotalFreshDMSupply = 0;
+    private double TotalStoreDMSupply = 0;
+    private double TotalPriorityDMDemand = 0;
+    private double TotalNonPriorityDMDemand = 0;
+    private double StartWt = 0;
+    private double TotalNDemand = 0;
+    private double EndWt = 0;
     private double TotalDMDemand = 0;
     private double TotalDMSinkCapacity = 0;
     private double TotalWtAllocated = 0;
@@ -99,8 +112,8 @@ public class Arbitrator
     private double NFixationAllocated = 0;
     private double TotalFixationWtloss = 0;
     private double NetWtLossFixation = 0;
-    private double NLimitatedWtAllocation = 0;
-    private double TotalWtLossNShortage = 0;
+    private double NutrientLimitatedWtAllocation = 0;
+    private double TotalWtLossNutrientShortage = 0;
     private double EndN = 0;
     private double NBalanceError = 0;
  #endregion
@@ -245,6 +258,7 @@ public class Arbitrator
             Organs[i].DMPotentialAllocation = DMAllocation[i];
         }
     }
+    //To introduce Arbitration for other nutrients we need to add additional members to biomass object for each new type and then repeat eaco of the 4 allocation functions below for each nutrient type
     virtual public void DoNutrientSetup(List<Organ> Organs)
     {
         // Create organ specific variables       
@@ -425,7 +439,7 @@ public class Arbitrator
                     throw new Exception("Crop is trying to Fix excessive amounts of N.  Check partitioning coefficients are giving realistic nodule size and that FixationRatePotential is realistic");
             }
         }
-
+        //To introduce functionality for other nutrients we need to repeath this for loop for each new nutrient type
         // Calculate posible growth based on Minimum N requirement of organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -436,16 +450,14 @@ public class Arbitrator
         }
 
         // Reduce DM allocation below potential if insufficient N to reach Min n Conc or if DM was allocated to fixation
-        NLimitatedWtAllocation = 0;
+        NutrientLimitatedWtAllocation = 0;
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);
-            NLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]);
+            DMAllocation[i] = Math.Min(DMAllocation[i], NLimitedGrowth[i]);  //To introduce effects of other nutrients Need to include Plimited and Klimited growth in this min function
+            NutrientLimitatedWtAllocation += (DMAllocation[i] + DMExcessAllocation[i]); 
         }
-        TotalWtLossNShortage = TotalWtAllocated - NLimitatedWtAllocation + TotalStoreDMRetranslocated;
-    }
-    virtual public void DoNutrientAllocation(List<Organ> Organs)
-    {
+        TotalWtLossNutrientShortage = TotalWtAllocated - NutrientLimitatedWtAllocation + TotalStoreDMRetranslocated;
+
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
@@ -454,7 +466,9 @@ public class Arbitrator
             Organs[i].DMRespired = FixationWtLoss[i];
             Organs[i].DMRetranslocation = DMRetranslocation[i];
         }
-
+    }
+    virtual public void DoNutrientAllocation(List<Organ> Organs)
+    {
         // Send N allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
