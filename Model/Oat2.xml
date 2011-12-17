@@ -41,7 +41,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <Arbitrator name="Arbitrator">
+      <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PrioritythenRelativeAllocation</ArbitrationOption>
         <Memo> This arbitrator uses paritioning rules based on the SIRUS type models.
                1) it allocates N and DM along a hirachy of priorities
@@ -255,7 +255,7 @@
         </Memo>
         </PhaseBasedSwitch>
       </ReproductiveOrgan>
-      <Root name="Root">
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -356,7 +356,7 @@
                 </XYPairs>
               </AirTemperatureFunction>
             </PhaseLookupValue>
-          </PhaseLookup>		  
+          </PhaseLookup>
           <Constant name="ExpansionStress">
             <Value>1</Value>
           </Constant>
@@ -419,7 +419,7 @@
                 </XYPairs>
               </AirTemperatureFunction>
             </PhaseLookupValue>
-          </PhaseLookup>		  
+          </PhaseLookup>
           <Constant name="ExpansionStress">
             <Value>1</Value>
           </Constant>
@@ -461,7 +461,7 @@
           </XYPairs>
         </LinearInterpolationFunction>
       </GenericOrgan>
-      <Leaf name="Leaf">
+      <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
@@ -519,7 +519,7 @@
             <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
             <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
             <VernalisationIntercept type="text" description="VernalisationIntercept">0.012</VernalisationIntercept>
-            <VernalisationSlope type="text" description="VernalisationSlope">0.0012</VernalisationSlope>
+            <VernalisationSlope type="text" description="VernalisationSlope">0.0017</VernalisationSlope>
             <PhotoperiodFunction name="Photoperiod">
               <Twilight type="text" description="Twilight">-6</Twilight>
             </PhotoperiodFunction>
@@ -584,7 +584,7 @@
           <Phase2Multiplier type="text" description="Phase2Multiplier">1.0</Phase2Multiplier>
           <Phase3Multiplier type="text" description="Phase3Multiplier">1.3</Phase3Multiplier>
           <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">85</Value>
+            <Value type="text" description="Value">95</Value>
           </Constant>
         </LeafStagePhyllochronFunction>
         <LinearInterpolationFunction name="ExtinctionCoeff">
@@ -603,14 +603,41 @@
             <XY>6 1200</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <RelativeToFinalNodeFunction name="MaxArea">
-          <InitialSize type="text" description="InitialSize">150</InitialSize>
-          <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">150</EarlyStageSizeIncrement>
-          <SizeOfLargest type="text" description="SizeOfLargest">6000</SizeOfLargest>
-          <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
-          <SizeAtFinalNode type="text" description="SizeAtFinalNode">3500</SizeAtFinalNode>
-          <ChangeStage type="text" description="Stage code when rate change occurs">3.8</ChangeStage>
-        </RelativeToFinalNodeFunction>
+        <BellCurveFunction name="MaxArea">
+          <Constant name="FirstLeafArea">
+            <Value type="text" description="Value">300</Value>
+          </Constant>
+          <SubtractFunction name="LargestLeafPosition">
+            <Memo>From the first child value of this node subtract the values of the subsequent children</Memo>
+            <Variable>
+              <VariableName type="text" description="Variable Name">Leaf.FinalLeafNo</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+            </Variable>
+            <Constant>
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </SubtractFunction>
+          <LinearInterpolationFunction name="AreaMax">
+            <XProperty type="text" description="XProperty">Leaf.FinalLeafNo</XProperty>
+            <XYPairs>
+              <XY>6 3000</XY>
+              <XY>9 4700</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="Breadth">
+            <XProperty type="text" description="XProperty">Leaf.FinalLeafNo</XProperty>
+            <XYPairs>
+              <XY>6 -0.22</XY>
+              <XY>9 -0.082</XY>
+              <XY>13 -0.035</XY>
+              <XY>21 -0.02</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="Skewness">
+            <Value type="text" description="Value">-.0005</Value>
+          </Constant>
+        </BellCurveFunction>
         <MultiplyFunction name="GrowthDuration">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Variable name="Phyllochron">
@@ -645,7 +672,8 @@
           <XYPairs>
             <XY>4 0</XY>
             <XY>5 1</XY>
-            <XY>6 0</XY>
+            <XY>6 1</XY>
+            <XY>7 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
@@ -772,14 +800,6 @@
         </Constant>
         <MultiplyFunction name="DMDemandFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
-          <RelativeToFinalNodeFunction name="PotentialInternodeWt">
-            <InitialSize type="text" description="InitialSize">0</InitialSize>
-            <EarlyStageSizeIncrement type="text" description="EarlyStageSizeIncrement">0.0005</EarlyStageSizeIncrement>
-            <SizeOfLargest type="text" description="SizeOfLargest">.4</SizeOfLargest>
-            <PositionOfLargest type="text" description="PositionOfLargest">1</PositionOfLargest>
-            <SizeAtFinalNode type="text" description="SizeAtFinalNode">.3</SizeAtFinalNode>
-            <ChangeStage type="text" description="Stage code when rate change occurs">4.0</ChangeStage>
-          </RelativeToFinalNodeFunction>
           <Variable name="NodesAppearing">
             <VariableName type="text" description="Variable Name">Leaf.DeltaNodeNumber</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
@@ -790,6 +810,14 @@
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
           </Variable>
+          <LinearInterpolationFunction name="PotentialInternodeWt">
+            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>3 0</XY>
+              <XY>4 0.0005</XY>
+              <XY>5 0.5</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
         </MultiplyFunction>
       </GenericOrgan>
       <Summary />

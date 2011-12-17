@@ -658,7 +658,7 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo + 0.001 > Leaves.Count + 1) //NodeNo + 0.001 to ensure the final node triggers a new leaf cohort - CHCK-EIT (leaf count is cohort count)
+        if (NodeNo >= Leaves.Count + 1) //When Node number is 1 more than current cohort number produce a new cohort
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
