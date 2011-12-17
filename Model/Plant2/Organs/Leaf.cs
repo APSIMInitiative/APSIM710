@@ -8,77 +8,83 @@ using ModelFramework;
 public class Leaf : BaseOrgan, AboveGround
 {
  #region Class inputs
+    //Input Parameters
     [Param]
     public List<LeafCohort> Leaves;
-    [Link]
-    protected Plant Plant = null;
-    [Link]
-    protected Phenology Phenology = null;
-    [Link]
-    protected RUEModel Photosynthesis = null;
-    [Link]
-    protected FinalNodeNumber FinalNodeNumber = null;
-    [Link]
-    protected Function ThermalTime = null;
-    [Link]
-    protected Population Population = null;
-    [Link]
-    protected Function MaximumNConc = null;
-    [Link]
-    protected Function MinimumNConc = null;
-    [Link]
-    protected Function ExtinctionCoeff = null;
-    [Link]
-    protected Function NodeAppearanceRate = null;
-    [Link]
-    protected Function FrostFraction = null;
-    [Link]
-    protected Function BranchingRate = null;
-    [Link(NamePath = "Height")]
-    protected Function HeightModel = null;
-    [Link]
-    protected Arbitrator Arbitrator = null;
-    [Link]
-    public Function ExpansionStress = null;
-    [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
-    public Function DroughtInducedSenAcceleration;
-    [Link(NamePath = "DroughtPhenologyAcelleration", IsOptional = true)]
-    public Function DroughtPhenologyAcelleration;
-    [Input]
-    protected int Day = 0;
-    [Input]
-    protected int Year = 0;
-    [Input]
-    protected double Radn = 0;
     [Param]
     [Output]
     [Description("Max cover")]
     [Units("max units")]
-    protected double MaxCover;
+    public double MaxCover;
     [Param]
     [Output]
     [Description("Primary Bud")]
     public double PrimaryBudNo = 1;
     [Param]
     [Description("Extinction Coefficient (Dead)")]
-    protected double KDead = 0;
+    public double KDead = 0;
     [Output]
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
+    //Model Inputs
+    [Input]
+    public int Day = 0;
+    [Input]
+    public int Year = 0;
+    [Input]
+    public double Radn = 0;
+    //Class Links
+    [Link]
+    public Plant Plant = null;
+    [Link]
+    public Arbitrator Arbitrator = null;
+    [Link]
+    public Phenology Phenology = null;
+    [Link]
+    public RUEModel Photosynthesis = null;
+    [Link]
+    public FinalNodeNumber FinalNodeNumber = null;
+    //Child Functions
+    [Link]
+    public Function ThermalTime = null;
+    [Link]
+    public Population Population = null;
+    [Link]
+    public Function ExtinctionCoeff = null;
+    [Link]
+    public Function NodeAppearanceRate = null;
+    [Link]
+    public Function FrostFraction = null;
+    [Link]
+    public Function BranchingRate = null;
+    [Link(NamePath = "Height")]
+    public Function HeightModel = null;
+    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
+    Function HeightExpansionStress = null;
+    [Link]
+    public Function ExpansionStress = null;
+    [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
+    public Function DroughtInducedSenAcceleration;
+    [Link(NamePath = "DroughtPhenologyAcelleration", IsOptional = true)]
+    public Function DroughtPhenologyAcelleration;
     [Link]
     public Function CriticalNConc = null;
     [Link]
+    public Function MaximumNConc = null;
+    [Link]
+    public Function MinimumNConc = null;
+    [Link]
     public Function StructuralFraction = null;
-    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
-    Function HeightExpansionStress = null;
  #endregion
 
  #region Class Data Members
     [Event]
     public event NewCanopyDelegate New_Canopy;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
-    public double ExpansionStressValue
+    [Output]
+    public double NodeNo = 0;
+    public double ExpansionStressValue //This property is necessary so the leaf class can update Expansion stress value each day an pass it down to cohorts
     {
         get
         {
@@ -86,38 +92,72 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     public double CurrentRank = 0;
-    protected double _WaterAllocation;
-    protected double PEP = 0;
-    protected double EP = 0;
-    protected double _FinalLeafNumber = 0;
-    protected double _PrimordiaNo = 0;
-    protected double FinalNodeNoEstimate = 0;
+    public double _WaterAllocation;
+    public double PEP = 0;
+    public double EP = 0;
+    public double _FinalLeafNumber = 0;
+    public double _PrimordiaNo = 0;
     public double DeltaNodeNumber = 0;
     public double PotentialHeightYesterday = 0;
     public double StemPopulation = 0;
     public double DeadNodesYesterday = 0;
     public double FractionDied = 0;
     public double MaxNodeNo = 0;
-    protected bool CohortsInitialised = false;
-    public double _JuvDev = 0; //This is temporary until I can get linking between unrelated childern working
+    public bool CohortsInitialised = false;
     public double _ThermalTime = 0;
  #endregion
 
  #region Outputs
-    [Output]
-    public double NodeNo = 0;
-    [Output]
-    [Units("/stem")]
-    public double LeafNo
+    //Leaf population state variables
+    [Output("MainStemPopulation")]
+    [Units("/m2")]
+    public double MainStemPopulation
     {
-        get { return TotalNo / PrimaryBudNo; }
+        get { return Population.Value * PrimaryBudNo; }
     }
-    [Output("Height")]
-    protected double Height = 0;
     [Output]
-    public double JuvDev { get { return _JuvDev; } }//This is temporary until I can get linking between unrelated childern working
+    [Units("/m2")]
+    public double BranchNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                n = Math.Max(n, L.Population);
+            }
+            return n;
+        }
+    }
+    [Output]
+    [Units("/plant")]
+    public double TotalNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                n += L.Population;
+            }
+
+            return n / Population.Value;
+        }
+    }
     [Output]
     public double PrimordiaNo { get { return _PrimordiaNo; } }
+    [Output]
+    public virtual double CohortNo
+    {
+        get
+        {
+            int Count = 0;
+            foreach (LeafCohort L in Leaves)
+                if (L.IsInitialised)
+                    Count++;
+            return Count;
+        }
+    }
     [Output]
     public double FinalLeafNo { get {return _FinalLeafNumber; } }
     [Output]
@@ -128,7 +168,182 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     public double RemainingNodeNo { get { return _FinalLeafNumber - NodeNo; } }
     [Output]
-    public double PotentialGrowth { get { return DMDemand; } }
+    [Units("/plant")]
+    public double GreenNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                if (!L.Finished)
+                    n += L.Population;
+            }
+            return n / Population.Value;
+        }
+    }
+    [Output]
+    public double ExpandingNodeNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                if (L.IsGrowing)
+                    n += 1;
+            }
+            return n;
+        }
+    }
+    [Output]
+    [Units("/plant")]
+    public double GreenNodeNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                if (L.IsGreen)
+                    n += 1;
+            }
+            return n;
+        }
+    }
+    [Output]
+    public double SenescingNodeNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaves)
+            {
+                if (L.IsSenescing)
+                    n += 1;
+            }
+            return n;
+        }
+    }
+    [Output]
+    public int DeadNodeNo
+    {
+        get
+        {
+            int DNN = 0;
+            foreach (LeafCohort L in Leaves)
+                if (L.IsDead)
+                    DNN++;
+
+            return DNN;
+        }
+    }
+    [Output]
+    public int FullyExpandedNodeNo
+    {
+        get
+        {
+            int FXNN = 0;
+            foreach (LeafCohort L in Leaves)
+                if (L.IsFullyExpanded)
+                    FXNN++;
+            return FXNN;
+        }
+    }
+    [Output]
+    [Units("/stem")]
+    public double LeafNo
+    {
+        get { return TotalNo / PrimaryBudNo; }
+    }
+
+    //Canopy State variables
+    [Output("Height")]
+    protected double Height = 0;
+    [Output]
+    [Units("m^2/m^2")]
+    public virtual double LAI
+    {
+        get
+        {
+            int MM2ToM2 = 1000000; // Conversion of mm2 to m2
+            double value = 0;
+            foreach (LeafCohort L in Leaves)
+                value = value + L.LiveArea / MM2ToM2;
+            return value;
+        }
+    }
+    [Output]
+    [Units("m^2/m^2")]
+    public virtual double LAIDead
+    {
+        get
+        {
+            double value = 0;
+            foreach (LeafCohort L in Leaves)
+                value = value + L.DeadArea / 1000000;
+            return value;
+        }
+    }
+    [Output("Cover_green")]
+    public double CoverGreen
+    {
+        get
+        {
+            return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
+        }
+    }
+    [Output("Cover_tot")]
+    public double CoverTot
+    {
+        get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
+    }
+    [Output("Cover_dead")]
+    public double CoverDead
+    {
+        get { return 1.0 - Math.Exp(-KDead * LAIDead); }
+    }
+    [Output("RadIntTot")]
+    [Units("MJ/m^2/day")]
+    public double RadIntTot
+    {
+        get
+        {
+            return CoverGreen * Radn;
+        }
+    }
+    [Output]
+    public double SLAcheck
+    {
+        get
+        {
+            if (Live.Wt > 0)
+                return LAI / Live.Wt * 10000; // CHCK-EIT Why are these 2 properties with different coeficients? (SLAcheck and SpecificLeafArea)
+            else
+                return 0;
+        }
+    }
+    [Output]
+    [Units("mm^2/g")]
+    public double SpecificArea
+    {
+        get
+        {
+            if (Live.Wt > 0)
+                return LAI / Live.Wt * 1000000;
+            else
+                return 0;
+        }
+    }
+    //Cohort State variable outputs
+    [Output]
+    public double[] CohortSize
+    {
+        get
+        {
+            return Size;
+        }
+    }
     [Output]
     public double[] Size
     {
@@ -209,272 +424,6 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
-    [Output]
-    [Units("/m2")]
-    public double BranchNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                n = Math.Max(n, L.Population);
-            }
-            return n;
-        }
-    }
-    [Output]
-    [Units("/plant")]
-    public double TotalNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                n += L.Population;
-            }
-
-            return n / Population.Value;
-        }
-    }
-    [Output]
-    [Units("/plant")]
-    public double GreenNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                if (!L.Finished)
-                    n += L.Population;
-            }
-            return n / Population.Value;
-        }
-    }
-    [Output]
-    public double ExpandingNodeNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                if (L.IsGrowing)
-                    n += 1;
-            }
-            return n;
-        }
-    }
-    [Output]
-    [Units("/plant")]
-    public double GreenNodeNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                if (L.IsGreen)
-                    n += 1;
-            }
-            return n;
-        }
-    }
-    [Output]
-    public double SenescingNodeNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-            {
-                if (L.IsSenescing)
-                    n += 1;
-            }
-            return n;
-        }
-    }
-    [Output]
-    public double SLAcheck
-    {
-        get
-        {
-            if (Live.Wt > 0)
-                return LAI / Live.Wt * 10000; // CHCK-EIT Why are these 2 properties with different coeficients? (SLAcheck and SpecificLeafArea)
-            else
-                return 0;
-        }
-    }
-    [Output]
-    [Units("mm^2/g")]
-    public double SpecificArea
-    {
-        get
-        {
-            if (Live.Wt > 0)
-                return LAI / Live.Wt * 1000000;
-            else
-                return 0;
-        }
-    }
-    [Output]
-    public virtual double CohortNo
-    {
-        get 
-        {
-            int Count = 0;
-            foreach (LeafCohort L in Leaves)
-                if (L.IsInitialised)
-                    Count++;
-            return Count; 
-        }
-    }
-    [Output]
-    public int DeadNodeNo
-    {
-        get
-        {
-            int DNN = 0;
-            foreach (LeafCohort L in Leaves)
-                if (L.IsDead)
-                    DNN++;
-
-            return DNN;
-        }
-    }
-    [Output]
-    public int FullyExpandedNodeNo
-    {
-        get
-        {
-            int FXNN = 0;
-            foreach (LeafCohort L in Leaves)
-                if (L.IsFullyExpanded)
-                    FXNN++;
-            return FXNN;
-        }
-    }
-    [Output]
-    [Units("mm")]
-    public double Transpiration { get { return EP; } }
-    [Output]
-    public double Fw
-    {
-        get
-        {
-            double F = 0;
-            if (PEP > 0)
-                F = EP / PEP;
-            else
-                F = 1;
-            return F;
-        }
-    }
-    [Output]
-    public double Fn
-    {
-        get
-        {
-            double F = 1;
-            double FunctionalNConc = (CriticalNConc.Value - (MinimumNConc.Value * StructuralFraction.Value)) * (1 / (1 - StructuralFraction.Value));
-            if (FunctionalNConc == 0)
-                F = 1;
-            else
-            {
-                F = Live.MetabolicNConc / FunctionalNConc;
-                F = Math.Max(0.0, Math.Min(F, 1.0));
-            }
-            return F;
-        }
-    }
-    /// <summary>
-    /// Leaf area index (m2 leaf/m2 soil)
-    /// </summary>
-    [Output]
-    [Units("m^2/m^2")]
-    public virtual double LAI
-    {
-        get
-        {
-            int MM2ToM2 = 1000000; // Conversion of mm2 to m2
-            double value = 0;
-            foreach (LeafCohort L in Leaves)
-                value = value + L.LiveArea / MM2ToM2;
-            return value;
-        }
-    }
-    [Output]
-    [Units("m^2/m^2")]
-    public virtual double LAIDead
-    {
-        get
-        {
-            double value = 0;
-            foreach (LeafCohort L in Leaves)
-                value = value + L.DeadArea / 1000000;
-            return value;
-        }
-    }
-    /// <summary>
-    /// Fractional solar radiation interception for whole canopy
-    /// </summary>
-    [Output("Cover_green")]
-    public double CoverGreen
-    {
-        get
-        {
-            return MaxCover * (1.0 - Math.Exp(-ExtinctionCoeff.Value * LAI / MaxCover));
-        }
-    }
-    [Output("Cover_tot")]
-    public double CoverTot
-    {
-        get { return 1.0 - (1 - CoverGreen) * (1 - CoverDead); }
-    }
-    [Output("Cover_dead")]
-    public double CoverDead
-    {
-        get { return 1.0 - Math.Exp(-KDead * LAIDead); }
-    }
-    [Output]
-    public double LiveNConc
-    {
-        get
-        {
-            return Live.NConc;
-        }
-    }
-    /// <summary>
-    /// Solar radiation intercepted by the crop (MJ/m2/day)
-    /// </summary>
-    [Output("RadIntTot")]
-    [Units("MJ/m^2/day")]
-    public double RadIntTot
-    {
-        get
-        {
-            return CoverGreen * Radn;
-        }
-    }
-    [Output("MainStemPopulation")]
-    [Units("/m2")]
-    public double MainStemPopulation
-    {
-        get { return Population.Value * PrimaryBudNo; }
-    }
-    [Output]
-    public double[] CohortSize
-    {
-        get
-        {
-            return Size;
-        }
-    }
-    /// <summary>
-    /// CHCK-EIT Atributing each "green" area to cohort positions???? units??? 
-    /// </summary>
     [Output]
     public double[] CohortArea
     {
@@ -625,10 +574,55 @@ public class Leaf : BaseOrgan, AboveGround
             return values;
         }
     }
+    
+    //General Leaf State variables
+    [Output]
+    public double LiveNConc
+    {
+        get
+        {
+            return Live.NConc;
+        }
+    }
+    [Output]
+    public double PotentialGrowth { get { return DMDemand; } }
+    [Output]
+    [Units("mm")]
+    public double Transpiration { get { return EP; } }
+    [Output]
+    public double Fw
+    {
+        get
+        {
+            double F = 0;
+            if (PEP > 0)
+                F = EP / PEP;
+            else
+                F = 1;
+            return F;
+        }
+    }
+    [Output]
+    public double Fn
+    {
+        get
+        {
+            double F = 1;
+            double FunctionalNConc = (CriticalNConc.Value - (MinimumNConc.Value * StructuralFraction.Value)) * (1 / (1 - StructuralFraction.Value));
+            if (FunctionalNConc == 0)
+                F = 1;
+            else
+            {
+                F = Live.MetabolicNConc / FunctionalNConc;
+                F = Math.Max(0.0, Math.Min(F, 1.0));
+            }
+            return F;
+        }
+    }
  #endregion
 
  #region Leaf functions
-    protected void CopyLeaves(List<LeafCohort> From, List<LeafCohort> To)
+    public void CopyLeaves(List<LeafCohort> From, List<LeafCohort> To)
     {
         foreach (LeafCohort Leaf in From)
             To.Add(Leaf.Clone());
@@ -653,7 +647,6 @@ public class Leaf : BaseOrgan, AboveGround
             DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
         NodeNo += DeltaNodeNumber;
         NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
-        _JuvDev = FinalNodeNumber.JuvDev(); //This is temporary until I can get linking between unrelated childern working
         
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);

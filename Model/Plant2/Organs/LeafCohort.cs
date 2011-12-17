@@ -16,17 +16,17 @@ public class LeafCohort
     public double PotentialSize = 0;
     private double FunctionalNConc = 0;
     private double LuxaryNConc = 0;
-    protected double StructuralFraction = 0;
-    protected double MaxLiveArea = 0;
-    protected double GrowthDuration = 0;
-    protected double LagDuration = 0;
-    protected double SenescenceDuration = 0;
-    protected double SpecificLeafAreaMax = 0;
-    protected double SpecificLeafAreaMin = 0;
-    protected double MaximumNConc = 0;
-    protected double MinimumNConc = 0;
-    protected double StructuralNConc = 0;
-    protected double InitialNConc = 0;
+    public double StructuralFraction = 0;
+    public double MaxLiveArea = 0;
+    public double GrowthDuration = 0;
+    public double LagDuration = 0;
+    public double SenescenceDuration = 0;
+    public double SpecificLeafAreaMax = 0;
+    public double SpecificLeafAreaMin = 0;
+    public double MaximumNConc = 0;
+    public double MinimumNConc = 0;
+    public double StructuralNConc = 0;
+    public double InitialNConc = 0;
     //Leaf Status variabules
     public double MaxSize
     {
@@ -73,7 +73,6 @@ public class LeafCohort
         else
             return 0;
     }
-    public double _Population = 0;
     public double LiveArea = 0;
     public double DeadArea = 0;
     public double MaxArea = 0;
@@ -82,6 +81,7 @@ public class LeafCohort
     private double ShadeInducedSenRate = 0;
     private double SenescedFrac = 0;
     private double _ExpansionStress = 0;
+    public double _Population = 0;
     //Leaf Initial status paramaters
     public double LeafStartNRetranslocationSupply = 0;
     public double LeafStartNReallocationSupply = 0;
@@ -179,10 +179,9 @@ public class LeafCohort
         {
             if (IsGrowing)
             {
-                double TotalDMDemand = DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2);
-                StructuralDMDemand = TotalDMDemand * StructuralFraction; //  Fixme HEB.  removing lower SLA constraint so leaves may get to thick under water stress. Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
-                //StructuralDMDemand = Math.Min(DeltaPotentialArea / SpecificLeafAreaMax, DeltaWaterConstrainedArea / SpecificLeafAreaMin * StructuralFraction);  //Work out how much DM would be needed to grow to potantial size
-                MetabolicDMDemand = TotalDMDemand * (1 - StructuralFraction);// (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand; //FIXME-EIT check Metabolic DM is a fixed proporiton of DM demand assuming leaves are growing at potential rate
+                double TotalDMDemand = DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2); //FIXMe HEB.  Need to constrain DM demand under water stress.  Something Like This.. TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2), DeltaWaterConstrainedArea / SpecificLeafAreaMin);
+                StructuralDMDemand = TotalDMDemand * StructuralFraction; 
+                MetabolicDMDemand = TotalDMDemand * (1 - StructuralFraction);
                 return StructuralDMDemand + MetabolicDMDemand;
             }
             else
@@ -195,7 +194,8 @@ public class LeafCohort
         {
             if (IsNotSenescing)
             {
-                double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);
+                //FIXME  This needs to be changed to use non-structural Fraction
+                double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
                 //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction);
                 return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
             }
