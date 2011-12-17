@@ -17,6 +17,7 @@ public class LeafCohort
     private double FunctionalNConc = 0;
     private double LuxaryNConc = 0;
     public double StructuralFraction = 0;
+    public double NonStructuralFraction = 0;
     public double MaxLiveArea = 0;
     public double GrowthDuration = 0;
     public double LagDuration = 0;
@@ -179,7 +180,7 @@ public class LeafCohort
         {
             if (IsGrowing)
             {
-                double TotalDMDemand = DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2); //FIXMe HEB.  Need to constrain DM demand under water stress.  Something Like This.. TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2), DeltaWaterConstrainedArea / SpecificLeafAreaMin);
+                double TotalDMDemand = Math.Min(DeltaPotentialArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin) / 2),DeltaWaterConstrainedArea / SpecificLeafAreaMin); 
                 StructuralDMDemand = TotalDMDemand * StructuralFraction; 
                 MetabolicDMDemand = TotalDMDemand * (1 - StructuralFraction);
                 return StructuralDMDemand + MetabolicDMDemand;
@@ -195,9 +196,8 @@ public class LeafCohort
             if (IsNotSenescing)
             {
                 //FIXME  This needs to be changed to use non-structural Fraction
-                double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 / SpecificLeafAreaMin) / (1 / SpecificLeafAreaMax / StructuralFraction);  
-                //double MaximumDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * (1 + NonStructuralFraction);
-                return Math.Max(0.0, MaximumDM - MetabolicDMDemand - StructuralDMDemand - LeafStartMetabolicWt - LeafStartStructuralWt - LeafStartNonStructuralWt);
+                double MaxNonStructuralDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * NonStructuralFraction;  
+                return Math.Max(0.0, MaxNonStructuralDM - LeafStartNonStructuralWt);
             }
             else
                 return 0.0;
@@ -446,7 +446,8 @@ public class LeafCohort
         MinimumNConc = MinimumNConcFunction.Value;
         if (StructuralNConcFunction != null)
             StructuralNConc = StructuralNConcFunction.Value;
-
+        if (NonStructuralFractionFunction != null)
+            NonStructuralFraction = NonStructuralFractionFunction.Value;
         if (InitialNConcFunction != null)
             InitialNConc = InitialNConcFunction.Value;
 
