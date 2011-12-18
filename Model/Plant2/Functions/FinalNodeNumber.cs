@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-
-
 public class FinalNodeNumber
 {
     //Class Linkages
@@ -25,54 +23,46 @@ public class FinalNodeNumber
     private double InitialLeafPrimordia = 0;
 
     //Class data members
-    private double _PrimordiaNumber = 0;
+    public double _PrimordiaNumber = 0;
+    public double _FinalLeafNumber = 0;
+
+    public double MaximumNodeNumber
+    {
+        get { return MaxNodeNo; }
+    }
+    public double PrimordiaNumber
+    {
+        get { return _PrimordiaNumber; }
+    }
+    public double FinalLeafNumber
+    {
+        get { return _FinalLeafNumber; }
+    }
 
     public void UpdateFinalNodeVariables()
     {
         if (TerminateFinalNodeNumber != null)
             TerminateFinalNodeNumber.UpdateTerminateNodeVariables();
     }
-
-    public double MaximumNodeNumber()
+    public void CalculateFinalLeafNumber()
     {
-        return MaxNodeNo;
-    }
-
-    public double FinalLeafNumber()
-    {
-        double FLN = 0;
         if (TerminateFinalNodeNumber != null)
-            FLN = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
+            //_FinalLeafNumber = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
+            _FinalLeafNumber = Math.Max(InitialLeafPrimordia, TerminateFinalNodeNumber.TargetFinalNodeNumber);
         else if (PhotoperiodFactor != null)
-            FLN = PhotoperiodFactor.Value * MaxNodeNo;
+            _FinalLeafNumber = PhotoperiodFactor.Value * MaxNodeNo;
         else
-            FLN = Math.Min(_PrimordiaNumber, MaxNodeNo);
-        
-        return FLN;//Fixme  This needs to be cast to an interger but will cause colatoral damage so will fix later.
+            _FinalLeafNumber = Math.Min(_PrimordiaNumber, MaxNodeNo);
     }
-
-    public double PrimordiaNumber()
+    public void CalculatePrimordiaNumber()
     {
-
         if (NodeInitiationRate != null)
         {
             if (_PrimordiaNumber == 0.0)
                 _PrimordiaNumber = InitialLeafPrimordia;
-            double DeltaPrimordiaNo = 0;
-            if (NodeInitiationRate.Value > 0.0)
-                DeltaPrimordiaNo = ThermalTime.Value / NodeInitiationRate.Value;
-            _PrimordiaNumber = _PrimordiaNumber + DeltaPrimordiaNo;
+            else if (NodeInitiationRate.Value > 0.0)
+                _PrimordiaNumber += ThermalTime.Value / NodeInitiationRate.Value;
         }
         else _PrimordiaNumber = MaxNodeNo;
-
-        return _PrimordiaNumber;
-    }
-
-    public double JuvDev()  //This is temporary until I can get linking between unrelated childern working
-    {
-        if (TerminateFinalNodeNumber == null)
-            return 0.0;
-        else
-            return TerminateFinalNodeNumber.JuvenileDevelopmentIndex;
-    }
-}
+   }
+ }

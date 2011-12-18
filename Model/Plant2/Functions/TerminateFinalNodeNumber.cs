@@ -44,7 +44,9 @@ public class TerminateFinalNodeNumber
     { 
         get 
         {
-            if ((_VernalisationIndex >= 1) || (Leaf.PrimordiaNo >= _AttainableFinalNodeNumber))
+            if (Leaf.PrimordiaNo == 0)
+                return _VernalisationIndex;
+            else if ((_VernalisationIndex >= 1) || (Leaf.PrimordiaNo >= _AttainableFinalNodeNumber))
                 return 1.0;
             else
                 return Math.Max(Leaf.PrimordiaNo / _AttainableFinalNodeNumber, _VernalisationIndex);
@@ -103,6 +105,7 @@ public class TerminateFinalNodeNumber
     public void OnSow(SowPlant2Type Sow)
     {
         _VernalisationIndex = VernalisationType;
+        _AttainableFinalNodeNumber = Leaf.MaxNodeNo;
     }
 
  #endregion
@@ -132,34 +135,28 @@ public class TerminateFinalNodeNumber
      /// AttainableFinalNodeNumber is the final leaf number that the crop may committ to 
      /// It decreases from the MaximumNodeNumber toward a minimum depending on the extent of vernalisation
      /// </summary>
-     //public double AttainableFinalNodeNumber
     public void AttainableFinalNodeNumber()
      {
-         //get
-         //{
              _AttainableFinalNodeNumber = Leaf.MaxNodeNo * (1 - _VernalisationIndex);
-           //  return _AttainableFinalNodeNumber;
-         //}
      }
 
-     public void VernalisationFinalNodeNumberFunction()
+    public void VernalisationFinalNodeNumberFunction()
     {
-        if ((Leaf.CohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))//(_CropIsVernalised == true))
+        if ((Leaf.CohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))
         { } // do nothing
         else
         _VernalisationFinalNodeNumber = (Leaf.PrimordiaNo);
     }
 
-     public void PhotoperiodFinalNodeNumberFunction()
+    public void PhotoperiodFinalNodeNumberFunction()
      {
-        
          double PhotoPeriodResponse = 0;
          if (Photoperiod.Value <SaturationPhotoperiod)
              PhotoPeriodResponse = PhotoperiodSensitivity * (SaturationPhotoperiod - Photoperiod.Value);
          _PhotoperiodFinalNodeNumber = _VernalisationFinalNodeNumber + PhotoPeriodResponse;
      }
 
-     public void CommitPrimordiaFunction()
+    public void CommitPrimordiaFunction()
      {
          _CommitPrimordia = _TerminatedFinalNodeNumber + 4;
      }

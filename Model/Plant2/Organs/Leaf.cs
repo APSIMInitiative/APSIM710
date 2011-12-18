@@ -95,8 +95,8 @@ public class Leaf : BaseOrgan, AboveGround
     public double _WaterAllocation;
     public double PEP = 0;
     public double EP = 0;
-    public double _FinalLeafNumber = 0;
-    public double _PrimordiaNo = 0;
+    //public double _FinalLeafNumber = 0;
+    //public double _PrimordiaNo = 0;
     public double DeltaNodeNumber = 0;
     public double PotentialHeightYesterday = 0;
     public double StemPopulation = 0;
@@ -145,7 +145,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    public double PrimordiaNo { get { return _PrimordiaNo; } }
+    public double PrimordiaNo { get { return FinalNodeNumber.PrimordiaNumber; } }
     [Output]
     public virtual double CohortNo
     {
@@ -159,14 +159,14 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    public double FinalLeafNo { get {return _FinalLeafNumber; } }
+    public double FinalLeafNo { get {return FinalNodeNumber.FinalLeafNumber; } }
     [Output]
     public double RelativeLeafApperance
     {
         get { return NodeNo / FinalLeafNo; }
     }
     [Output]
-    public double RemainingNodeNo { get { return _FinalLeafNumber - NodeNo; } }
+    public double RemainingNodeNo { get { return FinalLeafNo - NodeNo; } }
     [Output]
     [Units("/plant")]
     public double GreenNo
@@ -630,23 +630,24 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
+        if (CohortsInitialised) //Leaves are initialised so calculate apperance
+        {
+            FinalNodeNumber.CalculatePrimordiaNumber();
+            FinalNodeNumber.UpdateFinalNodeVariables();
+            FinalNodeNumber.CalculateFinalLeafNumber();
+            CalculateNodeNumber();
+        }
 
         if (Phenology.OnDayOf(InitialiseStage))
         {
             // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
+            FinalNodeNumber.CalculatePrimordiaNumber();
+            FinalNodeNumber.UpdateFinalNodeVariables();
+            FinalNodeNumber.CalculateFinalLeafNumber();
             CohortsInitialised = true;
         }
-
-        _PrimordiaNo = FinalNodeNumber.PrimordiaNumber();
-        FinalNodeNumber.UpdateFinalNodeVariables();
-        _FinalLeafNumber = FinalNodeNumber.FinalLeafNumber();
-        DeltaNodeNumber = 0;
-        if (NodeAppearanceRate.Value > 0)
-            DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
-        NodeNo += DeltaNodeNumber;
-        NodeNo = Math.Min(NodeNo, _FinalLeafNumber);
         
         foreach (LeafCohort L in Leaves)
             L.DoFrost(FrostFraction.Value);
@@ -716,10 +717,18 @@ public class Leaf : BaseOrgan, AboveGround
             FractionDied = DeltaDeadLeaves / GreenNodeNo;
         }
     }
+    public void CalculateNodeNumber()
+    {
+        DeltaNodeNumber = 0;
+        if (NodeAppearanceRate.Value > 0)
+            DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
+        NodeNo += DeltaNodeNumber;
+        NodeNo = Math.Min(NodeNo, FinalLeafNo);
+    }
     public virtual void ZeroLeaves()
     {
         NodeNo = 0;
-        _FinalLeafNumber = 0;
+        FinalNodeNumber._FinalLeafNumber = 0;
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -1126,7 +1135,7 @@ public class Leaf : BaseOrgan, AboveGround
         PrimaryBudNo = Sow.BudNumber;
         StemPopulation = Sow.Population * Sow.BudNumber;
         if (FinalNodeNumber != null)
-            MaxNodeNo = FinalNodeNumber.MaximumNodeNumber();
+            MaxNodeNo = FinalNodeNumber.MaximumNodeNumber;
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
@@ -1173,7 +1182,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         NodeNo = 0;
-        _FinalLeafNumber = 0;
+        FinalNodeNumber._FinalLeafNumber = 0;
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();
