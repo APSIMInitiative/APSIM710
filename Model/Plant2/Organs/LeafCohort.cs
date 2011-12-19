@@ -10,6 +10,7 @@ public class LeafCohort
     public Biomass Live = new Biomass();
     public Biomass Dead = new Biomass();
     //Leaf coefficients
+    public double Age = 0;
     private double NReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
@@ -33,7 +34,10 @@ public class LeafCohort
     {
         get
         {
-            return MaxLiveArea / Population;
+            if (MaxLiveArea == 0)
+                return 0;
+            else
+                return MaxLiveArea / Population;
         }
     }
     public double Population
@@ -47,7 +51,7 @@ public class LeafCohort
     {
         get
         {
-            if (IsInitialised)
+            if (IsAppeared)
                 return LiveArea / Population;
             else
                 return 0;
@@ -57,7 +61,7 @@ public class LeafCohort
     {
         get
         {
-            if (IsInitialised && Age < GrowthDuration)
+            if (IsAppeared && Age < GrowthDuration)
                 return Age / GrowthDuration;
             else
                 return 1.0;
@@ -65,7 +69,7 @@ public class LeafCohort
     }
     private double NFac()
     {
-        if (IsInitialised)
+        if (IsAppeared)
         {
             double Nconc = Live.NConc;
             double value = Math.Min(1.0, Math.Max(0.0, (Nconc - MinimumNConc) / (MaximumNConc - MinimumNConc)));
@@ -118,11 +122,17 @@ public class LeafCohort
     private double MetabolicNAllocation = 0;
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
+   // private double StructuralWtSenescing = 0;
+   // private double StructuralNSenescing = 0;
+   // private double MetabolicWtSenescing = 0;
+   // private double MetabolicNSenescing = 0;
+   // private double NonStructuralWtSenescing = 0;
+   // private double NonStructuralNSenescing = 0;
 #endregion
 
  #region Class Inputs
-    [Param]  //FIXME HEB.  This paramater is no longer read in as a parameter but calculated from area and maxArea.  This needs to be changed from a param to a member
-    public double Age = 0;
+    //[Param]  //FIXME HEB.  This paramater is no longer read in as a parameter but calculated from area and maxArea.  This needs to be changed from a param to a member
+    //public double Age = 0;
     [Param]
     public double Rank = 0;
     [Param]
@@ -361,11 +371,12 @@ public class LeafCohort
     {
         get { return Age; }
     }
+    public bool IsInitialised = false;
     public bool Finished
     {
         get
         {
-            return IsInitialised && Age > (GrowthDuration + LagDuration + SenescenceDuration);
+            return IsAppeared && Age > (GrowthDuration + LagDuration + SenescenceDuration);
         }
     }
     public bool IsGrowing
@@ -392,10 +403,10 @@ public class LeafCohort
     {
         get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
     }
-    public bool IsInitialised
-    {
-        get { return _Population > 0; }
-    }
+    public bool IsAppeared = false;
+    //{
+    //    get { return _Population > 0; }
+    //}
     public bool IsDead
     {
         get
@@ -407,7 +418,7 @@ public class LeafCohort
     {
         get
         {
-            return (IsInitialised && Age > GrowthDuration);
+            return (IsAppeared && Age > GrowthDuration);
         }
     }
  #endregion
@@ -429,11 +440,16 @@ public class LeafCohort
         NewLeaf.Dead = new Biomass();
         return NewLeaf;
     }
-    virtual public void DoInitialisation()
+    public void DoInitialisation()
+    {
+        IsInitialised = true;
+    }
+    public void DoAppearance()
     {
         // _Population will equal 0 when the APSIM infrastructure creates this object.
         // It will already be set if PLANT creates this object and population is passed
         // in as an argument in the constructor below. Confusing isn't it?
+        IsAppeared = true;
         if (_Population == 0)
             _Population = PopulationFunction.Value * Leaf.PrimaryBudNo;
         MaxArea = MaxAreaFunction.Value; 
@@ -442,21 +458,20 @@ public class LeafCohort
         SenescenceDuration = SenescenceDurationFunction.Value;
         StructuralFraction = StructuralFractionFunction.Value;
         SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
+        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
         MaximumNConc = MaximumNConcFunction.Value;
         MinimumNConc = MinimumNConcFunction.Value;
-        if (StructuralNConcFunction != null)
+        if (StructuralNConcFunction != null) //FIXME HEB I think this can be removed
             StructuralNConc = StructuralNConcFunction.Value;
         if (NonStructuralFractionFunction != null)
             NonStructuralFraction = NonStructuralFractionFunction.Value;
-        if (InitialNConcFunction != null)
+        if (InitialNConcFunction != null) //FIXME HEB I think this can be removed
             InitialNConc = InitialNConcFunction.Value;
-
-        Age = Area / MaxArea * GrowthDuration;
+            Age = Area / MaxArea * GrowthDuration;
         LiveArea = Area * _Population;
         Live.StructuralWt = LiveArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin)/2) * StructuralFraction;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
-        SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
-        SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
+        //SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         StructuralNConc = MinimumNConc;
         FunctionalNConc = (CriticalNConcFunction.Value - (MinimumNConcFunction.Value * StructuralFraction)) * (1 / (1 - StructuralFraction));
         LuxaryNConc = (MaximumNConcFunction.Value - CriticalNConcFunction.Value);
@@ -473,9 +488,9 @@ public class LeafCohort
     }
     virtual public void DoPotentialGrowth(double TT)
     {
-        if (IsInitialised)
+        if (IsAppeared)
         {
-            Leaf.CurrentRank = Rank - 1; //Set currentRank variable in parent leaf for use in experssion functions
+            Leaf.CurrentRank = Rank -1; //Set currentRank variable in parent leaf for use in experssion functions
             //Acellerate thermal time accumulation if crop is water stressed.
             double _ThermalTime;
             if ((DroughtInducedSenAcceleration != null) && (IsFullyExpanded))
@@ -535,7 +550,7 @@ public class LeafCohort
     }
     virtual public void DoActualGrowth(double TT)
     {
-        if (IsInitialised)
+        if (IsAppeared)
         {
             //Acellerate thermal time accumulation if crop is water stressed.
             double _ThermalTime;
@@ -560,14 +575,15 @@ public class LeafCohort
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
             //Update area and biomass of leaves
-
-            double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
-            double StructuralNSenescing = SenescedFrac * Live.StructuralN;
-            double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
-            double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
-            double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
-            double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
-
+            //if (SenescedFrac > 0)
+            //{
+              double  StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
+              double StructuralNSenescing = SenescedFrac * Live.StructuralN;
+              double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
+              double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
+              double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
+              double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
+            //}
             DeadArea = DeadArea + LeafAreaLoss;
             LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
 
@@ -620,7 +636,7 @@ public class LeafCohort
     }
     virtual public void DoFrost(double fraction)
     {
-        if (IsInitialised)
+        if (IsAppeared)
             DoKill(fraction);
     }    
     /// <summary>
@@ -649,7 +665,7 @@ public class LeafCohort
     public double FractionSenescing(double TT)
     {
         //Calculate fraction of leaf area senessing based on age and shading.  This is used to to calculate change in leaf area and Nreallocation supply.
-        if (IsInitialised)
+        if (IsAppeared)
         {
             double FracSenAge = 0;
             double TTInSenPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration);

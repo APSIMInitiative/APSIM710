@@ -62,6 +62,7 @@ public class FinalNodeNumber
                 _PrimordiaNumber = InitialLeafPrimordia;
             else if (NodeInitiationRate.Value > 0.0)
                 _PrimordiaNumber += ThermalTime.Value / NodeInitiationRate.Value;
+            _PrimordiaNumber = Math.Min(_PrimordiaNumber, MaxNodeNo);
         }
         else _PrimordiaNumber = MaxNodeNo;
    }

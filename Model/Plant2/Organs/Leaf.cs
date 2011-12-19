@@ -147,13 +147,25 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     public double PrimordiaNo { get { return FinalNodeNumber.PrimordiaNumber; } }
     [Output]
-    public virtual double CohortNo
+    public double AppearedCohorts //!!!! FIXME  CohortNo and AppearedCohorts have been labled back to front and need to be reversed.  Like this to prevent diffs while testing.  
     {
         get
         {
             int Count = 0;
             foreach (LeafCohort L in Leaves)
                 if (L.IsInitialised)
+                    Count++;
+            return Count;
+        }
+    }
+    [Output]
+    public double CohortNo  //!!!! FIXME  CohortNo and AppearedCohorts have been labled back to front and need to be reversed.  Like this to prevent diffs while testing.  
+    {
+        get
+        {
+            int Count = 0;
+            foreach (LeafCohort L in Leaves)
+                if (L.IsAppeared)
                     Count++;
             return Count;
         }
@@ -648,50 +660,75 @@ public class Leaf : BaseOrgan, AboveGround
             FinalNodeNumber.CalculateFinalLeafNumber();
             CohortsInitialised = true;
         }
-        
-        foreach (LeafCohort L in Leaves)
-            L.DoFrost(FrostFraction.Value);
 
-        if (NodeNo >= Leaves.Count + 1) //When Node number is 1 more than current cohort number produce a new cohort
+        if (FrostFraction.Value > 0)
+        {
+            foreach (LeafCohort L in Leaves)
+                L.DoFrost(FrostFraction.Value);
+        }
+
+        if (PrimordiaNo >= Leaves.Count + 1) //When primordia number is 1 more than current cohort number produce a new cohort
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
 
-            double CohortAge = (NodeNo - Math.Truncate(NodeNo)) * NodeAppearanceRate.Value;
-
-            double BranchNumber = Population.Value * PrimaryBudNo;
-            if (Leaves.Count > 0)
-                BranchNumber = Leaves[Leaves.Count - 1].Population;
-            BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
-
             LeafCohort NewLeaf = InitialLeaves[0].Clone();
-            NewLeaf._Population = BranchNumber;
-            NewLeaf.Age = CohortAge;
+            NewLeaf._Population = 0;
+            NewLeaf.Age = 0;
             NewLeaf.Rank = Math.Truncate(NodeNo);
             NewLeaf.Area = 0.0;
             NewLeaf.DoInitialisation();
             Leaves.Add(NewLeaf);
         }
 
+        if (NodeNo >= CohortNo + 1) //When Node number is 1 more than current cohort number make a new leaf appear and start growing
+        {
+            if (CohortsInitialised == false)
+                throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
 
+            int AppearingLeaf = (int)NodeNo;
+            double CohortAge = (NodeNo - AppearingLeaf) * NodeAppearanceRate.Value;
+            double BranchNumber = Population.Value * PrimaryBudNo;
+            if (Leaves.Count > 0)
+            {
+                int j = (int)CohortNo - 1;
+                BranchNumber = Leaves[j].Population;
+            }
+                BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
+
+            int i = AppearingLeaf -1;
+            Leaves[i].Rank = AppearingLeaf;
+            Leaves[i]._Population = BranchNumber;
+            Leaves[i].Age = CohortAge; 
+            Leaves[i].DoAppearance();
+        }
+        
         foreach (LeafCohort L in Leaves)
         {
             L.DoPotentialGrowth(_ThermalTime);
         }
     }
-    public virtual void InitialiseCohorts()
+    public virtual void InitialiseCohorts() //This sets up cohorts on the day growth starts (eg at emergence)
     {
         Leaves.Clear();
         CopyLeaves(InitialLeaves, Leaves);
         foreach (LeafCohort Leaf in Leaves)
         {
-            NodeNo = Leaf.Rank;
-            Leaf._Population = Population.Value * PrimaryBudNo;
+            //NodeNo = Leaf.Rank;
+            //Leaf._Population = Population.Value * PrimaryBudNo;
+            if (Leaf.Area > 0)//If Leaves are appeared on day of emergence do appearance and count nodes on first day
+            {
+                Leaf._Population = Population.Value * PrimaryBudNo;
+                Leaf.DoInitialisation();
+                NodeNo += 1;
+                Leaf.DoAppearance();
+            }
+            else //Leaves are primordia and have not yet emerged, initialise but do not set appeared values yet
             Leaf.DoInitialisation();
         }
         
         // Add fraction of top leaf expanded to node number.
-        NodeNo = NodeNo + Leaves[Leaves.Count - 1].FractionExpanded;
+        NodeNo = NodeNo + Leaves[(int)NodeNo - 1].FractionExpanded;
 
     }
     public override void DoActualGrowth()
@@ -729,6 +766,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         NodeNo = 0;
         FinalNodeNumber._FinalLeafNumber = 0;
+        FinalNodeNumber._PrimordiaNumber = 0;
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -1124,6 +1162,7 @@ public class Leaf : BaseOrgan, AboveGround
     public void OnPrune(PruneType Prune)
     {
         PrimaryBudNo = Prune.BudNumber;
+        CohortsInitialised = false;
         ZeroLeaves();
     }
     [EventHandler]
