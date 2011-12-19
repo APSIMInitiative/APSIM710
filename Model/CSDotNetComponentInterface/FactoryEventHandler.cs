@@ -21,6 +21,10 @@ public abstract class EvntHandler : ApsimType
         {
             return Name;
         }
+        set
+        {
+            Name = value;
+        }
     }
     public abstract Type Typ
     {

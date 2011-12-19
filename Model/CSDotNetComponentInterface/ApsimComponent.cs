@@ -358,14 +358,13 @@ namespace ModelFramework
         /// <summary>
         /// Look for all properties and register them.
         /// </summary>
-        /// <param name="F"></param>
         // ----------------------------------------------
-        public void RegisterAllProperties(Factory F)
+        public void RegisterAllProperties()
         {
             Boolean doReg = true;
-            for (int i = 0; i != F.Properties.Count; i++)
+            for (int i = 0; i != Fact.Properties.Count; i++)
             {
-                FactoryProperty Property = F.Properties[i];
+                FactoryProperty Property = Fact.Properties[i];
                 doReg = true;
                 if (IsPlant && (String.Compare(Property.Name, "plant_status", true) == 0))  //don't (re)register plant_status for Plant2
                     doReg = false;
@@ -385,13 +384,15 @@ namespace ModelFramework
         /// having ambiguous EndCrop event handlers in the registry when the Manager sends
         /// EndCrop published event.
         /// </summary>
-        /// <param name="F"></param>
         // ----------------------------------------------
-        public void RegisterAllEventHandlers(Factory F)
+        public void RegisterAllEventHandlers()
         {
-            for (int i = 0; i != F.EventHandlers.Count; i++)
-                if (String.Compare(F.EventHandlers[i].EventName, "EndCrop", true) != 0)
-                    Subscribe(F.EventHandlers[i]);
+            for (int i = 0; i != Fact.EventHandlers.Count; i++)
+                if (String.Compare(Fact.EventHandlers[i].EventName, "EndCrop", true) != 0)
+                {
+                    ExpandEventName(Fact.EventHandlers[i]);
+                    Subscribe(Fact.EventHandlers[i]);
+                }
         }
         // ----------------------------------------------
         /// <summary>
@@ -523,6 +524,39 @@ namespace ModelFramework
         /// <summary>
         /// Registers all the event handlers in the cmp component. 
         /// </summary>
+        /// <param name="Event">Event to be considered</param>
+        // ------------------------------------------------------------------------
+        public void ExpandEventName(EvntHandler Event)
+        {
+            string name = Event.EventName;
+            int openPos = name.IndexOf('[');
+            int closePos = name.IndexOf(']');
+            while (openPos >= 0 && closePos >= 0)
+            {
+                string target = name.Substring(openPos + 1, closePos - openPos - 1);
+                string newText = "";
+                for (int i = 0; i != Fact.Properties.Count; i++)
+                {
+                    FactoryProperty prop = Fact.Properties[i];
+                    if (prop.IsParam && prop.HasAsValue && prop.Name == target)
+                    {
+                        newText = prop.Get.ToString();
+                        break;
+                    }
+                }
+                if (newText == "")
+                    Warning("No substitution string available for [" + target + "]");
+                name = name.Remove(openPos, closePos - openPos + 1);
+                name = name.Insert(openPos, newText);
+                openPos = name.IndexOf('[');
+                closePos = name.IndexOf(']');
+                Event.EventName = name;
+            }
+        }
+        // ------------------------------------------------------------------------
+        /// <summary>
+        /// Registers all the event handlers in the cmp component. 
+        /// </summary>
         /// <param name="Event"></param>
         // ------------------------------------------------------------------------
         public void Subscribe(EvntHandler Event)
@@ -554,14 +588,13 @@ namespace ModelFramework
         /// <summary>
         /// Look for all event publishers and register them.
         /// </summary>
-        /// <param name="F"></param>
         // ------------------------------------------------------------------------
-        public void TrapAllEvents(Factory F)
+        public void TrapAllEvents()
         {
             int eventID = Host.eventCount();
-            for (int i = 0; i != F.Events.Count; i++)
+            for (int i = 0; i != Fact.Events.Count; i++)
             {
-                FactoryEvent Event = F.Events[i];
+                FactoryEvent Event = Fact.Events[i];
                 Event.ID = eventID;
                 RegistrationsEvent.Add(Event.ID, Event);
                 Host.addEvent(Event.EventName, Event.ID, TypeSpec.KIND_PUBLISHEDEVENT, Event.DDML(), "", "", 0);
@@ -601,10 +634,10 @@ namespace ModelFramework
                 InstanceName = InstanceName.Substring(InstanceName.LastIndexOf('.') + 1);
             }
             ModelInstance.Name = InstanceName;
-            RegisterAllProperties(Fact);
-            RegisterAllEventHandlers(Fact);
-            TrapAllEvents(Fact);
+            RegisterAllProperties();
             Fact.CheckParameters(this);
+            RegisterAllEventHandlers();
+            TrapAllEvents();
         }
         // ----------------------------------------------
         /// <summary>
