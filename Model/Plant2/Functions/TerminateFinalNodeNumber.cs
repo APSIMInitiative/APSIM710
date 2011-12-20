@@ -142,7 +142,7 @@ public class TerminateFinalNodeNumber
 
     public void VernalisationFinalNodeNumberFunction()
     {
-        if ((Leaf.CohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))
+        if ((Leaf.AppearedCohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))
         { } // do nothing
         else
         _VernalisationFinalNodeNumber = (Leaf.PrimordiaNo);

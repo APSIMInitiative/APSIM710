@@ -27,36 +27,12 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Cultivar name="Primo">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Rex">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Excel">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Kaspa">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Mutka">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Parafield">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Parv">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Crusader">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">FieldPea</CropType>
       <Population>
         <Value>4</Value>
       </Population>
-      <Arbitrator name="Arbitrator">
+      <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PrioritythenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -258,7 +234,7 @@
         </Memo>
         </PhaseBasedSwitch>
       </ReproductiveOrgan>
-      <Root name="Root">
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -391,30 +367,30 @@
           <Memo>This is just here at the moment.  I have not set it to respond to a sensible x variable</Memo>
         </LinearInterpolationFunction>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<PhaseLookup name="PartitionFraction">
-			  <PhaseLookupValue name="Early">
-				<Start type="text" description="Start">Emergence</Start>
-				<End type="text" description="End">FloralInitiation</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.03</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Middle">
-				<Start type="text" description="Start">FloralInitiation</Start>
-				<End type="text" description="End">StartPodGrowth</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.02</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Late">
-				<Start>StartPodGrowth</Start>
-				<End>Maturity</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
-			</PhaseLookup>
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">FloralInitiation</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.03</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Middle">
+              <Start type="text" description="Start">FloralInitiation</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.02</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>StartPodGrowth</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <Memo>Partitioning to root nodules is a small proportion (~5%) of the biomass partitioned to roots (CropGro)</Memo>
+          </PhaseLookup>
         </PartitionFractionDemandFunction>
         <Constant name="MaximumNConc">
           <Value>0.01</Value>
@@ -449,24 +425,24 @@
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<PhaseLookup name="PartitionFraction">
-			  <PhaseLookupValue name="Early">
-				<Start type="text" description="Start">Flowering</Start>
-				<End type="text" description="End">StartPodGrowth</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.1</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Late">
-				<Start>StartPodGrowth</Start>
-				<End>Maturity</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.2</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			</PhaseLookup>
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">Flowering</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.1</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>StartPodGrowth</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.2</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
         </PartitionFractionDemandFunction>
-		<Constant name="StructuralFraction">
+        <Constant name="StructuralFraction">
           <Value type="text" description="Value">0.7</Value>
           <Memo>Sets the proporiton of DM allocation that is partitioned to the organ the is put into the structural pool         </Memo>
         </Constant>
@@ -486,7 +462,7 @@
         </Memo>
         </PhaseBasedSwitch>
       </GenericOrgan>
-      <Leaf name="Leaf">
+      <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
@@ -558,7 +534,7 @@
         <MultiplyFunction name="BranchingRate">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="Potential_Branching_Rate">
-            <XProperty>Leaf.NodeNo</XProperty>
+            <XProperty>Leaf.AppearedNodeNo</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>4 0</XY>
@@ -776,38 +752,38 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<PhaseLookup name="PartitionFraction">
-			  <PhaseLookupValue name="Early">
-				<Start type="text" description="Start">Emergence</Start>
-				<End type="text" description="End">Flowering</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.39</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="middle">
-				<Start type="text" description="Start">Flowering</Start>
-				<End type="text" description="End">StartPodGrowth</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.45</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Late">
-				<Start>StartPodGrowth</Start>
-				<End>Maturity</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="PostMaturity">
-				<Start type="text" description="Start">Maturity</Start>
-				<End type="text" description="End">Unused</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.3</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			</PhaseLookup>
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">Flowering</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.39</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="middle">
+              <Start type="text" description="Start">Flowering</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.45</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>StartPodGrowth</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="PostMaturity">
+              <Start type="text" description="Start">Maturity</Start>
+              <End type="text" description="End">Unused</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.3</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
         </PartitionFractionDemandFunction>
-		<PhaseLookup name="xStructuralFraction">
+        <PhaseLookup name="xStructuralFraction">
           <Memo>Sets the proporiton of DM allocation that is partitioned to the organ the is put into the structural pool         </Memo>
         </PhaseLookup>
         <Constant name="MaximumNConc">
@@ -860,5 +836,29 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Grain.Dead</Property>
       </CompositeBiomass>
     </Plant>
+    <Cultivar name="Primo">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Rex">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Excel">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Kaspa">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Mutka">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Parafield">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Parv">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="Crusader">
+      <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
   </Model>
 </Type>

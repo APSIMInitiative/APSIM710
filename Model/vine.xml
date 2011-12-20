@@ -240,7 +240,7 @@
 (StructuralDMDemand * (1 / StructuralFraction)) - StructuralDMDemand such that the actual SLA of leaves will normally be less than SpecificLeafAreaMax.  If the leaf cohort is not partitioned sufficient biomass to meet both structural and metabolic N demands it will reduce the growth of both proportinatly.  With moderate DM limitations leaves will get less dense but when they reach SpecificLeafAreaMax and then leaf size will become constrained.</Memo>
         </Constant>
         <LinearInterpolationFunction name="SpecificLeafAreaMin">
-          <XProperty type="text" description="XProperty">Leaf.NodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
           <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
           <XYPairs>
             <XY>1 20000</XY>
@@ -272,7 +272,7 @@
           <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>1 20000</XY>
             <XY>30 19000</XY>
@@ -300,7 +300,7 @@
           </Constant>
         </PhaseLookupValue>
         <LinearInterpolationFunction name="BranchingRate">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>5 0.0</XY>
             <XY>10 0.0</XY>
@@ -308,28 +308,28 @@
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="LagDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>5 1500.0</XY>
             <XY>20 2500.0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="GrowthDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>4 150.0</XY>
             <XY>5 150.0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SenescenceDuration">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>5 500.0</XY>
             <XY>30 500.0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="MaxArea">
-          <XProperty>Leaf.NodeNo</XProperty>
+          <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>1 5000.0</XY>
             <XY>4 15000.0</XY>

@@ -56,9 +56,9 @@ public class LeafStagePhyllochronFunction : Function
                 throw new Exception("Phase end name not set:" + Name);
             if (Phenology.Between(Start, End))
             {
-                if (Leaf.NodeNo <= Phase1End)
+                if (Leaf.AppearedNodeNo <= Phase1End)
                     return BasePhyllochron.Value * Phase1Multiplier;
-                else if (Leaf.NodeNo <= Phase2End)
+                else if (Leaf.AppearedNodeNo <= Phase2End)
                     return BasePhyllochron.Value * Phase2Multiplier;
                 else
                     return BasePhyllochron.Value * Phase3Multiplier;

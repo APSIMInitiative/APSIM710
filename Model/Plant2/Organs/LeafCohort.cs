@@ -14,7 +14,6 @@ public class LeafCohort
     private double NReallocationFactor = 0;
     private double NRetranslocationFactor = 0;
     private double DMRetranslocationFactor = 0;
-    public double PotentialSize = 0;
     private double FunctionalNConc = 0;
     private double LuxaryNConc = 0;
     public double StructuralFraction = 0;

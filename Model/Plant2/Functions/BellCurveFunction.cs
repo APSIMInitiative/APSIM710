@@ -34,7 +34,7 @@ public class BellCurveFunction : Function
         {
             double LeafSizePerNode = 0; // Current Size of a leaf at a given node position (mm2/leaf)
 
-            double LeafNo = Leaf.NodeNo;
+            double LeafNo = Leaf.AppearedNodeNo;
 
             LeafSizePerNode = FirstLeafArea.Value + AreaMax.Value * Math.Exp(Breadth.Value * Math.Pow(LeafNo - LargestLeafPosition.Value, 2.0)
                               + Skewness.Value * (Math.Pow(LeafNo - LargestLeafPosition.Value, 3.0)));

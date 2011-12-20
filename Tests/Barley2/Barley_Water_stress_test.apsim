@@ -736,15 +736,15 @@
             <variable name="LeafFw" />
             <variable name="LeafPhotosynthesisFtValue" />
             <variable name="LeafPhotosynthesisFvpdValue" />
-            <variable name="LeafTotalNo" />
-            <variable name="LeafGreenNo" />
-            <variable name="LeafExpandingNodeNo" />
-            <variable name="LeafCohortNo" />
-            <variable name="LeafBranchNo" />
-            <variable name="LeafDeadNodeNo" />
-            <variable name="LeafNodeNo" />
-            <variable name="LeafSenescingNodeNo" />
-            <variable name="LeafLeafNo" />
+            <variable name="LeafPlantLeafNo" />
+            <variable name="LeafPlantGreenLeafNo" />
+            <variable name="LeafExpandingCohortNo" />
+            <variable name="LeafAppearedCohortNo" />
+            <variable name="LeafTotalStemPopn" />
+            <variable name="LeafDeadCohortNo" />
+            <variable name="LeafAppearedNodeNo" />
+            <variable name="LeafSenescingCohortNo" />
+            <variable name="LeafPrimaryBudLeafNo" />
             <variable name="sw" />
             <variable name="no3" />
             <variable name="LeafPartitionFractionValue" />
@@ -1024,12 +1024,12 @@ endif
             <X>dd/mmm/yyyy</X>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
-            <Y>LeafSenescingNodeNo</Y>
-            <Y>LeafDeadNodeNo</Y>
-            <Y>LeafCohortNo</Y>
-            <Y>LeafExpandingNodeNo</Y>
-            <Y>LeafGreenNo</Y>
-            <Y>LeafTotalNo</Y>
+            <Y>LeafSenescingCohortNo</Y>
+            <Y>LeafDeadCohortNo</Y>
+            <Y>LeafAppearedCohortNo</Y>
+            <Y>LeafExpandingCohortNo</Y>
+            <Y>LeafPlantGreenLeafNo</Y>
+            <Y>LeafPlantLeafNo</Y>
             <GDApsimFileReader name="Predicted" />
           </Plot>
         </Graph>
@@ -1132,15 +1132,15 @@ endif
         </events>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
-          <variable name="LeafTotalNo" />
-          <variable name="LeafGreenNo" />
-          <variable name="LeafExpandingNodeNo" />
-          <variable name="LeafCohortNo" />
-          <variable name="LeafBranchNo" />
-          <variable name="LeafDeadNodeNo" />
-          <variable name="LeafNodeNo" />
-          <variable name="LeafSenescingNodeNo" />
-          <variable name="LeafLeafNo" />
+          <variable name="LeafPlantLeafNo" />
+          <variable name="LeafPlantGreenLeafNo" />
+          <variable name="LeafExpandingCohortNo" />
+          <variable name="LeafAppearedCohortNo" />
+          <variable name="LeafTotalStemPopn" />
+          <variable name="LeafDeadCohortNo" />
+          <variable name="LeafAppearedNodeNo" />
+          <variable name="LeafSenescingCohortNo" />
+          <variable name="LeafPrimaryBudLeafNo" />
           <variable name="LeafPrimordiaNo" />
           <variable name="LeafFinalNodeNo" />
           <variable name="LeafPhotoPeriodValue" />
@@ -1165,7 +1165,7 @@ endif
             <colour>
             </colour>
             <X>Date</X>
-            <Y>LeafNodeNo</Y>
+            <Y>LeafAppearedNodeNo</Y>
             <Y>LeafPrimordiaNo</Y>
             <Y>VernalisationIndex</Y>
             <Y>VFNN</Y>
@@ -1432,15 +1432,15 @@ endif
             <variable name="LeafFw" />
             <variable name="LeafPhotosynthesisFtValue" />
             <variable name="LeafPhotosynthesisFvpdValue" />
-            <variable name="LeafTotalNo" />
-            <variable name="LeafGreenNo" />
-            <variable name="LeafExpandingNodeNo" />
-            <variable name="LeafCohortNo" />
-            <variable name="LeafBranchNo" />
-            <variable name="LeafDeadNodeNo" />
-            <variable name="LeafNodeNo" />
-            <variable name="LeafSenescingNodeNo" />
-            <variable name="LeafLeafNo" />
+            <variable name="LeafPlantLeafNo" />
+            <variable name="LeafPlantGreenLeafNo" />
+            <variable name="LeafExpandingCohortNo" />
+            <variable name="LeafAppearedCohortNo" />
+            <variable name="LeafTotalStemPopn" />
+            <variable name="LeafDeadCohortNo" />
+            <variable name="LeafAppearedNodeNo" />
+            <variable name="LeafSenescingCohortNo" />
+            <variable name="LeafPrimaryBudLeafNo" />
             <variable name="sw" />
             <variable name="no3" />
             <variable name="LeafPartitionFractionValue" />
@@ -1718,12 +1718,12 @@ endif
             <X>dd/mmm/yyyy</X>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
-            <Y>LeafSenescingNodeNo</Y>
-            <Y>LeafDeadNodeNo</Y>
-            <Y>LeafCohortNo</Y>
-            <Y>LeafExpandingNodeNo</Y>
-            <Y>LeafGreenNo</Y>
-            <Y>LeafTotalNo</Y>
+            <Y>LeafSenescingCohortNo</Y>
+            <Y>LeafDeadCohortNo</Y>
+            <Y>LeafAppearedCohortNo</Y>
+            <Y>LeafExpandingCohortNo</Y>
+            <Y>LeafPlantGreenLeafNo</Y>
+            <Y>LeafPlantLeafNo</Y>
             <GDApsimFileReader name="Predicted" />
           </Plot>
         </Graph>
@@ -2455,7 +2455,7 @@ endif
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="LeafSize">
+        <Graph name="LeafCohortSize">
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>Circle</PointType>
@@ -2729,15 +2729,15 @@ if (date_within('[date1], [date2]') = 1) then
         <title>HighWaterLowRadn Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
-          <variable name="LeafTotalNo" />
-          <variable name="LeafGreenNo" />
-          <variable name="LeafExpandingNodeNo" />
-          <variable name="LeafCohortNo" />
-          <variable name="LeafBranchNo" />
-          <variable name="LeafDeadNodeNo" />
-          <variable name="LeafNodeNo" />
-          <variable name="LeafSenescingNodeNo" />
-          <variable name="LeafLeafNo" />
+          <variable name="LeafPlantLeafNo" />
+          <variable name="LeafPlantGreenLeafNo" />
+          <variable name="LeafExpandingCohortNo" />
+          <variable name="LeafAppearedCohortNo" />
+          <variable name="LeafTotalStemPopn" />
+          <variable name="LeafDeadCohortNo" />
+          <variable name="LeafAppearedNodeNo" />
+          <variable name="LeafSenescingCohortNo" />
+          <variable name="LeafPrimaryBudLeafNo" />
           <variable name="LeafPrimordiaNo" />
         </variables>
         <events name="Reporting Frequency">
@@ -3353,7 +3353,7 @@ if (date_within('[date1], [date2]') = 1) then
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="LeafSize">
+        <Graph name="LeafCohortSize">
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>Circle</PointType>
@@ -3627,15 +3627,15 @@ if (date_within('[date1], [date2]') = 1) then
         <title>HighWaterHighCO2 Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
-          <variable name="LeafTotalNo" />
-          <variable name="LeafGreenNo" />
-          <variable name="LeafExpandingNodeNo" />
-          <variable name="LeafCohortNo" />
-          <variable name="LeafBranchNo" />
-          <variable name="LeafDeadNodeNo" />
-          <variable name="LeafNodeNo" />
-          <variable name="LeafSenescingNodeNo" />
-          <variable name="LeafLeafNo" />
+          <variable name="LeafPlantLeafNo" />
+          <variable name="LeafPlantGreenLeafNo" />
+          <variable name="LeafExpandingCohortNo" />
+          <variable name="LeafAppearedCohortNo" />
+          <variable name="LeafTotalStemPopn" />
+          <variable name="LeafDeadCohortNo" />
+          <variable name="LeafAppearedNodeNo" />
+          <variable name="LeafSenescingCohortNo" />
+          <variable name="LeafPrimaryBudLeafNo" />
           <variable name="LeafPrimordiaNo" />
         </variables>
         <events name="Reporting Frequency">
@@ -4251,7 +4251,7 @@ if (date_within('[date1], [date2]') = 1) then
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="LeafSize">
+        <Graph name="LeafCohortSize">
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>Circle</PointType>
@@ -4538,15 +4538,15 @@ if (date_within('[date1], [date2]') = 1) then
         <title>LowWaterHighNitrogen Leaf Cohort Analysis</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
-          <variable name="LeafTotalNo" />
-          <variable name="LeafGreenNo" />
-          <variable name="LeafExpandingNodeNo" />
-          <variable name="LeafCohortNo" />
-          <variable name="LeafBranchNo" />
-          <variable name="LeafDeadNodeNo" />
-          <variable name="LeafNodeNo" />
-          <variable name="LeafSenescingNodeNo" />
-          <variable name="LeafLeafNo" />
+          <variable name="LeafPlantLeafNo" />
+          <variable name="LeafPlantGreenLeafNo" />
+          <variable name="LeafExpandingCohortNo" />
+          <variable name="LeafAppearedCohortNo" />
+          <variable name="LeafTotalStemPopn" />
+          <variable name="LeafDeadCohortNo" />
+          <variable name="LeafAppearedNodeNo" />
+          <variable name="LeafSenescingCohortNo" />
+          <variable name="LeafPrimaryBudLeafNo" />
           <variable name="LeafPrimordiaNo" />
         </variables>
         <events name="Reporting Frequency">
@@ -5162,7 +5162,7 @@ if (date_within('[date1], [date2]') = 1) then
             <GDApsimFileReader name="ApsimFileReader" />
           </Plot>
         </Graph>
-        <Graph name="LeafSize">
+        <Graph name="LeafCohortSize">
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>Circle</PointType>

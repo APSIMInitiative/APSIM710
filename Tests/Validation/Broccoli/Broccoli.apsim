@@ -439,7 +439,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
             <variable name="PhenologyCurrentPhaseName" />
             <variable name="PhenologyThermalTimeValue" />
             <variable name="broccoli.AboveGroundWt as Biomass" />
-            <variable name="broccoli.LeafCohortNo" />
+            <variable name="broccoli.LeafAppearedCohortNo" />
             <variable name="LeafLAI as LAI" />
             <variable name="LeafTranspiration" />
             <variable name="LeafWaterDemand" />
@@ -454,8 +454,8 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
             <variable name="LeafPhotosynthesisFvpdValue" />
             <variable name="Irrigation.irrigation" />
             <variable name="LeafFinalNodeNo" />
-            <variable name="broccoli.LeafDeadNodeNo" />
-            <variable name="broccoli.LeafFullyExpandedNodeNo" />
+            <variable name="broccoli.LeafDeadCohortNo" />
+            <variable name="broccoli.LeafExpandedCohortNo" />
             <variable name="sw_dep()" />
             <variable name="SW60" />
             <variable name="broccoli.LeafLiveWt" />
@@ -481,7 +481,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
             <variable name="broccoli.LeafFn" />
             <variable name="NO3()" />
             <variable name="broccoli.TotalN" />
-            <variable name="broccoli.LeafTotalNo" />
+            <variable name="broccoli.LeafPlantLeafNo" />
           </variables>
           <events name="My Variables Events">
             <event name="Daily" description="End of day" />
@@ -493,8 +493,8 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
               <PointType>None</PointType>
               <colour>
               </colour>
-              <Y>LeafCohortNo</Y>
-              <Y>LeafTotalNo</Y>
+              <Y>LeafAppearedCohortNo</Y>
+              <Y>LeafPlantLeafNo</Y>
               <GDApsimFileReader name="ApsimFileReader" />
             </Plot>
           </Graph>
@@ -936,7 +936,7 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <title>Lawes06P1Wet LeafOutput</title>
           <variables name="My Variables">
             <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-            <variable name="LeafMaxSize" />
+            <variable name="LeafCohortMaxSize" />
           </variables>
           <events name="My Variables Events" />
         </outputfile>
@@ -2891,9 +2891,9 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
         <SeriesType>Solid line</SeriesType>
         <PointType>None</PointType>
         <X>Date</X>
-        <Y>LeafCohortNo</Y>
-        <Y>LeafDeadNodeNo</Y>
-        <Y>LeafFullyExpandedNodeNo</Y>
+        <Y>LeafAppearedCohortNo</Y>
+        <Y>LeafDeadCohortNo</Y>
+        <Y>LeafExpandedCohortNo</Y>
         <colour>
         </colour>
         <Y>LeafFinalNodeNo</Y>

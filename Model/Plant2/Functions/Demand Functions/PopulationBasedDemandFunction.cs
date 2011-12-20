@@ -51,7 +51,7 @@ public class PopulationBasedDemandFunction : Function
             if ((StageCode.Value >= StartStage) && (AccumulatedThermalTime < GrowthDuration))
             {
                 double Rate = MaximumOrganWt / GrowthDuration;
-                Value = Rate * ThermalTimeToday * Leaf.BranchNo;
+                Value = Rate * ThermalTimeToday * Leaf.TotalStemPopn;
             }
 
             return Value * ExpansionStress.Value;

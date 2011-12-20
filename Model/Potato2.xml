@@ -31,7 +31,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <Arbitrator name="Arbitrator">
+      <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityThenRelativeAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -163,7 +163,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
               <Value type="text" description="Value">5</Value>
             </Constant>
             <Variable name="StemNumber">
-              <VariableName type="text" description="Variable Name">Leaf.MainStemPopulation</VariableName>
+              <VariableName type="text" description="Variable Name">Leaf.MainStemPopn</VariableName>
             </Variable>
           </MultiplyFunction>
           <TemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime" />
@@ -224,7 +224,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </LinearInterpolationFunction>
       </GenericOrgan>
-      <Root name="Root">
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -329,7 +329,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
         </LinearInterpolationFunction>
       </Root>
-      <Leaf name="Leaf">
+      <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
@@ -401,7 +401,7 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <Memo>The branching rates sets the number of new branches initiated.  If we have a plant with one stem and branching rate is set as zero this plant will continue to have only one stem.  If this value increases to 1 for the appearance of 1 mainstem node and then reduces to zero again the plant will produce one branch on its mainstem that has the same properties as the mainstem.  The higher this number is and the longer is remains above 0 the more branches the plant will produce.
 For Potato the potential branching rate is the branching pattern that would be observed in wide spaced plantings.  There is a cover response factor to reduce branching rates in closer spacings.</Memo>
           <LinearInterpolationFunction name="Potential_Branching_Rate">
-            <XProperty>Leaf.NodeNo</XProperty>
+            <XProperty>Leaf.AppearedNodeNo</XProperty>
             <XYPairs>
               <XY>0 0</XY>
               <XY>7 0</XY>
@@ -621,15 +621,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <InternodeDemandFunction name="DMDemandFunction">
-          <LinearInterpolationFunction name="xInterNodeWt">
-            <XProperty type="text" description="XProperty">Leaf.LeafNo</XProperty>
-            <XYPairs>
-              <XY>0 0.2</XY>
-              <XY>7 0.2</XY>
-              <XY>8 0.2</XY>
-            </XYPairs>
-            <Memo>This is the Structural weight (g/node) of each internode.  It is multiplied by the number of nodes appearing each day and the number of branches/m2 to give a DM demand.</Memo>
-          </LinearInterpolationFunction>
           <Constant name="InterNodeWt">
             <Value type="text" description="Value">.2</Value>
           </Constant>

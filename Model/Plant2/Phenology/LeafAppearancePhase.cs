@@ -38,14 +38,14 @@ public class LeafAppearancePhase : Phase
     {
         if (First)
         {
-            NodeNoAtStart = Leaf.FullyExpandedNodeNo;
+            NodeNoAtStart = Leaf.ExpandedCohortNo;
             First = false;
         }
 
         // Accumulate thermal time.
         CumulativeTT += ThermalTime.Value;
 
-        if (Leaf.FullyExpandedNodeNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
+        if (Leaf.ExpandedCohortNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
             return 0.00001;
         else
             return 0;
@@ -58,7 +58,7 @@ public class LeafAppearancePhase : Phase
     {
         get
         {
-            double F = (Leaf.FullyExpandedNodeNo - NodeNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - NodeNoAtStart);
+            double F = (Leaf.ExpandedCohortNo - NodeNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - NodeNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
             return F;
