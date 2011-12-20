@@ -531,7 +531,7 @@ namespace ModelFramework
             string name = Event.EventName;
             int openPos = name.IndexOf('[');
             int closePos = name.IndexOf(']');
-            while (openPos >= 0 && closePos >= 0)
+            while (openPos >= 0 && closePos > openPos)
             {
                 string target = name.Substring(openPos + 1, closePos - openPos - 1);
                 string newText = "";
