@@ -86,6 +86,9 @@ public class LeafCohort
     private double SenescedFrac = 0;
     private double _ExpansionStress = 0;
     public double _Population = 0;
+    public double CellDivisionStressFactor = 1;
+    public double CellDivisionStressAccumulation = 0;
+    public double CellDivisionStressDays = 0;
     //Leaf Initial status paramaters
     public double LeafStartNRetranslocationSupply = 0;
     public double LeafStartNReallocationSupply = 0;
@@ -121,12 +124,6 @@ public class LeafCohort
     private double MetabolicNAllocation = 0;
     private double StructuralDMAllocation = 0;
     private double MetabolicDMAllocation = 0;
-   // private double StructuralWtSenescing = 0;
-   // private double StructuralNSenescing = 0;
-   // private double MetabolicWtSenescing = 0;
-   // private double MetabolicNSenescing = 0;
-   // private double NonStructuralWtSenescing = 0;
-   // private double NonStructuralNSenescing = 0;
 #endregion
 
  #region Class Inputs
@@ -180,6 +177,8 @@ public class LeafCohort
     public Function DroughtInducedSenAcceleration = null;
     [Link(NamePath = "NonStructuralFraction", IsOptional = true)]
     public Function NonStructuralFractionFunction = null;
+    [Link(NamePath = "CellDivisionStress", IsOptional = true)]
+    public Function CellDivisionStress = null;
 #endregion
     
  #region arbitration methods
@@ -371,16 +370,24 @@ public class LeafCohort
         get { return Age; }
     }
     public bool IsInitialised = false;
-    public bool Finished
+    public bool IsNotAppeared
     {
         get
         {
-            return IsAppeared && Age > (GrowthDuration + LagDuration + SenescenceDuration);
+            return (IsInitialised && Age == 0);
         }
     }
     public bool IsGrowing
     {
         get { return (Age < GrowthDuration); }
+    }
+    public bool IsAppeared = false;
+    public bool IsFullyExpanded
+    {
+        get
+        {
+            return (IsAppeared && Age > GrowthDuration);
+        }
     }
     public bool IsGreen
     {
@@ -398,26 +405,22 @@ public class LeafCohort
     {
         get { return (Age > (GrowthDuration + LagDuration + SenescenceDuration)); }
     }
+    public bool Finished
+    {
+        get
+        {
+            return IsAppeared && Age > (GrowthDuration + LagDuration + SenescenceDuration);
+        }
+    }
     public bool IsAlive
     {
         get { return ((Age >= 0) && (Age < (GrowthDuration + LagDuration + SenescenceDuration))); }
     }
-    public bool IsAppeared = false;
-    //{
-    //    get { return _Population > 0; }
-    //}
     public bool IsDead
     {
         get
         {
             return MathUtility.FloatsAreEqual(LiveArea, 0.0) && !MathUtility.FloatsAreEqual(DeadArea, 0.0);
-        }
-    }
-    public bool IsFullyExpanded
-    {
-        get
-        {
-            return (IsAppeared && Age > GrowthDuration);
         }
     }
  #endregion
@@ -442,6 +445,7 @@ public class LeafCohort
     public void DoInitialisation()
     {
         IsInitialised = true;
+        Age = 0;
     }
     public void DoAppearance()
     {
@@ -451,7 +455,7 @@ public class LeafCohort
         IsAppeared = true;
         if (_Population == 0)
             _Population = PopulationFunction.Value * Leaf.PrimaryBudNo;
-        MaxArea = MaxAreaFunction.Value; 
+        MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
         GrowthDuration = GrowthDurationFunction.Value;
         LagDuration = LagDurationFunction.Value;
         SenescenceDuration = SenescenceDurationFunction.Value;
@@ -487,6 +491,14 @@ public class LeafCohort
     }
     virtual public void DoPotentialGrowth(double TT)
     {
+        //Calculate Accumulated Stress Factor for reducing potential leaf size
+        if (IsNotAppeared && (CellDivisionStress != null))
+        {
+            CellDivisionStressDays += 1;
+            CellDivisionStressAccumulation += CellDivisionStress.Value;
+            CellDivisionStressFactor = CellDivisionStressAccumulation / CellDivisionStressDays;
+        }
+        
         if (IsAppeared)
         {
             Leaf.CurrentRank = Rank -1; //Set currentRank variable in parent leaf for use in experssion functions
@@ -573,16 +585,13 @@ public class LeafCohort
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
-            //Update area and biomass of leaves
-            //if (SenescedFrac > 0)
-            //{
               double  StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
               double StructuralNSenescing = SenescedFrac * Live.StructuralN;
               double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
               double MetabolicNSenescing = SenescedFrac * LeafStartMetabolicN;
               double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
               double NonStructuralNSenescing = SenescedFrac * LeafStartNonStructuralN;
-            //}
+            
             DeadArea = DeadArea + LeafAreaLoss;
             LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
 
