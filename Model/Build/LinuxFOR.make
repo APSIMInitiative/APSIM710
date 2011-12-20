@@ -14,15 +14,17 @@ STATICLIBS := $(foreach library,$(STATICLIBS),$(APSIM)/Model/$(library).a)
 
 F90FLAGS= -D"ml_external=!external" -D"STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x" -static \
           -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false \
-          $(F95DEBUGFLAGS) -frounding-math -O3 $(EXTRACOMPILEFLAGS)
+          $(F95DEBUGFLAGS) -frounding-math $(EXTRACOMPILEFLAGS)
 F90INCLUDES = 
 F90MODS=-I$(APSIM)/Model/FortranInfrastructure -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod 
 
 CFLAGS= -Wall -I$(APSIM)/Model -Wno-write-strings -fpermissive -fPIC \
-        $(CPPDEBUGFLAGS) -O3
+        $(CPPDEBUGFLAGS) 
 
-OBJS:=	$(SRC:.for=.o) 
-OBJS:=	$(OBJS:.f90=.o)
+OBJS:= $(SRC:.for=.o)
+OBJS:= $(OBJS:.FOR=.o)
+OBJS:= $(OBJS:.f90=.o)
+OBJS:= $(OBJS:.F90=.o)
 OBJS:= $(OBJS:.cpp=.o)
 
 ifeq ($(PROJECTTYPE),libdll)
@@ -31,7 +33,7 @@ all: $(APSIM)/Model/$(PROJECT).so
 endif
 
 ifeq ($(PROJECTTYPE),dll)
- LDFLAGS:= -static -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions
+ LDFLAGS:= -static -Xlinker -Bsymbolic -Xlinker -Bsymbolic-functions -Xlinker 
 all: $(APSIM)/Model/$(PROJECT).so
 endif
 
@@ -43,6 +45,9 @@ endif
 	$(FC) -x f77-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o: %.f90
+	$(FC) -x f95-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+
+%.o: %.F90
 	$(FC) -x f95-cpp-input -o $@ -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
 %.o:    %.cpp

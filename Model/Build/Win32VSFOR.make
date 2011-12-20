@@ -4,6 +4,7 @@
 FC=gfortran
 LD=ld
 RC=windres
+CC=gcc
 
 # add .lib to all user libraries
 LIBS := $(foreach library,$(LIBS),../$(library).lib)
@@ -18,11 +19,23 @@ F90MODS= -I$(APSIM)/Model/CropTemplate -I$(APSIM)/Model/CropMod
 %.o:	%.for
 	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
+%.o:	%.FOR
+	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+
 %.o:	%.f90
 	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
 
+%.o:	%.F90
+	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
+
+%.o:	%.cpp
+	$(CC) $(CFLAGS) -I$(APSIM)/Model $(WARNINGS) -c $<
+
 OBJS:=	$(SRC:.for=.o)
 OBJS:=	$(OBJS:.f90=.o)
+OBJS:=	$(OBJS:.F90=.o)
+OBJS:=	$(OBJS:.FOR=.o)
+OBJS:=	$(OBJS:.cpp=.o)
 
 # remove all paths on OBJ files.
 OBJSNODIR := $(foreach o,$(OBJS),$(notdir $(o)))
@@ -45,7 +58,7 @@ RESOBJ = dllres.obj
 LDFLAGS:= -Xlinker --enable-stdcall-fixup -Xlinker --no-allow-shlib-undefined -Xlinker --disable-auto-import
 all: $(APSIM)/Model/$(PROJECT).dll 
 $(APSIM)/Model/$(PROJECT).dll: $(OBJS) $(RESOBJ)
-	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) 
+	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
 	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@

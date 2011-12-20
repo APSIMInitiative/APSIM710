@@ -51,7 +51,7 @@ class FortranComponentWrapper
       BoolMethod* allocDealloc;
       CommonBlock *realCommonBlock;
       CommonBlock ourCommonBlock;
-	  std::stack<CommonBlock> savedCommonBlocks;
+      std::stack<CommonBlock> savedCommonBlocks;
 
       void onInit1();
    };

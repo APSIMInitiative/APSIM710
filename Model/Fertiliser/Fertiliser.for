@@ -156,6 +156,7 @@ c     include   'fertiliz.inc'
       character  string*200            ! output string
       character*200  message
       logical found
+      integer ifound
       integer cropsta                  ! rice crop stage
       integer rice_crop_in             ! digital 1 or 0 for whether rice crop in ground or not
 !      character  Err_string*400      ! Event message string
@@ -176,9 +177,9 @@ c     include   'fertiliz.inc'
          call SetSearchOrder(type);
 
          full_name = blank
-         call ReadParam('full_name', '()', NotOptional, full_name)
+         ifound = ReadParam('full_name', '()', NotOptional, full_name)
          components(:) = blank		 
-         call ReadParam(
+         ifound = ReadParam(
      :           'components'         ! Keyword
      :         , '()'                 ! Units
      :         , NotOptional
@@ -186,7 +187,7 @@ c     include   'fertiliz.inc'
      :         , numvals              ! Number of values returned
      :         , mxcomp)              ! array size_of
 
-         call ReadParam (
+         ifound = ReadParam (
      :          'fraction'           ! Keyword
      :         , '()'                 ! Units
      :         , NotOptional

@@ -63,31 +63,33 @@ class EXPORT FortranString
          {
          return text;
          }
+      std::string toString() 
+         {
+         return std::string(text, length());
+         }
       std::string toString() const
          {
          return std::string(text, length());
          }
       FortranString& operator= (const FortranString& rhs)
          {
-         unsigned int rhsLength = rhs.length();
-         if (len < rhsLength)
+         if (len < rhs.realLen)
             {
             std::string message = "String truncation.  FORTRAN string not long enough\nto hold the string:\n";
-            message += rhs.toString();
+            message += std::string(rhs.f_str(), rhs.realLen > 10 ? rhs.realLen : 10) + "...";
             throw std::runtime_error(message);
             }
          else
             {
-            memcpy(text, rhs.f_str(), rhsLength);
-            memset(&text[rhsLength], ' ', len - rhsLength);
-            realLen = rhsLength;
+            memcpy(text, rhs.f_str(), rhs.realLen);
+            memset(&text[rhs.realLen], ' ', len - rhs.realLen);
+            realLen = rhs.realLen;
             }
          return *this;
          }
       FortranString& operator= (const std::string& rhs)
          {
-         unsigned int rhsLength = (unsigned)rhs.length();
-         if (len < rhsLength)
+         if (len < rhs.length())
             {
             std::string message = "String truncation.  FORTRAN string not long enough\nto hold the string:\n";
             message += rhs;
@@ -95,15 +97,22 @@ class EXPORT FortranString
             }
          else
             {
-            memcpy(text, rhs.c_str(), rhsLength);
-            memset(&text[rhsLength], ' ', len - rhsLength);
-            realLen = rhsLength;
+            memcpy(text, rhs.c_str(), rhs.length());
+            memset(&text[rhs.length()], ' ', len - rhs.length());
+            realLen = rhs.length();
             }
          return *this;
          }
+      unsigned int length(void)
+         {
+         calcRealLength();
+         return realLen;
+         }
       unsigned int length(void) const
          {
-         return realLen;
+         int lengthNow = len;
+         for (;lengthNow > 0 && text[lengthNow-1] == ' '; lengthNow--);
+         return lengthNow;
          }
       unsigned int maxLength(void) const
          {

@@ -12,8 +12,9 @@ void unpack(MessageData& messageData, FortranString& value)
    };
 void pack(MessageData& messageData, const FortranString& value)
    {
-   pack(messageData, (int)value.length());
-   messageData.copyFrom(value.f_str(), value.length());
+   int numChars = (int)value.length();
+   pack(messageData, numChars);
+   messageData.copyFrom(value.f_str(), numChars);
    }
 unsigned memorySize(const FortranString& value)
    {

@@ -21,11 +21,12 @@ bool swapMutexInited = false;
 #endif
 
 FortranComponentWrapper::FortranComponentWrapper(ScienceAPI2* api, CMPComponentInterface* ci, void* handle)
-   : scienceapi(*api), dllHandle(handle), componentinterface(ci)
+   : scienceapi(*api), componentinterface(ci)
    {
    // -----------------------------------------------------------------------
    // Constructor
    // -----------------------------------------------------------------------
+   dllHandle = handle;
    realCommonBlock = NULL;
    scienceAPI().subscribe("init1", nullFunction(&FortranComponentWrapper::onInit1));
    }
@@ -157,94 +158,117 @@ extern "C" void EXPORT STDCALL SetSearchOrder
    currentWrapper->componentInterface().setSearchOrder(sectionNames);
    }
 
+extern "C" void EXPORT STDCALL AppendSearchOrder
+   (const char* SectionName, unsigned SectionNameLength)
+   {
+   vector<string> sectionNames;
+   currentWrapper->componentInterface().getSearchOrder(sectionNames);
+   sectionNames.push_back(FortranString(SectionName, SectionNameLength).toString());
+   currentWrapper->componentInterface().setSearchOrder(sectionNames);
+   }
+
 
 extern "C" int EXPORT STDCALL ReadInteger
    (const char* name, const char* units, int* optional, int* value, int* lower, int* upper,
     unsigned nameLength, unsigned unitsLength)
    {
    string variableName = FortranString(name, nameLength).toString();
-   CMPBuiltInBounded<int, int> variable(variableName, *value, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   return currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                            *optional != 0, *value, *lower, *upper);
    }
 extern "C" int EXPORT STDCALL ReadReal
    (const char* name, const char* units, int* optional, float* value, float* lower, float* upper,
     unsigned nameLength, unsigned unitsLength)
    {
    string variableName = FortranString(name, nameLength).toString();
-   CMPBuiltInBounded<float, float> variable(variableName, *value, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   return currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                            *optional != 0, *value, *lower, *upper);
    }
 extern "C" int EXPORT STDCALL ReadDouble
    (const char* name, const char* units, int* optional, double* value, double* lower, double* upper,
     unsigned nameLength, unsigned unitsLength)
    {
    string variableName = FortranString(name, nameLength).toString();
-   CMPBuiltInBounded<double, double> variable(variableName, *value, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   return currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                            *optional != 0, *value, *lower, *upper);
    }
 extern "C" int EXPORT STDCALL ReadString
    (const char* name, const char* units, int* optional, char* value,
     unsigned nameLength, unsigned unitsLength, unsigned valueLength)
    {
-   vector<string> values;
-   CMPBuiltIn<FortranString> variable(FortranString(value, valueLength));
-   return currentWrapper->componentInterface().read(FortranString(name, nameLength).toString(),
-                                                    &variable,
-                                                    *optional != 0);
+   string variableName = FortranString(name, nameLength).toString();
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   string valueString;
+   bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                                   *optional != 0, valueString);
+   FortranString(value,valueLength) = valueString;
+   return result;
    }
 extern "C" int EXPORT STDCALL ReadIntegerArray
    (const char* name, const char* units, int* optional, int* value, int* numValues, int* maxValues, int* lower, int* upper,
     unsigned nameLength, unsigned unitsLength)
    {
-   *numValues = 0;
    string variableName = FortranString(name, nameLength).toString();
-   FortranArray<int> arr(value, *numValues, *maxValues);
-   CMPBuiltInBounded<FortranArray<int>, int> variable(variableName, arr, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   vector<int> valueVec;
+   bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                                   *optional != 0, valueVec, *lower, *upper);
+
+   if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
+
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+      value[i] = valueVec[i];
+   *numValues = min((int)valueVec.size(), *maxValues);
+   return result;
    }
 extern "C" int EXPORT STDCALL ReadRealArray
    (const char* name, const char* units, int* optional, float* value, int* numValues, int* maxValues, float* lower, float* upper,
     unsigned nameLength, unsigned unitsLength)
    {
-   *numValues = 0;
    string variableName = FortranString(name, nameLength).toString();
-   FortranArray<float> arr(value, *numValues, *maxValues);
-   CMPBuiltInBounded<FortranArray<float>, float> variable(variableName, arr, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   vector<float> valueVec;
+   bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                                   *optional != 0, valueVec, *lower, *upper);
+
+   if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
+
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+      value[i] = valueVec[i];
+   *numValues = min((int)valueVec.size(), *maxValues);
+   return result;
    }
 extern "C" int EXPORT STDCALL ReadDoubleArray
    (const char* name, const char* units, int* optional, double* value, int* numValues, int* maxValues, double* lower, double* upper,
     unsigned nameLength, unsigned unitsLength)
    {
-   *numValues = 0;
    string variableName = FortranString(name, nameLength).toString();
-   FortranArray<double> arr(value, *numValues, *maxValues);
-   CMPBuiltInBounded<FortranArray<double>, double> variable(variableName, arr, *lower, *upper);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   vector<int> valueVec;
+   bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                                   *optional != 0, valueVec, *lower, *upper);
+
+   if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
+
+   for (unsigned int i = 0; i < valueVec.size() && i < (unsigned)*maxValues; i++) 
+      value[i] = valueVec[i];
+   *numValues = min((int)valueVec.size(), *maxValues);
+   return result;
    }
 extern "C" int EXPORT STDCALL ReadStringArray
    (const char* name, const char* units, int* optional, char* value, int* numValues, int* maxValues,
     unsigned nameLength, unsigned unitsLength, unsigned valueLength)
    {
-   *numValues = 0;
    string variableName = FortranString(name, nameLength).toString();
-   FortranStrings arr(value, valueLength, *maxValues, *numValues);
-   CMPBuiltIn<FortranStrings> variable(arr);
-   return currentWrapper->componentInterface().read(variableName,
-                                                    &variable,
-                                                    *optional != 0);
+   string unitsDesc = FortranString(units, unitsLength).toString();
+   vector<string> valueVec;
+   bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
+                                                   *optional != 0, valueVec);
+   FortranStrings(value, valueLength, *maxValues, *maxValues) = valueVec;
+   return result;
    }
 // -----------------------------------------------------------------------
 // The EXPOSE methods that FORTRAN calls to make one of its variables

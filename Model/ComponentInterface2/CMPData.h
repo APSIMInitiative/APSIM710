@@ -210,10 +210,12 @@ class CMPBuiltInBounded : public CMPBuiltIn<T>
       std::string name;
    public:
       CMPBuiltInBounded(const std::string& variableName,  T value, B lower, B upper)
-         : lowerBound(lower),
-           upperBound(upper),
-           name(variableName),
-           CMPBuiltIn<T>(value) { }
+         :  CMPBuiltIn<T>(value) 
+         {
+         name = variableName;
+         lowerBound = lower;
+         upperBound = upper;
+         }
 
       virtual void from(const std::vector<std::string>& values)
          {

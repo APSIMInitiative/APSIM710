@@ -448,15 +448,15 @@ void CMPComponentInterface::publish(const std::string& name, Packable* data)
 
 	PublishEventType publishEvent;
 	publishEvent.ID = id;
-	publishEvent.ddml = data->ddml();
+	if (data != NULL) publishEvent.ddml = data->ddml();
 	Message& publishEventMessage = constructMessage(Message::PublishEvent, componentID, parentID, false,
-                                                   memorySize(publishEvent) + data->memorySize());
+                                                   memorySize(publishEvent) + (data!=NULL? data->memorySize() : 0));
    MessageData publishEventMessageData(publishEventMessage);
    pack(publishEventMessageData, publishEvent);
-   data->pack(publishEventMessageData);
-	sendMessage(publishEventMessage);
+   if (data != NULL) data->pack(publishEventMessageData);
+   sendMessage(publishEventMessage);
 
-   if (alreadyRegistered)
+   if (data != NULL && alreadyRegistered)
       delete data;
    }
 
@@ -582,7 +582,7 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
    // ie. don't delete this data object elsewhere!
    // -----------------------------------------------------------------------
    {
-   string ddml = data->ddml();
+   string ddml = data != NULL ? data->ddml() : "";
    if (units != "")
       addAttributeToXML(ddml, "unit=\"" + units + "\"");
    if (description != "")
