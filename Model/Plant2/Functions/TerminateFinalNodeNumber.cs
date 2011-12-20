@@ -75,7 +75,7 @@ public class TerminateFinalNodeNumber
     {
         get
         {
-            return (int)Math.Max(_AttainableFinalNodeNumber, _TerminatedFinalNodeNumber); ;
+            return Math.Round(Math.Max(_AttainableFinalNodeNumber, _TerminatedFinalNodeNumber));
         }
     }
     //This returns an estimate of the final node number that the crop will committ to starting off with maximum node number, decreasing as the crop is vernalised and then changing in response to photoperiod 
