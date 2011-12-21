@@ -171,7 +171,7 @@
           <Start>Maturity</Start>
           <End>HarvestRipe</End>
           <Constant name="Target">
-            <Value>1</Value>
+            <Value type="text" description="Value">600</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
@@ -492,16 +492,9 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <LinearInterpolationFunction name="ExpansionStress">
-          <XProperty>WaterSupplyDemandRatio</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>0.9 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <FinalNodeNumber>
           <MaxNodeNo type="text" description="MaximumNodeNo">26</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">2</InitialLeafPrimordia>
+          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">3</InitialLeafPrimordia>
           <PhaseLookupValue name="NodeInitiationRate">
             <Start type="text" description="Start">Germination</Start>
             <End type="text" description="End">FlagLeaf</End>
@@ -597,16 +590,7 @@
             <XY>0.45 0.55</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="Height">
-          <XProperty>StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 20</XY>
-            <XY>4 100</XY>
-            <XY>5 1000</XY>
-            <XY>6 1200</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <BellCurveFunction name="MaxArea">
+        <BellCurveFunction name="xMaxArea">
           <Constant name="FirstLeafArea">
             <Value type="text" description="Value">300</Value>
           </Constant>
@@ -625,14 +609,14 @@
             <XProperty type="text" description="XProperty">Leaf.FinalLeafNo</XProperty>
             <XYPairs>
               <XY>6 3000</XY>
-              <XY>9 4700</XY>
+              <XY>9 4500</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="Breadth">
             <XProperty type="text" description="XProperty">Leaf.FinalLeafNo</XProperty>
             <XYPairs>
               <XY>6 -0.22</XY>
-              <XY>9 -0.082</XY>
+              <XY>9 -0.09</XY>
               <XY>13 -0.035</XY>
               <XY>21 -0.02</XY>
             </XYPairs>
@@ -641,6 +625,35 @@
             <Value type="text" description="Value">-.0005</Value>
           </Constant>
         </BellCurveFunction>
+        <LinearInterpolationFunction name="MaxArea">
+          <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
+          <XYPairs>
+            <XY>1 350</XY>
+            <XY>2 470</XY>
+            <XY>3 752</XY>
+            <XY>4 1500</XY>
+            <XY>5 2600</XY>
+            <XY>6 3500</XY>
+            <XY>7 4500</XY>
+            <XY>8 5050</XY>
+            <XY>9 3800</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="CellDivisionStress">
+          <XProperty>WaterSupplyDemandRatio</XProperty>
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>1 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="ExpansionStress">
+          <XProperty>WaterSupplyDemandRatio</XProperty>
+          <XYPairs>
+            <XY>0 0.5</XY>
+            <XY>0.5 0.5</XY>
+            <XY>1 1</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <MultiplyFunction name="GrowthDuration">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Variable name="Phyllochron">
@@ -652,47 +665,21 @@
             <Value type="text" description="Value">2</Value>
           </Constant>
         </MultiplyFunction>
-        <LinearInterpolationFunction name="LagDuration">
-          <XProperty>Leaf.AppearedNodeNo</XProperty>
-          <XYPairs>
-            <XY>1 800</XY>
-            <XY>4 800</XY>
-            <XY>6 800</XY>
-            <XY>8 800</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SenescenceDuration">
-          <XProperty>Leaf.AppearedNodeNo</XProperty>
-          <XYPairs>
-            <XY>1 900</XY>
-            <XY>4 900</XY>
-            <XY>6 900</XY>
-            <XY>8 900</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
+        <Constant name="LagDuration">
+          <Value type="text" description="Value">300</Value>
+        </Constant>
+        <Constant name="SenescenceDuration">
+          <Value type="text" description="Value">1100</Value>
+        </Constant>
         <LinearInterpolationFunction name="BranchingRate">
-          <XProperty>Leaf.AppearedNodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
           <XYPairs>
-            <XY>4 0</XY>
-            <XY>5 1</XY>
-            <XY>6 1</XY>
-            <XY>7 0</XY>
+            <XY>3 0</XY>
+            <XY>4 0.5</XY>
+            <XY>5 0.5</XY>
+            <XY>6 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="FrostFraction">
-          <XProperty>Leaf.MinT</XProperty>
-          <XYPairs>
-            <XY>-1 0</XY>
-            <XY>0 0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <Constant name="SenescenceInducingCover">
-          <Value type="text" description="Value">.7</Value>
-        </Constant>
-        <Constant name="ShadeInducedSenRate">
-          <Value type="text" description="Value">.03</Value>
-          <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
-        </Constant>
         <Constant name="MaximumNConc">
           <Value type="text" description="Value">.063</Value>
         </Constant>
@@ -721,23 +708,32 @@
             </LinearInterpolationFunction>
           </MultiplyFunction>
         </AddFunction>
-        <Constant name="StructuralFraction">
-          <Value type="text" description="Value">.7</Value>
-        </Constant>
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
-            <XY>1 20000</XY>
-            <XY>4 35000</XY>
-            <XY>10 35000</XY>
+            <XY>1 25000</XY>
+            <XY>4 40000</XY>
+            <XY>10 40000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <Constant name="SpecificLeafAreaMin">
-          <Value type="text" description="Value">18000</Value>
+          <Value type="text" description="Value">22000</Value>
+        </Constant>
+        <Constant name="StructuralFraction">
+          <Value type="text" description="Value">.7</Value>
         </Constant>
         <Constant name="NonStructuralFraction">
           <Value type="text" description="Value">0.2</Value>
         </Constant>
+        <LinearInterpolationFunction name="Height">
+          <XProperty>StageCode.Value</XProperty>
+          <XYPairs>
+            <XY>3 20</XY>
+            <XY>4 100</XY>
+            <XY>5 1000</XY>
+            <XY>6 1200</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="HeightExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
@@ -745,22 +741,22 @@
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="FrostFraction">
+          <XProperty>Leaf.MinT</XProperty>
+          <XYPairs>
+            <XY>-1 0</XY>
+            <XY>0 0</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
           <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
           <XYPairs>
             <XY>0 0</XY>
-            <XY>0.7 0</XY>
-            <XY>0.700001 0.03</XY>
+            <XY>0.9 0</XY>
+            <XY>1 0.05</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
-        <LinearInterpolationFunction name="CellDivisionStress">
-          <XProperty>WaterSupplyDemandRatio</XProperty>
-          <XYPairs>
-            <XY>0 1</XY>
-            <XY>0.9 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
       </Leaf>
       <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

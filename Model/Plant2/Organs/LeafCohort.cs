@@ -203,7 +203,6 @@ public class LeafCohort
         {
             if (IsNotSenescing)
             {
-                //FIXME  This needs to be changed to use non-structural Fraction
                 double MaxNonStructuralDM = (MetabolicDMDemand + StructuralDMDemand + LeafStartMetabolicWt + LeafStartStructuralWt) * NonStructuralFraction;  
                 return Math.Max(0.0, MaxNonStructuralDM - LeafStartNonStructuralWt);
             }
