@@ -6,20 +6,15 @@ using CSGeneral;
 
 class MinimumFunction : Function
    {
-   [Link] Plant Plant = null;
-
-   [Param] string[] Propertys = null;
-
    [Output]
    public override double Value
       {
       get
          {
          double ReturnValue = 999999999;
-         foreach (string PropertyName in Propertys)
+         foreach (Function F in My.ChildrenAsObjects)
             {
-                double Val = Convert.ToDouble(ExpressionFunction.Evaluate(Plant, PropertyName));
-            ReturnValue = Math.Min(ReturnValue, Val);
+                ReturnValue = Math.Min(ReturnValue, F.Value);
             }
          return ReturnValue;
          }

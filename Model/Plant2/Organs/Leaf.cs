@@ -95,6 +95,7 @@ public class Leaf : BaseOrgan, AboveGround
     public double EP = 0;
     public double DeltaNodeNumber = 0;
     public double PotentialHeightYesterday = 0;
+    public double DeltaHeight = 0;
     public double StemPopulation = 0;//FIXME.  This is declarired and given a value but doesn't seem to be used
     public double DeadNodesYesterday = 0; //FIXME.  This is declarired and given a value but doesn't seem to be used
     public double FractionDied = 0; 
@@ -714,7 +715,8 @@ public class Leaf : BaseOrgan, AboveGround
         if (HeightExpansionStress != null)  //FIX me.  This should not be optional
             Stress = HeightExpansionStress.Value;
         double PotentialHeightIncrement = HeightModel.Value - PotentialHeightYesterday;
-        Height += PotentialHeightIncrement * Stress;
+        DeltaHeight = PotentialHeightIncrement * Stress;
+        Height += DeltaHeight;
         PotentialHeightYesterday = HeightModel.Value;
 
         PublishNewCanopyEvent();
