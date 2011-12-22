@@ -127,8 +127,6 @@ public class LeafCohort
 #endregion
 
  #region Class Inputs
-    //[Param]  //FIXME HEB.  This paramater is no longer read in as a parameter but calculated from area and maxArea.  This needs to be changed from a param to a member
-    //public double Age = 0;
     [Param]
     public double Rank = 0;
     [Param]

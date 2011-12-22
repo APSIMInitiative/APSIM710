@@ -96,7 +96,6 @@ public class Leaf : BaseOrgan, AboveGround
     public double DeltaNodeNumber = 0;
     public double PotentialHeightYesterday = 0;
     public double DeltaHeight = 0;
-    public double StemPopulation = 0;//FIXME.  This is declarired and given a value but doesn't seem to be used
     public double DeadNodesYesterday = 0; //FIXME.  This is declarired and given a value but doesn't seem to be used
     public double FractionDied = 0; 
     public double MaxNodeNo = 0;
@@ -106,6 +105,13 @@ public class Leaf : BaseOrgan, AboveGround
 
  #region Outputs
     //population state variables
+    /// <summary>
+    ///Note on naming convention.  
+    ///Variables that represent the number of units per meter of area these are called population (Popn suffix) variables 
+    ///Variables that represent the number of leaf cohorts (integer) in a particular state on an individual main-stem are cohort variables (CohortNo suffix)
+    ///Variables that represent the number of primordia or nodes (double) in a particular state on an individual mainstem are called number variables (e.g NodeNo or PrimordiaNo suffix)
+    ///Variables that the number of leaves on a plant or a primary bud have Plant or Primary bud prefixes
+    /// </summary>
     [Output]
     [Units("/m2")]
     [Description("Number of Mainstem units per meter")]
@@ -725,7 +731,7 @@ public class Leaf : BaseOrgan, AboveGround
         FractionDied = 0;
         if (DeadCohortNo > 0 && GreenCohortNo > 0)
         {
-            double DeltaDeadLeaves = DeadCohortNo - DeadNodesYesterday;
+            double DeltaDeadLeaves = DeadCohortNo - DeadNodesYesterday; //Fixme.  DeadNodesYesterday is never given a value as far as I can see.
             FractionDied = DeltaDeadLeaves / GreenCohortNo;
         }
     }
@@ -1147,7 +1153,7 @@ public class Leaf : BaseOrgan, AboveGround
            throw new Exception("MaxCover must exceed zero in a Sow event.");
         MaxCover = Sow.MaxCover;
         PrimaryBudNo = Sow.BudNumber;
-        StemPopulation = Sow.Population * Sow.BudNumber;
+        //StemPopulation = Sow.Population * Sow.BudNumber;
         if (FinalNodeNumber != null)
             MaxNodeNo = FinalNodeNumber.MaximumNodeNumber;
     }
