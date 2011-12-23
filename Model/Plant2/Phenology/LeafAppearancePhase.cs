@@ -11,7 +11,7 @@ public class LeafAppearancePhase : Phase
     Function ThermalTime = null;
 
     private double CumulativeTT;
-    private double NodeNoAtStart;
+    private double CohortNoAtStart;
     bool First = true;
 
     [Param]
@@ -27,7 +27,7 @@ public class LeafAppearancePhase : Phase
     public override void ResetPhase()
     {
         CumulativeTT = 0;
-        NodeNoAtStart = 0;
+        CohortNoAtStart = 0;
     }
 
 
@@ -38,7 +38,7 @@ public class LeafAppearancePhase : Phase
     {
         if (First)
         {
-            NodeNoAtStart = Leaf.ExpandedCohortNo;
+            CohortNoAtStart = Leaf.ExpandedCohortNo;
             First = false;
         }
 
@@ -58,7 +58,7 @@ public class LeafAppearancePhase : Phase
     {
         get
         {
-            double F = (Leaf.ExpandedCohortNo - NodeNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - NodeNoAtStart);
+            double F = (Leaf.ExpandedNodeNo - CohortNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - CohortNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
             return F;

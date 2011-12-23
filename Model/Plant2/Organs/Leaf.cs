@@ -100,6 +100,10 @@ public class Leaf : BaseOrgan, AboveGround
     public double FractionDied = 0; 
     public double MaxNodeNo = 0;
     public bool CohortsInitialised = false;
+    public double _ExpandedNodeNo = 0;
+    public double FractionNextleafExpanded = 0;
+    public double CurrentExpandingLeaf = 0;
+    public double StartFractionExpanded = 0;
     public double _ThermalTime = 0;
  #endregion
 
@@ -185,6 +189,16 @@ public class Leaf : BaseOrgan, AboveGround
                     count += 1;
             }
             return count;
+        }
+    }
+    [Output]
+    [Units("/MainStem")]
+    [Description("Number of leaf cohorts that are fully expanded")]
+    public double ExpandedNodeNo
+    {
+        get
+        {
+            return _ExpandedNodeNo;
         }
     }
     [Output]
@@ -683,11 +697,24 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves[i].Age = CohortAge; 
             Leaves[i].DoAppearance();
         }
-        
+
+        FractionNextleafExpanded = 0;
+        bool NextExpandingLeaf = false;
         foreach (LeafCohort L in Leaves)
         {
             L.DoPotentialGrowth(_ThermalTime);
+            if ((L.IsFullyExpanded == false) && (NextExpandingLeaf == false))
+            {
+                NextExpandingLeaf = true;
+                if (CurrentExpandingLeaf != L.Rank)
+                {
+                    CurrentExpandingLeaf = L.Rank;
+                    StartFractionExpanded = L.FractionExpanded;
+                }
+                FractionNextleafExpanded = (L.FractionExpanded - StartFractionExpanded) / (1 - StartFractionExpanded);
+            }
         }
+        _ExpandedNodeNo = ExpandedCohortNo + FractionNextleafExpanded;
     }
     public virtual void InitialiseCohorts() //This sets up cohorts on the day growth starts (eg at emergence)
     {

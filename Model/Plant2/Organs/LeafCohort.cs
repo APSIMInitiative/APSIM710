@@ -60,10 +60,12 @@ public class LeafCohort
     {
         get
         {
-            if (IsAppeared && Age < GrowthDuration)
-                return Age / GrowthDuration;
+            if (Age == 0)
+                return 0;
+            else if (Age >= GrowthDuration)
+                return 1;
             else
-                return 1.0;
+                return Age / GrowthDuration;
         }
     }
     private double NFac()
