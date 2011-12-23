@@ -1,3 +1,13 @@
+! 23/12/2011 Things to do:
+! FBiomassRemovedType (incorp surfaceOM at end_crop) is broken
+! no root weight (by layer) is appearing -> root transfer to FOM pool isnt happening
+! no canopy radiation partitioning
+! no interaction with swim
+! no rat grazing
+! variable naming probing needs help (ie sow a crop for getDescription)
+! latest & greatest .ini file
+! sand/clay is gotten twice
+
       module Oryza2Module
       use Infrastructure2
 
@@ -63,6 +73,7 @@
         real dlt_nh4(max_layer)         ! nh4 uptake (mm)
         real RLV(max_layer)             ! root length density (mm)
         real ZRTMS                      ! Max root depth
+        real harvestFraction            ! fraction of biomass removed when harvesting
         end type Oryza2Globals
 
       common /instancePointers/ ID, g, p, c
@@ -141,6 +152,7 @@
         g%RNSTRS = 1.0
         g%LDSTRS = 1.0
       g%zrtms = 0.0
+      g%harvestFraction = 0.0
       g%plant_status = 'out'
       g%cropsta = 0
       return
@@ -195,7 +207,9 @@
 !      Set the values of variables in other APSIM modules
       type(FOMLayerType) :: IncorpFOM
       type(BiomassRemovedType) :: BiomassRemoved
+      type(CropChoppedType) :: CropChopped
       integer layer
+	  character*(100)  message
 
 !- Implementation Section ----------------------------------
       if (g%Soil_has_N .and. sum(g%dlt_no3) .ne. 0.0) then
@@ -214,7 +228,8 @@
       endif
 
       if (sum(g%dlt_root_mass) .ne. 0.0) then
-write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
+         write (message,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
+		 call writeLine(message)
          IncorpFOM%Type = g%crop_type
          IncorpFOM%num_layer = g%SoilProfile%num_dlayer
          do layer = 1, g%SoilProfile%num_dlayer
@@ -230,6 +245,8 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
       endif
 
       if (g%dlt_surfaceom .gt. 0.1) then
+          write (message,'(a, f7.1, a)') 'Adding ', g%dlt_surfaceom , ' kg/ha to surface residues'
+ 		  call writeLine(message)
           BiomassRemoved%dm_type(:) = ' '
           BiomassRemoved%dlt_crop_dm(:)         = 0.0
           BiomassRemoved%dlt_dm_n(:)            = 0.0
@@ -237,21 +254,26 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
           BiomassRemoved%fraction_to_residue(:) = 0.0
 
           BiomassRemoved%crop_type = g%crop_type
-
           BiomassRemoved%dm_type(1)             = g%crop_type
           BiomassRemoved%num_dm_type            = 1
-
           BiomassRemoved%dlt_crop_dm(1)         = g%dlt_surfaceom
           BiomassRemoved%num_dlt_crop_dm        = 1
-
           BiomassRemoved%dlt_dm_n(1)            = g%dlt_surfaceom_n
           BiomassRemoved%num_dlt_dm_n           = 1
-
           BiomassRemoved%num_dlt_dm_p           = 0
-
           BiomassRemoved%fraction_to_residue(1) = 1.0
           BiomassRemoved%num_fraction_to_residue= 1
-          !call PublishBiomassRemovedType('BiomassRemoved', BiomassRemoved) FIXME causes infrastructure crash
+          !call PublishBiomassRemovedType('BiomassRemoved', BiomassRemoved) !FIXME causes infrastructure crash
+		  !CropChopped%crop_type = g%crop_type
+		  !CropChopped%dm_type(1) = g%crop_type
+		  !CropChopped%num_dm_type = 1
+		  !CropChopped%dlt_crop_dm(1) = g%dlt_surfaceom
+		  !CropChopped%num_dlt_crop_dm = 1
+		  !CropChopped%dlt_dm_n(1) = g%dlt_surfaceom_n
+		  !CropChopped%num_dlt_dm_n = 1
+		  !CropChopped%fraction_to_Residue(1) = 1.0
+		  !CropChopped%num_fraction_to_Residue = 1
+          !call PublishCropChoppedType('CropChopped',CropChopped)
       endif
       return
       end subroutine
@@ -265,6 +287,8 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
       Use Oryza2Module
       use interface_oryza
       USE Public_Module
+  	  USE RootGrowth
+
       implicit none
       ! 1 argument: the control parameter (start/stop/process etc)
       integer controlValue
@@ -275,7 +299,7 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
       TYPE (SwitchType)  ISWITCH
       INTEGER         ITASK
       LOGICAL         OR_OUTPUT
-      CHARACTER (128) FILEI1, FILEIT, FILEI2
+      CHARACTER (128) FILEI1, FILEIT, FILEI2, message
       REAL    TIME, DELT  ,  NFLV, NSLLV
       REAL    TKLT  ,  LRSTRS, LESTRS, NRT
       REAL    CPEW , LAIROL, ZRT  , DVS, WCL(10),  DLDR
@@ -515,7 +539,6 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
         ITASK = 0
         IF (controlValue == SEASEND) THEN
           TERMNL = .TRUE.
-          DEALLOCATE(PV) 
         ENDIF
       ENDIF
 
@@ -564,64 +587,64 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
                         ANRT, NFLV, NSLLV,NRT, g%RNSTRS)
         END IF
 
-     ! if (ITASK .gt. 1) THEN
-     !   pv%pnl = nl;			pv%pevap = evsc;	pv%ptrans = trw 
-     !   pv%petp = trc + evsc;	pv%peta = trc;		pv%pdae = rDAE
-     !   pv%pwl0 = g%pond_depth;	pv%plai = lai
-     ! end if
-	  
       IF (ITASK == 2) THEN
         DO L = 1, NLAYR
   	      g%dlt_no3(L) =  (g%no3(L) - PV % PNO3(L))    !NO3 uptake (kg/ha)
           g%dlt_nh4(L) =  (g%nh4(L) - PV % PNH4(L))    !NH4 uptake (kg/ha)
           g%dlt_sw_dep(L) = TRWL(L)                   !H2O uptake (mm/d)
+		  
+          !         Add senesced roots to soil fresh organic matter pools
+          !g%dlt_root_mass(L)  =  pv%PResC(L,1) / 0.40  ! DSSAT has this.
+          !g%dlt_root_mass_n(L) = PV%PResN(L,1)
+          g%dlt_root_mass(L)  = RRDCL(L) / 0.4  !!! FIXME - nothing happens here!!!
+          g%dlt_root_mass_n(L) = RRDNL(L)      
+          g%rlv(L) = RRDENSIT(L)               ! pv%prootden(L) !* 1.E-10
         end do
+        !write (*,*) 'task = ', itask
+        !write (*,*) 'dlt_no3 = ', sum(g%dlt_no3) , 'kg '
+        !write (*,*) 'dlt_nh4 = ', sum(g%dlt_nh4) , 'kg '
+        !write (*,*) 'dlt_sw = ', sum(g%dlt_sw_dep) , 'mm'
+        !write (*,*) 'dlt_root_mass = ', sum(g%dlt_root_mass) , 'kg roots'
       ELSEIF (ITASK == 3) THEN
         WLVD = WLVD+ (DLDR+LLV)*DELT        
         WAGT = WST + WLVG + WSO + WLVD
         WRR  = WRR14 * 0.86
 
-        DO L = 1, NLAYR
-!         Add senesced roots to soil fresh organic matter pools
-          g%dlt_root_mass(L)  = pv%PResC(L,1) / 0.40
-          g%dlt_root_mass_n(L) = PV%PResN(L,1)
-          g%rlv(L) = pv%prootden(L) !* 1.E-10
-        ENDDO
-
         g%dae= pv%Pdae
-
         IF (g%CROPSTA .GE. 3) THEN
            g%dat = g%dat + 1
         endif
+
+        !! Keep a track of the max lai for cover_tot calculation
+        if (LAI.gt.g%max_rlai) then
+            g%max_rlai = LAI
+            g%cover_tot = 1 - exp(-0.5 * g%max_rlai)
+        endif
+        g%cover_green = 1 - exp(-0.5 * LAI)
         call oryza2_set_other_variables()
       ENDIF
-        write (*,*) 'task = ', itask
-        write (*,*) 'no3 = ', sum(g%dlt_no3) , 'kg '
-        write (*,*) 'nh4 = ', sum(g%dlt_nh4) , 'kg '
-        write (*,*) 'sw = ', sum(g%dlt_sw_dep) , 'mm'
-        write (*,*) 'pvresc = ', sum(g%dlt_root_mass) , 'kg roots'
     ENDIF
 
-      IF (TERMNL .AND. controlValue == INTEGR) THEN 
-	    call publishNull('harvesting')
-        HARVFRAC(1) = 0.9 ! Actual yield harvested (90 %)
-        HARVFRAC(2) = 0.1 ! Actual byproduct harvested (10 %)
-                          ! Byproduct not harvested is incorporated
-        g%dlt_surfaceom  = (WLVG + WLVD + WST) * HARVFRAC(2)
-        g%dlt_surfaceom_n = (ANLV + ANLD + ANST) * HARVFRAC(2)
+    IF (TERMNL .AND. controlValue == INTEGR) THEN 
+	    g%plant_status = 'dead'
+    ENDIF
+    
+    IF (TERMNL .AND. controlValue == SEASEND) THEN 
+        g%dlt_surfaceom  = (WLVG + WLVD + WST) * (1.0 - g%harvestFraction)
+        g%dlt_surfaceom_n = (ANLV + ANLD + ANST) * (1.0 - g%harvestFraction)
+        write (message, '(a, f7.1, a)') &
+               'Crop ended. Rough Rice Yield (dw) = ', WRR, ' (kg/ha)'
+        call writeLine(message)
+        write (message,'(a, f7.1, a)') 'Removing ', (WLVG + WLVD + WST) * g%harvestFraction , ' kg/ha biomass from field'
+        call writeLine(message)
         g%dlt_nh4(:) = 0.0
         g%dlt_no3(:) = 0.0
         g%dlt_sw_dep(:) = 0.0
         call oryza2_set_other_variables()
-	    g%plant_status = 'dead'
-      ENDIF
+	    g%plant_status = 'out'
+        DEALLOCATE(PV) 
+    ENDIF
       
-      !! Keep a track of the max lai for cover_tot calculation
-      if (LAI.gt.g%max_rlai) then
-            g%max_rlai = LAI
-            g%cover_tot = 1 - exp(-0.5 * g%max_rlai)
-      endif
-      g%cover_green = 1 - exp(-0.5 * LAI)
       return
       end subroutine
 
@@ -898,16 +921,20 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
 
 
 !     ===========================================================
-      subroutine Oryza2OnHarvest ()
+      subroutine Oryza2OnHarvest (harvest)
 !     ===========================================================
       USE ModuleDefs
       Use Oryza2Module
       implicit none
 !STDCALL(Oryza2OnHarvest)
+      type(harvestType) :: harvest
+
 !+  Purpose
 !     Harvest the crop
+      call writeLine('Harvesting')
       call publishNull('harvesting')
-      !call CallOryza(SEASEND) FIXME - ideally this should reset reproductive organs etc. 
+	  g%harvestFraction = harvest%remove
+
       return
       end subroutine
 
@@ -945,6 +972,7 @@ write (*,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
       g%dlt_sw_dep(:) = 0.0
       g%dlt_no3(:) = 0.0
       g%dlt_nh4(:) = 0.0
+      g%harvestFraction = 0.0
       
       return
       end subroutine
