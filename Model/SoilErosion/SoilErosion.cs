@@ -11,17 +11,17 @@ using CSGeneral;
 /// Ported by Eric Zurcher Feb 2011
 /// </summary>
 
-public class SoilErosion
+public partial class SoilErosion
 {
     [Link]
-    private Paddock MyPaddock = null;
+    private Component MyComponent = null;
 
 #region Parameters used to initialise the model
   #region Parameters we expect to see provided by the user
 
     [Param]
     [Description("Model name")]
-    private string model   // Currently either "freebairn" or "rose"
+    protected string model   // Currently either "freebairn" or "rose"
     {
         get { return model_type.ToString(); }
         set
@@ -37,7 +37,7 @@ public class SoilErosion
 
     [Param]
     [Description("Profile reduction")]
-    private string profile_reduction // either "on" or "off"
+    protected string profile_reduction // either "on" or "off"
     {
         get { return reduce_profile ? "on" : "off"; }
         set { reduce_profile = (value == "on"); }
@@ -46,37 +46,37 @@ public class SoilErosion
     [Param(MinVal=0.0, MaxVal=1.0)]
     [Description("Fraction of original size in which the lowest layer is merged into the layer above")]
     [Units("")]
-    private double profile_layer_merge = 0.0;
+    protected double profile_layer_merge = 0.0;
 
     [Param(MinVal=0.0, MaxVal=1000.0)]
     [Description("If the profile erodes to this depth, the simulation is stopped")]
     [Units("mm")]
-    private double minimum_depth = 0.0;
+    protected double minimum_depth = 0.0;
 
     [Param(MinVal=0.0, MaxVal=100.0)]
     [Description("Slope of plot in percent")]
     [Units("%")]
-    private double slope = 0.0;
+    protected double slope = 0.0;
 
     [Param(MinVal=0.0, MaxVal=100.0)]
     [Description("Length of plot")]
     [Units("m")]
-    private double slope_length = 0.0;
+    protected double slope_length = 0.0;
 
     [Param(MinVal=0.0, MaxVal=5000.0)]
     [Output]
     [Description("Depth to bedrock")]
     [Units("mm")]
-    private double bed_depth;
+    protected double bed_depth;
 
   #endregion
 #region Optional parameters
-    private double _cover_extra = 0.0;
+    protected double _cover_extra = 0.0;
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Output]
     [Description("\"Fudge factor\" added to total cover")]
     [Units("")]
-    private double cover_extra
+    protected double cover_extra
     {
         get { return _cover_extra; }
         set { _cover_extra = value; }
@@ -85,52 +85,52 @@ public class SoilErosion
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor")]
     [Units("t/ha/EI30")]
-    private double k_factor = -1.0;
+    protected double k_factor = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for bed load")]
     [Units("t/ha/EI30")]
-    private double k_factor_bed = -1.0;
+    protected double k_factor_bed = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 1.0)]
     [Description("Soil erodibility factor for suspended load")]
     [Units("t/ha/EI30")]
-    private double k_factor_susp = -1.0;
+    protected double k_factor_susp = -1.0;
 
     [Param(IsOptional = true)]
     [Description("Supporting practise factor")]
     [Units("")]
-    private double p_factor = -1.0;
+    protected double p_factor = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface")]
     [Units("")]
-    private double entrain_eff = -1.0;
+    protected double entrain_eff = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - bed load")]
     [Units("")]
-    private double entrain_eff_bed = -1.0;
+    protected double entrain_eff_bed = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 2.0)]
     [Description("Efficiency of entrainment - bare surface - suspended load")]
     [Units("")]
-    private double entrain_eff_susp = -1.0;
+    protected double entrain_eff_susp = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model")]
     [Units("")]
-    private double eros_rose_b2 = -1.0;
+    protected double eros_rose_b2 = -1.0;
 
     [Param(IsOptional = true, MinVal = -1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - bed load")]
     [Units("")]
-    private double eros_rose_b2_bed = -1.0;
+    protected double eros_rose_b2_bed = -1.0;
 
     [Param(IsOptional = true, MinVal =-1.0, MaxVal = 0.2)]
     [Description("Coefficient for calculating lambda in \"rose\" sub-model - suspended load")]
     [Units("")]
-    private double eros_rose_b2_susp = -1.0;
+    protected double eros_rose_b2_susp = -1.0;
 
 #endregion
 #endregion
@@ -211,34 +211,171 @@ public class SoilErosion
 
 // "year" and "day" are present in the Fortran version, but are never used
 //    [Input]
-//    private int year;
+//    protected int year;
 
 //    [Input]
-//    private int day;
+//    protected int day;
 
     [Input]
     [Units("mm")]
     [Description("Daily runoff.")]
-    private double runoff = 0.0;
+    protected double runoff = 0.0;
+
+// But what cover values to we REALLY need?
+// The "plant" components provide cover_green, cover_tot and cover_dead (called cover_sen in Plant)
+// SuraceOM provide surfaceom_cover (that is, residue)
+// SoilWat combines these and provides cover_surface_runoff, which is pulled in here
+// For wind erosion calculations, we'll need a bit more; probably need to query each "plant"
+// component for cover and height....
 
     [Input]
     [Units("0-1")]
     [Description("Effective total cover (crop and residue)")]
-    private double cover_surface_runoff = 0.0;
+    protected double cover_surface_runoff = 0.0;
 
     [Input]
     [Units("mm")]
     [Description("Thickness of soil layers")]
-    private double[] dlayer = null;  // Thickness of soil layer (mm)
+    protected double[] dlayer = null;  // Thickness of soil layer (mm)
 
     [Input]
     [Units("g/cm^3")]
-    [Description("Moist bulk density of soil")]
-    private double[] bd = null;  // Bulk density
+    [Description("Moist bulk density of soil layers")]
+    public double[] bd = null;  // Bulk density
+
+    [Input]
+    [Units("0-1")]
+    [Description("Water content of soil layers")]
+    public double[] sw = null;  // Soil water
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed")]
+    public double wind = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from midnight to 0100 hours")]
+    public double wind0 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0100 to 0200 hours")]
+    public double wind1 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0200 to 0300 hours")]
+    public double wind2 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0300 to 0400 hours")]
+    public double wind3 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0400 to 0500 hours")]
+    public double wind4 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0500 to 0600 hours")]
+    public double wind5 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0600 to 0700 hours")]
+    public double wind6 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0700 to 0800 hours")]
+    public double wind7 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0800 to 0900 hours")]
+    public double wind8 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 0900 to 1000 hours")]
+    public double wind9 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1000 to 1100 hours")]
+    public double wind10 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1100 to 1200 hours")]
+    public double wind11 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1200 to 1300 hours")]
+    public double wind12 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1300 to 1400 hours")]
+    public double wind13 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1400 to 1500 hours")]
+    public double wind14 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1500 to 1600 hours")]
+    public double wind15 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1600 to 1700 hours")]
+    public double wind16 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1700 to 1800 hours")]
+    public double wind17 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1800 to 1900 hours")]
+    public double wind18 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 1900 to 2000 hours")]
+    public double wind19 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 2000 to 2100 hours")]
+    public double wind20 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 2100 to 2200 hours")]
+    public double wind21 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 2200 to 2300 hours")]
+    public double wind22 = Double.NaN;
+
+    [Input(IsOptional = true)]
+    [Units("m/s")]
+    [Description("Daily average wind speed from 2300 hours to midnight")]
+    public double wind23 = Double.NaN;
 
 #endregion
 
-    private double[] dlt_dlayer = null;
+    protected double[] dlt_dlayer = null;
 
 #region Events to which we subscribe, and their handlers
     [EventHandler]
@@ -260,32 +397,32 @@ public class SoilErosion
     }
 #endregion
 
-    private enum model_type_enum
+    protected enum model_type_enum
     {
         unknown = 0,
         freebairn = 1,
         rose = 2
     }
 
-    private model_type_enum model_type = model_type_enum.unknown;
+    protected model_type_enum model_type = model_type_enum.unknown;
     Boolean reduce_profile = false;
-    private double ls_factor = 0.0; // Slope-length factor
-    private double layer_merge_mm;
+    protected double ls_factor = 0.0; // Slope-length factor
+    protected double layer_merge_mm;
 
 #region Useful constants
-    private const double pcnt2fract = 1.0 / 100.0;    // convert percent to fraction
-    private const double fract2pcnt = 100.0;  // convert fraction to percent
-    private const double t2g = 1000.0 * 1000.0; // tonnes to grams
-    private const double g2t = 1.0/(1000.0 * 1000.0); // convert grams to tonnes
-    private const double ha2scm = 10000.0 * 10000.0; // ha to sq. cm.
-    private const double ha2sm = 10000.0;            // convert hectares to sq metres
-    private const double sm2ha = 1.0 / 10000.0;  // convert m^2 to hectares
-    private const double g2mm = 1.0e3/1.0e6;   // convert g water/m^2 to mm water
-    private const double cm2mm = 10.0;  // cm to mm
-    private const double mm2lpsm = 1.0; // mm depth to litres per sq m
+    protected const double pcnt2fract = 1.0 / 100.0;    // convert percent to fraction
+    protected const double fract2pcnt = 100.0;  // convert fraction to percent
+    protected const double t2g = 1000.0 * 1000.0; // tonnes to grams
+    protected const double g2t = 1.0/(1000.0 * 1000.0); // convert grams to tonnes
+    protected const double ha2scm = 10000.0 * 10000.0; // ha to sq. cm.
+    protected const double ha2sm = 10000.0;            // convert hectares to sq metres
+    protected const double sm2ha = 1.0 / 10000.0;  // convert m^2 to hectares
+    protected const double g2mm = 1.0e3/1.0e6;   // convert g water/m^2 to mm water
+    protected const double cm2mm = 10.0;  // cm to mm
+    protected const double mm2lpsm = 1.0; // mm depth to litres per sq m
 #endregion
 
-    private void ZeroDailyVariables()
+    protected void ZeroDailyVariables()
     {
         int nLayers = dlayer.Length;
         // No need to zero these!
@@ -296,7 +433,7 @@ public class SoilErosion
         soil_loss_susp = 0.0;
     }
 
-    private void Init()
+    protected void Init()
     {
         Console.WriteLine("      Initialising:");
         Console.WriteLine("     ");
@@ -305,7 +442,7 @@ public class SoilErosion
 
         if (dlayer == null)
         {
-            MyPaddock.Get("dlayer", out dlayer);
+            MyComponent.Get("dlayer", out dlayer);
         }
 
         if (bed_depth < MathUtility.Sum(dlayer))
@@ -357,7 +494,7 @@ public class SoilErosion
 
     }
 
-    private void WriteSummary()
+    protected void WriteSummary()
     {
         Console.WriteLine("     ");
         Console.WriteLine("     ");
@@ -419,10 +556,27 @@ public class SoilErosion
             Console.WriteLine("           ? Unknown model type ?");
             Console.WriteLine("     ");
         }
+
+        if (Double.IsNaN(wind))
+        {
+            MyComponent.Get("wind", out wind);
+        }
+        if (Double.IsNaN(wind23))
+        {
+            MyComponent.Get("wind23", out wind23);
+        }
+        if (!Double.IsNaN(wind23))
+            Console.WriteLine("           Wind erosion will be assessed based on hourly wind runs");
+        else if (!Double.IsNaN(wind))
+            Console.WriteLine("           Wind erosion will be assessed based on daily wind run");
+        else
+            Console.WriteLine("           Wind data not available; wind erosion will not be assessed");
+
+
         Console.WriteLine("          -----------------------------------------------");
      }
 
-    private void Process()
+    protected void Process()
     {
         soil_loss_bed = 0.0;
         soil_loss_susp = 0.0;
@@ -433,18 +587,27 @@ public class SoilErosion
 
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
             MoveProfile();
+
+        // TEST ONLY
+        // What this SHOULD be doing is first seeing whether wind data is available, then if it is, 
+        // running the wind erosion sub-component
+        //wind_model = "shao";
+        //sw[0] = 0.01;
+        //double flux = VerticalFlux(2500.0);
+        //wind_model = "mb95";
+        //flux = VerticalFlux(2500.0);
         
     }
 
-    private void SetOtherVariables()
+    protected void SetOtherVariables()
     {
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
         {
-            MyPaddock.Set("dlt_dlayer", dlt_dlayer);
+            MyComponent.Set("dlt_dlayer", dlt_dlayer);
         }
     }
 
-    private void Freebairn()
+    protected void Freebairn()
     {
 
 //     Freebairn cover-sediment concentration model
@@ -467,7 +630,7 @@ public class SoilErosion
                         * p_factor * runoff;
     }
 
-    private void Rose()
+    protected void Rose()
     {
 //     Simplified rose model from PERFECT
 //     Sets t/ha bed and suspended loads
@@ -502,7 +665,7 @@ public class SoilErosion
 
     }
 
-    private void MoveProfile()
+    protected void MoveProfile()
     {
         double dlt_bed_depth = MoveDLayer();
         int nLayers = dlayer.Length;
@@ -514,7 +677,7 @@ public class SoilErosion
         bed_depth += dlt_bed_depth;
     }
 
-    private double MoveDLayer()
+    protected double MoveDLayer()
     {
         // Move the layers - erode from the bottom up
 
@@ -527,14 +690,14 @@ public class SoilErosion
 
         // What happens when layer completely eroded?
         if (dlt_depth_mm > dlayer[0])
-            MyPaddock.Warning("Eroding more than top layer depth.\n This may affect SoilN loss");
+            MyComponent.Warning("Eroding more than top layer depth.\n This may affect SoilN loss");
 
         dlt_depth_mm = MathUtility.Divide(top, bd[nLayers - 1], 0.0) * cm2mm;
 
         // What happens when layer completely eroded?
         if (dlt_depth_mm > dlayer[nLayers - 1])
         {
-            MyPaddock.Warning("Eroding more than bottom layer depth. (layer" +
+            MyComponent.Warning("Eroding more than bottom layer depth. (layer" +
                nLayers.ToString() + ").\n" +
                "PAWC calculations may be incorrect if BD is different to layer above.");
         }
