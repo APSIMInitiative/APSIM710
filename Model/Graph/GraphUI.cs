@@ -46,6 +46,10 @@ namespace Graph
             }
          else
             {
+                Steema.TeeChart.Themes.WebTheme theme = new Steema.TeeChart.Themes.WebTheme(Chart.Chart);
+
+               // theme.Apply();
+                SetupChartDefaults();
             Chart.Header.Text = "";
             Chart.Axes.Bottom.Title.Text = "";
             Chart.Axes.Left.Title.Text = "";
@@ -58,6 +62,7 @@ namespace Graph
             Chart.Axes.Bottom.Labels.Items.Clear();
             Chart.Axes.Bottom.AutomaticMinimum = true;
             Chart.Axes.Bottom.AutomaticMaximum = true;
+             
             }
 
          GenerateTitle = Chart.Header.Text == "";
@@ -879,11 +884,7 @@ namespace Graph
          this.Chart.Walls.Right.AutoHide = false;
          this.Chart.Walls.Right.Shadow.Visible = false;
          this.Chart.Walls.Visible = false;
-         }
-    
-
-
-         
+         }         
       }
    }
 

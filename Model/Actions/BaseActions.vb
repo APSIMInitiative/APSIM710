@@ -15,17 +15,20 @@ Imports System.Drawing.Printing
 
 Public Class BaseActions
    Public Shared Sub FileOpen(ByVal Controller As BaseController)
-      If Controller.FileSaveAfterPrompt() Then
-         Dim dialog As New OpenFileDialog
-         dialog.Filter = Configuration.Instance.Setting("DialogFilter")
-         dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
-         dialog.RestoreDirectory = True
-         If dialog.ShowDialog = DialogResult.OK Then
-            Controller.Explorer.CloseUI()
-            Controller.ApsimData.OpenFile(dialog.FileName)
-            Controller.RefreshToolStrips()
-         End If
-      End If
+        If Controller.FileSaveAfterPrompt() Then
+            Dim LastDir As String = Configuration.Instance.GetFrequentList()(0)
+            Dim dialog As New OpenFileDialog
+            LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
+            dialog.InitialDirectory = LastDir
+            dialog.Filter = Configuration.Instance.Setting("DialogFilter")
+            dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
+            dialog.RestoreDirectory = True
+            If dialog.ShowDialog = DialogResult.OK Then
+                Controller.Explorer.CloseUI()
+                Controller.ApsimData.OpenFile(dialog.FileName)
+                Controller.RefreshToolStrips()
+            End If
+        End If
    End Sub
    Public Shared Function FileSave(ByVal Controller As BaseController)
       If Controller.ApsimData.FileName = "Untitled" Then
@@ -36,7 +39,10 @@ Public Class BaseActions
    End Function
    Public Shared Function FileSaveAs(ByVal Controller As BaseController) As Boolean
       Dim result As Boolean = False
-      Dim Dialog As New SaveFileDialog
+        Dim Dialog As New SaveFileDialog
+        Dim LastDir As String = Configuration.Instance.GetFrequentList()(0)
+        LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
+        Dialog.InitialDirectory = LastDir
       Dialog.Filter = Configuration.Instance.Setting("DialogFilter")
       Dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
       Dialog.AddExtension = True
