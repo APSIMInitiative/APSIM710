@@ -495,18 +495,6 @@
         <Constant name="DMRetranslocationFactor">
           <Value type="text" description="Value">.5</Value>
         </Constant>
-        <LeafStagePhyllochronFunction name="NodeAppearanceRate">
-          <Start>Emergence</Start>
-          <End>FlagLeaf</End>
-          <Phase1End>2.0</Phase1End>
-          <Phase1Multiplier>0.75</Phase1Multiplier>
-          <Phase2End>8.0</Phase2End>
-          <Phase2Multiplier>1.0</Phase2Multiplier>
-          <Phase3Multiplier>1.3</Phase3Multiplier>
-          <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">90</Value>
-          </Constant>
-        </LeafStagePhyllochronFunction>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -599,6 +587,21 @@
             <XY>0.900001 0.2</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <MultiplyFunction name="NodeAppearanceRate">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <LinearInterpolationFunction name="LeafStageFactor">
+            <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
+            <XYPairs>
+              <XY>0 0.75</XY>
+              <XY>1.9999 1</XY>
+              <XY>7.999 1</XY>
+              <XY>8 1.3</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="BasePhyllochron">
+            <Value type="text" description="Value">90</Value>
+          </Constant>
+        </MultiplyFunction>
       </Leaf>
       <GenericOrgan name="Floret">
         <Biomass name="Live" />
