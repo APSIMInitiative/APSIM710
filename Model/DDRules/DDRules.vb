@@ -47,11 +47,11 @@ Public Class DDRules
     <Input()> Public is_end_week As Boolean
     <Input()> Public is_start_week As Boolean
 
-    Public dairyNZ_mg As Single() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
-    Public dairyNZ_gr As Single() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
-    Public Val_gr As Single() = {1600, 1600, 1600, 1600, 1600, 1200, 1200, 1600, 1600, 1600, 1600, 1600}  'june to may - altered by Val for FarmSim
-    Public default_mg As Single() = dairyNZ_mg
-    Public default_gr As Single() = dairyNZ_gr
+    Public dairyNZ_mg As Integer() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
+    Public dairyNZ_gr As Integer() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
+    Public Val_gr As Integer() = {1600, 1600, 1600, 1600, 1600, 1200, 1200, 1600, 1600, 1600, 1600, 1600}  'june to may - altered by Val for FarmSim
+    Public default_mg As Integer() = dairyNZ_mg
+    Public default_gr As Integer() = dairyNZ_gr
 
     Dim strEffluentPaddocks() As String
     Dim strLanewayPaddocks() As String
@@ -284,15 +284,19 @@ Public Class DDRules
     <Description("Set paddocks avalibility to be included in the grazing rotation")> _
     <Output()> <Units("")> Public Property PaddockGrazable(ByVal i As Integer) As Integer
         Get
-            Return myFarm.PaddockGrazable(i)
+            If myFarm.PaddockGrazable(i) Then
+                Return 1
+            Else
+                Return 0
+            End If
         End Get
         Set(ByVal value As Integer)
-            myFarm.PaddockGrazable(i) = value
+            myFarm.PaddockGrazable(i) = value > 0
         End Set
     End Property
 
     Sub SetupFarmSim(ByVal MyPaddock As Paddock)
-        Dim FarmSim As Component = MyPaddock.LinkByType("FarmSimGraze")
+        Dim FarmSim As Component = CType(MyPaddock.LinkByType("FarmSimGraze"), Component)
         If FarmSim Is Nothing Then
             Return
         End If
@@ -321,7 +325,7 @@ Public Class DDRules
             myFarm.SupplementDigestability = 0.8
         End If
 
-        SilageStoreEnable = False 'all supplement purchase / no silage kept
+        SilageStoreEnable = 0 'False 'all supplement purchase / no silage kept
         WinterOffDryStock = 1 'all stock wintered off farm
         default_gr = Val_gr
     End Sub
@@ -358,7 +362,7 @@ Public Class DDRules
     <Description("Stocking rate a peak of lactation")> _
     <Output()> <Units("cows/ha")> Public Property PeakStockingRate() As Single
         Get
-            Return StockingRate
+            Return CSng(StockingRate)
         End Get
         Set(ByVal value As Single)
             If (value >= 0) Then
@@ -746,7 +750,7 @@ Public Class DDRules
             End If
         End Get
         Set(ByVal value As Integer)
-            myFarm.EnableSilageStore = value
+            myFarm.EnableSilageStore = value > 0
         End Set
     End Property
 
@@ -786,7 +790,7 @@ Public Class DDRules
             Return myFarm.CR
         End Get
         Set(ByVal value As Double)
-            myFarm.CR = value
+            myFarm.CR = CInt(value)
         End Set
     End Property
 #End Region
@@ -898,7 +902,7 @@ Public Class DDRules
     <Description("Energy consumed as pasture per paddock")> _
     <Output()> <Units("kgDM/ha/day")> Public ReadOnly Property AverageGrowthRate() As Single
         Get
-            Return myFarm.AverageGrowthRate
+            Return CSng(myFarm.AverageGrowthRate)
         End Get
     End Property
 
@@ -1009,7 +1013,7 @@ Public Class DDRules
     <Description("Date commence winter off")> _
     <Output()> <Units("")> Public Property DCWO() As String
         Get
-            Return myFarm.DCWO
+            Return myFarm.DCWO.ToString()
         End Get
         Set(ByVal value As String)
             myFarm.DCWO = Date.Parse(value)
@@ -1018,7 +1022,7 @@ Public Class DDRules
     <Description("Date to stop winter off")> _
     <Output()> <Units("")> Public Property DSWO() As String
         Get
-            Return myFarm.DSWO
+            Return myFarm.DSWO.ToString()
         End Get
         Set(ByVal value As String)
             myFarm.DSWO = Date.Parse(value)
@@ -1098,30 +1102,38 @@ Public Class DDRules
     <Description("Interpolate monthly values to get daily values (warning: this can cause issues) [0=No, 1=Yes]")> _
     <Param()> Property Cow_Interpolation() As Integer
         Get
-            Return SimpleCow.DoInterpolate
+            Return Convert.ToInt32(SimpleCow.DoInterpolate)
         End Get
         Set(ByVal value As Integer)
-            SimpleCow.DoInterpolate = value
+            SimpleCow.DoInterpolate = (value = 1)
         End Set
     End Property
 
     <Description("Control animal grazing to simulate break feeding of indervidual paddocks [0=No, 1=Yes]")> _
     <Param()> Property BreakFeeding() As Integer
         Get
-            Return LocalPaddockType.DebugTestBreakFeeding
+            If LocalPaddockType.DebugTestBreakFeeding Then
+                Return 1
+            Else
+                Return 0
+            End If
         End Get
         Set(ByVal value As Integer)
-            LocalPaddockType.DebugTestBreakFeeding = value
+            LocalPaddockType.DebugTestBreakFeeding = value > 0
         End Set
     End Property
 
     <Description("Switch to include stolon mass in calculations and reporting [0=No, 1=Yes]")> _
     <Param()> Property IncludeStolon() As Integer
         Get
-            Return LocalPaddockType.IncludeStolon
+            If LocalPaddockType.IncludeStolon Then
+                Return 1
+            Else
+                Return 0
+            End If
         End Get
         Set(ByVal value As Integer)
-            LocalPaddockType.IncludeStolon = value
+            LocalPaddockType.IncludeStolon = value > 0
         End Set
     End Property
 
@@ -1268,7 +1280,7 @@ Public Class DDRules
             Dim values(11) As Double
             For i As Integer = 0 To 11 'strValues.Length - 1
                 If (DebugLevel > 0) Then
-                    Console.Write("Milk Curve = " + value(i))
+                    Console.Write("Milk Curve = " + value(i).ToString())
                 End If
                 values(i) = value((i + 6) Mod 12)
                 If (DebugLevel > 0) Then

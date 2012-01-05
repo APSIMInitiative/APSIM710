@@ -199,7 +199,7 @@ Public Class BioMass
         End If
     End Function
 
-    Sub [set](ByVal value As Double, ByVal SilageDigestability As Double, ByVal SilageN As Double, ByVal DefualtSilageME As Single)
+    Sub [set](ByVal value As Double, ByVal SilageDigestability As Double, ByVal SilageN As Double, ByVal DefualtSilageME As Double)
         gLeaf = value
         gStem = 0
         dLeaf = 0

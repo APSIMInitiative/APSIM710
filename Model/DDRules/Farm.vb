@@ -181,7 +181,7 @@ Public Class Farm
 
     Public preGrazeCovers() As Double
     Public postGrazeCovers() As Double
-    Public Sub Process(ByVal start_of_week As Integer)
+    Public Sub Process(ByVal start_of_week As Boolean)
         CheckWinteringOff()
         If Not (IsWinteringOff()) Then 'assume all stock wintering off farm i.e. no grazing
             If (start_of_week) Then
@@ -374,8 +374,8 @@ Public Class Farm
 
     Public SilageN As Double = 0.035 'N content of silage (need to check this value - add to the user interface
     Public SupplementN As Double = 0.018 'N content of supplement (grain?) - add to the user interface
-    Public SupplementME As Single = 12
-    Public DefualtSilageME As Single = 10.5
+    Public SupplementME As Double = 12
+    Public DefualtSilageME As Double = 10.5
 
     Public Property SilageME() As Double
         Get
@@ -394,7 +394,7 @@ Public Class Farm
     'TODO - check implementation of wastage
     Sub FeedSupplements()
         If (myMilkingHerd.RemainingFeedDemand > 0) Then ' Meet any remaining demand with bought in feed (i.e. grain)
-            Dim temp As Single = FeedSilage(myMilkingHerd.RemainingFeedDemand, SilageWastage)
+            Dim temp As Double = FeedSilage(myMilkingHerd.RemainingFeedDemand, SilageWastage)
             If (DebugLevel > 0) Then
                 Console.WriteLine("*** DDRules - Silage Fed *** = " + temp.ToString())
             End If
@@ -405,7 +405,7 @@ Public Class Farm
             If (DebugLevel > 0) Then
                 Console.WriteLine("*** DDRules - Supplements Fed demend *** = " + myMilkingHerd.RemainingFeedDemand.ToString())
             End If
-            Dim temp As Single = FeedSupplement(myMilkingHerd.RemainingFeedDemand, SupplementME, SupplementN, SupplementWastage, SupplementDigestability)
+            Dim temp As Double = FeedSupplement(myMilkingHerd.RemainingFeedDemand, SupplementME, SupplementN, SupplementWastage, SupplementDigestability)
             If (DebugLevel > 0) Then
                 Console.WriteLine("*** DDRules - Supplements Fed *** = " + temp.ToString())
                 Console.WriteLine("Supplment Fed Today = " + SupplementStore.ToString())
@@ -428,7 +428,7 @@ Public Class Farm
         End Set
     End Property
 
-    Function FeedSilage(ByVal MEDemand As Single, ByVal WastageFactor As Single) As Single
+    Function FeedSilage(ByVal MEDemand As Double, ByVal WastageFactor As Double) As Double
         Dim tempDM As BioMass = SilageHeap.Remove(MEDemand * (1 + WastageFactor))
         If (tempDM.DM_Total <= 0) Then
             Return 0
@@ -441,7 +441,7 @@ Public Class Farm
         Return tempDM.getME_Total
     End Function
 
-    Function FeedSupplement(ByVal MEDemand As Single, ByVal WastageFactor As Single) As Single
+    Function FeedSupplement(ByVal MEDemand As Double, ByVal WastageFactor As Double) As Double
         Dim dm As BioMass = New BioMass()
         Dim SupplementFedout As Double = (MEDemand / SupplementME) * (1 + SupplementWastage)
         dm.gLeaf = SupplementFedout * (1 - SupplementWastage)
@@ -453,7 +453,7 @@ Public Class Farm
         Return dm.DM_Total
     End Function
 
-    Function FeedSupplement(ByVal MEDemand As Single, ByVal MEperKg As Single, ByVal NperKg As Single, ByVal WastageFactor As Single, ByVal Digestability As Single) As Single
+    Function FeedSupplement(ByVal MEDemand As Double, ByVal MEperKg As Double, ByVal NperKg As Double, ByVal WastageFactor As Double, ByVal Digestability As Double) As Double
         Dim dm As BioMass = New BioMass()
         Dim SupplementFedout As Double = (MEDemand / MEperKg) * (1 + WastageFactor)
         dm.gLeaf = SupplementFedout * (1 - WastageFactor)
@@ -773,27 +773,27 @@ Public Class Farm
     '<Output()> <Units("kgN/ha")> Public N_to_BC As Single
     '<Output()> <Units("kgN/ha")> Public N_to_feaces As Single
     '<Output()> <Units("kgN/ha")> Public N_to_urine As Single
-    Public N_Balance As Single
-    Public N_Out As Single
+    Public N_Balance As Double
+    Public N_Out As Double
 
-    Public ME_Demand As Single
-    Public ME_Eaten As Single
-    Public ME_Eaten_Pasture As Single
-    Public ME_Eaten_Silage As Single
-    Public ME_Eaten_Supplement As Single
-    Public DM_Eaten As Single
-    Public DM_Eaten_Pasture As Single
-    Public DM_Eaten_Silage As Single
-    Public DM_Eaten_Supplement As Single
-    Public N_Eaten As Single
-    Public N_Eaten_Pasture As Single
-    Public N_Eaten_Silage As Single
-    Public N_Eaten_Supplement As Single
-    Public N_to_milk As Single
-    Public N_to_BC As Single
-    Public N_to_feaces As Single
+    Public ME_Demand As Double
+    Public ME_Eaten As Double
+    Public ME_Eaten_Pasture As Double
+    Public ME_Eaten_Silage As Double
+    Public ME_Eaten_Supplement As Double
+    Public DM_Eaten As Double
+    Public DM_Eaten_Pasture As Double
+    Public DM_Eaten_Silage As Double
+    Public DM_Eaten_Supplement As Double
+    Public N_Eaten As Double
+    Public N_Eaten_Pasture As Double
+    Public N_Eaten_Silage As Double
+    Public N_Eaten_Supplement As Double
+    Public N_to_milk As Double
+    Public N_to_BC As Double
+    Public N_to_feaces As Double
     Public N_to_urine As Double
-    Public DM_to_feaces As Single ' added
+    Public DM_to_feaces As Double ' added
 
     Public ReadOnly Property PaddockStatus() As String()
         Get
@@ -829,7 +829,7 @@ Public Class Farm
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index here
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = myPaddocks(i).DM_Eaten()
+                result(i) = CSng(myPaddocks(i).DM_Eaten())
             Next
             Return result
         End Get
@@ -840,16 +840,16 @@ Public Class Farm
             Dim result() As Single = DM_Eaten_Pdks
             'sort by index here
             For i As Integer = 0 To (result.Length - 1)
-                result(i) /= myPaddocks(i).Area
+                result(i) /= CSng(myPaddocks(i).Area)
             Next
             Return result
         End Get
     End Property
 
-    Public ReadOnly Property AverageGrowthRate() As Single
+    Public ReadOnly Property AverageGrowthRate() As Double
         Get
-            Dim growth As Single = 0
-            Dim area As Single = 0
+            Dim growth As Double = 0
+            Dim area As Double = 0
             'sort by index here
             For Each pdk As LocalPaddockType In myPaddocks
                 growth += pdk.AverageGrowthRate() * pdk.Area
@@ -886,7 +886,7 @@ Public Class Farm
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = myPaddocks(i).ME_Eaten()
+                result(i) = CSng(myPaddocks(i).ME_Eaten())
             Next
             Return result
         End Get
@@ -912,7 +912,7 @@ Public Class Farm
             Dim result(myPaddocks.Count - 1) As Single
             'sort by index
             For i As Integer = 0 To (myPaddocks.Count - 1)
-                result(i) = myPaddocks(i).N_From_Feaces()
+                result(i) = CSng(myPaddocks(i).N_From_Feaces())
             Next
             Return result
         End Get
@@ -927,23 +927,23 @@ Public Class Farm
             Return result
         End Get
     End Property
-    Public ME_Demand_Cow As Single
-    Public ME_Eaten_Cow As Single
-    Public ME_Eaten_Pasture_Cow As Single
-    Public ME_Eaten_Supplement_Cow As Single
-    Public DM_Eaten_Cow As Single
-    Public DM_Eaten_Pasture_Cow As Single
-    Public DM_Eaten_Supplement_Cow As Single
-    Public N_Eaten_Cow As Single
-    Public N_Eaten_Pasture_Cow As Single
-    Public N_Eaten_Supplement_Cow As Single
-    Public N_to_milk_Cow As Single
-    Public N_to_BC_Cow As Single
-    Public N_to_feaces_Cow As Single
+    Public ME_Demand_Cow As Double
+    Public ME_Eaten_Cow As Double
+    Public ME_Eaten_Pasture_Cow As Double
+    Public ME_Eaten_Supplement_Cow As Double
+    Public DM_Eaten_Cow As Double
+    Public DM_Eaten_Pasture_Cow As Double
+    Public DM_Eaten_Supplement_Cow As Double
+    Public N_Eaten_Cow As Double
+    Public N_Eaten_Pasture_Cow As Double
+    Public N_Eaten_Supplement_Cow As Double
+    Public N_to_milk_Cow As Double
+    Public N_to_BC_Cow As Double
+    Public N_to_feaces_Cow As Double
     Public N_to_urine_Cow As Double
     Public ReadOnly Property LWt_Change_Cow() As Single
         Get
-            Return myMilkingHerd.LWt_Change
+            Return CSng(myMilkingHerd.LWt_Change)
         End Get
     End Property
 
@@ -1132,7 +1132,7 @@ Public Class Farm
         If (data.Amount > 0) Then
             Dim total As Double = 0
             Dim area As Double = 0
-            data.Amount *= efficiency
+            data.Amount *= CSng(efficiency)
             For Each paddock As LocalPaddockType In myPaddocks
                 area += data.Crop_Area
                 total += (data.Amount * data.Crop_Area / efficiency)

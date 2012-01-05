@@ -49,12 +49,12 @@ Public Class LocalPaddockType
         Me.Name = ApSim_SubPaddock.Name
 
         Area = PaddockArea
-        Dim i As Integer = PaddockArea
-        Dim j As Integer = Area
+        '        Dim i As Integer = PaddockArea
+        '        Dim j As Integer = Area
 
         Grazable = True                               'paddock grazable at initilisation time
         Me.index = index                                        'sort origional paddock position in the simulation for sorting
-        UrinePatchComponent = ApSim_SubPaddock.LinkByName("UrinePatch")
+        UrinePatchComponent = CType(ApSim_SubPaddock.LinkByName("UrinePatch"), Component)
         AgPastureInstance = CType(ApSim_SubPaddock.LinkByType("AgPasture"), AgPasture)
         myAverageGrowthRate = New MovingAverage(MovingAverageSeriesLength)
     End Sub
@@ -367,7 +367,7 @@ Public Class LocalPaddockType
     ' Will be used as part of grazing event if trampling is to be included
     Public Sub ReturnDMtoSOM(ByVal Mass As BioMass)
         If (Mass.DM_Total > 0) Then
-            Dim SOM As SurfaceOM = ApSim_SubPaddock.LinkByType("SurfaceOM")
+            Dim SOM As SurfaceOM = CType(ApSim_SubPaddock.LinkByType("SurfaceOM"), SurfaceOM)
             SOM.Publish("BiomassRemoved", Mass.toBiomassRemovedType(1.0))
         End If
     End Sub
@@ -428,8 +428,8 @@ Public Class LocalPaddockType
             Console.WriteLine("******** WARNING ****************")
             Console.WriteLine("Error: DDRules Dung Application")
             Console.WriteLine("Negitive application amount found")
-            Console.WriteLine("     - kg N  = " + kgN)
-            Console.WriteLine("     - kg DM = " + kgDM)
+            Console.WriteLine("     - kg N  = " + kgN.ToString())
+            Console.WriteLine("     - kg DM = " + kgDM.ToString())
         End If
 
         Dim kgN_ha As Double = kgN / Area
@@ -437,12 +437,12 @@ Public Class LocalPaddockType
         Dim dung As BiomassRemovedType = New BiomassRemovedType()
         dung.crop_type = "RuminantDung_PastureFed"
         dung.dm_type = New String() {"RuminantDung_PastureFed"}
-        dung.dlt_crop_dm = New Single() {kgDM_ha}
+        dung.dlt_crop_dm = New Single() {CSng(kgDM_ha)}
         dung.dlt_dm_n = New Single() {kgN_ha}
-        dung.dlt_dm_p = New Single() {kgDM_ha * (5.5 / 256.0)} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
+        dung.dlt_dm_p = New Single() {CSng(kgDM_ha * (5.5 / 256.0))} 'Source: McDowell and Stewart (2005) Phosphorus in Fresh and Dry Dung of Grazing Dairy Cattle, Deer, and Sheep, J. Environ. Qual. 34:598-607 (2005). Table 1.
         dung.fraction_to_residue = New Single() {1.0}
 
-        Dim SOM As Component = ApSim_SubPaddock.LinkByType("SurfaceOM")
+        Dim SOM As Component = CType(ApSim_SubPaddock.LinkByType("SurfaceOM"), Component)
         SOM.Publish("BiomassRemoved", dung)
     End Sub
 #End Region
