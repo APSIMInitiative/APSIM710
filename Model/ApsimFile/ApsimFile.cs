@@ -229,7 +229,12 @@ namespace ApsimFile
             XmlNode RootNode = doc.AppendChild(doc.CreateElement(RootComponent.Type));
             XmlHelper.SetAttribute(RootNode, "version", APSIMChangeTool.CurrentVersion.ToString());
             RootComponent.Write(RootNode);
-            doc.Save(FileName);
+            try { doc.Save(FileName); } //Win 7 - do not allow saving to Program Files directory
+            catch (Exception e) 
+            { 
+                System.Windows.Forms.MessageBox.Show("Error: " + e.Message + " Try saving in a different location."); 
+                return false; 
+            }
             Dirty = true;
             SetDirty(false);
             return true;
