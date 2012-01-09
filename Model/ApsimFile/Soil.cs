@@ -1052,7 +1052,7 @@ namespace ApsimFile
         {
             XmlNode Parent = FindVariableParentOptional(SoilNode, VariableName, CreateCropVariablesIfNecessary, Find.PreferSample);
             if (Parent == null)
-                throw new Exception("Invalid soil variable \"" + VariableName + "\" in soil \"" + XmlHelper.Name(SoilNode) + "\"");
+                throw new Exception("Invalid soil paramater: \"" + VariableName + "\" in soil: \"" + XmlHelper.Name(SoilNode) + "\".");
             else
                 return Parent;
         }
