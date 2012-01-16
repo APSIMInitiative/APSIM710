@@ -14,12 +14,21 @@ Imports System.Drawing.Printing
 
 
 Public Class BaseActions
-   Public Shared Sub FileOpen(ByVal Controller As BaseController)
+    Public Shared Sub FileOpen(ByVal Controller As BaseController)
+        Dim LastDir As String
         If Controller.FileSaveAfterPrompt() Then
-            Dim LastDir As String = Configuration.Instance.GetFrequentList()(0)
+            If (Configuration.Instance.GetFrequentList.Count() > 0) Then
+                LastDir = Configuration.Instance.GetFrequentList()(0)
+            Else
+                LastDir = ""
+            End If
+
             Dim dialog As New OpenFileDialog
-            LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
-            dialog.InitialDirectory = LastDir
+            If LastDir <> "" Then
+                LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
+                dialog.InitialDirectory = LastDir
+            End If
+
             dialog.Filter = Configuration.Instance.Setting("DialogFilter")
             dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
             dialog.RestoreDirectory = True
@@ -29,7 +38,7 @@ Public Class BaseActions
                 Controller.RefreshToolStrips()
             End If
         End If
-   End Sub
+    End Sub
    Public Shared Function FileSave(ByVal Controller As BaseController)
       If Controller.ApsimData.FileName = "Untitled" Then
          Return BaseActions.FileSaveAs(Controller)
