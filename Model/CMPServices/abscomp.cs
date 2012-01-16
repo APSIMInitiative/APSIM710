@@ -86,6 +86,7 @@ namespace CMPServices
 
                 switch (canAssignFrom(source))
                 {
+                    case TTypedValue.ctDODGY:
                     case TTypedValue.ctCOMP:         //Parameter order is important! ctCOMP
                         {                             //means "sourceValue is compatible with this"
                             addSourceValue(sourceCompID, source);

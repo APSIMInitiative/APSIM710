@@ -255,122 +255,122 @@ public partial class SoilErosion
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from midnight to 0100 hours")]
+    [Description("Wind speed from 2300 hours to midnight")]
     public double wind0 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0100 to 0200 hours")]
+    [Description("Wind speed from midnight to 0100 hours")]
     public double wind1 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0200 to 0300 hours")]
+    [Description("Wind speed from 0100 to 0200 hours")]
     public double wind2 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0300 to 0400 hours")]
+    [Description("Wind speed from 0200 to 0300 hours")]
     public double wind3 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0400 to 0500 hours")]
+    [Description("Wind speed from 0300 to 0400 hours")]
     public double wind4 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0500 to 0600 hours")]
+    [Description("Wind speed from 0400 to 0500 hours")]
     public double wind5 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0600 to 0700 hours")]
+    [Description("Wind speed from 0500 to 0600 hours")]
     public double wind6 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0700 to 0800 hours")]
+    [Description("Wind speed from 0600 to 0700 hours")]
     public double wind7 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0800 to 0900 hours")]
+    [Description("Wind speed from 0700 to 0800 hours")]
     public double wind8 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 0900 to 1000 hours")]
+    [Description("Wind speed from 0800 to 0900 hours")]
     public double wind9 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1000 to 1100 hours")]
+    [Description("Wind speed from 0900 to 1000 hours")]
     public double wind10 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1100 to 1200 hours")]
+    [Description("Wind speed from 1000 to 1100 hours")]
     public double wind11 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1200 to 1300 hours")]
+    [Description("Wind speed from 1100 to 1200 hours")]
     public double wind12 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1300 to 1400 hours")]
+    [Description("Wind speed from 1200 to 1300 hours")]
     public double wind13 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1400 to 1500 hours")]
+    [Description("Wind speed from 1300 to 1400 hours")]
     public double wind14 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1500 to 1600 hours")]
+    [Description("Wind speed from 1400 to 1500 hours")]
     public double wind15 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1600 to 1700 hours")]
+    [Description("Wind speed from 1500 to 1600 hours")]
     public double wind16 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1700 to 1800 hours")]
+    [Description("Wind speed from 1600 to 1700 hours")]
     public double wind17 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1800 to 1900 hours")]
+    [Description("Wind speed from 1700 to 1800 hours")]
     public double wind18 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 1900 to 2000 hours")]
+    [Description("Wind speed from 1800 to 1900 hours")]
     public double wind19 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 2000 to 2100 hours")]
+    [Description("Wind speed from 1900 to 2000 hours")]
     public double wind20 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 2100 to 2200 hours")]
+    [Description("Wind speed from 2000 to 2100 hours")]
     public double wind21 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 2200 to 2300 hours")]
+    [Description("Wind speed from 2100 to 2200 hours")]
     public double wind22 = Double.NaN;
 
     [Input(IsOptional = true)]
     [Units("m/s")]
-    [Description("Daily average wind speed from 2300 hours to midnight")]
+    [Description("Wind speed from 2200 to 2300 hours")]
     public double wind23 = Double.NaN;
 
 #endregion
@@ -403,6 +403,16 @@ public partial class SoilErosion
         freebairn = 1,
         rose = 2
     }
+
+    protected enum windDataType
+    {
+        none,
+        daily,
+        hourly,
+        three_hourly
+    }
+
+    protected windDataType wind_type = windDataType.none;
 
     protected model_type_enum model_type = model_type_enum.unknown;
     Boolean reduce_profile = false;
@@ -561,17 +571,36 @@ public partial class SoilErosion
         {
             MyComponent.Get("wind", out wind);
         }
-        if (Double.IsNaN(wind23))
+        if (Double.IsNaN(wind1))
         {
-            MyComponent.Get("wind23", out wind23);
+            MyComponent.Get("wind1", out wind1);
         }
-        if (!Double.IsNaN(wind23))
-            Console.WriteLine("           Wind erosion will be assessed based on hourly wind runs");
-        else if (!Double.IsNaN(wind))
-            Console.WriteLine("           Wind erosion will be assessed based on daily wind run");
-        else
-            Console.WriteLine("           Wind data not available; wind erosion will not be assessed");
+        if (Double.IsNaN(wind3))
+        {
+            MyComponent.Get("wind3", out wind3);
+        }
 
+        // Should also allow for the use of gust data....
+        if (!Double.IsNaN(wind1))
+        {
+            wind_type = windDataType.hourly;
+            Console.WriteLine("           Wind erosion will be assessed based on hourly wind speeds");
+        }
+        else if (!Double.IsNaN(wind3))
+        {
+            wind_type = windDataType.three_hourly;
+            Console.WriteLine("           Wind erosion will be assessed based on 3-hourly wind speeds");
+        }
+        else if (!Double.IsNaN(wind))
+        {
+            wind_type = windDataType.daily;
+            Console.WriteLine("           Wind erosion will be assessed based on daily wind speeds");
+        }
+        else
+        {
+            wind_type = windDataType.none;
+            Console.WriteLine("           Wind data are not available; wind erosion will not be assessed");
+        }
 
         Console.WriteLine("          -----------------------------------------------");
      }
@@ -588,15 +617,22 @@ public partial class SoilErosion
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
             MoveProfile();
 
-        // TEST ONLY
-        // What this SHOULD be doing is first seeing whether wind data is available, then if it is, 
-        // running the wind erosion sub-component
-        //wind_model = "shao";
-        //sw[0] = 0.01;
-        //double flux = VerticalFlux(2500.0);
-        //wind_model = "mb95";
-        //flux = VerticalFlux(2500.0);
-        
+        if (wind_type == windDataType.three_hourly)
+        {
+            // Need to multiply by 100 to convert m/s to cm/s
+            // Currently using 200 just to get the speeds up enough from some results...
+            double flux = VerticalFlux(wind0 * 200.0) * 3.0 * 3600.0;  // Flux will have units of g/cm^2
+            flux += VerticalFlux(wind3 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind6 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind9 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind12 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind15 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind18 * 200.0) * 3.0 * 3600.0;
+            flux += VerticalFlux(wind21 * 200.0) * 3.0 * 3600.0;
+            if (flux > 0.0)
+                Console.WriteLine("Got some wind erosion!");
+        }
+
     }
 
     protected void SetOtherVariables()

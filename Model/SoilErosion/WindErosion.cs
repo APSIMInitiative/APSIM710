@@ -67,7 +67,7 @@ public partial class SoilErosion
     /// This varies with mineralogy
     /// </summary>
     [Param(IsOptional = true, MinVal = 2.0, MaxVal = 3.0)]
-    [Description("Density of air")]
+    [Description("Density of soil particles")]
     [Units("g/cm^3")]
     public double rho_particle = 2.65;
 
@@ -79,12 +79,13 @@ public partial class SoilErosion
     /// <summary>
     /// Gamma parameter in Shao and Lu relationship for determining threshold friction velocity of a smooth surface
     /// Is a measure of the cohesive force
-    /// Values used in Darmenova et al. were 1.65e-4, 3e-4, and 5e-4
+    /// Values used in Darmenova et al. were 1.65e-4, 3e-4, and 5e-4 kg/s^2
+    /// Note that here we are using units of g/s^2, not kg/s^2
     /// </summary>
-    [Param(IsOptional = true, MinVal = 1e-4, MaxVal = 6e-4)]
+    [Param(IsOptional = true, MinVal = 0.1, MaxVal = 0.6)]
     [Description("Gamma parameter of Shao and Lu")]
-    [Units("kg/s^2")]
-    public double Shao_gamma = 1.65e-4;
+    [Units("g/s^2")]
+    public double Shao_gamma = 0.165;
 
     /// <summary>
     /// An parameter in Shao and Lu relationship for determining threshold friction velocity of a smooth surface
@@ -102,7 +103,7 @@ public partial class SoilErosion
     /// Otherwise, use the Zhao et al. 2006 variant
     /// </summary>
     [Param(IsOptional = true)]
-    public int moisture_option = 1;
+    public int moisture_option = 2;
 
     /// <summary>
     /// Amount of clay in the soil surface layer, expressed as a percentage
@@ -260,7 +261,7 @@ public partial class SoilErosion
 
     [Param(IsOptional = true, MinVal = 1)]
     [Description("Soil type, for particle size distribution")]
-    public string soil_type = "jade";
+    public string soil_type = "clay";
 
     [Param(IsOptional = true, MinVal = 0, MaxVal = 15)]
     [Description("Height at which wind speed was measured")]
@@ -348,12 +349,14 @@ public partial class SoilErosion
         else if (wind_model.ToLower() == "shao")
         {
              return Math.Sqrt(Shao_An * (diameter * gravity * rho_particle / rho_air +
-                                        1000.0 * Shao_gamma / (diameter * rho_air)));
+                                         Shao_gamma / (diameter * rho_air)));
         }
 
         else
             throw new Exception("Unknown wind model: " + wind_model);
     }
+
+    private double minSoilWat = 1.0;
 
     /// <summary>
     /// Calculate a moisture correction factor for adjusting the threshold friction velocity
@@ -369,6 +372,8 @@ public partial class SoilErosion
                 MyComponent.Get("sw", out sw);
             }
             soilWater = sw[0];
+            if (soilWater < minSoilWat)
+                minSoilWat = soilWater;
         }
 
         if (wind_model.ToLower() == "shao")
@@ -486,15 +491,15 @@ public partial class SoilErosion
             return 0.0;
         else
         {
-            double fv2 = frictionVelocity * frictionVelocity; // square of friction velocity
+            double fv2 = Sqr(frictionVelocity); // square of friction velocity
             double fv3 = fv2 * frictionVelocity; // cube of friction velocity
             if (flux_model.ToLower() == "owen")
             {
-                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - thresholdVelocity * thresholdVelocity / fv2);
+                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - Sqr(thresholdVelocity) / fv2);
             }
             else if (flux_model.ToLower() == "white")
             {
-                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - thresholdVelocity * thresholdVelocity / fv2)
+                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - Sqr(thresholdVelocity) / fv2)
                     * (1.0 + thresholdVelocity / frictionVelocity);
             }
             else
@@ -511,6 +516,7 @@ public partial class SoilErosion
     /// <returns>Total horizonal flux in g/cm/s</returns>
     protected double TotalHorizontalFlux(double windSpeed, double height)
     {
+        int iClay = 0;
         // If we haven't already created a particle size distribution, do it now
         // Also calculate the smooth theshold friction velocity for each size class
         // and the maximum index for "dust"
@@ -527,8 +533,13 @@ public partial class SoilErosion
                 smoothThreshold[i] = ThresholdFrictionVelocitySmooth(dd[i] / 1000.0);
                 if (dd[i] <= dust_cutoff)
                     iDust = i;
+                if (dd[i] <= 2.0) // Defined as clay if < 2 microns
+                    iClay = i;
             }
         }
+
+        if (percent_clay < 0.0)
+            percent_clay = ppsd_disp[iClay] * 100.0;
 
         // Initialise those values that don't change with particle size, but do change with time
         moistureCorrection = CalcMoistureCorrection(0.0);
@@ -586,7 +597,7 @@ public partial class SoilErosion
             for (int i = iDust + 1; i < dd.Length; i++)
                 for (int j = 0; j <= iDust; j++)
                 {
-                    double sigma_p = psd[j] / psd_disp[j];
+                    double sigma_p = dpsd[j] / dpsd_disp[j];
                     double term1 = shao_c_y * dpsd_disp[j] * ((1.0 - gamma) + gamma * sigma_p);
                     double term2 = 1.0 + sigma_m;      // dimensionless
                     double term3 = horizFlux[i] * gravity / Sqr(frictionVelocity); // I think this gives us units of g/m^2/sec, but it's exceeding the mb95 outputs by around a factor of 1000
@@ -652,12 +663,21 @@ public partial class SoilErosion
                 throw new Exception("Unknown soil type: " + typename);
         }
 
+        /// <summary>
+        /// Obtain the parameters for particle size distribution for a given type of soil. The values below are taken from Shao's source code;
+        /// see also Shao 2004, Table 1. 
+        /// These values could be improved with additional data (of course).
+        /// </summary>
+        /// <param name="typename">Type of soil</param>
+        /// <param name="dispersed">If true, return values for a fully-dispersed soil; otherwise return those for a minimally-dispersed soil</param>
+        /// <param name="dist">Structure to receive the results</param>
         public static void GetDist(string typename, bool dispersed, ref logNormalDist[] dist)
         {
             SoilTypes soiltype = StrToSoilType(typename);
             switch (soiltype)
             {
-                case SoilTypes.clay:
+                // Yuck. Clay looks to be just plain wrong! Even for the fully dispered values, most of the weight is given to sand-sized classes!
+                case SoilTypes.clay:                                   
                     if (dispersed)  // Clay, fully dispersed
                     {
                         Array.Resize(ref dist, 3);
@@ -795,13 +815,6 @@ public partial class SoilErosion
             }
         }
     }
-
-    readonly logNormalDist[] jadem = new logNormalDist[]{
-      new logNormalDist{ weight = 0.35, mean = 5.40, sigma = 0.345},
-      new logNormalDist{ weight = 0.32, mean = 4.63, sigma = 0.490},
-      new logNormalDist{ weight = 0.23, mean = 4.10, sigma = 0.650},
-      new logNormalDist{ weight = 0.10, mean = 2.75, sigma = 0.950},
-    };
 
     /// <summary>
     /// Generate a particle size distribution function as the sum of four log-normal distributions.
