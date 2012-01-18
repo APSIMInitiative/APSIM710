@@ -110,7 +110,7 @@ namespace CPIUserInterface
             String ComponentType = Controller.ApsimData.Find(NodePath).Type;
             List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
             FDllFileName = DllFileNames[0];
-            FDllFileName = Configuration.RemoveMacros(FDllFileName).Replace("%dllext%", "dll");
+            FDllFileName = Configuration.RemoveMacros(FDllFileName);
 
             if ((propertyList.Count == 0) && File.Exists(FDllFileName)) //if no properties yet
             {

@@ -138,7 +138,8 @@ public class Types
             else
             {
                 //attempt to get these details from getDescription() (works for CPI components)
-                if (TOSInterface.isManaged(DLLFileName) == TOSInterface.CompilationMode.Native)
+                TOSInterface.CompilationMode mode = TOSInterface.isManaged(DLLFileName);
+                if ( (mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed) )
                 {
                     String descr = "";
                     //now I can probe this dll for it's description.

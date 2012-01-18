@@ -361,7 +361,7 @@ namespace CPIUserInterface
             String ComponentType = Controller.ApsimData.Find(NodePath).Type;
             List<String> DllFileNames = Types.Instance.Dlls(ComponentType);
             String DllFileName = DllFileNames[0];
-            DllFileName = Configuration.RemoveMacros(DllFileName).Replace("%dllext%", "dll");
+            DllFileName = Configuration.RemoveMacros(DllFileName);
             String helpFileName = Path.ChangeExtension(DllFileName, "chm");
             if (File.Exists(helpFileName))
             {

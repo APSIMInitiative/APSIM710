@@ -84,11 +84,29 @@ namespace ApsimFile
                 Directory.CreateDirectory(pathsToMake[i]);
             }
         }
+        //---------------------------------------------------------------------
+        /// <summary>
+        /// Remove macros from strings: %apsim%, %ausfarm%, %dllext%
+        /// Also fixes path separator.
+        /// </summary>
+        /// <param name="St">Input string</param>
+        /// <returns>The expanded filename</returns>
         public static string RemoveMacros(string St)
         {
-            string result = St.Replace("%apsim%", ApsimDirectory());
-            string ausfarmDir = AusFarmDirectory();
-            if (ausfarmDir != "") result = result.Replace("%ausfarm%", ausfarmDir);
+            string result = St;
+            if (St.Length > 0)
+            {
+                result = St.Replace("%apsim%", ApsimDirectory());
+                string ausfarmDir = AusFarmDirectory();
+                if (ausfarmDir != "") result = result.Replace("%ausfarm%", ausfarmDir);
+
+                result = result.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+                if (Configuration.getArchitecture() == Configuration.architecture.unix) // ApsimFile.Configuration.amRunningOnUnix()
+                    result = result.Replace("%dllext%", "so");
+                else
+                    result = result.Replace("%dllext%", "dll");
+
+            }
             return result;
         }
         public static string AddMacros(string St)
