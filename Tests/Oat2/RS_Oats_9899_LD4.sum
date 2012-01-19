@@ -93,7 +93,7 @@ Paddock:
         AccumIrrigation
         AccumOutflowLat
         SoilWaterDeficit
-        AboveGroundWt
+        AboveGroundLiveWt
         BelowGroundWt
         TotalWt
         LeafDeadWt
@@ -166,15 +166,15 @@ Paddock:
         RootNUptakeSupply
         ArbitratorNDemand
         LeafExpandedCohortNo
-        LeafPlantLeafNo
-        LeafPlantGreenLeafNo
+        LeafPlantAppearedLeafNo
+        LeafPlantAppearedGreenLeafNo
         LeafExpandingCohortNo
         LeafAppearedCohortNo
         LeafTotalStemPopn
         LeafDeadCohortNo
         LeafAppearedNodeNo
         LeafSenescingCohortNo
-        LeafPrimaryBudLeafNo
+        LeafPrimaryBudAppearedLeafNo
         LeafPrimordiaNo
         LeafFinalNodeNo
         LeafPhotoPeriodValue
@@ -195,6 +195,9 @@ Paddock:
         LeafSpecificArea
         HuskLiveWt
         RachisLiveWt
+        LeafTotalStemPopn
+        GrainNumber
+        WaterSupplyDemandRatio
 
      Output file = RS_Oats_9899_LD4 Outputs.out
      Format = normal
@@ -258,7 +261,7 @@ Paddock:
      
      SECTION:- start_of_day
      if today = date('29/09/1998') then
-        oat2 sow population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+        oat2 sow population = 300, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      endif
      END of rules
      
@@ -267,7 +270,7 @@ Paddock:
      Manager rules:
      
      SECTION:- prenewmet
-     if (date_within('10/10/1998, 01/04/1999') = 1) then
+     if (date_within('17/10/1998, 01/04/1999') = 1) then
         maxt = maxt + 0
         mint = mint + 0
         rain = rain + rain * -100 / 100
@@ -532,7 +535,7 @@ Paddock:
            Totals  137215.2 12474.1  1267.8   158.5   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- oat2 sow  population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     Manager sending message :- oat2 sow  population = 300, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      Manager creating a new local real variable : initialsoilomn = 12642.57813
      Manager creating a new local real variable : initialsurfaceomn = 5.00000
      Manager creating a new local real variable : initialmineraln = 601.20282
@@ -542,9 +545,9 @@ Paddock:
 9/10/1998 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-25/10/1998 - FloralInitiation
-                            LAI = 0.26 (m^2/m^2)
-           Above Ground Biomass = 11.67 (g/m^2)
+26/10/1998 - FloralInitiation
+                            LAI = 0.32 (m^2/m^2)
+           Above Ground Biomass = 8.83 (g/m^2)
 27 October 1998(Day of year=300), operations: 
       Sending apply message to irrigation
 2 November 1998(Day of year=306), operations: 
@@ -559,23 +562,23 @@ Paddock:
       Sending apply message to irrigation
 7 December 1998(Day of year=341), operations: 
       Sending apply message to irrigation
-18/12/1998 - FlagLeaf
-                            LAI = 9.57 (m^2/m^2)
-           Above Ground Biomass = 995.51 (g/m^2)
-25/12/1998 - Flowering
-                            LAI = 7.97 (m^2/m^2)
-           Above Ground Biomass = 1190.80 (g/m^2)
-25/12/1998 - StartGrainFill
-                            LAI = 7.97 (m^2/m^2)
-           Above Ground Biomass = 1190.80 (g/m^2)
-21/01/1999 - EndGrainFill
-                            LAI = 2.05 (m^2/m^2)
-           Above Ground Biomass = 1860.25 (g/m^2)
-24/01/1999 - Maturity
-                            LAI = 1.59 (m^2/m^2)
-           Above Ground Biomass = 1894.85 (g/m^2)
-24/02/1999 - HarvestRipe
+14/12/1998 - FlagLeaf
+                            LAI = 7.79 (m^2/m^2)
+           Above Ground Biomass = 910.78 (g/m^2)
+21/12/1998 - Flowering
+                            LAI = 6.49 (m^2/m^2)
+           Above Ground Biomass = 1070.69 (g/m^2)
+21/12/1998 - StartGrainFill
+                            LAI = 6.49 (m^2/m^2)
+           Above Ground Biomass = 1070.69 (g/m^2)
+17/01/1999 - EndGrainFill
+                            LAI = 3.34 (m^2/m^2)
+           Above Ground Biomass = 1853.64 (g/m^2)
+18/01/1999 - Maturity
+                            LAI = 3.17 (m^2/m^2)
+           Above Ground Biomass = 1875.05 (g/m^2)
+16/02/1999 - HarvestRipe
                             LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 1957.88 (g/m^2)
+           Above Ground Biomass = 2016.96 (g/m^2)
 1 April 1999(Day of year=91), clock: 
      Simulation is terminating due to end criteria being met.

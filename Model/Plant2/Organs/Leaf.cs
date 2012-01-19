@@ -76,6 +76,10 @@ public class Leaf : BaseOrgan, AboveGround
     public Function MinimumNConc = null;
     [Link]
     public Function StructuralFraction = null;
+    [Link (IsOptional = true)]
+    public Function ShadeInducedBranchMortality = null;
+    [Link(IsOptional = true)]
+    public Function DroughtInducedBranchMortality = null;
  #endregion
 
  #region Class Data Members
@@ -105,6 +109,8 @@ public class Leaf : BaseOrgan, AboveGround
     public double CurrentExpandingLeaf = 0;
     public double StartFractionExpanded = 0;
     public double _ThermalTime = 0;
+    public double ProportionStemMortality = 0;
+        
  #endregion
 
  #region Outputs
@@ -265,8 +271,8 @@ public class Leaf : BaseOrgan, AboveGround
     //Plant leaf number state variables
     [Output]
     [Units("/plant")]
-    [Description("Number of leaves per plant including all main stem and branch leaves")]
-    public double PlantLeafNo
+    [Description("Number of Appeared leaves per plant including all main stem and branch leaves")]
+    public double PlantAppearedLeafNo
     {
         get
         {
@@ -281,15 +287,15 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("/PrimaryBud")]
-    [Description("Number of leaves per primary bud unit including all main stem and branch leaves")]
-    public double PrimaryBudLeafNo
+    [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
+    public double PrimaryBudAppearedLeafNo
     {
-        get { return PlantLeafNo / PrimaryBudNo; }
+        get { return PlantAppearedLeafNo / PrimaryBudNo; }
     }
     [Output]
     [Units("/plant")]
-    [Description("Number of leaves per plant that have appeared but not yet fully senesced on each plant")]
-    public double PlantGreenLeafNo
+    [Description("Number of appeared leaves per plant that have appeared but not yet fully senesced on each plant")]
+    public double PlantAppearedGreenLeafNo
     {
         get
         {
@@ -688,7 +694,7 @@ public class Leaf : BaseOrgan, AboveGround
                 int j = (int)AppearedCohortNo - 1;
                 BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
-                BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
+            BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
             
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
@@ -698,11 +704,21 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves[i].DoAppearance();
         }
 
+        //Work out stem mortanity from shading
+        if (ShadeInducedBranchMortality != null)
+        {
+            ProportionStemMortality = ShadeInducedBranchMortality.Value;
+        }
+        if (DroughtInducedBranchMortality != null)
+        {
+            ProportionStemMortality += DroughtInducedBranchMortality.Value;
+        }
+        
         FractionNextleafExpanded = 0;
         bool NextExpandingLeaf = false;
         foreach (LeafCohort L in Leaves)
         {
-            L.DoPotentialGrowth(_ThermalTime);
+            L.DoPotentialGrowth(_ThermalTime, ProportionStemMortality);
             if ((L.IsFullyExpanded == false) && (NextExpandingLeaf == false))
             {
                 NextExpandingLeaf = true;

@@ -488,8 +488,17 @@ public class LeafCohort
             DMRetranslocationFactor = DMRetranslocationFactorFunction.Value;
         else DMRetranslocationFactor = 0;
     }
-    virtual public void DoPotentialGrowth(double TT)
+    virtual public void DoPotentialGrowth(double TT, double StemMortality)
     {
+        //Reduce StemNumber
+            double FractionStemMortality = 0;
+            if (StemMortality > 0)
+            {
+            double DeltaPopn = Math.Min(StemMortality * (_Population - Leaf.MainStemPopn), _Population - PopulationFunction.Value);
+            FractionStemMortality = DeltaPopn / _Population;
+            _Population -= DeltaPopn;
+            }
+                    
         //Calculate Accumulated Stress Factor for reducing potential leaf size
         if (IsNotAppeared && (CellDivisionStress != null))
         {
@@ -515,7 +524,7 @@ public class LeafCohort
             CoverAbove = Leaf.CoverAboveCohort(Rank); // Calculate cover above leaf cohort (unit??? FIXME-EIT)
             if (ShadeInducedSenescenceRateFunction != null)
                 ShadeInducedSenRate = ShadeInducedSenescenceRateFunction.Value;
-            SenescedFrac = FractionSenescing(_ThermalTime);
+            SenescedFrac = FractionSenescing(_ThermalTime, FractionStemMortality);
 
             // Doing leaf mass growth in the cohort
             SLA = 0;
@@ -579,7 +588,6 @@ public class LeafCohort
             if ((Live.MetabolicNConc <= MinimumNConc) & ((MetabolicNRetranslocated - MetabolicNAllocation) > 0.0))
                 AreaSenescingN = LeafStartArea * (MetabolicNRetranslocated - MetabolicNAllocation) / LeafStartMetabolicN;
 
-            //double LeafAreaLoss = Math.Max(AreaSenescingAge, Math.Max(AreaSenescingN, AreaSenescingShade));
             double LeafAreaLoss = Math.Max(AreaSenescing, AreaSenescingN);
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
@@ -653,6 +661,7 @@ public class LeafCohort
     /// <returns>(mm2 leaf/cohort position/m2 soil/day)</returns>
     virtual public double PotentialAreaGrowthFunction(double TT)
     {
+        double BranchNo = Leaf.TotalStemPopn - Leaf.MainStemPopn;
         double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
         double growth = Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
@@ -669,7 +678,7 @@ public class LeafCohort
         return leafsize;
 
     }
-    public double FractionSenescing(double TT)
+    public double FractionSenescing(double TT, double StemMortality)
     {
         //Calculate fraction of leaf area senessing based on age and shading.  This is used to to calculate change in leaf area and Nreallocation supply.
         if (IsAppeared)
@@ -701,7 +710,7 @@ public class LeafCohort
             double FracSenShade = 0;
             if (LiveArea > 0)
             {
-                FracSenShade = Math.Min(MaxLiveArea * ShadeInducedSenRate, LiveArea) / LiveArea;
+                FracSenShade = Math.Min(MaxLiveArea * (ShadeInducedSenRate + StemMortality), LiveArea) / LiveArea;
             }
             
             return Math.Max(FracSenAge, FracSenShade);
@@ -715,10 +724,5 @@ public class LeafCohort
         MyPaddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
     }
 #endregion
-    
-
-    
-
-
 }
    

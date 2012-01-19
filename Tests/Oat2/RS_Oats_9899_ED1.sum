@@ -93,7 +93,7 @@ Paddock:
         AccumIrrigation
         AccumOutflowLat
         SoilWaterDeficit
-        AboveGroundWt
+        AboveGroundLiveWt
         BelowGroundWt
         TotalWt
         LeafDeadWt
@@ -166,15 +166,15 @@ Paddock:
         RootNUptakeSupply
         ArbitratorNDemand
         LeafExpandedCohortNo
-        LeafPlantLeafNo
-        LeafPlantGreenLeafNo
+        LeafPlantAppearedLeafNo
+        LeafPlantAppearedGreenLeafNo
         LeafExpandingCohortNo
         LeafAppearedCohortNo
         LeafTotalStemPopn
         LeafDeadCohortNo
         LeafAppearedNodeNo
         LeafSenescingCohortNo
-        LeafPrimaryBudLeafNo
+        LeafPrimaryBudAppearedLeafNo
         LeafPrimordiaNo
         LeafFinalNodeNo
         LeafPhotoPeriodValue
@@ -195,6 +195,10 @@ Paddock:
         LeafSpecificArea
         HuskLiveWt
         RachisLiveWt
+        LeafTotalStemPopn
+        GrainNumber
+        WaterSupplyDemandRatio
+        AboveGroundLiveWt
 
      Output file = RS_Oats_9899_ED1 Outputs.out
      Format = normal
@@ -267,7 +271,7 @@ Paddock:
      
      SECTION:- start_of_day
      if today = date('29/09/1998') then
-        oat2 sow population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+        oat2 sow population = 300, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      endif
      END of rules
      
@@ -276,7 +280,7 @@ Paddock:
      Manager rules:
      
      SECTION:- prenewmet
-     if (date_within('10/10/1998, 01/04/1999') = 1) then
+     if (date_within('17/10/1998, 01/04/1999') = 1) then
         maxt = maxt + 0
         mint = mint + 0
         rain = rain + rain * -100 / 100
@@ -403,14 +407,14 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
         ---------------------------------------------------------------------
-            0.-  200.  0.050  0.100  0.320  0.419  0.320  1.311  0.856  0.900*******
-          200.-  400.  0.100  0.100  0.300  0.405  0.300  1.524  0.135  0.500389.229
-          400.-  600.  0.149  0.149  0.280  0.342  0.280  1.650  0.009  0.600 16.362
-          600.-  800.  0.140  0.140  0.255  0.322  0.200  1.601  0.000  0.400 97.995
-          800.- 1000.  0.150  0.150  0.240  0.348  0.150  1.601  0.000  0.400 97.995
-         1000.- 1200.  0.149  0.149  0.280  0.342  0.280  1.601  0.000  0.900 97.995
-         1200.- 1400.  0.100  0.100  0.200  0.307  0.200  1.601  0.000  0.900 97.995
-         1400.- 1600.  0.060  0.060  0.200  0.309  0.180  1.601  0.000  0.900 97.995
+            0.-  200.  0.050  0.100  0.250  0.419  0.250  1.311  0.856  0.900*******
+          200.-  400.  0.100  0.100  0.330  0.405  0.330  1.524  0.135  0.500389.229
+          400.-  600.  0.149  0.149  0.270  0.342  0.270  1.650  0.009  0.600 16.362
+          600.-  800.  0.140  0.140  0.220  0.322  0.220  1.601  0.000  0.400 97.995
+          800.- 1000.  0.150  0.150  0.200  0.348  0.200  1.601  0.000  0.400 97.995
+         1000.- 1200.  0.149  0.149  0.250  0.342  0.250  1.601  0.000  0.400 97.995
+         1200.- 1400.  0.100  0.100  0.190  0.307  0.190  1.601  0.000  0.900 97.995
+         1400.- 1600.  0.060  0.060  0.170  0.309  0.170  1.601  0.000  0.900 97.995
         ---------------------------------------------------------------------
      
      
@@ -421,16 +425,16 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  200.      20.00      44.00      44.00      19.80
-          200.-  400.      20.00      40.00      40.00      21.00
-          400.-  600.      29.80      26.20      26.20      12.40
-          600.-  800.      28.00      12.00      23.00      13.40
-          800.- 1000.      30.00       0.00      18.00      21.60
-         1000.- 1200.      29.80      26.20      26.20      12.40
-         1200.- 1400.      20.00      20.00      20.00      21.40
-         1400.- 1600.      12.00      24.00      28.00      21.80
+            0.-  200.      20.00      30.00      30.00      33.80
+          200.-  400.      20.00      46.00      46.00      15.00
+          400.-  600.      29.80      24.20      24.20      14.40
+          600.-  800.      28.00      16.00      16.00      20.40
+          800.- 1000.      30.00      10.00      10.00      29.60
+         1000.- 1200.      29.80      20.20      20.20      18.40
+         1200.- 1400.      20.00      18.00      18.00      23.40
+         1400.- 1600.      12.00      22.00      22.00      27.80
           ---------------------------------------------------------
-               Totals     189.60     192.40     225.40     143.80
+               Totals     189.60     186.40     186.40     182.80
           ---------------------------------------------------------
      
      
@@ -541,7 +545,7 @@ Paddock:
            Totals  137215.2 12474.1  1267.8   158.5   400.0    10.0
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-     Manager sending message :- oat2 sow  population = 262, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
+     Manager sending message :- oat2 sow  population = 300, depth = 20, cultivar = drummond, maxcover = 1.0, budnumber = 1, row_spacing = 130, crop_class = plant
      Manager creating a new local real variable : initialsoilomn = 12642.57813
      Manager creating a new local real variable : initialsurfaceomn = 5.00000
      Manager creating a new local real variable : initialmineraln = 601.20282
@@ -551,9 +555,9 @@ Paddock:
 9/10/1998 - Emergence
                             LAI = 0.00 (m^2/m^2)
            Above Ground Biomass = 0.00 (g/m^2)
-25/10/1998 - FloralInitiation
-                            LAI = 0.26 (m^2/m^2)
-           Above Ground Biomass = 11.66 (g/m^2)
+26/10/1998 - FloralInitiation
+                            LAI = 0.32 (m^2/m^2)
+           Above Ground Biomass = 8.83 (g/m^2)
 16 November 1998(Day of year=320), operations1: 
       Sending apply message to irrigation
 23 November 1998(Day of year=327), operations1: 
@@ -562,19 +566,19 @@ Paddock:
       Sending apply message to irrigation
 7 December 1998(Day of year=341), operations1: 
       Sending apply message to irrigation
+11/12/1998 - FlagLeaf
+                            LAI = 7.79 (m^2/m^2)
+           Above Ground Biomass = 783.70 (g/m^2)
 14 December 1998(Day of year=348), operations1: 
       Sending apply message to irrigation
-14/12/1998 - FlagLeaf
-                            LAI = 8.73 (m^2/m^2)
-           Above Ground Biomass = 872.00 (g/m^2)
+19/12/1998 - Flowering
+                            LAI = 6.70 (m^2/m^2)
+           Above Ground Biomass = 983.86 (g/m^2)
+19/12/1998 - StartGrainFill
+                            LAI = 6.70 (m^2/m^2)
+           Above Ground Biomass = 983.86 (g/m^2)
 21 December 1998(Day of year=355), operations1: 
       Sending apply message to irrigation
-21/12/1998 - Flowering
-                            LAI = 7.48 (m^2/m^2)
-           Above Ground Biomass = 1063.62 (g/m^2)
-21/12/1998 - StartGrainFill
-                            LAI = 7.48 (m^2/m^2)
-           Above Ground Biomass = 1063.62 (g/m^2)
 28 December 1998(Day of year=362), operations1: 
       Sending apply message to irrigation
 5 January 1999(Day of year=5), operations1: 
@@ -585,12 +589,12 @@ Paddock:
       Sending apply message to irrigation
 25 January 1999(Day of year=25), operations1: 
       Sending apply message to irrigation
-28/01/1999 - EndGrainFill
-                            LAI = 3.13 (m^2/m^2)
-           Above Ground Biomass = 2063.26 (g/m^2)
-30/01/1999 - Maturity
-                            LAI = 2.92 (m^2/m^2)
-           Above Ground Biomass = 2099.66 (g/m^2)
+25/01/1999 - EndGrainFill
+                            LAI = 4.14 (m^2/m^2)
+           Above Ground Biomass = 2124.21 (g/m^2)
+27/01/1999 - Maturity
+                            LAI = 4.08 (m^2/m^2)
+           Above Ground Biomass = 2200.64 (g/m^2)
 1 February 1999(Day of year=32), operations1: 
       Sending apply message to irrigation
 8 February 1999(Day of year=39), operations1: 
@@ -601,8 +605,8 @@ Paddock:
       Sending apply message to irrigation
 1 March 1999(Day of year=60), operations1: 
       Sending apply message to irrigation
-6/03/1999 - HarvestRipe
-                            LAI = 0.00 (m^2/m^2)
-           Above Ground Biomass = 2215.96 (g/m^2)
+3/03/1999 - HarvestRipe
+                            LAI = 0.77 (m^2/m^2)
+           Above Ground Biomass = 2221.81 (g/m^2)
 1 April 1999(Day of year=91), clock: 
      Simulation is terminating due to end criteria being met.
