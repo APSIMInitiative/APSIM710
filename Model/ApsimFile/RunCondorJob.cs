@@ -118,7 +118,7 @@ namespace ApsimFile
                     simDoc.Load(simFile);
                     string simName = sanitiseFileName(Path.GetFileNameWithoutExtension(simFile));
 
-                    Notifier((int)(100.0 * simCount / SimulationPaths.Count), "Converting " + simName);
+                    Notifier((int)(100.0 * simCount / simFiles.Count), "Converting " + simName);
 
                     XmlNode jobNode = fileNode.AppendChild(fileNode.OwnerDocument.CreateElement("simulation"));
                     XmlHelper.SetAttribute(jobNode, "name", simName);
