@@ -1,6 +1,6 @@
 <Type name="barley">
   <MetaData>
-    <UItype>VBUserInterface.EmptyUI</UItype>
+    <UItype>VBUserInterface.GenericUI</UItype>
     <IsCrop>Yes</IsCrop>
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\barley.jpg</Image>
@@ -21,7 +21,14 @@
         <executable name="[dll]" version="1.0"/>
         <initdata>
                [Model]
-               <ll>[soil.[InstanceName] ll(mm/mm)]</ll><kl>[soil.[InstanceName] kl(/day)]</kl><xf>[soil.[InstanceName] xf(0-1)]</xf></initdata>
+               <ModifyKL>[wheat.ModifyKL]</ModifyKL>
+               <ll>[soil.[InstanceName] ll(mm/mm)]</ll>
+               <kl>[soil.[InstanceName] kl(/day)]</kl>
+               <xf>[soil.[InstanceName] xf(0-1)]</xf>
+               [if [soil.Cl (mg/kg)]]<cl>[soil.Cl (mg/kg)]</cl>[endif]
+               [if [soil.ESP (%)]]<esp>[soil.ESP (%)]</esp>[endif]
+               [if [soil.EC (1:5 dS/m)]]<ec>[soil.EC (1:5 dS/m)]</ec>[endif]
+        </initdata>
       </component>
     </ApsimToSim>
   </MetaData>
@@ -567,6 +574,20 @@
       <tt_maturity_to_ripe_ub units="oCd" description="upper limit">1000.0</tt_maturity_to_ripe_ub>
       <tt_flower_to_start_grain_ub units="oCd" description="upper limit">1000.0</tt_flower_to_start_grain_ub>
       <tt_init_to_flower_ub units="oCd" description="upper limit">1000.0</tt_init_to_flower_ub>
+      
+      <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      SECTION - Root KL modifiers:
+         Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
+         crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802:810
+      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      -->
+      <ClA>4.0</ClA>
+      <ClB>-0.005</ClB>
+      <ESPA>10.0</ESPA>
+      <ESPB>-0.15</ESPB>
+      <ECA>3.0</ECA>
+      <ECB>-1.3</ECB>
+      
     </plant>
     <!-- ***********************************************************************************************************
       PARAMETERS  - CULTIVAR-SPECIFIC VALUES

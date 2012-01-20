@@ -139,6 +139,8 @@ class Soil
       float ESPB;
       float ECA;
       float ECB;
+      bool ModifyKL;
+      bool HaveModifiedKLValues;
       float getModifiedKL(int LayerIndex);
    protected:
       ScienceAPI& scienceAPI;

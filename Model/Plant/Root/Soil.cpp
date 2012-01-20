@@ -31,6 +31,12 @@ void Soil::Read(void)
 //=======================================================================================
 // Read parameters
    {
+   string ModifyKLString;
+   if (scienceAPI.readOptional("ModifyKL", ModifyKLString))
+      ModifyKL = (ModifyKLString == "yes");
+   else
+      ModifyKL = false;
+   
    scienceAPI.read("sw_ub", sw_ub, 0.0f, 1.0f);
    scienceAPI.read("sw_lb", sw_lb, 0.0f, 1.0f);
    scienceAPI.read("sw_dep_ub", sw_dep_ub, 0.0f, 10000.0f);
@@ -94,7 +100,23 @@ void Soil::Read(void)
    if (xf.size() != (unsigned) num_layers)
        throw std::runtime_error ("Size of XF array doesn't match soil profile.");
 
+   scienceAPI.readOptional("esp", esp, 0.0f, 100000.0f);
+   scienceAPI.readOptional("ec", ec, 0.0f, 100000.0f);
+   if (esp.size() > 0 && esp.size() != num_layers)
+      throw std::runtime_error("The number of ESP values in root does not equal the number of layers");
+   if (ec.size() > 0 && ec.size() != num_layers)
+      throw std::runtime_error("The number of EC values in root does not equal the number of layers");
+   
 
+   if (ModifyKL)
+      {
+      scienceAPI.read("ClA", ClA, -100.0f, 100.0f);
+      scienceAPI.read("ClB", ClB, -100.0f, 100.0f);
+      scienceAPI.read("ESPA", ESPA, -100.0f, 100.0f);
+      scienceAPI.read("ESPB", ESPB, -100.0f, 100.0f);
+      scienceAPI.read("ECA", ECA, -100.0f, 100.0f);
+      scienceAPI.read("ECB", ECB, -100.0f, 100.0f);
+      }
    }
 
 void Soil::onNewProfile(protocol::NewProfileType &v)
@@ -188,7 +210,7 @@ void Soil::zero(void)
       no3_diffn_const = 0.0;
       no3_uptake_max = 0.0;
       no3_conc_half_max = 0.0;
-
+      HaveModifiedKLValues = false;
 
       ZeroDeltas();
    }
@@ -334,7 +356,7 @@ void Soil::doSWSupply(float root_depth)
    for(int i = 0; i <= deepest_layer; i++)
       {
       sw_avail = (sw_dep[i] - ll_dep[i]);
-      sw_supply[i] = sw_avail * kl[i];
+      sw_supply[i] = sw_avail * getModifiedKL(i);
       sw_supply[i] = l_bound (sw_supply[i], 0.0);
       }
    //now adjust bottom layer for depth of root
@@ -558,7 +580,7 @@ void Soil::write()
        {
        sprintf (msg, "     %9.1f%10.3f%15.3f%12.3f"
           , dlayer[layer]
-          , kl[layer]
+          , getModifiedKL(layer)
           , divide(ll_dep[layer],dlayer[layer],0.0)
           , xf[layer]);
        cout << msg << endl;
@@ -566,6 +588,9 @@ void Soil::write()
        esw_tot += dul_dep[layer] - ll_dep[layer];
        }
     cout << "         -----------------------------------------------" << endl;
+    if (HaveModifiedKLValues)
+       cout << "         **** KL's have been modified using either CL, EC or ESP values.\n";
+    
     sprintf (msg
           , "         Extractable SW: %5.0fmm in %5.0fmm total depth (%3.0f%%)."
           , esw_tot
@@ -603,6 +628,9 @@ void Soil::getOtherVariables()
     for (int i = 0; i < num_layers; i++)
        nh4gsm[i] = values[i] * kg2gm /ha2sm;
 
+   scienceAPI.getOptional("cl", "(mg/kg)", cl, 0.0f, 100000.0f);
+   if (cl.size() > 0 && cl.size() != num_layers)
+      throw std::runtime_error("The number of CL values in root does not equal the number of layers");
    }
 
 void Soil::doWaterUptakeInternal (float sw_demand, float root_depth)
@@ -859,5 +887,31 @@ void Soil::plant_nit_supply(float root_depth, float *root_length)
 
    }
 
+//=======================================================================================
+// Calculate a modified KL value as per:
+//    Hochman et. al. (2007) Simulating the effects of saline and sodic subsoils on wheat
+//       crops growing on Vertosols. Australian Journal of Agricultural Research, 58, 802–810
+// Will use one of CL, ESP and EC in that order to modified KL.
+//=======================================================================================
+float Soil::getModifiedKL(int i)
+   {
+   if (ModifyKL)
+      {
+      float KLFactor = 1.0;
+      if (cl.size() > 0)
+         KLFactor = min(1.0, ClA * exp(ClB * cl[i]));
+        
+      else if (esp.size() > 0)
+        KLFactor = min(1.0, ESPA * exp(ESPB * esp[i]));
 
+      else if (ec.size() > 0)
+        KLFactor = min(1.0, ECA * exp(ECB * ec[i]));
 
+      if (KLFactor != 1.0)
+         HaveModifiedKLValues = true;
+        
+      return kl[i] * KLFactor;
+      }   
+   else
+      return kl[i];
+   }
