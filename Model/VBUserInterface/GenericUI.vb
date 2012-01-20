@@ -284,8 +284,15 @@ Public Class GenericUI
                   If Row("Value").ToString() <> "" Then
                      ' Make sure we save date rows as dd/mm/yyyy.
                      If Not IsDBNull(Row("Type")) AndAlso Row("Type") = "date" Then
-                        Dim DateValue As DateTime = Row("Value").ToString()
-                        NewProperty.InnerText = DateValue.ToString("dd/MM/yyyy")
+                        ' Try converting to date.
+                        Try
+                           Dim DateValue As DateTime = Row("Value").ToString()
+                           NewProperty.InnerText = DateValue.ToString("dd/MM/yyyy")
+                        Catch ex As Exception
+                           MessageBox.Show("Cannot convert string: " + Row("Value").ToString() + " to a valid date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                           NewProperty.InnerText = Row("Value").ToString()
+
+                        End Try
                      Else
                         NewProperty.InnerText = Row("Value").ToString()
                      End If
