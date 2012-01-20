@@ -28,7 +28,8 @@ Public Class OutputFileDescUI
    Friend WithEvents DeleteVariablesMenuItem As System.Windows.Forms.ToolStripMenuItem
    Friend WithEvents Grid As UIBits.EnhancedGrid
    Friend WithEvents HelpPanel As System.Windows.Forms.Panel
-   Friend WithEvents BottomPanel As System.Windows.Forms.Panel
+    Friend WithEvents BottomPanel As System.Windows.Forms.Panel
+    Friend WithEvents TitleLabel As System.Windows.Forms.Label
    Private ComponentTypes As New StringCollection
 
 #Region " Windows Form Designer generated code "
@@ -72,296 +73,309 @@ Public Class OutputFileDescUI
    Friend WithEvents ComponentFilter As System.Windows.Forms.ComboBox
 
    <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
-      Me.components = New System.ComponentModel.Container
-      Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(OutputFileDescUI))
-      Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog
-      Me.GridPanel = New System.Windows.Forms.Panel
-      Me.Grid = New UIBits.EnhancedGrid
-      Me.HelpPanel = New System.Windows.Forms.Panel
-      Me.GridLabel = New System.Windows.Forms.Label
-      Me.HelpButton = New System.Windows.Forms.Button
-      Me.Splitter1 = New System.Windows.Forms.Splitter
-      Me.Splitter2 = New System.Windows.Forms.Splitter
-      Me.FilterPanel = New System.Windows.Forms.Panel
-      Me.DictionaryLabel = New System.Windows.Forms.Label
-      Me.VariableListView = New System.Windows.Forms.ListView
-      Me.ColumnHeader1 = New System.Windows.Forms.ColumnHeader
-      Me.ColumnHeader4 = New System.Windows.Forms.ColumnHeader
-      Me.ColumnHeader3 = New System.Windows.Forms.ColumnHeader
-      Me.Label1 = New System.Windows.Forms.Label
-      Me.ComponentFilter = New System.Windows.Forms.ComboBox
-      Me.ConstantsPanel = New System.Windows.Forms.Panel
-      Me.ConstantsBox = New System.Windows.Forms.TextBox
-      Me.ConstantsLabel = New System.Windows.Forms.Label
-      Me.GridContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-      Me.MoveUpMenuItem = New System.Windows.Forms.ToolStripMenuItem
-      Me.MoveDownMenuItem = New System.Windows.Forms.ToolStripMenuItem
-      Me.DeleteVariablesMenuItem = New System.Windows.Forms.ToolStripMenuItem
-      Me.BottomPanel = New System.Windows.Forms.Panel
-      Me.GridPanel.SuspendLayout()
-      CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
-      Me.HelpPanel.SuspendLayout()
-      Me.FilterPanel.SuspendLayout()
-      Me.ConstantsPanel.SuspendLayout()
-      Me.GridContextMenu.SuspendLayout()
-      Me.BottomPanel.SuspendLayout()
-      Me.SuspendLayout()
-      '
-      'MyHelpLabel
-      '
-      Me.MyHelpLabel.Size = New System.Drawing.Size(753, 16)
-      '
-      'OpenFileDialog
-      '
-      Me.OpenFileDialog.CheckFileExists = False
-      Me.OpenFileDialog.DefaultExt = "out"
-      Me.OpenFileDialog.Filter = "APSIM output files(*.out)|*.out|All Files (*.*)|*.*"
-      Me.OpenFileDialog.RestoreDirectory = True
-      Me.OpenFileDialog.Title = "Enter output file name"
-      '
-      'GridPanel
-      '
-      Me.GridPanel.Controls.Add(Me.Grid)
-      Me.GridPanel.Controls.Add(Me.HelpPanel)
-      Me.GridPanel.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.GridPanel.Location = New System.Drawing.Point(0, 0)
-      Me.GridPanel.Name = "GridPanel"
-      Me.GridPanel.Size = New System.Drawing.Size(353, 434)
-      Me.GridPanel.TabIndex = 11
-      '
-      'Grid
-      '
-      Me.Grid.AllowDrop = True
-      Me.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None
-      Me.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-      Me.Grid.ColumnHeadersVisible = False
-      Me.Grid.DataSourceTable = Nothing
-      Me.Grid.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.Grid.Location = New System.Drawing.Point(0, 30)
-      Me.Grid.Name = "Grid"
-      Me.Grid.RowHeadersVisible = False
-      Me.Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
-      Me.Grid.Size = New System.Drawing.Size(353, 404)
-      Me.Grid.TabIndex = 27
-      '
-      'HelpPanel
-      '
-      Me.HelpPanel.Controls.Add(Me.GridLabel)
-      Me.HelpPanel.Controls.Add(Me.HelpButton)
-      Me.HelpPanel.Dock = System.Windows.Forms.DockStyle.Top
-      Me.HelpPanel.Location = New System.Drawing.Point(0, 0)
-      Me.HelpPanel.Name = "HelpPanel"
-      Me.HelpPanel.Size = New System.Drawing.Size(353, 30)
-      Me.HelpPanel.TabIndex = 27
-      '
-      'GridLabel
-      '
-      Me.GridLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
-      Me.GridLabel.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.GridLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-      Me.GridLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-      Me.GridLabel.Location = New System.Drawing.Point(30, 0)
-      Me.GridLabel.Name = "GridLabel"
-      Me.GridLabel.Size = New System.Drawing.Size(323, 30)
-      Me.GridLabel.TabIndex = 25
-      Me.GridLabel.Text = "Output file columns:"
-      Me.GridLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-      '
-      'HelpButton
-      '
-      Me.HelpButton.AutoSize = True
-      Me.HelpButton.Dock = System.Windows.Forms.DockStyle.Left
-      Me.HelpButton.Image = CType(resources.GetObject("HelpButton.Image"), System.Drawing.Image)
-      Me.HelpButton.Location = New System.Drawing.Point(0, 0)
-      Me.HelpButton.Name = "HelpButton"
-      Me.HelpButton.Size = New System.Drawing.Size(30, 30)
-      Me.HelpButton.TabIndex = 26
-      Me.HelpButton.UseVisualStyleBackColor = True
-      '
-      'Splitter1
-      '
-      Me.Splitter1.Dock = System.Windows.Forms.DockStyle.Top
-      Me.Splitter1.Location = New System.Drawing.Point(0, 87)
-      Me.Splitter1.Name = "Splitter1"
-      Me.Splitter1.Size = New System.Drawing.Size(753, 3)
-      Me.Splitter1.TabIndex = 22
-      Me.Splitter1.TabStop = False
-      '
-      'Splitter2
-      '
-      Me.Splitter2.Dock = System.Windows.Forms.DockStyle.Right
-      Me.Splitter2.Location = New System.Drawing.Point(353, 0)
-      Me.Splitter2.Name = "Splitter2"
-      Me.Splitter2.Size = New System.Drawing.Size(3, 434)
-      Me.Splitter2.TabIndex = 23
-      Me.Splitter2.TabStop = False
-      '
-      'FilterPanel
-      '
-      Me.FilterPanel.Controls.Add(Me.DictionaryLabel)
-      Me.FilterPanel.Controls.Add(Me.VariableListView)
-      Me.FilterPanel.Controls.Add(Me.Label1)
-      Me.FilterPanel.Controls.Add(Me.ComponentFilter)
-      Me.FilterPanel.Dock = System.Windows.Forms.DockStyle.Right
-      Me.FilterPanel.Location = New System.Drawing.Point(356, 0)
-      Me.FilterPanel.Name = "FilterPanel"
-      Me.FilterPanel.Size = New System.Drawing.Size(397, 434)
-      Me.FilterPanel.TabIndex = 18
-      '
-      'DictionaryLabel
-      '
-      Me.DictionaryLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
-      Me.DictionaryLabel.Dock = System.Windows.Forms.DockStyle.Top
-      Me.DictionaryLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-      Me.DictionaryLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-      Me.DictionaryLabel.Location = New System.Drawing.Point(0, 0)
-      Me.DictionaryLabel.Name = "DictionaryLabel"
-      Me.DictionaryLabel.Size = New System.Drawing.Size(397, 30)
-      Me.DictionaryLabel.TabIndex = 22
-      Me.DictionaryLabel.Text = "Variables to drag onto grid:"
-      Me.DictionaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-      '
-      'VariableListView
-      '
-      Me.VariableListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                  Or System.Windows.Forms.AnchorStyles.Left) _
-                  Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-      Me.VariableListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader4, Me.ColumnHeader3})
-      Me.VariableListView.FullRowSelect = True
-      Me.VariableListView.Location = New System.Drawing.Point(11, 59)
-      Me.VariableListView.Name = "VariableListView"
-      Me.VariableListView.Size = New System.Drawing.Size(374, 361)
-      Me.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending
-      Me.VariableListView.TabIndex = 20
-      Me.VariableListView.UseCompatibleStateImageBehavior = False
-      Me.VariableListView.View = System.Windows.Forms.View.Details
-      '
-      'ColumnHeader1
-      '
-      Me.ColumnHeader1.Text = "Variable name"
-      Me.ColumnHeader1.Width = 201
-      '
-      'ColumnHeader4
-      '
-      Me.ColumnHeader4.Text = "Array?"
-      Me.ColumnHeader4.Width = 45
-      '
-      'ColumnHeader3
-      '
-      Me.ColumnHeader3.Text = "Description"
-      Me.ColumnHeader3.Width = 437
-      '
-      'Label1
-      '
-      Me.Label1.AutoSize = True
-      Me.Label1.Location = New System.Drawing.Point(10, 35)
-      Me.Label1.Name = "Label1"
-      Me.Label1.Size = New System.Drawing.Size(86, 13)
-      Me.Label1.TabIndex = 19
-      Me.Label1.Text = "Component filter:"
-      '
-      'ComponentFilter
-      '
-      Me.ComponentFilter.FormattingEnabled = True
-      Me.ComponentFilter.Location = New System.Drawing.Point(102, 32)
-      Me.ComponentFilter.Name = "ComponentFilter"
-      Me.ComponentFilter.Size = New System.Drawing.Size(155, 21)
-      Me.ComponentFilter.TabIndex = 18
-      '
-      'ConstantsPanel
-      '
-      Me.ConstantsPanel.Controls.Add(Me.ConstantsBox)
-      Me.ConstantsPanel.Controls.Add(Me.ConstantsLabel)
-      Me.ConstantsPanel.Dock = System.Windows.Forms.DockStyle.Top
-      Me.ConstantsPanel.Location = New System.Drawing.Point(0, 16)
-      Me.ConstantsPanel.Name = "ConstantsPanel"
-      Me.ConstantsPanel.Size = New System.Drawing.Size(753, 71)
-      Me.ConstantsPanel.TabIndex = 24
-      '
-      'ConstantsBox
-      '
-      Me.ConstantsBox.BorderStyle = System.Windows.Forms.BorderStyle.None
-      Me.ConstantsBox.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.ConstantsBox.Location = New System.Drawing.Point(0, 30)
-      Me.ConstantsBox.Multiline = True
-      Me.ConstantsBox.Name = "ConstantsBox"
-      Me.ConstantsBox.Size = New System.Drawing.Size(753, 41)
-      Me.ConstantsBox.TabIndex = 19
-      '
-      'ConstantsLabel
-      '
-      Me.ConstantsLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
-      Me.ConstantsLabel.Dock = System.Windows.Forms.DockStyle.Top
-      Me.ConstantsLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-      Me.ConstantsLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
-      Me.ConstantsLabel.Location = New System.Drawing.Point(0, 0)
-      Me.ConstantsLabel.Name = "ConstantsLabel"
-      Me.ConstantsLabel.Size = New System.Drawing.Size(753, 30)
-      Me.ConstantsLabel.TabIndex = 20
-      Me.ConstantsLabel.Text = "Constants to put in top of output file:"
-      Me.ConstantsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-      '
-      'GridContextMenu
-      '
-      Me.GridContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MoveUpMenuItem, Me.MoveDownMenuItem, Me.DeleteVariablesMenuItem})
-      Me.GridContextMenu.Name = "ContextMenu"
-      Me.GridContextMenu.Size = New System.Drawing.Size(252, 70)
-      '
-      'MoveUpMenuItem
-      '
-      Me.MoveUpMenuItem.Name = "MoveUpMenuItem"
-      Me.MoveUpMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Up), System.Windows.Forms.Keys)
-      Me.MoveUpMenuItem.Size = New System.Drawing.Size(251, 22)
-      Me.MoveUpMenuItem.Text = "Move variables &up"
-      '
-      'MoveDownMenuItem
-      '
-      Me.MoveDownMenuItem.Name = "MoveDownMenuItem"
-      Me.MoveDownMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Down), System.Windows.Forms.Keys)
-      Me.MoveDownMenuItem.Size = New System.Drawing.Size(251, 22)
-      Me.MoveDownMenuItem.Text = "Move variables &down"
-      '
-      'DeleteVariablesMenuItem
-      '
-      Me.DeleteVariablesMenuItem.Name = "DeleteVariablesMenuItem"
-      Me.DeleteVariablesMenuItem.Size = New System.Drawing.Size(251, 22)
-      Me.DeleteVariablesMenuItem.Text = "Delete variables"
-      '
-      'BottomPanel
-      '
-      Me.BottomPanel.Controls.Add(Me.GridPanel)
-      Me.BottomPanel.Controls.Add(Me.Splitter2)
-      Me.BottomPanel.Controls.Add(Me.FilterPanel)
-      Me.BottomPanel.Dock = System.Windows.Forms.DockStyle.Fill
-      Me.BottomPanel.Location = New System.Drawing.Point(0, 90)
-      Me.BottomPanel.Name = "BottomPanel"
-      Me.BottomPanel.Size = New System.Drawing.Size(753, 434)
-      Me.BottomPanel.TabIndex = 28
-      '
-      'OutputFileDescUI
-      '
-      Me.Controls.Add(Me.BottomPanel)
-      Me.Controls.Add(Me.Splitter1)
-      Me.Controls.Add(Me.ConstantsPanel)
-      Me.Name = "OutputFileDescUI"
-      Me.Size = New System.Drawing.Size(753, 524)
-      Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
-      Me.Controls.SetChildIndex(Me.ConstantsPanel, 0)
-      Me.Controls.SetChildIndex(Me.Splitter1, 0)
-      Me.Controls.SetChildIndex(Me.BottomPanel, 0)
-      Me.GridPanel.ResumeLayout(False)
-      CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
-      Me.HelpPanel.ResumeLayout(False)
-      Me.HelpPanel.PerformLayout()
-      Me.FilterPanel.ResumeLayout(False)
-      Me.FilterPanel.PerformLayout()
-      Me.ConstantsPanel.ResumeLayout(False)
-      Me.ConstantsPanel.PerformLayout()
-      Me.GridContextMenu.ResumeLayout(False)
-      Me.BottomPanel.ResumeLayout(False)
-      Me.ResumeLayout(False)
+        Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(OutputFileDescUI))
+        Me.OpenFileDialog = New System.Windows.Forms.OpenFileDialog()
+        Me.GridPanel = New System.Windows.Forms.Panel()
+        Me.Grid = New UIBits.EnhancedGrid()
+        Me.HelpPanel = New System.Windows.Forms.Panel()
+        Me.GridLabel = New System.Windows.Forms.Label()
+        Me.HelpButton = New System.Windows.Forms.Button()
+        Me.Splitter1 = New System.Windows.Forms.Splitter()
+        Me.Splitter2 = New System.Windows.Forms.Splitter()
+        Me.FilterPanel = New System.Windows.Forms.Panel()
+        Me.DictionaryLabel = New System.Windows.Forms.Label()
+        Me.VariableListView = New System.Windows.Forms.ListView()
+        Me.ColumnHeader1 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader4 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.ColumnHeader3 = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.ComponentFilter = New System.Windows.Forms.ComboBox()
+        Me.ConstantsPanel = New System.Windows.Forms.Panel()
+        Me.ConstantsBox = New System.Windows.Forms.TextBox()
+        Me.ConstantsLabel = New System.Windows.Forms.Label()
+        Me.GridContextMenu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.MoveUpMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MoveDownMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DeleteVariablesMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BottomPanel = New System.Windows.Forms.Panel()
+        Me.TitleLabel = New System.Windows.Forms.Label()
+        Me.GridPanel.SuspendLayout()
+        CType(Me.Grid, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.HelpPanel.SuspendLayout()
+        Me.FilterPanel.SuspendLayout()
+        Me.ConstantsPanel.SuspendLayout()
+        Me.GridContextMenu.SuspendLayout()
+        Me.BottomPanel.SuspendLayout()
+        Me.SuspendLayout()
+        '
+        'MyHelpLabel
+        '
+        Me.MyHelpLabel.Size = New System.Drawing.Size(753, 16)
+        '
+        'OpenFileDialog
+        '
+        Me.OpenFileDialog.CheckFileExists = False
+        Me.OpenFileDialog.DefaultExt = "out"
+        Me.OpenFileDialog.Filter = "APSIM output files(*.out)|*.out|All Files (*.*)|*.*"
+        Me.OpenFileDialog.RestoreDirectory = True
+        Me.OpenFileDialog.Title = "Enter output file name"
+        '
+        'GridPanel
+        '
+        Me.GridPanel.Controls.Add(Me.Grid)
+        Me.GridPanel.Controls.Add(Me.HelpPanel)
+        Me.GridPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GridPanel.Location = New System.Drawing.Point(0, 0)
+        Me.GridPanel.Name = "GridPanel"
+        Me.GridPanel.Size = New System.Drawing.Size(353, 419)
+        Me.GridPanel.TabIndex = 11
+        '
+        'Grid
+        '
+        Me.Grid.AllowDrop = True
+        Me.Grid.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.Grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.Grid.ColumnHeadersVisible = False
+        Me.Grid.DataSourceTable = Nothing
+        Me.Grid.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Grid.Location = New System.Drawing.Point(0, 30)
+        Me.Grid.Name = "Grid"
+        Me.Grid.RowHeadersVisible = False
+        Me.Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect
+        Me.Grid.Size = New System.Drawing.Size(353, 389)
+        Me.Grid.TabIndex = 27
+        '
+        'HelpPanel
+        '
+        Me.HelpPanel.Controls.Add(Me.GridLabel)
+        Me.HelpPanel.Controls.Add(Me.HelpButton)
+        Me.HelpPanel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.HelpPanel.Location = New System.Drawing.Point(0, 0)
+        Me.HelpPanel.Name = "HelpPanel"
+        Me.HelpPanel.Size = New System.Drawing.Size(353, 30)
+        Me.HelpPanel.TabIndex = 27
+        '
+        'GridLabel
+        '
+        Me.GridLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.GridLabel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GridLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.GridLabel.Location = New System.Drawing.Point(30, 0)
+        Me.GridLabel.Name = "GridLabel"
+        Me.GridLabel.Size = New System.Drawing.Size(323, 30)
+        Me.GridLabel.TabIndex = 25
+        Me.GridLabel.Text = "Output file columns:"
+        Me.GridLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'HelpButton
+        '
+        Me.HelpButton.AutoSize = True
+        Me.HelpButton.Dock = System.Windows.Forms.DockStyle.Left
+        Me.HelpButton.Image = CType(resources.GetObject("HelpButton.Image"), System.Drawing.Image)
+        Me.HelpButton.Location = New System.Drawing.Point(0, 0)
+        Me.HelpButton.Name = "HelpButton"
+        Me.HelpButton.Size = New System.Drawing.Size(30, 30)
+        Me.HelpButton.TabIndex = 26
+        Me.HelpButton.UseVisualStyleBackColor = True
+        '
+        'Splitter1
+        '
+        Me.Splitter1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Splitter1.Location = New System.Drawing.Point(0, 102)
+        Me.Splitter1.Name = "Splitter1"
+        Me.Splitter1.Size = New System.Drawing.Size(753, 3)
+        Me.Splitter1.TabIndex = 22
+        Me.Splitter1.TabStop = False
+        '
+        'Splitter2
+        '
+        Me.Splitter2.Dock = System.Windows.Forms.DockStyle.Right
+        Me.Splitter2.Location = New System.Drawing.Point(353, 0)
+        Me.Splitter2.Name = "Splitter2"
+        Me.Splitter2.Size = New System.Drawing.Size(3, 419)
+        Me.Splitter2.TabIndex = 23
+        Me.Splitter2.TabStop = False
+        '
+        'FilterPanel
+        '
+        Me.FilterPanel.Controls.Add(Me.DictionaryLabel)
+        Me.FilterPanel.Controls.Add(Me.VariableListView)
+        Me.FilterPanel.Controls.Add(Me.Label1)
+        Me.FilterPanel.Controls.Add(Me.ComponentFilter)
+        Me.FilterPanel.Dock = System.Windows.Forms.DockStyle.Right
+        Me.FilterPanel.Location = New System.Drawing.Point(356, 0)
+        Me.FilterPanel.Name = "FilterPanel"
+        Me.FilterPanel.Size = New System.Drawing.Size(397, 419)
+        Me.FilterPanel.TabIndex = 18
+        '
+        'DictionaryLabel
+        '
+        Me.DictionaryLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.DictionaryLabel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.DictionaryLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.DictionaryLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.DictionaryLabel.Location = New System.Drawing.Point(0, 0)
+        Me.DictionaryLabel.Name = "DictionaryLabel"
+        Me.DictionaryLabel.Size = New System.Drawing.Size(397, 30)
+        Me.DictionaryLabel.TabIndex = 22
+        Me.DictionaryLabel.Text = "Variables to drag onto grid:"
+        Me.DictionaryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'VariableListView
+        '
+        Me.VariableListView.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.VariableListView.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.ColumnHeader1, Me.ColumnHeader4, Me.ColumnHeader3})
+        Me.VariableListView.FullRowSelect = True
+        Me.VariableListView.Location = New System.Drawing.Point(11, 59)
+        Me.VariableListView.Name = "VariableListView"
+        Me.VariableListView.Size = New System.Drawing.Size(374, 346)
+        Me.VariableListView.Sorting = System.Windows.Forms.SortOrder.Ascending
+        Me.VariableListView.TabIndex = 20
+        Me.VariableListView.UseCompatibleStateImageBehavior = False
+        Me.VariableListView.View = System.Windows.Forms.View.Details
+        '
+        'ColumnHeader1
+        '
+        Me.ColumnHeader1.Text = "Variable name"
+        Me.ColumnHeader1.Width = 201
+        '
+        'ColumnHeader4
+        '
+        Me.ColumnHeader4.Text = "Array?"
+        Me.ColumnHeader4.Width = 45
+        '
+        'ColumnHeader3
+        '
+        Me.ColumnHeader3.Text = "Description"
+        Me.ColumnHeader3.Width = 437
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(10, 35)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(86, 13)
+        Me.Label1.TabIndex = 19
+        Me.Label1.Text = "Component filter:"
+        '
+        'ComponentFilter
+        '
+        Me.ComponentFilter.FormattingEnabled = True
+        Me.ComponentFilter.Location = New System.Drawing.Point(102, 32)
+        Me.ComponentFilter.Name = "ComponentFilter"
+        Me.ComponentFilter.Size = New System.Drawing.Size(155, 21)
+        Me.ComponentFilter.TabIndex = 18
+        '
+        'ConstantsPanel
+        '
+        Me.ConstantsPanel.Controls.Add(Me.ConstantsBox)
+        Me.ConstantsPanel.Controls.Add(Me.TitleLabel)
+        Me.ConstantsPanel.Controls.Add(Me.ConstantsLabel)
+        Me.ConstantsPanel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ConstantsPanel.Location = New System.Drawing.Point(0, 16)
+        Me.ConstantsPanel.Name = "ConstantsPanel"
+        Me.ConstantsPanel.Size = New System.Drawing.Size(753, 86)
+        Me.ConstantsPanel.TabIndex = 24
+        '
+        'ConstantsBox
+        '
+        Me.ConstantsBox.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.ConstantsBox.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.ConstantsBox.Location = New System.Drawing.Point(0, 43)
+        Me.ConstantsBox.Multiline = True
+        Me.ConstantsBox.Name = "ConstantsBox"
+        Me.ConstantsBox.Size = New System.Drawing.Size(753, 43)
+        Me.ConstantsBox.TabIndex = 19
+        '
+        'ConstantsLabel
+        '
+        Me.ConstantsLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.ConstantsLabel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.ConstantsLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ConstantsLabel.ForeColor = System.Drawing.SystemColors.ActiveCaptionText
+        Me.ConstantsLabel.Location = New System.Drawing.Point(0, 0)
+        Me.ConstantsLabel.Name = "ConstantsLabel"
+        Me.ConstantsLabel.Size = New System.Drawing.Size(753, 30)
+        Me.ConstantsLabel.TabIndex = 20
+        Me.ConstantsLabel.Text = "Constants to put in top of output file:"
+        Me.ConstantsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'GridContextMenu
+        '
+        Me.GridContextMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.MoveUpMenuItem, Me.MoveDownMenuItem, Me.DeleteVariablesMenuItem})
+        Me.GridContextMenu.Name = "ContextMenu"
+        Me.GridContextMenu.Size = New System.Drawing.Size(252, 70)
+        '
+        'MoveUpMenuItem
+        '
+        Me.MoveUpMenuItem.Name = "MoveUpMenuItem"
+        Me.MoveUpMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Up), System.Windows.Forms.Keys)
+        Me.MoveUpMenuItem.Size = New System.Drawing.Size(251, 22)
+        Me.MoveUpMenuItem.Text = "Move variables &up"
+        '
+        'MoveDownMenuItem
+        '
+        Me.MoveDownMenuItem.Name = "MoveDownMenuItem"
+        Me.MoveDownMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Down), System.Windows.Forms.Keys)
+        Me.MoveDownMenuItem.Size = New System.Drawing.Size(251, 22)
+        Me.MoveDownMenuItem.Text = "Move variables &down"
+        '
+        'DeleteVariablesMenuItem
+        '
+        Me.DeleteVariablesMenuItem.Name = "DeleteVariablesMenuItem"
+        Me.DeleteVariablesMenuItem.Size = New System.Drawing.Size(251, 22)
+        Me.DeleteVariablesMenuItem.Text = "Delete variables"
+        '
+        'BottomPanel
+        '
+        Me.BottomPanel.Controls.Add(Me.GridPanel)
+        Me.BottomPanel.Controls.Add(Me.Splitter2)
+        Me.BottomPanel.Controls.Add(Me.FilterPanel)
+        Me.BottomPanel.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.BottomPanel.Location = New System.Drawing.Point(0, 105)
+        Me.BottomPanel.Name = "BottomPanel"
+        Me.BottomPanel.Size = New System.Drawing.Size(753, 419)
+        Me.BottomPanel.TabIndex = 28
+        '
+        'TitleLabel
+        '
+        Me.TitleLabel.AutoSize = True
+        Me.TitleLabel.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.TitleLabel.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TitleLabel.Location = New System.Drawing.Point(0, 30)
+        Me.TitleLabel.Name = "TitleLabel"
+        Me.TitleLabel.Size = New System.Drawing.Size(39, 13)
+        Me.TitleLabel.TabIndex = 21
+        Me.TitleLabel.Text = "Label2"
+        '
+        'OutputFileDescUI
+        '
+        Me.Controls.Add(Me.BottomPanel)
+        Me.Controls.Add(Me.Splitter1)
+        Me.Controls.Add(Me.ConstantsPanel)
+        Me.Name = "OutputFileDescUI"
+        Me.Size = New System.Drawing.Size(753, 524)
+        Me.Controls.SetChildIndex(Me.MyHelpLabel, 0)
+        Me.Controls.SetChildIndex(Me.ConstantsPanel, 0)
+        Me.Controls.SetChildIndex(Me.Splitter1, 0)
+        Me.Controls.SetChildIndex(Me.BottomPanel, 0)
+        Me.GridPanel.ResumeLayout(False)
+        CType(Me.Grid, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.HelpPanel.ResumeLayout(False)
+        Me.HelpPanel.PerformLayout()
+        Me.FilterPanel.ResumeLayout(False)
+        Me.FilterPanel.PerformLayout()
+        Me.ConstantsPanel.ResumeLayout(False)
+        Me.ConstantsPanel.PerformLayout()
+        Me.GridContextMenu.ResumeLayout(False)
+        Me.BottomPanel.ResumeLayout(False)
+        Me.ResumeLayout(False)
 
-   End Sub
+    End Sub
 
 #End Region
 
@@ -444,20 +458,16 @@ Public Class OutputFileDescUI
         'Fill it in with the new stuff from this node.
         Dim Lines As List(Of String) = New List(Of String)
 
-        ' Titles are "special" 
         Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
-        hasTitle = False
-        Dim TitleNode As XmlNode = XmlHelper.Find(outputfileComponent.ContentsAsXML(), "title")
-        If (Not IsNothing(TitleNode)) Then
-            Lines.Add("Title = " + TitleNode.InnerText)
-            hasTitle = True
-        End If
-        Dim Index As Integer = 1
+        Dim FileName As String = ComponentUtility.CalcFileName(outputfileComponent)
+        TitleLabel.Text = "(readonly) Title = " + Path.GetFileNameWithoutExtension(FileName)
+        
         Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
         If Not IsNothing(ConstantsNode) Then
             For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
-                Lines.Add(Constant.Name + " = " + Constant.InnerText)
-                Index = Index + 1
+                If Constant.Name.ToLower <> "title" Then
+                    Lines.Add(Constant.Name + " = " + Constant.InnerText)
+                End If
             Next
         End If
         ConstantsBox.Lines = Lines.ToArray()
@@ -542,39 +552,21 @@ Public Class OutputFileDescUI
       Next
 
         Dim Constants As XmlNode = XmlHelper.Find(Data, "constants")
-      If Not IsNothing(Constants) Then
-         Data.RemoveChild(Constants)
+        If Not IsNothing(Constants) Then
+            Data.RemoveChild(Constants)
         End If
-        Dim titleIsInListbox As Boolean = False
-      For Each Line As String In ConstantsBox.Lines
-         Dim PosEquals As Integer = Line.IndexOf("=")
-         If PosEquals <> -1 Then
+        For Each Line As String In ConstantsBox.Lines
+            Dim PosEquals As Integer = Line.IndexOf("=")
+            If PosEquals <> -1 Then
                 Dim ConstantName As String = Trim(Line.Substring(0, PosEquals))
                 Dim ConstantValue As String = Trim(Line.Substring(PosEquals + 1))
                 If (ConstantName = "Title") Then
-                    Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
-                    outputfileComponent.SetValue("title", ConstantValue)
-                    titleIsInListbox = True
+                    MessageBox.Show("You cannot specify a title. It is set automatically to the name of the simulation", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Else
                     XmlHelper.SetValue(Data, "constants/" + ConstantName, ConstantValue)
                 End If
             End If
         Next
-        If (hasTitle And Not titleIsInListbox) Then
-            ' User has deleted the title. Set it to the default value
-            Dim outputfileComponent As ApsimFile.Component = Controller.ApsimData.Find(NodePath).Parent
-            Dim simulationName As String = ""
-            Dim d As Component = outputfileComponent
-            While (Not IsNothing(d.Parent))
-                d = d.Parent
-                If (d.Type.ToLower() = "simulation") Then
-                    simulationName = d.Name
-                End If
-            End While
-            outputfileComponent.SetValue("title", simulationName)
-
-        End If
-
     End Sub
 
 

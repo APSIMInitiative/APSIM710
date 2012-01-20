@@ -115,10 +115,11 @@ namespace ApsimFile
             // this recursively for all children.
             //  Some "compound" objects shouldnt be resolved - eg. outputfile, area, but their children should be
             // ------------------------------------------------------
-            if (Type != "outputfile" && TempShortCutName != "") // FIXME - could do this better. 
+            if (TempShortCutName != "") 
             {
                 MyShortCutTo = MyFile.Find(TempShortCutName);
                 TempShortCutName = "";
+                CheckOutputFileNode();
             }
             foreach (Component Child in ChildNodes)
                 Child.ResolveShortcuts();
@@ -182,10 +183,14 @@ namespace ApsimFile
                 OuterContents += ">";
 
                 // Get the absolute base component.
+                // For output files, don't follow any shortcuts because we want to read
+                // the title and filename from this node, not the shortcut node.
                 Component BaseComponent = this;
-                while (BaseComponent.MyShortCutTo != null)
-                    BaseComponent = BaseComponent.MyShortCutTo;
-
+                if (Type != "outputfile")
+                {
+                    while (BaseComponent.MyShortCutTo != null)
+                        BaseComponent = BaseComponent.MyShortCutTo;
+                }
                 OuterContents += BaseComponent.MyContents;
                 OuterContents += "</" + Type + ">";
                 return OuterContents;
@@ -200,12 +205,12 @@ namespace ApsimFile
                     if (MyContents != InnerContents)
                     {
                         MyContents = InnerContents;
-                        CheckOutputFileNode();
                         MyFile.PublishContentChanged(this);
                     }
                 }
                 else
                     MyShortCutTo.Contents = value;
+                CheckOutputFileNode();
             }
         }
         public XmlNode ContentsAsXML
@@ -422,6 +427,7 @@ namespace ApsimFile
 
             MyFile.EndUpdate();
             MyFile.PublishComponentChanged(this);
+            CheckOutputFileNode();
             return ShortCutComponent;
         }
         public void Delete(Component ComponentToDelete)
@@ -726,6 +732,8 @@ namespace ApsimFile
                 XmlHelper.SetAttribute(FileNameNode, "output", "yes");
                 MyContents = Node.InnerXml;
             }
+            foreach (Component Child in ChildNodes)
+                Child.CheckOutputFileNode();
         }
     }
 }
