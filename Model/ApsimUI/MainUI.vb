@@ -690,22 +690,16 @@ Public Class MainUI
 
         If Sender.GetType().ToString = "System.Windows.Forms.ToolStripButton" Then
             CurrentToolBoxButton = Sender
-        Else
-            CurrentToolBoxButton.Checked = False
-        End If
 
-        Dim ButtonThatWasClicked As ToolStripButton = CurrentToolBoxButton
-        If Not ButtonThatWasClicked.Checked Then
-            HideToolBoxWindow(ButtonThatWasClicked, e)
-        Else
+            Dim ButtonThatWasClicked As ToolStripButton = CurrentToolBoxButton
+
             ' Turn off the checked status of all toolbox buttons - except the one
             ' that was just clicked.
             For i As Integer = 2 To ToolBoxesToolStrip.Items.Count - 1
                 Dim Button As ToolStripButton = ToolBoxesToolStrip.Items(i)
-                If Not Button Is ButtonThatWasClicked Then
                     Button.Checked = False
-                End If
             Next
+            ButtonThatWasClicked.Checked = True
 
             Dim inifile As New IniFile
             ToolBoxPanel.Height = Val(Configuration.Instance.Setting("toolboxheight"))
@@ -722,8 +716,11 @@ Public Class MainUI
 
             ToolboxController.ApsimData.OpenFile(filename)
             Cursor.Current = Cursors.Default
-
+        Else
+            CurrentToolBoxButton.Checked = False
+            HideToolBoxWindow(Sender, e)
         End If
+
     End Sub
     Private Sub HideToolBoxWindow(ByVal Sender As Object, ByVal e As EventArgs)
         ' ---------------------------------------------------------------
