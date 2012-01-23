@@ -98,7 +98,7 @@ namespace Graph
             if (NumGraphs == 1)
                NumRows = 1;
             else
-               NumRows = (int)Math.Sqrt(NumGraphs) + 1;
+               NumRows = (int)Math.Sqrt(NumGraphs-1) + 1;
             int NumCols = (int)Math.Ceiling((double)NumGraphs / NumRows);
             int Width = Panel.Size.Width / NumCols;
             int Height = Panel.Size.Height / NumRows - 1;
