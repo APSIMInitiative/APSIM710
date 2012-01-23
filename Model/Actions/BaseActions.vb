@@ -20,7 +20,7 @@ Public Class BaseActions
             If (Configuration.Instance.GetFrequentList.Count() > 0) Then
                 LastDir = Configuration.Instance.GetFrequentList()(0)
             Else
-                LastDir = ""
+                LastDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
             End If
 
             Dim dialog As New OpenFileDialog
@@ -49,20 +49,25 @@ Public Class BaseActions
    Public Shared Function FileSaveAs(ByVal Controller As BaseController) As Boolean
       Dim result As Boolean = False
         Dim Dialog As New SaveFileDialog
-        Dim LastDir As String = Configuration.Instance.GetFrequentList()(0)
-        LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
+        Dim LastDir As String
+        If (Configuration.Instance.GetFrequentList.Count > 0) Then
+            LastDir = Configuration.Instance.GetFrequentList()(0)
+            LastDir = LastDir.Substring(0, LastDir.LastIndexOf("\"))
+        Else
+            LastDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal)
+        End If
         Dialog.InitialDirectory = LastDir
-      Dialog.Filter = Configuration.Instance.Setting("DialogFilter")
-      Dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
-      Dialog.AddExtension = True
-      Dialog.OverwritePrompt = True
-      If Dialog.ShowDialog = DialogResult.OK Then
-         Controller.Explorer.SaveCurrentView()
-         result = Controller.ApsimData.SaveAs(Dialog.FileName)
-         Controller.RefreshToolStrips()
-      End If
-      Return result
-   End Function
+        Dialog.Filter = Configuration.Instance.Setting("DialogFilter")
+        Dialog.DefaultExt = Configuration.Instance.Setting("DefaultExtension")
+        Dialog.AddExtension = True
+        Dialog.OverwritePrompt = True
+        If Dialog.ShowDialog = DialogResult.OK Then
+            Controller.Explorer.SaveCurrentView()
+            result = Controller.ApsimData.SaveAs(Dialog.FileName)
+            Controller.RefreshToolStrips()
+        End If
+        Return result
+    End Function
    Public Shared Sub HelpAbout(ByVal Controller As BaseController)
       If Configuration.Instance.Setting("SplashScreen") <> "" Then
          Dim SplashForm As Form = BaseController.CreateClass(Configuration.Instance.Setting("SplashScreen"))
