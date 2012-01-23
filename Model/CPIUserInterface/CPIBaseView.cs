@@ -202,6 +202,8 @@ namespace CPIUserInterface
                         MessageBox.Show("Could not open editor.", "Error");
                     }
                 }
+                else
+                    MessageBox.Show("No editor found.", "Information");
                 if (result)
                 {
                     StringBuilder sSDML = new StringBuilder(len);

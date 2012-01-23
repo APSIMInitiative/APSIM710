@@ -341,17 +341,13 @@ namespace CPIUserInterface
                     }
 
                     //delete option
-                    deleteToolStripMenuItem1.Enabled = (treeParentTag != null) && (treeParentTag.TypedValue.count() > 0);
-                    deleteToolStripMenuItem1.Visible = true;
+                    deleteToolStripMenuItem1.Enabled = (treeParentTag != null) && (treeParentTag.TypedValue.count() > 0) && (treeParentTag.TypedValue.isArray());
+                    deleteToolStripMenuItem1.Visible = (treeParentTag != null) && (treeParentTag.TypedValue.isArray());
+                    //add options
                     if (treeViewColTag.TypedValue.isArray()) 
                     {
                         addToolStripMenuItem.Enabled = true;
                         addToolStripMenuItem.Visible = true;
-                    }
-                    else if (treeViewColTag.TypedValue.isRecord())
-                    {
-                        deleteToolStripMenuItem1.Enabled = false;
-                        deleteToolStripMenuItem1.Visible = false;
                     }
                 }
             }
@@ -371,7 +367,7 @@ namespace CPIUserInterface
 
                     if (reloadTreeEvent != null)
                     {
-                        reloadTreeEvent();
+                        reloadTreeEvent();      //expects as a minimum a redraw of the selected node
                     }
                     selectNode(treeView1.Nodes, currentTreeNode);
                 }
@@ -405,11 +401,8 @@ namespace CPIUserInterface
             {
                 TAFTreeViewColumnTag treeViewColTag = this.treeView1.SelectedNode.Tag as TAFTreeViewColumnTag;
 
-                CMPServices.TTypedValue tt = treeViewColTag.TypedValue;
-                //tt.deleteElement(0);
                 TreeNode parentNode = treeView1.SelectedNode.Parent;
-                //treeViewColTag.TypedValue.
-
+                
                 if ((parentNode != null) && (parentNode.Tag is TAFTreeViewColumnTag))
                 {
                     TAFTreeViewColumnTag parentTreeViewColTag = parentNode.Tag as TAFTreeViewColumnTag;
@@ -417,6 +410,7 @@ namespace CPIUserInterface
                     
                     if (reloadTreeEvent != null)
                     {
+                        selectNode(treeView1.Nodes, parentNode);    //this means that is the parent only is being refilled it will work correctly
                         reloadTreeEvent();
                     }
 

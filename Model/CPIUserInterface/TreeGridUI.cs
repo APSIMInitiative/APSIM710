@@ -330,11 +330,20 @@ namespace CPIUserInterface
         //=======================================================================
         /// <summary>
         /// Called from the tree when arrays are resized.
+        /// Using the selected node, just recreate it's child nodes.
         /// </summary>
         //=======================================================================
         private void afTreeViewColumns1_reloadTreeEvent()
         {
-            InitFromInitSection("");    //I don't need a string here to reload current values
+            if (afTreeViewColumns1.TreeView.SelectedNode != null)
+            {
+                TAFTreeViewColumnTag changedValue = (TAFTreeViewColumnTag)afTreeViewColumns1.TreeView.SelectedNode.Tag;
+                afTreeViewColumns1.TreeView.BeginUpdate();
+                afTreeViewColumns1.TreeView.SelectedNode.Nodes.Clear();
+                addTreeModelNode(afTreeViewColumns1.TreeView.SelectedNode, changedValue.TypedValue.Name, changedValue.TypedValue);
+                afTreeViewColumns1.TreeView.SelectedNode.Expand();
+                afTreeViewColumns1.TreeView.EndUpdate();
+            }
         }
         //=========================================================================
         /// <summary>
@@ -346,8 +355,8 @@ namespace CPIUserInterface
         private void button1_Click(object sender, EventArgs e)
         {
             String sInitSDML = WriteInitsectionXml(); //with no subscribed events in the SDML
-            Initialise(FDllFileName, ref sInitSDML);
-            InitFromInitSection(sInitSDML);
+            if (Initialise(FDllFileName, ref sInitSDML))
+                InitFromInitSection(sInitSDML);
         }
         //=========================================================================
         /// <summary>
