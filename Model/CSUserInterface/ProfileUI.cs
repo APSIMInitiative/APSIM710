@@ -260,6 +260,7 @@ namespace CSUserInterface
 
                 if (DoingCrops)
                 {
+                    Col.ReadOnly = true;
                     Col.DefaultCellStyle.BackColor = CropColors[CropIndex];
                     if (Col.HeaderText.Contains("XF"))
                     {
