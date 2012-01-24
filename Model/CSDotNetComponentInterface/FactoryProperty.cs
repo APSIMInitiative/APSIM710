@@ -788,7 +788,7 @@ public class WrapBuiltInVariable<T> : TypeInterpreter, ApsimType
         else if (tType == typeof(DateTime))
         {
             double JulianDate = DDMLValue.asDouble();               //stored as a double
-            DateTime jDate = TTimeValue.JDToDateTime(JulianDate);
+            DateTime jDate = DateUtility.JulianDayNumberToDateTime((int)Math.Truncate(JulianDate));
             Value = (T)(Convert.ChangeType(jDate, typeof(T)));
         }
     }
@@ -897,7 +897,7 @@ public class WrapBuiltInVariable<T> : TypeInterpreter, ApsimType
         }
         else if (tType == typeof(DateTime))
         {
-            double JulianDate = TTimeValue.dateTimeToJD((DateTime)Convert.ChangeType(value, typeof(DateTime)));
+            double JulianDate = DateUtility.DateTimeToJulianDayNumber((DateTime)Convert.ChangeType(value, typeof(DateTime)));
             DDMLValue.setValue(JulianDate);
         }
     }

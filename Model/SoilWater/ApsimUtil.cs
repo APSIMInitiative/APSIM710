@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using CSGeneral;
 
    class ApsimUtil
       {
@@ -211,23 +211,14 @@ using System.Text;
          }
 
       static public void jday_to_day_of_year(Double JulianDay, out int DOY, out int Year)
-         {
+      {
 
-         //sv- Julian Day is NOT Day of Year. It is a common misonception that Julian Date is DOY but it is incorrect.
-         //    Julian Day is days since 1 January 4713 BC Greenwich noon, Julian proleptic calendar. Expressed as a double -> days_since_4713BC.fraction_of_day
-         //    The correct term is Ordinal Date or just plain old 'Day of Year'. 
-         //    See http://en.wikipedia.org/wiki/Julian_day and http://en.wikipedia.org/wiki/ISO_8601#Ordinal_dates
+          //sv- Julian Day is NOT Day of Year. It is a common misonception that Julian Date is DOY but it is incorrect.
+          //    Julian Day is days since 1 January 4713 BC Greenwich noon, Julian proleptic calendar. Expressed as a double -> days_since_4713BC.fraction_of_day
+          //    The correct term is Ordinal Date or just plain old 'Day of Year'. 
+          //    See http://en.wikipedia.org/wiki/Julian_day and http://en.wikipedia.org/wiki/ISO_8601#Ordinal_dates
 
-         DateTime theday = CSGeneral.DateUtility.GetDate(JulianDay);
-		 DOY = theday.DayOfYear;
-		 Year = theday.Year;
-
-         //CSGeneral.DateUtility.JulianDateToDayOfYear(JulianDay, out DOY, out Year);
-
-
-         }
-      
-
-
+          DateUtility.JulianDayNumberToDayOfYear((int)Math.Truncate(JulianDay), out DOY, out Year);
       }
+}
 

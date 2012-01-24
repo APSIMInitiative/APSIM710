@@ -16,13 +16,15 @@ namespace CSGeneral
         static Regex
             rxDD = new Regex(@"\d\d?"),
             rxMMM = new Regex(@"\w{3}");
-
+        //=====================================================================
         /// <summary>
         /// Convert a Julian Date to a DateTime object
+        /// Where the Julian day begins at Greenwich mean noon 12pm. 12h UT.
+        /// 2429996.0 is 1/1/1941 12:00
         /// </summary>
         /// <param name="julian_date"></param>
         /// <returns></returns>
-        public static DateTime GetDate(double julian_date)
+        private static DateTime GetDate(double julian_date)
         {
             double a, b, c, d, e, f, z, alpha, decDay;
             int yr, mnth, day, hr, min, sec, ms;
@@ -192,13 +194,15 @@ namespace CSGeneral
         {
             return today.CompareTo(start) >= 0 && today.CompareTo(end) <= 0;
         }
-
+        //=====================================================================
         /// <summary>
-        /// Get a Julian Date from a DateTime
+        /// Get a Julian Date from a DateTime. Where the Julian day begins at Greenwich mean noon 12pm. 12h UT.
+        /// 2429995.5 is 1/1/1941 00:00
+        /// 2429996.0 is 1/1/1941 12:00
         /// </summary>
         /// <param name="date">The DateTime to convert</param>
         /// <returns>The Julian Date representation of <paramref name="date"/></returns>
-        public static double GetJulianDate(DateTime date)
+        private static double GetJulianDate(DateTime date)
         {
             double yr;
             double a, b = 0;
@@ -219,7 +223,7 @@ namespace CSGeneral
             }
             if (yr >= 1582.1015)
             { //use yyyy.MMDDdd value
-                a = y / 100;  // Integer division
+                a = Math.Truncate(y / 100);  
                 b = 2 - a + Math.Truncate(a / 4.0);
             }
 
@@ -227,7 +231,7 @@ namespace CSGeneral
 
             return JD;
         }
-
+        //=====================================================================
         /// <summary>
         /// Converts a Julian Day Number to Day of year. 
         /// </summary>
@@ -235,11 +239,36 @@ namespace CSGeneral
         /// <returns>Date time value.</returns>
         public static void JulianDayNumberToDayOfYear(int JDN, out int dyoyr, out int year)
         {
-            uint day;
-            uint month;
             DateTime date = GetDate(JDN);
             dyoyr = date.DayOfYear;
             year = date.Year;
+        }
+        //=====================================================================
+        /// <summary>
+        /// Convert the Julian day number (int value) emitted from Clock to a DateTime. 
+        /// This will be the DateTime at 00:00 of the day. 
+        /// For example 2429996 => 1/1/1941 by the apsim clock. 
+        /// (Where 2429996 is really 1/1/1941 12pm. 2429995.5 is really 1/1/1941 00:00.) 
+        /// </summary>
+        /// <param name="JDN"></param>
+        /// <returns></returns>
+        public static DateTime JulianDayNumberToDateTime(int JDN)
+        {
+            double jd = JDN - 0.5;  //Convert to true julian date value (at 00:00).
+            return GetDate(jd);     //equiv to new DateTime(y,m,d)
+        }
+        //=====================================================================
+        /// <summary>
+        /// Convert the DateTime value to the Julian day number equivalent to what
+        /// Clock would emit. Given the DateTime for a day would give the whole number
+        /// for the standard Julian date at 12h on this day.
+        /// e.g. 1/1/1941 00:00 - 23:59 --> 2429996
+        /// </summary>
+        /// <param name="adatetime"></param>
+        /// <returns></returns>
+        public static int DateTimeToJulianDayNumber(DateTime adatetime)
+        {
+            return (int)Math.Truncate(GetJulianDate(adatetime) + 0.5);
         }
     }
 }

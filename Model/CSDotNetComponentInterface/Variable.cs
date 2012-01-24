@@ -323,7 +323,7 @@ namespace ModelFramework
             }
             else if (tType == typeof(DateTime))
             {
-                double JulianDate = TTimeValue.dateTimeToJD((DateTime)Convert.ChangeType(value, typeof(DateTime)));
+                double JulianDate = DateUtility.DateTimeToJulianDayNumber((DateTime)Convert.ChangeType(value, typeof(DateTime))); 
                 DDMLValue.setValue(JulianDate);
             }
         }
