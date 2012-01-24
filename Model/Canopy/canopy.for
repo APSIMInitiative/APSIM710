@@ -88,7 +88,7 @@ C VOS
 
 *+  Local Variables
       integer    num_modules           ! number of module names in list
-      character  line*200              ! message
+      character  line*2000              ! message
       integer    i                     ! loop counter
 
       integer    numvals           ! VOS for if DoLIght is yes
@@ -132,7 +132,7 @@ C VOS
          write (line, '(a)')  ' Module rotation for intercropping :'
          call write_string (line)
 
-         write (line, '(100a)')  (g%intercrop_list(i), i=1, num_modules)
+         write (line, '(2000a)')(g%intercrop_list(i), i=1, num_modules)
          call write_string (line)
 
       else
