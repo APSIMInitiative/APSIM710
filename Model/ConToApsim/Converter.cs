@@ -200,6 +200,8 @@ namespace ConToApsim
                TransferParameter(Child, "InitData/mass", NewNode, "mass");
                TransferParameter(Child, "InitData/cnr", NewNode, "cnr");
                TransferParameter(Child, "InitData/type", NewNode, "type");
+               if (XmlHelper.Value(Child, "InitData/standing_fraction") != "")
+                   TransferParameter(Child, "InitData/standing_fraction", NewNode, "standing_fraction");
                }
             else if (ModuleName == "solute")
                {
