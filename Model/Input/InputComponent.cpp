@@ -115,6 +115,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 
       static const char* getDataDDML = "<type kind=\"string\" array=\"T\"/>";
       static const char* stringDDML = "<type kind=\"string\"/>";
+      static const char* singleType = "<type kind=\"single\"/>";
 
       // register a few things.
 	  tickID = addRegistration(::respondToEvent, 0, "tick", DDML(protocol::TimeType()).c_str());
@@ -123,7 +124,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  hasDataTodayID = addRegistration(::respondToGet, 0, "hasDataToday", hasDataTodayTypeDDML);
 	  getDataMethodID = addRegistration(::respondToEvent, 0, "getData", getDataDDML);
 	  haveReadTodaysDataID = addRegistration(::event, 0, "HaveReadTodaysData", nullTypeDDML);
-
+     
 	  iAmMet = (Str_i_Cmp(getName(), "met") == 0);
 	  if (iAmMet)
 		 {
@@ -148,6 +149,16 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  openInputFile();
 	  registerAllVariables();
 	  checkForSparseData();
+     
+     // When the DLL is probed the filename will be blank. Send out some dummy variables so that the GUI
+     // and other tools can see the met variables.
+     if (fileName == "")
+        {
+          addRegistration(::respondToGet, 0, "maxt", singleType);       
+          addRegistration(::respondToGet, 0, "mint", singleType);       
+          addRegistration(::respondToGet, 0, "radn", singleType);       
+          addRegistration(::respondToGet, 0, "rain", singleType);       
+        }     
 	  }
    catch (const runtime_error& err)
 	  {
