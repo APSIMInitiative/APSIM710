@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="Rice-wheat">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\Bhola.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Bhola.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">01/06/2001</start_date>
       <end_date type="date" description="Select the end date of the simulation">31/05/2002</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Silt">
         <Country>Bangladesh</Country>
@@ -499,7 +497,7 @@ min_dop = 20</text>
             <modulename type="modulename" description="The module the event come from : ">rice</modulename>
             <eventname type="text" description="On which event should tillage be done : ">harvesting</eventname>
             <category type="category" description="Tillage details" />
-            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">Surface Organic Matter</surfaceommodule>
+            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">SurfaceOrganicMatter</surfaceommodule>
             <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
             <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
             <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.85</tillage_f_incorp>
@@ -656,7 +654,7 @@ endif  </text>
             <modulename type="modulename" description="The module the event come from : ">wheat</modulename>
             <eventname type="text" description="On which event should tillage be done : ">harvesting</eventname>
             <category type="category" description="Tillage details" />
-            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">Surface Organic Matter</surfaceommodule>
+            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">SurfaceOrganicMatter</surfaceommodule>
             <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
             <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">0</tillage_depth>
             <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">.8</tillage_f_incorp>
@@ -680,7 +678,7 @@ endif  </text>
       </irrigation>
       <rice />
       <wheat />
-      <surfaceom name="Surface Organic Matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">rice_stubble</PoolName>
         <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat" description="Organic Matter type">rice</type>
         <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
@@ -694,6 +692,8 @@ endif  </text>
         <CEC type="text" description="surface soil cation exchange capacity">30.0</CEC>
       </pond>
       <outputfile name="Outputfile">
+        <filename output="yes">Rice-wheat.out</filename>
+        <title>Rice-wheat</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="year" />

@@ -1,4 +1,4 @@
-<folder version="25" name="Simulations">
+<folder version="28" name="Simulations">
   <folder name="Shared">
     <area name="p">
       <wheat />
@@ -2115,7 +2115,6 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -2520,7 +2519,6 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -2958,7 +2956,6 @@ closeLogging
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -3187,15 +3184,15 @@ closeLogging
       <end_date type="date" description="Select the end date of the simulation">2/07/1972</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/Metfiles/Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/Metfiles/Goond.met</filename>
     </metfile>
   </folder>
   <simulation name="MCA plastic">
     <clock shortcut="/Simulations/Shared/clock" />
-    <metfile name="met" shortcut="/Simulations/Shared/met" />
-    <summaryfile>
-      <filename name="filename">MCA plastic.sum</filename>
-    </summaryfile>
+    <metfile name="met" shortcut="/Simulations/Shared/met">
+      <filename shortcut="/Simulations/Shared/met/filename" input="yes" />
+    </metfile>
+    <summaryfile />
     <tclmanager name="Economics" shortcut="/Simulations/Shared/Economics">
       <rule name="Cash Initialisation logic" shortcut="/Simulations/Shared/Economics/Cash Initialisation logic" />
       <rule name="Initial Capital Assets" shortcut="/Simulations/Shared/Economics/Initial Capital Assets" />
@@ -4032,10 +4029,10 @@ stateGraph arc lappend "arc9" rules {{[apsimGet $paddock.weed.das] == 60 ||  "[a
   </simulation>
   <simulation name="MCA rigid">
     <clock shortcut="/Simulations/Shared/clock" />
-    <metfile name="met" shortcut="/Simulations/Shared/met" />
-    <summaryfile>
-      <filename name="filename">MCA plastic.sum</filename>
-    </summaryfile>
+    <metfile name="met" shortcut="/Simulations/Shared/met">
+      <filename shortcut="/Simulations/Shared/met/filename" input="yes" />
+    </metfile>
+    <summaryfile />
     <tclmanager name="Farm Manager" shortcut="/Simulations/Shared/Farm Manager">
       <rule name="Name" shortcut="/Simulations/Shared/Farm Manager/Name" />
       <rule name="Farm Logic" shortcut="/Simulations/Shared/Farm Manager/Farm logic" />

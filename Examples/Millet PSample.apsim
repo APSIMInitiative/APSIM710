@@ -1,21 +1,19 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="Millet P">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/09/1988</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/05/1989</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Maize Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/MetFiles/Dalby.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Dalby.met</filename>
     </metfile>
     <area name="paddock">
       <millet />
       <canopy name="Canopy">
         <intercrop type="text" description="Enter crop names to intercrop">millet millet1 millet2 millet3 millet4 millet5</intercrop>
       </canopy>
-      <surfaceom name="surface organic matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
         <type type="text" description="Organic Matter type">wheat</type>
         <mass type="text" description="Initial surface residue (kg/ha)">0</mass>
@@ -1249,7 +1247,8 @@ millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.bi
         </Sample>
       </soil>
       <outputfile>
-        <filename name="filename">Continuous Maize Simulation.out</filename>
+        <filename name="filename" output="yes">Millet P.out</filename>
+        <title>Millet P</title>
         <variables name="My Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="day" />

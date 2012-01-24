@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="TemperateGrass">
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/MetFiles/Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/01/1954</start_date>
       <end_date type="date" description="Select the end date of the simulation">1/01/1955</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <folder name="Manager">
         <manager name="Area">
@@ -27,7 +25,7 @@
             <reset_date type="ddmmmdate" description="Enter date of reset (dd-mmm) : ">1-jan</reset_date>
             <category description="Reset details" type="category" />
             <soilmodule type="modulename" description="Name of your soil module : ">SandyLoam</soilmodule>
-            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">surface organic matter</surfaceommodule>
+            <surfaceommodule type="modulename" description="Name of your surface organic matter module : ">SurfaceOrganicMatter</surfaceommodule>
             <resetWater type="yesno" description="Reset soil water?">no</resetWater>
             <resetNitrogen type="yesno" description="Reset soil nitrogen?">yes</resetNitrogen>
             <resetSurfaceOM type="yesno" description="Reset surface organic matter?">no</resetSurfaceOM>
@@ -116,7 +114,7 @@ endif
           </script>
         </manager>
       </folder>
-      <surfaceom name="Surface Organic Matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
         <type type="list" listvalues="inert,manure,fym,bambatsi,barley,broccoli,camaldulensis,canola,chickpea,cowpea,danthonia,globulus,grandis,fababean,fieldpea,grass,lablab,lucerne,lupin,maize,millet,mucuna,mungbean,horsegram,navybean,cotton,orobanche,peanut,pigeonpea,rice,soybean,sorghum,stylo,sugar,sunflower,sweetcorn,sweetsorghum,weed,wheat" description="Organic Matter type">wheat</type>
         <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
@@ -125,7 +123,8 @@ endif
       </surfaceom>
       <fertiliser name="Fertiliser" />
       <outputfile name="daily">
-        <filename name="filename">sample.out</filename>
+        <filename name="filename" output="yes">TemperateGrass daily.out</filename>
+        <title>TemperateGrass daily</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="year" array="No" description="Year" />

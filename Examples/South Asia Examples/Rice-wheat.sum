@@ -30,7 +30,7 @@ Paddock:
    Component           "Irrigate at sowing" = %apsim%\Model\Manager.dll
    Component                 "Rabi residue" = %apsim%\Model\Manager.dll
    Component                   "Silt Water" = %apsim%\Model\SoilWat.dll
-   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                         "pond" = %apsim%\Model\Pond.dll
    Component                "Silt Nitrogen" = %apsim%\Model\SoilN.dll
    Component                        "wheat" = %apsim%\Model\Plant.dll
@@ -182,9 +182,9 @@ Paddock:
      
      SECTION:- rice.harvesting
       if day > 213 then
-     'surface organic matter' tillage type = user_defined, f_incorp = 0.85 (), tillage_depth = 0
+     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 0.85 (), tillage_depth = 0
       else
-     'surface organic matter' tillage type = user_defined, f_incorp = 0.60 (), tillage_depth = 0
+     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 0.60 (), tillage_depth = 0
      endif
      END of rules
      
@@ -271,7 +271,7 @@ Paddock:
      Manager rules:
      
      SECTION:- wheat.harvesting
-     'surface organic matter' tillage type = user_defined, f_incorp = .8 (), tillage_depth = 0
+     'surfaceorganicmatter' tillage type = user_defined, f_incorp = .8 (), tillage_depth = 0
      END of rules
      
 
@@ -349,7 +349,7 @@ Paddock:
                                   Winter        1-Dec
             Eo from priestly-taylor
 
-------- Surface Organic Matter Initialisation ---------------------------------
+------- SurfaceOrganicMatter Initialisation -----------------------------------
      
          - Reading constants
      
@@ -475,8 +475,8 @@ Paddock:
 8 November 2001(Day of year=312), Rice-Transplant Aman: 
      Manager sending message :- rice end_crop
 8 November 2001(Day of year=312), Rice residue: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 0.85, tillage_depth = 0
-8 November 2001(Day of year=312), Surface Organic Matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.85, tillage_depth = 0
+8 November 2001(Day of year=312), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.85
                                              Incorporated Depth    =     0.00
@@ -631,8 +631,8 @@ Paddock:
          start_grain_fill     to end_grain_fill          0.072        0.098        0.089        0.089
      
 12 March 2002(Day of year=71), Rabi residue: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = .8, tillage_depth = 0
-12 March 2002(Day of year=71), Surface Organic Matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = .8, tillage_depth = 0
+12 March 2002(Day of year=71), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     0.80
                                              Incorporated Depth    =     0.00

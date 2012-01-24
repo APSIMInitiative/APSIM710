@@ -1,15 +1,13 @@
-<folder version="27" name="Simulations">
+<folder version="28" name="Simulations">
   <simulation name="Rice">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\bhola.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/10/1990</start_date>
       <end_date type="date" description="Select the end date of the simulation">28/03/1991</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <folder name="Manager folder">
         <manager name="Rice sowing rule">
@@ -2000,6 +1998,8 @@ endif</text>
       </soil>
       <rice />
       <outputfile name="Outputfile">
+        <filename output="yes">Rice.out</filename>
+        <title>Rice</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="ancr" array="No" description="Amount of N in crop (live and dead material)  !kg N ha-1 " />
@@ -2060,17 +2060,17 @@ endif</text>
   </simulation>
   <simulation name="Ponding Simulation">
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\bhola.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\bhola.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Select the start date of the simulation">1/01/1990</start_date>
       <end_date type="date" description="Select the end date of the simulation">30/06/1991</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Blank Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <outputfile name="Outputfile">
+        <filename output="yes">Ponding Simulation.out</filename>
+        <title>Ponding Simulation</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" />
           <variable name="Watering.pond_depth" />

@@ -1,21 +1,19 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Millet">
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/MetFiles/Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">1/01/1940</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1941</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Continuous Wheat Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <millet />
       <canopy name="Canopy">
         <intercrop type="text" description="Enter crop names to intercrop">millet millet1 millet2 millet3 millet4 millet5</intercrop>
       </canopy>
-      <surfaceom name="surface organic matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
         <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
         <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
@@ -1225,6 +1223,8 @@ millet_biomass = millet.biomass + millet1.biomass + millet2.biomass + millet3.bi
         </Sample>
       </soil>
       <outputfile>
+        <filename output="yes">Millet.out</filename>
+        <title>Millet</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" />
           <variable name="stage" />

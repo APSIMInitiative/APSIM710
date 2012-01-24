@@ -24,7 +24,7 @@ Paddock:
    Component "Remove all residues on a fixed date" = %apsim%\Model\Manager.dll
    Component "Remove all residues on a fixed date{2}" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
-   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
    Component                        "maize" = %apsim%\Model\Maize.dll
 
@@ -114,7 +114,7 @@ Paddock:
            ready_to_manure_pre_sow = 1
         endif
         if (crop_in = 0 and ready_to_manure_pre_sow = 1) then
-           'surface organic matter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
+           'surfaceorganicmatter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
            ready_to_manure_pre_sow = 0
            manure_day_pre_sow = 0
         endif
@@ -175,10 +175,10 @@ Paddock:
            endif
           endif
            if ('disc' = 'user_defined') then
-               'surface organic matter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
+               'surfaceorganicmatter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
                'soil water' tillage type = disc, cn_red = 0, cn_rain = 0
            else
-               'surface organic matter' tillage type = disc ()
+               'surfaceorganicmatter' tillage type = disc ()
                'soil water' tillage type = user_defined
            endif
            ready_to_till_pre_sow = 0
@@ -248,10 +248,10 @@ Paddock:
                     endif
                  endif
                  if ('user_defined' = 'user_defined') then
-                     'surface organic matter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
+                     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
                      'soil water' tillage type = user_defined, cn_red = 0, cn_rain = 0
                  else
-                     'surface organic matter' tillage type = user_defined ()
+                     'surfaceorganicmatter' tillage type = user_defined ()
                      'soil water' tillage type = user_defined
                  endif
               else
@@ -329,7 +329,7 @@ Paddock:
            ready_to_manure_pre_sow = 1
         endif
         if (crop_in = 0 and ready_to_manure_pre_sow = 1) then
-           'surface organic matter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
+           'surfaceorganicmatter' add_surfaceom type=manure, name=manure, mass=0, cnr=25, cpr=50
            ready_to_manure_pre_sow = 0
            manure_day_pre_sow = 0
         endif
@@ -390,10 +390,10 @@ Paddock:
            endif
           endif
            if ('disc' = 'user_defined') then
-               'surface organic matter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
+               'surfaceorganicmatter' tillage type = disc, f_incorp = 1 (), tillage_depth = 100
                'soil water' tillage type = disc, cn_red = 0, cn_rain = 0
            else
-               'surface organic matter' tillage type = disc ()
+               'surfaceorganicmatter' tillage type = disc ()
                'soil water' tillage type = user_defined
            endif
            ready_to_till_pre_sow = 0
@@ -463,10 +463,10 @@ Paddock:
                     endif
                  endif
                  if ('user_defined' = 'user_defined') then
-                     'surface organic matter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
+                     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 1 (), tillage_depth = 150
                      'soil water' tillage type = user_defined, cn_red = 0, cn_rain = 0
                  else
-                     'surface organic matter' tillage type = user_defined ()
+                     'surfaceorganicmatter' tillage type = user_defined ()
                      'soil water' tillage type = user_defined
                  endif
               else
@@ -533,7 +533,7 @@ Paddock:
      
      SECTION:- start_of_day
               if today = date('1-sep') then
-     'surface organic matter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
+     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
               endif
      END of rules
      
@@ -543,7 +543,7 @@ Paddock:
      
      SECTION:- start_of_day
               if today = date('1-may') then
-     'surface organic matter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
+     'surfaceorganicmatter' tillage type = user_defined, f_incorp = 1.0 (), tillage_depth = 0.0 ()
               endif
      END of rules
      
@@ -618,7 +618,7 @@ Paddock:
             CONA:                     5.00 ()
             Eo from priestly-taylor
 
-------- surface organic matter Initialisation ---------------------------------
+------- SurfaceOrganicMatter Initialisation -----------------------------------
      
          - Reading constants
      
@@ -692,22 +692,22 @@ Paddock:
          - Reading constants
 ------- Start of simulation  --------------------------------------------------
 1 September 1985(Day of year=244), Remove all residues on a fixed date: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 September 1985(Day of year=244), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1985(Day of year=244), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
 10 October 1985(Day of year=283), Sow using a variable rule with intercropping{2}: 
      Manager creating a new local real variable : surface_moist = 0.72048
 1 May 1986(Day of year=121), Remove all residues on a fixed date{2}: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 May 1986(Day of year=121), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1986(Day of year=121), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
 1 September 1986(Day of year=244), Remove all residues on a fixed date: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 September 1986(Day of year=244), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1986(Day of year=244), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
@@ -768,8 +768,8 @@ Paddock:
      
      
      
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-14 November 1986(Day of year=318), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+14 November 1986(Day of year=318), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
@@ -841,14 +841,14 @@ Paddock:
      Manager creating a new local real variable : fert_tot = 0.00000
      Manager creating a new local real variable : sow_year = 0.00000
 1 May 1987(Day of year=121), Remove all residues on a fixed date{2}: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 May 1987(Day of year=121), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1987(Day of year=121), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
 1 September 1987(Day of year=244), Remove all residues on a fixed date: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 September 1987(Day of year=244), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1987(Day of year=244), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
@@ -909,8 +909,8 @@ Paddock:
      
      
      
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-18 October 1987(Day of year=291), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+18 October 1987(Day of year=291), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
@@ -1036,8 +1036,8 @@ Paddock:
      
      
      
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-2 April 1988(Day of year=93), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+2 April 1988(Day of year=93), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
@@ -1061,8 +1061,8 @@ Paddock:
                           biomass =          0.3989469       lai =    0.9874072E-02
                           stover N conc =    3.186168       extractable sw =    30.30176
 1 May 1988(Day of year=122), Remove all residues on a fixed date{2}: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 May 1988(Day of year=122), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1988(Day of year=122), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
@@ -1113,8 +1113,8 @@ Paddock:
                           P  (kg/ha) =                  0.00                    0.00
      
 1 September 1988(Day of year=245), Remove all residues on a fixed date: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 September 1988(Day of year=245), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 September 1988(Day of year=245), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00
@@ -1175,8 +1175,8 @@ Paddock:
      
      
      
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
-19 March 1989(Day of year=78), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1, tillage_depth = 150
+19 March 1989(Day of year=78), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =   150.00
@@ -1207,8 +1207,8 @@ Paddock:
         27.00 of ammonium nitrate (nh4no3)
                                          added at depth   50.00 (layer   1)
 1 May 1989(Day of year=121), Remove all residues on a fixed date{2}: 
-     Manager sending message :- surface organic matter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
-1 May 1989(Day of year=121), surface organic matter: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 1.0, tillage_depth = 0.0
+1 May 1989(Day of year=121), SurfaceOrganicMatter: 
      Residue removed using user_defined
                                              Fraction Incorporated =     1.00
                                              Incorporated Depth    =     0.00

@@ -1,4 +1,4 @@
-<folder version="25" name="Grazing simulations">
+<folder version="28" name="Grazing simulations">
   <memo name="notes for CQ Mixed GG simulations"><![CDATA[* 4000 ha property size
 * cattle numbers: 1100 to 1500
 * all cattle are on adjistment
@@ -49,7 +49,7 @@ sell rule - sell in lotsof 120 when weight > 400kg.
       <end_date type="date" description="Enter the end date of the simulation">31/12/1989</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%\Examples\MetFiles\Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Goond.met</filename>
     </metfile>
     <soil name="Grey Vertosol-Belah-Brigalow (Inglestone No093)">
       <Country />
@@ -454,7 +454,6 @@ sell rule - sell in lotsof 120 when weight > 400kg.
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -984,7 +983,6 @@ sell rule - sell in lotsof 120 when weight > 400kg.
         <CN2Bare>73</CN2Bare>
         <CNRed>20</CNRed>
         <CNCov>0.8</CNCov>
-        <CnCanopyFact />
         <Slope>
         </Slope>
         <DischargeWidth>
@@ -4729,10 +4727,10 @@ set config(machinery,fuelcost) "[fuelcost]"
       <start_date type="date" description="Enter the start date of the simulation">1/1/1980</start_date>
       <end_date type="date" description="Enter the end date of the simulation">31/12/1983</end_date>
     </clock>
-    <metfile name="met" shortcut="/Grazing simulations/common stuff/met" />
-    <summaryfile>
-      <filename name="filename">Continuous Sorghum Simulation.sum</filename>
-    </summaryfile>
+    <metfile name="met" shortcut="/Grazing simulations/common stuff/met">
+      <filename shortcut="/Grazing simulations/common stuff/met/filename" input="yes" />
+    </metfile>
+    <summaryfile />
     <tclmanager name="Farm Manager">
       <rule name="Initialisation logic">
         <script name="init">
@@ -5073,14 +5071,14 @@ Use 0.5 for kl - in GRASP GMK uses p106:
       <folder name="Manager folder">
         <manager name="Oats Sowing rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-mar</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">1-jul</date2>
             <must_sow type="yesno" description="Must sow? : ">no</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">20</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">5</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">60</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">oats</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -5117,10 +5115,10 @@ Use 0.5 for kl - in GRASP GMK uses p106:
         </manager>
         <manager name="Sowing fertiliser">
           <ui>
-            <category description="When should fertiliser be applied" />
+            <category description="When should fertiliser be applied" type="category" />
             <modulename type="modulename" description="On which module should the event come from : ">oats</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" />
+            <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">50</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
@@ -5334,14 +5332,14 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
       <folder name="Manager folder">
         <manager name="Sow using a variable rule">
           <ui>
-            <category description="Sowing criteria" />
+            <category description="Sowing criteria" type="category" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-sep</date1>
             <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">30-dec</date2>
             <must_sow type="yesno" description="Must sow? : ">no</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">20</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">60</esw_amount>
-            <category description="Sowing parameters" />
+            <category description="Sowing parameters" type="category" />
             <crop type="crop" description="Enter name of crop to sow : ">SweetSorghum</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">20</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
@@ -5372,10 +5370,10 @@ At CQ Mixed GG, the pasture under the Leucaena is: silk sorghum ,green panic and
         </manager>
         <manager name="Sowing fertiliser">
           <ui>
-            <category description="When should fertiliser be applied" />
+            <category description="When should fertiliser be applied" type="category" />
             <modulename type="modulename" description="On which module should the event come from : ">SweetSorghum</modulename>
             <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" />
+            <category description="Fertiliser application details" type="category" />
             <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
             <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">50</fert_amount_sow>
             <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea" description="Sowing fertiliser type : ">urea_N</fert_type_sow>

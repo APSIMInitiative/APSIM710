@@ -1,15 +1,13 @@
-<folder version="27" name="simulations">
+<folder version="28" name="simulations">
   <simulation name="Rotation Sample">
     <metfile name="met">
-      <filename name="filename">%apsim%/Examples/MetFiles/Goond.met</filename>
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
     <clock>
       <start_date name="start_date" description="Enter the start date of the simulation" type="date">1/01/1940</start_date>
       <end_date name="end_date" description="Enter the end date of the simulation" type="date">31/12/1950</end_date>
     </clock>
-    <summaryfile>
-      <filename name="filename">Rotation Sample.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <area name="paddock">
       <soil name="Soil">
         <Country />
@@ -583,7 +581,7 @@
           </Layer>
         </Sample>
       </soil>
-      <surfaceom name="surface organic matter">
+      <surfaceom name="SurfaceOrganicMatter">
         <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
         <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
         <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
@@ -895,6 +893,8 @@
         </manager>
       </folder>
       <outputfile>
+        <filename output="yes">Rotation Sample.out</filename>
+        <title>Rotation Sample</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
           <variable name="cotton.dm as Cotton.Biomass" array="?" description="Total above ground biomass (kg/ha)" />
