@@ -51,6 +51,7 @@ class ApsimToSimExe
    private bool ConvertApsimToSim(string ApsimFileName, string[] SimNames)
       {
        //if the filename is not 'rooted' then assume that the user intends to use the current working directory as the root
+          ApsimFileName = ApsimFileName.Replace("\"", "");
        if (!Path.IsPathRooted(ApsimFileName))
            ApsimFileName = Path.Combine(Directory.GetCurrentDirectory(), ApsimFileName);
 
@@ -58,9 +59,9 @@ class ApsimToSimExe
        if (!File.Exists(ApsimFileName))
            throw new Exception("Error: Specified APSIM File does not exist!\n\t" + ApsimFileName);
 
-       Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimFileName));
-
       PlugIns.LoadAll();
+
+      Directory.SetCurrentDirectory(Path.GetDirectoryName(ApsimFileName));
 
       // convert the specified simulations in the specified apsim file name
       // into a separate .sim file for each.
@@ -87,7 +88,7 @@ class ApsimToSimExe
             {
             string SimName = Child.Name;
             string SimPath = Child.FullPath;
-            bool convertSim = (SimPaths.Length == 0 || Array.IndexOf(SimPaths, SimName) != -1);
+            bool convertSim = (SimPaths.Length == 0 || CSGeneral.StringManip.IndexOfCaseInsensitive(SimPaths, SimPath) != -1);
             if (convertSim)
                {
                try

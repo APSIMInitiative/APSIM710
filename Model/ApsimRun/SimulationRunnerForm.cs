@@ -272,8 +272,11 @@ namespace ApsimRun
             }
             else if (e.ClickedItem == PauseButton)
             {
-                PauseButton.Checked = true;
-                _JobRunner.Pause();
+                PauseButton.Checked = !PauseButton.Checked;
+                if (PauseButton.Checked)
+                    _JobRunner.Pause();
+                else
+                    _JobRunner.Resume();
             }
         }
 
