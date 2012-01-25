@@ -69,7 +69,10 @@ public class Manager2
         }
         catch (Exception err)
         {
-            throw err.InnerException;
+            if (err.InnerException != null)
+                throw err.InnerException;
+            else
+                throw err;
         }
     }
 

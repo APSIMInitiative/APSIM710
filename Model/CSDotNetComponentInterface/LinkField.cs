@@ -255,7 +255,7 @@ class LinkField
             foreach (TComp pair in comps)
             {
                 String SiblingType = pair.CompClass;
-                if (SiblingType.ToLower() == compClass.ToLower())
+                if (SiblingType.ToLower() == compClass.ToLower() || unQualifiedName(SiblingType).ToLower() == compClass.ToLower())
                 {
                     SiblingShortName = unQualifiedName(pair.name).ToLower();
                     if (NameToFind == null || NameToFind.Contains("*") || NameToFind.ToLower() == SiblingShortName)
@@ -283,8 +283,13 @@ class LinkField
             }
         }
 
-        // If we get this far then we didn't find the APSIM component.
-        return null;
+        // If we get this far then we didn't find the APSIM component. Try our parent system.
+        int lastDot = SystemName.LastIndexOf(".");
+        string ParentSystem = SystemName.Substring(0, lastDot);
+        if (ParentSystem != "")
+            return FindApsimComponent(NameToFind, TypeToFind, ParentSystem, Comp);
+        else
+            return null;
     }
     //============================================================================
     /// <summary>
