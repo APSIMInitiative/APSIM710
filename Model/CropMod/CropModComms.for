@@ -1663,6 +1663,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NO3gsm, deepest_layer)
      :                  - sum_real_array (g%dlt_NH4gsm, deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif     
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1676,6 +1679,9 @@ c      end if
      :                                   deepest_layer)
      :                  - sum_real_array (g%dlt_NH4gsm_massflow,
      :                                            deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif         
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1684,6 +1690,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NO3gsm_massflow,
      :                                            deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1692,6 +1701,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NH4gsm_massflow,
      :                                            deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1703,6 +1715,9 @@ c      end if
      :                                   deepest_layer)
      :                  - sum_real_array (g%dlt_NH4gsm_diffusion,
      :                                                 deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1711,6 +1726,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NO3gsm_diffusion,
      :                                   deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1719,6 +1737,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum = - sum_real_array (g%dlt_NH4gsm_diffusion,
      :                                   deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
@@ -1728,6 +1749,9 @@ c      end if
          deepest_layer = find_layer_no (g%root_depth,g%dlayer,max_layer)
          N_uptake_sum  = - sum_real_array (g%dlt_NO3gsm, deepest_layer)
      :                   - sum_real_array (g%dlt_NH4gsm, deepest_layer)
+         if (reals_are_equal(N_uptake_sum, 0.0)) then
+            N_uptake_sum = 0.0
+         endif
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , N_uptake_sum)
