@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 28;
+        public static int CurrentVersion = 29;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -61,7 +61,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion25),
                                           new UpgraderDelegate(ToVersion26),
                                           new UpgraderDelegate(ToVersion27),
-                                          new UpgraderDelegate(ToVersion28)
+                                          new UpgraderDelegate(ToVersion28),
+                                          new UpgraderDelegate(ToVersion29)
                                        };
             if (Data != null)
             {
@@ -1781,5 +1782,41 @@ namespace ApsimFile
                     Node.RemoveChild(fileNameNode);
             }
         }
+        private static void ToVersion29(XmlNode Node)
+        {
+            // ----------------------------------------------------------------
+            // Change the <constants> node within <outputfile> from
+            //  <constants>
+            //     <test>yes</test>
+            //  </constants>
+            // to
+            //  <constants>
+            //     <constant name="test">yes</constant>
+            //  </constants>
+            // ---------------------------------------------------------------
+
+            if (Node.Name.ToLower() == "outputfile")
+            {
+                foreach (XmlNode VariablesNode in XmlHelper.ChildNodes(Node, "variables"))
+                {
+                    XmlNode ConstantsNode = XmlHelper.FindByType(VariablesNode, "constants");
+                    if (ConstantsNode != null)
+                    {
+                        foreach (XmlNode Child in XmlHelper.ChildNodes(ConstantsNode, ""))
+                        {
+                            string ConstantName = XmlHelper.Name(Child);
+                            if (ConstantName.ToLower() != "title")
+                            {
+                                XmlNode NewChild = XmlHelper.ChangeType(Child, "constant");
+                                XmlHelper.SetName(NewChild, ConstantName);
+                            }
+                            else
+                                ConstantsNode.RemoveChild(Child);
+                        }
+                    }
+                }
+            }
+        }
     }
+
 }

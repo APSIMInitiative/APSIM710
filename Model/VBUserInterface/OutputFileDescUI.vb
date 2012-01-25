@@ -464,11 +464,12 @@ Public Class OutputFileDescUI
         
         Dim ConstantsNode As XmlNode = XmlHelper.Find(Data, "constants")
         If Not IsNothing(ConstantsNode) Then
-            For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
-                If Constant.Name.ToLower <> "title" Then
-                    Lines.Add(Constant.Name + " = " + Constant.InnerText)
-                End If
-            Next
+         For Each Constant As XmlNode In XmlHelper.ChildNodes(ConstantsNode, "")
+            Dim ConstantName As String = XmlHelper.Name(Constant)
+            If ConstantName.ToLower <> "title" Then
+               Lines.Add(ConstantName + " = " + Constant.InnerText)
+            End If
+         Next
         End If
         ConstantsBox.Lines = Lines.ToArray()
     End Sub
@@ -554,7 +555,8 @@ Public Class OutputFileDescUI
         Dim Constants As XmlNode = XmlHelper.Find(Data, "constants")
         If Not IsNothing(Constants) Then
             Data.RemoveChild(Constants)
-        End If
+      End If
+      Dim ConstantsNode As XmlNode = Nothing
         For Each Line As String In ConstantsBox.Lines
             Dim PosEquals As Integer = Line.IndexOf("=")
             If PosEquals <> -1 Then
@@ -562,9 +564,19 @@ Public Class OutputFileDescUI
                 Dim ConstantValue As String = Trim(Line.Substring(PosEquals + 1))
                 If (ConstantName = "Title") Then
                     MessageBox.Show("You cannot specify a title. It is set automatically to the name of the simulation", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Else
-                    XmlHelper.SetValue(Data, "constants/" + ConstantName, ConstantValue)
-                End If
+            Else
+               If IsNothing(ConstantsNode) Then
+                  ConstantsNode = XmlHelper.Find(Data, "constants")
+                  If IsNothing(ConstantsNode) Then
+                     ConstantsNode = Data.AppendChild(Data.OwnerDocument.CreateElement("constants"))
+                  End If
+               End If
+
+               Dim ConstantNode As XmlNode = Data.OwnerDocument.CreateElement("constant")
+               XmlHelper.SetName(ConstantNode, ConstantName)
+               ConstantNode.InnerText = ConstantValue
+               ConstantsNode.AppendChild(ConstantNode)
+            End If
             End If
         Next
     End Sub

@@ -547,22 +547,22 @@ void ReportComponent::writeHeadings(void)
 
    // write out all constants
    vector<string> names, values;
-   scienceAPI.readAll(names, values);
-   bool ConstantsFound = false;
-   for (unsigned i = 0; i != names.size(); i++)
+   XMLDocument* simScript = new XMLDocument(scienceAPI.getInitData(), XMLDocument::xmlContents);
+   XMLNode::iterator initData = find_if(simScript->documentElement().begin(),
+                                        simScript->documentElement().end(),
+                                        EqualToName<XMLNode>("initdata"));
+   for (XMLNode::iterator i = initData->begin();
+                          i != initData->end();
+                          i++)
       {
-      if (!Str_i_Eq(names[i], "variable") &&
-		  !Str_i_Eq(names[i], "title") &&
-          !Str_i_Eq(names[i], "outputfrequency") &&
-          !Str_i_Eq(names[i], "outputfile") &&
-          !Str_i_Eq(names[i], "nastring") &&
-          !Str_i_Eq(names[i], "format") &&
-          !Str_i_Eq(names[i], "precision"))
+      if (i->getName() == "constant")
          {
-         ConstantsFound = true;
-         file << names[i] << " = " << values[i] << endl;
+         names.push_back(i->getAttribute("name"));
+         values.push_back(i->getValue());
          }
       }
+   for (unsigned i = 0; i != names.size(); i++)
+      file << names[i] << " = " << values[i] << endl;
 
    file << "Title = " << title << endl;
 
