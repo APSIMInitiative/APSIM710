@@ -57,7 +57,9 @@ namespace Graph
 
          string ColourString = XmlHelper.Value(Data, "colour");
          SpecificColourCheckBox.Checked = (ColourString != "");
+          if(ColourString != "")
          ColourButton.Color = Color.FromArgb(Convert.ToInt32(ColourString));
+
          OnSpecificColourChange(null, null);
          }
 
