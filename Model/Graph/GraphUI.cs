@@ -159,8 +159,29 @@ namespace Graph
                     S.ShowInLegend = false;
             }
 
+            // Select legend items if previously saved.
+            XmlNode LegendSettings = XmlHelper.Find(Data, "Legend");
+            if (LegendSettings != null)
+            {
+                List<string> LegendTitlesChecked = XmlHelper.Values(LegendSettings, "CheckedTitles");
+                foreach (Series S in Chart.Series)
+                    S.Active = LegendTitlesChecked.Contains(S.Title);
+            }
         }
 
+        public override void OnSave()
+        {
+            base.OnSave();
+
+            XmlNode LegendSettings = XmlHelper.EnsureNodeExists(Data, "Legend");
+            List<string> LegendTitlesChecked = new List<string>();
+            foreach (Series S in Chart.Series)
+            {
+                if (S.Active)
+                    LegendTitlesChecked.Add(S.Title);
+            }
+            XmlHelper.SetValues(LegendSettings, "CheckedTitles", LegendTitlesChecked);
+        }
         private void FixAxisTitle(Steema.TeeChart.Axis _Axis, string Name)
         {
             _Axis.Title.Text = "";
