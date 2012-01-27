@@ -331,32 +331,35 @@ public class ApsimRunToolStrip
         ToolStripButton ErrorsButton = (ToolStripButton)_Strip.Items["ErrorsButton"];
         ToolStripLabel PercentLabel = (ToolStripLabel)_Strip.Items["PercentLabel"];
 
-        ProgressBar.Value = _JobRunner.PercentageComplete;
-        PercentLabel.Text = ProgressBar.Value.ToString() + "%";
-        if (ProgressBar.Value == 100)
+        if (ProgressBar != null)
         {
-            // All finished.
-            RunButton.Enabled = true;
-            StopButton.Enabled = false;
-            _JobRunner.Stop();
-            String WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
-            if (File.Exists(WavFileName))
+            ProgressBar.Value = _JobRunner.PercentageComplete;
+            PercentLabel.Text = ProgressBar.Value.ToString() + "%";
+            if (ProgressBar.Value == 100)
             {
-                System.Media.SoundPlayer Player = new System.Media.SoundPlayer(WavFileName);
-                Player.Play();
+                // All finished.
+                RunButton.Enabled = true;
+                StopButton.Enabled = false;
+                _JobRunner.Stop();
+                String WavFileName = Configuration.Instance.Setting("ApsimFinishedWAVFileName");
+                if (File.Exists(WavFileName))
+                {
+                    System.Media.SoundPlayer Player = new System.Media.SoundPlayer(WavFileName);
+                    Player.Play();
+                }
+                Timer.Enabled = false;
             }
-            Timer.Enabled = false;
-        }
 
-        int NumCompleted;
-        int NumWithErrors;
-        int NumWithWarnings;
-        _JobRunner.CalcStats(out NumCompleted, out NumWithErrors, out NumWithWarnings);
-        ProgressBar.ToolTipText = "Running " + _JobRunner.Jobs.Count.ToString() + " simulations. "
-                                + ProgressBar.Value.ToString() + "% completed.";
-        ErrorsButton.Visible = NumWithErrors > 0;
-        if (ErrorsButton.Visible)
-            ErrorsButton.Text = NumWithErrors.ToString() + " sims. have errors";
+            int NumCompleted;
+            int NumWithErrors;
+            int NumWithWarnings;
+            _JobRunner.CalcStats(out NumCompleted, out NumWithErrors, out NumWithWarnings);
+            ProgressBar.ToolTipText = "Running " + _JobRunner.Jobs.Count.ToString() + " simulations. "
+                                    + ProgressBar.Value.ToString() + "% completed.";
+            ErrorsButton.Visible = NumWithErrors > 0;
+            if (ErrorsButton.Visible)
+                ErrorsButton.Text = NumWithErrors.ToString() + " sims. have errors";
+        }
     }
 
 }
