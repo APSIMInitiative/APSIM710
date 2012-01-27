@@ -34,8 +34,6 @@ public class GenericOrgan : BaseOrgan, AboveGround
     protected Plant Plant = null;
     [Link]
     protected Arbitrator Arbitrator = null;
-    [Link(IsOptional = true)]
-    protected Function PartitionFraction = null;
     [Input]
     protected int Day = 0;
     [Input]
@@ -45,13 +43,10 @@ public class GenericOrgan : BaseOrgan, AboveGround
     #region Class data members
     private double SenescenceRate = 0;
     double StructuralFraction = 1;
+    private Biomass StartLive = new Biomass();
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
-    private double StartNonStructuralN = 0;
-    private double StartNonStructuralWt = 0;
     protected double PotentialDMAllocation = 0;
-    private double StartStructuralN = 0;
-    private double StartStructuralWt = 0;
     protected double StructuralDMDemand = 0;
     protected double InitialWt = 0;
     private double InitStutFraction = 1;
@@ -89,18 +84,13 @@ public class GenericOrgan : BaseOrgan, AboveGround
         //Initialise biomass and nitrogen
         if (Live.Wt == 0)
         {
-            double InitStructWt = InitialWt * InitStutFraction;
-            double InitNonStructWt = InitialWt * (1 - InitStutFraction);
-            Live.StructuralWt = InitStructWt;
-            Live.NonStructuralWt = InitNonStructWt;
-            Live.StructuralN = InitStructWt * MinimumNConc.Value;
-            Live.NonStructuralN = ((InitStructWt + InitNonStructWt) * MaximumNConc.Value) - (InitStructWt * MinimumNConc.Value);
+            Live.StructuralWt = InitialWt * InitStutFraction;
+            Live.NonStructuralWt = InitialWt * (1 - InitStutFraction);
+            Live.StructuralN = Live.StructuralWt * MinimumNConc.Value;
+            Live.NonStructuralN = (InitialWt * MaximumNConc.Value) - Live.StructuralN;
         }
 
-        StartNonStructuralN = Live.NonStructuralN;
-        StartNonStructuralWt = Live.NonStructuralWt;
-        StartStructuralWt = Live.StructuralWt;
-        StartStructuralN = Live.StructuralN;
+        StartLive = Live;
         StartNReallocationSupply = NReallocationSupply;
         StartNRetranslocationSupply = NRetranslocationSupply;
     }
@@ -128,9 +118,9 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         get
         {
-            double MaximumDM = (StartStructuralWt + StructuralDMDemand) * 1 / StructuralFraction;
+            double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / StructuralFraction;
             MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
-            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartStructuralWt - StartNonStructuralWt);
+            return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt);
         }
     }
     public override double DMPotentialAllocation
@@ -151,7 +141,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
             double _DMRetranslocationFactor = 0;
             if (DMRetranslocationFactor != null) //Default of 0 means retranslocation is always truned off!!!!
                 _DMRetranslocationFactor = DMRetranslocationFactor.Value;
-            return StartNonStructuralWt * _DMRetranslocationFactor;
+            return StartLive.NonStructuralWt * _DMRetranslocationFactor;
         }
     }
     public override double NDemand
@@ -172,7 +162,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
             double _NReallocationFactor = 0;
             if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
                 _NReallocationFactor = NReallocationFactor.Value;
-            return SenescenceRate * StartNonStructuralN * _NReallocationFactor;
+            return SenescenceRate * StartLive.NonStructuralN * _NReallocationFactor;
         }
     }
     public override double NRetranslocationSupply
@@ -182,7 +172,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
             double _NRetranslocationFactor = 0;
             if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
                 _NRetranslocationFactor = NRetranslocationFactor.Value;
-            double LabileN = Math.Max(0, StartNonStructuralN - StartNonStructuralWt * MinimumNConc.Value);
+            double LabileN = Math.Max(0, StartLive.NonStructuralN - StartLive.NonStructuralWt * MinimumNConc.Value);
             double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
             return Nretrans;
         }
@@ -192,9 +182,6 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            //double _StructuralFraction = 1.0; //Default of 1 means all DM is structural
-            //if (StructuralFraction != null)
-            //    _StructuralFraction = StructuralFraction.Value;
             Live.StructuralWt += Math.Min(value, StructuralDMDemand);
             Live.NonStructuralWt += Math.Max(0, value - StructuralDMDemand);
         }
@@ -215,7 +202,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            if (value - StartNonStructuralWt > 0.0000000001)
+            if (value - StartLive.NonStructuralWt > 0.0000000001)
                 throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
             Live.NonStructuralWt -= value;
         }
@@ -224,7 +211,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            if (MathUtility.IsGreaterThan(value, StartNonStructuralN))
+            if (MathUtility.IsGreaterThan(value, StartLive.NonStructuralN))
                 throw new Exception("N Reallocation exceeds nonstructural nitrogen in organ: " + Name);
             if (value < -0.000000001)
                 throw new Exception("-ve N Reallocation requested from " + Name);
@@ -248,7 +235,7 @@ public class GenericOrgan : BaseOrgan, AboveGround
     {
         set
         {
-            if (MathUtility.IsGreaterThan(value, StartNonStructuralN - StartNRetranslocationSupply))
+            if (MathUtility.IsGreaterThan(value, StartLive.NonStructuralN - StartNRetranslocationSupply))
                 throw new Exception("N Retranslocation exceeds nonstructural nitrogen in organ: " + Name);
             if (value < -0.000000001)
                 throw new Exception("-ve N Retranslocation requested from " + Name);

@@ -35,7 +35,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <Arbitrator name="Arbitrator">
+      <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -224,7 +224,7 @@
         </Memo>
         </PhaseBasedSwitch>
       </ReproductiveOrgan>
-      <Root name="Root">
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -292,7 +292,7 @@
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
         </Constant>
       </Root>
-      <Leaf name="Leaf">
+      <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
@@ -305,23 +305,23 @@
           <Rank type="text" description="Rank">2</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[3]">
+        <LeafCohort name="Leaves[3]">
           <Rank type="text" description="Rank">3</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[4]">
+        <LeafCohort name="Leaves[4]">
           <Rank type="text" description="Rank">4</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[5]">
+        <LeafCohort name="Leaves[5]">
           <Rank type="text" description="Rank">5</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[6]">
+        <LeafCohort name="Leaves[6]">
           <Rank type="text" description="Rank">6</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-		<CompositeBiomass name="Live">
+        <CompositeBiomass name="Live">
           <Property>Leaf.Leaves[].Live</Property>
         </CompositeBiomass>
         <CompositeBiomass name="Dead">
@@ -530,6 +530,9 @@
             <XY>0.900001 0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <Constant name="InitialNConc">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

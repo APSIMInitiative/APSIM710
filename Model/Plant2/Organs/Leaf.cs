@@ -384,18 +384,6 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("mm^2/g")]
-    public double SLAcheck
-    {
-        get
-        {
-            if (Live.Wt > 0)
-                return LAI / Live.Wt * 10000; // CHCK-EIT Why are these 2 properties with different coeficients? (SLAcheck and SpecificLeafArea)
-            else
-                return 0;
-        }
-    }
-    [Output]
-    [Units("mm^2/g")]
     public double SpecificArea
     {
         get
@@ -483,7 +471,7 @@ public class Leaf : BaseOrgan, AboveGround
             i = 0;
             foreach (LeafCohort L in Leaves)
             {
-                values[i] = L.NodeAge;
+                values[i] = L.Age;
                 i++;
             }
 
@@ -1189,6 +1177,13 @@ public class Leaf : BaseOrgan, AboveGround
         CohortsInitialised = false;
         ZeroLeaves();
     }
+    [EventHandler]
+    public void OnRemoveLowestLeaf()
+    {
+        Console.WriteLine("Removing Lowest Leaf");
+        Leaves.RemoveAt(0);
+    }
+
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
