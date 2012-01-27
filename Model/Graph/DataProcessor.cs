@@ -202,19 +202,19 @@ public class DataProcessor
                     if (FileName != "" && File.Exists(FileName))
                     {
                         string CheckPointFile = Path.GetDirectoryName(Path.GetFullPath(FileName)) + "\\CheckPoint\\" + Path.GetFileName(FileName);
-                        if (File.Exists(CheckPointFile))
-                        {
-                            int StartRow = Data.Rows.Count;
-                            APSIMInputFile InFile = new APSIMInputFile();
-                            InFile.ReadFromFile(CheckPointFile, Data);
-                            InFile.SetConstant("title", "Checkpointed " + InFile.Constant("title").Value);
-                            InFile.AddConstantsToData(Data, StartRow);
-                        }
                         if (File.Exists(FileName))
                         {
                             int StartRow = Data.Rows.Count;
                             APSIMInputFile InFile = new APSIMInputFile();
                             InFile.ReadFromFile(FileName, Data);
+                            InFile.AddConstantsToData(Data, StartRow);
+                        }
+                        if (File.Exists(CheckPointFile))
+                        {
+                            int StartRow = Data.Rows.Count;
+                            APSIMInputFile InFile = new APSIMInputFile();
+                            InFile.ReadFromFile(CheckPointFile, Data);
+                            InFile.SetConstant("title", "{Checkpoint} " + InFile.Constant("title").Value);
                             InFile.AddConstantsToData(Data, StartRow);
                         }
                     }
@@ -466,11 +466,11 @@ public class DataProcessor
                         DataRow[] PredictedMatch;
                         if (Filter.ToLower().Contains("title"))
                         {
-                            string CheckPointedFilter = Filter.Replace("Title = '", "Title = 'Checkpointed ");
-                            CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = 'Checkpointed ");
+                            string CheckPointedFilter = Filter.Replace("Title = '", "Title = '{Checkpoint} ");
+                            CheckPointedFilter = CheckPointedFilter.Replace("title = '", "title = '{Checkpoint} ");
                             PredictedMatch = Predicted.Select(CheckPointedFilter);
                             if (PredictedMatch.Length > 0)
-                                WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "Checkpointed Predicted/Observed", FieldsToMatch);
+                                WritePredictObservedRow(PredictedMatch, ObservedRow, NewData, "{Checkpoint} Predicted/Observed", FieldsToMatch);
                         }
                         // Handle pred/obs for noncheckpointed series.
                         PredictedMatch = Predicted.Select(Filter);
@@ -506,8 +506,8 @@ public class DataProcessor
             }
             // Create a point name
             string PointName = "";
-            if (Title.Contains("Checkpointed "))
-                PointName = "Checkpointed ";
+            if (Title.Contains("{Checkpoint} "))
+                PointName = "{Checkpoint} ";
             foreach (string FieldName in FieldsToMatch)
             {
                 if (PointName != "")

@@ -240,7 +240,7 @@ namespace Graph
             Color[] Colors = { Color.Blue, Color.Red, Color.Green, Color.Orange, Color.Magenta, Color.Black, Color.Cyan, Color.FromArgb(255, 195, 155) };
             Color[] CheckpointedColors = { Color.LightBlue, Color.LightPink, Color.LightGreen, Color.FromArgb(255, 195, 155), Color.FromArgb(255, 201, 255), Color.Gray, Color.FromArgb(157, 255, 255), Color.FromArgb(255, 209, 164) };
 
-            if (NewSeries.Title.Contains("Checkpointed "))
+            if (NewSeries.Title.Contains("{Checkpoint} "))
                 NewSeries.Color = CheckpointedColors[SeriesColourNumber];
             else
             {

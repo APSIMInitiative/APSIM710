@@ -60,7 +60,7 @@ namespace Graph
                if (i == 0)
                   RegressionLine = (Line)GetSeries("Regression line");
                else
-                  RegressionLine = (Line)GetSeries("Checkpointed regression line");
+                   RegressionLine = (Line)GetSeries("{Checkpoint} regression line");
                RegressionLine.Active = false;
 
                // setup footer
@@ -143,8 +143,8 @@ namespace Graph
             {
             if (S.Active && !S.Title.ToLower().Contains("regression line") && !S.Title.Contains("1:1 line"))
                {
-               if ((!S.Title.Contains("Checkpointed ") && Indx == 0) ||
-                   S.Title.Contains("Checkpointed ") && Indx == 1)
+                   if ((!S.Title.Contains("{Checkpoint} ") && Indx == 0) ||
+                   S.Title.Contains("{Checkpoint} ") && Indx == 1)
                   {
                   // Add regression stats to chart in footer
                   for (int i = 0; i != S.XValues.Count; i++)

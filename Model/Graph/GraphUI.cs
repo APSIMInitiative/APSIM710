@@ -76,9 +76,9 @@ namespace Graph
 
             // loop through all plots
             SeriesNumber = 0;
+            SeriesColourNumber = 0;
             foreach (ApsimFile.Component Plot in Controller.ApsimData.Find(NodePath).ChildNodes)
             {
-                SeriesColourNumber = 0;
                 DataProcessor Processor = new DataProcessor();
                 List<string> DefaultFileNames = new List<string>();
                 UIUtility.OutputFileUtility.GetOutputFiles(Controller, Controller.Selection, DefaultFileNames);
@@ -547,20 +547,63 @@ namespace Graph
         }
 
         private void AssignColourToSeries(Series NewSeries)
-        {                                                                                                                     // brown
-            Color[] Colors = { Color.Blue, Color.Red, Color.Green, Color.Orange, Color.Magenta, Color.Black, Color.Cyan, Color.FromArgb(255, 195, 155) };
-            Color[] CheckpointedColors = { Color.LightBlue, Color.LightPink, Color.LightGreen, Color.FromArgb(255, 195, 155), Color.FromArgb(255, 201, 255), Color.Gray, Color.FromArgb(157, 255, 255), Color.FromArgb(255, 209, 164) };
+        {                                                                                                                     // brown                  // purple
+            Color[] Colors = { Color.Blue, Color.Red, Color.Green, Color.Orange, Color.Magenta, Color.Cyan, Color.Brown, Color.Purple, Color.Gray, Color.DarkBlue, Color.DarkRed, Color.DarkGreen, Color.DarkOrange, Color.DarkMagenta, Color.DarkCyan, Color.Firebrick, Color.DarkSalmon, Color.DarkGray};
+            //Color[] CheckpointedColors = { Color.LightBlue, Color.LightPink, Color.LightGreen, Color.FromArgb(255, 195, 155), Color.FromArgb(255, 201, 255), Color.Gray, Color.FromArgb(157, 255, 255), Color.FromArgb(255, 209, 164) };
 
-            if (NewSeries.Title.Contains("Checkpointed "))
-                NewSeries.Color = CheckpointedColors[SeriesColourNumber];
+            // If there is a related series (i.e. one with the same title) then use the same colour.
+            // Otherwise assign a new colour.
+            Series RelatedSeries = FindRelatedSeries(NewSeries);
+            if (RelatedSeries != null)
+                NewSeries.Color = RelatedSeries.Color;
             else
             {
+                // assign new colour
                 NewSeries.Color = Colors[SeriesColourNumber];
                 SeriesColourNumber++;
+                if (SeriesColourNumber >= Colors.Length)
+                    SeriesColourNumber = 0;
             }
 
-            if (SeriesColourNumber >= Colors.Length)
-                SeriesColourNumber = 0;
+            // If the series is checkpointed then make the colour pale.
+            if (NewSeries.Title.Contains("{Checkpoint} "))
+            {
+                NewSeries.Color = MakeColourPale(NewSeries.Color);
+            }
+
+        }
+
+        private Color MakeColourPale(Color color)
+        {
+            byte Red = (byte)Math.Min(color.R + 127, 255);
+            byte Green = (byte)Math.Min(color.G + 127, 255);
+            byte Blue = (byte)Math.Min(color.B + 127, 255);
+            return Color.FromArgb(Red, Green, Blue);
+        }
+        private Color MakeColourDark(Color color)
+        {
+            byte Red = (byte)Math.Max(color.R - 127, 0);
+            byte Green = (byte)Math.Max(color.G - 127, 0);
+            byte Blue = (byte)Math.Max(color.B - 127, 0);
+            return Color.FromArgb(Red, Green, Blue);
+        }
+        private Series FindRelatedSeries(Series SeriesToFind)
+        {
+            string SeriesTitleToFind = GetTitleFromSeries(SeriesToFind);
+            foreach (Series S in Chart.Series)
+                if (S != SeriesToFind && SeriesTitleToFind.ToLower() == GetTitleFromSeries(S).ToLower())
+                    return S;
+            return null;
+        }
+        private string GetTitleFromSeries(Series S)
+        {
+            // Title should be formatted like:
+            //     plotname, variablename, title.
+            string SeriesTitle = S.Title;
+            int PosComma = SeriesTitle.IndexOf(',');
+            if (PosComma != -1)
+                SeriesTitle = SeriesTitle.Substring(PosComma + 1);
+            return SeriesTitle.Replace("{Checkpoint} ", "");
         }
 
         private void AddFieldNameToAxisTitle(Steema.TeeChart.Axis Axis, string FieldName)
