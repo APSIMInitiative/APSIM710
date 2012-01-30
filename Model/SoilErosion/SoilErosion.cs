@@ -205,6 +205,27 @@ public partial class SoilErosion
         get { return cover_surface_runoff + _cover_extra; }
     }
 
+    double vertFlux = 0.0;
+
+    [Output]
+    [Units("t/ha")]
+    [Description("Total vertical dust flux")]
+    double soil_loss_wind
+    {
+        get { return vertFlux * g2t * ha2scm ; } // Convert g/cm^2 to t/ha
+    }
+
+    [Output]
+    [Units("mm")]
+    [Description("")]
+    double soil_loss_wind_mm
+    {
+        get
+        {
+            return MathUtility.Divide(vertFlux, bd[0], 0.0) * cm2mm;
+        }
+    }
+
 #endregion
 
 #region Drivers we obtain from other components
@@ -617,22 +638,58 @@ public partial class SoilErosion
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
             MoveProfile();
 
+        if (wind_type == windDataType.hourly) // Wind erosion, based on hourly wind data
+        {
+            // Need to multiply by 100 to convert m/s to cm/s
+            vertFlux = VerticalFlux(wind0 * 100.0) * 3600.0;  // Flux will have units of g/cm^2
+            vertFlux += VerticalFlux(wind1 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind2 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind3 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind4 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind5 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind6 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind7 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind8 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind9 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind10 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind11 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind12 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind13 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind14 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind15 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind16 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind17 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind18 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind19 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind20 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind21 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind22 * 100.0) * 3600.0;
+            vertFlux += VerticalFlux(wind23 * 100.0) * 3600.0;
+        }
+
         if (wind_type == windDataType.three_hourly)
         {
             // Need to multiply by 100 to convert m/s to cm/s
-            // Currently using 200 just to get the speeds up enough from some results...
-            double flux = VerticalFlux(wind0 * 200.0) * 3.0 * 3600.0;  // Flux will have units of g/cm^2
-            flux += VerticalFlux(wind3 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind6 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind9 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind12 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind15 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind18 * 200.0) * 3.0 * 3600.0;
-            flux += VerticalFlux(wind21 * 200.0) * 3.0 * 3600.0;
-            if (flux > 0.0)
-                Console.WriteLine("Got some wind erosion!");
+            vertFlux = VerticalFlux(wind0 * 100.0) * 3.0 * 3600.0;  // Flux will have units of g/cm^2
+            vertFlux += VerticalFlux(wind3 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind6 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind9 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind12 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind15 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind18 * 100.0) * 3.0 * 3600.0;
+            vertFlux += VerticalFlux(wind21 * 100.0) * 3.0 * 3600.0;
+//            if (vertFlux > 0.0)
+//                Console.WriteLine("Got some wind erosion!");
         }
 
+        if (wind_type == windDataType.daily)
+        {
+            // This approach is too simplistic. We should also be able to make use
+            // of gust information, or use inferred wind speed distributions to 
+            // calculate likely gust speeds (and duration???)
+            // Need to multiply by 100 to convert m/s to cm/s
+            vertFlux = VerticalFlux(wind * 100.0) * 24.0 * 3600.0;  // Flux will have units of g/cm^2
+        }
     }
 
     protected void SetOtherVariables()

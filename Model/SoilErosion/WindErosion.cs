@@ -99,11 +99,12 @@ public partial class SoilErosion
     /// <summary>
     /// Indicates option to use for moisture correction
     /// Currently applied only to the Shao model.
-    /// If 1, use the Shao et al. 1996 version
+    /// If 1, use the Fecan version (as used in MB95)
+    /// If 2, use the Shao et al. 1996 version
     /// Otherwise, use the Zhao et al. 2006 variant
     /// </summary>
     [Param(IsOptional = true)]
-    public int moisture_option = 2;
+    public int moisture_option = 1;
 
     /// <summary>
     /// Amount of clay in the soil surface layer, expressed as a percentage
@@ -287,10 +288,28 @@ public partial class SoilErosion
     protected double[] ppsd_disp = null;
     protected double[] smoothThreshold = null;  // Threshold friction velocity for a smooth surface for a given particle size
     protected double[] horizFlux = null;
+
+    [Output]
+    [Description("Total horizonal flux")]
+    [Units("g/cm/s")]
     public double totHorizFlux;
 
     protected double moistureCorrection = 1.0; //
     protected double dragCorrection = 1.0;
+
+    protected double frictionVelocity = 0.0;
+
+    [Output]
+    [Description("Friction velocity at the soil surface")]
+    [Units("m/s")]
+    protected double ustar 
+    {
+        get { return frictionVelocity / 100.0; } // Convert from cm/s to m/s 
+    }
+
+    [Output]
+    [Description("Smallest threshold friction velocity for any particle size")]
+    [Units("m/s")]
     protected double ustar_t_min;  // Minimum value for threshold velocity, expressed in m/s
 
     int iDust = 0; // Index of last particle size class considered to be dust
@@ -376,14 +395,7 @@ public partial class SoilErosion
                 minSoilWat = soilWater;
         }
 
-        if (wind_model.ToLower() == "shao")
-        {
-            if ((moisture_option == 1) || soilWater <= 0.003)
-                return Math.Exp(22.7 * soilWater);
-            else
-                return Math.Exp(95.3 * soilWater - 2.029);
-        }
-        else if (wind_model.ToLower() == "mb95")
+        if (wind_model.ToLower() == "mb95" || moisture_option == 1)
         {
             if (bd == null)
             {
@@ -396,6 +408,13 @@ public partial class SoilErosion
                 return 1.0;
             else
                 return Math.Sqrt(1.0 + 1.21 * Math.Pow(swGrav - wPrime, 0.68));
+        }
+        else if (wind_model.ToLower() == "shao")
+        {
+            if ((moisture_option == 2) || soilWater <= 0.003)
+                return Math.Exp(22.7 * soilWater);
+            else
+                return Math.Exp(95.3 * soilWater - 2.029);
         }
         else
             throw new Exception("Unknown wind model: " + wind_model);
@@ -544,7 +563,7 @@ public partial class SoilErosion
         // Initialise those values that don't change with particle size, but do change with time
         moistureCorrection = CalcMoistureCorrection(0.0);
         dragCorrection = CalcDragCorrection();
-        double frictionVelocity = WindFrictionVelocity(windSpeed, height);
+        frictionVelocity = WindFrictionVelocity(windSpeed, height);
 
         // Now get the flux associated with each particle size, and weight the result
         // by the probability density of that size class
@@ -587,8 +606,10 @@ public partial class SoilErosion
             {
                 MyComponent.Get("bd", out bd);            
             }
-            bulkDensity = bd[0] * 1000.0;  // Shao uses units of kg/m^3 for density
             double frictionVelocity = WindFrictionVelocity(windSpeed, wind_height) / 100.0; // NOTE: It this context, we want friction velocity in m/sec, not cm/sec
+            if (frictionVelocity < ustar_t_min)
+                return 0.0;
+            bulkDensity = bd[0] * 1000.0;  // Shao uses units of kg/m^3 for density
             double zeta = frictionVelocity * Math.Sqrt(bulkDensity / plastic_pressure);  // zeta is dimensionless
             double sigma_m = 12.0 * Sqr(zeta) * (1.0 + 14.0 * zeta);       // sigma_m is dimenionless
             double gamma = Math.Exp(-shao_k_gamma * Math.Pow((frictionVelocity - ustar_t_min), 3.0)); // ghl of Shao's code. I think the result is meant to be dimensionless, although the velocities start with units
