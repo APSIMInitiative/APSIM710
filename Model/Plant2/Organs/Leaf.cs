@@ -534,7 +534,7 @@ public class Leaf : BaseOrgan, AboveGround
             i = 0;
             foreach (LeafCohort L in Leaves)
             {
-                values[i] = L.SLA;
+                values[i] = L.SpecificArea;
                 i++;
             }
 

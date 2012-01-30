@@ -2,11 +2,11 @@
   <folder name="Expt324">
     <simulation name="Expt324N3">
       <metfile name="met">
-        <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Ingham.met</filename>
+        <filename name="filename" input="yes">%apsim%\Tests\Validation\OilPalm\Cairns.met</filename>
       </metfile>
       <clock>
-        <start_date type="date" description="Enter the start date of the simulation">01/01/1990</start_date>
-        <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
+        <start_date type="date" description="Enter the start date of the simulation">01/01/1996</start_date>
+        <end_date type="date" description="Enter the end date of the simulation">31/12/2010</end_date>
       </clock>
       <summaryfile />
       <area name="paddock">
@@ -20,63 +20,66 @@
           <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
         </surfaceom>
         <folder name="Manager folder">
-          <manager name="Harvesting rule">
-            <ui>
-              <category type="category" description="Harvesting criteria" />
-              <crop type="crop" description="Enter name of crop to harvest when ripe : ">OilPalm</crop>
-            </ui>
-            <script>
-              <text>
-
-           if day = 120 and year = 2000 then
-              [crop]  harvest
-              [crop]  EndCrop
-           endif
-
-</text>
-              <event>end_of_day</event>
-            </script>
-          </manager>
           <operations>
             <operation condition="start_of_day">
-              <date>2/10/1998</date>
-              <action>irrigation apply amount= 40 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>26/10/1998</date>
-              <action>irrigation apply amount= 70 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>15/12/1998</date>
-              <action>irrigation apply amount= 70 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>29/12/1998</date>
-              <action>irrigation apply amount= 10 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>30/12/1998</date>
-              <action>irrigation apply amount= 55 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>7/01/1999</date>
-              <action>irrigation apply amount= 50 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>21/01/1999</date>
-              <action>irrigation apply amount= 40 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>10/02/1999</date>
-              <action>irrigation apply amount= 28 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>19/02/1999</date>
-              <action>irrigation apply amount= 15 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
-              <date>9/03/1999</date>
-              <action>irrigation apply amount= 25 (mm)</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
               <date>1-jan</date>
@@ -103,7 +106,7 @@
           </irrigation>
           <manager name="Tree Sowing Rule">
             <ui>
-              <sowing_date type="date" description="Sowing date">01/01/1990</sowing_date>
+              <sowing_date type="date" description="Sowing date">01/03/1996</sowing_date>
               <population type="text" description="Plant Population (/ha)">135</population>
               <cultivar type="cultivars" description="Cultivar">dami</cultivar>
               <sowing_depth type="text" description="Sowing depth (mm)">200</sowing_depth>
@@ -523,94 +526,44 @@ endif
           <title>Expt324N3</title>
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" />
-            <variable name="LeafLAI" />
-            <variable name="LeafLAIDead" />
-            <variable name="sw_dep()" />
-            <variable name="AboveGroundWt" />
-            <variable name="LeafLiveWt" />
             <variable name="StemLiveWt" />
-            <variable name="BunchLiveWt" />
-            <variable name="RootLiveWt" />
-            <variable name="RootDepth" />
-            <variable name="PhenologyDaysAfterPlanting" />
-            <variable name="LeafAppearedCohortNo" />
-            <variable name="LeafExpandedCohortNo" />
-            <variable name="LeafDeadCohortNo" />
-            <variable name="LeafGreenCohortNo" />
-            <variable name="LeafPhotosynthesisFwValue" />
-            <variable name="LeafPhotosynthesisFnValue" />
-            <variable name="LeafPhotosynthesisFvpdValue" />
-            <variable name="LeafPhotosynthesisFtValue" />
           </variables>
           <events name="Reporting Frequency">
             <event name="Daily" />
           </events>
-          <Graph name="LeafArea">
-            <Plot>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <colour>
-              </colour>
-              <X>Date</X>
-              <Y>LeafLAI</Y>
-              <Y>LeafLAIDead</Y>
-              <YRight>LeafAppearedCohortNo</YRight>
-              <YRight>LeafDeadCohortNo</YRight>
-              <YRight>LeafExpandedCohortNo</YRight>
-              <GDApsimFileReader name="ApsimFileReader" />
-            </Plot>
-          </Graph>
-          <Graph name="SpecificLeafArea">
-            <Plot>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <colour>
-              </colour>
-              <X>Date</X>
-              <Y>LeafSpecificArea</Y>
-              <GDApsimFileReader name="ApsimFileReader" />
-            </Plot>
-          </Graph>
-          <Graph name="Stress">
-            <Plot>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <colour>
-              </colour>
-              <X>Date</X>
-              <Y>LeafPhotosynthesisFnValue</Y>
-              <Y>LeafPhotosynthesisFvpdValue</Y>
-              <Y>LeafPhotosynthesisFtValue</Y>
-              <GDApsimFileReader name="ApsimFileReader" />
-            </Plot>
-          </Graph>
-          <Graph name="DMDemands">
-            <Plot>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <colour>
-              </colour>
-              <X>Date</X>
-              <Y>LeafDMDemand</Y>
-              <GDApsimFileReader name="ApsimFileReader" />
-            </Plot>
-          </Graph>
-          <Graph name="LeafNumber">
-            <Plot>
-              <SeriesType>Solid line</SeriesType>
-              <PointType>None</PointType>
-              <colour>
-              </colour>
-              <X>Date</X>
-              <Y>LeafAppearedCohortNo</Y>
-              <Y>LeafDeadCohortNo</Y>
-              <Y>LeafExpandedCohortNo</Y>
-              <Y>LeafGreenCohortNo</Y>
-              <GDApsimFileReader name="ApsimFileReader" />
-            </Plot>
-          </Graph>
         </outputfile>
       </area>
     </simulation>
+    <Graph name="StemWt">
+      <Legend>
+        <CheckedTitles>Predicted, StemLiveWt,Expt324N3</CheckedTitles>
+        <CheckedTitles>Observed, StemWt,Expt324N0</CheckedTitles>
+        <CheckedTitles>Observed, StemWt,Expt324N1</CheckedTitles>
+        <CheckedTitles>Observed, StemWt,Expt324N2</CheckedTitles>
+        <CheckedTitles>Observed, StemWt,Expt324N3</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>StemLiveWt</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <X>Date</X>
+        <Y>StemWt</Y>
+        <colour>
+        </colour>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Observed\Expt324StemWt.txt</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
   </folder>
 </folder>
