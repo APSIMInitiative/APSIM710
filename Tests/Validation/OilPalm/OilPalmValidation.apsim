@@ -127,6 +127,29 @@ endif
               <event>Init</event>
             </script>
           </manager>
+          <manager name="Calculations">
+            <script>
+              <text>CumLeaves = 0
+</text>
+              <event>init</event>
+            </script>
+            <script>
+              <text>
+              </text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>
+              </text>
+              <event>end_of_day</event>
+            </script>
+            <script>
+              <text>if today &gt; date('01/11/2001') then
+   CumLeaves = CumLeaves + 1
+endif</text>
+              <event>NewLeaf</event>
+            </script>
+          </manager>
         </folder>
         <soil name="Soil">
           <Country />
@@ -527,6 +550,8 @@ endif
           <variables name="Variables">
             <variable name="dd/mm/yyyy as Date" />
             <variable name="StemLiveWt" />
+            <variable name="LeafLAI" />
+            <variable name="CumLeaves" />
           </variables>
           <events name="Reporting Frequency">
             <event name="Daily" />
@@ -537,9 +562,6 @@ endif
     <Graph name="StemWt">
       <Legend>
         <CheckedTitles>Predicted, StemLiveWt,Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, StemWt,Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, StemWt,Expt324N1</CheckedTitles>
-        <CheckedTitles>Observed, StemWt,Expt324N2</CheckedTitles>
         <CheckedTitles>Observed, StemWt,Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
@@ -552,8 +574,8 @@ endif
         <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
       <Plot name="Observed">
-        <SeriesType>Solid line</SeriesType>
-        <PointType>None</PointType>
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
         <X>Date</X>
         <Y>StemWt</Y>
         <colour>
@@ -563,6 +585,815 @@ endif
           <FileName>
           </FileName>
         </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="LAI">
+      <Legend>
+        <CheckedTitles>Predicted, Expt324N3</CheckedTitles>
+        <CheckedTitles>Observed, Expt324N0</CheckedTitles>
+        <CheckedTitles>Observed, Expt324N1</CheckedTitles>
+        <CheckedTitles>Observed, Expt324N2</CheckedTitles>
+        <CheckedTitles>Observed, Expt324N3</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>LeafLAI</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Observed\Expt324LAI.txt</FileName>
+          <FileName>
+          </FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="FrondAppearance">
+      <Legend>
+        <CheckedTitles>Predicted, CumLeaves,Expt324N3</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N0</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N1</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N2</CheckedTitles>
+        <CheckedTitles>Observed, CumFrontCount,Expt324N3</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>CumLeaves</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>CumFrontCount</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Observed\Expt324FrondCount.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+  </folder>
+  <folder name="Breure88">
+    <simulation name="Breure88_056">
+      <metfile name="met">
+        <filename name="filename" input="yes">%apsim%\Tests\Validation\OilPalm\Cairns.met</filename>
+      </metfile>
+      <clock>
+        <start_date type="date" description="Enter the start date of the simulation">01/01/1970</start_date>
+        <end_date type="date" description="Enter the end date of the simulation">31/12/1984</end_date>
+      </clock>
+      <summaryfile />
+      <area name="paddock">
+        <OilPalm />
+        <fertiliser />
+        <surfaceom name="surface organic matter">
+          <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+          <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+          <mass type="text" description="Initial surface residue (kg/ha)">2000</mass>
+          <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+          <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+        </surfaceom>
+        <folder name="Manager folder">
+          <operations>
+            <operation condition="start_of_day">
+              <date>1-jan</date>
+              <action>fertiliser apply amount= 200 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>1-jul</date>
+              <action>oilpalm RemoveLowestLeaf</action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+          </operations>
+          <irrigation name="Irrigation">
+            <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+            <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+            <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+            <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+            <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+            <allocation type="text" description="Allocation in ML">0</allocation>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">100</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          </irrigation>
+          <manager name="Tree Sowing Rule">
+            <ui>
+              <sowing_date type="date" description="Sowing date">01/03/1970</sowing_date>
+              <population type="text" description="Plant Population (/ha)">56</population>
+              <cultivar type="cultivars" description="Cultivar">dami</cultivar>
+              <sowing_depth type="text" description="Sowing depth (mm)">200</sowing_depth>
+            </ui>
+            <script>
+              <text>ppsm = [population]/10000
+if today = date('[sowing_date]') then
+   OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+           
+      
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>Plant_population = 0
+</text>
+              <event>Init</event>
+            </script>
+          </manager>
+        </folder>
+        <soil name="Soil">
+          <Country />
+          <Site />
+          <Region />
+          <LocalName />
+          <SoilType description="Classification" />
+          <NearestTown description="Nearest town" />
+          <NaturalVegetation description="Natural vegetation" />
+          <State />
+          <ApsoilNumber description="Apsoil number" />
+          <Latitude description="Latitude (WGS84)" />
+          <Longitude />
+          <LocationAccuracy description="Location accuracy" />
+          <DataSource type="multiedit" description="Data source" />
+          <Comments />
+          <Langitude description="Longitude (WGS84)" />
+          <Comment type="multiedit" description="Comments" />
+          <Analysis>
+            <Layer>
+              <Thickness units="mm">100</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH units="1:5 water">6.6</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH>6.2</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH>5.7</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH>5.5</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH>5.5</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <Rocks units="%" />
+              <Texture />
+              <MunsellColour />
+              <EC units="1:5 dS/m" />
+              <PH>5.5</PH>
+              <CL units="mg/kg" />
+              <Boron units="Hot water mg/kg" />
+              <CEC units="cmol+/kg" />
+              <Ca units="cmol+/kg" />
+              <Mg units="cmol+/kg" />
+              <Na units="cmol+/kg" />
+              <K units="cmol+/kg" />
+              <ESP units="%" />
+              <Mn units="mg/kg" />
+              <Al units="cmol+/kg" />
+              <ParticleSizeSand units="%" />
+              <ParticleSizeSilt units="%" />
+              <ParticleSizeClay units="%" />
+            </Layer>
+          </Analysis>
+          <InitWater name="Initial water">
+            <PercentMethod>
+              <Percent>1.00</Percent>
+              <Distributed>Evenly distributed</Distributed>
+            </PercentMethod>
+          </InitWater>
+          <Water>
+            <Layer>
+              <Thickness units="mm">100</Thickness>
+              <KS units="mm/day" />
+              <BD units="g/cc">1.2</BD>
+              <AirDry units="mm/mm">0.08</AirDry>
+              <LL15 units="mm/mm">0.13</LL15>
+              <DUL units="mm/mm">0.33</DUL>
+              <SAT units="mm/mm">0.5</SAT>
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <KS units="mm/day" />
+              <BD>1.2</BD>
+              <AirDry>0.13</AirDry>
+              <LL15>0.13</LL15>
+              <DUL>0.33</DUL>
+              <SAT>0.5</SAT>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <KS units="mm/day" />
+              <BD>1.2</BD>
+              <AirDry>0.1</AirDry>
+              <LL15>0.1</LL15>
+              <DUL>0.31</DUL>
+              <SAT>0.44</SAT>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <KS units="mm/day" />
+              <BD>1.2</BD>
+              <AirDry>0.06</AirDry>
+              <LL15>0.06</LL15>
+              <DUL>0.15</DUL>
+              <SAT>0.46</SAT>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <KS units="mm/day" />
+              <BD>1.2</BD>
+              <AirDry>0.04</AirDry>
+              <LL15>0.04</LL15>
+              <DUL>0.1</DUL>
+              <SAT>0.44</SAT>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <KS units="mm/day" />
+              <BD>1.2</BD>
+              <AirDry>0.02</AirDry>
+              <LL15>0.02</LL15>
+              <DUL>0.06</DUL>
+              <SAT>0.44</SAT>
+            </Layer>
+            <SoilCrop name="OilPalm">
+              <Layer>
+                <Thickness units="mm">100</Thickness>
+                <LL units="mm/mm">0.13</LL>
+                <KL units="/day">0.1</KL>
+                <XF units="0-1">1</XF>
+              </Layer>
+              <Layer>
+                <Thickness>200</Thickness>
+                <LL>0.13</LL>
+                <KL>0.06</KL>
+                <XF>1</XF>
+              </Layer>
+              <Layer>
+                <Thickness>300</Thickness>
+                <LL>0.27</LL>
+                <KL>0.03</KL>
+                <XF>1</XF>
+              </Layer>
+              <Layer>
+                <Thickness>300</Thickness>
+                <LL>0.27</LL>
+                <KL>0.03</KL>
+                <XF>1</XF>
+              </Layer>
+              <Layer>
+                <Thickness>300</Thickness>
+                <LL>0.3</LL>
+                <KL>0.03</KL>
+                <XF>1</XF>
+              </Layer>
+              <Layer>
+                <Thickness>300</Thickness>
+                <LL>0.3</LL>
+                <KL>0.03</KL>
+                <XF>1</XF>
+              </Layer>
+            </SoilCrop>
+          </Water>
+          <SoilWat>
+            <SummerCona>4.4</SummerCona>
+            <SummerU>9</SummerU>
+            <SummerDate>1-Nov</SummerDate>
+            <WinterCona>4.4</WinterCona>
+            <WinterU>9</WinterU>
+            <WinterDate>1-Apr</WinterDate>
+            <DiffusConst>88</DiffusConst>
+            <DiffusSlope>35.4</DiffusSlope>
+            <Salb>0.18</Salb>
+            <CN2Bare>68</CN2Bare>
+            <CNRed>20</CNRed>
+            <CNCov>0.8</CNCov>
+            <Slope>
+            </Slope>
+            <DischargeWidth>
+            </DischargeWidth>
+            <CatchmentArea>
+            </CatchmentArea>
+            <MaxPond>
+            </MaxPond>
+            <Layer>
+              <Thickness units="mm">100</Thickness>
+              <SWCON units="0-1">0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <SWCON>0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <SWCON>0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <SWCON>0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <SWCON>0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <SWCON>0.55</SWCON>
+              <MWCON units="0-1" />
+              <KLAT units="mm/d" />
+            </Layer>
+          </SoilWat>
+          <SoilOrganicMatter>
+            <RootCN>30</RootCN>
+            <RootWT>3000</RootWT>
+            <SoilCN>11.5</SoilCN>
+            <EnrACoeff>7.4</EnrACoeff>
+            <EnrBCoeff>0.2</EnrBCoeff>
+            <Layer>
+              <Thickness units="mm">100</Thickness>
+              <OC units="Total %">1.82</OC>
+              <FBiom units="0-1">0.025</FBiom>
+              <FInert units="0-1">0.3</FInert>
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <OC>1.47</OC>
+              <FBiom>0.025</FBiom>
+              <FInert>0.4</FInert>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <OC>1.2</OC>
+              <FBiom>0.015</FBiom>
+              <FInert>0.75</FInert>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <OC>1.03</OC>
+              <FBiom>0.01</FBiom>
+              <FInert>0.9</FInert>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <OC>0.47</OC>
+              <FBiom>0.01</FBiom>
+              <FInert>0.96</FInert>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <OC>0.47</OC>
+              <FBiom>0.01</FBiom>
+              <FInert>0.96</FInert>
+            </Layer>
+          </SoilOrganicMatter>
+          <Sample name="Initial nitrogen">
+            <Date type="date" description="Sample date:" />
+            <Layer>
+              <Thickness units="mm">100</Thickness>
+              <NO3 units="kg/ha">217</NO3>
+              <NH4 units="ppm">0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+            <Layer>
+              <Thickness>200</Thickness>
+              <NO3>30</NO3>
+              <NH4>0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <NO3>5</NO3>
+              <NH4>0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <NO3>5</NO3>
+              <NH4>0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <NO3>0</NO3>
+              <NH4>0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <NO3>0</NO3>
+              <NH4>0</NH4>
+              <SW units="mm/mm" />
+            </Layer>
+          </Sample>
+        </soil>
+        <micromet name="Micromet">
+          <soilalbedo name="soilalbedo">0.23</soilalbedo>
+          <a_interception name="a_interception">0.0</a_interception>
+          <b_interception name="b_interception">0.0</b_interception>
+          <c_interception name="c_interception">0.0</c_interception>
+          <d_interception name="d_interception">0.0</d_interception>
+        </micromet>
+        <outputfile name="Outputfile">
+          <filename output="yes">Breure88_056.out</filename>
+          <title>Breure88_056</title>
+          <variables name="Variables">
+            <variable name="dd/mm/yyyy as Date" />
+            <variable name="StemLiveWt" />
+            <variable name="LeafLAI" />
+            <variable name="Cover_green" />
+          </variables>
+          <events name="Reporting Frequency">
+            <event name="end_year" />
+          </events>
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Breure88_110" shortcut="/simulations/Breure88/Breure88_056">
+      <metfile name="met" shortcut="/simulations/Breure88/Breure88_056/met" />
+      <clock shortcut="/simulations/Breure88/Breure88_056/clock" />
+      <summaryfile shortcut="/simulations/Breure88/Breure88_056/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Breure88/Breure88_056/paddock">
+        <OilPalm shortcut="/simulations/Breure88/Breure88_056/paddock/OilPalm" />
+        <fertiliser shortcut="/simulations/Breure88/Breure88_056/paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/simulations/Breure88/Breure88_056/paddock/surface organic matter" />
+        <folder name="Manager folder" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder">
+          <operations shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/operations" />
+          <irrigation name="Irrigation" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/Irrigation" />
+          <manager name="Tree Sowing Rule">
+            <ui>
+              <sowing_date type="date" description="Sowing date">01/03/1970</sowing_date>
+              <population type="text" description="Plant Population (/ha)">110</population>
+              <cultivar type="cultivars" description="Cultivar">dami</cultivar>
+              <sowing_depth type="text" description="Sowing depth (mm)">200</sowing_depth>
+            </ui>
+            <script>
+              <text>ppsm = [population]/10000
+if today = date('[sowing_date]') then
+   OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+           
+      
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>Plant_population = 0
+</text>
+              <event>Init</event>
+            </script>
+          </manager>
+        </folder>
+        <soil name="Soil" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil">
+          <Analysis shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Analysis" />
+          <InitWater name="Initial water" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial water" />
+          <Water shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water">
+            <SoilCrop name="OilPalm" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water/OilPalm" />
+          </Water>
+          <SoilWat shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilWat" />
+          <SoilOrganicMatter shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilOrganicMatter" />
+          <Sample name="Initial nitrogen" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial nitrogen" />
+        </soil>
+        <micromet name="Micromet" shortcut="/simulations/Breure88/Breure88_056/paddock/Micromet" />
+        <outputfile name="Outputfile" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile">
+          <filename output="yes">Breure88_110.out</filename>
+          <title>Breure88_110</title>
+          <variables name="Variables" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Reporting Frequency" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Breure88_148" shortcut="/simulations/Breure88/Breure88_056">
+      <metfile name="met" shortcut="/simulations/Breure88/Breure88_056/met" />
+      <clock shortcut="/simulations/Breure88/Breure88_056/clock" />
+      <summaryfile shortcut="/simulations/Breure88/Breure88_056/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Breure88/Breure88_056/paddock">
+        <OilPalm shortcut="/simulations/Breure88/Breure88_056/paddock/OilPalm" />
+        <fertiliser shortcut="/simulations/Breure88/Breure88_056/paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/simulations/Breure88/Breure88_056/paddock/surface organic matter" />
+        <folder name="Manager folder" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder">
+          <operations shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/operations" />
+          <irrigation name="Irrigation" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/Irrigation" />
+          <manager name="Tree Sowing Rule">
+            <ui>
+              <sowing_date type="date" description="Sowing date">01/03/1970</sowing_date>
+              <population type="text" description="Plant Population (/ha)">148</population>
+              <cultivar type="cultivars" description="Cultivar">dami</cultivar>
+              <sowing_depth type="text" description="Sowing depth (mm)">200</sowing_depth>
+            </ui>
+            <script>
+              <text>ppsm = [population]/10000
+if today = date('[sowing_date]') then
+   OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+           
+      
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>Plant_population = 0
+</text>
+              <event>Init</event>
+            </script>
+          </manager>
+        </folder>
+        <soil name="Soil" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil">
+          <Analysis shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Analysis" />
+          <InitWater name="Initial water" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial water" />
+          <Water shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water">
+            <SoilCrop name="OilPalm" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water/OilPalm" />
+          </Water>
+          <SoilWat shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilWat" />
+          <SoilOrganicMatter shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilOrganicMatter" />
+          <Sample name="Initial nitrogen" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial nitrogen" />
+        </soil>
+        <micromet name="Micromet" shortcut="/simulations/Breure88/Breure88_056/paddock/Micromet" />
+        <outputfile name="Outputfile" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile">
+          <filename output="yes">Breure88_148.out</filename>
+          <title>Breure88_148</title>
+          <variables name="Variables" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Reporting Frequency" />
+        </outputfile>
+      </area>
+    </simulation>
+    <simulation name="Breure88_186" shortcut="/simulations/Breure88/Breure88_056">
+      <metfile name="met" shortcut="/simulations/Breure88/Breure88_056/met" />
+      <clock shortcut="/simulations/Breure88/Breure88_056/clock" />
+      <summaryfile shortcut="/simulations/Breure88/Breure88_056/summaryfile" />
+      <area name="paddock" shortcut="/simulations/Breure88/Breure88_056/paddock">
+        <OilPalm shortcut="/simulations/Breure88/Breure88_056/paddock/OilPalm" />
+        <fertiliser shortcut="/simulations/Breure88/Breure88_056/paddock/fertiliser" />
+        <surfaceom name="surface organic matter" shortcut="/simulations/Breure88/Breure88_056/paddock/surface organic matter" />
+        <folder name="Manager folder" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder">
+          <operations shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/operations" />
+          <irrigation name="Irrigation" shortcut="/simulations/Breure88/Breure88_056/paddock/Manager folder/Irrigation" />
+          <manager name="Tree Sowing Rule">
+            <ui>
+              <sowing_date type="date" description="Sowing date">01/03/1970</sowing_date>
+              <population type="text" description="Plant Population (/ha)">186</population>
+              <cultivar type="cultivars" description="Cultivar">dami</cultivar>
+              <sowing_depth type="text" description="Sowing depth (mm)">200</sowing_depth>
+            </ui>
+            <script>
+              <text>ppsm = [population]/10000
+if today = date('[sowing_date]') then
+   OilPalm sow population = ppsm, depth = [sowing_depth], cultivar = [cultivar], maxcover = 1.0, budnumber = 1, row_spacing = [row_width], crop_class = plant  
+endif
+           
+      
+</text>
+              <event>start_of_day</event>
+            </script>
+            <script>
+              <text>Plant_population = 0
+</text>
+              <event>Init</event>
+            </script>
+          </manager>
+        </folder>
+        <soil name="Soil" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil">
+          <Analysis shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Analysis" />
+          <InitWater name="Initial water" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial water" />
+          <Water shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water">
+            <SoilCrop name="OilPalm" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Water/OilPalm" />
+          </Water>
+          <SoilWat shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilWat" />
+          <SoilOrganicMatter shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/SoilOrganicMatter" />
+          <Sample name="Initial nitrogen" shortcut="/simulations/Breure88/Breure88_056/paddock/Soil/Initial nitrogen" />
+        </soil>
+        <micromet name="Micromet" shortcut="/simulations/Breure88/Breure88_056/paddock/Micromet" />
+        <outputfile name="Outputfile" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile">
+          <filename output="yes">Breure88_186.out</filename>
+          <title>Breure88_186</title>
+          <variables name="Variables" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Variables" />
+          <events name="Reporting Frequency" shortcut="/simulations/Breure88/Breure88_056/paddock/Outputfile/Reporting Frequency" />
+        </outputfile>
+      </area>
+    </simulation>
+    <Graph name="LAI">
+      <Legend>
+        <CheckedTitles>Predicted, LeafLAI,Breure88_056</CheckedTitles>
+        <CheckedTitles>Predicted, LeafLAI,Breure88_110</CheckedTitles>
+        <CheckedTitles>Predicted, LeafLAI,Breure88_148</CheckedTitles>
+        <CheckedTitles>Predicted, LeafLAI,Breure88_186</CheckedTitles>
+        <CheckedTitles>Observed, LAI,Breure88_110</CheckedTitles>
+        <CheckedTitles>Observed, LAI,Breure88_148</CheckedTitles>
+        <CheckedTitles>Observed, LAI,Breure88_186</CheckedTitles>
+        <CheckedTitles>Observed, LAI,Breure88_056</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafLAI</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LAI</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Observed\Breure88_LAI.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+    <Graph name="Cover">
+      <Legend>
+        <CheckedTitles> Breure88_056</CheckedTitles>
+        <CheckedTitles> Breure88_110</CheckedTitles>
+        <CheckedTitles> Breure88_148</CheckedTitles>
+        <CheckedTitles> Breure88_186</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <Y>Cover_green</Y>
+        <X>LeafLAI</X>
+        <GDApsimFileReader name="ApsimFileReader" />
       </Plot>
     </Graph>
   </folder>

@@ -85,6 +85,8 @@ public class Leaf : BaseOrgan, AboveGround
  #region Class Data Members
     [Event]
     public event NewCanopyDelegate New_Canopy;
+    [Event]
+    public event NullTypeDelegate NewLeaf;
     public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
     public double ExpansionStressValue //This property is necessary so the leaf class can update Expansion stress value each day an pass it down to cohorts
     {
@@ -690,6 +692,7 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves[i]._Population = BranchNumber;
             Leaves[i].Age = CohortAge; 
             Leaves[i].DoAppearance();
+            NewLeaf.Invoke();
         }
 
         //Work out stem mortanity from shading

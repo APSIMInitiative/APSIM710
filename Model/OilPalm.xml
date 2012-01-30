@@ -1,4 +1,4 @@
-<Type version="28" name="OilPalm">
+<Type version="29" name="OilPalm">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -270,15 +270,21 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <Memo>This is the rate (proportion per day) that shaded leaves seness at.</Memo>
         </Constant>
         <MultiplyFunction name="ExtinctionCoeff">
-          <Memo>Quantifies the relationship between Leaf area index and radiation interception.  The PotentialExtinctionCoeff is the unstressed value and extinction coefficient declines in response to water stress as leaves wilt to reduce their radiation load</Memo>
-          <Constant name="PotentialExtinctionCoeff">
-            <Value type="text" description="Value">.5</Value>
-          </Constant>
+          <Memo>Extinction coefficient is derived from data  found in Breure CJ (1988) The effect of different planting densities on yield trends in oil palm.  Experimental Agriculture 24:37-52.
+
+Extinction coefficient at age 14 is assumed to vary from 0.2 at 56 palms/ha to 0.4 at 186 palms/ha.  These values span the range of the data measured from the density trial.</Memo>
           <LinearInterpolationFunction name="WaterStressReduction">
             <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
             <XYPairs>
               <XY>0 1</XY>
               <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="PotentialExtinctionCoeff">
+            <XProperty type="text" description="XProperty">Population.Value</XProperty>
+            <XYPairs>
+              <XY>0.0056 0.2</XY>
+              <XY>0.0186 0.4</XY>
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>

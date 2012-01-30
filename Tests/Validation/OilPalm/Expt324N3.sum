@@ -20,6 +20,7 @@ Paddock:
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component             "Tree Sowing Rule" = %apsim%\Model\Manager.dll
+   Component                 "Calculations" = %apsim%\Model\Manager.dll
    Component                     "Micromet" = %apsim%\Model\MicroMet.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -52,6 +53,8 @@ Paddock:
      Output variables:
         dd/mm/yyyy as Date
         StemLiveWt
+        LeafLAI
+        CumLeaves
 
      Output file = Expt324N3.out
      Format = normal
@@ -91,6 +94,24 @@ Paddock:
      END of rules
      
      Manager creating a new local real variable : plant_population = 0.00000
+
+------- Calculations Initialisation -------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cumleaves = 0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     
+     SECTION:- newleaf
+     if today > date('01/11/2001') then
+        cumleaves = cumleaves + 1
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : cumleaves = 0.00000
 
 ------- Micromet Initialisation -----------------------------------------------
      Initialising
