@@ -1,4 +1,4 @@
-<folder version="28" name="simulations">
+<folder version="29" name="simulations">
   <memo>Simulations numbered as per Table 2. "Datasets used for model development" in:
 
 Keating, B.A., Robertson, M.J., Muchow, R.C. and Huth, N.I. (1999). Modelling sugarcane production systems I. Development and performance of the sugarcane module.
@@ -721,7 +721,7 @@ Field Crops Research, 61: 253-271.
       <soil name="Soil" shortcut="/simulations/Old/paddock/Soil">
         <InitWater name="Initial water" shortcut="/simulations/Old/paddock/Soil/Initial water" />
         <Water shortcut="/simulations/Old/paddock/Soil/Water">
-          <SoilCrop name="sugar2" shortcut="/simulations/Old/paddock/Soil/Water/sugar" />
+          <SoilCrop name="SugarCane" shortcut="/simulations/Old/paddock/Soil/Water/sugar" />
         </Water>
         <SoilWat shortcut="/simulations/Old/paddock/Soil/SoilWat" />
         <SoilOrganicMatter shortcut="/simulations/Old/paddock/Soil/SoilOrganicMatter" />
@@ -731,7 +731,7 @@ Field Crops Research, 61: 253-271.
       <surfaceom name="Surface Organic Matter" shortcut="/simulations/Old/paddock/Surface Organic Matter" />
       <fertiliser name="Fertiliser" shortcut="/simulations/Old/paddock/Fertiliser" />
       <irrigation name="Irrigation" shortcut="/simulations/Old/paddock/Irrigation" />
-      <sugar2 />
+      <SugarCane />
       <manager name="Empty manager">
         <script>
           <text>sla=0</text>
@@ -740,8 +740,8 @@ Field Crops Research, 61: 253-271.
         <script>
           <text>calcgreenbiomass=leaflivewt+stemlivewt
 
-if sugar2.leaflai&gt;0 then
-   sla=sugar2.leaflai/sugar2.leaflivewt*1000000
+if SugarCane.leaflai&gt;0 then
+   sla=SugarCane.leaflai/SugarCane.leaflivewt*1000000
 else
    sla=0
 endif
@@ -758,7 +758,7 @@ endif
       <operations>
         <operation condition="start_of_day">
           <date>23/07/1992</date>
-          <action>sugar2 sow population = 10, depth = 100, cultivar = Q117, maxcover = 1.0, BudNumber = 1, row_spacing = 1500, crop_class = plant</action>
+          <action>SugarCane sow population = 10, depth = 100, cultivar = Q117, maxcover = 1.0, BudNumber = 1, row_spacing = 1500, crop_class = plant</action>
         </operation>
         <operation condition="start_of_day">
           <date>
@@ -912,11 +912,11 @@ endif
         </operation>
         <operation condition="end_of_day">
           <date>21/10/1993</date>
-          <action>sugar2 harvest</action>
+          <action>SugarCane harvest</action>
         </operation>
         <operation condition="end_of_day">
           <date>21/10/1993</date>
-          <action>sugar2 end_crop</action>
+          <action>SugarCane end_crop</action>
         </operation>
       </operations>
       <outputfile name="Outputfile">

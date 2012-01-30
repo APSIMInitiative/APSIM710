@@ -24,7 +24,7 @@ Paddock:
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                       "sugar2" = %apsim%\Model\Plant2.dll
+   Component                    "SugarCane" = %apsim%\Model\Plant2.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -86,9 +86,9 @@ Paddock:
 ------- operations Initialisation ---------------------------------------------
      Operations Schedule
      ===================
-     23/07/1992  Prepare      sugar2 sow population = 10, depth = 100, cultivar = Q117, maxcover = 1.0, BudNumber = 1, row_spacing = 1500, crop_class = plant
-     21/10/1993  Post         sugar2 harvest
-     21/10/1993  Post         sugar2 end_crop
+     23/07/1992  Prepare      SugarCane sow population = 10, depth = 100, cultivar = Q117, maxcover = 1.0, BudNumber = 1, row_spacing = 1500, crop_class = plant
+     21/10/1993  Post         SugarCane harvest
+     21/10/1993  Post         SugarCane end_crop
 
 ------- Irrigation Initialisation ---------------------------------------------
       Initialising
@@ -110,8 +110,8 @@ Paddock:
      
      SECTION:- start_of_day
      calcgreenbiomass=leaflivewt+stemlivewt
-     if sugar2.leaflai>0 then
-        sla=sugar2.leaflai/sugar2.leaflivewt*1000000
+     if sugarcane.leaflai>0 then
+        sla=sugarcane.leaflai/sugarcane.leaflivewt*1000000
      else
         sla=0
      endif
@@ -268,7 +268,7 @@ Paddock:
            Totals  138264.1 12569.5  1855.9   232.0    20.0     0.3
           ---------------------------------------------------------
 ------- Start of simulation  --------------------------------------------------
-      Sending sow message to sugar2
+      Sending sow message to sugarcane
      Manager creating a new local real variable : calcgreenbiomass = 0.00000
 24/07/1992 - Sprouted
                             LAI = 0.00 (m^2/m^2)
@@ -280,7 +280,7 @@ Paddock:
                             LAI = 5.00 (m^2/m^2)
            Above Ground Biomass = 781.60 (g/m^2)
 21 October 1993(Day of year=294), operations: 
-      Sending harvest message to sugar2
-      Sending end_crop message to sugar2
+      Sending harvest message to sugarcane
+      Sending end_crop message to sugarcane
 21 October 1993(Day of year=294), clock: 
      Simulation is terminating due to end criteria being met.
