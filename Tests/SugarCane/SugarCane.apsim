@@ -711,7 +711,7 @@ Field Crops Research, 61: 253-271.
       </outputfile>
     </area>
   </simulation>
-  <simulation name="Sugar2">
+  <simulation name="SugarCane">
     <metfile name="met" shortcut="/simulations/Old/met">
       <filename shortcut="/simulations/Old/met/filename" input="yes" />
     </metfile>
@@ -920,8 +920,8 @@ endif
         </operation>
       </operations>
       <outputfile name="Outputfile">
-        <filename output="yes">Sugar2.out</filename>
-        <title>Sugar2</title>
+        <filename output="yes">SugarCane.out</filename>
+        <title>SugarCane</title>
         <variables name="Variables">
           <variable name="dd/mm/yyyy as date" />
           <variable name="PhenologyThermalTimeValue" />
@@ -938,7 +938,7 @@ endif
           <variable name="BelowGroundDM" />
           <variable name="AboveGroundDM" />
           <variable name="calcgreenbiomass" />
-          <variable name="surfaceom_wt as sugar2_surfaceom_wt" />
+          <variable name="surfaceom_wt as SugarCane_surfaceom_wt" />
           <variable name="LeafFw" />
           <variable name="LeafFn" />
           <variable name="RootDepth" />
@@ -952,6 +952,12 @@ endif
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/Old/paddock/Outputfile/Reporting Frequency" />
         <Graph name="Water and N stress">
+          <Legend>
+            <CheckedTitles> LeafFw</CheckedTitles>
+            <CheckedTitles> LeafFn</CheckedTitles>
+            <CheckedTitles> leafphotosynthesisft</CheckedTitles>
+            <CheckedTitles> leafphotosynthesisfvpd</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>None</PointType>
@@ -966,6 +972,10 @@ endif
           </Plot>
         </Graph>
         <Graph name="SLA">
+          <Legend>
+            <CheckedTitles> sla</CheckedTitles>
+            <CheckedTitles> leafspecificarea</CheckedTitles>
+          </Legend>
           <Plot>
             <SeriesType>Solid line</SeriesType>
             <PointType>Circle</PointType>
@@ -988,6 +998,10 @@ endif
     </area>
   </simulation>
   <Graph name="LAI">
+    <Legend>
+      <CheckedTitles> Old</CheckedTitles>
+      <CheckedTitles> SugarCane</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
@@ -999,6 +1013,12 @@ endif
     </Plot>
   </Graph>
   <Graph name="Leaf Numbers">
+    <Legend>
+      <CheckedTitles> LeafDeadCohortNo, Old</CheckedTitles>
+      <CheckedTitles> LeafDeadCohortNo, SugarCane</CheckedTitles>
+      <CheckedTitles> LeafAppearedCohortNo, Old</CheckedTitles>
+      <CheckedTitles> LeafAppearedCohortNo, SugarCane</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
@@ -1011,6 +1031,10 @@ endif
     </Plot>
   </Graph>
   <Graph name="StemWt">
+    <Legend>
+      <CheckedTitles> Old</CheckedTitles>
+      <CheckedTitles> SugarCane</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
@@ -1022,6 +1046,10 @@ endif
     </Plot>
   </Graph>
   <Graph name="RootDepth">
+    <Legend>
+      <CheckedTitles> Old</CheckedTitles>
+      <CheckedTitles> SugarCane</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
@@ -1033,6 +1061,10 @@ endif
     </Plot>
   </Graph>
   <Graph name="Phenology">
+    <Legend>
+      <CheckedTitles> Old</CheckedTitles>
+      <CheckedTitles> SugarCane</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>None</PointType>
