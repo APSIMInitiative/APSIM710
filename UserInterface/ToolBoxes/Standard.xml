@@ -753,42 +753,62 @@ if (year > [startyear]) then
       </script>
     </manager>
      <manager2 name="Script(VB)">
-       <ui>
-         <A type="text" description="Some little thing">Hello</A>
-       </ui>
-       <text>Imports System
-   Imports ModelFramework
+        <ui>
+          <A type="text" description="Param A">Parameter value</A>
+        </ui>
+       <text>
+Imports System
+Imports ModelFramework
 
-   Public Class Script 
+Public Class Script 
       
-      &lt;Link()&gt; Dim MyPaddock As Paddock
-      &lt;Param()&gt; Private A As String
-      &lt;Output()&gt; Private B As Single
+   &lt;Link&gt; Dim MyPaddock As Paddock ' Can be used to dynamically get access to simulation structure and variables
+   &lt;Input&gt; Dim Today As DateTime   ' Equates to the value of the current simulation date - value comes from CLOCK
+   &lt;Param&gt; Private A As String     ' The value for this will come from the Properties page.
+   &lt;Output&gt; Private B As Double    ' An example of how to make a variable available to other APSIM modules
 
-      &lt;EventHandler()&gt; Public Sub OnInitialised()
-         ' do something
-         
-      End Sub
-      
-   End Class
+   
+   ' The following event handler will be called once at the beginning of the simulation
+   &lt;EventHandler()&gt; Public Sub OnInitialised()
+   End Sub
+
+   
+   ' The following event handler will be called each day at the beginning of the day
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+   End Sub
+   
+End Class
    </text>
      </manager2>
      <manager2 name="Script(C#)">
-       <ui />
+        <ui>
+          <A type="text" description="Param A">Parameter value</A>
+        </ui>
        <text>
-   using System;
-   using ModelFramework;
+using System;
+using ModelFramework;
 
-   public class Script
-      {
-      [Input] Private Double A = 0;
-      [Param] private double B = 0;
-      [Output][Units("oC")] Public Double C = 0;
+public class Script 
+{      
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   [Param] string A;         // The value for this will come from the Properties page.
+   [Output] double B;        // An example of how to make a variable available to other APSIM modules
 
-      [EventHandler] public void OnPost()
-         {
-         }
-      }
+   
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      
+   }
+      
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+      
+   }
+   
+}
        </text>
      </manager2>    
     <folder name="Manager (common tasks)">
