@@ -146,11 +146,11 @@ public class Leaf : BaseOrgan, AboveGround
     }
     //Mainstem unit (nodes or cohorts) state variables
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of primordia initiated on each main stem")] //Note: PrimordiaNo is a double that increase gradually each day
     public double PrimordiaNo { get { return FinalNodeNumber.PrimordiaNumber; } }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohort objects that have been initialised")] //Note:  InitialisedCohortNo is an interger of Primordia Number, increasing every time primordia increses by one and a new cohort is initialised
     public double InitialisedCohortNo 
     {
@@ -164,11 +164,11 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf mainstem nodes that have appeared")] //Note: AppearedNodeNo is a double that increase gradually each day
     public double AppearedNodeNo = 0;
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohort that have appeared")] //Note:  AppearedCohortNo is an interger of AppearedNodeNo, increasing every time AppearedNodeNo increses by one and a new cohort is appeared
     public double AppearedCohortNo
     {
@@ -182,7 +182,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that have appeared but not yet fully expanded")]
     public double ExpandingCohortNo
     {
@@ -196,7 +196,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that are fully expanded")]
     public double ExpandedNodeNo
     {
@@ -206,7 +206,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that are fully expanded")]
     public int ExpandedCohortNo
     {
@@ -220,7 +220,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that are have expanded but not yet fully senesced")]
     public double GreenCohortNo
     {
@@ -234,7 +234,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that are Senescing")]
     public double SenescingCohortNo
     {
@@ -248,7 +248,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaf cohorts that have fully Senesced")]
     public int DeadCohortNo
     {
@@ -300,7 +300,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
     //Leaf State Variables regarding final leaf number
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaves that will appear on the mainstem before it terminates")]
     public double FinalLeafNo { get { return FinalNodeNumber.FinalLeafNumber; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
     [Output]
@@ -308,7 +308,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Relative progress toward final leaf")]
     public double RelativeLeafApperance { get { return AppearedNodeNo / FinalLeafNo; } }
     [Output]
-    [Units("/MainStem")]
+
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return FinalLeafNo - AppearedNodeNo; } }
     
