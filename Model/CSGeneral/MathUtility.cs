@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace CSGeneral
    {
@@ -655,6 +656,24 @@ namespace CSGeneral
             }
          return true;
          }
+
+      static public bool IsNumericalenUS(string StringValue)
+      {
+          double Value;
+          if (StringValue != "" && !Double.TryParse(StringValue, NumberStyles.Any, new CultureInfo("en-US"), out Value))
+              return false;
+          else
+              return true;
+      }
+      static public bool ValuesAreNumericalenUS(string[] Values)
+      {
+          for (int i = 0; i < Values.Length; i++)
+          {
+              if (!IsNumericalenUS(Values[i]))
+                  return false;
+          }
+          return true;
+      }
 
       static public double[] RemoveMissingValuesFromBottom(double[] Values)
          {

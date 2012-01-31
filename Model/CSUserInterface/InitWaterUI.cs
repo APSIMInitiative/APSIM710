@@ -12,7 +12,8 @@ using Controllers;
 using CSGeneral;
 using UIUtility;
 using System.Data;
-using System.Collections.Generic;    //GridUtility.cs
+using System.Collections.Generic;
+using System.Globalization;    //GridUtility.cs
 
 
 
@@ -421,7 +422,7 @@ namespace CSUserInterface
          {
          OurNode.RemoveAll();
          double Percent = Convert.ToDouble(PercentEdit.Value) / 100;
-         XmlHelper.SetValue(OurNode, "PercentMethod/Percent", Percent.ToString());
+         XmlHelper.SetValue(OurNode, "PercentMethod/Percent", Percent.ToString(new CultureInfo("en-US")));
          if (FilledFromTopRadio.Checked)
             XmlHelper.SetValue(OurNode, "PercentMethod/Distributed", "Filled from top");
          else
@@ -438,7 +439,7 @@ namespace CSUserInterface
          double Depth = 0;
          if (DepthEdit.Text != "")
             Depth = Convert.ToDouble(DepthEdit.Text) * 10;
-         XmlHelper.SetValue(OurNode, "DepthWetSoilMethod/Depth", Depth.ToString());
+         XmlHelper.SetValue(OurNode, "DepthWetSoilMethod/Depth", Depth.ToString(new CultureInfo("en-US")));
          XmlHelper.SetValue(OurNode, "RelativeTo", RelativeToCombo.Text);
          }
 

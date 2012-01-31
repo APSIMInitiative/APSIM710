@@ -2055,7 +2055,7 @@ Public Class MetGraphControl
         Dim HaveVPColumn As Boolean = Not IsNothing(MetData.Columns("VP"))
 
         ' Get latitude for later on.
-        Dim Latitude As Single = Metfile.Constant("latitude").Value
+      Dim Latitude As Single = Convert.ToDouble(Metfile.Constant("latitude").Value, New Globalization.CultureInfo("en-US"))
 
         ' Loop through all rows and calculate a QMax
         Dim doy As Integer = CType(firstDay, Integer)

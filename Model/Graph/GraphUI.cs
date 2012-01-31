@@ -12,6 +12,7 @@ using Steema.TeeChart.Styles;
 using System.Drawing.Printing;
 using System.Drawing.Imaging;
 using Steema.TeeChart;
+using System.Globalization;
 
 namespace Graph
 {
@@ -367,7 +368,7 @@ namespace Graph
             // Now feed new x and y data to our series.
             if (!Convert.IsDBNull(View[Row][YColumnName]))
             {
-                double YValue = Convert.ToDouble(View[Row][YColumnName]);
+                double YValue = Convert.ToDouble(View[Row][YColumnName], new CultureInfo("en-US"));
                 if (CumulativeY)
                 {
                     CumulativeYSoFar += YValue;
@@ -414,7 +415,7 @@ namespace Graph
             {
                 ErrorBarSeries.XValues.Name = NewSeries.XValues.Name;
                 ErrorBarSeries.YValues.Name = NewSeries.YValues.Name;
-                double ErrorValue = Convert.ToDouble(ErrorBarValue);
+                double ErrorValue = Convert.ToDouble(ErrorBarValue, new CultureInfo("en-US"));
                 if (XDataType == typeof(string))
                 {
                     // not sure what to do here.
@@ -427,7 +428,7 @@ namespace Graph
                 }
                 else if (!Convert.IsDBNull(XValue))
                 {
-                    double XValueAsDouble = Convert.ToDouble(XValue);
+                    double XValueAsDouble = Convert.ToDouble(XValue, new CultureInfo("en-US"));
                     if (CumulativeX)
                     {
                         CumulativeXSoFar += XValueAsDouble;
@@ -451,7 +452,7 @@ namespace Graph
             else if (!Convert.IsDBNull(XValue))
             {
                 // X as double.
-                double XValueAsDouble = Convert.ToDouble(XValue);
+                double XValueAsDouble = Convert.ToDouble(XValue, new CultureInfo("en-US"));
                 if (CumulativeX)
                 {
                     CumulativeXSoFar += XValueAsDouble;

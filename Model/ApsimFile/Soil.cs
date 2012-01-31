@@ -6,6 +6,7 @@ using System.Xml;
 
 using CSGeneral;
 using System.Data;
+using System.Globalization;
 
 
 namespace ApsimFile
@@ -99,7 +100,7 @@ namespace ApsimFile
                     {
                         string ThicknessString = XmlHelper.Value(LayerNodes[i], "Thickness");
                         if (ThicknessString != "")
-                            _ThicknessMM[i] = Convert.ToDouble(ThicknessString);
+                            _ThicknessMM[i] = Convert.ToDouble(ThicknessString, new CultureInfo("en-US"));
                         else
                             _ThicknessMM[i] = 0;
                         _Strings[i] = XmlHelper.Value(LayerNodes[i], Name);
@@ -110,6 +111,16 @@ namespace ApsimFile
                             Codes[i] = "";
                         if (i == 0 && ValueNode != null)
                             _Units = XmlHelper.Attribute(ValueNode, "units");
+                    }
+                    if (MathUtility.ValuesAreNumericalenUS(_Strings))
+                    {
+                        _Doubles = new double[LayerNodes.Count];
+                        for (int i = 0; i < LayerNodes.Count; i++)
+                        {
+                            if (!Double.TryParse(_Strings[i], NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out _Doubles[i]))
+                                _Doubles[i] = MathUtility.MissingValue;
+                        }
+                        _Strings = null;
                     }
                     Soil.CheckUnits(Name, Units);
                 }
@@ -180,7 +191,7 @@ namespace ApsimFile
                 set
                 {
                     string ToUnits = value;
-                    if (Units != ToUnits && Value == null && MathUtility.ValuesAreNumerical(Strings))
+                    if (Units != ToUnits && Value == null && MathUtility.ValuesInArray(Doubles))
                     {
                         if (Doubles == null)
                             throw new Exception("Cannot change the units on variable " + Name + ". No values were found.");
@@ -273,52 +284,22 @@ namespace ApsimFile
             /// <summary>
             /// Return the values of this variable as doubles.
             /// </summary>
-            public double[] Doubles
-            {
-                get
-                {
-                    if (_Doubles != null)
-                        return _Doubles;
-                    else if (_Strings != null)
-                    {
-                        double[] Values = new double[_Strings.Length];
-                        for (int i = 0; i < _Strings.Length; i++)
-                        {
-                            if (_Strings[i] == "")
-                                Values[i] = MathUtility.MissingValue;
-                            else
-                                Values[i] = Convert.ToDouble(_Strings[i]);
-                        }
-                        return Values;
-                    }
-                    else
-                        throw new Exception("Cannot return doubles for variable " + Name + ". No values found.");
-                }
-            }
+            public double[] Doubles { get { return _Doubles; } }
 
             /// <summary>
             /// Return the values of this variable as strings.
             /// </summary>
-            public string[] Strings
+            public string[] Strings { get { return _Strings; } }
+
+            public int Length
             {
                 get
                 {
                     if (_Strings != null)
-                        return _Strings;
+                        return _Strings.Length;
                     else if (_Doubles != null)
-                    {
-                        string[] Values = new string[_Doubles.Length];
-                        for (int i = 0; i < _Doubles.Length; i++)
-                        {
-                            if (_Doubles[i] == MathUtility.MissingValue)
-                                Values[i] = "";
-                            else
-                                Values[i] = _Doubles[i].ToString();
-                        }
-                        return Values;
-                    }
-                    else
-                        throw new Exception("Cannot return string values for variable " + Name + ". No values found.");
+                        return _Doubles.Length;
+                    return 0;
                 }
             }
 
@@ -447,7 +428,6 @@ namespace ApsimFile
                     XmlHelper.EnsureNumberOfChildren(ProfileNode, "Layer", "", ThicknessMM.Length);
 
                     List<XmlNode> Layers = XmlHelper.ChildNodes(ProfileNode, "Layer");
-                    string[] Values = Strings;
                     for (int i = 0; i != ThicknessMM.Length; i++)
                     {
                         // Give this layer a thickness.
@@ -457,10 +437,19 @@ namespace ApsimFile
                             XmlHelper.SetAttribute(ThicknessNode, "units", "mm");
 
                         // Give this layer a value node.
-                        if (i >= Values.Length)
+                        if (i >= Length)
                             XmlHelper.SetValue(Layers[i], ChildName, "");
                         else
-                            XmlHelper.SetValue(Layers[i], ChildName, Values[i]);
+                        {
+                            if (Doubles == null)
+                                XmlHelper.SetValue(Layers[i], ChildName, Strings[i]);
+                            else
+                            {
+                                string ValueToWrite = Doubles[i].ToString(new CultureInfo("en-US"));
+                                XmlHelper.SetValue(Layers[i], ChildName, ValueToWrite);
+                            }
+
+                        }
                         XmlNode ValueNode = XmlHelper.Find(Layers[i], ChildName);
 
                         if (ValueNode != null)
@@ -492,7 +481,7 @@ namespace ApsimFile
 
                 if (Value != null)
                     DataTableUtility.AddValue(Table, TableColumnName, Value, StartRow, ThicknessMM.Length);
-                else if (MathUtility.ValuesAreNumerical(Strings))
+                else if (Doubles != null)
                     DataTableUtility.AddColumn(Table, TableColumnName, Doubles, StartRow, ThicknessMM.Length);
                 else
                     DataTableUtility.AddColumn(Table, TableColumnName, Strings, StartRow, ThicknessMM.Length);
@@ -864,7 +853,7 @@ namespace ApsimFile
                                         if (Value == MathUtility.MissingValue)
                                             StringValue = "0.000";
                                         else
-                                            StringValue = Value.ToString("f3");
+                                            StringValue = Value.ToString("f3", new CultureInfo("en-US"));
                                         MacroValue += new string(' ', 10 - StringValue.Length) + StringValue;
                                     }
                                 }
@@ -936,7 +925,7 @@ namespace ApsimFile
         public static Soil.Variable GetOptionalFromProfileNode(XmlNode SoilNode, XmlNode ProfileNode, string VariableName)
         {
             Soil.Variable Var = new Soil.Variable(ProfileNode, VariableName);
-            if (Var.Strings.Length == 0)
+            if (Var.Length == 0)
                 return GetCalculated(SoilNode, VariableName);
             else
                 return Var;
@@ -1292,7 +1281,7 @@ namespace ApsimFile
             Var.Units = Units;
 
             if (OldVar == null)
-                Var.Codes = StringManip.CreateStringArray("", Var.Strings.Length);
+                Var.Codes = StringManip.CreateStringArray("", Var.Length);
             else
                 SetCodesInVar(Var, OldVar);
 
@@ -1313,22 +1302,20 @@ namespace ApsimFile
 
             string[] OldValues = OldVar.Strings;
             string[] NewValues = Var.Strings;
-            Var.Codes = new string[NewValues.Length];
-            for (int i = 0; i < NewValues.Length; i++)
+            Var.Codes = new string[Var.Length];
+            for (int i = 0; i < Var.Length; i++)
             {
                 bool ValueIdentical = false;
-                if (i < OldValues.Length)
+                if (i < OldVar.Length)
                 {
-                    // Do a string comparison first of all.
-                    ValueIdentical = OldValues[i] == NewValues[i];
-
-                    // Now try and do a numerical comparison.
-                    double OldValue;
-                    if (Double.TryParse(OldValues[i], out OldValue))
+                    // Try and do a string comparison first of all.
+                    if (OldVar.Strings != null && Var.Strings != null)
+                        ValueIdentical = OldVar.Strings[i] == Var.Strings[i];
+                    else if (OldVar.Doubles != null && Var.Doubles != null)
                     {
-                        double NewValue;
-                        if (Double.TryParse(NewValues[i], out NewValue))
-                            ValueIdentical = MathUtility.FloatsAreEqual(OldValue, NewValue);
+                        // Now try and do a numerical comparison.
+                        ValueIdentical = MathUtility.FloatsAreEqual(OldVar.Doubles[i], Var.Doubles[i]);
+                        
                     }
                 }
                 if (ValueIdentical && OldVar.Codes != null && i < OldVar.Codes.Length)
@@ -1599,7 +1586,7 @@ namespace ApsimFile
                         // Create a variable value structure to return to caller.
                         Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, a.ThicknessMM, SoilNode);
                         Value.ThicknessMM = Soil.Get(SoilNode, "DUL").ThicknessMM;
-                        Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+                        Value.Codes = StringManip.CreateStringArray("Predicted", Value.Doubles.Length);
                     }
                 }
             }
@@ -1616,7 +1603,7 @@ namespace ApsimFile
                     KL.ThicknessMM = LL.ThicknessMM;
 
                     // Create a variable value structure to return to caller.
-                    KL.Codes = StringManip.CreateStringArray("Calculated", KL.Doubles.Length);
+                    KL.Codes = StringManip.CreateStringArray("Predicted", KL.Doubles.Length);
 
                     Value = KL;
                 }
@@ -1641,7 +1628,7 @@ namespace ApsimFile
                         xf[i] = 1.0;
                     Value = new Soil.Variable(CropName + " " + CropVariableName, "0-1", xf, LL15.ThicknessMM, SoilNode);
                 }
-                Value.Codes = StringManip.CreateStringArray("Calculated", Value.Doubles.Length);
+                Value.Codes = StringManip.CreateStringArray("Predicted", Value.Doubles.Length);
             }
             return Value;
         }
@@ -1679,7 +1666,7 @@ namespace ApsimFile
                     XmlNode PercentMethodNode = XmlHelper.Find(InitWaterNode, "PercentMethod");
                     double Percent = 0;
                     if (PercentMethodNode != null)
-                        Percent = Convert.ToDouble(XmlHelper.Value(PercentMethodNode, "Percent")) * 100;
+                        Percent = Convert.ToDouble(XmlHelper.Value(PercentMethodNode, "Percent"), new CultureInfo("en-US")) * 100;
                     if (XmlHelper.Value(PercentMethodNode, "Distributed").ToLower() == "filled from top")
                     {
                         double AmountWater = MathUtility.Sum(pawc) * (Percent / 100.0);
@@ -1708,7 +1695,7 @@ namespace ApsimFile
                 }
                 else
                 {
-                    double DepthWetSoil = Convert.ToDouble(XmlHelper.Value(InitWaterNode, "DepthWetSoilMethod/Depth"));
+                    double DepthWetSoil = Convert.ToDouble(XmlHelper.Value(InitWaterNode, "DepthWetSoilMethod/Depth"), new CultureInfo("en-US"));
 
                     double[] Thickness = ll.ThicknessMM;
                     double DepthSoFar = 0;

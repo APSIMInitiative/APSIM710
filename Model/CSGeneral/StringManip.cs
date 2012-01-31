@@ -272,7 +272,7 @@ namespace CSGeneral
             if (Value == "?")
                 ColumnType = Type.GetType("System.Byte");
 
-            else if (StringManip.IsNumeric(Value))
+            else if (MathUtility.IsNumericalenUS(Value))
                 ColumnType = Type.GetType("System.Single");
 
             else if (Units == "" && StringManip.IsDateTime(Value))
