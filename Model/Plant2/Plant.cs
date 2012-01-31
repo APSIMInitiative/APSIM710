@@ -101,10 +101,8 @@ public class Plant
                 fraction = Math.Min(1.0, Supply / Demand);
 
             foreach (Organ o in Organs)
-            {
                 if (o.WaterDemand > 0)
                     o.WaterAllocation = fraction * o.WaterDemand;
-            }
 
             double FractionUsed = 0;
             if (Supply > 0)
@@ -137,10 +135,8 @@ public class Plant
                 throw new Exception("Water uptake exceeds total crop demand.");
 
             foreach (Organ o in Organs)
-            {
                 if (o.WaterDemand > 0)
                     o.WaterAllocation = fraction * o.WaterDemand;
-            }
 
             //throw new Exception("Cannot talk to swim3 yet");
         }
@@ -180,8 +176,7 @@ public class Plant
     public object GetPlantVariable(string VariablePath)
     {
         double ValueFromGet;
-        if (!My.Get(VariablePath, out ValueFromGet) ||
-            ValueFromGet == Double.NaN)
+        if (!My.Get(VariablePath, out ValueFromGet) || ValueFromGet == Double.NaN)
             return null;
         return ValueFromGet;
 
@@ -237,9 +232,7 @@ public class Plant
                             throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
 
                         if (ArraySpecifier == "" || Utility.IsOfType(Array[i].GetType(), ArraySpecifier))
-                        {
                             Sum += Convert.ToDouble(Obj);
-                        }
                     }
                     return Sum;
                 }

@@ -8,9 +8,9 @@ public class FinalNodeNumber
     //Class Linkages
     [Link]
     protected Function ThermalTime = null;
-    [Link(IsOptional=true)]
+    [Link(IsOptional = true)]
     protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
-    [Link(IsOptional=true)]
+    [Link(IsOptional = true)]
     protected Function NodeInitiationRate = null;
     [Link(IsOptional = true)]
     protected Function PhotoperiodFactor = null;
@@ -23,9 +23,14 @@ public class FinalNodeNumber
     private double InitialLeafPrimordia = 0;
 
     //Class data members
-    public double _PrimordiaNumber = 0;
-    public double _FinalLeafNumber = 0;
+    private double _PrimordiaNumber = 0;
+    private double _FinalLeafNumber = 0;
 
+    public void Clear()
+    {
+        _FinalLeafNumber = 0;
+        _PrimordiaNumber = 0;
+    }
     public double MaximumNodeNumber
     {
         get { return MaxNodeNo; }
@@ -39,12 +44,18 @@ public class FinalNodeNumber
         get { return _FinalLeafNumber; }
     }
 
-    public void UpdateFinalNodeVariables()
+    public void Calculate()
+    {
+        CalculatePrimordiaNumber();
+        UpdateFinalNodeVariables();
+        CalculateFinalLeafNumber();
+    }
+    private void UpdateFinalNodeVariables()
     {
         if (TerminateFinalNodeNumber != null)
             TerminateFinalNodeNumber.UpdateTerminateNodeVariables();
     }
-    public void CalculateFinalLeafNumber()
+    private void CalculateFinalLeafNumber()
     {
         if (TerminateFinalNodeNumber != null)
             //_FinalLeafNumber = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
@@ -54,7 +65,7 @@ public class FinalNodeNumber
         else
             _FinalLeafNumber = Math.Min(_PrimordiaNumber, MaxNodeNo);
     }
-    public void CalculatePrimordiaNumber()
+    private void CalculatePrimordiaNumber()
     {
         if (NodeInitiationRate != null)
         {
@@ -65,5 +76,5 @@ public class FinalNodeNumber
             _PrimordiaNumber = Math.Min(_PrimordiaNumber, MaxNodeNo);
         }
         else _PrimordiaNumber = MaxNodeNo;
-   }
- }
+    }
+}

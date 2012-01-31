@@ -140,9 +140,7 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double n = 0;
             foreach (LeafCohort L in Leaves)
-            {
                 n = Math.Max(n, L.Population);
-            }
             return n;
         }
     }
@@ -192,10 +190,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double count = 0;
             foreach (LeafCohort L in Leaves)
-            {
                 if (L.IsGrowing)
                     count += 1;
-            }
             return count;
         }
     }
@@ -232,10 +228,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double count = 0;
             foreach (LeafCohort L in Leaves)
-            {
                 if (L.IsGreen)
                     count += 1;
-            }
             return count;
         }
     }
@@ -248,10 +242,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double count = 0;
             foreach (LeafCohort L in Leaves)
-            {
                 if (L.IsSenescing)
                     count += 1;
-            }
             return count;
         }
     }
@@ -280,10 +272,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double n = 0;
             foreach (LeafCohort L in Leaves)
-            {
                 if (L.IsAppeared)
-                n += L.Population;
-            }
+                    n += L.Population;
             return n / Population.Value;
         }
     }
@@ -303,10 +293,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double n = 0;
             foreach (LeafCohort L in Leaves)
-            {
-                if ((L.IsAppeared)&&(!L.Finished))
+                if ((L.IsAppeared) && (!L.Finished))
                     n += L.Population;
-            }
             return n / Population.Value;
         }
     }
@@ -635,9 +623,7 @@ public class Leaf : BaseOrgan, AboveGround
         
         if (CohortsInitialised) //Leaves are initialised so calculate apperance
         {
-            FinalNodeNumber.CalculatePrimordiaNumber();
-            FinalNodeNumber.UpdateFinalNodeVariables();
-            FinalNodeNumber.CalculateFinalLeafNumber();
+            FinalNodeNumber.Calculate();
             CalculateNodeNumber();
         }
 
@@ -645,17 +631,13 @@ public class Leaf : BaseOrgan, AboveGround
         {
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
-            FinalNodeNumber.CalculatePrimordiaNumber();
-            FinalNodeNumber.UpdateFinalNodeVariables();
-            FinalNodeNumber.CalculateFinalLeafNumber();
+            FinalNodeNumber.Calculate();
             CohortsInitialised = true;
         }
 
         if (FrostFraction.Value > 0)
-        {
             foreach (LeafCohort L in Leaves)
                 L.DoFrost(FrostFraction.Value);
-        }
 
         if (PrimordiaNo >= Leaves.Count + 1) //When primordia number is 1 more than current cohort number produce a new cohort
         {
@@ -697,13 +679,10 @@ public class Leaf : BaseOrgan, AboveGround
 
         //Work out stem mortanity from shading
         if (ShadeInducedBranchMortality != null)
-        {
             ProportionStemMortality = ShadeInducedBranchMortality.Value;
-        }
+
         if (DroughtInducedBranchMortality != null)
-        {
             ProportionStemMortality += DroughtInducedBranchMortality.Value;
-        }
         
         FractionNextleafExpanded = 0;
         bool NextExpandingLeaf = false;
@@ -747,9 +726,8 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoActualGrowth()
     {
         foreach (LeafCohort L in Leaves)
-        {
             L.DoActualGrowth(_ThermalTime);
-        }
+
 
         double Stress = 1;
         if (HeightExpansionStress != null)  //FIX me.  This should not be optional
@@ -780,8 +758,7 @@ public class Leaf : BaseOrgan, AboveGround
     public virtual void ZeroLeaves()
     {
         AppearedNodeNo = 0;
-        FinalNodeNumber._FinalLeafNumber = 0;
-        FinalNodeNumber._PrimordiaNumber = 0;
+        FinalNodeNumber.Clear();
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -795,9 +772,7 @@ public class Leaf : BaseOrgan, AboveGround
         int MM2ToM2 = 1000000; // Conversion of mm2 to m2
         double LAIabove = 0;
         for (int i = Leaves.Count - 1; i > cohortno - 1; i--)
-        {
             LAIabove += Leaves[i].LiveArea / MM2ToM2;
-        }
         return 1 - Math.Exp(-ExtinctionCoeff.Value * LAIabove);
     }
  #endregion
@@ -809,12 +784,9 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-
             double Demand = 0.0;
             foreach (LeafCohort L in Leaves)
-            {
                 Demand += L.DMDemand;
-            }
             return Demand;
         }
     }
@@ -836,11 +808,8 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double Capacity = 0.0;
             foreach (LeafCohort L in Leaves)
-            {
                 Capacity += L.DMSinkCapacity;
-            }
             return Capacity;
-
         } 
     }
     public override double DMRetranslocationSupply
@@ -870,9 +839,8 @@ public class Leaf : BaseOrgan, AboveGround
                 double TotalPotentialDemand = 0;
 
                 foreach (LeafCohort L in Leaves)
-                {
                     TotalPotentialDemand += L.DMDemand;
-                }
+
                 // first make sure each cohort gets the DM required for Maximum SLA
                 double fraction = (value) / TotalPotentialDemand;//
                 foreach (LeafCohort L in Leaves)
@@ -985,9 +953,7 @@ public class Leaf : BaseOrgan, AboveGround
         {
             double Demand = 0.0;
             foreach (LeafCohort L in Leaves)
-            {
                 Demand += L.NDemand;
-            }
             return Demand;
         }
     }
@@ -1226,9 +1192,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         foreach (LeafCohort L in Leaves)
-        {
             L.DoKill(KillLeaf.KillFraction);
-        }
 
     }
     [EventHandler]
@@ -1243,7 +1207,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         AppearedNodeNo = 0;
-        FinalNodeNumber._FinalLeafNumber = 0;
+        FinalNodeNumber.Clear();
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();

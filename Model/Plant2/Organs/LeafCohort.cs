@@ -451,6 +451,7 @@ public class LeafCohort
         
         if (IsAppeared)
         {
+            // The following line needs to be CHANGED!!!!!!
             Leaf.CurrentRank = Rank -1; //Set currentRank variable in parent leaf for use in experssion functions
             //Acellerate thermal time accumulation if crop is water stressed.
             double _ThermalTime;
