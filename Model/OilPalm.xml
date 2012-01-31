@@ -31,6 +31,7 @@
     </Cultivar>
     <Plant>
       <CropType type="text" description="CropType">oilpalm</CropType>
+      <AgeCalculatorFunction name="Age" />
       <Population>
         <Value>4</Value>
       </Population>
@@ -254,10 +255,12 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <Value type="text" description="Value">0</Value>
         </Constant>
         <LinearInterpolationFunction name="MaxArea">
-          <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Age.Value</XProperty>
           <XYPairs>
-            <XY>1 3000000</XY>
-            <XY>300 14000000</XY>
+            <XY>0 500000</XY>
+            <XY>5 7000000</XY>
+            <XY>10 12000000</XY>
+            <XY>15 14000000</XY>
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
@@ -410,24 +413,15 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <XY>4000 5000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="FrostFraction">
-          <XProperty type="text" description="XProperty">Leaf.MinT</XProperty>
-          <XYPairs>
-            <XY>-1 0</XY>
-            <XY>0 0</XY>
-          </XYPairs>
-          <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
-        </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
         </Constant>
-        <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
-          <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>0.9 0</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
+        <Constant name="ShadeInducedSenescenceRate">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="FrostFraction">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />

@@ -86,8 +86,10 @@
               <action>fertiliser apply amount= 200 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
             </operation>
             <operation condition="start_of_day">
-              <date>1-jul</date>
-              <action>oilpalm RemoveLowestLeaf</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
           </operations>
           <irrigation name="Irrigation">
@@ -144,9 +146,12 @@ endif
               <event>end_of_day</event>
             </script>
             <script>
-              <text>if today &gt; date('01/11/2001') then
+              <text>if today &gt; date('01/03/2001') then
    CumLeaves = CumLeaves + 1
-endif</text>
+   ! oilpalm RemoveLowestLeaf
+endif
+
+</text>
               <event>NewLeaf</event>
             </script>
           </manager>
@@ -552,6 +557,10 @@ endif</text>
             <variable name="StemLiveWt" />
             <variable name="LeafLAI" />
             <variable name="CumLeaves" />
+            <variable name="LeafGreenCohortNo" />
+            <variable name="LeafAppearedCohortNo" />
+            <variable name="LeafAppearedNodeNo" />
+            <variable name="Age" />
           </variables>
           <events name="Reporting Frequency">
             <event name="Daily" />
@@ -590,9 +599,6 @@ endif</text>
     <Graph name="LAI">
       <Legend>
         <CheckedTitles>Predicted, Expt324N3</CheckedTitles>
-        <CheckedTitles>Observed, Expt324N0</CheckedTitles>
-        <CheckedTitles>Observed, Expt324N1</CheckedTitles>
-        <CheckedTitles>Observed, Expt324N2</CheckedTitles>
         <CheckedTitles>Observed, Expt324N3</CheckedTitles>
       </Legend>
       <Plot name="Predicted">
@@ -647,6 +653,34 @@ endif</text>
         </GDApsimFileReader>
       </Plot>
     </Graph>
+    <Graph name="FrondNumbers">
+      <Legend>
+        <CheckedTitles>Predicted, LeafGreenCohortNo,Expt324N3</CheckedTitles>
+        <CheckedTitles>Observed, FrontCount,Expt324N3</CheckedTitles>
+      </Legend>
+      <Plot name="Predicted">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <colour>
+        </colour>
+        <X>Date</X>
+        <Y>LeafGreenCohortNo</Y>
+        <Y>LeafAppearedCohortNo</Y>
+        <Y>LeafAppearedNodeNo</Y>
+        <GDApsimFileReader name="ApsimFileReader" />
+      </Plot>
+      <Plot name="Observed">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <X>Date</X>
+        <colour>
+        </colour>
+        <Y>FrontCount</Y>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>%apsim%\Tests\Validation\OilPalm\Observed\Expt324FrondCount.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
   </folder>
   <folder name="Breure88">
     <simulation name="Breure88_056">
@@ -675,8 +709,10 @@ endif</text>
               <action>fertiliser apply amount= 200 (kg/ha), type= urea_N (), depth= 10 (mm)</action>
             </operation>
             <operation condition="start_of_day">
-              <date>1-jul</date>
-              <action>oilpalm RemoveLowestLeaf</action>
+              <date>
+              </date>
+              <action>
+              </action>
             </operation>
             <operation condition="start_of_day">
               <date>
