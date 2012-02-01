@@ -13,6 +13,7 @@ using System.Drawing.Printing;
 using System.Drawing.Imaging;
 using Steema.TeeChart;
 using System.Globalization;
+using Steema.TeeChart.Export;
 
 namespace Graph
 {
@@ -674,14 +675,13 @@ namespace Graph
 
         public override void PrintPage(Rectangle MarginBounds, Graphics g)
         {
-            Rectangle R = new Rectangle(0, 0, MarginBounds.Width - MarginBounds.X, MarginBounds.Height - MarginBounds.Y);
-            Bitmap b = new Bitmap(R.Width, R.Height);
-            Chart.Dock = DockStyle.None;
-            Chart.Width = R.Width;
-            Chart.Height = R.Height;
-            Chart.DrawToBitmap(b, R);
-            Chart.Dock = DockStyle.Fill;
-            g.DrawImage(b, MarginBounds.Location);
+            Stream stream = new MemoryStream();
+            ImageExportFormat image = Chart.Export.Image.PNG;
+            image.Width = MarginBounds.Width;
+            image.Height = MarginBounds.Height;
+            image.Save(stream);
+            Image img = Image.FromStream(stream);
+            g.DrawImage(img, MarginBounds.Location);
         }
 
         private void CopyToClipboardMenu_Click(object sender, EventArgs e)
