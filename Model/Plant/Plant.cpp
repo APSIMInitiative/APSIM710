@@ -444,11 +444,8 @@ void Plant::onProcess()
       if (phenologyEventToday != "")
          {
          plant_event(phenologyEventToday);
-         if (phenologyRewoundToday)
-            {
-            stageObservers.reset();
-            otherObservers.reset();
-            }
+         stageObservers.reset();
+         otherObservers.reset();
          phenologyEventToday = "";
          phenologyRewoundToday = false;
          }
