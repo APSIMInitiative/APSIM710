@@ -108,11 +108,11 @@ namespace CSUserInterface
 
             RefreshGraph();
 
+            ApplyCodesToColumns();
+
             ColourCropColumns();
 
             UpdateTotalGrid();
-
-            ApplyCodesToColumns();
 
             AdjustDecPlaces();
 
@@ -186,7 +186,7 @@ namespace CSUserInterface
                     Var.ThicknessMM = ThicknessMM;
                     if (Var != null && Var.Codes != null)
                     {
-                        if (Var.Codes.Length > 0 && Var.Codes[0].Contains("Calculated"))
+                        if (Var.Codes.Length > 0 && (Var.Codes[0].Contains("Calculated") || Var.Codes[0].Contains("Predicted")))
                             Grid.Columns[Col].ReadOnly = true;
                         else
                             EditableColumnNames.Add(Grid.Columns[Col].HeaderText);
@@ -203,6 +203,7 @@ namespace CSUserInterface
                                     {
                                         CodeText = Soil.GetFullCodeName(CodeText, Var.Name);
                                     }
+                                    Grid.Columns[Col].ToolTipText = CodeText;
                                     Grid.Rows[Row].Cells[Col].ToolTipText = CodeText;
                                     Grid.Rows[Row].Cells[Col].Style.ForeColor = Color.Blue;
                                 }
@@ -248,12 +249,18 @@ namespace CSUserInterface
         private void ColourCropColumns()
         {
             Color[] CropColors = { Color.FromArgb(173, 221, 142), Color.FromArgb(247, 252, 185) };
+            Color[] PredictedCropColors = { Color.FromArgb(233, 191, 255), Color.FromArgb(244, 226, 255) };
             int CropIndex = 0;
             bool DoingCrops = false;
+            bool UsePredictedColour = false;
+            bool HaveSetHelpText = false;
             foreach (DataGridViewColumn Col in Grid.Columns)
             {
                 if (Col.HeaderText.Contains(" LL"))
+                {
                     DoingCrops = true;
+                    UsePredictedColour = Col.ToolTipText == "Predicted";
+                }
 
                 if (Data.Name == "Water")
                     Col.Frozen = !DoingCrops;
@@ -261,10 +268,20 @@ namespace CSUserInterface
                 if (DoingCrops)
                 {
                     Col.ReadOnly = true;
-                    Col.DefaultCellStyle.BackColor = CropColors[CropIndex];
+                    if (UsePredictedColour)
+                    {
+                        Col.DefaultCellStyle.BackColor = PredictedCropColors[CropIndex];
+                        if (!HaveSetHelpText)
+                        {
+                            HaveSetHelpText = true;
+                            MyHelpLabel.BackColor = PredictedCropColors[0];
+                            HelpText = "The values in pink are calculated using an approach described by Hochman et. al., Aust. J. Agric. Res., 2001, 52, 955–961";
+                        }
+                    }
+                    else
+                        Col.DefaultCellStyle.BackColor = CropColors[CropIndex];
                     if (Col.HeaderText.Contains("XF"))
                     {
-                        Col.DefaultCellStyle.BackColor = CropColors[CropIndex];
                         CropIndex++;
                         if (CropIndex >= CropColors.Length)
                             CropIndex = 0;

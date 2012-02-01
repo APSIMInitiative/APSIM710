@@ -117,7 +117,7 @@ namespace ApsimFile
                         _Doubles = new double[LayerNodes.Count];
                         for (int i = 0; i < LayerNodes.Count; i++)
                         {
-                            if (!Double.TryParse(_Strings[i], NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"), out _Doubles[i]))
+                            if (!Double.TryParse(_Strings[i], NumberStyles.Any, new CultureInfo("en-US"), out _Doubles[i]))
                                 _Doubles[i] = MathUtility.MissingValue;
                         }
                         _Strings = null;
@@ -345,7 +345,7 @@ namespace ApsimFile
                 if (Name.Contains(" "))
                     VariableName = VariableName.Substring(VariableName.IndexOf(' ') + 1);
                 double[] LowerBounds, UpperBounds;
-                string LowerBoundSt = SoilMetaData.Instance.MetaData(Name, "LowerBound");
+                string LowerBoundSt = SoilMetaData.Instance.MetaData(VariableName, "LowerBound");
                 if (LowerBoundSt != "")
                 {
                     LowerBounds = GetBounds(Values, LowerBoundSt, Thickness);
@@ -353,7 +353,7 @@ namespace ApsimFile
                         for (int i = 0; i < Values.Length; i++)
                             Values[i] = Math.Max(LowerBounds[i], Values[i]);
                 }
-                string UpperBoundSt = SoilMetaData.Instance.MetaData(Name, "UpperBound");
+                string UpperBoundSt = SoilMetaData.Instance.MetaData(VariableName, "UpperBound");
                 if (UpperBoundSt != "")
                 {
                     UpperBounds = GetBounds(Values, UpperBoundSt, Thickness);
@@ -1569,7 +1569,9 @@ namespace ApsimFile
                             bool DidInterpolate;
                             double A = MathUtility.LinearInterpReal(DepthCentre[i], CoeffDepthCentre, a.Doubles, out DidInterpolate);
                             double B = MathUtility.LinearInterpReal(DepthCentre[i], CoeffDepthCentre, b.Doubles, out DidInterpolate);
-                            LL[i] = DUL.Doubles[i] * (A + B * DUL.Doubles[i]) / 100.0;
+                            double DULPercent = DUL.Doubles[i] * 100.0;
+                            LL[i] = DULPercent * (A + B * DULPercent);
+                            LL[i] /= 100.0;
 
                             // Bound the predicted LL values.
                             LL[i] = Math.Max(LL[i], LL15.Doubles[i]);
@@ -1587,6 +1589,7 @@ namespace ApsimFile
                         Value = new Soil.Variable(CropName + " " + CropVariableName, "mm/mm", LL, a.ThicknessMM, SoilNode);
                         Value.ThicknessMM = Soil.Get(SoilNode, "DUL").ThicknessMM;
                         Value.Codes = StringManip.CreateStringArray("Predicted", Value.Doubles.Length);
+
                     }
                 }
             }
