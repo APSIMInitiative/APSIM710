@@ -478,7 +478,7 @@ public class Arbitrator
                 NAllocated[i] = 0.0;
 
             Organs[i].NReallocation = NReallocation[i];
-            Organs[i].NUptake = NUptake[i];
+            Organs[i].NUptake_gsm = NUptake[i];
             Organs[i].NFixation = NFixation[i];
             Organs[i].NRetranslocation = NRetranslocation[i];
             Organs[i].NAllocation = NAllocated[i];

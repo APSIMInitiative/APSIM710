@@ -44,7 +44,9 @@ abstract public class Organ
     abstract public double NRetranslocationSupply { get; }
     abstract public double NAllocation { set; }
     abstract public double NReallocation { set; }
-    abstract public double NUptake { set; }
+    // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2
+    // This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
+    abstract public double NUptake_gsm { set; }  
     abstract public double NFixation { set; }
     abstract public double NRetranslocation { set; }
 

@@ -59,11 +59,11 @@ public class Root : BaseOrgan, BelowGround
     
     [Output]
     [Units("kg/ha")]
-    public double Nuptake
+    public double NUptake
     {
         get
         {
-            return _Nuptake * 10;
+            return _Nuptake / kgha2gsm;
         }
     }
     [Input]
@@ -431,7 +431,7 @@ public class Root : BaseOrgan, BelowGround
     }
     [Output]
     [Units("g/m2")]
-    public override double NUptake
+    public override double NUptake_gsm
     {
         set
         {

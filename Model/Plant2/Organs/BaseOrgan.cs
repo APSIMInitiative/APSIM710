@@ -33,7 +33,7 @@ public class BaseOrgan : Organ
                 throw new Exception(Name + " cannot supply N retranslocation");
         }
     }
-    public override double NUptake
+    public override double NUptake_gsm
     {
         set
         {

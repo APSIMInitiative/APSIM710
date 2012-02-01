@@ -28,7 +28,7 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     public override double NRetranslocationSupply { get { return 0; } }
     public override double NRetranslocation { set { } }
     public override double NAllocation { set { } }
-    public override double NUptake { set { } }
+    public override double NUptake_gsm { set { } }
     public override double WaterDemand { get { return 0; } }
 
     [Output]
