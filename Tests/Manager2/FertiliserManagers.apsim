@@ -1,4 +1,4 @@
-<folder version="28" name="simulations">
+<folder version="29" name="simulations">
   <simulation name="FertOnFixedDates">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -2424,8 +2424,6 @@ Public Class Script
       '"OnInit2" is an event handler gets called once at the start of the simulation 
 
       'nothing to do in here
-      
-      console.writeline("uptahje")
 
    End Sub
    
@@ -2466,7 +2464,7 @@ End Class
       </manager2>
     </area>
   </simulation>
-  <simulation name="FertOnEvent" enabled="no">
+  <simulation name="FertOnEvent">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
     </metfile>
@@ -3075,6 +3073,74 @@ End Class
               <XF>0</XF>
             </Layer>
           </SoilCrop>
+          <SoilCrop name="Wheat1">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.29</LL>
+              <KL units="/day">0.1</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.29</LL>
+              <KL>0.1</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.32</LL>
+              <KL>0.08</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.32</LL>
+              <KL>0.06</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.35</LL>
+              <KL>0.04</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.38</LL>
+              <KL>0.02</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.41</LL>
+              <KL>0.01</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.48</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.47</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.46</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.44</LL>
+              <KL>0</KL>
+              <XF>0</XF>
+            </Layer>
+          </SoilCrop>
         </Water>
         <SoilWat>
           <SummerCona>3.5</SummerCona>
@@ -3559,19 +3625,19 @@ End Class
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
       </irrigation>
-      <wheat />
+      <wheat name="wheat1" />
       <folder name="WheatManagers">
         <manager name="Sowing rule">
           <ui>
             <category type="category" description="Sowing criteria" />
             <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-may</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-jul</date2>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">30-may</date2>
             <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
             <raincrit type="text" description="Amount of rainfall : ">25</raincrit>
             <rainnumdays type="text" description="Number of days of rainfall : ">7</rainnumdays>
             <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">100</esw_amount>
             <category type="category" description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <crop type="crop" description="Enter name of crop to sow : ">wheat1</crop>
             <density type="text" description="Enter sowing density  (plants/m2) : ">100</density>
             <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
             <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
@@ -3603,29 +3669,12 @@ End Class
             <event>init</event>
           </script>
         </manager>
-        <manager name="Sowing fertiliser">
-          <ui>
-            <category description="When should fertiliser be applied" type="category" />
-            <modulename type="modulename" description="On which module should the event come from : ">wheat</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category description="Fertiliser application details" type="category" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
-          </ui>
-          <script name="[modulename].[eventname]">
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
         <manager name="Harvesting rule">
           <ui>
             <category type="category" description="Harvesting criteria" />
             <crop type="crop" description="Enter name of crop to harvest when ripe : ">wheat</crop>
           </ui>
-          <script name="end_of_day">
+          <script>
             <text>
 
            if [crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead' then
@@ -3659,7 +3708,7 @@ End Class
       <manager name="Irrigate on fixed date">
         <ui>
           <category type="category" description="When should irrigation be applied" />
-          <irrigate_date type="ddmmmdate" description="Enter irrigation date (dd-mmm) : ">10-jan</irrigate_date>
+          <irrigate_date type="ddmmmdate" description="Enter irrigation date (dd-mmm) : ">10-may</irrigate_date>
           <category type="category" description="Irrigation application details" />
           <irrigate_module type="modulename" description="Module used to apply the irrigation : ">Irrigation</irrigate_module>
           <irrigate_amount type="text" description="Amount of irrigation to apply (mm) : ">100</irrigate_amount>
@@ -3674,14 +3723,14 @@ End Class
           <event>start_of_day</event>
         </script>
       </manager>
-      <manager2 name="FertOnEvent">
+      <manager2 name="FertOnEvent_Sow">
         <ui>
           <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
-          <ModuleName type="modulename" description="On which module should the event come from : ">Irrigation</ModuleName>
-          <EvenName type="text" description="On which event should fertiliser be applied : ">sowing</EvenName>
-          <Days2Wait type="text" description="Number of days to wait after the event happens before the fertiliser is applied">0</Days2Wait>
+          <ModuleName type="modulename" description="On which module should the event come from : ">wheat1</ModuleName>
+          <EventName type="text" description="On which event should fertiliser be applied : (see the list by module in Reporting Frequency for possible events)">sowing</EventName>
+          <Days2Wait type="text" description="Number of days to wait after the event happens before the fertiliser is applied">3</Days2Wait>
           <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
-          <FertAmtCriteria type="text" description="Don't add fertiliser if N in the soil to the depth below exceeds (kg/ha) ">50</FertAmtCriteria>
+          <FertAmtCriteria type="text" description="Don't add fertiliser if N in the soil to the depth below exceeds (kg/ha)  (insert a large value to avoid this test)">50</FertAmtCriteria>
           <FertDepthCriteria type="text" description="Depth to which the amount of N in the soil should be calculated (mm)">300</FertDepthCriteria>
           <category type="category" description="Fertiliser application details" />
           <FertDepth type="text" description="Depth at which to apply the fertiliser (mm)">50</FertDepth>
@@ -3696,8 +3745,14 @@ Public Class Script
    &lt;Link()&gt; Dim Fert As Fertiliser
    
    'Parameters - user inputs from the Properties tab
+   
+   &lt;Param&gt; Private ModuleName As String         'Module that sends the even that will be used in the decision
+   &lt;Param&gt; Private EventName As String          'The name of the event (e.g. "sowing", "irrigated") to control the fertiliser decision
+   &lt;Param&gt; Private Days2Wait As Integer         'Wait this many days after the event before applying the fertiliser
+   
    &lt;Param&gt; Private FertAmtCriteria As Single    'Don't apply fertiliser if the N stored in the soil is greater than this.  Disregard the test if the value is -ve
    &lt;Param&gt; Private FertDepthCriteria As Single  'Depth in the soil to calculate the N storage
+
    &lt;Param&gt; Private FertDepth As Single          'Depth in the soil that the fertilser will be applied
    &lt;Param&gt; Private FertAmt As Single            'Total annual application - needs to be split up between the various application dates listed
    &lt;Param&gt; Private FertType As String           'Type of fertliser to apply
@@ -3714,19 +3769,52 @@ Public Class Script
 
    'Other variables that are calculated but not needed for outputs
    Private LayerWeights As Single()             'Weigthing of each layer for FertAmtCriteria calculation
+   Private CountingTheDays As Integer           'Variable to count the days from the event to the fertiliser application
+   Private DoFert As Boolean                    'Variable to help with the fertiliser application decision
 
 
    &lt;EventHandler()&gt; Public Sub OnInit2()
       '"OnInit2" is an event handler gets called once at the start of the simulation 
 
-      'nothing to do in here
-      
-      console.writeline("uptahje")
+      'Initialise the variables for the delay between the event and the actual application
+      CountingTheDays = 0
+      DoFert = False
 
    End Sub
    
+   &lt;EventHandler("[ModuleName].[EventName]")&gt; Public Sub TriggerApplyMyFertiliser() 
+      'This subroutine will be called when [ModuleName].[EventName] is fired
+      
+      'Initialise the counter between the event and the fertiliser application.  The actual fertiliser aplication is done in the ApplyMyFertiliser subroutine
+      CountingTheDays = 1
+      DoFert = True
+      
+      'if there is to be no delay between the event and the fertiliser application then just go  do it now (don't wait for a Prepare stage which might not be until tomorrow)
+      'reset the DoFert because now the fertiliser has been applied (nothing in the queue anymore)
+      If Days2Wait = 0 Then
+         ApplyMyFertiliser
+         DoFert = False
+      End If
+      
+   End Sub
+
    &lt;EventHandler()&gt; Public Sub OnPrepare()
       '"OnPrepare" is an event handler gets called once at the start of every day (before Prepare and Post) 
+
+      'Increment the counter once per day if are in that delay stage between the event and the application
+      'If the delay period is over then go to the subroutine for the fertiliser application and reset DoFert
+      If DoFert Then
+         CountingTheDays += 1
+         If CountingTheDays &gt;= Days2Wait Then
+            ApplyMyFertiliser
+            DoFert = False
+         End If
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub ApplyMyFertiliser()
+      'This subroutine sends Fertiliser the command to apply the fertiliser 
       
       'Set the number of elements in the LayerWeights array to equal the number of soil layers - do this here because erosion can change the layering
       'Then move through the array and assign a LayerWeighting from 0 to 1 quantifying what proportion of the soil and mineral N in this layer is above FertDepthCriteria
@@ -3760,23 +3848,131 @@ Public Class Script
 End Class
 </text>
       </manager2>
-      <manager name="Fertilise at sowing" enabled="no">
+      <manager2 name="FertOnEvent_Irrig">
         <ui>
-          <category type="category" description="When should fertiliser be applied" />
-          <modulename type="modulename" description="On which module should the event come from : ">wheat</modulename>
-          <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+          <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+          <ModuleName type="modulename" description="On which module should the event come from : ">Irrigation</ModuleName>
+          <EventName type="text" description="On which event should fertiliser be applied : (see the list by module in Reporting Frequency for possible events)">irrigated</EventName>
+          <Days2Wait type="text" description="Number of days to wait after the event happens before the fertiliser is applied">0</Days2Wait>
+          <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+          <FertAmtCriteria type="text" description="Don't add fertiliser if N in the soil to the depth below exceeds (kg/ha)  (insert a large value to avoid this test)">50</FertAmtCriteria>
+          <FertDepthCriteria type="text" description="Depth to which the amount of N in the soil should be calculated (mm)">300</FertDepthCriteria>
           <category type="category" description="Fertiliser application details" />
-          <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-          <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-          <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          <FertDepth type="text" description="Depth at which to apply the fertiliser (mm)">50</FertDepth>
+          <FertAmt type="text" description="Amount of fertiliser to add (kg N /ha)">40</FertAmt>
+          <FertType type="list" listvalues="no3_n,nh4_n,nh4no3,urea_n,urea_no3,urea,nh4so4_n,rock_p,banded_p,broadcast_p" description="Fertiliser type - select from the list">urea_n</FertType>
         </ui>
-        <script>
-          <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-          <event>[modulename].[eventname]</event>
-        </script>
-      </manager>
+        <text>Imports System
+Imports ModelFramework
+
+Public Class Script 
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Link()&gt; Dim Fert As Fertiliser
+   
+   'Parameters - user inputs from the Properties tab
+   
+   &lt;Param&gt; Private ModuleName As String         'Module that sends the even that will be used in the decision
+   &lt;Param&gt; Private EventName As String          'The name of the event (e.g. "sowing", "irrigated") to control the fertiliser decision
+   &lt;Param&gt; Private Days2Wait As Integer         'Wait this many days after the event before applying the fertiliser
+   
+   &lt;Param&gt; Private FertAmtCriteria As Single    'Don't apply fertiliser if the N stored in the soil is greater than this.  Disregard the test if the value is -ve
+   &lt;Param&gt; Private FertDepthCriteria As Single  'Depth in the soil to calculate the N storage
+
+   &lt;Param&gt; Private FertDepth As Single          'Depth in the soil that the fertilser will be applied
+   &lt;Param&gt; Private FertAmt As Single            'Total annual application - needs to be split up between the various application dates listed
+   &lt;Param&gt; Private FertType As String           'Type of fertliser to apply
+   
+   'Inputs - got by this Manager from elsewhere in APSIM
+   &lt;Input&gt; Private Today As DateTime            'Today's date from APSIM 
+   &lt;Input&gt; Private dlayer As Single()           'Array of soil layer thicknesses - for calculation of mineral N in the soil
+   &lt;Input&gt; Private no3 As Single()              'Array of nitrate-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private nh4 As Single()              'Array of ammonium-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private urea As Single()             'Array of urea-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+
+   'Outputs - calculated by this Manager and available to be output by the user
+   &lt;Output&gt; Private CumSoilN As Single          'Mineral-N stored in the soil to a depth of FertDepthCriteria
+
+   'Other variables that are calculated but not needed for outputs
+   Private LayerWeights As Single()             'Weigthing of each layer for FertAmtCriteria calculation
+   Private CountingTheDays As Integer           'Variable to count the days from the event to the fertiliser application
+   Private DoFert As Boolean                    'Variable to help with the fertiliser application decision
+
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      '"OnInit2" is an event handler gets called once at the start of the simulation 
+
+      'Initialise the variables for the delay between the event and the actual application
+      CountingTheDays = 0
+      DoFert = False
+
+   End Sub
+   
+   &lt;EventHandler("[ModuleName].[EventName]")&gt; Public Sub TriggerApplyMyFertiliser() 
+      'This subroutine will be called when [ModuleName].[EventName] is fired
+      
+      'Initialise the counter between the event and the fertiliser application.  The actual fertiliser aplication is done in the ApplyMyFertiliser subroutine
+      CountingTheDays = 1
+      DoFert = True
+      
+      'if there is to be no delay between the event and the fertiliser application then just go  do it now (don't wait for a Prepare stage which might not be until tomorrow)
+      'reset the DoFert because now the fertiliser has been applied (nothing in the queue anymore)
+      If Days2Wait = 0 Then
+         ApplyMyFertiliser
+         DoFert = False
+      End If
+      
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      '"OnPrepare" is an event handler gets called once at the start of every day (before Prepare and Post) 
+
+      'Increment the counter once per day if are in that delay stage between the event and the application
+      'If the delay period is over then go to the subroutine for the fertiliser application and reset DoFert
+      If DoFert Then
+         CountingTheDays += 1
+         If CountingTheDays &gt;= Days2Wait Then
+            ApplyMyFertiliser
+            DoFert = False
+         End If
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub ApplyMyFertiliser()
+      'This subroutine sends Fertiliser the command to apply the fertiliser 
+      
+      'Set the number of elements in the LayerWeights array to equal the number of soil layers - do this here because erosion can change the layering
+      'Then move through the array and assign a LayerWeighting from 0 to 1 quantifying what proportion of the soil and mineral N in this layer is above FertDepthCriteria
+      ReDim LayerWeights(dlayer.length - 1)                
+      Dim CumDepth As Single = 0.0
+         For i As Integer = 0 To dlayer.Length - 1     
+            CumDepth += dlayer(i)                      
+         If CumDepth &lt;= FertDepthCriteria Then
+            LayerWeights(i) = 1.0                   
+         ElseIf (CumDepth - dlayer(i)) &lt;= FertDepthCriteria Then
+            LayerWeights(i) = (FertDepthCriteria - (CumDepth - dlayer(i))) / dlayer(i)
+         Else
+            LayerWeights(i) = 0.0
+         End If
+      Next
+
+      'Add up the no3, nh4 and urea (all already in kg N /ha) in each layer and multiply by the layer weighting to get the total mineral N to the set depth
+      CumSoilN = 0.0
+      For i As Integer = 0 To dlayer.Length - 1     
+         CumSoilN += (no3(i) + nh4(i) + urea(i)) * LayerWeights(i)                         
+      Next
+
+      'If there is less mineral N in the soil than FertAmtCriteria then it is OK to add fertiliser
+      '"Fert.Apply" send the command to apply the specified amount of fertiliser at the specified depth of the specified type of fertiliser
+      If CumSoilN &lt;= FertAmtCriteria Then
+         Fert.Apply(FertAmt, FertDepth, FertType)
+      End If
+
+   End Sub
+
+End Class
+</text>
+      </manager2>
       <manager name="Fertilise in a zadok stage window" enabled="no">
         <ui>
           <category type="category" description="When should fertiliser be applied" />
