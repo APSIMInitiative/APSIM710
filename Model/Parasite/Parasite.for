@@ -819,7 +819,7 @@
       g%tt_since_host_emerg=0.0
 
       call fill_real_array  (g%days_tot  ,0.0, max_stage)
-      call fill_real_array  (g%tt_class_cum,    0.0, max_stage)
+      call fill_real_array  (g%tt_class_cum,    0.0, max_class)
 
 * growth
 
