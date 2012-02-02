@@ -157,7 +157,7 @@ class Plant
    float svp(float temp);
 
    float getTempStress(void)const{return tempStress;}
-   float getTranspEff(void)const{return (transpEff * co2_te_modifier.value(co2));}
+   float getTranspEff(void)const;
    float getSowingDepth(void)const{return sowingDepth;}
    string getCropType(void)const{return cropType;}
 
