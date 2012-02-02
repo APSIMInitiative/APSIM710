@@ -158,6 +158,11 @@ public class Biomass
         StructuralWt = 0;
         NonStructuralWt = 0;
         MetabolicWt = 0;
+        StructuralN = 0;
+        NonStructuralN = 0;
+        MetabolicN = 0;
+
+
     }
 
 }

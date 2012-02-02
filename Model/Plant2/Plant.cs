@@ -279,6 +279,9 @@ public class Plant
     public event NullTypeDelegate Cutting;
     [Event]
     public event NewCropDelegate CropEnding;
+    [Event]
+    public event BiomassRemovedDelegate BiomassRemoved;
+
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
@@ -317,6 +320,36 @@ public class Plant
         Crop.crop_type = CropType;
         Crop.sender = Name;
         CropEnding.Invoke(Crop);
+
+        BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+        BiomassRemovedData.crop_type = CropType;
+        BiomassRemovedData.dm_type = new string[Organs.Count];
+        BiomassRemovedData.dlt_crop_dm = new float[Organs.Count];
+        BiomassRemovedData.dlt_dm_n = new float[Organs.Count];
+        BiomassRemovedData.dlt_dm_p = new float[Organs.Count];
+        BiomassRemovedData.fraction_to_residue = new float[Organs.Count];
+        int i = 0;
+        foreach (Organ O in Organs)
+        {
+            if (O is AboveGround)
+            {
+                BiomassRemovedData.dm_type[i] = O.Name;
+                BiomassRemovedData.dlt_crop_dm[i]=(float)(O.Live.Wt + O.Dead.Wt)*10f;
+                BiomassRemovedData.dlt_dm_n[i] = (float)(O.Live.N + O.Dead.N) * 10f;
+                BiomassRemovedData.dlt_dm_p[i] = 0f;
+                BiomassRemovedData.fraction_to_residue[i] = 1f;
+            }
+            else
+            {
+                BiomassRemovedData.dm_type[i] = O.Name;
+                BiomassRemovedData.dlt_crop_dm[i] = 0f;
+                BiomassRemovedData.dlt_dm_n[i] = 0f;
+                BiomassRemovedData.dlt_dm_p[i] = 0f;
+                BiomassRemovedData.fraction_to_residue[i] = 0f;
+            }
+            i++;
+        }
+        BiomassRemoved.Invoke(BiomassRemovedData);
     }
     [EventHandler]
     private void OnCut()

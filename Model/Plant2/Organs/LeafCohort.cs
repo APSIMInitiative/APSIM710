@@ -24,6 +24,8 @@ public class LeafCohort
     public double GrowthDuration = 0;
     public double LagDuration = 0;
     public double SenescenceDuration = 0;
+    public double DetachmentLagDuration = 0;
+    public double DetachmentDuration = 0;
     public double SpecificLeafAreaMax = 0;
     public double SpecificLeafAreaMin = 0;
     public double MaximumNConc = 0;
@@ -36,6 +38,7 @@ public class LeafCohort
     public double CoverAbove = 0;
     private double ShadeInducedSenRate = 0;
     private double SenescedFrac = 0;
+    private double DetachedFrac = 0;
     private double _ExpansionStress = 0;
     public double _Population = 0;
     public double CellDivisionStressFactor = 1;
@@ -73,11 +76,13 @@ public class LeafCohort
     private double MetabolicDMAllocation = 0;
 #endregion
 
- #region Class Inputs
+ #region Class Parameters and Functions
     [Param]
     public double Rank = 0;
     [Param]
     public double Area = 0;
+    [Link]
+    public Plant Plant = null;
     [Link]
     public Paddock MyPaddock;
     [Link]
@@ -92,6 +97,10 @@ public class LeafCohort
     public Function LagDurationFunction;
     [Link(NamePath = "SenescenceDuration")]
     public Function SenescenceDurationFunction;
+    [Link(NamePath = "DetachmentLagDuration")]
+    public Function DetachmentLagDurationFunction;
+    [Link(NamePath = "DetachmentDuration")]
+    public Function DetachmentDurationFunction;
     [Link(NamePath = "SpecificLeafAreaMax")]
     public Function SpecificLeafAreaMaxFunction;
     [Link(NamePath = "SpecificLeafAreaMin")]
@@ -124,6 +133,9 @@ public class LeafCohort
     public Function NonStructuralFractionFunction = null;
     [Link(NamePath = "CellDivisionStress", IsOptional = true)]
     public Function CellDivisionStress = null;
+
+    [Event]
+    public event BiomassRemovedDelegate BiomassRemoved;
 #endregion
     
  #region arbitration methods
@@ -403,6 +415,8 @@ public class LeafCohort
         GrowthDuration = GrowthDurationFunction.Value;
         LagDuration = LagDurationFunction.Value;
         SenescenceDuration = SenescenceDurationFunction.Value;
+        DetachmentLagDuration = DetachmentLagDurationFunction.Value;
+        DetachmentDuration = DetachmentDurationFunction.Value;
         StructuralFraction = StructuralFractionFunction.Value;
         SpecificLeafAreaMax = SpecificLeafAreaMaxFunction.Value;
         SpecificLeafAreaMin = SpecificLeafAreaMinFunction.Value;
@@ -527,13 +541,13 @@ public class LeafCohort
             if (LeafAreaLoss > 0)
                 SenescedFrac = Math.Min(1.0, LeafAreaLoss / LeafStartArea);
 
-              double  StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
-              double StructuralNSenescing = SenescedFrac * Live.StructuralN;
-              double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
-              double MetabolicNSenescing = SenescedFrac * LiveStart.MetabolicN;
-              double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
-              double NonStructuralNSenescing = SenescedFrac * LiveStart.NonStructuralN;
-            
+            double StructuralWtSenescing = SenescedFrac * Live.StructuralWt;
+            double StructuralNSenescing = SenescedFrac * Live.StructuralN;
+            double MetabolicWtSenescing = SenescedFrac * Live.MetabolicWt;
+            double MetabolicNSenescing = SenescedFrac * LiveStart.MetabolicN;
+            double NonStructuralWtSenescing = SenescedFrac * Live.NonStructuralWt;
+            double NonStructuralNSenescing = SenescedFrac * LiveStart.NonStructuralN;
+
             DeadArea = DeadArea + LeafAreaLoss;
             LiveArea = LiveArea - LeafAreaLoss; // Final leaf area of cohort that will be integrated in Leaf.cs? (FIXME-EIT)
 
@@ -556,6 +570,41 @@ public class LeafCohort
             Dead.NonStructuralWt += Math.Max(0.0, NonStructuralWtSenescing - DMRetranslocated);
 
             Age = Age + _ThermalTime;
+
+            // Do Detachment of this Leaf Cohort
+            // ---------------------------------
+            DetachedFrac = FractionDetaching(_ThermalTime);
+            if (DetachedFrac > 0.0)
+            {
+                double DetachedArea = DeadArea * DetachedFrac;
+                double DetachedWt = Dead.Wt * DetachedFrac;
+                double DetachedN = Dead.N * DetachedFrac;
+
+                DeadArea *= (1 - DetachedFrac);
+                Dead.StructuralWt *= (1 - DetachedFrac);
+                Dead.StructuralN *= (1 - DetachedFrac);
+                Dead.NonStructuralWt *= (1 - DetachedFrac);
+                Dead.NonStructuralN *= (1 - DetachedFrac);
+                Dead.MetabolicWt *= (1 - DetachedFrac);
+                Dead.MetabolicN *= (1 - DetachedFrac);
+
+
+                BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
+
+                BiomassRemovedData.crop_type = Plant.CropType;
+                BiomassRemovedData.dm_type = new string[1];
+                BiomassRemovedData.dlt_crop_dm = new float[1];
+                BiomassRemovedData.dlt_dm_n = new float[1];
+                BiomassRemovedData.dlt_dm_p = new float[1];
+                BiomassRemovedData.fraction_to_residue = new float[1];
+
+                BiomassRemovedData.dm_type[0] = "leaf";
+                BiomassRemovedData.dlt_crop_dm[0] = (float)DetachedWt * 10f;
+                BiomassRemovedData.dlt_dm_n[0] = (float)DetachedN * 10f;
+                BiomassRemovedData.dlt_dm_p[0] = 0f;
+                BiomassRemovedData.fraction_to_residue[0] = 1f;
+                BiomassRemoved.Invoke(BiomassRemovedData);
+            }
         }
     }
     virtual public void DoKill(double fraction)
@@ -652,6 +701,28 @@ public class LeafCohort
         }
         else
             return 0;
+    }
+    public double FractionDetaching(double TT)
+    {
+        double FracDetach = 0;
+        double TTInDetachPhase = Math.Max(0.0, Age + TT - LagDuration - GrowthDuration - SenescenceDuration - DetachmentLagDuration);
+        if (TTInDetachPhase > 0)
+        {
+            double LeafDuration = GrowthDuration + LagDuration + SenescenceDuration + DetachmentLagDuration + DetachmentDuration;
+            double RemainingTT = Math.Max(0, LeafDuration - Age);
+
+            if (RemainingTT == 0)
+                FracDetach = 1;
+            else
+                FracDetach = Math.Min(1, Math.Min(TT, TTInDetachPhase) / RemainingTT);
+            if ((FracDetach > 1) || (FracDetach < 0))
+                throw new Exception("Bad Fraction Detaching");
+        }
+        else
+            FracDetach = 0;
+
+        return FracDetach;
+
     }
     [EventHandler]
     public void OnInitialised()

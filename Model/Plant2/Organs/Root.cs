@@ -279,6 +279,36 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
+    [EventHandler]
+    public void OnEndCrop()
+    {
+        FOMLayerLayerType[] FOMLayers = new FOMLayerLayerType[dlayer.Length];
+
+        for (int layer = 0; layer < dlayer.Length; layer++)
+        {
+            double DM = (LayerLive[layer].Wt + LayerDead[layer].Wt) * 10.0;
+            double N = (LayerLive[layer].N + LayerDead[layer].N) * 10.0;
+
+            FOMType fom = new FOMType();
+            fom.amount = (float)DM;
+            fom.N = (float)N;
+            fom.C = (float)(0.40 * DM);
+            fom.P = 0;
+            fom.AshAlk = 0;
+
+            FOMLayerLayerType Layer = new FOMLayerLayerType();
+            Layer.FOM = fom;
+            Layer.CNR = 0;
+            Layer.LabileP = 0;
+
+            FOMLayers[layer] = Layer;
+        }
+        FOMLayerType FomLayer = new FOMLayerType();
+        FomLayer.Type = Plant.CropType;
+        FomLayer.Layer = FOMLayers;
+        IncorpFOM.Invoke(FomLayer);
+
+    }
  #endregion
 
  #region Arbitrator method calls
