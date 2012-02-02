@@ -29,23 +29,28 @@ Imports ModelFramework
 '       SupplementBuyType
 
 ' LUDF Grazing rules
-'       post 1480 = 7 clicks
+'       post 1480 = 7-8 clicks
 '       pre 3100-3200
 '       average 2300-2400
 '       20 day during growth
 '       out to 35 days at drying off
 '       Paddocks over pre-graze taken out and cut imediatly
 
+' Silage cutting
+'   Only remove surplus e.g. if in surplus by 18TDM only remove 18 TDM at cutting (see weekly notes)
+
+' Feed deficit?
+' Short 14TDM on wedge == feed 2 TDM/day for the week
+
 
 Public Class DDRules
     Public myDebugLevel As Integer = 0
     <Link()> Public MySimulation As Paddock
     <Link()> Public MyClock As Clock
-    Private myFarm As Farm
-    Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. This is only a short term fix
-
     <Input()> Public is_end_week As Boolean
     <Input()> Public is_start_week As Boolean
+    Private myFarm As Farm
+    Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. Is this only a short term fix?
 
     Public dairyNZ_mg As Integer() = {20, 25, 30, 40, 50, 100, 100, 80, 50, 25, 20, 20}  'jan to dec
     Public dairyNZ_gr As Integer() = {1600, 1600, 1600, 1500, 1400, 1200, 1200, 1400, 1500, 1500, 1500, 1500}  'june to may
@@ -360,11 +365,11 @@ Public Class DDRules
     'End Property
 
     <Description("Stocking rate a peak of lactation")> _
-    <Output()> <Units("cows/ha")> Public Property PeakStockingRate() As Single
+    <Output()> <Units("cows/ha")> Public Property PeakStockingRate() As Double
         Get
             Return CSng(StockingRate)
         End Get
-        Set(ByVal value As Single)
+        Set(ByVal value As Double)
             If (value >= 0) Then
                 StockingRate = value
             Else
@@ -1109,7 +1114,7 @@ Public Class DDRules
         End Set
     End Property
 
-    <Description("Control animal grazing to simulate break feeding of indervidual paddocks [0=No, 1=Yes]")> _
+    <Description("Control animal grazing to simulate break feeding of individual paddocks [0=No, 1=Yes]")> _
     <Param()> Property BreakFeeding() As Integer
         Get
             If LocalPaddockType.DebugTestBreakFeeding Then
@@ -1144,6 +1149,7 @@ Public Class DDRules
         End Get
         Set(ByVal value As Integer)
             LocalPaddockType.MovingAverageSeriesLength = value
+            Farm.MovingAverageSeriesLength = value
         End Set
 
     End Property

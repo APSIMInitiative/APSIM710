@@ -1,4 +1,4 @@
-<folder version="23" name="Simulations" enabled="no">
+<folder version="28" name="Simulations" enabled="no">
   <simulation name="FarmSim-DDRules-2">
     <manager2 name="FarmSimOptions">
       <ui>
@@ -58,13 +58,13 @@ End Class
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
+      <filename name="filename" input="yes">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <DDRules />
     <outputfile name="DDRules Outputs">
+      <filename output="yes">FarmSim-DDRules-2 DDRules Outputs.out</filename>
+      <title>FarmSim-DDRules-2 DDRules Outputs</title>
       <variables name="Variables">
         <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
         <variable name="DM_Eaten" array="No" description="Dry matter eaten on a /ha basis" />
@@ -199,18 +199,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -221,6 +223,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -229,6 +232,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -237,6 +241,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -245,6 +250,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -253,6 +259,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -261,6 +268,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -269,6 +277,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -641,34 +650,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -677,8 +658,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -721,78 +749,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -825,6 +974,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-2 pad.out</filename>
+        <title>FarmSim-DDRules-2 pad</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -921,18 +1072,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -943,6 +1096,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -951,6 +1105,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -959,6 +1114,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -967,6 +1123,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -975,6 +1132,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -983,6 +1141,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -991,6 +1150,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -1363,34 +1523,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -1399,8 +1531,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -1443,78 +1622,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -1547,6 +1847,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-2 pad1.out</filename>
+        <title>FarmSim-DDRules-2 pad1</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -1643,18 +1945,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -1665,6 +1969,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -1673,6 +1978,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -1681,6 +1987,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -1689,6 +1996,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -1697,6 +2005,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -1705,6 +2014,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -1713,6 +2023,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2085,34 +2396,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -2121,8 +2404,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -2165,78 +2495,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -2269,6 +2720,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-2 pad2.out</filename>
+        <title>FarmSim-DDRules-2 pad2</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -2365,18 +2818,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -2387,6 +2842,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -2395,6 +2851,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -2403,6 +2860,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2411,6 +2869,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2419,6 +2878,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2427,6 +2887,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2435,6 +2896,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -2807,34 +3269,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -2843,8 +3277,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -2887,78 +3368,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -2991,6 +3593,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-2 pad3.out</filename>
+        <title>FarmSim-DDRules-2 pad3</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -3087,18 +3691,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -3109,6 +3715,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -3117,6 +3724,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -3125,6 +3733,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -3133,6 +3742,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -3141,6 +3751,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -3149,6 +3760,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -3157,6 +3769,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -3529,34 +4142,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -3565,8 +4150,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -3609,78 +4241,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -3713,6 +4466,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-2 pad4.out</filename>
+        <title>FarmSim-DDRules-2 pad4</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -3813,13 +4568,13 @@ End Class
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
+      <filename name="filename" input="yes">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <DDRules />
     <outputfile name="DDRules Outputs">
+      <filename output="yes">FarmSim-DDRules-3 DDRules Outputs.out</filename>
+      <title>FarmSim-DDRules-3 DDRules Outputs</title>
       <variables name="Variables">
         <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
         <variable name="DM_Eaten" array="No" description="Dry matter eaten on a /ha basis" />
@@ -3956,18 +4711,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -3978,6 +4735,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -3986,6 +4744,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -3994,6 +4753,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4002,6 +4762,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4010,6 +4771,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4018,6 +4780,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4026,6 +4789,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4398,34 +5162,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -4434,8 +5170,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -4478,78 +5261,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -4582,6 +5486,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-3 pad.out</filename>
+        <title>FarmSim-DDRules-3 pad</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -4678,18 +5584,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -4700,6 +5608,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -4708,6 +5617,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -4716,6 +5626,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4724,6 +5635,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4732,6 +5644,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4740,6 +5653,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -4748,6 +5662,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5120,34 +6035,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -5156,8 +6043,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -5200,78 +6134,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -5304,6 +6359,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-3 pad1.out</filename>
+        <title>FarmSim-DDRules-3 pad1</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -5400,18 +6457,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -5422,6 +6481,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -5430,6 +6490,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -5438,6 +6499,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5446,6 +6508,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5454,6 +6517,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5462,6 +6526,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5470,6 +6535,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -5842,34 +6908,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -5878,8 +6916,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -5922,78 +7007,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -6026,6 +7232,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-3 pad2.out</filename>
+        <title>FarmSim-DDRules-3 pad2</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -6122,18 +7330,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -6144,6 +7354,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -6152,6 +7363,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -6160,6 +7372,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6168,6 +7381,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6176,6 +7390,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6184,6 +7399,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6192,6 +7408,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6564,34 +7781,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -6600,8 +7789,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -6644,78 +7880,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -6748,6 +8105,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-3 pad3.out</filename>
+        <title>FarmSim-DDRules-3 pad3</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -6844,18 +8203,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -6866,6 +8227,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -6874,6 +8236,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -6882,6 +8245,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6890,6 +8254,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6898,6 +8263,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6906,6 +8272,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -6914,6 +8281,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -7286,34 +8654,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -7322,8 +8662,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -7366,78 +8753,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -7470,6 +8978,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-3 pad4.out</filename>
+        <title>FarmSim-DDRules-3 pad4</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />
@@ -7570,13 +9080,13 @@ End Class
       <end_date type="date" description="Enter the end date of the simulation">30/06/1981</end_date>
     </clock>
     <metfile name="met">
-      <filename name="filename">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
+      <filename name="filename" input="yes">%apsim%_dev\data\MetFiles\Other\WinchmoreMet.met</filename>
     </metfile>
-    <summaryfile>
-      <filename name="filename">AgPasture Simulation.sum</filename>
-    </summaryfile>
+    <summaryfile />
     <DDRules />
     <outputfile name="DDRules Outputs">
+      <filename output="yes">FarmSim-DDRules-1 DDRules Outputs.out</filename>
+      <title>FarmSim-DDRules-1 DDRules Outputs</title>
       <variables name="Variables">
         <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
         <variable name="DM_Eaten" array="No" description="Dry matter eaten on a /ha basis" />
@@ -7714,18 +9224,20 @@ End Class
       </AgPasture>
       <soil name="SoilLismore">
         <Country />
-        <State>New Zealand</State>
-        <Region>Canterbury</Region>
-        <NearestTown description="Nearest town">Winchmore</NearestTown>
         <Site>Winchmore</Site>
-        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
+        <Region>Canterbury</Region>
+        <LocalName />
         <SoilType description="Classification">0</SoilType>
+        <NearestTown description="Nearest town">Winchmore</NearestTown>
+        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
+        <State>New Zealand</State>
+        <ApsoilNumber description="Apsoil number">0</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">0</Latitude>
         <Longitude>0</Longitude>
         <LocationAccuracy description="Location accuracy">0</LocationAccuracy>
         <DataSource type="multiedit" description="Data source">published soil profile description (as an example)</DataSource>
+        <Comments />
         <Comment type="multiedit" description="Comments">Soil naming structure: \State\Region\Classification-Local Name (Site/district and locator number)</Comment>
-        <NaturalVegetation description="Natural vegetation">0</NaturalVegetation>
         <Langitude description="Longitude (WGS84)" />
         <InitWater name="Initial water">
           <PercentMethod>
@@ -7736,6 +9248,7 @@ End Class
         <Water>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <KS units="mm/day" />
             <BD units="g/cc">1.25</BD>
             <AirDry units="mm/mm">0.06</AirDry>
             <LL15 units="mm/mm">0.14</LL15>
@@ -7744,6 +9257,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <KS units="mm/day" />
             <BD>1.31</BD>
             <AirDry>0.06</AirDry>
             <LL15>0.14</LL15>
@@ -7752,6 +9266,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.23</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -7760,6 +9275,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.24</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -7768,6 +9284,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.25</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -7776,6 +9293,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.26</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -7784,6 +9302,7 @@ End Class
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <KS units="mm/day" />
             <BD>1.29</BD>
             <AirDry>0.03</AirDry>
             <LL15>0.03</LL15>
@@ -8156,34 +9675,6 @@ End Class
           <CN2Bare>73</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
-          <Layer>
-            <Thickness units="mm">100</Thickness>
-            <SWCON units="0-1">0.4</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.5</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.6</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.8</SWCON>
-          </Layer>
           <Slope>
           </Slope>
           <DischargeWidth>
@@ -8192,8 +9683,55 @@ End Class
           </CatchmentArea>
           <MaxPond>
           </MaxPond>
+          <Layer>
+            <Thickness units="mm">100</Thickness>
+            <SWCON units="0-1">0.4</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>200</Thickness>
+            <SWCON>0.5</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.6</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.8</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
         </SoilWat>
         <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWT>800</RootWT>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
           <Layer>
             <Thickness units="mm">100</Thickness>
             <OC units="Total %">4</OC>
@@ -8236,78 +9774,199 @@ End Class
             <FBiom>0</FBiom>
             <FInert>1</FInert>
           </Layer>
-          <RootCN>40</RootCN>
-          <RootWT>800</RootWT>
-          <SoilCN>11.3</SoilCN>
-          <EnrACoeff>7.4</EnrACoeff>
-          <EnrBCoeff>0.2</EnrBCoeff>
         </SoilOrganicMatter>
-        <Lab>
+        <Analysis>
           <Layer>
             <Thickness units="mm">100</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH units="1:5 water">5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
             <PH>5.9</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
           </Layer>
-        </Lab>
+        </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
           <Layer>
             <Thickness units="mm">100</Thickness>
             <NO3 units="ppm">7.61904761904762</NO3>
             <NH4 units="ppm">0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>200</Thickness>
             <NO3>7.27008360596147</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.87146728610143</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.84024577572965</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.80952380952381</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.77928949357521</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
           <Layer>
             <Thickness>300</Thickness>
             <NO3>3.69139904023625</NO3>
             <NH4>0.132451499118166</NH4>
+            <SW units="mm/mm" />
           </Layer>
         </Sample>
       </soil>
@@ -8340,6 +9999,8 @@ End Class
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
       <outputfile>
+        <filename output="yes">FarmSim-DDRules-1 pad.out</filename>
+        <title>FarmSim-DDRules-1 pad</title>
         <variables name="Variables">
           <variable name="dd/mmm/yyyy as Date" array="No" description="Date (dd/mmm/yyyy)" />
           <variable name="AboveGroundLiveWt" array="No" description="Plant aboveground live dry matter" />

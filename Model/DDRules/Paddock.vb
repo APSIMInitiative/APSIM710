@@ -16,14 +16,13 @@ Public Class LocalPaddockType
     Public DebugLevel As Integer = 0 '0==none, 1==brief, 2==verbose
     Public Shared DebugTestBreakFeeding As Boolean = True
     Public Shared MovingAverageSeriesLength As Integer = 7
-    Public myAverageGrowthRate As MovingAverage = New MovingAverage(MovingAverageSeriesLength)
+    Public myAverageGrowthRate As MovingAverage
     Public Shared IncludeStolon As Boolean = False
     Public Name As String
 
     <Link()> Private ApSim_SubPaddock As Paddock
-
-    <Input(IsOptional:=True)> Public Area As Double = -1
-
+    '<Input(IsOptional:=True)>
+    Public Area As Double = -1
     Private myStatus As PaddockStatus
     'Homogeneous pasture cover
     Dim Pasture_Cover As BioMass = New BioMass()
@@ -40,7 +39,6 @@ Public Class LocalPaddockType
     Dim Default_Application_Depth As Double = 300 'mm
 
     Private UrinePatchComponent As Component
-    'Private AgPasture As Component
     Private AgPastureInstance As AgPasture '<Link()> 
     Private UpdatedGrowth As Boolean = False
 

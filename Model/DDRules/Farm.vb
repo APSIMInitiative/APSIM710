@@ -30,7 +30,10 @@ Public Class Farm
     'LUDF Process
     Private EnableCutting As Boolean = True
     Private DefaultPastureME As Double = 11.5 '12.3 average me/kgDM from 2006-2010
-    Public myAverageCover As MovingAverage = New MovingAverage(7)
+    Public Shared MovingAverageSeriesLength As Integer = 7
+    Public myAverageCover As MovingAverage = New MovingAverage(MovingAverageSeriesLength)
+    Public preGrazeCovers() As Double
+    Public postGrazeCovers() As Double
 
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
@@ -179,8 +182,6 @@ Public Class Farm
         Return result
     End Function
 
-    Public preGrazeCovers() As Double
-    Public postGrazeCovers() As Double
     Public Sub Process(ByVal start_of_week As Boolean)
         CheckWinteringOff()
         If Not (IsWinteringOff()) Then 'assume all stock wintering off farm i.e. no grazing
@@ -190,6 +191,12 @@ Public Class Farm
                     Case Else
                         Allocate_Paddocks()
                 End Select
+                Dim feed As Double = FeedSituation() / StockingRate
+                If (feed < 0) Then
+                    ' feed shortage for the week
+                    ' need to make a decission to feed silage before grazing
+                End If
+
             End If
 
             If (DebugLevel > 1) Then
@@ -206,6 +213,9 @@ Public Class Farm
             preGrazeCovers = updateCovers()
             Graze()
             postGrazeCovers = updateCovers()
+            If (myMilkingHerd.isUnderFed) Then
+                FeedSupplements()
+            End If
             doAnimalsPost()
         End If
         doConservation()
@@ -323,22 +333,26 @@ Public Class Farm
         Dim i As Integer = 0
         Dim result As BioMass = New BioMass()
 
+        Dim surplus As Double = FeedSituation()
+        Console.WriteLine("CutToFeedWedge begin: Surplus = " + surplus.ToString())
+
         updateCovers()
+        myPaddocks.Sort(LocalPaddockType.getSortListByCover(True))
         For Each pdk As LocalPaddockType In myPaddocks
             If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
-                Dim cover As Integer = Optimum_residual + (i * interval)
-                Dim temp As BioMass = pdk.Harvest(cover, SilageCutWastage)
+                Dim cutResidual As Integer = Optimum_residual + (i * interval)
+                Dim temp As BioMass = pdk.Harvest(cutResidual, SilageCutWastage)
                 result = result.Add(temp)
                 i += 1
+                surplus -= temp.Multiply(1 / pdk.Area).DM_Total
             End If
         Next
+        surplus = FeedSituation()
+        Console.WriteLine("CutToFeedWedge end: Surplus = " + surplus.ToString())
         Return result
     End Function
 
     Private Sub doAnimalsPost()
-        If (myMilkingHerd.isUnderFed) Then
-            FeedSupplements()
-        End If
 
         myMilkingHerd.doNitrogenPartioning()
 
@@ -855,7 +869,12 @@ Public Class Farm
                 growth += pdk.AverageGrowthRate() * pdk.Area
                 area += pdk.Area
             Next
-            Return growth / area
+            If (area > 0) Then
+
+                Return growth / area
+            Else
+                Return 0
+            End If
         End Get
     End Property
 
