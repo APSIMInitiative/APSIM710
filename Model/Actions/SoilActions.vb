@@ -187,7 +187,7 @@ Public Class SoilActions
         MessageBox.Show(VersionString(), "Apsoil version", MessageBoxButtons.OK, MessageBoxIcon.Information)
     End Sub
     Public Shared Function VersionString() As String
-        Return "Version " + Configuration.Instance.ApsimVersion()
+      Return "Version " + Configuration.Instance.Setting("Version")
     End Function
    Public Shared Sub OpenLatestVersionOfSoilsDatabase(ByVal Controller As BaseController)
       If Controller.FileSaveAfterPrompt() Then
