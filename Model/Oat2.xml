@@ -1,4 +1,4 @@
-<Type version="28" name="Oat2">
+<Type version="29" name="Oat2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -129,14 +129,6 @@
             <Value type="text" description="Value">120</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
-          <GenericPhase name="FlagLeafToFlowering">
-            <Start>FlagLeaf</Start>
-            <End>Flowering</End>
-            <Constant name="Target">
-              <Value type="text" description="Value">120</Value>
-            </Constant>
-            <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
-          </GenericPhase>
         </GenericPhase>
         <GenericPhase name="FloweringToGrainFilling">
           <Start>Flowering</Start>
@@ -670,15 +662,15 @@
           <XProperty>StageCode.Value</XProperty>
           <XYPairs>
             <XY>3 20</XY>
-            <XY>4 100</XY>
-            <XY>5 1000</XY>
+            <XY>4.2 100</XY>
+            <XY>5 1100</XY>
             <XY>6 1200</XY>
           </XYPairs>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="HeightExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>
-            <XY>0 0</XY>
+            <XY>0.3 0</XY>
             <XY>1 1</XY>
           </XYPairs>
         </LinearInterpolationFunction>
@@ -730,7 +722,7 @@
         </PhaseLookup>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
       </Leaf>
       <GenericOrgan name="Husk">
         <PopulationBasedDemandFunction name="DMDemandFunction">

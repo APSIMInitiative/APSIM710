@@ -50,12 +50,21 @@ public class FinalNodeNumber
         UpdateFinalNodeVariables();
         CalculateFinalLeafNumber();
     }
+
+    public void PreEmergenceCalculate()
+    {
+        if (TerminateFinalNodeNumber != null)
+        {
+            TerminateFinalNodeNumber.AttainableFinalNodeNumber();
+        }
+        CalculateFinalLeafNumber();
+    }
     private void UpdateFinalNodeVariables()
     {
         if (TerminateFinalNodeNumber != null)
             TerminateFinalNodeNumber.UpdateTerminateNodeVariables();
     }
-    private void CalculateFinalLeafNumber()
+    public void CalculateFinalLeafNumber()
     {
         if (TerminateFinalNodeNumber != null)
             //_FinalLeafNumber = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
@@ -77,4 +86,5 @@ public class FinalNodeNumber
         }
         else _PrimordiaNumber = MaxNodeNo;
     }
+
 }

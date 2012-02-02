@@ -20,6 +20,7 @@ public class LeafAppearancePhase : Phase
     [Output]
     public double TTInPhase { get { return CumulativeTT; } }
 
+    private double FractionCompleteYesterday = 0;
 
     /// <summary>
     /// Reset phase
@@ -42,6 +43,9 @@ public class LeafAppearancePhase : Phase
             First = false;
         }
 
+        //
+        FractionCompleteYesterday = FractionComplete;
+
         // Accumulate thermal time.
         CumulativeTT += ThermalTime.Value;
 
@@ -61,7 +65,7 @@ public class LeafAppearancePhase : Phase
             double F = (Leaf.ExpandedNodeNo - CohortNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - CohortNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
-            return F;
+            return Math.Max(F, FractionCompleteYesterday); //Set to maximum of FractionCompleteYesterday so on days where final leaf number increases phenological stage is not wound back.
         }
     }
 

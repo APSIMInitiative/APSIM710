@@ -620,7 +620,14 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-        
+
+        //Calculate final leaf number changes due to peremergence vernalisation.  
+        //FIXME  HEB.  This is not a very robust test as won't work if the emergence phase is not called "Emerging"  Need something better.
+        if (Phenology.CurrentPhaseName == "Emerging")
+        {
+            FinalNodeNumber.PreEmergenceCalculate();
+        }
+
         if (CohortsInitialised) //Leaves are initialised so calculate apperance
         {
             FinalNodeNumber.Calculate();
