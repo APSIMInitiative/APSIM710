@@ -2397,6 +2397,9 @@ c      endif
 *+  Changes
 *     26/11/1999 dph changed action_send(unknown_module, action, data)
 *                    to action_send_to_all_comps(action)
+*     RCichota - 09-Feb-2010 - make SWIM reset solute values if fail to solve and 
+*                    tell user the value of dt
+
 
 *+  Local Variables
       double precision dr
@@ -2423,6 +2426,7 @@ c      double precision psiold(0:M)
       double precision old_hmin
       double precision old_gsurf
       double precision LogTime
+      character string*100
 
 *- Implementation Section ----------------------------------
 
@@ -2608,8 +2612,11 @@ cnh
             call apswim_solve(itlim,fail)
 
             if(fail)then
+!              SWIM failed to find a solution, should reset values to its previous state 
+!               and attempt to solve again with a smaller dt
+			
                 call apswim_diagnostics(pold)
-
+             ! Reset values
                g%t = old_time
                g%hmin = old_hmin
                g%gsurf = old_gsurf
@@ -2618,7 +2625,20 @@ cnh
                g%h=g%hold
                do 42 i=0,p%n
                   g%p(i)=pold(i)
+                  g%th(i) = g%thold(i)
+                  do 44 solnum=1,p%num_solutes
+                     g%csl(solnum,i) = g%cslold(solnum,i)
+44                continue				  
 42             continue
+cRC   lines for g%th and g%csl added by RCichota, 09/02/2010
+
+               g%dt=0.5*g%dt
+
+!              Tell user that SWIM is changing dt
+               write(string,*)
+     :               'Changing dt value from: ', g%dt*2
+     :               ,'to: ', g%dt
+               call write_string('ApsimSwim|apswim_swim - '//string)
                if(g%dt.ge.dtiny)go to 40
             else
 
@@ -2745,6 +2765,9 @@ cnh
       double precision timestep_start
       double precision timestep
 
+      character string*100
+      integer          solnum
+      integer          node
 *- Implementation Section ----------------------------------
 
       call apswim_reset_daily_totals()
@@ -2772,6 +2795,39 @@ cnh
          call apswim_report_status()
          call fatal_error (Err_Internal, 'Swim failed to find solution')
       else
+!````````````````````````````````````````````````````````````````````````````````
+              !Test for negative values of g%csl coming from the thomas algorithm.
+              ! disregard if very small, else cause fatal error
+cRC            Changes by RCichota, 30/Jan/2010, ammended in 10/Jul/2010
+
+               do 55 solnum = 1,p%num_solutes
+                  do 56 node = 0, p%n
+                     if (abs(g%csl(solnum,node)).lt.-c%slcerr) then
+     :                  ! value is negative, throw a fatal error (using same error limit as for thomas algorithm, may need to look at this better)
+                        write(string,*)
+     :                        '  Solution '
+     :                        ,p%solute_names(solnum)
+     :                        (:lastnb(p%solute_names(solnum)))
+     :                        ,'(',node,') = ',g%csl(solnum,node)
+                        call fatal_error(err_internal,
+     :                        '-ve value when calculating'
+     :                        //' solute movement'
+     :                        //new_line//string)
+
+                        g%csl(solnum,node) = 0d0
+
+                     elseif (g%csl(solnum,node) .lt. 1d-100) then
+                        ! Value is REALY small, set to zero to avoid underfolw with reals
+
+                        g%csl(solnum,node) = 0d0
+
+                     else
+                        ! value is OK. proceed with calculations
+                     endif
+   56             continue
+   55          continue
+
+!````````````````````````````````````````````````````````````````````````````````
 
          call apswim_set_other_variables ()
          call apswim_set_solute_variables()
@@ -3525,6 +3581,8 @@ c      eqr0  = 0.d0
 
 *+  Changes
 *   21-6-96 NIH - Changed set_double_array to post construct
+*   RCichota - 26/01/2010 - Add test to make sure SWIM will not send a -ve value
+*   RCichota - 12/Jul/2010 - add simple test for -ve solution concentration
 
 *+  Local Variables
       double precision Ctot
@@ -3542,56 +3600,55 @@ c      eqr0  = 0.d0
             ! Step One - calculate total solute in node from solute in
             ! water and Freundlich isotherm.
 
+            if (g%csl(solnum,node).lt.0d0) then
+               write(string,*)
+     :               ' solution'
+     :               ,p%solute_names(solnum)
+     :               (:lastnb(p%solute_names(solnum)))
+     :               ,'(',node,') = ',g%csl(solnum,node)
+               call fatal_error (err_internal,
+     :               '-ve concentration in apswim_set_solute_variables'
+     :               //new_line//string)
+            endif
+
             call apswim_freundlich (node,solnum,g%csl(solnum,node)
      :                    ,Ctot,dCtot)
 
             ! Note:- Sometimes small numerical errors can leave
-            ! -ve concentrations.  Set conc to zero in these cases.
+            ! -ve concentrations. Test if values are within limits.
 
-            ! convert solute ug/cc soil to kg/ha for node
-            !
-            !  kg      ug      cc soil    kg
-            !  -- = -------- p%x -------- p%x --
-            !  ha   cc soil       ha      ug
-
-            Ctot = Ctot
-     :           * (p%dx(node)*(1d4)**2) ! cc soil/ha
-     :           * 1d-9               ! kg/ug
-
-            if (Ctot .lt. -c%negative_conc_fatal) then
-               write(string,'(x,3a,i3,a,G12.6)')
-     :              'Total '
-     :             ,p%solute_names(solnum)
-     :                (:lastnb(p%solute_names(solnum)))
-     :             ,'(',node,') = ',Ctot
-               call fatal_error(err_internal,
-     :               '-ve solute conc - increase numerical precision'
-     :               //new_line//string)
-
-            elseif (Ctot .lt. -c%negative_conc_warn) then
-               write(string,'(x,3a,i3,a,G12.6)')
-     :              'Total '
-     :             ,p%solute_names(solnum)
-     :                 (:lastnb(p%solute_names(solnum)))
-     :             ,'(',node,') = ',Ctot
-
-               call warning_error(err_internal,
-     :               '-ve solute conc - increase numerical precision'
-     :               //new_line//string)
+            if (abs(Ctot) .lt. 1d-100) then
+               ! Ctot is REALLY small, its value can be disregarded
+               ! set to zero to avoid underflow with reals
 
                Ctot = 0d0
 
-            elseif (Ctot .lt. 0d0) then
-               ! Ctot only slightly negative
-               Ctot = 0d0
+            elseif (Ctot .lt. 0) then
+               !Ctot is negative and a fatal error is thrown. Should not happen as it has been tested on apswim_freundlich
+               write(string,'(x,3a,i3,a,G12.6)')
+     :               '  Total '
+     :               ,p%solute_names(solnum)
+     :               (:lastnb(p%solute_names(solnum)))
+     :               ,'(',node,') = ',Ctot
+            call fatal_error(err_internal,
+     :            '-ve value for solute concentration' 
+     :            //new_line//string)
 
-            elseif (Ctot .lt. 1d-30) then
-               ! Ctot is REALLY small
-               Ctot = 0d0  ! Too avoid underflow with reals
+            Ctot = 0d0
 
             else
                ! Ctot is positive
             endif
+
+            ! convert solute ug/cc soil to kg/ha for node
+            !
+            !  kg      ug        cc soil      kg
+            !  -- = -------- p%x -------- p%x --
+            !  ha    cc soil        ha        ug
+
+            Ctot = Ctot                   ! ug/cc soil
+     :           * (p%dx(node)*1d8)       ! cc soil/ha
+     :           * 1d-9                   ! kg/ug
 
             ! finished testing - assign value to array element
             solute_n(node) = Ctot
@@ -3607,9 +3664,7 @@ c      eqr0  = 0.d0
      :           dlt_solute_n(0),
      :           p%n+1)
 
-
   100 continue
-
       return
       end subroutine
 
@@ -5653,31 +5708,69 @@ cnh      end if
       double precision Cw
       double precision Ctot
       double precision dCtot
-
+*+  Changes
+*   RCichota - 30/Jan/2010 - implement test for -ve values passed in, test for linear isotherm
+*                  and test for very small values (these were ammended in 10/Jul/2010)
+*+  Local Variables
+      character        string*100
 *- Implementation Section ----------------------------------
+      ! first make sure Cw has not been passed negative. Changes by RCichota, 30/jan/2010, ammended 09/Jul/2010
+      
+      if (abs(Cw) .lt. 1d-100) then
+         ! Cw is zero or REALLY small and can be diregarded,
+         !  set to zero to avoid underflow with reals
 
-      ! calculate value of isotherm function and the derivative.
-      if (Cw .lt. 0) then
-         if (Cw.lt.-1e-6) then
+         Cw = 0
+         Ctot = 0d0
+         dCtot = g%th(node)   !if n<1 it actually equals infinity at Cw = zero
+                                 !this value will not be used if Cw = 0
+      elseif (Cw .lt. 0) then
+         ! Cw is negative, this is a fatal error.
+
+               write(string,'(x,3a,i3,a,G12.6)')
+     :               ' Solution '
+     :               ,p%solute_names(solnum)
+     :               (:lastnb(p%solute_names(solnum)))
+     :               ,'(',node,') = ',Cw
             call fatal_error (err_internal,
-     :           '-ve concentration in calculating isotherm')
+     :           '-ve value has been passed to Freundlich solution'
+     :            //new_line//string)
             Ctot = 0
             dCtot = 0
-         else
-            Ctot = 0
-            dCtot = g%th(node)
-         endif
 
       else
+         !Cw is positive, proceed with the calculations
 
-         Ctot = g%th(node) * Cw
-     :        + p%ex(solnum,node) * Cw ** p%fip(solnum,node)
-         dCtot = g%th(node)
-     :         + p%ex(solnum,node)
-     :         *p%fip(solnum,node)
-     :         *Cw**(p%fip(solnum,node)-1d0)
+         if ((Doubles_are_equal(p%fip(solnum,node),1d0))
+     :         .or. (Doubles_are_equal(p%ex(solnum,node),0d0))) then
+            ! Linear isotherm or no adsorption
+            
+            Ctot = Cw*(g%th(node) + p%ex(solnum,node))
+            dCtot = g%th(node) + p%ex(solnum,node)
+
+         else
+            !nonlinear isotherm
+
+            Ctot = g%th(node) * Cw
+     :           + p%ex(solnum,node) * Cw ** p%fip(solnum,node)
+            dCtot = g%th(node)
+     :            + p%ex(solnum,node)
+     :            *p%fip(solnum,node)
+     :            *Cw**(p%fip(solnum,node)-1d0)
+         endif
       endif
 
+!````````````````````````````````````````````````````````````````````````````````
+      ! Check for very small values, set to zero to avoid underflow with reals
+
+      if (abs(Ctot) .lt. 1d-100) then
+         Ctot = 0d0
+      endif
+
+      if (abs(dCtot) .lt. 1d-100) then
+         dCtot = 0d0
+      end if
+!````````````````
       return
       end subroutine
 
@@ -5698,6 +5791,9 @@ cnh      end if
 *+  Purpose
 *   Calculate the solute in solution for a given total solute
 *   concentration for a given node.
+*+  Changes
+*   RCichota - 30/Jan/2010 - update name of proc., organize the newton solution
+*                 added tests for -ve and very small values
 
 *+  Constant Values
       integer max_iterations
@@ -5714,69 +5810,172 @@ cnh      end if
       double precision dfdCw
       logical          solved
       character        message*200
+      character        string*100
 
 *- Implementation Section ----------------------------------
 
-      if (Ctot.lt.0) then
-         if (Ctot.lt.-1e-6) then
-            call fatal_error (err_internal,
-     :           '-ve concentration in isotherm calculation')
-            solved = .false.
-            CW = 0
-         else
-            Cw = 0
-            solved = .true.
-         endif
+cRC    Changes by RCichota, 30/Jan/2010, updated in 10/Jul/2010
+      ! Organize solution and add test for no adsorption or linear adsorption
+
+      if (abs(Ctot).lt.1d-100) then
+         ! really small value or zero, solution is zero
+
+         solved = .true.
+         Cw = 0
+
+      elseif (Ctot.lt.0d0) then
+         ! negative value for Ctot, this should have been catched already
+
+         write(string,'(x,3a,i3,a,G12.6)')
+     :         ' Total'
+     :         ,p%solute_names(solnum)
+     :         (:lastnb(p%solute_names(solnum)))
+     :         ,'(',node,') = ',Ctot
+         call fatal_error (err_internal,
+     :         '-ve concentration was passed to Freundlich solution'
+     :         //new_line//string)
+
+         solved = .false.
+         Cw = 0
+
       else
-         ! Take intital guess at Cw
+         ! Ctot is OK, proceed to calculations
 
-         Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
-     :        , 0.d0))**(1.0/p%fip(solnum,node))
-     
-         ! calculate value of isotherm function and the derivative.
+         ! Check for no adsorption and whether the isotherm is linear
+         if (Doubles_are_equal(p%ex(solnum,node),0d0)) then
+            !There is no adsorption:
 
-         call apswim_freundlich (node,solnum,Cw,f,dfdCw)
-
-         if (abs(f-Ctot) .lt. tolerance) then
-            ! It is already solved
+            Cw = ddivide (Ctot, g%th(node),0d0)
             solved = .true.
 
-         else if (dfdCw .eq. 0d0) then
-            ! We are at zero so Cw must be zero - this is a solution too
+         elseif (Doubles_are_equal(p%fip(solnum,node),0d0)) then
+            !Full adsorption, solute is immobile:
+
+            Cw = 0d0
+            solved = .true.
+
+         elseif (Doubles_are_equal(p%fip(solnum,node),1d0)) then
+            !Linear adsorption:
+
+            Cw = ddivide (Ctot, g%th(node) + p%ex(solnum,node),0d0)
             solved = .true.
 
          else
-            solved = .false.
-            do 100 iteration = 1,max_iterations
+            !Non linear isotherm:
 
-               call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+            ! take initial guess for Cw
+            Cw = (ddivide (Ctot, (g%th(node)+p%ex(solnum,node))
+     :            , 0.d0))**(1.0/p%fip(solnum,node))
+            if (Cw .lt. 0d0) then            ! test added by RCichota 09/Jul/2010
+               write(string,*)
+     :             '  '
+     :             ,p%solute_names(solnum)
+     :             (:lastnb(p%solute_names(solnum)))
+     :             ,'(',node,') = ',Cw
+     :             ,' - Iteration: 0'
+               call fatal_error(err_internal,
+     :             '-ve value for Cw on solving Freundlich1'
+     :             //new_line//string)
+            endif
 
-               error_amount = f - Ctot
-               if (abs(error_amount) .lt. tolerance) then
-                  solved = .true.
-                  goto 200
-               else
-                  Cw = Cw - ddivide(error_amount,dfdCw,0d0)
-               endif
+            ! calculate value of isotherm function and the derivative.
 
-  100       continue
-  200       continue
+            call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+            error_amount = f - Ctot
+
+            if (abs(error_amount) .lt. tolerance) then
+               ! It is already solved
+
+               solved = .true.
+
+            elseif (abs(dfdCw) .lt. 1d-100) then
+               ! We are at zero (approximately) so Cw must be zero - this is a solution too
+
+               Cw = 0d0
+               solved = .true.
+
+!            elseif (dfdCw) .gt. 1d100) then
+!               ! derivative is too large, so Cw must be zero - this is a solution too
+
+!               Cw = 0d0
+!               solved = .true.
+
+            else
+               ! Iterate until a solution is found or max_iterations is reached
+
+               solved = .false.
+               do 100 iteration = 1,max_iterations
+
+                  ! next value for Cw
+                  Cw = Cw - ddivide(error_amount,2*dfdCw,0d0)
+                  if (Cw .lt. 0d0) then            ! test added by RCichota 09/Jul/2010
+                     write(string,*)
+     :                  '  '
+     :                  ,p%solute_names(solnum)
+     :                  (:lastnb(p%solute_names(solnum)))
+     :                  ,'(',node,') = ',Cw
+     :                  ,' - Iteration: ',iteration
+                     call fatal_error(err_internal,
+     :                  '-ve value for Cw on solving Freundlich2'
+     :                   //new_line//string)
+                  endif
+
+                  ! calculate new value of isotherm function and derivative.
+                  call apswim_freundlich (node,solnum,Cw,f,dfdCw)
+                  error_amount = f - Ctot
+
+                  if (abs(error_amount) .lt. tolerance) then
+                     solved = .true.
+                     goto 200
+                  endif
+
+  100          continue
+  200          continue
+            endif
          endif
       endif
 
-      if (.not.solved) then
-         write(message,*) 
-     :     'APSwim failed to solve for freundlich isotherm for '
-     :     //trim(p%solute_names(solnum))//new_line
-     :     ,'FIP=',p%fip(solnum,node)
-     :     ,'Exco=',p%ex(solnum,node)
-     :     ,trim(p%solute_names(solnum))//'=',Ctot
-     
-         call fatal_error (err_internal,message)
-         apswim_solve_freundlich = ddivide (Ctot, g%th(node), 0.d0)
+      if (solved) then
+
+!````````````````````````````````````````````````````````````````````````````````
+         ! Note: Sometimes small numerical errors can leave -ve concentrations.
+         ! This will evaluate the error and define the appropriate response:
+cRC      Changes by RCichota, 30/Jan/2010
+
+         if (abs(Cw) .lt. 1d-100) then
+            ! Value is REALLY small or zero and can be diregarded,
+            !  set value to zero to avoid underflow with reals
+
+            Cw = 0
+
+         elseif (Cw .lt. 0) then
+            ! Cw is negative, this is a fatal error.
+            write(string,'(x,3a,i3,a,G12.6)')
+     :            '  Solution '
+     :            ,p%solute_names(solnum)
+     :            (:lastnb(p%solute_names(solnum)))
+     :            ,'(',node,') = ',Cw
+            call fatal_error(err_internal,
+     :            '-ve value for solute found in adsorption isotherm'
+     :            //new_line//string)
+
+            Cw = 0d0
+
+         else
+            ! Cw is positive and considerable
+
+         endif
+!````````````````````````````````````````````````````````````````````````````````
+
+         ! Publish the computed value
+         apswim_solve_freundlich = Cw
 
       else
-         apswim_solve_freundlich = Cw
+         ! A solution was not found
+         
+         call fatal_error (err_internal,
+     :           'APSwim failed to solve the freundlich isotherm')
+         apswim_solve_freundlich = ddivide (Ctot, g%th(node), 0.d0)
 
       endif
 
@@ -5874,31 +6073,70 @@ cnh      end if
 *+  Sub-Program Arguments
       integer solnum
       integer node
+*+  Changes
+*   RCichota - 30-01-2010 - Added test for -ve value
 
 *+  Local Variables
       double precision Ctot
       double precision dCtot
-
+      character string*100
+	  
 *- Implementation Section ----------------------------------
 
-      ! Step One - calculate total solute in node from solute in
-      ! water and Freundlich isotherm.
+*     ! Step One - calculate total solute in node from solute in
+*      ! water and Freundlich isotherm.
+
+      if (g%csl(solnum,node).lt.0d0) then
+         write(string,*)
+     :         ' solution'
+     :         ,p%solute_names(solnum)
+     :         (:lastnb(p%solute_names(solnum)))
+     :         ,'(',node,') = ',g%csl(solnum,node)
+         call fatal_error (err_internal,
+     :         '-ve concentration in apswim_solute_amount'
+     :         //new_line//string)
+      endif
 
       call apswim_freundlich (node,solnum,g%csl(solnum,node)
      :                    ,Ctot,dCtot)
 
+!````````````````````````````````````````````````````````````````````````````````
+cRC   Changes by RCichota, 30/Jan/2010
+      ! Note:- Sometimes small numerical errors can leave
+      ! -ve concentrations.  This will check Ctot and take appropriate action
+
+      if (abs(apswim_solute_amount) .lt. 1d-100) then
+         ! value REALLY small, set to zero to avoid underflow with reals
+
+         apswim_solute_amount = 0
+
+      elseif (apswim_solute_amount .lt. 0) then
+         write(string,'(x,3a,i3,a,G12.6)')
+     :          '  Total '
+     :          ,p%solute_names(solnum)
+     :          (:lastnb(p%solute_names(solnum)))
+     :          ,'(',node,') = ',Ctot
+         call fatal_error(err_internal,
+     :          '-ve value for solute amount'
+     :         //new_line//string)
+
+         apswim_solute_amount = 0d0
+
+      else
+         ! Value is positive, proceed with calculations
+
+      end if
+!````````````````````````````````````````````````````````````````````````````````
+
       ! convert solute ug/cc soil to kg/ha for node
       !
-      !  kg      ug      cc soil    kg
+      !  kg      ug        cc soil      kg
       !  -- = -------- p%x -------- p%x --
-      !  ha   cc soil       ha      ug
+      !  ha   cc soil        ha         ug
 
-      ! Note:- Sometimes small numerical errors can leave
-      ! -ve concentrations.
-
-      apswim_solute_amount = Ctot
-     :               * (p%dx(node)*(1d4)**2) ! cc soil/ha
-     :               * 1d-9               ! kg/ug
+      apswim_solute_amount = Ctot            ! ug/cc soil
+     :               * (p%dx(node)*1d8)      ! cc soil/ha
+     :               * 1d-9                  ! kg/ug
 
       return
       end function
@@ -5934,21 +6172,63 @@ cnh      end if
       integer         solnum
       integer          node
       double precision amount
-
+*+  Changes
+*   RCichota - 30/Jan-2010 - Add test for -ve values
 *+  Local Variables
       double precision conc_soil
       double precision conc_water
-
+      character        string*100
 *- Implementation Section ----------------------------------
+!````````````````````````````````````````````````````````````````````````````````
+         ! Note: Sometimes small numerical errors can leave -ve concentrations.
+         ! This will evaluate the error and define the appropriate response:
+cRC      Changes by RCichota, 30/Jan/2010
+
+      if (conc_soil .lt. -(c%negative_conc_fatal)) then
+         write(string,'(x,3a,i3,a,G12.6)')
+     :         '  Total '
+     :         ,p%solute_names(solnum)
+     :         (:lastnb(p%solute_names(solnum)))
+     :         ,'(',node,') = ',conc_soil
+         call fatal_error(err_internal,
+     :         '-ve value for solute within SWIM calculations'
+     :         //new_line//string)
+
+         conc_soil = 0d0
+
+      elseif (conc_soil .lt. -(c%negative_conc_warn)) then
+         write(string,'(x,3a,i3,a,G12.6)')
+     :         '  Total '
+     :         ,p%solute_names(solnum)
+     :         (:lastnb(p%solute_names(solnum)))
+     :         ,'(',node,') = ',conc_soil
+     :         ,'- Value will be set to zero'
+         call warning_error(err_internal,
+     :         '-ve value for solute within SWIM calculations'
+     :         //new_line//string)
+
+         conc_soil = 0d0
+
+      elseif (conc_soil .lt. 1d-100) then
+         ! Value is REALLY small, no need to tell user,
+         ! set value to zero to avoid underflow with reals
+
+         conc_soil = 0d0
+
+      else
+         ! Value is positive and considerable
+
+      endif
+!````````````````````````````````````````````````````````````````````````````````
 
          ! convert solute from kg/ha to ug/cc soil
          ! ug Sol    kg Sol    ug   ha(node)
          ! ------- = ------- * -- * -------
          ! cc soil   ha(node)  kg   cc soil
 
-      conc_soil = amount
-     :          * 1d9             ! ug/kg
-     :          / (p%dx(node)*1d8) ! cc soil/ha
+      conc_soil = amount               ! kg/ha
+     :            * 1d9                ! ug/kg
+     :            / (p%dx(node)*1d8)   ! cc soil/ha
 
       conc_water = apswim_solve_freundlich
      :                                    (node
@@ -5956,7 +6236,6 @@ cnh      end if
      :                                    ,conc_soil)
 
       apswim_solute_conc = conc_water
-
       return
       end function
 
@@ -6260,6 +6539,9 @@ cnh      end if
 *+  Sub-Program Arguments
       character solname*(*)
       double precision conc_water_solute(0:p%n)
+*+  Changes
+*     30-01-2010 - RCichota - added test for -ve values, causes a fatal error if so
+
 
 *+  Purpose
 *      Calculate the concentration of solute in water (ug/l).  Note that
@@ -6275,6 +6557,8 @@ cnh      end if
       double precision solute_n(0:M) ! solute at each node
       integer          solnum
       integer          numvals
+      character        string*100 
+
 *+  Initial Data Values
       call fill_double_array(conc_water_solute(0),0d0,p%n+1)
 
@@ -6308,6 +6592,49 @@ cnh      end if
          if (numvals.gt.0) then
 
             do 50 node=0, p%n
+!````````````````````````````````````````````````````````````````````````````````
+cRC            Changes by RCichota, 30/Jan/2010
+               ! Note: Sometimes small numerical errors can leave -ve concentrations.
+               ! This will check for -ve or very small values being passed by other modules
+               !  and define the appropriate response:
+
+               if (solute_n(node) .lt. -(c%negative_conc_fatal)) then
+                  write(string,'(x,3a,i3,a,G12.6)')
+     :                  '  Total '
+     :                  ,p%solute_names(solnum)
+     :                  (:lastnb(p%solute_names(solnum)))
+     :                  ,'(',node,') = ',solute_n(node)
+                  call fatal_error(err_internal,
+     :                  '-ve value for solute was passed to SWIM'
+     :                  //new_line//string)
+               
+                  solute_n(node) = 0d0
+               
+               elseif (solute_n(node) .lt. -(c%negative_conc_warn)) then
+                  write(string,'(x,3a,i3,a,G12.6)')
+     :                  '  Total '
+     :                  ,p%solute_names(solnum)
+     :                  (:lastnb(p%solute_names(solnum)))
+     :                  ,'(',node,') = ',solute_n(node)
+     :                  ,'- Value will be set to zero'
+                  call warning_error(err_internal,
+     :                  '-ve value for solute was passed to SWIM'
+     :                  //new_line//string)
+               
+                  solute_n(node) = 0d0
+               
+               elseif (solute_n(node) .lt. 1d-100) then
+                  ! Value is REALLY small, no need to tell user,
+                  ! set value to zero to avoid underflow with reals
+               
+                  solute_n(node) = 0d0
+               
+               else
+                  ! Value is positive and considerable
+               
+               endif
+!````````````````````````````````````````````````````````````````````````````````
+			
                ! convert solute from kg/ha to ug/cc soil
                ! ug Sol    kg Sol    ug   ha(node)
                ! ------- = ------- * -- * -------
@@ -6362,6 +6689,8 @@ cnh      end if
 *      owner module.  It therefore also follows that this routine cannot
 *      be used for internal calculations of solute concentration during
 *      the process stage etc.
+*+  Changes
+*     30-01-2010 - RCichota - added test for -ve values, causes a fatal error if so
 
 *+  Local Variables
       integer          node
@@ -6369,13 +6698,13 @@ cnh      end if
       integer          solnum
       integer          numvals
       double precision conc_water_solute ! (ug/g water)
-
+      character string*100
 *+  Initial Data Values
       call fill_double_array(conc_adsorb_solute(0),0d0,p%n+1)
 
 *- Implementation Section ----------------------------------
 
-      solnum = apswim_solute_number (solname)
+       solnum = apswim_solute_number (solname)
 
       if (solnum .gt. 0) then
          ! only continue if solute exists.
@@ -6387,28 +6716,68 @@ cnh      end if
      :           solute_n(0),
      :           numvals,
      :           c%lb_solute,
-     :           c%ub_solute)
+     :           c%ub_solute) 
 
          if (numvals.gt.0) then
 
             do 50 node=0, p%n
 
-               if (p%ex(solnum,node).eq. 0.d0) then
-                  conc_adsorb_solute(node) = 0.d0
+!````````````````````````````````````````````````````````````````````````````````
+cRC            Changes by RCichota, 30/Jan/2010
+               ! Note: Sometimes small numerical errors can leave -ve concentrations.
+               ! This will check for -ve or very small values being passed by other modules
+               !  and define the appropriate response:
+
+               if (solute_n(node) .lt. -(c%negative_conc_fatal)) then
+                  write(string,'(x,3a,i3,a,G12.6)')
+     :                  '  Total '
+     :                  ,p%solute_names(solnum)
+     :                  (:lastnb(p%solute_names(solnum)))
+     :                  ,'(',node,') = ',solute_n(node)
+                  call fatal_error(err_internal,
+     :                  '-ve value for solute was passed to SWIM'
+     :                  //new_line//string)
+
+                  solute_n(node) = 0d0
+
+               elseif (solute_n(node) .lt. -(c%negative_conc_warn)) then
+                  write(string,'(x,3a,i3,a,G12.6)')
+     :                  '  Total '
+     :                  ,p%solute_names(solnum)
+     :                  (:lastnb(p%solute_names(solnum)))
+     :                  ,'(',node,') = ',solute_n(node)
+     :                  ,'- Value will be set to zero'
+                  call warning_error(err_internal,
+     :                  '-ve value for solute was passed to SWIM'
+     :                  //new_line//string)
+
+                  solute_n(node) = 0d0
+
+               elseif (solute_n(node) .lt. 1d-100) then
+                  ! Value is REALLY small, no need to tell user,
+                  ! set value to zero to avoid underflow with reals
+
+                  solute_n(node) = 0d0
+
                else
-                  ! convert solute from kg/ha to ug/cc soil
-                  ! ug Sol    kg Sol    ug   ha(node)
-                  ! ------- = ------- * -- * -------
-                  ! cc soil   ha(node)  kg   cc soil
+                  ! Value is positive and considerable
 
-                  solute_n(node) = solute_n(node)
-     :                        * 1d9             ! ug/kg
-     :                        / (p%dx(node)*1d8) ! cc soil/ha
+               endif
+!````````````````````````````````````````````````````````````````````````````````
 
-                  conc_water_solute = apswim_solve_freundlich
-     :                                             (node
-     :                                             ,solnum
-     :                                             ,solute_n(node))
+               ! convert solute from kg/ha to ug/cc soil
+               ! ug Sol    kg Sol    ug   ha(node)
+               ! ------- = ------- * -- * -------
+               ! cc soil   ha(node)  kg   cc soil
+
+               solute_n(node) = solute_n(node)  ! kg/ha
+     :                     * 1d9                ! ug/kg
+     :                     / (p%dx(node)*1d8)   ! cc soil/ha
+
+               conc_water_solute = apswim_solve_freundlich
+     :                                          (node
+     :                                          ,solnum
+     :                                          ,solute_n(node))
 
  !                  conc_adsorb_solute(node) =
  !     :              ddivide(solute_n(node)
@@ -6416,12 +6785,9 @@ cnh      end if
  !     :                      ,p%rhob(node)
  !     :                      ,0d0)
 
-                  conc_adsorb_solute(node) =
-     :                      p%ex(solnum,node)
-     :                     * conc_water_solute ** p%fip(solnum,node)
-
-
-               endif
+               conc_adsorb_solute(node) =
+     :                   p%ex(solnum,node)
+     :                  * conc_water_solute ** p%fip(solnum,node)
 
    50       continue
 

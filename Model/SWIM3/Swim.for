@@ -922,8 +922,12 @@ cnh         j=indxsl(solnum,i)
             nonlin=.TRUE.
             c2(i)=0.
             if(c1(i).gt.0.)c2(i)=c1(i)**(p%fip(solnum,i)-1.)
-            exco1=p%ex(solnum,j)*p%fip(solnum,j)*c2(i)
-         end if
+!``````````````````````````````````````````````````````````````````````````````````````````````````
+cRC         Changed by RCichota 30/jan/2010
+            exco1=p%ex(solnum,j)*c2(i)
+!            exco1=p%ex(solnum,j)*p%fip(solnum,j)*c2(i)    !<---old code
+!			
+          end if
          b(i)=(-(thi+exco1)/g%dt)*p%dx(i)
 cnh     1        apswim_slupf(1,solnum)*g%qex(i)-g%qssof(i)
      1        -g%qssof(i)
@@ -1096,15 +1100,24 @@ cnh               kk=indxsl(solnum,i)
                   if(g%csl(solnum,i).gt.0.)then
                      cp=g%csl(solnum,i)**(p%fip(solnum,i)-1.)
                   endif
-                  d1=p%fip(solnum,i)*(cp-c2(i))
-                  d2=(1.-p%fip(solnum,i))
-     :              *(g%csl(solnum,i)*cp-c1(i)*c2(i))
+
+!````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+cRC      Changed by RCichota (29/Jan/2010), original code is commented out
+                  d1 = cp-c2(i)
+!                  d1=p%fip(solnum,kk)*(cp-c2(i))
+!                  d2=(1.-p%fip(solnum,kk))
+!     :              *(g%csl(solnum,i)*cp-c1(i)*c2(i))
                   c1(i)=g%csl(solnum,i)
                   c2(i)=cp
                   b(j)=b(j)-(p%ex(solnum,kk)/g%dt)
      :                 *d1*p%dx(i)
-                  rhs(j)=rhs(j)+(p%ex(solnum,kk)/g%dt)
-     :                          *d2*p%dx(i)
+!                  rhs(j)=rhs(j)+(p%ex(solnum,kk)/g%dt
+!     :                            -p%betaex(solnum,kk))
+!     :                          *d2*p%dx(i)
+!````````````````````````````````````````````````````````````````````````````````````````````````````````````````
+! Changes in the calc of d1 are to agree with the calc of exco1 above (no need to multiply by p%fip
+! If p%fip < 1, the unkown is Cw, and is only used in the calc of b. thus rhs is commented out.
+!`	 
                end if
 67          continue
             go to 62
