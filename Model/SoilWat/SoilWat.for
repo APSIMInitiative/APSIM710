@@ -7550,7 +7550,7 @@ c
 
       ! events subscribed to
       id%tillage = add_registration(respondToEventReg, 'tillage',
-     .                              nullTypeDDML, '')
+     .                              ApsimVariantTypeDDML, '')
       id%reset = add_registration(respondToEventReg, 'reset',
      .                            nullTypeDDML, '')
       id%sum_report = add_registration(respondToEventReg, 'sum_report',

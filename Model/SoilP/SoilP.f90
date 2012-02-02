@@ -364,9 +364,9 @@ subroutine soilp_zero_variables ()
    g%soil_t(:)           = 0.0
    g%bd(:)               = 0.0
 
-   g%rlv              = 0.0
-   g%crop_p_demand    = 0.0
-   g%uptake_p_crop    = 0.0
+   g%rlv                 = 0.0
+   g%crop_p_demand(:)    = 0.0
+   g%uptake_p_crop(:,:)  = 0.0
    g%p_decomp         = 0.0
 
    c%act_energy_loss_avail_p = 0.0

@@ -120,6 +120,8 @@
                IncorpFOM%layer(layer)%FOM%Amount = dlt_dm_incorp(layer)
                IncorpFOM%layer(layer)%FOM%N = dlt_n_incorp(layer)
                IncorpFOM%layer(layer)%FOM%P = 0.0
+               IncorpFOM%layer(layer)%FOM%C = 0.0
+               IncorpFOM%layer(layer)%FOM%AshAlk = 0.0
                IncorpFOM%layer(layer)%CNR = 0.0
                IncorpFOM%layer(layer)%LabileP = 0.0
             enddo

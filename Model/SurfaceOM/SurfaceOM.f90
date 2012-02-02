@@ -3514,6 +3514,9 @@ end subroutine
       call doRegistrations(id)
       call surfom_zero_all_globals ()
       call surfom_zero_variables ()
+      c%no3ppm(:) = 0.0
+      c%nh4ppm(:) = 0.0
+      c%po4ppm(:) = 0.0
       call surfom_zero_event_data ()
       end subroutine
 

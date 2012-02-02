@@ -684,6 +684,7 @@ c      write (*,*) 'pesw_cap = ', pesw_capacity
 
       call push_routine (my_name)
 
+      call fill_real_array (g%dlayer, 0.0, max_layer)
       call fill_real_array (g%ll, 0.0, max_layer)
       call fill_real_array (p%kl, 0.0, max_layer)
       g%canopy_height = 0.0

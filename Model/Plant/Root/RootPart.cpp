@@ -494,6 +494,8 @@ void RootPart::root_incorp (float  dlt_dm_root,                  // (INPUT) root
          Layer.FOM.amount = dlt_dm_incorp[i];
          Layer.FOM.N = dlt_N_incorp[i];
          Layer.FOM.P = dlt_P_incorp[i];
+         Layer.FOM.C = 0.0;
+         Layer.FOM.AshAlk = 0.0;
          Layer.CNR = 0;
          Layer.LabileP = 0;
          IncorpFOM.Layer.push_back(Layer);

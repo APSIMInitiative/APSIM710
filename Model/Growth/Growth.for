@@ -7128,6 +7128,8 @@ c      crown_cover = 1.0/(1.0 + 9.*exp(-1.66*G_LAI))
       call push_routine (myname)
 
       call Growth_zero_variables ()
+      call fill_real_array(c%adm_partn_fr, 0.0, max_part)
+      call fill_real_array(c%bdm_partn_fr, 0.0, max_part)
 
       call pop_routine (myname)
       return

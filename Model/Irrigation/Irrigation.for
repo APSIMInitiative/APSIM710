@@ -1818,6 +1818,7 @@ cnh note that results may be strange if swdep < ll15
          allocate(g)
          allocate(p)
          allocate(id)
+         call irrigate_zero_variables ()
       else
          deallocate(g)
          deallocate(p)
