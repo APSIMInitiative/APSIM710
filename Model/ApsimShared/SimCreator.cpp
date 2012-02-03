@@ -126,6 +126,7 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
 #endif
       out << "   <title>";
       string Title = con.getTitle(sectionNames[s]);
+	  stripLeadingTrailing(Title, "\r");
       bool UseCDATA = (Title.find_first_of("<>&") != string::npos);
       if (UseCDATA)
          out << "<![CDATA[";
@@ -304,6 +305,7 @@ SimCreator::ParFile* SimCreator::ConvertParFile(const std::string& fileName)
               line.erase(posComment);
            }
          replaceAll(line, "\t", "   ");
+         stripLeadingTrailing(line, "\r");
          string sectionName = getSectionName(line);
 
          // Save the current section we've been accumulating if necessary.
