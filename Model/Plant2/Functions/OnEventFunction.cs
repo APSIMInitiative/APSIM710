@@ -5,6 +5,8 @@ using ModelFramework;
 
 class OnEventFunction : Function
 {
+    //Fixme HEB.  Add pre event value as a parameter so values other than zero can be returned prior to event.
+    
     [Param]
     private string Event = "";
     private double _Value = 0;

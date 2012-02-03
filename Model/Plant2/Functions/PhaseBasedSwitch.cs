@@ -6,6 +6,8 @@ using System.Text;
 [Description("A value is determined depending upon the current phenological growth phase for the crop.")]
 public class PhaseBasedSwitch : Function
 {
+    //Fixme.  This can be removed an phase lookup returnig a constant of 1 if in phase.
+    
     [Link]
     Phenology Phenology = null;
 

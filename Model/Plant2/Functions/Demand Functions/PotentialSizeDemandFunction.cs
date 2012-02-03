@@ -28,7 +28,7 @@ public class PotentialSizeDemandFunction : Function
 
     [Output("AccumThermalTime")]
     [Units("oCd")]
-    public double AccumulatedThermalTime
+    public double AccumulatedThermalTime //FIXME.  This is not used in Code, check is needed
     {
         get { return AccumThermalTime.Value; }
     }
