@@ -28,25 +28,27 @@ void Co2Modifier::init(void)
 
 void Co2Modifier::zero_co2_variables (void)
 // =======================================
-//     Set all variables in this module to zero.
+//     Set all variables in this module to some initial value.
 {
-      co2_modifier_te = 0.0;
-      co2_modifier_n_conc = 0.0;
-      co2_modifier_rue = 0.0;
-
+      co2_modifier_te = 1.0;
+      co2_modifier_n_conc = 1.0;
+      co2_modifier_rue = 1.0;
+      co2_default = 350.0;
  }
 
 //     ===========================================================
 void Co2Modifier::read_co2_constants (void)
 {
-    cTE.read(scienceAPI, "x_co2_te_modifier", "()", 0.0, 1000.0,
+    scienceAPI.read("co2_default", co2_default, 0.0f, 1000.0f);
+
+    cTE.readOptional(scienceAPI, "x_co2_te_modifier", "()", 0.0, 1000.0,
                          "y_co2_te_modifier", "()", 0.0, 10.0);
 
-    cNConc.read(scienceAPI, "x_co2_nconc_modifier", "()", 0.0, 1000.0,
+    cNConc.readOptional(scienceAPI, "x_co2_nconc_modifier", "()", 0.0, 1000.0,
                             "y_co2_nconc_modifier", "()", 0.0, 10.0);
 
     string pathway;
-    scienceAPI.read("photosynthetic_pathway", pathway);
+    scienceAPI.readOptional("photosynthetic_pathway", pathway);
 
     if (Str_i_Eq(pathway.c_str(), "C3")) {
       c.photosynthetic_pathway = photosynthetic_pathway_C3;
@@ -56,7 +58,10 @@ void Co2Modifier::read_co2_constants (void)
 
     } else {
       c.photosynthetic_pathway = photosynthetic_pathway_UNDEF;
-      printf("undefined photosynthetic_pathway read!!!!\n");
+	  string msg = "Undefined photosynthetic_pathway \"";
+	  msg += pathway;
+	  msg += "\"\nShould be \"C3\" or \"C4\".";
+      scienceAPI.warning(msg);
     }
 }
 
@@ -79,12 +84,18 @@ void Co2Modifier::doPlant_Co2Modifier()
 //     ===========================================================
 //         Get current temperature stress factors (0-1)
    {
-         co2_modifier_rue = plant_rue_co2_modifier(plant.environment().co2(),
-                               plant.environment().meant());
+         float co2 = plant.environment().co2();
+		 if (fabs(co2 - co2_default) > 0.1 && 
+		     (! cTE.isInitialised() || ! cNConc.isInitialised()))
+            throw std::runtime_error("CO2 isn't at default level, and plant has no CO2 x (TE, nConc) parameterisations.");
 
-         co2_modifier_te = cTE.value(plant.environment().co2());
-         co2_modifier_n_conc = cNConc.value(plant.environment().co2());
+         co2_modifier_rue = plant_rue_co2_modifier(co2, plant.environment().meant());
 
+		 if ( cTE.isInitialised() )
+           co2_modifier_te = cTE.value(co2);
+		 
+		 if ( cNConc.isInitialised() )
+           co2_modifier_n_conc = cNConc.value(co2);
    }
 
 //==========================================================================
@@ -124,9 +135,9 @@ float Co2Modifier::plant_rue_co2_modifier(float co2,                 //!CO2 leve
       {
       return 0.000143 * co2 + 0.95; //Mark Howden, personal communication
       }
-    else
-      throw std::invalid_argument ("Unknown photosynthetic pathway in cproc_rue_co2_modifier()");
-   }
+
+    return 1.0;
+  }
 
 
 

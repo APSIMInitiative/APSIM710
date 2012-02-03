@@ -28,6 +28,7 @@ private:
       float     co2_modifier_rue;
       float     co2_modifier_te;
       float     co2_modifier_n_conc;
+      float     co2_default;
 
    struct {
       photosynthetic_pathway_t photosynthetic_pathway;

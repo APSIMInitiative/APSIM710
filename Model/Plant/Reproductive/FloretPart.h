@@ -56,9 +56,6 @@ class FloretPart : public SimplePart {
       interpolationFunction cY_frac_Floret;                // fraction of dm allocated to Floret
       int   cNum_stage_no_partition;
       float cFloret_trans_frac;                            // fraction of Floret used in translocat
-      float cX_co2_te_modifier[max_table];
-      float cY_co2_te_modifier[max_table];
-      int   cNum_co2_te_modifier;
 
       struct Cover
       {

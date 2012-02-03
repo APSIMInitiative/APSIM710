@@ -10,9 +10,6 @@ using namespace std;
 FloretPart::FloretPart(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
    : SimplePart(scienceAPI, p, name)
    {
-   fill_real_array (cX_co2_te_modifier, 0.0, max_table);
-   fill_real_array (cY_co2_te_modifier, 0.0, max_table);
-   cNum_co2_te_modifier = 0;
    }
 
 void FloretPart::onInit1(protocol::Component *system)
@@ -106,8 +103,6 @@ void FloretPart::readSpeciesParameters(protocol::Component *system, vector<strin
    SimplePart::readSpeciesParameters(system, sections);
 
    scienceAPI.read("transp_eff_cf", c.transpEffCf, 0.0f, 1.0f);
-   scienceAPI.read("x_co2_te_modifier", cX_co2_te_modifier, cNum_co2_te_modifier, 0.0f, 1000.0f);
-   scienceAPI.read("y_co2_te_modifier", cY_co2_te_modifier, cNum_co2_te_modifier, 0.0, 10.0f);
    scienceAPI.read("extinct_coef_Floret", cExtinctionCoeffFloret, 0.0f, 1.0f);
    scienceAPI.read("spec_Floret_area", cSpec_Floret_area, 0.0f, 100000.0f);
    scienceAPI.read("rue_Floret", cRue_Floret, 0.0f, 3.0f);
