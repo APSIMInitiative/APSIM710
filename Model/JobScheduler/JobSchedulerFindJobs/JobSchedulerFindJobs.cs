@@ -191,7 +191,7 @@ class Program
         List<string> SimsInConFile = new List<string>();
         if (P.ExitCode == 0)
         {
-            string Line = P.StandardOutput.ReadLine();
+            string Line = P.StandardError.ReadLine();
             while (Line != null)
             {
                 if (Line.Length > 8 && Line.Substring(0, 8) == "Written ")
@@ -200,9 +200,9 @@ class Program
                     if (Path.DirectorySeparatorChar == '\\') SimFileName = SimFileName.Replace('/', '\\'); else SimFileName = SimFileName.Replace('\\', '/');
                     SimsInConFile.Add(SimFileName);
                 }
-                Line = P.StandardOutput.ReadLine();
+                Line = P.StandardError.ReadLine();
             }
-            P.StandardOutput.Close();
+            P.StandardError.Close();
         }
         return SimsInConFile;
     }

@@ -94,7 +94,7 @@ class ApsimToSimExe
                try
                   {
                   string SimFileName = ApsimToSim.WriteSimFile(Child);
-                  Console.WriteLine("Written " + SimFileName);
+                  Console.Error.WriteLine("Written " + SimFileName);
                   }
                catch (Exception err)
                   {
