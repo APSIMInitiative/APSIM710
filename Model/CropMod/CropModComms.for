@@ -2535,7 +2535,7 @@ c         g%co2level = c%co2level
       real       soil_temp             ! soil surface temperature (oC)
       real       profile_depth         ! depth of soil profile (mm)
       real       root_depth_new        ! new root depth (mm)
-
+      character  msg*(200)
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -2546,7 +2546,28 @@ c         g%co2level = c%co2level
      :                                            g%co2level, numvals,
      :                                            0.0, 1000.0)
 
-       if (numvals .eq.0) g%co2level = c%co2level
+	  if (c%co2switch .ne. 0 .and. numvals .eq. 0) then
+	      g%co2level = c%co2level
+      end if 
+	  if (c%co2switch .ne. 0 .and. 
+     :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
+     :    c%num_co2_level_te .eq. 0) then
+         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level, 
+     :                       ' ppm is not the default ', c%co2level, 
+     :	                     ' ppm, but the crop '//
+     :                       'is not parameterised for CO2 x TE.'
+         call fatal_error(err_user, msg)  
+      end if 
+
+      if (c%co2switch .ne. 0 .and. 
+     :    abs(g%co2level - c%co2level) .gt. 0.1 .and.
+     :    c%num_co2_level_nconc .eq. 0) then
+         write (msg, '(a,f4.0,a,f4.0,a)') 'CO2 of ', g%co2level, 
+     :                       ' ppm is not the default ', c%co2level, 
+     :	                     ' ppm, but the crop '//
+     :                       'is not parameterised for CO2 x nConc.'
+         call fatal_error(err_user, msg)  
+      end if 
 
       !use the observed or calculated grain number from other module
       call get_real_var_optional(unknown_module,'obs_grainno_psm', '()'
@@ -4210,7 +4231,8 @@ c         if (istage.lt.emerg) then
 
 
 
-      if (c%co2switch .ne. 0) then
+      if (c%co2switch .ne. 0 .and. 
+     :    c%num_co2_level_nconc .gt. 0) then
 
 
          co2_modifier = linear_interp_real(g%co2level,

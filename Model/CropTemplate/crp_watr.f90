@@ -1158,13 +1158,12 @@
 
       transp_eff = divide (transp_eff_cf(current_phase), vpd, 0.0) /g2mm
 
-
-      if (co2level .lt. 1.0) then
-          co2_modifier =1.0
+      if (num_co2_level_te .eq. 0) then
+          co2_modifier = 1.0
       else
-          co2_modifier = linear_interp_real(co2level,          &
+          co2_modifier = linear_interp_real(co2level,    &
                                   co2_level_te,          &
-                                  te_co2_modifier,          &
+                                  te_co2_modifier,       &
                                   num_co2_level_te)
       end if
 

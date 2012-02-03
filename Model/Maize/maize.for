@@ -1420,18 +1420,11 @@ c     :                    , 0.0, 100.0)
      :                   , 'co2_level_te', max_table, '(ppm)'
      :                   , c%co2_level_te, c%num_co2_level_te
      :                   , 0.0, 1000.0)
-      if (c%num_co2_level_te .eq. 0) then
-        c%co2_level_te(1) = 350.0
-      endif
 
       call read_real_array_optional (section_name
      :                   , 'te_co2_modifier', max_table, '()'
      :                   , c%te_co2_modifier, c%num_co2_level_te
      :                   , 0.0, 10.0)
-      if (c%num_co2_level_te .eq. 0) then
-        c%te_co2_modifier(1) = 1.0
-        c%num_co2_level_te = 1
-      endif
 
       call read_real_array_optional (section_name
      :                   , 'co2_level_nconc', max_table, '(ppm)'
