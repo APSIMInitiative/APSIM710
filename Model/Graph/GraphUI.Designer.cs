@@ -29,6 +29,7 @@ namespace Graph
       private void InitializeComponent()
          {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GraphUI));
             this.Chart = new Steema.TeeChart.TChart();
             this.PopupMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CopyToClipboardMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,6 +37,8 @@ namespace Graph
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.EditGraphMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveAllFormattingMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.DownButton = new System.Windows.Forms.Button();
+            this.UpButton = new System.Windows.Forms.Button();
             this.PopupMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -385,7 +388,6 @@ namespace Graph
             // 
             // 
             // 
-            this.Chart.Legend.Alignment = Steema.TeeChart.LegendAlignments.Bottom;
             // 
             // 
             // 
@@ -519,48 +521,74 @@ namespace Graph
             this.EditGraphMenu,
             this.RemoveAllFormattingMenu});
             this.PopupMenu.Name = "ContextMenu";
-            this.PopupMenu.Size = new System.Drawing.Size(195, 98);
+            this.PopupMenu.Size = new System.Drawing.Size(196, 98);
             // 
             // CopyToClipboardMenu
             // 
             this.CopyToClipboardMenu.Name = "CopyToClipboardMenu";
-            this.CopyToClipboardMenu.Size = new System.Drawing.Size(194, 22);
+            this.CopyToClipboardMenu.Size = new System.Drawing.Size(195, 22);
             this.CopyToClipboardMenu.Text = "Copy to clipboard";
             this.CopyToClipboardMenu.Click += new System.EventHandler(this.CopyToClipboardMenu_Click);
             // 
             // CopyDataMenu
             // 
             this.CopyDataMenu.Name = "CopyDataMenu";
-            this.CopyDataMenu.Size = new System.Drawing.Size(194, 22);
+            this.CopyDataMenu.Size = new System.Drawing.Size(195, 22);
             this.CopyDataMenu.Text = "Copy data to clipboard";
             this.CopyDataMenu.Click += new System.EventHandler(this.OnCopyDataClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
             // 
             // EditGraphMenu
             // 
             this.EditGraphMenu.Name = "EditGraphMenu";
-            this.EditGraphMenu.Size = new System.Drawing.Size(194, 22);
+            this.EditGraphMenu.Size = new System.Drawing.Size(195, 22);
             this.EditGraphMenu.Text = "Format graph";
             this.EditGraphMenu.Click += new System.EventHandler(this.OnEditGraphMenuClick);
             // 
             // RemoveAllFormattingMenu
             // 
             this.RemoveAllFormattingMenu.Name = "RemoveAllFormattingMenu";
-            this.RemoveAllFormattingMenu.Size = new System.Drawing.Size(194, 22);
+            this.RemoveAllFormattingMenu.Size = new System.Drawing.Size(195, 22);
             this.RemoveAllFormattingMenu.Text = "Remove all formatting";
             this.RemoveAllFormattingMenu.Click += new System.EventHandler(this.OnRemoveAllFormattingMenu);
             // 
+            // DownButton
+            // 
+            this.DownButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.DownButton.Image = ((System.Drawing.Image)(resources.GetObject("DownButton.Image")));
+            this.DownButton.Location = new System.Drawing.Point(605, 53);
+            this.DownButton.Name = "DownButton";
+            this.DownButton.Size = new System.Drawing.Size(26, 23);
+            this.DownButton.TabIndex = 4;
+            this.DownButton.UseVisualStyleBackColor = true;
+            this.DownButton.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // UpButton
+            // 
+            this.UpButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.UpButton.Image = ((System.Drawing.Image)(resources.GetObject("UpButton.Image")));
+            this.UpButton.Location = new System.Drawing.Point(581, 53);
+            this.UpButton.Name = "UpButton";
+            this.UpButton.Size = new System.Drawing.Size(26, 23);
+            this.UpButton.TabIndex = 5;
+            this.UpButton.UseVisualStyleBackColor = true;
+            this.UpButton.Click += new System.EventHandler(this.button2_Click);
+            // 
             // GraphUI
             // 
+            this.Controls.Add(this.UpButton);
+            this.Controls.Add(this.DownButton);
             this.Controls.Add(this.Chart);
             this.Name = "GraphUI";
             this.Size = new System.Drawing.Size(634, 520);
             this.Controls.SetChildIndex(this.MyHelpLabel, 0);
             this.Controls.SetChildIndex(this.Chart, 0);
+            this.Controls.SetChildIndex(this.DownButton, 0);
+            this.Controls.SetChildIndex(this.UpButton, 0);
             this.PopupMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -575,6 +603,8 @@ namespace Graph
       private System.Windows.Forms.ToolStripMenuItem RemoveAllFormattingMenu;
       private System.Windows.Forms.ToolStripMenuItem CopyDataMenu;
       private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+      private System.Windows.Forms.Button DownButton;
+      private System.Windows.Forms.Button UpButton;
 
       }
    }

@@ -26,6 +26,7 @@ namespace Graph
         private bool GenerateRightAxisTitle;
         private bool GenerateTopAxisTitle;
         private bool GenerateBottomAxisTitle;
+        private int NumRowsInLegend;
         protected DataTable PlotData;
         protected List<string> PointLabels = new List<string>();
 
@@ -166,9 +167,26 @@ namespace Graph
             if (LegendSettings != null)
             {
                 List<string> LegendTitlesChecked = XmlHelper.Values(LegendSettings, "CheckedTitles");
+                bool SomeActive = false;
                 foreach (Series S in Chart.Series)
+                {
                     S.Active = LegendTitlesChecked.Contains(S.Title);
+                    if (S.Active)
+                        SomeActive = true;
+                }
+
+                // If non are ticked then make them all ticked.
+                if (!SomeActive)
+                    foreach (Series S in Chart.Series)
+                        S.Active = true;
             }
+            Chart.Legend.Invalidate();
+            Chart.Legend.FirstValue = 1;
+            NumRowsInLegend = Chart.Legend.Items.Count;
+
+            // Can we turn the legend scroll buttons off?
+            UpButton.Visible = NumRowsInLegend < Chart.Series.Count;
+            DownButton.Visible = NumRowsInLegend < Chart.Series.Count;
         }
 
         public override void OnSave()
@@ -808,10 +826,12 @@ namespace Graph
         private void SetupChartDefaults()
         {
             //draw legend scroll bar. Setting horizontal to false isn't working, bar still horizontal.
-            Steema.TeeChart.Tools.LegendScrollBar legendScrollBar = new Steema.TeeChart.Tools.LegendScrollBar(Chart.Chart);
-            legendScrollBar.Active = true;
-            legendScrollBar.Horizontal = false;
-            legendScrollBar.DrawStyle = Steema.TeeChart.Tools.ScrollBarDrawStyle.WhenNeeded;
+            Chart.Tools.Clear();
+            //Steema.TeeChart.Tools.LegendScrollBar legendScrollBar = new Steema.TeeChart.Tools.LegendScrollBar(Chart.Chart);
+            //legendScrollBar.Active = true;
+            //legendScrollBar.Horizontal = false;
+            //legendScrollBar.DrawStyle = Steema.TeeChart.Tools.ScrollBarDrawStyle.WhenNeeded;
+            //legendScrollBar.Scrolled += new Steema.TeeChart.Tools.ScrollBarScrolledHandler(legendScrollBar_Scrolled);
 
             this.Chart.Legend.MaxNumRows = 8;
             this.Chart.Aspect.ColorPaletteIndex = 3;
@@ -926,16 +946,16 @@ namespace Graph
             this.Chart.Header.Font.Size = 12;
             this.Chart.Header.Lines = new string[] { "" };
             this.Chart.Header.Shadow.Visible = false;
-            this.Chart.Legend.Alignment = Steema.TeeChart.LegendAlignments.Bottom;
-            this.Chart.Legend.CheckBoxes = true;
-            this.Chart.Legend.Font.Shadow.Visible = false;
-            this.Chart.Legend.Shadow.Visible = false;
-            this.Chart.Legend.Title.Font.Bold = true;
-            this.Chart.Legend.Title.Font.Shadow.Visible = false;
-            this.Chart.Legend.Title.Pen.Visible = false;
-            this.Chart.Legend.Title.Shadow.Visible = false;
-            this.Chart.Legend.Transparent = true;
-            this.Chart.Legend.Visible = false;
+            //this.Chart.Legend.Alignment = Steema.TeeChart.LegendAlignments.Right;
+            //this.Chart.Legend.CheckBoxes = true;
+            //this.Chart.Legend.Font.Shadow.Visible = false;
+            //this.Chart.Legend.Shadow.Visible = false;
+            //this.Chart.Legend.Title.Font.Bold = true;
+            //this.Chart.Legend.Title.Font.Shadow.Visible = false;
+            //this.Chart.Legend.Title.Pen.Visible = false;
+            //this.Chart.Legend.Title.Shadow.Visible = false;
+            //this.Chart.Legend.Transparent = true;
+            //this.Chart.Legend.Visible = false;
             this.Chart.Location = new System.Drawing.Point(0, 18);
             this.Chart.Name = "Chart";
             this.Chart.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None;
@@ -958,6 +978,19 @@ namespace Graph
             this.Chart.Walls.Right.Shadow.Visible = false;
             this.Chart.Walls.Visible = false;
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (Chart.Legend.FirstValue  < Chart.Series.Count-1)
+                Chart.Legend.FirstValue = Chart.Legend.FirstValue + 1;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (Chart.Legend.FirstValue > 1)
+                Chart.Legend.FirstValue = Chart.Legend.FirstValue - 1;
+        }
+
     }
 }
 
