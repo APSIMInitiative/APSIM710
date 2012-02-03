@@ -8,6 +8,7 @@ using System.Reflection;
 using Steema.TeeChart;
 using Steema.TeeChart.Styles;
 using System.Drawing;
+using Steema.TeeChart.Export;
 
 namespace Plant2Doco
    {
@@ -437,9 +438,10 @@ namespace Plant2Doco
          Graph.Walls.Visible = false;
          Graph.Header.Text = GraphName;
          Graph.Panel.Bevel.Outer = Steema.TeeChart.Drawing.BevelStyles.None;
-         Graph.Panel.Brush.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+         Graph.Panel.Brush.Color = Color.White;
          Graph.Panel.ImageBevel.Width = 1;
          Graph.Panel.Shadow.Visible = false;
+         Graph.Panel.Gradient.Visible = false;
 
          // Create a line series.
          Steema.TeeChart.Styles.Line LineSeries = new Steema.TeeChart.Styles.Line();
@@ -493,10 +495,12 @@ namespace Plant2Doco
 
          // Export graph to bitmap file.
          Rectangle Bounds = new Rectangle(0, 0, 300, 200);
-         Graph.Bounds = Bounds;
-         Bitmap b = new Bitmap(Bounds.Width, Bounds.Height);
-         Graph.DrawToBitmap(b, Bounds);
-         b.Save(GifFileName, System.Drawing.Imaging.ImageFormat.Gif);       
+         Stream stream = new FileStream(GifFileName,FileMode.Create);
+         ImageExportFormat image = Graph.Chart.Export.Image.GIF;
+         image.Width = Bounds.Width;
+         image.Height = Bounds.Height;
+         image.Save(stream);
+         stream.Close();
          }
       }
    }
