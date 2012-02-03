@@ -159,44 +159,15 @@ public class ApsimToSim
         // Replace all occurrences of [Model] with the contents of the model configuration.
         while (ApsimToSimContents.Contains("[Model"))
         {
-            // If the user has an ini child under
-            string ModelContents = "";
-            foreach (Component Child in ApsimComponent.ChildNodes)
-            {
-                if (Child.Type == "ini")
-                {
-                    // Get the name of the model file.
-                    XmlDocument IniComponent = new XmlDocument();
-                    IniComponent.LoadXml(Child.Contents);
-                    string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
-                    ModelFileName = ModelFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-
-                    if (Path.GetExtension(ModelFileName) == ".xml")
-                    {
-                        // Find the <Model> node in the model file.
-                        XmlDocument ModelFile = new XmlDocument();
-                        ModelFile.Load(ModelFileName);
-                        ModelContents += FindModelContents(ModelFile.DocumentElement, ApsimComponent.Type);
-                    }
-                    else
-                        ModelContents += "<include>" + ModelFileName + "</include>";
-                }
-            }
-
             // See if there is something after [Model e.g. [Model SoilWat]. SoilWat is the ModelType
             int PosModel = ApsimToSimContents.IndexOf("[Model");
             int PosEndModel = ApsimToSimContents.IndexOf(']', PosModel);
-            string ModelType = "";
-            if (ModelContents == "")
-            {
-                int PosStartModelType = PosModel + "[Model".Length;
-                ModelType = ApsimToSimContents.Substring(PosStartModelType, PosEndModel - PosStartModelType).Trim();
-                if (ModelType == "")
-                    ModelContents = Types.Instance.ModelContents(ApsimComponent.Type);
-                else
-                    ModelContents = Types.Instance.ModelContents(ApsimComponent.Type, ModelType);
+            int PosStartModelType = PosModel + "[Model".Length;
+            string ModelType = ApsimToSimContents.Substring(PosStartModelType, PosEndModel - PosStartModelType).Trim();
 
-            }
+            // If the user has an ini child under
+            string ModelContents = GetModelContents(ApsimComponent, ModelType);
+
             ApsimToSimContents = ApsimToSimContents.Remove(PosModel, PosEndModel - PosModel + 1);
             ApsimToSimContents = ApsimToSimContents.Insert(PosModel, ModelContents);
             if (ModelType != "")
@@ -232,6 +203,45 @@ public class ApsimToSim
         }
         return ApsimToSimContents;
     }
+
+    private static string GetModelContents(Component ApsimComponent, string ModelType)
+    {
+        string ModelContents = "";
+        foreach (Component Child in ApsimComponent.ChildNodes)
+        {
+            if (Child.Type == "ini")
+            {
+                // Get the name of the model file.
+                XmlDocument IniComponent = new XmlDocument();
+                IniComponent.LoadXml(Child.Contents);
+                string ModelFileName = Configuration.RemoveMacros(XmlHelper.Value(IniComponent.DocumentElement, "filename"));
+                ModelFileName = ModelFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
+
+                if (Path.GetExtension(ModelFileName) == ".xml")
+                {
+                    // Find the <Model> node in the model file.
+                    XmlDocument ModelFile = new XmlDocument();
+                    ModelFile.Load(ModelFileName);
+                    if (ModelType == "")
+                        ModelType = ApsimComponent.Type;
+                    ModelContents += FindModelContents(ModelFile.DocumentElement, ModelType);
+                }
+                else
+                    ModelContents += "<include>" + ModelFileName + "</include>";
+            }
+        }
+
+        // If we didn't find an ini component then look in the standard XML.
+        if (ModelContents == "")
+        {
+            if (ModelType == "")
+                ModelContents = Types.Instance.ModelContents(ApsimComponent.Type);
+            else
+                ModelContents = Types.Instance.ModelContents(ApsimComponent.Type, ModelType);
+        }
+
+        return ModelContents;
+    }
     private static string FindModelContents(XmlNode Node, string TypeName)
     {
         // Given the XmlNode passed in, try and find the <Model> node.
@@ -242,6 +252,8 @@ public class ApsimToSim
         XmlNode ModelNode = XmlHelper.Find(Node, "Model");
         if (ModelNode == null)
             ModelNode = XmlHelper.Find(Node, TypeName + "/Model");
+        if (ModelNode == null)
+            ModelNode = XmlHelper.Find(Node, TypeName);
         if (ModelNode == null)
             return "";
         else
