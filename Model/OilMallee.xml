@@ -240,23 +240,23 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
         </FinalNodeNumber>
         <Constant name="NodeAppearanceRate">
-          <Value type="text" description="Value">14</Value>
+          <Value type="text" description="Value">30</Value>
         </Constant>
         <Constant name="GrowthDuration">
-          <Value type="text" description="Value">70</Value>
+          <Value type="text" description="Value">40</Value>
         </Constant>
         <Constant name="LagDuration">
-          <Value type="text" description="Value">400</Value>
+          <Value type="text" description="Value">650</Value>
         </Constant>
         <Constant name="SenescenceDuration">
-          <Value type="text" description="Value">100</Value>
+          <Value type="text" description="Value">50</Value>
         </Constant>
         <Constant name="DetachmentLagDuration">
-          <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+          <Value type="text" description="Value">1</Value>
+        </Constant>
         <Constant name="DetachmentDuration">
-          <Value type="text" description="Value">1e6</Value>
-        </Constant>				
+          <Value type="text" description="Value">1</Value>
+        </Constant>
         <Constant name="BranchingRate">
           <Value type="text" description="Value">0</Value>
         </Constant>
@@ -292,8 +292,8 @@ Extinction coefficient at age 14 is assumed to vary from 0.2 at 56 palms/ha to 0
           <LinearInterpolationFunction name="PotentialExtinctionCoeff">
             <XProperty type="text" description="XProperty">Population.Value</XProperty>
             <XYPairs>
-              <XY>0.0056 0.2</XY>
-              <XY>0.0186 0.4</XY>
+              <XY>0.0056 0.5</XY>
+              <XY>0.0186 0.5</XY>
             </XYPairs>
           </LinearInterpolationFunction>
         </MultiplyFunction>
@@ -309,15 +309,15 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
               <XY>5 1</XY>
               <XY>20 1</XY>
               <XY>25 1</XY>
-              <XY>35 1</XY>
+              <XY>35 0</XY>
             </XYPairs>
           </WeightedTemperatureFunction>
           <LinearInterpolationFunction name="FVPD">
             <XProperty type="text" description="XProperty">Leaf.Photosynthesis.VPD</XProperty>
             <XYPairs>
               <XY>0 1</XY>
-              <XY>10 1</XY>
-              <XY>50 0</XY>
+              <XY>4 1</XY>
+              <XY>40 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
           <LinearInterpolationFunction name="FN">
@@ -341,21 +341,24 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           </RUECO2Function>
         </RUEModel>
         <LinearInterpolationFunction name="SpecificLeafAreaMax">
-          <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
+          <XProperty type="text" description="XProperty">Age.Value</XProperty>
           <XYPairs>
-            <XY>1 13000</XY>
-            <XY>300 26000</XY>
+            <XY>0 10000</XY>
+            <XY>1 7000</XY>
+            <XY>2 4000</XY>
+            <XY>3 4000</XY>
+            <XY>80 4000</XY>
           </XYPairs>
           <Memo>This controls the effect of water stress on leaf area expansion</Memo>
         </LinearInterpolationFunction>
         <LinearInterpolationFunction name="SpecificLeafAreaMin">
-          <XProperty type="text" description="XProperty">Phenology.DaysAfterPlanting</XProperty>
+          <XProperty type="text" description="XProperty">Age.Value</XProperty>
           <XYPairs>
-            <XY>0 16000</XY>
-            <XY>365 13000</XY>
-            <XY>730 11000</XY>
-            <XY>1095 10000</XY>
-            <XY>2190 8000</XY>
+            <XY>0 10000</XY>
+            <XY>1 7000</XY>
+            <XY>2 4000</XY>
+            <XY>3 4000</XY>
+            <XY>80 4000</XY>
           </XYPairs>
           <Memo>This controls the effect of water stress on leaf area expansion</Memo>
           <LinearInterpolationFunction name="ExpansionStress">
@@ -389,13 +392,13 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           </LinearInterpolationFunction>
         </LinearInterpolationFunction>
         <Constant name="MinimumNConc">
-          <Value type="text" description="Value">.015</Value>
+          <Value type="text" description="Value">.005</Value>
         </Constant>
         <Constant name="CriticalNConc">
-          <Value type="text" description="Value">.025</Value>
+          <Value type="text" description="Value">.01</Value>
         </Constant>
         <Constant name="MaximumNConc">
-          <Value type="text" description="Value">.03</Value>
+          <Value type="text" description="Value">.01</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the CriticalNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - CriticalNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
         </Constant>
         <Constant name="NReallocationFactor">
@@ -403,7 +406,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
         </Constant>
         <Constant name="NRetranslocationFactor">
-          <Value type="text" description="Value">.05</Value>
+          <Value type="text" description="Value">0</Value>
           <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
         </Constant>
         <Constant name="DMRetranslocationFactor">
