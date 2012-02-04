@@ -10,15 +10,12 @@ public class LeafAppearancePhase : Phase
     [Link]
     Function ThermalTime = null;
 
-    private double CumulativeTT;
+    //private double CumulativeTT;
     private double CohortNoAtStart;
     bool First = true;
 
     [Param]
     private double RemainingLeaves = 0;
-
-    [Output]
-    public double TTInPhase { get { return CumulativeTT; } }
 
     private double FractionCompleteYesterday = 0;
 
@@ -27,11 +24,10 @@ public class LeafAppearancePhase : Phase
     /// </summary>
     public override void ResetPhase()
     {
-        CumulativeTT = 0;
+       _TTinPhase = 0;
         CohortNoAtStart = 0;
     }
-
-
+    
     /// <summary>
     /// Do our timestep development
     /// </summary>
@@ -47,7 +43,8 @@ public class LeafAppearancePhase : Phase
         FractionCompleteYesterday = FractionComplete;
 
         // Accumulate thermal time.
-        CumulativeTT += ThermalTime.Value;
+        _TTForToday = ThermalTime.Value * PropOfDayToUse;
+        _TTinPhase += _TTForToday;
 
         if (Leaf.ExpandedCohortNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
             return 0.00001;

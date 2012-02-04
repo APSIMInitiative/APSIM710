@@ -6,9 +6,6 @@ using CSGeneral;
 
 class GerminatingPhase : Phase
 {
-    [Link]
-    Phenology Phenology = null;
-
     [Input]
     private double ESW = 0;
 

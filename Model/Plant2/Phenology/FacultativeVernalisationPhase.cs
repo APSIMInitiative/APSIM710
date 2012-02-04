@@ -11,7 +11,9 @@ public class FacultativeVernalisationPhase : Phase
     [Link]
     Function Target = null;
 
-
+    [Link]
+    public Function ThermalTime = null;
+    
     //Class Parameters
     private double ExtentOfVernYesterday;
     private double ExtentOfVern;
@@ -29,11 +31,11 @@ public class FacultativeVernalisationPhase : Phase
     /// </summary>
     public override double DoTimeStep(double PropOfDayToUse)
     {
+        _TTForToday = ThermalTime.Value * PropOfDayToUse;
+        _TTinPhase += _TTForToday;
+        
         // Calculate the Vern for today.
         ExtentOfVern = JuvenileDevelopmentIndex.Value * PropOfDayToUse;
-
-        // Accumulate Vernalisation
-        //_CumulativeVern += VernForToday;
 
         // Get the Target TT
         double Target = CalcTarget();

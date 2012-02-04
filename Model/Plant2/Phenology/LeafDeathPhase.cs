@@ -9,10 +9,8 @@ public class LeafDeathPhase : Phase
     private Leaf Leaf = null;
     [Link]
     private Function ThermalTime = null;
-    [Output]
-    public double CumulativeValue { get { return _CumulativeValue; } }
-
-    private double _CumulativeValue = 0.0;
+    [Link]
+    public Phenology Phenology = null;
 
     private double DeadNodeNoAtStart;
     bool First = true;
@@ -28,12 +26,9 @@ public class LeafDeathPhase : Phase
             First = false;
         }
 
-        _CumulativeValue += ThermalTime.Value;
-
-        //if (Leaf.LAI == 0)
-        //   return 0.00001;
-        //else
-        //   return 0;
+        // Accumulate thermal time.
+        _TTForToday = ThermalTime.Value * PropOfDayToUse;
+        _TTinPhase += _TTForToday;
 
         if (Leaf.DeadCohortNo >= Leaf.FinalLeafNo)
             return 0.00001;
@@ -44,7 +39,6 @@ public class LeafDeathPhase : Phase
     /// <summary>
     /// Return a fraction of phase complete.
     /// </summary>
-    // public override double FractionComplete { get { return 0.0; } }
     public override double FractionComplete
     {
         get

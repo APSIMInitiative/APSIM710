@@ -13,10 +13,18 @@ public class Phenology
     private Component My = null;
     [Link]
     private Paddock MyPaddock = null;
+    //[Link]
+    //public Phase Phase = null;
 
     private List<Phase> Phases = new List<Phase>();
     [Output]
     private int CurrentPhaseIndex;
+    public double _AccumulatedTT = 0;
+    [Output]
+    public double AccumulatedTT
+    {
+        get { return _AccumulatedTT; }
+    }
     private string CurrentlyOnFirstDayOfPhase = "";
     private bool JustInitialised = true;
 
@@ -96,7 +104,6 @@ public class Phenology
             CurrentlyOnFirstDayOfPhase = Phases[0].Start;
             JustInitialised = false;
         }
-
         double FractionOfDayLeftOver = CurrentPhase.DoTimeStep(1.0);
         while (FractionOfDayLeftOver > 0)
         {
@@ -111,6 +118,7 @@ public class Phenology
             // Tell the new phase to use the fraction of day left.
             FractionOfDayLeftOver = CurrentPhase.DoTimeStep(FractionOfDayLeftOver);
         }
+        _AccumulatedTT += CurrentPhase.TTForToday;
     }
 
     /// <summary>
@@ -150,6 +158,7 @@ public class Phenology
             // Send a PhaseChanged event.
             if (PhaseChanged != null)
             {
+                //_AccumulatedTT += CurrentPhase.TTinPhase;
                 PhaseChangedType PhaseChangedData = new PhaseChangedType();
                 PhaseChangedData.OldPhaseName = OldPhaseName;
                 PhaseChangedData.NewPhaseName = CurrentPhase.Name;
