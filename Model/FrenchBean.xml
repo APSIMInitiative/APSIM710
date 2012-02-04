@@ -1,4 +1,4 @@
-<Type version="28" name="FrenchBean">
+<Type version="29" name="FrenchBean">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -119,13 +119,6 @@
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="NumberFunction">
-          <XProperty>Stem.Live.Wt</XProperty>
-          <XYPairs>
-            <XY>0 250</XY>
-            <XY>200 250</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <PhaseLookup name="Mortality">
           <PhaseLookupValue name="EarlyPodGrowth">
             <Start>Flowering</Start>
@@ -223,6 +216,20 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <OnEventFunction name="NumberFunction">
+          <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+          <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+          <Constant name="PreEventValue">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <LinearInterpolationFunction name="PostEventValue">
+            <XProperty>Stem.Live.Wt</XProperty>
+            <XYPairs>
+              <XY>0 250</XY>
+              <XY>200 250</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </OnEventFunction>
       </ReproductiveOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -451,10 +458,10 @@
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>

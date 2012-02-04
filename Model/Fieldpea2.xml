@@ -1,4 +1,4 @@
-<Type version="28" name="FieldPea2">
+<Type version="29" name="FieldPea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -168,13 +168,6 @@
           <Stages type="text" description="Stages"> StartPodGrowth      EndGrainFill      Maturity       HarvestRipe</Stages>
           <Values type="text" description="Values">  0.93                       0.93                 0.93             0.93     </Values>
         </StageBasedInterpolation>
-        <LinearInterpolationFunction name="NumberFunction">
-          <XProperty>Stem.Live.Wt</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1000 25000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <Constant name="MaxNConcDailyGrowth">
           <Value type="text" description="Value">0.06</Value>
         </Constant>
@@ -233,6 +226,20 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <OnEventFunction name="NumberFunction">
+          <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+          <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+          <Constant name="PreEventValue">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <LinearInterpolationFunction name="PostEventValue">
+            <XProperty>Stem.Live.Wt</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1000 25000</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </OnEventFunction>
       </ReproductiveOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -601,10 +608,10 @@ For Potato the potential branching rate is the branching pattern that would be o
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>
@@ -739,7 +746,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>				
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

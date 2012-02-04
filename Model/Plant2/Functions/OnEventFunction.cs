@@ -3,33 +3,47 @@ using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
 
+[Description("Returns the value of PreEventValue child function from Initialisation to SetEvent, PostEventValue from ReSetEvent and PreEventValue again from ReSetEvent to the next SetEvent")]
 class OnEventFunction : Function
 {
-    //Fixme HEB.  Add pre event value as a parameter so values other than zero can be returned prior to event.
+    private double _Value = 0;
     
     [Param]
-    private string Event = "";
-    private double _Value = 0;
-
-
+    private string SetEvent = "";
+    [Param]
+    private string ReSetEvent = "";
+    
     [Link]
     private Paddock MyPaddock = null;
+
+    [Link]
+    Function PreEventValue = null;
+
+    [Link]
+    Function PostEventValue = null; 
 
     [EventHandler] 
     public void OnInitialised()
     {
-        MyPaddock.Subscribe(Event, OnEvent);
+        MyPaddock.Subscribe(SetEvent, OnSetEvent);
+        MyPaddock.Subscribe(ReSetEvent, OnReSetEvent);
     }
 
-    public void OnEvent()
+    [EventHandler]
+    public void OnInit()
     {
-        List<object> Children = My.ChildrenAsObjects;
-        
-        if (Children.Count == 0)
-            throw new Exception("Cannot find function in function: " + Name);
+        _Value = PreEventValue.Value;
+    }
 
-        Function F = Children[0] as Function;
-        _Value = F.Value;
+    [EventHandler]
+    public void OnReSetEvent()
+    {
+        _Value = PreEventValue.Value;
+    }
+
+    public void OnSetEvent()
+    {
+           _Value = PostEventValue.Value;
     }
 
     [Output]

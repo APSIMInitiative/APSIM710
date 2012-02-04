@@ -1,4 +1,4 @@
-<Type version="28" name="lucerne2">
+<Type version="29" name="lucerne2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -117,8 +117,12 @@
           <End type="text" description="End">FloralInitiation</End>
           <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
-            <Event type="text" description="Event">EndJuvenile</Event>
-            <LinearInterpolationFunction name="TemporaryTarget">
+            <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
+            <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+            <Constant name="PreEventValue">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+            <LinearInterpolationFunction name="PostEventValue">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 700</XY>
@@ -173,8 +177,12 @@
           <End type="text" description="End stage name">RGFloralInitiation</End>
           <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime" />
           <OnEventFunction name="Target">
-            <Event type="text" description="Event">StartRegrowth</Event>
-            <LinearInterpolationFunction name="TemporaryTarget">
+            <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
+            <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+            <Constant name="PreEventValue">
+              <Value type="text" description="Value">0</Value>
+            </Constant>
+            <LinearInterpolationFunction name="PostEventValue">
               <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
               <XYPairs>
                 <XY>10 700</XY>
@@ -242,11 +250,11 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
           <Rank type="text" description="Rank">5</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[6]">
+        <LeafCohort name="Leaves[6]">
           <Rank type="text" description="Rank">6</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-		<LinearInterpolationFunction name="FrostFraction">
+        <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
             <XY>-1 0</XY>
@@ -287,8 +295,12 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
               <Start type="text" description="Start">EndJuvenile</Start>
               <End type="text" description="End">Flowering</End>
               <OnEventFunction name="Target">
-                <Event type="text" description="Event">EndJuvenile</Event>
-                <LinearInterpolationFunction name="TemporaryTarget">
+                <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
+                <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+                <Constant name="PreEventValue">
+                  <Value type="text" description="Value">0</Value>
+                </Constant>
+                <LinearInterpolationFunction name="PostEventValue">
                   <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                   <XYPairs>
                     <XY>10.5 51</XY>
@@ -309,8 +321,12 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
               <Start type="text" description="Start">StartRegrowth</Start>
               <End type="text" description="End">RGFlowering</End>
               <OnEventFunction name="Target">
-                <Event type="text" description="Event">StartRegrowth</Event>
-                <LinearInterpolationFunction name="TemporaryTarget">
+                <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
+                <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+                <Constant name="PreEventValue">
+                  <Value type="text" description="Value">0</Value>
+                </Constant>
+                <LinearInterpolationFunction name="PostEventValue">
                   <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                   <XYPairs>
                     <XY>10.5 51</XY>
@@ -344,8 +360,12 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <Start type="text" description="Start">EndJuvenile</Start>
             <End type="text" description="End">Flowering</End>
             <OnEventFunction name="Target">
-              <Event type="text" description="Event">EndJuvenile</Event>
-              <LinearInterpolationFunction name="TemporaryTarget">
+              <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
@@ -366,8 +386,12 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <Start type="text" description="Start">StartRegrowth</Start>
             <End type="text" description="End">RGFlowering</End>
             <OnEventFunction name="Target">
-              <Event type="text" description="Event">StartRegrowth</Event>
-              <LinearInterpolationFunction name="TemporaryTarget">
+              <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
                 <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
                 <XYPairs>
                   <XY>10.5 51</XY>
@@ -478,10 +502,10 @@ LAI expansion needs attention in the future.</Memo>
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="BranchingRate">
           <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
@@ -641,7 +665,7 @@ LAI expansion needs attention in the future.</Memo>
         </PhaseLookup>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly

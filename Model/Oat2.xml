@@ -126,7 +126,7 @@
           <Start>FlagLeaf</Start>
           <End>Flowering</End>
           <Constant name="Target">
-            <Value type="text" description="Value">120</Value>
+            <Value type="text" description="Value">50</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
         </GenericPhase>
@@ -134,7 +134,7 @@
           <Start>Flowering</Start>
           <End>StartGrainFill</End>
           <Constant name="Target">
-            <Value type="text" description="Value">0</Value>
+            <Value type="text" description="Value">20</Value>
           </Constant>
           <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime">
             <XYPairs />
@@ -186,7 +186,7 @@
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="NumberFunction">
+        <LinearInterpolationFunction name="yNumberFunction">
           <XProperty type="text" description="XProperty">StemLive.Wt</XProperty>
           <XYPairs>
             <XY>0 0</XY>
@@ -207,32 +207,6 @@
           <Stages type="text" description="Stages">Germination Emergence FloralInitiation FlagLeaf Flowering StartGrainFill EndGrainFill Maturity HarvestRipe</Stages>
           <Values type="text" description="Values">0.022           0.022          0.022             0.022      0.022       0.022            0.022          0.022    0.022</Values>
         </StageBasedInterpolation>
-        <PhaseLookup name="FillingRate">
-          <PhaseLookupValue name="EarlyGrainGrowth">
-            <Start>Flowering</Start>
-            <End>StartGrainFill</End>
-            <AirTemperatureFunction name="Function">
-              <XYPairs>
-                <XY>0 0</XY>
-                <XY>26 0.001</XY>
-                <XY>30 0.001</XY>
-                <XY>35 0.001</XY>
-              </XYPairs>
-            </AirTemperatureFunction>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="LateGrainGrowth">
-            <Start>StartGrainFill</Start>
-            <End>Maturity</End>
-            <AirTemperatureFunction name="Function">
-              <XYPairs>
-                <XY>0 0.0</XY>
-                <XY>26 0.002</XY>
-                <XY>30 0.002</XY>
-                <XY>35 0.002</XY>
-              </XYPairs>
-            </AirTemperatureFunction>
-          </PhaseLookupValue>
-        </PhaseLookup>
         <PhaseLookup name="NFillingRate">
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
@@ -254,6 +228,45 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <MultiplyFunction name="NumberFunction">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <Variable name="StemNumber">
+            <VariableName type="text" description="Variable Name">Leaf.TotalStemPopn</VariableName>
+            <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+          </Variable>
+          <Constant name="PanicalsPerStem">
+            <Value type="text" description="Value">0.83</Value>
+          </Constant>
+          <Constant name="SpikletPerPanical">
+            <Value type="text" description="Value">25</Value>
+          </Constant>
+          <LinearInterpolationFunction name="GrainPerSpiklet">
+            <XProperty type="text" description="XProperty">Grain.AccumThermalTime.Value</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>250 1.95</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>
+        <AccumulateFunction name="AccumThermalTime">
+          <StartStageName type="text" description="StartStageName">Flowering</StartStageName>
+          <EndStageName type="text" description="StartStageName">Maturity</EndStageName>
+          <Memo>Sum the values of the children of this node and accumulate daily between the start and end stages</Memo>
+          <Variable name="DailyThermalTimeValue">
+            <VariableName type="text" description="Variable Name">Phenology.ThermalTime.Value</VariableName>
+            <Memo>Returns the value of a nominated internal Plant2 numerical variable
+</Memo>
+          </Variable>
+        </AccumulateFunction>
+        <AirTemperatureFunction name="FillingRate">
+          <XYPairs>
+            <XY>0 0</XY>
+            <XY>26 0.0015</XY>
+            <XY>30 0.0015</XY>
+            <XY>35 0.0015</XY>
+          </XYPairs>
+        </AirTemperatureFunction>
       </ReproductiveOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>

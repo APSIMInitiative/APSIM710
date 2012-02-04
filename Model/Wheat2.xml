@@ -1,4 +1,4 @@
-<Type version="28" name="Wheat2">
+<Type version="29" name="Wheat2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -203,7 +203,7 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <MinimumFunction name="Stress">
-             <Variable>
+            <Variable>
               <VariableName type="text" description="Variable Name">Phenology.Vernalisation.VernEff</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
@@ -376,13 +376,20 @@
         <RipeStage>Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="NumberFunction">
-          <XProperty>Stem.Live.Wt</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1000 25000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
+        <OnEventFunction name="NumberFunction">
+          <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+          <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+          <Constant name="PreEventValue">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <LinearInterpolationFunction name="PostEventValue">
+            <XProperty>Stem.Live.Wt</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1000 25000</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </OnEventFunction>
         <PhaseLookup name="FillingRate">
           <PhaseLookupValue name="EarlyGrainGrowth">
             <Start>Flowering</Start>
@@ -735,10 +742,10 @@
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
@@ -787,7 +794,7 @@
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Biomass name="Live" />

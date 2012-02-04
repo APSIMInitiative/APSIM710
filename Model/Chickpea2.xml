@@ -1,4 +1,4 @@
-<Type version="28" name="Chickpea2">
+<Type version="29" name="Chickpea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -35,7 +35,7 @@
       <Population>
         <Value>4</Value>
       </Population>
-      <Arbitrator name="Arbitrator">
+      <Arbitrator>
         <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
         <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
 	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -178,13 +178,6 @@
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="NumberFunction">
-          <XProperty>Stem.Live.Wt</XProperty>
-          <XYPairs>
-            <XY>0 250</XY>
-            <XY>200 250</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <PhaseLookup name="Mortality">
           <PhaseLookupValue name="EarlyPodGrowth">
             <Start>Flowering</Start>
@@ -282,8 +275,22 @@
 		Applied in model code but can not be nested with other functions.
         </Memo>
         </PhaseBasedSwitch>
+        <OnEventFunction name="NumberFunction">
+          <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+          <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+		  <Constant name="PreEventValue">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <LinearInterpolationFunction name="PostEventValue">
+            <XProperty>Stem.Live.Wt</XProperty>
+            <XYPairs>
+              <XY>0 250</XY>
+              <XY>200 250</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </OnEventFunction>
       </ReproductiveOrgan>
-      <Root name="Root">
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -358,7 +365,7 @@
           <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
         </Constant>
       </Root>
-      <Leaf name="Leaf">
+      <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
@@ -371,19 +378,19 @@
           <Rank type="text" description="Rank">2</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[3]">
+        <LeafCohort name="Leaves[3]">
           <Rank type="text" description="Rank">3</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[4]">
+        <LeafCohort name="Leaves[4]">
           <Rank type="text" description="Rank">4</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[5]">
+        <LeafCohort name="Leaves[5]">
           <Rank type="text" description="Rank">5</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
-                <LeafCohort name="Leaves[6]">
+        <LeafCohort name="Leaves[6]">
           <Rank type="text" description="Rank">6</Rank>
           <Area type="text" description="Area">0</Area>
         </LeafCohort>
@@ -510,10 +517,10 @@
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
@@ -606,7 +613,7 @@
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
       </Leaf>
       <GenericOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -642,30 +649,30 @@
           <Memo shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc/Memo" />
         </StageBasedInterpolation>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<PhaseLookup name="PartitionFraction">
-			  <PhaseLookupValue name="Early">
-				<Start type="text" description="Start">Emergence</Start>
-				<End type="text" description="End">Flowering</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.39</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="middle">
-				<Start type="text" description="Start">Flowering</Start>
-				<End type="text" description="End">StartPodGrowth</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.45</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Late">
-				<Start>StartPodGrowth</Start>
-				<End>Maturity</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			</PhaseLookup>
-		</PartitionFractionDemandFunction>
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">Emergence</Start>
+              <End type="text" description="End">Flowering</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.39</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="middle">
+              <Start type="text" description="Start">Flowering</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.45</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>StartPodGrowth</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </PartitionFractionDemandFunction>
       </GenericOrgan>
       <GenericOrgan name="Pod">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -701,23 +708,23 @@
           <Memo shortcut="/Chickpea2/Model/Plant/Leaf/MinimumNConc/Memo" />
         </StageBasedInterpolation>
         <PartitionFractionDemandFunction name="DMDemandFunction">
-			<PhaseLookup name="PartitionFraction">
-			  <PhaseLookupValue name="Early">
-				<Start type="text" description="Start">Flowering</Start>
-				<End type="text" description="End">StartPodGrowth</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.1</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			  <PhaseLookupValue name="Late">
-				<Start>StartPodGrowth</Start>
-				<End>Maturity</End>
-				<Constant name="Function">
-				  <Value type="text" description="Value">0.2</Value>
-				</Constant>
-			  </PhaseLookupValue>
-			</PhaseLookup>
-      </PartitionFractionDemandFunction>
+          <PhaseLookup name="PartitionFraction">
+            <PhaseLookupValue name="Early">
+              <Start type="text" description="Start">Flowering</Start>
+              <End type="text" description="End">StartPodGrowth</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.1</Value>
+              </Constant>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="Late">
+              <Start>StartPodGrowth</Start>
+              <End>Maturity</End>
+              <Constant name="Function">
+                <Value type="text" description="Value">0.2</Value>
+              </Constant>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </PartitionFractionDemandFunction>
       </GenericOrgan>
       <CompositeBiomass name="AboveGround">
         <Property>Organs[AboveGround].Live</Property>

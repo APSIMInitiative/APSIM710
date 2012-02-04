@@ -175,11 +175,11 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     {
         get
         {
-            if (Number == 0 && FillingRate.Value > 0)
-            {
+            //if (Number == 0 && FillingRate.Value > 0)
+            //{
                 // We must be on the first day of filling
                 Number = NumberFunction.Value;
-            }
+            //}
             if (Number > 0)
             {
                 double demand = Number * FillingRate.Value;

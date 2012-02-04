@@ -184,13 +184,6 @@
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
         <Biomass name="Dead" />
-        <LinearInterpolationFunction name="NumberFunction">
-          <XProperty type="text" description="XProperty">StemLive.Wt</XProperty>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1000 40000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <Constant name="MaxNConcDailyGrowth">
           <Value>0.03</Value>
         </Constant>
@@ -264,6 +257,20 @@
             <Value type="text" description="Value">2</Value>
           </Constant>
         </MultiplyFunction>
+        <OnEventFunction name="NumberFunction">
+          <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
+          <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+          <Constant name="PreEventValue">
+            <Value type="text" description="Value">0</Value>
+          </Constant>
+          <LinearInterpolationFunction name="PostEventValue">
+            <XProperty type="text" description="XProperty">StemLive.Wt</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1000 40000</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </OnEventFunction>
       </ReproductiveOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
@@ -546,10 +553,10 @@
         </Constant>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>				
+        </Constant>
         <LinearInterpolationFunction name="ySenescenceDuration">
           <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
           <XYPairs>
