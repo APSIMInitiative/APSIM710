@@ -83,14 +83,14 @@ class JobSchedulerApplyPatch
                 MatchCollection Matches = R.Matches(Line.Substring(10));
                 if (Matches.Count > 3)
                 {
-                    string WorkingRevision = Matches[0].Value;
+                    string TipRevision = Matches[1].Value;
                     string FileName = "";
                     for (int i = 3; i < Matches.Count; i++)
                     {
                         FileName += Matches[i].Value + " ";
                     }
                     FileName = FileName.Trim();
-                    SVNFileNames.Add(FileName, WorkingRevision);
+                    SVNFileNames.Add(FileName, TipRevision);
                 }
             }
         }
