@@ -550,6 +550,8 @@
            ELSE
               TMPCOV = 0.
            END IF
+		   TMIN = TMMN   ! PdeV: default value is required when TMCTB is not defined 
+		   TMAX = TMMX
 		   IF((ILTMCT.GT.0).and.(ILTMAXCT.LE.0)) THEN
 				TCOR = LINT2('TMCTB',TMCTB,ILTMCT,DOY)
 				TMAX = TMMX+TCOR+TMPCOV
