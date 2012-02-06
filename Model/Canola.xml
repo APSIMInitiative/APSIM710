@@ -143,8 +143,8 @@
     <stress_reporting>end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill</stress_reporting>
     <n_stress>emergence end_of_juvenile floral_initiation flowering start_grain_fill end_grain_fill maturity harvest_ripe</n_stress>
     <plant class="yes">
-      <class_action>harvest</class_action>
-      <class_change>unchanged</class_change>
+      <class_action>harvest graze</class_action>
+      <class_change>unchanged regrowth</class_change>
       <n_uptake_option>1</n_uptake_option>
       <leaf_no_pot_option>1</leaf_no_pot_option>
       <n_retrans_option>1</n_retrans_option>
@@ -169,7 +169,7 @@
          sow    ger   eme  juv    fi    fl   st_gf end_gf  mat hv_rpe  end
          -->
       <stage_code_list description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9    10     11</stage_code_list>
-      <stage_stem_reduction_harvest>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
+      <stage_stem_reduction_harvest>1      2    3     4     4     4     4      4     4     4     11</stage_stem_reduction_harvest>
       <stage_stem_reduction_kill_stem>1      2    3     3     4     4     4      4     4     4     11</stage_stem_reduction_kill_stem>
       <!-- __________________________________________________________________________________________________________-
          SEED GERMINATION
@@ -202,6 +202,9 @@
          -->
       <x_temp units="oC" description="temperature table for thermal time">0.0  20.0  35.0</x_temp>
       <y_tt units="oCd" description="thermal time">0.0  20.0   0.0</y_tt>
+      <x_removeBiomPheno description="fraction of above ground biomass removed">0.0  0.1   0.4  0.5  1.0</x_removeBiomPheno>
+      <y_removeFractPheno description="fraction of above ground thermal time removed">0.0  0.08  0.4  0.5  1.0</y_removeFractPheno>
+
       <!-- __________________________________________________________________________________________________________-
          LEAF NUMBER DEVELOPMENT
          currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
@@ -540,6 +543,73 @@
          SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         SECTION 11 - DIGESTIBILITY
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+         green
+         -->
+      <XLeafGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMaxStageCode>
+      <YLeafGreenDigestibilityMax>0.8   0.8   0.8    0.8   0.8  0.78  0.78  0.78</YLeafGreenDigestibilityMax>
+      <XLeafGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityAvgStageCode>
+      <YLeafGreenDigestibilityAvg>0.8   0.8   0.8    0.8   0.7  0.68  0.68  0.68</YLeafGreenDigestibilityAvg>
+      <XLeafGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafGreenDigestibilityMinStageCode>
+      <YLeafGreenDigestibilityMin>0.72  0.72  0.72   0.72  0.6  0.58  0.58  0.58</YLeafGreenDigestibilityMin>
+      <XStemGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMaxStageCode>
+      <YStemGreenDigestibilityMax>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMax>
+      <XStemGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityAvgStageCode>
+      <YStemGreenDigestibilityAvg>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityAvg>
+      <XStemGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemGreenDigestibilityMinStageCode>
+      <YStemGreenDigestibilityMin>0.8   0.8   0.65  0.64  0.59  0.51  0.42  0.3</YStemGreenDigestibilityMin>
+      <XPodGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMaxStageCode>
+      <YPodGreenDigestibilityMax>0.8  0.8  0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMax>
+      <XPodGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityAvgStageCode>
+      <YPodGreenDigestibilityAvg>0.8  0.8  0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityAvg>
+      <XPodGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodGreenDigestibilityMinStageCode>
+      <YPodGreenDigestibilityMin>0.8  0.8 0.8  0.78  0.68  0.67  0.66  0.66</YPodGreenDigestibilityMin>
+      <XMealGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMaxStageCode>
+      <YMealGreenDigestibilityMax>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityMax>
+      <XMealGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityAvgStageCode>
+      <YMealGreenDigestibilityAvg>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityAvg>
+      <XMealGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealGreenDigestibilityMinStageCode>
+      <YMealGreenDigestibilityMin>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YMealGreenDigestibilityMin>
+      <XOilGreenDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMaxStageCode>
+      <YOilGreenDigestibilityMax>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityMax>
+      <XOilGreenDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityAvgStageCode>
+      <YOilGreenDigestibilityAvg>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityAvg>
+      <XOilGreenDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilGreenDigestibilityMinStageCode>
+      <YOilGreenDigestibilityMin>0.8   0.8   0.8   0.8   0.8  0.8  0.8  0.8</YOilGreenDigestibilityMin>
+      <!-- senesced
+         -->
+      <XLeafSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMaxStageCode>
+      <YLeafSenescedDigestibilityMax>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMax>
+      <XLeafSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityAvgStageCode>
+      <YLeafSenescedDigestibilityAvg>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityAvg>
+      <XLeafSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XLeafSenescedDigestibilityMinStageCode>
+      <YLeafSenescedDigestibilityMin>0.60  0.75  0.7   0.68  0.6   0.58  0.5   0.43</YLeafSenescedDigestibilityMin>
+      <XStemSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMaxStageCode>
+      <YStemSenescedDigestibilityMax>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMax>
+      <XStemSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityAvgStageCode>
+      <YStemSenescedDigestibilityAvg>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityAvg>
+      <XStemSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XStemSenescedDigestibilityMinStageCode>
+      <YStemSenescedDigestibilityMin>0.55  0.55  0.55  0.55  0.45  0.38  0.3   0.3</YStemSenescedDigestibilityMin>
+      <XPodSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMaxStageCode>
+      <YPodSenescedDigestibilityMax>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMax>
+      <XPodSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityAvgStageCode>
+      <YPodSenescedDigestibilityAvg>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityAvg>
+      <XPodSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XPodSenescedDigestibilityMinStageCode>
+      <YPodSenescedDigestibilityMin>0.8   0.8   0.8   0.78  0.68  0.67  0.66  0.66</YPodSenescedDigestibilityMin>
+      <XMealSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMaxStageCode>
+      <YMealSenescedDigestibilityMax>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityMax>
+      <XMealSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityAvgStageCode>
+      <YMealSenescedDigestibilityAvg>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityAvg>
+      <XMealSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XMealSenescedDigestibilityMinStageCode>
+      <YMealSenescedDigestibilityMin>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YMealSenescedDigestibilityMin>
+      <XOilSenescedDigestibilityMaxStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMaxStageCode>
+      <YOilSenescedDigestibilityMax>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityMax>
+      <XOilSenescedDigestibilityAvgStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityAvgStageCode>
+      <YOilSenescedDigestibilityAvg>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityAvg>
+      <XOilSenescedDigestibilityMinStageCode>3     5     6     6.5   8     9     10    11</XOilSenescedDigestibilityMinStageCode>
+      <YOilSenescedDigestibilityMin>0.8   0.8   0.8   0.8   0.8   0.8   0.8   0.8 </YOilSenescedDigestibilityMin>         
+      <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          SECTION - VALUE LIMITS - MAX AND MINS
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          ______________________________________________________________________________
@@ -581,6 +651,25 @@
       <y_leaf_size>500 1000 10000 10000</y_leaf_size>
     </triazine>
     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !! section for canola regrowth after grazing!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    -->
+   <regrowth class="yes">
+      <derived_from>plant</derived_from>
+      <class_action>graze</class_action>
+      <class_change>regrowth</class_change>
+      <!--                  sow    ger   eme  juv    fi    fl   st_gf  -    end_gf  -  mat hv_rpe  end
+       -->
+      <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7    7.99  8     8.99 9      10    11</x_stage_rue>
+      <y_rue units="g/MJ">0      0    1.35  3.00   1.35  1.35  1.35   1.35  0.00  0.00   0</y_rue>
+     <!-- stage code      = 1      2    3     4     5     6     7      8     9      10    11  ()     ! numeric code for phenological stages
+       -->
+       <transp_eff_cf units="Pa">0      0    0.005  .005  .005  .005  .005  .005   .0020 .00    0</transp_eff_cf>
+      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100</initial_tpla>
+      <x_node_no>1   5   9   13 16 </x_node_no>
+   <y_leaf_size>1500 4000 11000 14000  15000 </y_leaf_size>
+ </regrowth>
+     <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       !! section for winter varieties!!!
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
