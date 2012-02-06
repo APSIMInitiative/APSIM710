@@ -715,6 +715,7 @@ Public Class MainUI
             Cursor.Current = Cursors.WaitCursor
 
             ToolboxController.ApsimData.OpenFile(filename)
+            ToolboxExplorer.CloseUI()
             Cursor.Current = Cursors.Default
         Else
             CurrentToolBoxButton.Checked = False
