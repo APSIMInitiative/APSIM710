@@ -73,6 +73,7 @@ namespace Graph
                   Chart.Footer.Text = FooterText + ": Checkpoint\r\n" + Chart.Footer.Text;
 
                Chart.Footer.Alignment = StringAlignment.Near;
+               Chart.Footer.Visible = true;
 
                // Put on a regression line.
                

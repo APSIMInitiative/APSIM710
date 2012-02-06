@@ -26,7 +26,6 @@ namespace Graph
         private bool GenerateRightAxisTitle;
         private bool GenerateTopAxisTitle;
         private bool GenerateBottomAxisTitle;
-        private int NumRowsInLegend;
         protected DataTable PlotData;
         protected List<string> PointLabels = new List<string>();
 
@@ -181,12 +180,12 @@ namespace Graph
                         S.Active = true;
             }
             Chart.Legend.Invalidate();
-            Chart.Legend.FirstValue = 1;
-            NumRowsInLegend = Chart.Legend.Items.Count;
+            Chart.Legend.FirstValue = 0;
+            int NumRowsInLegend = Chart.Legend.Items.Count;
 
             // Can we turn the legend scroll buttons off?
-            UpButton.Visible = NumRowsInLegend < Chart.Series.Count;
-            DownButton.Visible = NumRowsInLegend < Chart.Series.Count;
+            UpButton.Visible = Chart.Legend.Visible && NumRowsInLegend < Chart.Series.Count;
+            DownButton.Visible = Chart.Legend.Visible && NumRowsInLegend < Chart.Series.Count;
         }
 
         public override void OnSave()
@@ -825,13 +824,7 @@ namespace Graph
 
         private void SetupChartDefaults()
         {
-            //draw legend scroll bar. Setting horizontal to false isn't working, bar still horizontal.
             Chart.Tools.Clear();
-            //Steema.TeeChart.Tools.LegendScrollBar legendScrollBar = new Steema.TeeChart.Tools.LegendScrollBar(Chart.Chart);
-            //legendScrollBar.Active = true;
-            //legendScrollBar.Horizontal = false;
-            //legendScrollBar.DrawStyle = Steema.TeeChart.Tools.ScrollBarDrawStyle.WhenNeeded;
-            //legendScrollBar.Scrolled += new Steema.TeeChart.Tools.ScrollBarScrolledHandler(legendScrollBar_Scrolled);
 
             this.Chart.Legend.MaxNumRows = 8;
             this.Chart.Aspect.ColorPaletteIndex = 3;

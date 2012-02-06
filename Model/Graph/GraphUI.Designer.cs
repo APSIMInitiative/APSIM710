@@ -521,38 +521,38 @@ namespace Graph
             this.EditGraphMenu,
             this.RemoveAllFormattingMenu});
             this.PopupMenu.Name = "ContextMenu";
-            this.PopupMenu.Size = new System.Drawing.Size(196, 98);
+            this.PopupMenu.Size = new System.Drawing.Size(195, 98);
             // 
             // CopyToClipboardMenu
             // 
             this.CopyToClipboardMenu.Name = "CopyToClipboardMenu";
-            this.CopyToClipboardMenu.Size = new System.Drawing.Size(195, 22);
+            this.CopyToClipboardMenu.Size = new System.Drawing.Size(194, 22);
             this.CopyToClipboardMenu.Text = "Copy to clipboard";
             this.CopyToClipboardMenu.Click += new System.EventHandler(this.CopyToClipboardMenu_Click);
             // 
             // CopyDataMenu
             // 
             this.CopyDataMenu.Name = "CopyDataMenu";
-            this.CopyDataMenu.Size = new System.Drawing.Size(195, 22);
+            this.CopyDataMenu.Size = new System.Drawing.Size(194, 22);
             this.CopyDataMenu.Text = "Copy data to clipboard";
             this.CopyDataMenu.Click += new System.EventHandler(this.OnCopyDataClick);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(191, 6);
             // 
             // EditGraphMenu
             // 
             this.EditGraphMenu.Name = "EditGraphMenu";
-            this.EditGraphMenu.Size = new System.Drawing.Size(195, 22);
+            this.EditGraphMenu.Size = new System.Drawing.Size(194, 22);
             this.EditGraphMenu.Text = "Format graph";
             this.EditGraphMenu.Click += new System.EventHandler(this.OnEditGraphMenuClick);
             // 
             // RemoveAllFormattingMenu
             // 
             this.RemoveAllFormattingMenu.Name = "RemoveAllFormattingMenu";
-            this.RemoveAllFormattingMenu.Size = new System.Drawing.Size(195, 22);
+            this.RemoveAllFormattingMenu.Size = new System.Drawing.Size(194, 22);
             this.RemoveAllFormattingMenu.Text = "Remove all formatting";
             this.RemoveAllFormattingMenu.Click += new System.EventHandler(this.OnRemoveAllFormattingMenu);
             // 
