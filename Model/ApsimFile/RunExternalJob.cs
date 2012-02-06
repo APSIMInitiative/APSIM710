@@ -80,7 +80,7 @@ public class RunExternalJob : Job
          {
          // A handler for an APSIM process writting to stderr.
          // Look for a percent complete
-         _StdErr += e.Text;
+             _StdErr += e.Text + "\n";
          }
       }
 

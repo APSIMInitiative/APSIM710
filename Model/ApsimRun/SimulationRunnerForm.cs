@@ -147,7 +147,7 @@ namespace ApsimRun
                         _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
                 }
             }
-            else
+            else if (Path.GetExtension(FileName).ToLower() != ".txt")
                 _JobRunner.Add(new RunEntireApsimFileJob(FileName, _JobRunner));
         }
 

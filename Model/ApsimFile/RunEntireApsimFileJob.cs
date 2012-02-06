@@ -25,7 +25,7 @@ public class RunEntireApsimFileJob : RunExternalJob
          Out.Close();
          _HasErrors = true;
          }
-      StringReader In = new StringReader(_StdOut);
+      StringReader In = new StringReader(_StdErr);
 
       string Line = In.ReadLine();
       while (Line != null)
