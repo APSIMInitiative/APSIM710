@@ -178,6 +178,9 @@ class LinkField
     protected static Object CreateDotNetProxy(String TypeToFind, String FQN, ApsimComponent Comp)
     {
         Type ProxyType;
+        if (TypeToFind == "ProtocolManager")
+            TypeToFind = "Paddock";
+
         if (TypeToFind == "Paddock" || TypeToFind == "Component")
             ProxyType = Assembly.GetExecutingAssembly().GetType("ModelFramework." + TypeToFind);
         else
