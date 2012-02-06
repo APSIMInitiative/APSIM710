@@ -44,6 +44,7 @@
       g%current_stage = real (plant_end)
       g%plant_status = status_out
 
+      call PlantP_Create()
       call PlantP_Init(c%crop_type,part_name,max_part)
 
       call pop_routine (my_name)

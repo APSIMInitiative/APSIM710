@@ -133,6 +133,12 @@ class Variant
 	     unsigned nBytes = max(sizeof(double), from.messageData.totalBytes());
 		 newDataPtr = new char[nBytes+1];
 		 messageData = MessageData(newDataPtr, nBytes);
+                 if (from.messageData.totalBytes() < nBytes)
+                 {
+                    double zero = 0.0;
+                    messageData << zero;
+                    messageData.reset();
+                 }
 		 messageData.copyFrom(from.messageData.start(), from.messageData.totalBytes());
 		 messageData.reset();
 // We need to make a copy of the type information, not just take a reference

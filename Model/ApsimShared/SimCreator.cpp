@@ -126,7 +126,7 @@ void SimCreator::ConToSimInternal(const std::string& controlFileName,
 #endif
       out << "   <title>";
       string Title = con.getTitle(sectionNames[s]);
-	  stripLeadingTrailing(Title, "\r");
+      stripLeadingTrailing(Title, "\r");
       bool UseCDATA = (Title.find_first_of("<>&") != string::npos);
       if (UseCDATA)
          out << "<![CDATA[";
