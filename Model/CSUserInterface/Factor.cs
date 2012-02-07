@@ -65,7 +65,7 @@ namespace CSUserInterface
            //don't add to targets if there is existing children
            //don't add to targets if the source is from the Factorial Tree
            ApsimFile.Component thisComp = Controller.ApsimData.Find(NodePath);
-           if (thisComp.ChildNodes.Count == 0)
+           //if (thisComp.ChildNodes.Count == 0)
            {
               FactorTargets.AddTargets(SourcePaths);
            }

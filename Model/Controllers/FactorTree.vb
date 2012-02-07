@@ -395,6 +395,8 @@ Public Class FactorTree
 
                 'Work out the type of left drag this is (copy, move, create link/shortcut), and store it in the "Effect" Drag Event Argument
                 Dim FullXML As String = e.Data.GetData(DataFormats.Text)
+                Debug.Print("drop = " + FullXML)
+
                 Dim DropComp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(DestinationNode))   'get the corresponding component for the destination node.
                 '   //If DropComp.AllowAdd(FullXML) Then                      'if allowed to drop this node onto this destination node
 
@@ -433,6 +435,10 @@ Public Class FactorTree
             Case Else                                                                           'should not needed this, but just put it in to prevent errors.
                 DragCancel()
         End Select
+        If Not IsNothing(PathsBeingDragged) Then
+            PathsBeingDragged = Nothing
+            'clear the variable storing the dragged nodes 
+        End If
     End Sub
     'Drag Actions
 
@@ -456,7 +462,7 @@ Public Class FactorTree
     'cancel
     Private Sub DragCancel()
         If Not IsNothing(PathsBeingDragged) Then                'when you drag from datatree in simulation to datatree in a toolbox the PathsBeingDragged disappear and it causes an error. I have done this to avoid the error.
-            PathsBeingDragged.Clear()                               'clear the variable storing the dragged nodes 
+            PathsBeingDragged = Nothing                         'clear the variable storing the dragged nodes 
         End If
     End Sub
 #End Region

@@ -38,8 +38,24 @@ namespace CSUserInterface
 
            foreach (string item in targetPaths)
            {
-              XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
-              varNode.InnerText = item;
+              string sComparePath = item.ToLower();
+              bool pathExists = false;
+              var nodes = targetsNode.SelectNodes("//Target");
+              foreach (XmlNode node in nodes)
+              {
+                 string spath = node.InnerText.ToLower();
+                 if (sComparePath == spath)
+                 {
+                    pathExists = true;
+                    break;
+                 }
+              }
+              if (!pathExists)
+              {
+                 //check if it exists already
+                 XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
+                 varNode.InnerText = item;
+              }
            }
         }
         public override void OnSave()
