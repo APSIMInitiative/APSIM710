@@ -396,16 +396,15 @@ Public Class FactorTree
                 'Work out the type of left drag this is (copy, move, create link/shortcut), and store it in the "Effect" Drag Event Argument
                 Dim FullXML As String = e.Data.GetData(DataFormats.Text)
                 Dim DropComp As ApsimFile.Component = Controller.ApsimData.Find(GetPathFromNode(DestinationNode))   'get the corresponding component for the destination node.
-                If DropComp.AllowAdd(FullXML) Then                      'if allowed to drop this node onto this destination node
+                '   //If DropComp.AllowAdd(FullXML) Then                      'if allowed to drop this node onto this destination node
 
-                    'If Not IsNothing(PathsBeingDragged) AndAlso PathsBeingDragged.Count > 0 Then
-                    e.Effect = DragDropEffects.Copy
-                    'End If
-                    'Else                                                    'if NOT allowed to drop this node onto this destination node
-                    'e.Effect = DragDropEffects.None                         'display circle with line through it symbol
-                Else
-                    e.Effect = DragDropEffects.None                         'display circle with line through it symbol
-                End If
+                'If Not IsNothing(PathsBeingDragged) AndAlso PathsBeingDragged.Count > 0 Then
+                e.Effect = DragDropEffects.Copy
+                'End If
+                'Else                                                    'if NOT allowed to drop this node onto this destination node
+                'e.Effect = DragDropEffects.None                         'display circle with line through it symbol
+            Else
+                e.Effect = DragDropEffects.None                         'display circle with line through it symbol
             End If
         End If
     End Sub
@@ -447,7 +446,6 @@ Public Class FactorTree
         If IsNothing(paths) Then
             Dim tmp As String = Parent.Name
             paths = Controller.Explorer.DataTree.PathsBeingDragged
-
             handled = Controller.Explorer.CurrentView.OnDropData(paths, FullXML)
         End If
 

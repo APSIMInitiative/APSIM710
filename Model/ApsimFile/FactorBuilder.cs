@@ -124,26 +124,33 @@ namespace ApsimFile
             }
             else
             {
-                Component constantsComponent = null;  // Fixme: we really need a Component.FindByType()!!
+               //Find the variables node (should be a child of the output file - it will find and use the first one 
+               Component constantsComponent = null;  
                 foreach (Component c in comp.ChildNodes)
                     if (c.Type == "variables")
                         constantsComponent = c;
                 if (constantsComponent == null) throw new Exception("No variables in outputfile!");
 
-                XmlNode constantsNode = constantsComponent.ContentsAsXML;
-                List<string> factors = new List<string>(factorsList.Split(','));
+                XmlNode componentNode = constantsComponent.ContentsAsXML; 
+                XmlNode constantsNode = componentNode.SelectSingleNode("//constants");
+                if (constantsNode == null)
+                {
+                   constantsNode = componentNode.OwnerDocument.CreateElement("constants");
+                }
+                List<string> factors = new List<string>(factorsList.Split(';'));
 
                 foreach (string factor in factors)
                   {
                   List<string> nameValue = new List<string>(factor.Split('='));
-                  XmlNode factorNode = constantsNode.SelectSingleNode("//" + nameValue[0]);
-                  if (factorNode == null)
-                      {
-                          factorNode = constantsNode.OwnerDocument.CreateElement(nameValue[0]);
-                          constantsNode.AppendChild(factorNode);
-                      }
-                  factorNode.InnerText = nameValue[1];
+                  if (nameValue.Count > 1)
+                  {
+                     XmlNode factorNode = constantsNode.OwnerDocument.CreateElement("constant");
+                     constantsNode.AppendChild(factorNode);
+                     XmlHelper.SetAttribute(factorNode, "name", nameValue[0]);
+                     factorNode.InnerText = nameValue[1];
                   }
+                  }
+                constantsComponent.Contents = componentNode.OuterXml;
             }
             comp.Contents = compNode.OuterXml;
          }
