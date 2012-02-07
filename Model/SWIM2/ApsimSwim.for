@@ -2187,6 +2187,49 @@ cnh added as per request by Dr Val Snow
       p%evap_source = ' '
       g%SWIMRainNumPairs = 1
       g%SWIMEvapNumPairs = 1
+      g%start_year = 0
+      g%start_day = 0
+
+      g%potet = 0.0
+      g%rain = 0.0
+      g%mint = 0.0
+      g%maxt = 0.0
+      g%radn = 0.0
+      g%swf(:) = 0.0
+      g%SubSurfaceInFlow(:) = 0.d0
+
+      g%demand_is_met(:,:) = .false.
+      g%solute_owners(:) = 0
+      g%psim = 0.d0
+      g%psimin(:) = 0.d0
+      g%crop_owners(:) = 0
+      g%num_crops = 0
+      g%crop_names(:) = ' '
+      g%root_radius(:) = 0.d0
+      g%root_conductance(:) = 0.d0
+      g%residue_cover = 0.d0
+      g%cover_green_sum = 0.d0
+
+      p%subsurface_drain = ' '
+      p%drain_depth = 0d0
+      p%drain_spacing = 0d0
+      p%Klat = 0d0
+      p%drain_radius = 0d0
+      p%imperm_depth = 0d0
+      p%water_table_depth = 0d0
+      p%water_table_conductance = 0d0
+     
+      p%specification_type = 0
+      p%num_solutes = 0
+      p%init_psi(:) = 0d0
+      p%rhob(:) = 0d0
+      p%exco(:,:) = 0d0
+      p%crop_table_name(:) = ' '
+      p%crop_table_psimin(:) = 0d0
+      p%crop_table_root_radius(:) = 0d0
+      p%crop_table_root_con(:) = 0d0
+      p%beta(:,:) = 0d0
+      p%cslgw(:) = 0d0
 
       do 3 counter = 1, SWIMLogSize
          g%SWIMRainTime(counter)= 0.d0
@@ -2295,6 +2338,7 @@ cnh*      common/bypass/p%ibp,p%gbp,p%sbp,g%hbp,g%hbp0,g%hbpold,g%qbp,g%qbpd,slb
       p%ibp = 0
       p%gbp = 0d0
       p%sbp = 0d0
+      p%xbp = 0d0
       g%hbp = 0d0
       g%hbp0 = 0d0
       g%hbpold = 0d0
@@ -2320,6 +2364,7 @@ c         wtint(counter) = 0.d0
          ! index(counter,1) = 0
          ! index(counter,2) = 0
    20 continue
+      p%sl = 0.d0
       p%slmin = 0.d0
       p%slmax = 0.d0
       call fill_double_array (p%sl,0d0,MP)
@@ -6443,6 +6488,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
       else
       endif
 
+      time = ' '
       call get_char_var_optional (
      :           unknown_module,
      :           'rain_time',
@@ -7050,6 +7096,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
+      cover_green_sum = 0.0
       call get_double_var_optional (unknown_module
      :                                  , 'cover_green_sum', '()'
      :                                  , cover_green_sum, numvals
@@ -7121,6 +7168,7 @@ cnh NOTE - intensity is not part of the official design !!!!?
 
          ! calculate evaporation for entire timestep
 
+         time = ' '
          call get_char_var_optional (
      :           unknown_module,
      :           'eo_time',
@@ -8522,34 +8570,6 @@ cRC   Make sure uptake is not larger than available solute  -  RCichota 10/Jun/2
 
       call apswim_freundlich (node,solnum,g%csl(solnum,node)
      :                    ,Ctot,dCtot)
-
-!````````````````````````````````````````````````````````````````````````````````
-cRC   Changes by RCichota, 30/Jan/2010
-      ! Note:- Sometimes small numerical errors can leave
-      ! -ve concentrations.  This will check Ctot and take appropriate action
-
-      if (abs(apswim_solute_amount) .lt. 1d-100) then
-         ! value REALLY small, set to zero to avoid underflow with reals
-
-         apswim_solute_amount = 0
-
-      elseif (apswim_solute_amount .lt. 0) then
-         write(string,'(x,3a,i3,a,G12.6)')
-     :          '  Total '
-     :          ,p%solute_names(solnum)
-     :          (:lastnb(p%solute_names(solnum)))
-     :          ,'(',node,') = ',Ctot
-         call fatal_error(err_internal,
-     :          '-ve value for solute amount'
-     :         //new_line//string)
-
-         apswim_solute_amount = 0d0
-
-      else
-         ! Value is positive, proceed with calculations
-
-      end if
-!````````````````````````````````````````````````````````````````````````````````
 
       ! convert solute ug/cc soil to kg/ha for node
       !
@@ -10256,6 +10276,7 @@ cRC            Changes by RCichota, 30/Jan/2010
          allocate(p)
          allocate(c)
          allocate(id)
+         call apswim_zero_variables()
       else
          deallocate(g)
          deallocate(p)

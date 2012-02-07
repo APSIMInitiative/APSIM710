@@ -240,7 +240,7 @@ C VOS
       g%intercrop_list = blank
       g%crop_module    = 0
       g%before_commence = .true.
-
+      g%DoLight = 'yes'
 
       call pop_routine (my_name)
       return
@@ -1077,6 +1077,7 @@ c      real       canopy_width          ! function
       if (doAllocate) then
          allocate(g)
          allocate(id)
+         call canopy_zero_all_variables ()
       else
          deallocate(g)
          deallocate(id)
