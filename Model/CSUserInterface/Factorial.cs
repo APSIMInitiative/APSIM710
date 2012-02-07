@@ -45,7 +45,13 @@ namespace CSUserInterface
                     treeNode.ImageIndex = 0;
                     treeNode.SelectedImageIndex = 0;
                     if (items.Count > 0)
-                        AddFactorsToTreeNode(items[0], treeNode);
+                    {
+                       List<String> factorials = new List<string>();
+                       string factorsList = ""; 
+                       int counter = 0;
+                       items[0].CalcFactorialList(factorials, factorsList, ref counter, 0);
+                       AddFactorsToTreeNode(items[0], treeNode, factorials);
+                    }
                 }
                 iTotalCount += iCount;
                 txtTotalSims.Text = iTotalCount.ToString();
@@ -68,14 +74,14 @@ namespace CSUserInterface
             else
                 radSingle.Checked = true;
         }
-        public void AddFactorsToTreeNode(FactorItem factor, TreeNode parentNode)
+        public void AddFactorsToTreeNode(FactorItem factor, TreeNode parentNode, List<string> factorials)
         {
-            if (factor != null)
+            foreach(string factorial in factorials)
             {
-                TreeNode node = parentNode.Nodes.Add(factor.getDesc() + " (" + factor.getCount() + ")");
+                TreeNode node = parentNode.Nodes.Add(factorial);
                 node.ImageIndex = 1;
                 node.SelectedImageIndex = 1;
-                AddFactorsToTreeNode(factor.NextItem, parentNode);
+                //AddFactorsToTreeNode(factor.NextItem, parentNode);
             }
         }
 

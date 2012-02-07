@@ -35,6 +35,24 @@ namespace ApsimFile
                 return NextItem.CalcCount() * FactorComponent.ChildNodes.Count;
             return FactorComponent.ChildNodes.Count; 
         }
+        public void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
+        {
+           if (factorsList != "")
+              factorsList += ";";
+           foreach (Component child in FactorComponent.ChildNodes)
+           {
+              if (NextItem != null)
+              {
+                 //call next factor in the list
+                 NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+              }
+              else
+              {
+                 ++counter;
+                 factorials.Add(factorsList + FactorComponent.Name + "=" + child.Name);
+              }
+           }
+        }
 
         public virtual void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
         {
@@ -198,7 +216,7 @@ namespace ApsimFile
                 return NextItem.CalcCount() * Parameters.Count;
             return Parameters.Count;
         }
-
+       
         public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
         {
             if (factorsList != "")
