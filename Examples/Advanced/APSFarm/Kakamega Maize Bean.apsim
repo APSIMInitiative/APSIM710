@@ -1,0 +1,3583 @@
+<folder version="29" name="simulations">
+  <simulation name="50 maize 50 intercrop">
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Examples\MetFiles\Kakamega.met</filename>
+    </metfile>
+    <clock />
+    <accum>
+      <variable type="text" description="variable">rain[10]</variable>
+    </accum>
+    <summaryfile />
+    <tclmanager name="Management">
+      <rule name="Setup">
+        <ui>
+          <cat type="category" description="Paddock Descriptions" />
+          <p1 type="text" description="Paddock 1 name">paddock1</p1>
+          <p1a type="text" description="Paddock 1 Area (ha)">0.5</p1a>
+          <p2 type="text" description="Paddock 2 name">paddock2</p2>
+          <p2a type="text" description="Paddock 2 Area (ha)">0.5</p2a>
+        </ui>
+        <script>
+          <text>
+set config(paddocks) [list [p1] [p2]]
+set config([p1],area) [p1a]
+set config([p2],area) [p2a]
+
+# A list of crops in each paddock
+set config(crops) [list maize bean]
+
+foreach paddock $config(paddocks) {
+  set config($paddock,initialState) Fallow
+  set config($paddock,history) {}
+  set config($paddock,graphNames) graph
+  set state($paddock) {}
+}
+
+set simName [apsimGet title]</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sow LR maize">
+        <ui>
+          <category type="category" description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-mar</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-may</date2>
+          <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+          <raincrit type="text" description="Amount of rainfall : ">20</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">4</rainnumdays>
+          <category type="category" description="Sowing parameters" />
+          <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">4.4</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+          <cultivar type="cultivars" description="Enter cultivar : ">makueni</cultivar>
+          <class type="classes" description="Enter crop growth class : ">plant</class>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">750</row_spacing>
+          <category2 type="category" description="Fertiliser parameters" />
+          <fert_amt type="text" description="Amount of fertiliser">0</fert_amt>
+          <fert_type type="text" description="Type of fertiliser">no3_n</fert_type>
+          <category2 type="category" description="Fertiliser parameters" />
+          <cost type="text" description="Cost of sowing ($/ha)">42</cost>
+          <category2 type="category" description="Tillage parameters" />
+          <presowtill type="yesno" description="Do Presow Tillage operations">yes</presowtill>
+          <sowtill type="yesno" description="Do Sowing Tillage operations">yes</sowtill>
+        </ui>
+        <script>
+          <text>
+# Sow this crop
+proc sow_LR_[crop] {paddock} {
+  global config
+
+  if {"[presowtill]" == "yes"} {
+     doPresowTillage $paddock
+  }
+
+  # The apsim crop module
+  apsimSendMessage $paddock.[crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+
+  if {[fert_amt] &gt; 0} {
+     apsimSendMessage $paddock.fertiliser apply {type [fert_type]} {amount [fert_amt]}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  [fert_type]" \
+               "rate [fert_amt]" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type [fert_type]" \
+               "fertiliser_rate [fert_amt]" {incrop_cost {}} "crop [crop]" \
+               "comment Fertiliser" 
+  }
+
+  if {"[sowtill]" == "yes"} {
+     doSowingTillage $paddock
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr [cost] * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"} 
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_LR_[crop] {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit] ) ||
+          ( "[must_sow]" == "yes" &amp;&amp; [dateIs '[date2]'] ) } {
+          return 1
+      }
+    }
+  }
+  return 0 
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {paddock} {
+   global config
+   foreach crop $config(crops) {
+      set status [apsimGet $paddock.$crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 &gt; $t1} {
+      return [expr $t &gt;= $t0 || $t &lt;= $t1]
+   } else {
+      return [expr $t &gt;= $t0 &amp;&amp; $t &lt;= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) &amp;&amp; ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sow SR maize">
+        <ui>
+          <category type="category" description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-sep</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-oct</date2>
+          <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+          <raincrit type="text" description="Amount of rainfall : ">20</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">4</rainnumdays>
+          <category type="category" description="Sowing parameters" />
+          <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">4.4</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+          <cultivar type="cultivars" description="Enter cultivar : ">makueni</cultivar>
+          <class type="classes" description="Enter crop growth class : ">plant</class>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">750</row_spacing>
+          <category2 type="category" description="Fertiliser parameters" />
+          <fert_amt type="text" description="Amount of fertiliser">0</fert_amt>
+          <fert_type type="text" description="Type of fertiliser">no3_n</fert_type>
+          <category type="category" description="Economic parameters" />
+          <cost type="text" description="Cost of sowing ($/ha)">20</cost>
+          <category2 type="category" description="Tillage parameters" />
+          <presowtill type="yesno" description="Do Presow Tillage operations">yes</presowtill>
+          <sowtill type="yesno" description="Do Sowing Tillage operations">yes</sowtill>
+        </ui>
+        <script>
+          <text>
+proc sow_SR_[crop] {paddock} {
+  global config
+
+  if {"[presowtill]" == "yes"} {
+     doPresowTillage $paddock
+  }
+
+  # The apsim crop module
+  apsimSendMessage $paddock.[crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+
+  if {[fert_amt] &gt; 0} {
+     apsimSendMessage $paddock.fertiliser apply {type [fert_type]} {amount [fert_amt]}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  [fert_type]" \
+               "rate [fert_amt]" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type [fert_type]" \
+               "fertiliser_rate [fert_amt]" {incrop_cost {}} "crop [crop]" \
+               "comment Fertiliser" 
+  }
+
+  if {"[sowtill]" == "yes"} {
+     doSowingTillage $paddock
+  }
+
+  apsimSendMessage economics expenditure \
+                   "cost [expr [cost] * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"} 
+
+  set config(season) "SR"
+}
+
+
+# Can we sow a crop?
+proc canSow_SR_[crop] {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit] ) ||
+          ( "[must_sow]" == "yes" &amp;&amp; [dateIs '[date2]'] ) } {
+          return 1
+      }
+    }
+  }
+  return 0 
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {paddock} {
+   global config
+   foreach crop $config(crops) {
+      set status [apsimGet $paddock.$crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 &gt; $t1} {
+      return [expr $t &gt;= $t0 || $t &lt;= $t1]
+   } else {
+      return [expr $t &gt;= $t0 &amp;&amp; $t &lt;= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) &amp;&amp; ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sow maizebean">
+        <ui>
+          <category type="category" description="Sowing criteria" />
+          <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-mar</date1>
+          <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-may</date2>
+          <must_sow type="yesno" description="Must sow? : ">no</must_sow>
+          <raincrit type="text" description="Amount of rainfall : ">20</raincrit>
+          <rainnumdays type="text" description="Number of days of rainfall : ">4</rainnumdays>
+          <category type="category" description="Maize Sowing parameters" />
+          <crop type="crop" description="Enter name of crop to sow : ">maize</crop>
+          <density type="text" description="Enter sowing density  (plants/m2) : ">4.4</density>
+          <depth type="text" description="Enter sowing depth  (mm) : ">30</depth>
+          <cultivar type="cultivars" description="Enter cultivar : ">katumani</cultivar>
+          <class type="classes" description="Enter crop growth class : ">plant</class>
+          <row_spacing type="text" description="Enter row spacing (mm) : ">750</row_spacing>
+          <category type="category" description="Bean sowing parameters" />
+          <crop2 type="crop" description="Enter name of crop to sow : ">bean</crop2>
+          <density2 type="text" description="Enter sowing density  (plants/m2) : ">8.8</density2>
+          <depth2 type="text" description="Enter sowing depth  (mm) : ">30</depth2>
+          <cultivar2 type="cultivars" description="Enter cultivar : ">fiord</cultivar2>
+          <class2 type="classes" description="Enter crop growth class : ">plant</class2>
+          <row_spacing2 type="text" description="Enter row spacing (mm) : ">750</row_spacing2>
+          <category2 type="category" description="Fertiliser parameters" />
+          <fert_amt type="text" description="Amount of fertiliser">0</fert_amt>
+          <fert_type type="text" description="Type of fertiliser">no3_n</fert_type>
+          <category type="category" description="Economic parameters" />
+          <cost type="text" description="Cost of Sowing ($/ha)">42</cost>
+          <category2 type="category" description="Tillage parameters" />
+          <presowtill type="yesno" description="Do Presow Tillage operations">yes</presowtill>
+          <sowtill type="yesno" description="Do Sowing Tillage operations">yes</sowtill>
+        </ui>
+        <script>
+          <text>
+# Sow this crop
+proc sow_maizebean {paddock} {
+  global config
+  
+  if {"[presowtill]" == "yes"} {
+     doPresowTillage $paddock
+  }
+
+  apsimSendMessage $paddock.[crop] sow {plants [density]} {sowing_depth [depth]} {cultivar  [cultivar]} {row_spacing [row_spacing]} {crop_class  [class]}
+
+  apsimSendMessage $paddock.[crop2] sow {plants [density2]} {sowing_depth [depth2]} {cultivar  [cultivar2]} {row_spacing [row_spacing2]} {crop_class  [class2]}
+
+  if {[fert_amt] &gt; 0} {
+     apsimSendMessage $paddock.fertiliser apply {type [fert_type]} {amount [fert_amt]}
+     apsimSendMessage economics expenditure {category fertilisercost} "name  [fert_type]" \
+               "rate [fert_amt]" "area $config($paddock,area)"  "paddock $paddock" "fertiliser_type [fert_type]" \
+               "fertiliser_rate [fert_amt]" {incrop_cost {}} "crop [crop]" \
+               "comment Fertiliser" 
+  }
+  
+  apsimSendMessage economics expenditure \
+                   "cost [expr [cost] * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "sowing costs"} 
+
+  if {"[sowtill]" == "yes"} {
+     doSowingTillage $paddock
+  }
+  set config(season) "LR"
+}
+
+# Can we sow a crop?
+proc canSow_maizebean {paddock} {
+  if {[paddockIsFallow $paddock]} {
+    if {[dateWithin [date1] [date2]] } {
+      if {( [apsimGet rain\[[rainnumdays]\]] &gt;= [raincrit] ) ||
+          ( "[must_sow]" == "yes" &amp;&amp; [dateIs '[date2]'] ) } {
+          return 1
+      }
+    }
+  }
+  return 0 
+}
+
+# Return whether any crop in our paddock is not "out"
+proc paddockIsFallow {paddock} {
+   global config
+   foreach crop $config(crops) {
+      set status [apsimGet $paddock.$crop.plant_status]
+      if {$status != "out"} {
+         return 0
+      }
+   }
+   return 1
+}
+
+##########Date functions (general)
+proc dateWithin {t0 t1} {
+   set year [apsimGet year]
+   set d0 [date2day $t0 $year]
+   set d1 [date2day $t1 $year]
+   return [dayWithin $d0 $d1]
+}
+
+proc dateIs {t} {
+   set d [date2day $t [apsimGet year]]
+   return [dayIs $d]
+}
+
+proc dayWithin {t0 t1} {
+   set t [apsimGet day]
+   if {$t0 &gt; $t1} {
+      return [expr $t &gt;= $t0 || $t &lt;= $t1]
+   } else {
+      return [expr $t &gt;= $t0 &amp;&amp; $t &lt;= $t1]
+   }
+   # notreached
+}
+
+proc dayIs {t} {
+   return [expr $t == [apsimGet day]]
+}
+
+proc leapyr {y} {
+   return [expr ($y%4 == 0) &amp;&amp; ($y%100 != 0) || ($y%400 == 0)]
+}
+
+proc date2day {date year} {
+   foreach {mday month} [split $date "-"] {break}
+   if {[leapyr $year]} {
+      array set daysin {jan 0  feb 31 mar 58 apr 89 may 119 jun 150 jul 180 aug 211 sep 242 oct 272 nov 303 dec 333}
+   } else {
+      array set daysin {jan 0  feb 31 mar 59 apr 90 may 120 jun 151 jul 181 aug 212 sep 243 oct 273 nov 304 dec 334}
+   }   
+   return [expr $mday + $daysin($month)]
+}
+
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Harvest maize rule">
+        <ui>
+          <category type="category" />
+          <crop type="crop" description="Enter name of crop to harvest when ripe : ">maize</crop>
+          <remove type="yesno" description="Sell Residues">yes</remove>
+        </ui>
+        <script>
+          <text>
+proc canHarvest_[crop] {paddock} {
+  return [expr [string equal [apsimGet $paddock.[crop].StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.[crop].plant_status] "dead"]]
+}
+
+proc harvest_[crop] {paddock} {
+
+   global config daysSinceLastHarvest harvest
+   apsimSendMessage labour operate "operator operator1" "implement harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"    
+
+   set yield [expr [apsimGet .masterpm.$paddock.[crop].yield]/1000.0]
+   set biomass [apsimGet .masterpm.$paddock.[crop].biomass]
+
+   apsimSendMessage economics income {category cropprice} "name [crop]"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop [crop]" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"                       
+
+   apsimSendMessage $paddock.[crop]  harvest
+   apsimSendMessage $paddock.[crop]  end_crop
+
+   set daysSinceLastHarvest($paddock) 0
+   
+   if {[remove] == "yes"} {
+      set somWt [expr [apsimGet "$paddock.Surface Organic Matter.surfaceom_wt"] / 1000.0]
+
+      apsimSendMessage economics income {category cropprice} "name [crop]_residue"  \
+                          "yield $somWt" \
+                          "area $config($paddock,area)" "paddock $paddock" 
+
+
+      apsimSendMessage "$paddock.Surface Organic Matter" tillage {type user_defined} {f_incorp 1.0} {tillage_depth 0.0}
+   }
+   
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,[crop],harvest)]} {
+     set annual($year,[crop],harvest) [expr $annual($year,[crop],harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,[crop],harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock [crop] \
+      [format %.0f [expr 1000.0 * $yield]] [format %.0f $biomass]]
+}
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Harvest bean rule">
+        <ui>
+          <category type="category" />
+          <crop type="crop" description="Enter name of crop to harvest when ripe : ">bean</crop>
+        </ui>
+        <script>
+          <text>
+proc canHarvest_[crop] {paddock} {
+  return [expr [string equal [apsimGet $paddock.[crop].StageName] "harvest_ripe"] || \
+               [string equal [apsimGet $paddock.[crop].plant_status] "dead"]]
+}
+
+proc harvest_[crop] {paddock} {
+
+   global config daysSinceLastHarvest harvest
+   apsimSendMessage labour operate "operator operator1" "implement harvesting"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"    
+
+   set yield [expr [apsimGet .masterpm.$paddock.[crop].yield]/1000.0]
+   set biomass [apsimGet .masterpm.$paddock.[crop].biomass]
+
+   apsimSendMessage economics income {category cropprice} "name [crop]"  \
+                          "yield $yield" \
+                          "area $config($paddock,area)" "paddock $paddock" "crop [crop]" \
+                          "SW_state [apsimGet $config($paddock,watBal).esw]" \
+                          "NO3_state [apsimGet $config($paddock,nModule).no3()]"                       
+
+   apsimSendMessage $paddock.[crop]  harvest
+   apsimSendMessage $paddock.[crop]  end_crop
+
+   set daysSinceLastHarvest($paddock) 0
+   
+   global annual
+   set year [apsimGet year]
+   set wetYield [expr ($yield * 100.0) / (100.0 - 12.0)] ;# 12% grain moisture
+   if {[info exists annual($year,[crop],harvest)]} {
+     set annual($year,[crop],harvest) [expr $annual($year,[crop],harvest) + $wetYield * $config($paddock,area)]
+   } else {
+     set annual($year,[crop],harvest)  [expr $wetYield * $config($paddock,area)]
+   }
+   lappend harvest [list [apsimGet dd/mm/yyyy] $config(season) $paddock [crop] \
+      [format %.0f [expr 1000.0 * $yield]] [format %.0f $biomass]]
+
+}
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Harvest maize bean">
+        <ui>
+          <category type="category" />
+          <crop type="text" description="Enter name of crop to harvest when ripe : ">maize</crop>
+          <crop2 type="text" description="Enter name of second crop">bean</crop2>
+        </ui>
+        <script>
+          <text>
+# intercropping harvest rules 
+proc canHarvest_[crop][crop2] {paddock} {
+  # 2nd crop is harvested by default
+  if { [canHarvest_[crop2] $paddock] } {
+      harvest_[crop2] $paddock
+  }
+
+  return [canHarvest_[crop] $paddock]
+}
+
+proc harvest_[crop][crop2] {paddock} {
+
+   # Make sure the intercrop is removed
+   if {! [string equal [apsimGet $paddock.[crop2].plant_status] "out" ] } {
+      harvest_[crop2] $paddock
+   }
+   harvest_[crop] $paddock
+}
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Presow Tillage">
+        <ui>
+          <category type="category" description="Labour" />
+          <implement type="text" description="The operator activity : ">presow_till</implement>
+          <category type="category" description="Tillage" />
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+          <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">100</tillage_depth>
+          <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.9</tillage_f_incorp>
+        </ui>
+        <script>
+          <text>
+
+proc doPresowTillage {paddock} {
+   global config
+
+   if {[string equal "[tillage_type]" "user_defined"]} {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+   } else {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]}
+   }
+
+   apsimSendMessage labour operate "operator operator1" "implement [implement]"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Pre sowing tillage"} 
+}
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sowing Tillage">
+        <ui>
+          <category type="category" description="Labour" />
+          <implement type="text" description="The operator activity : ">sowing</implement>
+          <category type="category" description="Tillage" />
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+          <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">100</tillage_depth>
+          <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.1</tillage_f_incorp>
+        </ui>
+        <script>
+          <text>
+
+proc doSowingTillage {paddock} {
+   global config
+
+   if {[string equal "[tillage_type]" "user_defined"]} {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+   } else {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]}
+   }
+
+   apsimSendMessage labour operate "operator operator1" "implement [implement]"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Sowing tillage"} 
+}
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Incrop Tillage">
+        <ui>
+          <category type="category" description="Labour" />
+          <implement type="text" description="The operator activity : ">weeding</implement>
+          <category type="category" description="Crop" />
+          <crop type="text" description="Which crop is tilled">maize</crop>
+          <das type="text" description="Days after sowing">30</das>
+          <category type="category" description="Tillage" />
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+          <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">100</tillage_depth>
+          <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.9</tillage_f_incorp>
+        </ui>
+        <script>
+          <text>
+
+proc doIncropTillage {paddock} {
+   global config
+
+   if {[string equal "[tillage_type]" "user_defined"]} {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+   } else {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]}
+   }
+
+   apsimSendMessage labour operate "operator operator1" "implement [implement]"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost"  {comment "Incrop tillage"} 
+}</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+foreach paddock $config(paddocks) {
+   if {[apsimGet $paddock.[crop].DaysAfterSowing] == [das]} {
+      doIncropTillage $paddock
+   }
+}</text>
+          <event>post</event>
+        </script>
+      </rule>
+      <rule name="Fallow Tillage">
+        <ui>
+          <category type="category" description="Labour" />
+          <implement type="text" description="The operator activity : ">weeding</implement>
+          <category type="category" description="Crop" />
+          <dah type="text" description="Days after harvest">40</dah>
+          <category type="category" description="Tillage" />
+          <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+          <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">100</tillage_depth>
+          <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.9</tillage_f_incorp>
+        </ui>
+        <script>
+          <text>
+
+proc doFallowTillage {paddock} {
+   global config
+
+   if {[string equal "[tillage_type]" "user_defined"]} {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]} {f_incorp [tillage_f_incorp]} {tillage_depth [tillage_depth]}
+   } else {
+       apsimSendMessage "$paddock.Surface Organic Matter" tillage {type [tillage_type]}
+   }
+
+   apsimSendMessage labour operate "operator operator1" "implement [implement]"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Fallow tillage"} 
+}</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+foreach paddock $config(paddocks) {
+   if {$daysSinceLastHarvest($paddock) == [dah]} {
+      doFallowTillage $paddock
+   }
+}</text>
+          <event>prepare</event>
+        </script>
+      </rule>
+      <rule name="Fallow Spraying" enabled="no">
+        <ui>
+          <category type="category" description="Labour" />
+          <implement type="text" description="The operator activity : ">spraying</implement>
+          <category type="category" description="Crop" />
+          <dah type="text" description="Days after harvest">30</dah>
+          <category type="category" description="Cost" />
+          <cost type="text" description="Cost of spraying ($/ha) : ">4.2</cost>
+        </ui>
+        <script>
+          <text>
+
+proc doFallowSpray {paddock} {
+   global config
+
+   apsimSendMessage labour operate "operator operator1" "implement [implement]"\
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Fallow Spraying"} 
+
+   apsimSendMessage economics expenditure \
+                   "cost [expr [cost] * $config($paddock,area)]" \
+                   "area $config($paddock,area)" \
+                   "paddock $paddock" "costtype incrop_cost" {comment "Spraying costs"}                    
+}</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+foreach paddock $config(paddocks) {
+   if {$daysSinceLastHarvest($paddock) == [dah]} {
+      doFallowSpray $paddock
+   }
+}</text>
+          <event>prepare</event>
+        </script>
+      </rule>
+      <rule name="Farm logic">
+        <ui>
+          <cat type="category" description="No editable parameters" />
+        </ui>
+        <script>
+          <text>
+# Return area (ha) planted to a crop
+proc areaOf {crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set sum 0.0
+   foreach paddock $config(cropPaddocks) {
+      set state [currentState $paddock]
+      if {[info exists config($state,alias)]} {set state $config($state,alias)}
+      if {"$state" == "$crop"} {
+        set sum [expr $sum + $config($paddock,area)]
+      }
+   }
+   return $sum
+}
+
+proc areaPlantedOk {crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set f [expr [areaOf $crop] / $config(allCropArea)]
+
+   return [expr $f &lt; $config(maxFract,$crop)]
+}
+
+proc historyOk {paddock crop} {
+   global config
+   if {[info exists config($crop,alias)]} {set crop $config($crop,alias)}
+   set max $config(maxContinuous,$crop)
+   set n [llength $config($paddock,history)]
+   for {set i $n} {$i &gt;= $n - $max} {decr i} {
+      if {[lindex $config($paddock,history)] != $crop} {return 1}
+   }
+   return 0
+}
+
+
+
+########### Support procedures
+
+proc max {a b} { return [expr {($a &gt; $b) ? $a : $b}] }
+proc min {a b} { return [expr {($a &gt; $b) ? $b : $a}] }
+
+# Return the current state of the system
+proc currentState {paddock} {
+   global state
+   return $state($paddock)
+}
+
+# Gather arguments (eg sowing depth, fert rate etc} from defaults array
+# $action: the operation (sow, fert ...
+# $what: the module (wheat, sorghum ...
+proc gatherArgs {action what} {
+   global defaults config
+
+   # 1. "sow,..."
+   foreach {index value} [array get defaults $action,*] {
+      set args([lindex [split $index ","] end]) $value
+   }
+   # 2. override above with any "wheat,sow,..."
+   foreach {index value} [array get defaults $what,$action,*] {
+      set args([lindex [split $index ","] end]) $value
+   }
+   # 3. override above with any "SpringWheat,sow,..."
+   if {[info exists config($what,alias)]} {
+      foreach {index value} [array get defaults $config($what,alias),$action,*] {
+         set args([lindex [split $index ","] end]) $value
+      }
+   }
+   return [array get args]
+}
+
+# Mash a list into name/value pairs to pass via the apsim message system
+proc mash {list} {
+   set result {}
+   foreach {name value} $list {lappend result [list $name $value]}
+   return $result
+}
+
+# Sum a list
+proc lsum {list} {
+   set result 0.0
+   foreach value $list {set result [expr $result + $value]}
+   return $result
+}
+
+# Linear interpolation
+proc linint {x_coords y_coords value} {
+   set y  0.0
+
+   if {[llength $x_coords] &lt;= 0 || [llength $y_coords] &lt;= 0 || [llength $x_coords] != [llength $y_coords]} {
+      error "bad coordinates in linear_interp_real"
+   }
+
+   for {set indx 0} {$indx &lt; [llength $x_coords]} {incr indx} {
+      if {$value &lt;= [lindex $x_coords $indx]} {
+         if {$indx == 0} {
+            set y [lindex $y_coords $indx]
+         } else {
+            if {abs($value - [lindex $x_coords $indx]) &lt; 1.0E-4} {
+               set y [lindex $y_coords $indx]
+            } else  {
+               set y_part [expr [lindex $y_coords $indx] - [lindex $y_coords [expr $indx-1]] ]
+               set x_part [expr [lindex $x_coords $indx] - [lindex $x_coords [expr $indx-1]] ]
+               set y [expr ($y_part/$x_part) * ($value - [lindex $x_coords [expr $indx - 1]]) + [lindex $y_coords [expr $indx- 1]] ]
+            }
+         break;
+         }
+      } elseif {$indx == [lindex $x_coords $indx]-1} {
+         set y  [lindex $y_coords $indx]
+      } else {
+         set y  0.0
+      }
+   }
+   return $y
+}
+
+#############################
+############### The decision routine(s).
+#############################
+# Return the score for planting "what"
+proc checkRules {thisPaddock} {
+  global config
+
+  uplevel #0 set paddock \"$thisPaddock\"
+  set bestScore -1.0; set bestTarget {}; set bestArc {}; set bestGraph {}
+  foreach graph $config($thisPaddock,graphNames) {
+     foreach arc [$graph arcs -out [currentState $thisPaddock]] {
+        set expr {}
+        set target [$graph arc target $arc]
+        foreach rule [$graph arc get $arc rules] {
+           set value [uplevel #0 expr $rule]
+           lappend expr $value
+           if {$value == 0} {break} ;# no need to continue evaluating subsequent rules
+        }
+        if {[llength $expr] &gt; 0} {
+           set score [expr [join $expr "*"]]
+           if {$score &gt; $bestScore} {
+              set bestScore  $score
+              set bestTarget $target
+              set bestArc    $arc
+              set bestGraph  $graph
+           }
+        }
+     }
+  }   
+  return [list  $bestScore $bestGraph $bestTarget $bestArc]
+}
+
+# A place holder function to monitor state transitions
+proc logState {graph paddock state} {puts "$graph $paddock $state"}
+
+# Change state to another
+proc changeState {paddock graph arc} {
+   global state
+   uplevel #0 set paddock \"$paddock\"
+   foreach action [$graph arc get $arc actions] { uplevel #0 $action }
+   set state($paddock) [$graph arc target $arc]
+   logState $graph $paddock $state($paddock)
+}
+
+# Do daily process at top level
+proc doProcess {} {
+   global date config daysSinceLastHarvest
+   
+   set date "[apsimGet day],[apsimGet year]"
+
+   set more 1
+   while {$more} {
+      set more 0
+      # 1. Find out what's possible
+      set bestPaddock {}; set bestScore -1.0
+      foreach paddock $config(paddocks) {
+         foreach {score graph target arc} [checkRules $paddock] {break}
+         if {$score &gt; $bestScore} {
+            set bestPaddock $paddock; set bestScore $score; set bestGraph $graph; set bestTarget $target; set bestArc $arc
+         }
+      }
+      if {$bestScore &gt; 0.0} {
+         changeState $bestPaddock $bestGraph $bestArc
+         set more 1
+      }
+   }
+   
+   foreach paddock $config(paddocks) {
+      incr daysSinceLastHarvest($paddock)
+   }   
+}
+
+# pass events to various output files
+proc reportEvent {from what} {
+   foreach {event args} [split $what "-"] {break}
+}
+
+puts "Done farm"
+</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+# Housekeeping
+if {[catch {doProcess } msg]} {
+   puts "$errorInfo"
+   error "$msg\n$errorInfo"
+}
+
+</text>
+          <event>process</event>
+        </script>
+        <script>
+          <text>
+          </text>
+          <event>end_simulation</event>
+        </script>
+        <script>
+          <text>
+foreach paddock $config(paddocks) {
+  set state($paddock)         $config($paddock,initialState) ;# Should get this from xml
+  set history($paddock)       $config($paddock,history)
+  set daysSinceLastHarvest($paddock) 60
+}
+
+# All our soils are called "Soil.." 
+foreach paddock $config(paddocks) {
+   set config($paddock,watBal)   ".masterpm.$paddock.Soil Water"
+   set config($paddock,nModule)  ".masterpm.$paddock.Soil Nitrogen"
+}
+
+set config(states) {}
+
+</text>
+          <event>start_simulation</event>
+        </script>
+      </rule>
+      <rule name="Rugplot stuff" enabled="no">
+        <ui>
+          <cat type="category" description="No editable parameters" />
+        </ui>
+        <script>
+          <text>
+# Rug plotting facility
+
+# 2 areas of interest:
+# - logState - called when a graph is changing state, called just after the "actions" have been evaluated
+
+# a logfile is used to generate the rugplots of farm activities. There are 2 parts:
+# an xml of paddocks, states &amp; times,
+# a binary of decision rules on each evaluation cycle
+proc log {msg} {
+   #puts $msg
+}
+
+package require cdftcl
+package require tdom
+
+proc setupLogging {} {
+   global simName config 
+
+   # Find the number of graphs - 1 file for each. Delete each.
+   set config(graphs) {}
+   foreach paddock $config(paddocks) {
+     foreach graph $config($paddock,graphNames) {
+        if {[lsearch $config(graphs) $graph] &lt; 0} {
+           lappend config(graphs) $graph
+        }
+     }
+  }
+  foreach graph $config(graphs) {
+    puts "deleting $simName.$graph.\[xml,nc\]"
+    file delete -force $simName.$graph.xml
+    file delete -force $simName.$graph.nc
+    foreach paddock $config(paddocks) {
+       set config(history,$paddock,$graph) {}
+    }
+  }
+  set config(states) {}
+  set config(rules) {}
+  set config(historyDays) {}
+}
+
+# Log a set of rule evaluations
+proc logRules {paddock graph rules values } {
+   global config history
+
+   set data {}
+   for {set i 0} {$i &lt; [llength $rules]} {incr i} {
+      lappend data [lindex $rules $i] [lindex $values $i]
+   }
+
+   set today [apsimGet today]
+
+   lappend history($paddock,$graph,$today) $data
+
+   if {[lsearch $config(historyDays) $today] &lt; 0} {
+       lappend config(historyDays) $today
+       set config($today,ddmmyyyy) [apsimGet clock.dd/mm/yyyy]
+   }
+}
+
+# Log a state transition
+proc logState {graph paddock state} {
+   global config
+   set today [apsimGet today]
+   lappend config(history,$paddock,$graph) $today $state
+   if {[lsearch $config(states) $state] &lt; 0} {lappend config(states) $state}
+}
+
+# Write the files. 
+proc closeLogging {} {
+   global config history simName
+
+   set config(xmldoc) [dom parse [apsimGetComponentXML]]
+   set config(docroot) [$config(xmldoc) documentElement]
+
+puts "graphs = $config(graphs)"
+
+   foreach graph $config(graphs) {
+puts "creating $simName.$graph.nc - len = [llength $config(historyDays)]"
+      set ncfp [ncdf create $simName.$graph.nc] 
+      ncdfdim $ncfp create index [llength $config(historyDays)]
+      ncdfdim $ncfp create time -1
+
+      ncdfvar $ncfp create position long {index}
+      ncdfvar $ncfp create daynum float {index}
+
+      ncdfvar $ncfp create day     float {time}
+      ncdfvar $ncfp create paddock short {time}
+      ncdfvar $ncfp create rule    short {time}
+      ncdfvar $ncfp create value   float {time}
+
+      set day [lindex $config(historyDays) 0]
+      ncdfatt $ncfp GLOBAL put startdate float $day
+      ncdfatt $ncfp GLOBAL put startddmmyyyy char $config($day,ddmmyyyy)
+
+      set day [lindex $config(historyDays) end]
+      ncdfatt $ncfp GLOBAL put enddate float $day
+      ncdfatt $ncfp GLOBAL put endddmmyyyy char $config($day,ddmmyyyy)
+
+      ncdf enddef $ncfp
+      set id 0
+      foreach p $config(paddocks) {
+         set pid($p) $id; incr id
+      }   
+	  puts "writing rules"
+      catch {unset pos}
+      set i 0
+      foreach day $config(historyDays) {
+         foreach paddock $config(paddocks) {
+            if {[info exists history($paddock,$graph,$day)]} {
+               set pos($paddock,$day) $i
+               foreach data $history($paddock,$graph,$day) {
+                  foreach {rule value} $data {
+                     ncdfvar $ncfp put day     $i $day
+                     ncdfvar $ncfp put paddock $i $pid($paddock)
+                     ncdfvar $ncfp put rule    $i $rule
+                     ncdfvar $ncfp put value   $i $value
+                     incr i
+                  } 
+               }
+            }
+         }
+      }
+
+	  puts "writing positions"
+      #Positions
+      for {set i 0} {$i &lt; [llength $config(historyDays)]} {incr i} {
+         set day [lindex $config(historyDays) $i]
+         set f 0
+         foreach paddock $config(paddocks) {
+            if {[info exists pos($paddock,$day)]} {
+               ncdfvar $ncfp put position  $i $pos($paddock,$day)
+               set f 1
+               break
+            } 
+         }
+         if {!$f} {
+            ncdfvar $ncfp put position  $i -1
+         }   
+      }
+      
+      for {set j 0} {$j &lt; [llength $config(historyDays)]} {incr j} {
+         ncdfvar $ncfp put daynum $j [lindex $config(historyDays) $j]
+      }   
+
+      ncdf close $ncfp
+puts "finished nc, opening $simName.$graph.xml"
+
+      set fp [open $simName.$graph.xml w]
+      puts $fp "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;simulation&gt;"
+      set id 0
+      foreach paddock $config(paddocks) {
+         puts $fp "&lt;history id=\"$id\" name=\"$paddock\"&gt;"
+         foreach {day state} $config(history,$paddock,$graph) {
+            if {[info exists pos($paddock,$day)]} {
+               puts $fp "&lt;transition day=\"$day\" to=\"$state\" position=\"$pos($paddock,$day)\" /&gt;"
+            } 
+         }
+         puts $fp "&lt;/history&gt;"
+         incr id
+      }
+
+      foreach paddock $config(paddocks) {
+         puts $fp "&lt;paddock id=\"$pid($paddock)\" name=\"$paddock\" /&gt;"
+      }   
+      set id 0
+      foreach rule $config(rules) {
+         set rule [string map {\&lt; "&amp;lt;"  \&gt; "&amp;gt;"     
+                               \&amp; "&amp;amp;" \" "&amp;quot;"  
+                               \[ "&amp;#91;" \] "&amp;#93;"    } $rule]
+         puts $fp "&lt;rule id=\"$id\" name=\"$rule\" /&gt;"
+         incr id
+      }
+
+      # Colours
+      foreach node [$config(docroot) selectNodes //node] {
+          set state [getValue $node "name"]
+          set colour [getValue $node "fill"]
+          puts $fp "&lt;state name=\"$state\" colour=\"$colour\" /&gt;"
+      }
+
+      set day [lindex $config(historyDays) 0]
+      puts $fp "&lt;startdate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
+      set day [lindex $config(historyDays) end]
+      puts $fp "&lt;enddate ddmmyyyy=\"$config($day,ddmmyyyy)\" day=\"$day\" /&gt;"
+
+      puts $fp "&lt;/simulation&gt;"
+      close $fp
+puts "finished $simName.$graph.xml"
+   }  
+   # $config(xmldoc) delete
+}
+
+# Override the "standard" decision routine to keep track of state info
+proc checkRules {thisPaddock} {
+  global config 
+  uplevel #0 set paddock $thisPaddock
+  set bestScore -1.0; set bestTarget {}; set bestArc {}; set bestGraph {}
+  foreach graph $config($thisPaddock,graphNames) {
+     foreach arc [$graph arcs -out [currentState $thisPaddock]] {
+        set values {}; set rules {}
+        set target [$graph arc target $arc]
+        if {[$graph arc keyexists $arc window]} {set inWindow [uplevel #0 expr [$graph arc get $arc window]]} else {set inWindow 0}
+        foreach rule [$graph arc get $arc rules] {
+           set value [uplevel #0 expr $rule]
+           lappend values $value
+           lappend rules [enCodeRule $target $rule]
+        }
+        logRules $thisPaddock $graph $rules $values
+        if {[llength $values] &gt; 0} {
+           set score [expr [join $values "*"]]
+           if {$score &gt; $bestScore} {
+              set bestScore  $score
+              set bestTarget $target
+              set bestArc    $arc
+              set bestGraph  $graph
+           }
+        }
+     }
+  }   
+  return [list  $bestScore $bestGraph $bestTarget $bestArc]
+}
+
+proc enCodeRule {target ruleText} {
+  global config
+  regsub -all "\," $ruleText "\-" ruleText
+
+  for {set i 0} {$i &lt; [llength $config(rules)]} {incr i} {
+     set rule [lindex $config(rules) $i]
+     if {[string equal $rule "$target,$ruleText"]} {
+        return $i
+     }
+  }
+  lappend config(rules) "$target,$ruleText"
+  return [expr [llength $config(rules)] - 1]
+}
+
+
+# Get the value of an objects 'thing'
+proc getValue {id thing} {
+   foreach node [$id childNodes] {
+      if {[string equal -nocase [$node nodeName] $thing]} {
+         return [$node text]
+      }
+   }
+   return ""
+}
+
+</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+setupLogging
+
+foreach paddock $config(paddocks) {
+   logState stateGraph $paddock [currentState $paddock]
+}
+</text>
+          <event>start_simulation</event>
+        </script>
+        <script>
+          <text>
+closeLogging
+</text>
+          <event>end_simulation</event>
+        </script>
+      </rule>
+      <RotPlot name="Crop Management">
+        <canvas_height>439</canvas_height>
+        <rules_height>252</rules_height>
+        <graph_name>graph</graph_name>
+        <node>
+          <name>Fallow</name>
+          <x1>140</x1>
+          <y1>140</y1>
+          <desc>yyy</desc>
+          <fill>-657956</fill>
+        </node>
+        <node>
+          <name>SRMaize</name>
+          <x1>66</x1>
+          <y1>10</y1>
+          <desc>New state</desc>
+          <fill>-32768</fill>
+        </node>
+        <node>
+          <name>maizebean</name>
+          <x1>252</x1>
+          <y1>18</y1>
+          <desc>
+          </desc>
+          <fill>-16744448</fill>
+        </node>
+        <node>
+          <name>LRMaize</name>
+          <x1>10</x1>
+          <y1>211</y1>
+          <desc>
+          </desc>
+          <fill>-32576</fill>
+        </node>
+        <arc>
+          <name>arc1</name>
+          <source>SRMaize</source>
+          <target>Fallow</target>
+          <x>108</x>
+          <y>160</y>
+          <actions>harvest_maize $paddock</actions>
+          <rules>[canHarvest_maize $paddock ]</rules>
+        </arc>
+        <arc>
+          <name>arc3</name>
+          <source>Fallow</source>
+          <target>SRMaize</target>
+          <x>207</x>
+          <y>106</y>
+          <actions>sow_SR_maize $paddock</actions>
+          <rules>[canSow_SR_maize $paddock]</rules>
+        </arc>
+        <arc>
+          <name>arc0</name>
+          <source>Fallow</source>
+          <target>maizebean</target>
+          <x>221</x>
+          <y>100</y>
+          <actions>sow_maizebean $paddock</actions>
+          <rules>[canSow_maizebean $paddock]</rules>
+          <rules>[string equal $paddock  "paddock1"]</rules>
+        </arc>
+        <arc>
+          <name>arc2</name>
+          <source>maizebean</source>
+          <target>Fallow</target>
+          <x>301</x>
+          <y>168</y>
+          <actions>harvest_maizebean $paddock</actions>
+          <rules>[canHarvest_maizebean $paddock ]</rules>
+        </arc>
+        <arc>
+          <name>arc4</name>
+          <source>LRMaize</source>
+          <target>Fallow</target>
+          <x>150</x>
+          <y>275</y>
+          <actions>harvest_maize $paddock</actions>
+          <rules>[canHarvest_maize $paddock ]</rules>
+        </arc>
+        <arc>
+          <name>arc5</name>
+          <source>Fallow</source>
+          <target>LRMaize</target>
+          <x>104</x>
+          <y>195</y>
+          <actions>sow_LR_maize $paddock</actions>
+          <rules>[canSow_LR_maize $paddock]</rules>
+          <rules>! [string equal $paddock  "paddock1"]</rules>
+        </arc>
+        <paddock>
+          <name>p1</name>
+          <isManaged>1</isManaged>
+          <initialState>Fallow</initialState>
+        </paddock>
+        <paddock>
+          <name>p2</name>
+          <isManaged>1</isManaged>
+          <initialState>Fallow</initialState>
+        </paddock>
+        <paddock>
+          <name>p3</name>
+          <isManaged>1</isManaged>
+          <initialState>Fallow</initialState>
+        </paddock>
+        <paddock>
+          <name>p4</name>
+          <isManaged>1</isManaged>
+          <initialState>Fallow</initialState>
+        </paddock>
+        <paddock>
+          <name>p5</name>
+          <isManaged>1</isManaged>
+          <initialState>Fallow</initialState>
+        </paddock>
+        <rule name="graph Init rule" invisible="yes" condition="init"><![CDATA[package require struct
+::struct::graph graph
+graph node insert "Fallow"
+set colour(Fallow) "-657956"
+graph node insert "SRMaize"
+set colour(SRMaize) "-32768"
+graph node insert "maizebean"
+set colour(maizebean) "-16744448"
+graph node insert "LRMaize"
+set colour(LRMaize) "-32576"
+graph arc insert "SRMaize" "Fallow" "arc1"
+graph arc lappend "arc1" actions {harvest_maize $paddock}
+graph arc lappend "arc1" rules {[canHarvest_maize $paddock ]}
+graph arc insert "Fallow" "SRMaize" "arc3"
+graph arc lappend "arc3" actions {sow_SR_maize $paddock}
+graph arc lappend "arc3" rules {[canSow_SR_maize $paddock]}
+graph arc insert "Fallow" "maizebean" "arc0"
+graph arc lappend "arc0" actions {sow_maizebean $paddock}
+graph arc lappend "arc0" rules {[canSow_maizebean $paddock]}
+graph arc lappend "arc0" rules {[string equal $paddock  "paddock1"]}
+graph arc insert "maizebean" "Fallow" "arc2"
+graph arc lappend "arc2" actions {harvest_maizebean $paddock}
+graph arc lappend "arc2" rules {[canHarvest_maizebean $paddock ]}
+graph arc insert "LRMaize" "Fallow" "arc4"
+graph arc lappend "arc4" actions {harvest_maize $paddock}
+graph arc lappend "arc4" rules {[canHarvest_maize $paddock ]}
+graph arc insert "Fallow" "LRMaize" "arc5"
+graph arc lappend "arc5" actions {sow_LR_maize $paddock}
+graph arc lappend "arc5" rules {[canSow_LR_maize $paddock]}
+graph arc lappend "arc5" rules {! [string equal $paddock  "paddock1"]}
+if {[info exists config(p1,graphNames)]} {lappend config(p1,graphNames) graph} else {set config(p1,graphNames) graph}
+set config(p1,initialState) "Fallow"
+if {[info exists config(p2,graphNames)]} {lappend config(p2,graphNames) graph} else {set config(p2,graphNames) graph}
+set config(p2,initialState) "Fallow"
+if {[info exists config(p3,graphNames)]} {lappend config(p3,graphNames) graph} else {set config(p3,graphNames) graph}
+set config(p3,initialState) "Fallow"
+if {[info exists config(p4,graphNames)]} {lappend config(p4,graphNames) graph} else {set config(p4,graphNames) graph}
+set config(p4,initialState) "Fallow"
+if {[info exists config(p5,graphNames)]} {lappend config(p5,graphNames) graph} else {set config(p5,graphNames) graph}
+set config(p5,initialState) "Fallow"
+]]></rule>
+        <RugPlotUI name="Rug Plot Graph" />
+      </RotPlot>
+      <rule name="Annual Reports">
+        <ui>
+          <category type="category" description="No editable paramters" />
+        </ui>
+        <script>
+          <text>
+# Annual summary of whole farm averages
+
+proc open_annual_stuff {} {
+   global annual annualcrop config
+   set year [expr [apsimGet year] - 1 ]
+   set annual(years) $year
+   set annual(accRain) 0.0
+   set annual($year,balance) [apsimGetOptional balance] 
+   foreach {accumulator} {runoff drain soil_loss es } {
+     foreach paddock $config(paddocks) {
+        set annual($paddock,$accumulator) 0.0
+     }   
+   }
+}
+
+proc do_end_year {} {
+   global config annual annualcrop
+
+   set year [apsimGet year]
+
+   foreach {accumulator} {runoff drain soil_loss es} {
+     foreach paddock $config(paddocks) {
+        set annual($year,$paddock,$accumulator) $annual($paddock,$accumulator)
+        set annual($paddock,$accumulator) 0.0
+     }
+   }
+   set annual($year,accRain) $annual(accRain)
+   set annual(accRain) 0.0
+   set annual($year,balance) [apsimGetOptional balance]
+   lappend annual(years) $year
+}
+
+proc close_annual_stuff {} {
+   global simName config annual annualcrop
+   puts "close_annual_stuff called"
+
+   # Heading
+   set fp [open $simName.annual.out w]
+   puts $fp "Title = $simName"
+   puts $fp ""
+   puts -nonewline $fp "year "
+   foreach {accumulator} {runoff drain soil_loss es rain } {
+      puts -nonewline $fp " $accumulator"
+   }
+   foreach crop $config(crops) {
+      puts -nonewline $fp " ${crop}_harvest"
+   }
+   puts $fp " profit"
+
+   puts -nonewline $fp "() "
+   foreach {accumulator} {runoff drain soil_loss es rain } {
+      puts -nonewline $fp " (mm)"
+   }
+   foreach crop $config(crops) {
+      puts -nonewline $fp " (tonnes-wet)"
+   }
+   puts $fp " ($)"
+
+   # Area weighted averages of environmental stuff
+   set tfa 0.0
+   foreach paddock $config(paddocks) {set tfa [expr $tfa + $config($paddock,area)]}
+
+   foreach year [lrange $annual(years) 1 end] {
+      puts -nonewline $fp "$year "
+      foreach {accumulator} {runoff drain soil_loss es} {
+         set s 0.0
+         foreach paddock $config(paddocks) {
+            set s [expr $s + $annual($year,$paddock,$accumulator) * $config($paddock,area) / $tfa]
+         }
+         puts -nonewline $fp " [format %.2f $s]"
+      }
+      puts -nonewline $fp " [format %.2f $annual($year,accRain)]"
+   
+      foreach crop $config(crops) {
+         if {[info exists annual($year,$crop,harvest)]} {
+           puts -nonewline $fp " [format %.3f $annual($year,$crop,harvest)]"
+         } else {
+           puts -nonewline $fp " *"
+         }  
+      }
+
+      # profit = change in bank balance each year
+      catch {
+         puts -nonewline $fp " [format %.2f [expr $annual($year,balance) - $annual([expr $year-1],balance)]]"
+      }
+      puts $fp ""
+   }
+   close $fp
+}
+
+
+
+</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+catch {file delete $simName.annual.csv}
+
+open_annual_stuff
+
+</text>
+          <event>start_simulation</event>
+        </script>
+        <script>
+          <text>
+close_annual_stuff
+
+</text>
+          <event>end_simulation</event>
+        </script>
+        <script>
+          <text>
+   set annual(accRain) [expr $annual(accRain) + [apsimGet rain]]
+   foreach {accumulator} {runoff drain es } {
+      foreach paddock $config(paddocks) {
+         if {$paddock != "toplevel"} {
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet $config($paddock,watBal).$accumulator]]
+         }
+      }   
+   }
+   foreach {accumulator} {soil_loss} {
+      foreach paddock $config(paddocks) {
+         if {$paddock != "toplevel"} {
+            set annual($paddock,$accumulator) [expr $annual($paddock,$accumulator) + [apsimGet .masterpm.$paddock.erosion.$accumulator]]
+         }
+      }   
+   }
+</text>
+          <event>post</event>
+        </script>
+        <script>
+          <text>
+do_end_year</text>
+          <event>end_year</event>
+        </script>
+      </rule>
+      <rule name="Harvest Reports">
+        <ui>
+          <category type="category" description="No editable paramters" />
+        </ui>
+        <script>
+          <text>
+# Annual summary of whole farm averages
+
+proc open_harvest_stuff {} {
+   global harvest config
+   set harvest {}
+}
+
+
+proc close_harvest_stuff {} {
+   global simName config harvest
+   puts "close_harvest_stuff called"
+
+   # Heading
+   set fp [open $simName.harvest.out w]
+   puts $fp "Title = $simName"
+   puts $fp ""
+   puts $fp "Date         season paddock crop yield   biomass"
+   puts $fp "(dd/mm/yyyy)     ()      ()   () (kg/ha) (kg/ha)"
+
+   foreach line $harvest {
+      puts $fp $line
+   }
+   close $fp
+}
+
+
+
+</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+catch {file delete $simName.harvest.out}
+
+open_harvest_stuff
+
+</text>
+          <event>start_simulation</event>
+        </script>
+        <script>
+          <text>
+close_harvest_stuff
+
+</text>
+          <event>end_simulation</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <tclmanager name="Labour">
+      <rule name="Initialisation logic">
+        <ui>
+          <category type="category" description="No editable Parameters" />
+        </ui>
+        <script>
+          <text>
+# Apsim Machinery (sub)Module
+# Contains Tractors, Implements &amp; Labour.
+
+# Operations: 
+# bool available(&lt;config&gt;)    ; See if a configuration can be used today (read)
+# operate &lt;config&gt; &lt;area&gt;     ; Operate a configuration over an area until finished (event)
+
+########################## Apsim interface code here
+source $apsuite/Model/TclLink/CIDataTypes.tcl
+
+# A trace handler for status. This handler is called whenever another module 
+# asks us whether machinery is available.
+#    NB. Careful! Errors in trace routines are not caught!!!
+proc machinery:maProc {name1 name2 op} {
+   if {$op == "read" } {
+      global config $name1
+      foreach {junk operator implement} [split $name1 "_"] { break }
+
+      # Check they are known to us
+      if {[lsearch $config(operators) $operator] &lt; 0} {
+         set msg "operator \"$operator\" is unknown - I only know about $config(operators)"
+         error $msg
+      }
+      if {[lsearch $config(implements) $implement] &lt; 0} {
+         set msg "implement \"$implement\" is unknown - I only know about $config(implements)"
+         error $msg
+      }
+      
+      # Now see if they are busy
+      set avail 1
+      catch {
+         global machinery:jobs
+         foreach job ${machinery:jobs} {
+            foreach {tid iid area paddock costtype} [split $job ","] {break}
+            if {"$operator" == "$tid" || "$implement" == "$iid"} {set avail 0}
+         }
+      } msg
+      if {$msg != ""} {apsimWriteToSummaryFile $msg; error $msg}
+           
+      # Set the variable - this is what is returned to apsim.
+      set $name1 $avail
+   }  
+}
+
+# An event handler. 
+proc machinery:operateHandler {args} {
+  global incomingVariant
+  foreach {name value} [unpack_Variant $incomingVariant] {
+     regsub -all "'" $name {} name
+     regsub -all "'" $value {} value
+     set [string tolower $name] [string tolower $value]
+  }
+  if {![info exists operator] || ![info exists implement] || ![info exists area]} {
+     error "Must specify a operator, implement, and area to operate over."
+  }
+  if { ![info exists paddock] } {set paddock {}}
+  if { ![info exists costtype] } {set costtype unknown}
+  machinery:operate $operator $implement $area $paddock $costtype
+}
+
+# Now register the event handlers. 
+apsimSubscribeVariant operate            "machinery:operateHandler"
+apsimSubscribeNull process            "machinery:process"
+apsimSubscribeNull end_financial_year "machinery:end_year"
+########################## End apsim interface code
+
+########################## Machinery configuration code
+# Read in our configuration
+proc machinery:initialise {} {
+   global config
+   if {![info exists config(operators)]} {set config(operators) {}}
+   if {![info exists config(implements)]} {set config(implements) {}}
+} 
+
+
+# return the work rate for this combo can cover per hour
+proc getCombo {operator implement thing} {
+   global config
+   if {![info exists config(machinery,$operator,$implement,$thing)]} {
+      error "No $thing specified for $operator and $implement"
+   }
+   return $config(machinery,$operator,$implement,$thing)
+}
+
+proc getRate {tid iid} {
+   return [getCombo $tid $iid workrate]
+}
+
+proc getValue {id thing} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (get)"
+   }
+   return $config(machinery,$id,$thing)
+}
+
+# Return the cost of labour per hour
+proc labourCost {} {
+   global config
+   if {![info exists config(machinery,labourCost)]} {
+      error "No labourCost specified"
+   }
+   return $config(machinery,labourCost)
+}
+
+# return the labour cost this combo uses per hour 
+proc getLabourCost {tid iid} {
+   return [expr [getCombo $tid $iid workrate] * [labourCost]]
+}
+
+# Return the number of hours worked per day
+proc getHoursPerDay {tid iid} {
+   return [getCombo $tid $iid hoursperday]
+}
+
+proc setValue {id thing value} {
+   global config
+   if {![info exists config(machinery,$id,$thing)]} {
+      error "No $thing for $id specified (set)"
+   }
+   set config(machinery,$id,$thing) $value
+}
+
+##############
+# Operate a configuration over an area. Just add it to the job queue 
+# and let process look after it.
+proc machinery:operate {operator implement area paddock costtype} {
+   if {![string is double -strict $area]} {
+      error "Area should be a number (not $area)"
+   }
+   global machinery:jobs
+   lappend machinery:jobs $operator,$implement,$area,$paddock,$costtype
+   apsimWriteToSummaryFile "Machinery job \"$operator + $implement\" is queued"
+}
+
+# The daily process routine. Manages the job queue
+proc machinery:process {} {
+   global machinery:jobs
+   set tomorrowsJobs {}
+   # Go through each job. If an item is in use in any prior job, we can't do it today. 
+   for {set ijob 0} {$ijob &lt; [llength ${machinery:jobs}]} {incr ijob} {
+      set job [lindex ${machinery:jobs} $ijob]
+      foreach {tid iid area paddock costtype} [split $job ","] {break}
+      set inuse 0
+      for {set j 0} {$j &lt; $ijob} {incr j} {
+         foreach {Ttid Tiid Tarea Tpaddock Tcosttype} [split [lindex ${machinery:jobs} $j] ","] {break}
+         if {$tid == $Ttid || $iid == $Tiid} {set inuse 1}
+      }
+      if {!$inuse} {
+        # The job is running today. Work out how many hours, and then the costs
+        set maxHours [getHoursPerDay $tid $iid]
+        set rate [getRate $tid $iid]
+
+        if {$maxHours * $rate &lt;= $area} {
+           set hours $maxHours
+           set areaToday [expr $maxHours * $rate]
+        } else {   
+           set hours [expr $area / $rate]
+           set areaToday [expr $hours * $rate]
+        }   
+        set cost [expr $hours * [getLabourCost $tid $iid]]
+        apsimSendMessage "" expenditure [list hours $hours] [list cost $cost] [list comment "operating costs of $tid + $iid"] [list paddock $paddock] [list area $areaToday] [list $costtype {}]
+
+        set rate [expr $hours * [getRate $tid $iid]]
+        set area [expr $area - $rate]
+
+        if {$area &gt; 0} {
+           lappend tomorrowsJobs $tid,$iid,$area,$paddock,$costtype
+        } else {
+           apsimWriteToSummaryFile "Labour job '$tid + $iid' in $paddock has finished"
+        }
+      } else {
+        lappend tomorrowsJobs $job
+      } 
+   }
+   set machinery:jobs $tomorrowsJobs
+}
+
+# The "end_year" routine. Do loan payments and replacement
+proc machinery:end_year {} {
+   global config
+}
+</text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+
+# Finally, load our configuration database and initialise states
+machinery:initialise 
+set machinery:jobs {}
+
+# Now tell apsim we own it, set up the trace variable we use to trigger when the variable is read
+foreach tid $config(operators) {
+  foreach iid $config(implements) {
+     set v available_${tid}_${iid}
+     set $v 0
+     apsimRegisterGetSet $v
+     trace add variable $v read "machinery:maProc"
+  }
+}
+
+apsimWriteToSummaryFile "Labour:\nOperators=$config(operators)\nImplements=$config(implements)"
+
+</text>
+          <event>start_simulation</event>
+        </script>
+      </rule>
+      <rule name="Operator 1">
+        <ui>
+          <category type="category" description="Operator" />
+          <apsimname type="text" description="Apsim name">operator1</apsimname>
+          <category type="category" description="Implement 1" />
+          <implement1name type="text" description="Name">sowing</implement1name>
+          <implement1workrate type="text" description="Work Rate (ha/hour)">0.5</implement1workrate>
+          <implement1hoursperday type="text" description="Daily Hours (hours)">12</implement1hoursperday>
+          <category type="category" description="Implement 2" />
+          <implement2name type="text" description="Name">weeding</implement2name>
+          <implement2workrate type="text" description="Work Rate (ha/hour)">0.8</implement2workrate>
+          <implement2hoursperday type="text" description="Daily Hours (hours)">12</implement2hoursperday>
+          <category type="category" description="Implement 3" />
+          <implement3name type="text" description="Name">harvesting</implement3name>
+          <implement3workrate type="text" description="Work Rate (ha/hour)">0.2</implement3workrate>
+          <implement3hoursperday type="text" description="Daily Hours (hours)">8</implement3hoursperday>
+          <category type="category" description="Implement 4" />
+          <implement4name type="text" description="Name">presow_till</implement4name>
+          <implement4workrate type="text" description="Work Rate (ha/hour)">0.1</implement4workrate>
+          <implement4hoursperday type="text" description="Daily Hours (hours)">8</implement4hoursperday>
+          <category type="category" description="Implement 5" />
+          <implement5name type="text" description="Name">spraying</implement5name>
+          <implement5workrate description="Work Rate (ha/hour)">0.1</implement5workrate>
+          <implement5hoursperday description="Daily Hours (hours)">8</implement5hoursperday>
+        </ui>
+        <script>
+          <text>
+lappend config(operators) "[apsimname]"
+set config(machinery,[apsimname],age) "0"
+
+set config(machinery,[apsimname],[implement1name],workrate) "[implement1workrate]"
+set config(machinery,[apsimname],[implement1name],hoursperday) "[implement1hoursperday]"
+
+set config(machinery,[apsimname],[implement2name],workrate) "[implement2workrate]"
+set config(machinery,[apsimname],[implement2name],hoursperday) "[implement2hoursperday]"
+
+set config(machinery,[apsimname],[implement3name],workrate) "[implement3workrate]"
+set config(machinery,[apsimname],[implement3name],hoursperday) "[implement3hoursperday]"
+
+set config(machinery,[apsimname],[implement4name],workrate) "[implement4workrate]"
+set config(machinery,[apsimname],[implement4name],hoursperday) "[implement4hoursperday]"
+
+set config(machinery,[apsimname],[implement5name],workrate) "[implement5workrate]"
+set config(machinery,[apsimname],[implement5name],hoursperday) "[implement5hoursperday]"
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Costs - Wages">
+        <ui>
+          <category type="category" description="Costs" />
+          <labourCost type="text" description="Cost of labour ($/hr)">1.0</labourCost>
+        </ui>
+        <script>
+          <text>
+set config(machinery,labourCost) "[labourCost]"
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <tclmanager name="Economics">
+      <rule name="Cash Initialisation logic">
+        <ui>
+          <category description="No editable parameters" />
+        </ui>
+        <script>
+          <text>
+# Apsim/Economics Cashbook (sub)module
+
+# accepts messages:
+#  cashbook income {amount 64000.0} {comment "description here"}
+#  cashbook income {category cropprice} {name wheat} {yield 4000} {protein 12.3} {comment "description here"}
+#  cashbook income {category cropprice} {name sorghum} {yield 6000} {comment "description here"}
+#  cashbook expenditure {cost 42.0} {comment "description here"}
+#  cashbook expenditure {category seed} {name wheat} {rate 120} {comment "description here"}
+# Keeps a balance, writes a log.
+
+########################## Apsim interface code here
+source $apsuite/Model/TclLink/CIDataTypes.tcl
+
+set balance [expr 0.0]
+apsimRegisterGetSet balance
+apsimSubscribeVariant  income      "cashbook:incomeHandler"
+apsimSubscribeVariant  expenditure "cashbook:expenditureHandler"
+apsimSubscribeNull  process     "cashbook:processHandler"
+apsimSubscribeNull  end_simulation "cashbook:exitHandler"
+
+# An event handler. 
+#  cashbook income {amount 64000.0}                                              {comment "description here"}
+#  cashbook income {category cropprice} {name wheat} {yield 4000} {protein 12.3} {comment "description here"}
+#  cashbook income {category cropprice} {name sorghum} {yield 6000}              {comment "description here"}
+proc cashbook:incomeHandler {args} {
+   global config incomingVariant balance
+
+   set names {}
+   foreach {_name _value} [unpack_Variant $incomingVariant] {
+      set $_name [string tolower $_value]
+      lappend names $_name
+   }
+   if {![info exists comment]} { set comment "" }
+   if {![info exists paddock]} { set paddock "" }
+   if {![info exists protein]} { set protein "" }
+   
+   if {[info exists amount] &amp;&amp; [string is double -strict $amount]} {
+      set balance [expr $balance + $amount]
+      cashbook:log income amount $amount comment $comment paddock $paddock
+
+   } elseif {[info exists category] &amp;&amp; [info exists name] &amp;&amp; 
+             [info exists yield] &amp;&amp; [info exists area]} {
+      set amount "NA"
+      set price  "NA"
+      if {![info exists config(economics,$category,$name)] } {
+         foreach {n v} [array get config economics*] {apsimWriteToSummaryFile "economics $n=$v"}
+         error "No price information for crop $name in $category"
+      }
+      if {![info exists config(economics,$category,$name,grain_moisture)] } {
+         apsimWriteToSummaryFile "Warning!!!!\nNo grain moisture found for $name. Using 12%."
+         set config(economics,$category,$name,grain_moisture) 12.0
+      }
+      if {$name != "wheat"} {
+         set price $config(economics,$category,$name)
+      } else {
+         # oddball wheat pricing system..
+         set proteins $config(economics,$category,$name,protein)
+         set prices $config(economics,$category,$name)
+         set price [lindex $prices 0]
+         for {set i 0} {($i &lt; [llength $proteins]) &amp;&amp; 
+             ($protein &gt; [lindex $proteins $i])} {incr i} {
+               set price [lindex $prices $i]
+         }
+      }  
+      set wetYield [expr ($yield * 100.0) / (100.0 - $config(economics,$category,$name,grain_moisture))]
+      set amount [expr  $price * $wetYield * $area]
+
+      set comment "$category ($name)"
+      apsimWriteToSummaryFile "Priced $name $category (price='$price', yield='$wetYield' wet) over '$area' ha = '$amount'"
+      set balance [expr $balance + $amount]
+      cashbook:log income amount $amount comment $comment \
+                          income $amount crop_income $amount \
+                          paddock $paddock area $area \
+                          yield $wetYield protein $protein crop $name
+   } else {
+      error "cashbook:income: Must specify a either an numeric amount, or &lt;category, name, price and area&gt;."
+   }
+}
+
+proc cashbook:expenditureHandler {args} {
+  global incomingVariant config
+  set _names {}
+
+  set comment ""
+  foreach {_name _value} [unpack_Variant $incomingVariant] { 
+     set $_name [string tolower $_value]
+     lappend _names $_name
+  }
+
+  if {[lsearch ${_names} comment] &lt; 0} {lappend _names comment}
+
+  if {[info exists cost]} {
+     # Simple 
+     global balance
+     set balance [expr $balance - $cost]
+  } elseif {[info exists category] &amp;&amp; [info exists name] &amp;&amp; [info exists rate] &amp;&amp; [info exists area]} {
+     # lookup this expense in our table of costs
+
+     if {![info exists config(economics,$category,$name)] } {
+        foreach {n v} [array get config economics*] {apsimWriteToSummaryFile "economics $n=$v"}
+        error "No price information for $name in $category"
+     }
+
+     set price $config(economics,$category,$name)
+     set cost [expr $price * $rate * $area]
+
+     if {[lsearch ${_names} price] &lt; 0} {lappend _names price}
+
+     set comment "$category ($name)"
+     apsimWriteToSummaryFile "Costed $name $category (rate=$rate, price=$price) over $area ha = $cost"
+     
+     global balance
+     set balance [expr $balance - $cost]
+  } else {
+     error "cashbook:expenditure: Must specify a either a cost or a (category + name + rate + area)."
+  }
+  if {[info exists fallow_cost] &amp;&amp; ![string is double -strict $fallow_cost]} {set fallow_cost $cost}
+  if {[info exists incrop_cost] &amp;&amp; ![string is double -strict $incrop_cost]} {set incrop_cost $cost}
+  set cmd "cashbook:log expenditure cost $cost" 
+  foreach _name ${_names} { lappend cmd ${_name} [set ${_name}] }
+  eval $cmd
+}
+
+# Add up the annual farm overheads
+proc cashbook:doFarmOverheads {} {
+   global balance config
+   set sum $config(economics,overheads)
+      
+   set balance [expr $balance - $sum]
+   cashbook:log expenditure cost $sum comment "Farm Overheads"
+}
+
+# Work our repayments on initial investment
+proc cashbook:doInitialCapital {} {
+   global config balance
+
+   if {![info exists config(economics,icapital,ivalue)] ||
+       ![info exists config(economics,icapital,loanRate)] ||
+       ![info exists config(economics,icapital,loanDuration)]} {
+      return   
+   }
+       
+   if {![info exists config(economics,icapital,loanPeriod)]} {
+      set config(economics,icapital,loanPeriod) 1
+   }
+   
+   if {$config(economics,icapital,loanRate) &gt; 0.0} {
+      if {$config(economics,icapital,loanPeriod) &lt;=  $config(economics,icapital,loanDuration)} {
+         #A = P(i(1+i)^n)/((1+i)^n - 1)
+         set P $config(economics,icapital,ivalue)
+         set i [expr $config(economics,icapital,loanRate)/100.0]
+         set n $config(economics,icapital,loanDuration)
+         
+         set A [expr $P * ($i*pow(1+$i,$n))/(pow(1.0+$i,$n) - 1.0) ]
+      
+         set balance [expr $balance - $A]
+         cashbook:log expenditure cost $A \
+                                  interest_paid $A \
+                                  comment "Loan repayments for initial capital outlay"
+         
+         set config(economics,icapital,loanPeriod) [expr 1 + $config(economics,icapital,loanPeriod)]
+         if { $config(economics,icapital,loanPeriod) &gt;  $config(economics,icapital,loanDuration) } {
+             apsimWriteToSummaryFile "Loan for initial capital outlay is finished"
+         }    
+      }
+   }
+}
+     
+
+
+# Send an "end financial year" message when needed
+proc cashbook:processHandler {args} {
+  if {[apsimGet day] == 181} {
+     cashbook:doFarmOverheads
+     cashbook:doInitialCapital
+     apsimSendMessage "" end_financial_year
+  }
+}
+
+proc cashbook:log {what args} {
+   global balance config 
+   set date [apsimGet dd/mmm/yyyy]
+
+   set _names {}
+   foreach {_name _value} $args { 
+      set ${_name} ${_value} 
+      lappend _names $_name
+   }
+
+   if { [info exists config(economics,outputfp)] } {
+      if {$what == "income"} {
+         puts $config(economics,outputfp) "$date,$amount,,$balance,$comment"
+      } elseif {$what == "expenditure"} {
+         puts $config(economics,outputfp) "$date,,$cost,$balance,$comment"
+      } else {
+         error "Unknown cashbook operation '$what'"
+      }
+   }
+
+   if {$what == "income"} {
+      set cmd "cashbook:summary date $date $what $amount"
+   } elseif {$what == "expenditure"} {
+      set cmd "cashbook:summary date $date $what $cost "
+   } else {
+      error "Unknown cashbook operation '$what'"
+   }
+   foreach _name ${_names} { lappend cmd ${_name} [set ${_name}] }
+   eval $cmd
+}
+
+proc cashbook:summary {args} {
+   global balance config
+   
+   if { [info exists config(economics,summaryfp)]} {
+      
+      foreach {_name _value} $args {set ${_name} ${_value} }
+
+      foreach v {date paddock area crop yield protein "fertiliser_type" \
+               "fertiliser_rate" "interim_rainfall" "interim_runoff" "interim_drainage" \
+               "interim_soil_loss" "SW_state" "NO3_state" "fallow_cost" "incrop_cost" "crop_income" \
+               "interest_paid" "expenditure" "income" "comment"} {
+         if {[info exists $v]} {
+            puts -nonewline $config(economics,summaryfp) "[set $v],"
+         } else {
+            puts -nonewline $config(economics,summaryfp) ","
+         }     
+      }
+      puts $config(economics,summaryfp) ""
+   }
+}
+# Annual summaries. Re-read the event file we have written into a single array and
+# write a cash flow summary
+proc cashbook:exitHandler {} {
+   global config
+
+   puts "Cashbook: Writing summaries"
+
+   if { [info exists config(economics,outputfp)] } { close $config(economics,outputfp) }
+   if { [info exists config(economics,summaryfp)] } { close $config(economics,summaryfp) }
+
+   if { ![info exists config(economics,cashSummaryName)] } { return }
+
+   #1. Read and store event data
+   set fp [open $config(economics,cashSummaryName) r]
+   gets $fp header
+   set columns [split $header ","]
+   
+   set minyear 3000; set maxyear 0; 
+   set years {}; set paddocks {}; catch {unset A}
+   
+   while {[gets $fp line] &gt;= 0} {
+      foreach what {incrop_cost fallow_cost crop_income income expenditure interest_paid interest_earned} {catch {unset $what}}
+      foreach $columns [split $line ","] {break}
+      regsub -all "/" $date "-" date
+      set now [clock scan $date]
+      set endYear [clock scan "30-june-[clock format $now -format %Y]"]
+   
+      if {$now &gt; $endYear} {
+         set year [expr [clock format $now -format %Y]+1]
+      } else {
+         set year [clock format $now -format %Y]
+      }
+   
+      if {$year &lt; $minyear} {set minyear $year}
+      if {$year &gt; $maxyear} {set maxyear $year}
+      if {[lsearch $years $year] &lt; 0} {lappend years $year}
+      if {$paddock != {} &amp;&amp; $paddock != "livestock" &amp;&amp; [lsearch $paddocks $paddock] &lt; 0} {lappend paddocks $paddock}
+      foreach what {incrop_cost fallow_cost crop_income} {
+         if {[string is double -strict [set $what]]} {
+            if {![info exists A($year,$paddock,$what)]} {
+               set A($year,$paddock,$what) [set $what]
+            } else {
+               set A($year,$paddock,$what) [expr $A($year,$paddock,$what) + [set $what]]
+            }
+         }
+      }
+      
+      foreach what {income expenditure interest_paid interest_earned} {
+         if {$paddock == {} &amp;&amp; 
+             [info exists $what] &amp;&amp; 
+             [string is double -strict [set $what]]} {
+            if {![info exists A($year,farm_$what)]} {
+               set A($year,farm_$what) [set $what]
+            } else {
+               set A($year,farm_$what) [expr $A($year,farm_$what) + [set $what]]
+            }
+         }
+
+         if {$paddock == "livestock" &amp;&amp; 
+             [info exists $what] &amp;&amp; 
+             [string is double -strict [set $what]]} {
+            if {![info exists A($year,livestock_$what)]} {
+               set A($year,livestock_$what) [set $what]
+            } else {
+               set A($year,livestock_$what) [expr $A($year,livestock_$what) + [set $what]]
+            }
+         }
+
+      }
+   }
+   close $fp
+   
+   set paddocks [lsort $paddocks]
+   
+   #2. Write annual cash flow summary
+   set fp [open $config(economics,annualSummaryName) w]
+
+   foreach year $years {puts -nonewline $fp ",Year $year"}
+   puts $fp "\nCrop income"
+   foreach paddock $paddocks {
+      puts -nonewline $fp "Paddock $paddock"
+      foreach year $years {
+         if {[info exists A($year,$paddock,crop_income)]} {
+            puts -nonewline $fp ",[format "%.0f" $A($year,$paddock,crop_income)]"
+         } else {
+            puts -nonewline $fp ","
+         }
+      }
+      puts $fp ""
+   }
+   
+   puts -nonewline $fp "Livestock income"
+   foreach year $years {
+      if {[info exists A($year,livestock_income)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,livestock_income)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   puts -nonewline $fp "Other farm income"
+   foreach year $years {
+      if {[info exists A($year,farm_income)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,farm_income)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   puts -nonewline $fp "Interest Earned"
+   foreach year $years {
+      if {[info exists A($year,farm_interest_earned)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,farm_interest_earned)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   
+   puts -nonewline $fp "Total income"
+   foreach year $years {
+      set sum 0.0
+      foreach {name value} [array get A $year,*income] {
+         set sum [expr $sum + $value]
+      }   
+      puts -nonewline $fp ",[format %.0f $sum]"
+      set A($year,total_income) $sum
+   }
+   puts $fp "\n"
+   
+   puts $fp "Variable expenses"
+   foreach what {incrop_cost fallow_cost} {
+      foreach paddock $paddocks {
+         puts -nonewline $fp "Paddock $paddock $what"
+         foreach year $years {
+            if {[info exists A($year,$paddock,$what)]} {
+               puts -nonewline $fp ",[format "%.0f" $A($year,$paddock,$what)]"
+            } else {
+               puts -nonewline $fp ","
+            }
+         }
+         puts $fp ""
+      }
+   }
+   puts -nonewline $fp "Livestock expenses"
+   foreach year $years {
+      if {[info exists A($year,livestock_expenditure)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,livestock_expenditure)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   puts -nonewline $fp "Other expenses"
+   foreach year $years {
+      if {[info exists A($year,farm_expenditure)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,farm_expenditure)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   
+   puts -nonewline $fp "Interest Paid"
+   foreach year $years {
+      if {[info exists A($year,farm_interest_paid)]} {
+         puts -nonewline $fp ",[format "%.0f" $A($year,farm_interest_paid)]"
+      } else {
+         puts -nonewline $fp ","
+      }
+   }
+   puts $fp ""
+   
+   puts -nonewline $fp "Total expenses"
+   foreach year $years {
+      set sum 0.0
+      foreach {name value} [array get A $year,farm_expenditure] {
+         set sum [expr $sum + $value]
+      }   
+      foreach {name value} [array get A $year,*cost] {
+         set sum [expr $sum + $value]
+      }   
+      puts -nonewline $fp ",[format %.0f $sum]"
+      set A($year,total_expenses) $sum
+   }
+   puts $fp "\n"
+
+   puts -nonewline $fp "Annual Surplus/Deficit"
+   foreach year $years {
+      set sum [expr $A($year,total_income) - $A($year,total_expenses)]
+      set A($year,surplus) $sum
+      puts -nonewline $fp ",[format %.0f $sum]"
+   }
+   puts $fp "\n"
+
+   puts -nonewline $fp "Cumulative Cash Flow"
+   set year [expr [lindex $years 0]-1]
+   set A($year,balance) $config(initialBalance)
+   foreach year $years {
+      set A($year,balance) [expr $A([expr $year-1],balance) + $A($year,surplus)]
+      puts -nonewline $fp ",[format %.0f $A($year,balance)]"
+   }
+   puts $fp "\n"
+
+   close $fp
+}
+
+# apsim 'strings' are returned as arrays of strings and may need this
+proc unlist {list} {
+   if {[llength $list] == 1} {return [lindex $list 0]}
+   return $list
+}
+
+########################## End apsim interface code
+
+apsimWriteToSummaryFile "     Cashbook initialised."
+apsimWriteToSummaryFile ""
+
+</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Initial Capital Assets">
+        <ui>
+          <category type="category" description="Initial Capital Assets" />
+          <ivalue type="text" description="Loan Value of Initial Investment ($)">0</ivalue>
+          <loanRate type="text" description="Loan repayment rate (% pa)">0</loanRate>
+          <loanDuration type="text" description="Loan duration (years)">0</loanDuration>
+        </ui>
+        <script>
+          <text>
+set config(economics,icapital,ivalue) "[ivalue]"
+set config(economics,icapital,loanRate) "[loanRate]"
+set config(economics,icapital,loanDuration) "[loanDuration]"
+          </text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Cash Journal">
+        <ui>
+          <category type="category" description="Initial Value" />
+          <balance type="text" description="Initial cash balance ($)">0</balance>
+          <category type="category" description="Cash Journal" />
+          <outputfile type="yesno" description="Produce Cashbook">yes</outputfile>
+          <summaryfile type="yesno" description="Produce Cash Summaries">yes</summaryfile>
+        </ui>
+        <script>
+          <text>
+set runTitle [unlist [apsimGet title]]
+
+if {"[outputfile]" != "no"} {
+   set config(economics,outputfp) [open $runTitle.cashBook.csv w]
+   puts $config(economics,outputfp) "date,income,expenditure,balance,comment"
+}
+
+if {"summaryfile" != "no"} {
+   set config(economics,cashSummaryName) "$runTitle.cashSummary.csv"
+   set config(economics,summaryfp) [open $config(economics,cashSummaryName) w]
+   puts $config(economics,summaryfp) "date,paddock,area,crop,yield,protein,fertiliser_type,fertiliser_rate,\
+interim_rainfall,interim_runoff,interim_drainage,\
+interim_soil_loss,SW_state,NO3_state,fallow_cost,incrop_cost,crop_income,interest_paid,expenditure,income,comment"
+
+   set config(economics,annualSummaryName) "$runTitle.cashSummary.Annual.csv"
+   file delete -force $config(economics,annualSummaryName)
+}
+
+set config(initialBalance) "[balance]"
+
+          </text>
+          <event>init</event>
+        </script>
+        <script>
+          <text>
+set balance "[balance]"
+apsimWriteToSummaryFile "     Initial Balance = $balance"
+          </text>
+          <event>start_simulation</event>
+        </script>
+      </rule>
+      <rule name="Prices">
+        <ui>
+          <category type="category" description="Prices" />
+          <maize type="text" description="Maize price ($/tonne)">285.0</maize>
+          <bean type="text" description="Bean Price ($/tonne)">420.0</bean>
+          <maize_residue type="text" description="Maize Stubble ($/tonne)">20.0</maize_residue>
+        </ui>
+        <script>
+          <text>
+set config(economics,cropprice,maize) "[maize]"
+set config(economics,cropprice,maize_residue) "[maize_residue]"
+set config(economics,cropprice,bean) "[bean]"
+          </text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Costs - Farm Overheads">
+        <ui>
+          <category type="category" description="Overheads" />
+          <other type="text" description="Other Overhead Expenses ($)">100.0</other>
+          <mzreq type="text" description="Maize requirement (tonnes)">1.26</mzreq>
+          <bnreq type="text" description="Bean requitrement (tonnes) ">0.35</bnreq>
+        </ui>
+        <script>
+          <text>
+set config(economics,mzreq) [mzreq]
+set config(economics,bnreq) [bnreq]
+set config(economics,overheads) [expr $config(economics,cropprice,maize) * $config(economics,mzreq) + \
+  $config(economics,cropprice,bean) * $config(economics,bnreq) + \
+  [other] ]
+          </text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Costs - Fertilisers">
+        <ui>
+          <category description="Fertiliser Costs" />
+          <map type="text" description="MAP (starterphos - 10n;21.9p;1.5s) ($/kg)">0.56</map>
+          <starter_z type="text" description="starter z ($/kg)">0.62</starter_z>
+          <urea type="text" description="Urea ($/kg)">0.6</urea>
+          <no3_n type="text" description="NO3 N ($/kg)">1.0</no3_n>
+        </ui>
+        <script>
+          <text>
+set config(economics,fertilisercost,map) "[map]"
+set config(economics,fertilisercost,starter_z) "[starter_z]"
+set config(economics,fertilisercost,urea) "[urea]"
+set config(economics,fertilisercost,no3_n) "[no3_n]"
+          </text>
+          <event>init</event>
+        </script>
+      </rule>
+    </tclmanager>
+    <area name="paddock1">
+      <surfaceom name="Surface Organic Matter">
+        <PoolName type="text" description="Organic Matter pool name">maize_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,WF_Millet,wheat" description="Organic Matter type">maize</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">100.</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80.0</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)" />
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <maize />
+      <fababean name="bean" />
+      <canopy>
+        <intercrop type="text" description="Enter crop names to intercrop">maize bean</intercrop>
+      </canopy>
+      <erosion name="Erosion">
+        <model description="Model Name">freebairn</model>
+        <slope description="Slope of plot in percent (%)">6.5</slope>
+        <slope_length description="Length of plot (m)">60.0</slope_length>
+        <k_factor description="Soil erodibility factor (t/ha/EI 30 )">0.4</k_factor>
+        <p_factor description="Supporting practise factor (unitless)">1.0</p_factor>
+        <bed_depth description="Depth to bedrock (mm)">1900</bed_depth>
+        <profile_reduction type="list" listvalues="off,on" description="Profile Reduction">off</profile_reduction>
+        <profile_layer_merge description="Fraction of original size in which the lowest layer is merged into the layer above (0-1)">0.05</profile_layer_merge>
+        <minimum_depth description="If the profile erodes to this depth, the simulation is stopped (mm)">100.0</minimum_depth>
+      </erosion>
+      <soil name="Soil">
+        <Country />
+        <Site />
+        <Region />
+        <LocalName />
+        <SoilType description="Classification" />
+        <NearestTown description="Nearest town" />
+        <NaturalVegetation description="Natural vegetation" />
+        <State />
+        <ApsoilNumber description="Apsoil number" />
+        <Latitude description="Latitude (WGS84)" />
+        <Longitude />
+        <LocationAccuracy description="Location accuracy" />
+        <DataSource type="multiedit" description="Data source">Dr. John P Dimes, ICRISAT, Bulawayo, Zimbabwe
+J.Dimes@cgiar.org</DataSource>
+        <Comments />
+        <Comment type="multiedit" description="Comments">8 Mar 1999</Comment>
+        <Langitude description="Longitude (WGS84)" />
+        <Water>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <KS units="mm/day" />
+            <BD units="g/cc">1.280</BD>
+            <AirDry units="mm/mm">0.110</AirDry>
+            <LL15 units="mm/mm">0.150</LL15>
+            <DUL units="mm/mm">0.280</DUL>
+            <SAT units="mm/mm">0.320</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <KS units="mm/day" />
+            <BD>1.270</BD>
+            <AirDry>0.120</AirDry>
+            <LL15>0.150</LL15>
+            <DUL>0.280</DUL>
+            <SAT>0.320</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.340</BD>
+            <AirDry>0.170</AirDry>
+            <LL15>0.170</LL15>
+            <DUL>0.285</DUL>
+            <SAT>0.340</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.330</BD>
+            <AirDry>0.170</AirDry>
+            <LL15>0.170</LL15>
+            <DUL>0.270</DUL>
+            <SAT>0.330</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.310</BD>
+            <AirDry>0.170</AirDry>
+            <LL15>0.170</LL15>
+            <DUL>0.270</DUL>
+            <SAT>0.330</SAT>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <KS units="mm/day" />
+            <BD>1.310</BD>
+            <AirDry>0.170</AirDry>
+            <LL15>0.170</LL15>
+            <DUL>0.270</DUL>
+            <SAT>0.330</SAT>
+          </Layer>
+          <SoilCrop name="sorg">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.070</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.070</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="cowpea">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="maize">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="mucuna">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="peanut">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="pigeonp">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="soybean">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="bean">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <LL units="mm/mm">0.150</LL>
+              <KL units="/day">0.080</KL>
+              <XF units="0-1">1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <LL>0.150</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.080</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.060</KL>
+              <XF>1</XF>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <LL>0.170</LL>
+              <KL>0.040</KL>
+              <XF>1</XF>
+            </Layer>
+          </SoilCrop>
+        </Water>
+        <SoilWat>
+          <SummerCona>5</SummerCona>
+          <SummerU>5</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>5</WinterCona>
+          <WinterU>5</WinterU>
+          <WinterDate>1-Apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>32</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>80</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>
+          </Slope>
+          <DischargeWidth>
+          </DischargeWidth>
+          <CatchmentArea>
+          </CatchmentArea>
+          <MaxPond>
+          </MaxPond>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <SWCON units="0-1">0.500</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <SWCON>0.500</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.500</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.300</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.300</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <SWCON>0.300</SWCON>
+            <MWCON units="0-1" />
+            <KLAT units="mm/d" />
+          </Layer>
+        </SoilWat>
+        <SoilOrganicMatter>
+          <RootCN>45</RootCN>
+          <RootWT>400</RootWT>
+          <SoilCN>10</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <OC units="Total %">1.39</OC>
+            <FBiom units="0-1">0.020</FBiom>
+            <FInert units="0-1">0.500</FInert>
+            <HumC units="kg/ha" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <OC>1</OC>
+            <FBiom>0.015</FBiom>
+            <FInert>0.750</FInert>
+            <HumC code="Calculated">3612.93103448276</HumC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.8</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.900</FInert>
+            <HumC code="Calculated">2268.71287128713</HumC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.46</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.990</FInert>
+            <HumC code="Calculated">181.72277227723</HumC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.43</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.990</FInert>
+            <HumC code="Calculated">167.316831683169</HumC>
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <OC>0.29</OC>
+            <FBiom>0.010</FBiom>
+            <FInert>0.990</FInert>
+            <HumC code="Calculated">112.841584158416</HumC>
+          </Layer>
+        </SoilOrganicMatter>
+        <Analysis>
+          <Layer>
+            <Thickness units="mm">150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH units="1:5 water">6</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>150</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>6</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>6.200</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>6.400</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>6.500</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+          <Layer>
+            <Thickness>300</Thickness>
+            <Rocks units="%" />
+            <Texture />
+            <MunsellColour />
+            <EC units="1:5 dS/m" />
+            <PH>6.500</PH>
+            <CL units="mg/kg" />
+            <Boron units="Hot water mg/kg" />
+            <CEC units="cmol+/kg" />
+            <Ca units="cmol+/kg" />
+            <Mg units="cmol+/kg" />
+            <Na units="cmol+/kg" />
+            <K units="cmol+/kg" />
+            <ESP units="%" />
+            <Mn units="mg/kg" />
+            <Al units="cmol+/kg" />
+            <ParticleSizeSand units="%" />
+            <ParticleSizeSilt units="%" />
+            <ParticleSizeClay units="%" />
+          </Layer>
+        </Analysis>
+        <InitWater>
+          <percentmethod>
+            <percent>1</percent>
+            <distributed>filled from top</distributed>
+          </percentmethod>
+        </InitWater>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Layer>
+            <Thickness units="mm">200</Thickness>
+            <no3 units="kg/ha">3</no3>
+            <nh4 units="kg/ha">0.5</nh4>
+          </Layer>
+          <Layer>
+            <Thickness>1800</Thickness>
+            <no3 units="kg/ha">2</no3>
+            <nh4 units="kg/ha">0.1</nh4>
+          </Layer>
+        </Sample>
+      </soil>
+    </area>
+    <area name="paddock2" shortcut="/simulations/50 maize 50 intercrop/paddock1">
+      <surfaceom name="Surface Organic Matter" shortcut="/simulations/50 maize 50 intercrop/paddock1/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/simulations/50 maize 50 intercrop/paddock1/Fertiliser" />
+      <maize shortcut="/simulations/50 maize 50 intercrop/paddock1/maize" />
+      <fababean name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock1/bean" />
+      <canopy shortcut="/simulations/50 maize 50 intercrop/paddock1/canopy" />
+      <erosion name="Erosion" shortcut="/simulations/50 maize 50 intercrop/paddock1/Erosion" />
+      <soil name="Soil" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil">
+        <Water shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water">
+          <SoilCrop name="sorg" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/sorg" />
+          <SoilCrop name="cowpea" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/cowpea" />
+          <SoilCrop name="maize" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/maize" />
+          <SoilCrop name="mucuna" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/mucuna" />
+          <SoilCrop name="peanut" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/peanut" />
+          <SoilCrop name="pigeonp" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/pigeonp" />
+          <SoilCrop name="soybean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/soybean" />
+          <SoilCrop name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/bean" />
+        </Water>
+        <SoilWat shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Analysis" />
+        <InitWater shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Initial nitrogen" />
+      </soil>
+    </area>
+  </simulation>
+  <simulation name="75 intercrop 25 maize" shortcut="/simulations/50 maize 50 intercrop">
+    <metfile name="met" shortcut="/simulations/50 maize 50 intercrop/met">
+      <filename shortcut="/simulations/50 maize 50 beans/met/filename" input="yes" />
+    </metfile>
+    <clock shortcut="/simulations/50 maize 50 intercrop/clock" />
+    <accum shortcut="/simulations/50 maize 50 intercrop/accum" />
+    <summaryfile shortcut="/simulations/50 maize 50 intercrop/summaryfile" />
+    <tclmanager name="Management" shortcut="/simulations/50 maize 50 intercrop/Management">
+      <rule name="Setup">
+        <ui>
+          <cat type="category" description="Paddock Descriptions" />
+          <p1 type="text" description="Paddock 1 name">paddock1</p1>
+          <p1a type="text" description="Paddock 1 Area (ha)">0.75</p1a>
+          <p2 type="text" description="Paddock 2 name">paddock2</p2>
+          <p2a type="text" description="Paddock 2 Area (ha)">0.25</p2a>
+        </ui>
+        <script>
+          <text>
+set config(paddocks) [list [p1] [p2]]
+set config([p1],area) [p1a]
+set config([p2],area) [p2a]
+
+# A list of crops in each paddock
+set config(crops) [list maize bean]
+
+foreach paddock $config(paddocks) {
+  set config($paddock,initialState) Fallow
+  set config($paddock,history) {}
+  set config($paddock,graphNames) graph
+  set state($paddock) {}
+}
+
+set simName [apsimGet title]</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sow LR maize" shortcut="/simulations/50 maize 50 intercrop/Management/Sow LR maize" />
+      <rule name="Sow SR maize" shortcut="/simulations/50 maize 50 intercrop/Management/Sow SR maize" />
+      <rule name="Sow maizebean" shortcut="/simulations/50 maize 50 intercrop/Management/Sow maizebean" />
+      <rule name="Harvest maize rule" shortcut="/simulations/50 maize 50 intercrop/Management/Harvest maize rule" />
+      <rule name="Harvest bean rule" shortcut="/simulations/50 maize 50 intercrop/Management/Harvest bean rule" />
+      <rule name="Harvest maize bean" shortcut="/simulations/50 maize 50 intercrop/Management/Harvest maize bean" />
+      <rule name="Presow Tillage" shortcut="/simulations/50 maize 50 intercrop/Management/Presow Tillage" />
+      <rule name="Sowing Tillage" shortcut="/simulations/50 maize 50 intercrop/Management/Sowing Tillage" />
+      <rule name="Incrop Tillage" shortcut="/simulations/50 maize 50 intercrop/Management/Incrop Tillage" />
+      <rule name="Fallow Tillage" shortcut="/simulations/50 maize 50 intercrop/Management/Fallow Tillage" />
+      <rule name="Fallow Spraying" shortcut="/simulations/50 maize 50 intercrop/Management/Fallow Spraying" />
+      <rule name="Farm logic" shortcut="/simulations/50 maize 50 intercrop/Management/Farm logic" />
+      <rule name="Rugplot stuff" shortcut="/simulations/50 maize 50 intercrop/Management/Rugplot stuff" />
+      <RotPlot name="Crop Management" shortcut="/simulations/50 maize 50 intercrop/Management/Crop Management">
+        <RugPlotUI name="Rug Plot Graph" shortcut="/simulations/50 maize 50 intercrop/Management/Crop Management/Rug Plot Graph" />
+      </RotPlot>
+      <rule name="Annual Reports" shortcut="/simulations/50 maize 50 intercrop/Management/Annual Reports" />
+      <rule name="Harvest Reports" shortcut="/simulations/50 maize 50 intercrop/Management/Harvest Reports" />
+    </tclmanager>
+    <tclmanager name="Labour" shortcut="/simulations/50 maize 50 intercrop/Labour">
+      <rule name="Initialisation logic" shortcut="/simulations/50 maize 50 intercrop/Labour/Initialisation logic" />
+      <rule name="Operator 1" shortcut="/simulations/50 maize 50 intercrop/Labour/Operator 1" />
+      <rule name="Costs - Wages" shortcut="/simulations/50 maize 50 intercrop/Labour/Costs - Wages" />
+    </tclmanager>
+    <tclmanager name="Economics" shortcut="/simulations/50 maize 50 intercrop/Economics">
+      <rule name="Cash Initialisation logic" shortcut="/simulations/50 maize 50 intercrop/Economics/Cash Initialisation logic" />
+      <rule name="Initial Capital Assets" shortcut="/simulations/50 maize 50 intercrop/Economics/Initial Capital Assets" />
+      <rule name="Cash Journal" shortcut="/simulations/50 maize 50 intercrop/Economics/Cash Journal" />
+      <rule name="Prices" shortcut="/simulations/50 maize 50 intercrop/Economics/Prices" />
+      <rule name="Costs - Farm Overheads" shortcut="/simulations/50 maize 50 intercrop/Economics/Costs - Farm Overheads" />
+      <rule name="Costs - Fertilisers" shortcut="/simulations/50 maize 50 intercrop/Economics/Costs - Fertilisers" />
+    </tclmanager>
+    <area name="paddock1" shortcut="/simulations/50 maize 50 intercrop/paddock1">
+      <surfaceom name="Surface Organic Matter" shortcut="/simulations/50 maize 50 intercrop/paddock1/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/simulations/50 maize 50 intercrop/paddock1/Fertiliser" />
+      <maize shortcut="/simulations/50 maize 50 intercrop/paddock1/maize" />
+      <fababean name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock1/bean" />
+      <canopy shortcut="/simulations/50 maize 50 intercrop/paddock1/canopy" />
+      <erosion name="Erosion" shortcut="/simulations/50 maize 50 intercrop/paddock1/Erosion" />
+      <soil name="Soil" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil">
+        <Water shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water">
+          <SoilCrop name="sorg" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/sorg" />
+          <SoilCrop name="cowpea" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/cowpea" />
+          <SoilCrop name="maize" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/maize" />
+          <SoilCrop name="mucuna" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/mucuna" />
+          <SoilCrop name="peanut" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/peanut" />
+          <SoilCrop name="pigeonp" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/pigeonp" />
+          <SoilCrop name="soybean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/soybean" />
+          <SoilCrop name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/bean" />
+        </Water>
+        <SoilWat shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Analysis" />
+        <InitWater shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Initial nitrogen" />
+      </soil>
+    </area>
+    <area name="paddock2" shortcut="/simulations/50 maize 50 intercrop/paddock2">
+      <surfaceom name="Surface Organic Matter" shortcut="/simulations/50 maize 50 intercrop/paddock2/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/simulations/50 maize 50 intercrop/paddock2/Fertiliser" />
+      <maize shortcut="/simulations/50 maize 50 intercrop/paddock2/maize" />
+      <fababean name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock2/bean" />
+      <canopy shortcut="/simulations/50 maize 50 intercrop/paddock2/canopy" />
+      <erosion name="Erosion" shortcut="/simulations/50 maize 50 intercrop/paddock2/Erosion" />
+      <soil name="Soil" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil">
+        <Water shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water">
+          <SoilCrop name="sorg" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/sorg" />
+          <SoilCrop name="cowpea" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/cowpea" />
+          <SoilCrop name="maize" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/maize" />
+          <SoilCrop name="mucuna" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/mucuna" />
+          <SoilCrop name="peanut" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/peanut" />
+          <SoilCrop name="pigeonp" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/pigeonp" />
+          <SoilCrop name="soybean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/soybean" />
+          <SoilCrop name="bean" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Water/bean" />
+        </Water>
+        <SoilWat shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Analysis" />
+        <InitWater shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/50 maize 50 intercrop/paddock1/Soil/Initial nitrogen" />
+      </soil>
+    </area>
+  </simulation>
+  <simulation name="25 intercrop 75 maize" shortcut="/simulations/75 intercrop 25 maize">
+    <metfile name="met" shortcut="/simulations/75 intercrop 25 maize/met">
+      <filename shortcut="/simulations/75 intercrop 25 maize/met/filename" input="yes" />
+    </metfile>
+    <clock shortcut="/simulations/75 intercrop 25 maize/clock" />
+    <accum shortcut="/simulations/75 intercrop 25 maize/accum" />
+    <summaryfile shortcut="/simulations/75 intercrop 25 maize/summaryfile" />
+    <tclmanager name="Management" shortcut="/simulations/75 intercrop 25 maize/Management">
+      <rule name="Setup">
+        <ui>
+          <cat type="category" description="Paddock Descriptions" />
+          <p1 type="text" description="Paddock 1 name">paddock1</p1>
+          <p1a type="text" description="Paddock 1 Area (ha)">0.25</p1a>
+          <p2 type="text" description="Paddock 2 name">paddock2</p2>
+          <p2a type="text" description="Paddock 2 Area (ha)">0.75</p2a>
+        </ui>
+        <script>
+          <text>
+set config(paddocks) [list [p1] [p2]]
+set config([p1],area) [p1a]
+set config([p2],area) [p2a]
+
+# A list of crops in each paddock
+set config(crops) [list maize bean]
+
+foreach paddock $config(paddocks) {
+  set config($paddock,initialState) Fallow
+  set config($paddock,history) {}
+  set config($paddock,graphNames) graph
+  set state($paddock) {}
+}
+
+set simName [apsimGet title]</text>
+          <event>init</event>
+        </script>
+      </rule>
+      <rule name="Sow LR maize" shortcut="/simulations/75 intercrop 25 maize/Management/Sow LR maize" />
+      <rule name="Sow SR maize" shortcut="/simulations/75 intercrop 25 maize/Management/Sow SR maize" />
+      <rule name="Sow maizebean" shortcut="/simulations/75 intercrop 25 maize/Management/Sow maizebean" />
+      <rule name="Harvest maize rule" shortcut="/simulations/75 intercrop 25 maize/Management/Harvest maize rule" />
+      <rule name="Harvest bean rule" shortcut="/simulations/75 intercrop 25 maize/Management/Harvest bean rule" />
+      <rule name="Harvest maize bean" shortcut="/simulations/75 intercrop 25 maize/Management/Harvest maize bean" />
+      <rule name="Presow Tillage" shortcut="/simulations/75 intercrop 25 maize/Management/Presow Tillage" />
+      <rule name="Sowing Tillage" shortcut="/simulations/75 intercrop 25 maize/Management/Sowing Tillage" />
+      <rule name="Incrop Tillage" shortcut="/simulations/75 intercrop 25 maize/Management/Incrop Tillage" />
+      <rule name="Fallow Tillage" shortcut="/simulations/75 intercrop 25 maize/Management/Fallow Tillage" />
+      <rule name="Fallow Spraying" shortcut="/simulations/75 intercrop 25 maize/Management/Fallow Spraying" />
+      <rule name="Farm logic" shortcut="/simulations/75 intercrop 25 maize/Management/Farm logic" />
+      <rule name="Rugplot stuff" shortcut="/simulations/75 intercrop 25 maize/Management/Rugplot stuff" />
+      <RotPlot name="Crop Management" shortcut="/simulations/75 intercrop 25 maize/Management/Crop Management">
+        <RugPlotUI name="Rug Plot Graph" shortcut="/simulations/75 intercrop 25 maize/Management/Crop Management/Rug Plot Graph" />
+      </RotPlot>
+      <rule name="Annual Reports" shortcut="/simulations/75 intercrop 25 maize/Management/Annual Reports" />
+      <rule name="Harvest Reports" shortcut="/simulations/75 intercrop 25 maize/Management/Harvest Reports" />
+    </tclmanager>
+    <tclmanager name="Labour" shortcut="/simulations/75 intercrop 25 maize/Labour">
+      <rule name="Initialisation logic" shortcut="/simulations/75 intercrop 25 maize/Labour/Initialisation logic" />
+      <rule name="Operator 1" shortcut="/simulations/75 intercrop 25 maize/Labour/Operator 1" />
+      <rule name="Costs - Wages" shortcut="/simulations/75 intercrop 25 maize/Labour/Costs - Wages" />
+    </tclmanager>
+    <tclmanager name="Economics" shortcut="/simulations/75 intercrop 25 maize/Economics">
+      <rule name="Cash Initialisation logic" shortcut="/simulations/75 intercrop 25 maize/Economics/Cash Initialisation logic" />
+      <rule name="Initial Capital Assets" shortcut="/simulations/75 intercrop 25 maize/Economics/Initial Capital Assets" />
+      <rule name="Cash Journal" shortcut="/simulations/75 intercrop 25 maize/Economics/Cash Journal" />
+      <rule name="Prices" shortcut="/simulations/75 intercrop 25 maize/Economics/Prices" />
+      <rule name="Costs - Farm Overheads" shortcut="/simulations/75 intercrop 25 maize/Economics/Costs - Farm Overheads" />
+      <rule name="Costs - Fertilisers" shortcut="/simulations/75 intercrop 25 maize/Economics/Costs - Fertilisers" />
+    </tclmanager>
+    <area name="paddock1" shortcut="/simulations/75 intercrop 25 maize/paddock1">
+      <surfaceom name="Surface Organic Matter" shortcut="/simulations/75 intercrop 25 maize/paddock1/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/simulations/75 intercrop 25 maize/paddock1/Fertiliser" />
+      <maize shortcut="/simulations/75 intercrop 25 maize/paddock1/maize" />
+      <fababean name="bean" shortcut="/simulations/75 intercrop 25 maize/paddock1/bean" />
+      <canopy shortcut="/simulations/75 intercrop 25 maize/paddock1/canopy" />
+      <erosion name="Erosion" shortcut="/simulations/75 intercrop 25 maize/paddock1/Erosion" />
+      <soil name="Soil" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil">
+        <Water shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water">
+          <SoilCrop name="sorg" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/sorg" />
+          <SoilCrop name="cowpea" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/cowpea" />
+          <SoilCrop name="maize" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/maize" />
+          <SoilCrop name="mucuna" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/mucuna" />
+          <SoilCrop name="peanut" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/peanut" />
+          <SoilCrop name="pigeonp" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/pigeonp" />
+          <SoilCrop name="soybean" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/soybean" />
+          <SoilCrop name="bean" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Water/bean" />
+        </Water>
+        <SoilWat shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Analysis" />
+        <InitWater shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/75 intercrop 25 maize/paddock1/Soil/Initial nitrogen" />
+      </soil>
+    </area>
+    <area name="paddock2" shortcut="/simulations/75 intercrop 25 maize/paddock2">
+      <surfaceom name="Surface Organic Matter" shortcut="/simulations/75 intercrop 25 maize/paddock2/Surface Organic Matter" />
+      <fertiliser name="Fertiliser" shortcut="/simulations/75 intercrop 25 maize/paddock2/Fertiliser" />
+      <maize shortcut="/simulations/75 intercrop 25 maize/paddock2/maize" />
+      <fababean name="bean" shortcut="/simulations/75 intercrop 25 maize/paddock2/bean" />
+      <canopy shortcut="/simulations/75 intercrop 25 maize/paddock2/canopy" />
+      <erosion name="Erosion" shortcut="/simulations/75 intercrop 25 maize/paddock2/Erosion" />
+      <soil name="Soil" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil">
+        <Water shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water">
+          <SoilCrop name="sorg" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/sorg" />
+          <SoilCrop name="cowpea" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/cowpea" />
+          <SoilCrop name="maize" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/maize" />
+          <SoilCrop name="mucuna" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/mucuna" />
+          <SoilCrop name="peanut" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/peanut" />
+          <SoilCrop name="pigeonp" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/pigeonp" />
+          <SoilCrop name="soybean" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/soybean" />
+          <SoilCrop name="bean" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Water/bean" />
+        </Water>
+        <SoilWat shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Analysis" />
+        <InitWater shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/InitWater" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/75 intercrop 25 maize/paddock2/Soil/Initial nitrogen" />
+      </soil>
+    </area>
+  </simulation>
+  <Graph name="Farmer Expected Maize Yield (monoculture)">
+    <Legend>
+      <CheckedTitles>Simulated Maize Yields, 50 maize 50 intercrop</CheckedTitles>
+      <CheckedTitles>Expected Maize yields, Kakamega farmer maize yields</CheckedTitles>
+    </Legend>
+    <Plot name="Simulated Maize Yields">
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Probability</Y>
+      <colour>
+      </colour>
+      <X>yield</X>
+      <GDProbability>
+        <Exceedence>No</Exceedence>
+        <GDFilter name="Filter">
+          <Filter>crop = 'maize' and paddock = 'paddock2'</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>50 maize 50 intercrop.harvest.out</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </GDProbability>
+    </Plot>
+    <Plot name="Expected Maize yields">
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <Y>Probability</Y>
+      <colour>-65536</colour>
+      <X>yield</X>
+      <GDApsimFileReader name="ApsimFileReader">
+        <FileName>kakamega.observed.maize.harvests.txt</FileName>
+      </GDApsimFileReader>
+    </Plot>
+  </Graph>
+  <GraphReport name="Maize yields by season">
+    <Graph name="Maize Harvest Yield (paddock1)">
+      <Legend>
+        <CheckedTitles>SR</CheckedTitles>
+        <CheckedTitles>LR</CheckedTitles>
+      </Legend>
+      <Plot name="SR">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Probability</Y>
+        <colour>-65536</colour>
+        <X>yield</X>
+        <GDProbability>
+          <Exceedence>No</Exceedence>
+          <GDFilter name="Filter">
+            <Filter>crop = 'maize' and paddock = 'paddock1' and season = 'SR'</Filter>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>50 maize 50 intercrop.harvest.out</FileName>
+            </GDApsimFileReader>
+          </GDFilter>
+        </GDProbability>
+      </Plot>
+      <Plot name="LR">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Probability</Y>
+        <colour>
+        </colour>
+        <X>yield</X>
+        <GDProbability>
+          <Exceedence>No</Exceedence>
+          <GDFilter name="Filter">
+            <Filter>crop = 'maize' and paddock = 'paddock1' and season = 'LR'</Filter>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>50 maize 50 intercrop.harvest.out</FileName>
+            </GDApsimFileReader>
+          </GDFilter>
+        </GDProbability>
+      </Plot>
+    </Graph>
+    <Graph name="Maize Harvest Yield (monoculture)">
+      <Legend>
+        <CheckedTitles>SR, 50 maize 50 intercrop</CheckedTitles>
+        <CheckedTitles>LR, 50 maize 50 intercrop</CheckedTitles>
+        <CheckedTitles>Expected yields, Kakamega farmer maize yields</CheckedTitles>
+      </Legend>
+      <Plot name="SR">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Probability</Y>
+        <colour>-65536</colour>
+        <X>yield</X>
+        <GDProbability>
+          <Exceedence>No</Exceedence>
+          <GDFilter name="Filter">
+            <Filter>crop = 'maize' and paddock = 'paddock2' and season = 'SR'</Filter>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>50 maize 50 intercrop.harvest.out</FileName>
+            </GDApsimFileReader>
+          </GDFilter>
+        </GDProbability>
+      </Plot>
+      <Plot name="LR">
+        <SeriesType>Solid line</SeriesType>
+        <PointType>None</PointType>
+        <Y>Probability</Y>
+        <colour>
+        </colour>
+        <X>yield</X>
+        <GDProbability>
+          <Exceedence>No</Exceedence>
+          <GDFilter name="Filter">
+            <Filter>crop = 'maize' and paddock = 'paddock2' and season = 'LR'</Filter>
+            <GDApsimFileReader name="ApsimFileReader">
+              <FileName>50 maize 50 intercrop.harvest.out</FileName>
+            </GDApsimFileReader>
+          </GDFilter>
+        </GDProbability>
+      </Plot>
+      <Plot name="Expected yields">
+        <SeriesType>No line</SeriesType>
+        <PointType>Circle</PointType>
+        <Y>Probability</Y>
+        <colour>-65536</colour>
+        <X>yield</X>
+        <GDApsimFileReader name="ApsimFileReader">
+          <FileName>kakamega.observed.maize.harvests.txt</FileName>
+        </GDApsimFileReader>
+      </Plot>
+    </Graph>
+  </GraphReport>
+  <Graph name="Total maize produced (tonnes)">
+    <Legend>
+      <CheckedTitles> 75 intercrop 25 maize</CheckedTitles>
+      <CheckedTitles> 25 intercrop 75 maize</CheckedTitles>
+      <CheckedTitles> 50 maize 50 intercrop</CheckedTitles>
+    </Legend>
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Probability</Y>
+      <colour>
+      </colour>
+      <X>maize_harvest</X>
+      <GDProbability>
+        <Exceedence>No</Exceedence>
+        <GDFilter name="Filter">
+          <Filter>year &gt;= 1980</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>75 intercrop 25 maize.annual.out</FileName>
+            <FileName>25 intercrop 75 maize.annual.out</FileName>
+            <FileName>50 maize 50 intercrop.annual.out</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </GDProbability>
+    </Plot>
+  </Graph>
+  <Graph name="Total beans produced (tonnes)">
+    <Legend>
+      <CheckedTitles> 75 intercrop 25 maize</CheckedTitles>
+      <CheckedTitles> 25 intercrop 75 maize</CheckedTitles>
+      <CheckedTitles> 50 maize 50 intercrop</CheckedTitles>
+    </Legend>
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Probability</Y>
+      <colour>
+      </colour>
+      <X>bean_harvest</X>
+      <GDProbability>
+        <Exceedence>No</Exceedence>
+        <GDFilter name="Filter">
+          <Filter>year &gt;= 1980</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>75 intercrop 25 maize.annual.out</FileName>
+            <FileName>25 intercrop 75 maize.annual.out</FileName>
+            <FileName>50 maize 50 intercrop.annual.out</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </GDProbability>
+    </Plot>
+  </Graph>
+  <Graph name="Profit">
+    <Legend>
+      <CheckedTitles> 75 intercrop 25 maize</CheckedTitles>
+      <CheckedTitles> 25 intercrop 75 maize</CheckedTitles>
+      <CheckedTitles> 50 maize 50 intercrop</CheckedTitles>
+    </Legend>
+    <Plot>
+      <SeriesType>Solid line</SeriesType>
+      <PointType>None</PointType>
+      <Y>Probability</Y>
+      <colour>
+      </colour>
+      <X>profit</X>
+      <GDProbability>
+        <Exceedence>No</Exceedence>
+        <GDFilter name="Filter">
+          <Filter>year &gt;= 1980</Filter>
+          <GDApsimFileReader name="ApsimFileReader">
+            <FileName>75 intercrop 25 maize.annual.out</FileName>
+            <FileName>25 intercrop 75 maize.annual.out</FileName>
+            <FileName>50 maize 50 intercrop.annual.out</FileName>
+          </GDApsimFileReader>
+        </GDFilter>
+      </GDProbability>
+    </Plot>
+  </Graph>
+</folder>
