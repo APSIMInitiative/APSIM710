@@ -1201,7 +1201,7 @@ public class SoilN
 #endregion
 
 #region Events to which we subscribe, and their handlers
-    [EventHandler]
+    [EventHandler("init2")]
     public void OnInit2()
     {
         GetSiteVariables();
@@ -1214,7 +1214,7 @@ public class SoilN
     }
 
 
-    [EventHandler]
+    [EventHandler("process")]
     public void OnProcess() 
     {
         //GetOtherVariables(); // Should occur automatically once we're up and running...
@@ -1225,7 +1225,7 @@ public class SoilN
             SendActualResidueDecompositionCalculated();
     }
 
-    [EventHandler]
+    [EventHandler("reset")]
     public void OnReset() 
     {
         SaveState();          // Save state
@@ -1238,13 +1238,13 @@ public class SoilN
         DeltaState();         // Change of state
     }
 
-    [EventHandler]
+    [EventHandler("sum_report")]
     public void OnSum_report() 
     { 
         SumReport(); 
     }
 
-    [EventHandler]
+    [EventHandler("IncorpFOM")]
     public void OnIncorpFOM(FOMLayerType IncorpFOM) 
     {
     //    We partition the C and N into fractions in each layer.
@@ -1259,7 +1259,7 @@ public class SoilN
                 IncorpFOM.Layer[i].FOM.N = (IncorpFOM.Layer[i].FOM.amount * c_in_fom) /
                                            IncorpFOM.Layer[i].CNR;
             // Was any N specified?
-            nSpecified |= IncorpFOM.Layer[i].FOM.N > 0.0;
+            nSpecified |= IncorpFOM.Layer[i].FOM.N != 0.0;
         }
 
         if (nSpecified)
@@ -1297,7 +1297,7 @@ public class SoilN
         }
     }
 
-    [EventHandler]
+    [EventHandler("tick")]
     public void OnTick(TimeType time) 
     {
         //DateUtility.JulianDayNumberToDayOfYear(time.startday, out day_of_year, out year);
@@ -1314,7 +1314,7 @@ public class SoilN
    
     }
 
-    [EventHandler]
+    [EventHandler("NewMet")]
     public void OnNewmet(NewMetType NewMet) 
     {
         radn = NewMet.radn;
@@ -1322,7 +1322,7 @@ public class SoilN
         mint = NewMet.mint;
     }
 
-    [EventHandler]
+    [EventHandler("PotentialResidueDecompositionCalculated")]
     public void OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecompType SurfaceOrganicMatterDecomp) 
     {
     //+  Purpose
@@ -1356,7 +1356,7 @@ public class SoilN
         }
     }
 
-    [EventHandler]
+    [EventHandler("IncorpFOMPool")]
     public void OnIncorpFOMPool(FOMPoolType IncorpFOMPool)
     {
         // INCREMENT THE POOLS wtih the unpacked deltas
@@ -1378,7 +1378,7 @@ public class SoilN
         }
     }
 
-    [EventHandler]
+    [EventHandler("new_profile")]
     public void OnNew_profile(NewProfileType NewProfile) 
     {
         ll15_dep = NewProfile.ll15_dep;
@@ -1390,7 +1390,7 @@ public class SoilN
         CheckProfile(NewProfile.dlayer);
     }
 
-    [EventHandler]
+    [EventHandler("NitrogenChanged")]
     public void OnNitrogenChanged(NitrogenChangedType NitrogenChanged) 
     {
         for (int layer = 0; layer < NitrogenChanged.DeltaNO3.Length; ++layer)
@@ -1413,7 +1413,7 @@ public class SoilN
         }
     }
 
-    [EventHandler]
+    [EventHandler("AddUrine")]
     public void OnAddUrine(AddUrineType UrineAdded) 
     {
        // Starting with the minimalist version. To be updated by Val's group to
@@ -1474,7 +1474,7 @@ public class SoilN
            
 #endregion
 
-    [EventHandler]
+    [EventHandler("Initialised")]
     public void OnInitialised()
     {
         soiltypeOverridden = My.Override(typeof(SoilTypeDefinition), soiltype);

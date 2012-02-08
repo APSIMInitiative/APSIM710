@@ -2598,7 +2598,7 @@ subroutine OnIncorpFOM (variant)
    ! Was any N specified?
    NSpecified = .false.
    do layer = 1, IncorpFOM%num_layer
-      NSpecified = (NSpecified .or. IncorpFOM%Layer(layer)%FOM%N .gt. 0)
+      NSpecified = (NSpecified .or. IncorpFOM%Layer(layer)%FOM%N .ne. 0)
    end do
 
    if (NSpecified) then
