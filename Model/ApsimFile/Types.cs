@@ -123,7 +123,7 @@ public class Types
             Type T = GetProbeInfoAssembly().GetType("ModelFramework." + ClassName);
             if (T != null)
             {
-                foreach (PropertyInfo Property in T.GetProperties())
+                foreach (PropertyInfo Property in T.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public))
                 {
                     string Description = "";
                     foreach (object Attribute in Property.GetCustomAttributes(false))

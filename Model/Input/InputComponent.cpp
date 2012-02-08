@@ -149,16 +149,16 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 	  openInputFile();
 	  registerAllVariables();
 	  checkForSparseData();
-     
+
      // When the DLL is probed the filename will be blank. Send out some dummy variables so that the GUI
      // and other tools can see the met variables.
-     if (fileName == "")
+     if (getName() == "input" && getVariableValue("maxt") == 0.0)
         {
           addRegistration(::respondToGet, 0, "maxt", singleType);       
           addRegistration(::respondToGet, 0, "mint", singleType);       
           addRegistration(::respondToGet, 0, "radn", singleType);       
           addRegistration(::respondToGet, 0, "rain", singleType);       
-        }     
+        } 
 	  }
    catch (const runtime_error& err)
 	  {
