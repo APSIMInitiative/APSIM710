@@ -2602,7 +2602,7 @@ CCC End new code
 
       CanopyWaterBalance%eo = 0.0 ! need to implement this later
       CanopyWaterBalance%interception =
-     :       sum(g%Interception(1:max_layer,1:max_components))
+     :       sum(g%Interception(1:g%NumLayers,1:max_components))
 
       call publish_CanopyWaterBalance(id%canopy_water_balance
      :                               , CanopyWaterBalance)
