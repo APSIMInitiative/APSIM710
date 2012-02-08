@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------------------------
 #include <stdio.h>
-
+#include <iostream>
 #include "Plant.h"
 #include "Phosphorus.h"
 
@@ -37,14 +37,14 @@ void Phosphorus::doRegistrations(void)
    scienceAPI.expose("pfact_grain",     "",     "Phosphorus stress factor for grain",          false, grainStress);
    scienceAPI.expose("p_total_uptake",  "g/m2", "Today's P uptake",                            false, pUptakeTotal);
 
-   scienceAPI.expose("BiomassP",        "g/m2", "BiomassP",                                    false, pBiomass);
+   scienceAPI.expose("biomass_p",        "g/m2", "Phosphorus in Biomass",                      false, pBiomass);
 
    scienceAPI.exposeFunction("GreenP", "g/m2", "P content of live plant parts",
                      FloatFunction(&Phosphorus::getPGreen));
    scienceAPI.exposeFunction("SenescedP","g/m2", "P content of senesced plant parts",
                      FloatFunction(&Phosphorus::getPSenesced));
    scienceAPI.exposeFunction("p_demand", "kg/ha", "P demand of plant parts",
-                     FloatArrayFunction(&Phosphorus::getPDemand));
+                     FloatFunction(&Phosphorus::getPDemand));
    scienceAPI.exposeFunction("dlt_p_green", "g/m2", "Daily P increase in live plant parts",
                      FloatArrayFunction(&Phosphorus::getDltPGreen));
    scienceAPI.exposeFunction("dlt_p_retrans", "g/m2", "P retranslocated from plant parts to grain",
@@ -167,9 +167,10 @@ float Phosphorus::pStress(void)
    float maxConc = divide(max, wt, 1.0);
    float minConc = divide(min, wt, 1.0);
 
+   
    if ((wt < 1.0e-5) || (act < 1.0e-5)) stress = 1.0;
    else stress = divide(actConc - minConc, maxConc - minConc, 1.0);
-
+   
    return bound(stress,0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
@@ -336,9 +337,9 @@ void Phosphorus::getPSenesced(float &result)
    result = sumVector(pSenesced);
    }
 //------------------------------------------------------------------------------------------------
-void Phosphorus::getPDemand(vector<float> &result)
+void Phosphorus::getPDemand(float &result)
    {
-   result = pDemand;
+   result = sumVector(pDemand);
    }
 //------------------------------------------------------------------------------------------------
 void Phosphorus::getDltPGreen(vector<float> &result)

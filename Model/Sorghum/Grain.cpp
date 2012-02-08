@@ -232,7 +232,7 @@ float Grain::calcGrainNumber(void)
 // Calculate the stress factor for diminishing potential harvest index
 float Grain::yieldPartDemandStress(void)
    {
-   float rueReduction = Min(plant->getTempStress(),plant->nitrogen->getPhotoStress());
+   float rueReduction = Min(Min(plant->getTempStress(),plant->nitrogen->getPhotoStress()),plant->phosphorus->getPhotoStress());
    return plant->water->photosynthesisStress() * rueReduction;
    }
 //------------------------------------------------------------------------------------------------

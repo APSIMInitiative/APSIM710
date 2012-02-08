@@ -577,9 +577,9 @@ float Leaf::calcDltPotentialTPLA(void)
 //------------------------------------------------------------------------------------------------
 float Leaf::calcStressedLeafArea()
    {
-   return dltPotentialLAI * Min(plant->water->getExpansionStress(),
-                                    plant->nitrogen->getExpansionStress());
-   }
+   return dltPotentialLAI * Min(Min(plant->water->getExpansionStress(),
+                                    plant->nitrogen->getExpansionStress()),plant->phosphorus->getExpansionStress());
+   } 
 //------------------------------------------------------------------------------------------------
 float Leaf::calcMaxLaiPossible(void)
    {

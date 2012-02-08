@@ -119,7 +119,7 @@ class Phosphorus : public PlantProcess
    void  getDltPDetached(vector<float> &);
    void  getDltPDead(vector<float> &);
    void  getDltPDeadDetached(vector<float> &);
-   void  getPDemand(vector<float> &);
+   void  getPDemand(float &);
 
    bool  Active(void){return active;}
    void  Summary(void);
