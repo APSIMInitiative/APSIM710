@@ -267,7 +267,7 @@ namespace CSUserInterface
 
                 if (DoingCrops)
                 {
-                    Col.ReadOnly = true;
+                    Col.ReadOnly = Data.Name == "Water" || UsePredictedColour || Col.HeaderText.Contains("PAWC");
                     if (UsePredictedColour)
                     {
                         Col.DefaultCellStyle.BackColor = PredictedCropColors[CropIndex];
