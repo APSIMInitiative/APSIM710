@@ -79,7 +79,7 @@ namespace CSUserInterface
             {
                foreach (XmlNode varNode in XmlHelper.ChildNodes(metNode, "facvar"))
                {
-                  variableTypes.Add(varNode.InnerText);
+                  variableTypes.Add(varNode.InnerText.ToLower());
                }
             }
          }
@@ -96,8 +96,7 @@ namespace CSUserInterface
 
                List<string> variableTypes = new List<string>();
                LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
-               if(variableTypes.Contains(childComp.Type))
-               //if (childComp.Type == "manager" || childComp.Type == "rule" || childComp.Type == "cropui" || childComp.Type == "sorghumConstants" || childComp.Type == "sorghumGenotype")
+               if(variableTypes.Contains(childComp.Type.ToLower()))
                {
                   Table = CreateTable(childComp);
                }
@@ -128,27 +127,37 @@ namespace CSUserInterface
             Table.Columns.Add("Parameters", typeof(string));
 
             XmlNodeList uiNodes = childComp.ContentsAsXML.SelectNodes("//ui/* | //CustomUI/*");
-            if (childComp.Type == "sorghumConstants" || childComp.Type == "sorghumGenotype")
+            bool isManager = true;
+           if(uiNodes.Count == 0)
             {
                uiNodes = childComp.ContentsAsXML.ChildNodes;
+               isManager = false;
             }
             foreach (XmlNode ui in uiNodes)
             {
                 DataRow newRow = Table.NewRow();
                 newRow[0] = false;
 
+                string varName = "";
                 string text = "";
-                if (ui.Attributes["description"] != null)
-                    text = ui.Attributes["description"].Value;
+                if (isManager)
+                {
+                   varName = ui.Name;
+                   if (ui.Attributes["description"] != null)
+                      text = ui.Attributes["description"].Value;
+                   else
+                      text = varName;
+                }
                 else
-                    text = ui.Name;
-
-                newRow[1] = ui.Name;
+                {
+                   varName = XmlHelper.Name(ui);
+                }
+                newRow[1] = varName;
                 newRow[2] = text;
                 newRow[3] = ui.InnerText;
 
                 //look for corresponding node in the variables node
-                XmlNode varNode = Data.SelectSingleNode("//vars/" + ui.Name);
+                XmlNode varNode = Data.SelectSingleNode("//vars/" + varName);
                 if (varNode != null)
                 {
                     newRow[0] = true;

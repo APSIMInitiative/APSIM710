@@ -35,26 +35,28 @@ namespace CSUserInterface
            XmlNode targetsNode = Data.SelectSingleNode("//targets");
            if (targetsNode == null)
               targetsNode = Data.AppendChild(Data.OwnerDocument.CreateElement("targets"));
-
-           foreach (string item in targetPaths)
+           if (targetPaths != null)
            {
-              string sComparePath = item.ToLower();
-              bool pathExists = false;
-              var nodes = targetsNode.SelectNodes("//Target");
-              foreach (XmlNode node in nodes)
+              foreach (string item in targetPaths)
               {
-                 string spath = node.InnerText.ToLower();
-                 if (sComparePath == spath)
+                 string sComparePath = item.ToLower();
+                 bool pathExists = false;
+                 var nodes = targetsNode.SelectNodes("//Target");
+                 foreach (XmlNode node in nodes)
                  {
-                    pathExists = true;
-                    break;
+                    string spath = node.InnerText.ToLower();
+                    if (sComparePath == spath)
+                    {
+                       pathExists = true;
+                       break;
+                    }
                  }
-              }
-              if (!pathExists)
-              {
-                 //check if it exists already
-                 XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
-                 varNode.InnerText = item;
+                 if (!pathExists)
+                 {
+                    //check if it exists already
+                    XmlNode varNode = targetsNode.AppendChild(Data.OwnerDocument.CreateElement("Target"));
+                    varNode.InnerText = item;
+                 }
               }
            }
         }

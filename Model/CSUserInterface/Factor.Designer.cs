@@ -48,8 +48,9 @@
          // 
          // pnlVariable
          // 
-         this.pnlVariable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+         this.pnlVariable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.pnlVariable.Controls.Add(this.label2);
          this.pnlVariable.Controls.Add(this.gridManager);
          this.pnlVariable.Controls.Add(this.label1);
@@ -125,6 +126,8 @@
          // 
          // FactorTargets
          // 
+         this.FactorTargets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.FactorTargets.AutoScroll = true;
          this.FactorTargets.BackColor = System.Drawing.SystemColors.Window;
          this.FactorTargets.HelpText = "";

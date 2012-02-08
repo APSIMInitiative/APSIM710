@@ -35,7 +35,7 @@ namespace ApsimFile
                 return NextItem.CalcCount() * FactorComponent.ChildNodes.Count;
             return FactorComponent.ChildNodes.Count; 
         }
-        public void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
+        public virtual void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
         {
            if (factorsList != "")
               factorsList += ", ";
@@ -154,19 +154,25 @@ namespace ApsimFile
                 if (constantsNode == null)
                 {
                    constantsNode = componentNode.OwnerDocument.CreateElement("constants");
+                   componentNode.AppendChild(constantsNode);
+                }
+                else
+                {
+                   //clean out existing nodes - will remove existing constants
+                   constantsNode.RemoveAll();
                 }
                 List<string> factors = new List<string>(factorsList.Split(';'));
 
                 foreach (string factor in factors)
                   {
-                  List<string> nameValue = new List<string>(factor.Split('='));
-                  if (nameValue.Count > 1)
-                  {
-                     XmlNode factorNode = constantsNode.OwnerDocument.CreateElement("constant");
-                     constantsNode.AppendChild(factorNode);
-                     XmlHelper.SetAttribute(factorNode, "name", nameValue[0]);
-                     factorNode.InnerText = nameValue[1];
-                  }
+                     List<string> nameValue = new List<string>(factor.Split('='));
+                     if (nameValue.Count > 1)
+                     {
+                        XmlNode factorNode = constantsNode.OwnerDocument.CreateElement("constant");
+                        constantsNode.AppendChild(factorNode);
+                        XmlHelper.SetAttribute(factorNode, "name", nameValue[0]);
+                        factorNode.InnerText = nameValue[1];
+                     }
                   }
                 constantsComponent.Contents = componentNode.OuterXml;
             }
@@ -216,6 +222,24 @@ namespace ApsimFile
                 return NextItem.CalcCount() * Parameters.Count;
             return Parameters.Count;
         }
+        public override void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
+        {
+           if (factorsList != "")
+              factorsList += ", ";
+            foreach (string par in Parameters)
+            {
+              if (NextItem != null)
+              {
+                 //call next factor in the list
+                 NextItem.CalcFactorialList(factorials, factorsList + Variable.Name + " = " + par, ref counter, totalCount * getCount());
+              }
+              else
+              {
+                 ++counter;
+                 factorials.Add(factorsList + Variable.Name + " = " + par);
+              }
+           }
+        }
        
         public override void Process(List<SimFactorItem> SimFiles, Component Simulation, string SimulationPath, string factorsList, ref int counter, int totalCount, Configuration.architecture arch)
         {
@@ -239,11 +263,12 @@ namespace ApsimFile
                         }
                         else
                         {
-                           varNode = variablesNode.SelectSingleNode("//" + Variable.Name);
+                           string sSelect = "//property[@name='" + Variable.Name + "']";
+                           varNode = variablesNode.SelectSingleNode(sSelect);
                            if (varNode != null)
                            {
                               varNode.InnerText = par;
-                           }
+                           }//TODO if else then record as an error
                         }
                         targetComp.Contents = variablesNode.OuterXml;
                     }
@@ -310,7 +335,7 @@ namespace ApsimFile
            {
               foreach (XmlNode varNode in XmlHelper.ChildNodes(metNode, "facvar"))
               {
-                 variableTypes.Add(varNode.InnerText);
+                 variableTypes.Add(varNode.InnerText.ToLower());
               }
            }
         }
@@ -334,7 +359,7 @@ namespace ApsimFile
                     {
  		 				            List<string> variableTypes = new List<string>();
 	 		 			            LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
-                        if (comp.ChildNodes.Count == 1 && variableTypes.Contains(comp.ChildNodes[0].Type))//(comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
+                        if (comp.ChildNodes.Count == 1 && variableTypes.Contains(comp.ChildNodes[0].Type.ToLower()))//(comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
                         {
                             //process variables within manager code
                             XmlNodeList varNodes = comp.ContentsAsXML.SelectNodes("//vars/*");
