@@ -152,7 +152,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 
      // When the DLL is probed the filename will be blank. Send out some dummy variables so that the GUI
      // and other tools can see the met variables.
-     if (getName() == "input" && getVariableValue("maxt") == 0.0)
+     if (ToLower(getName()) == "input" && getVariableValue("maxt") == 0.0)
         {
           addRegistration(::respondToGet, 0, "maxt", singleType);       
           addRegistration(::respondToGet, 0, "mint", singleType);       
@@ -171,14 +171,14 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 void InputComponent::openInputFile(void)
    {
    fileName = componentData->getProperty("parameters", "filename");
-   if (fileName == "")
-	  throw "Cannot find a filename parameter for module: " + string(getName());
+   if (fileName != "")
+      {
 #ifndef __WIN32__
-   // Convert DOS paths to native unix format
-   Replace_all(fileName, "\\", "/");
+      // Convert DOS paths to native unix format
+      Replace_all(fileName, "\\", "/");
 #endif
-
-   data.open(fileName);
+      data.open(fileName);
+      }
    }
 // ------------------------------------------------------------------
 // INIT 2 - temporary
