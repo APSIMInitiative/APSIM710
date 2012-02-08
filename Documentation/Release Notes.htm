@@ -1,42 +1,47 @@
 <html>
    <head>
-      <title>APSIM 7.3 Release Notes</title>
+      <title>APSIM 7.4 Release Notes</title>
       <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
    </head>
    <body>
-      <h1>APSIM 7.3 release notes</h1>
-      <p>18th February 2011</p>
+      <h1>APSIM 7.4 release notes</h1>
+      <p>10th February 2012</p>
 
       <p>This release of APSIM is a maintenance release with many defects fixed and some new functionality added. 
       </p>
-     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=20">The complete list of defects can be found here</a></h3>
+     <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=25">The complete list of defects can be found here</a></h3>
 
-      <h2>Changes to Windows explorer menu naming</h2>
-      The windows explorer context menus for apsim now include the revision number of that release. These revisions relate to the 
-      <a href="http://apsrunet.apsim.info/websvn/listing.php?repname=apsim"> version control</a> system. 
-      As usual, multiple versions (and now revisions) can be installed on one machine with no interferance.
-      By default, APSIM now installs itself into a directory name that contains the revision number.
-      For example, c:\program files\apsim73-R1031
-
-      <h2>Changes to Apsim User Interface</h2>
+      <h2>Manager .NET</h2>
+      <p>A new Manager module has been developed that allows users to write C# or VB.NET as a scripting language. This 
+         module is released along with the existing Manager module. Samples of the script can be found in the standard toolbox.
+         <a href="http://www.apsim.info/Wiki/Script.ashx">Documentation can be found here</a>
+      </p>
+      <h2>Factorial Designs</h2>
+      <p>The APSIM User Interface now has a Factorial button that allows the user to quickly specify multiple 
+         variations on a base simulation. For example a sowing x variety experiment could be easily configured using 
+         this system. <a href="http://www.apsim.info/Wiki/Factorial.ashx">Documentation can be found here.</a></p>
+      <h2>Oryza, Rice Management Toolbox</h2>
+	   <ul>
+	    <li>IRRI has made major changes to their rice model that improve on the 2004 version currently in apsim. The same version has already been integrated into DSSAT. Full details of the changes are described on the <a href="http://www.knowledgebank.irri.org/oryzabeta"> IRRI website </a>. The old Old apsim/oryza simulations will run without substantial change. Multipaddock simulations cannot use the new wrapping approach.
+	    <li> The toolbox used in the <a href="http://www.apsim.info/Wiki/Training-Manual-SAsia.ashx">South Asia training manual</a> is included in the standard release. 
+       </ul>  
+      <h2>Windows 7 issues</h2>
+      <p>Several Windows 7 installation issues have been resolved, particularly on computers where the user isn't
+         an "administrator" of their computer.</p>
+      <h2>Foreign Locales </h2>
+      <p>Several defects have been repaired relating to foreign locales (date and number formats), in particular the
+         French locale.</p> 
+	  
+	  <h2>Behaviour of default CO2 response</h2>
+	  <p>The default crop CO2 response has changed. If a simulation defines CO2 to a non-standard value (ie. other than 350ppm),	crops for which a CO2 response is not defined will throw an error.
+        NB Wheat, Oats and Barley are the only APSIM crop modules that are responsive to CO2.
+	  </p>
+      <h2>User Interface Enhancements</h2>
       <ul>
-         <li>Many grid control bugs, inadvertently introduced in APSIM 7.2, have been fixed in this release.</li>
-         <li>Two new options now exist on the right click context menu. The first is a convenient way to unlink 
-         all nested simulation nodes with a single click. The second is a way to easily duplicate simulations 
-         or paddocks a user defined number of times.</li>
-         <li>A button has been created in the user interface to allow users to easily send their large collection 
-         of simulations to the Toowoomba computer
-         cluster. A yearly access fee is charged for this service. The fee then allows the APSIM Initiative to upgrade the cluster 
-         computers. Contact apsim@dpi.qld.gov.au for more information.</li>
+      <li>The graphing capability of the User Interface has been improved, particularly the series colour matching and 
+         legend positioning.</li>
+      <li>The &quot;Run on Cluster &quot; Button has been overhauled. Details are on the <a href="http://www.apsim.info/Wiki/Running-Jobs-On-Cluster.ashx">APSIM wiki</a>.
+      </li>
       </ul>
-      
-      <h2>Changes to Apsim User Interface graphics</h2>
-      <ul>
-         <li>A new animated soil water and plant graph has been created. Drag a <b>Soil - PLANT report</b> from the 
-             <b>Graph Suites | Animated Reports</b> folder in the <b>Graph</b> toolbox. Drop this report on your paddock, 
-             rerun the simulation. When you go to this report you'll see an animated display of the soil water and plant
-             biomass.</li>
-         <li>A component to display <a href="http://www.r-project.org/">R Graphics</a> in the User Interface has been implemented.</li>
-      </ul>        
    </body>
 </html>
