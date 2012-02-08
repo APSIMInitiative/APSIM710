@@ -1979,7 +1979,7 @@ Residue_water = Residue_water - Evaporated_interception</text>
    using System;
    using ModelFramework;
 
-   public class Script : Instance
+   public class Script 
       {
       [Param()] private string DefoliationDateString;
       [Param()] private double ResidualStem;
@@ -1999,7 +1999,7 @@ Residue_water = Residue_water - Evaporated_interception</text>
       [Output()]
       private DateTime DefoliationDate;
       
-      public override void Initialised()
+      [EventHandler] public void OnInitialised()
       {
          DefoliationDate = DateTime.ParseExact(DefoliationDateString, "d/M/yyyy", null);
       }
@@ -2009,8 +2009,8 @@ Residue_water = Residue_water - Evaporated_interception</text>
          if ((Today &gt;= DefoliationDate) &amp;&amp; (Grazed == 0))   
             {
                Grazed = 1;
-               GreenLeaf = MyPaddock.ComponentByName(Crop2Defoliate).Variable("leafgreenwt").ToDouble();
-               GreenStem = MyPaddock.ComponentByName(Crop2Defoliate).Variable("stemgreenwt").ToDouble();
+               MyPaddock.Get(Crop2Defoliate + ".leafgreenwt", out GreenLeaf);
+               MyPaddock.Get(Crop2Defoliate + ".stemgreenwt", out GreenStem);
 
                dlt_GreenLeaf = Math.Max(0, GreenLeaf - ResidualLeaf);
                dlt_GreenStem = Math.Max(0, GreenStem - ResidualStem);
@@ -2027,7 +2027,7 @@ Residue_water = Residue_water - Evaporated_interception</text>
            
                MyRemoveCropDM.dm = new RemoveCropBiomassdmType[] { GreenRemoveCropDmDm };
             
-               MyPaddock.ComponentByName(Crop2Defoliate).Publish("remove_crop_biomass", MyRemoveCropDM);
+               MyPaddock.Publish(Crop2Defoliate + ".remove_crop_biomass", MyRemoveCropDM);
             
             Console.WriteLine(Today.ToShortDateString() + " - " + "Plant1 Defoliation Rule Invoked");
             Console.WriteLine("          - " + Crop2Defoliate + " has been defoliated");
