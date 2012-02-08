@@ -131,14 +131,19 @@ Public Class BaseActions
       ' Delete selected nodes
       ' --------------------------------------------------------
       Dim CompToDelete As ApsimFile.Component = Controller.FactorialSelection
-      ' find next sibling, or previous sibling, or parent the set SelectedFactorialPath
-      Dim CompToSelect As ApsimFile.Component = CompToDelete.Parent
+        'if this is the fatorial node and there is a project loaded, then you cannot delete it
+        If IsNothing(CompToDelete.Parent) Or IsNothing(CompToDelete.Parent.Parent) Then
+            Return
+        End If
 
-      Controller.SelectedFactorialPath = CompToSelect.FullPath
-      CompToDelete.Parent.Delete(CompToDelete)
+        ' find next sibling, or previous sibling, or parent the set SelectedFactorialPath
+        Dim CompToSelect As ApsimFile.Component = CompToDelete.Parent
 
-      Controller.Explorer.RefreshCurrentView()
-   End Sub
+        Controller.SelectedFactorialPath = CompToSelect.FullPath
+        CompToDelete.Parent.Delete(CompToDelete)
+
+        Controller.Explorer.RefreshCurrentView()
+    End Sub
    Public Shared Sub AddFactorFolder(ByVal Controller As BaseController)
       ' --------------------------------------------------------
       ' Add a folder
@@ -149,7 +154,8 @@ Public Class BaseActions
       ' --------------------------------------------------------
       ' Add a folder
       ' --------------------------------------------------------
-      Controller.FactorialSelection.Add("<factor/>")
+        Controller.FactorialSelection.Add("<factor/>")
+
    End Sub
 
 #Region "Printing"

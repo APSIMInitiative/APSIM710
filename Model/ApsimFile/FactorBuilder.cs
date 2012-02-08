@@ -38,18 +38,18 @@ namespace ApsimFile
         public void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
         {
            if (factorsList != "")
-              factorsList += ";";
+              factorsList += ", ";
            foreach (Component child in FactorComponent.ChildNodes)
            {
               if (NextItem != null)
               {
                  //call next factor in the list
-                 NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount());
+                 NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter, totalCount * getCount());
               }
               else
               {
                  ++counter;
-                 factorials.Add(factorsList + FactorComponent.Name + "=" + child.Name);
+                 factorials.Add(factorsList + FactorComponent.Name + " = " + child.Name);
               }
            }
         }

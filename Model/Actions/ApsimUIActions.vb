@@ -93,8 +93,11 @@ Public Class ApsimUIActions
       Next
    End Sub
    Public Shared Sub ToggleFactorialMode(ByVal Controller As BaseController)
-      Controller.FactorialMode = Not Controller.FactorialMode
-   End Sub
+        If (Not IsNothing(Controller.ApsimData.RootComponent)) Then
+            Controller.FactorialMode = Not Controller.FactorialMode
+        End If
+
+    End Sub
 
    Private Shared ProgressBar As ToolStripProgressBar
    Private Shared ProgressLabel As ToolStripStatusLabel
