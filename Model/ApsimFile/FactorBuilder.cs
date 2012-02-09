@@ -131,14 +131,38 @@ namespace ApsimFile
                 fileNode.InnerText = ComponentUtility.CalcFileName(comp);
             else
                 throw new Exception("Cant find an outputfile filename node!");
-
+   
             if (Builder.TitleIsSingleLine)
             {
-                XmlNode titleNode = compNode.SelectSingleNode("//title");
-                if (titleNode != null)
-                    titleNode.InnerText = factorsList;
-                else
-                    throw new Exception("Cant find an outputfile title node!");
+                //Title node is now read only, so need to add this as a constant 
+                //XmlNode titleNode = compNode.SelectSingleNode("//title");
+                //if (titleNode != null)
+                //    titleNode.InnerText = factorsList;
+                //else
+                //    throw new Exception("Cant find an outputfile title node!");
+                Component constantsComponent = null;  
+                foreach (Component c in comp.ChildNodes)
+                if (c.Type == "variables")
+                    constantsComponent = c;
+                if (constantsComponent == null) 
+                    throw new Exception("No variables in outputfile!");
+
+                XmlNode componentNode = constantsComponent.ContentsAsXML; 
+                XmlNode constantsNode = componentNode.SelectSingleNode("//constants");
+                if (constantsNode == null)
+                {
+                    constantsNode = componentNode.OwnerDocument.CreateElement("constants");
+                    componentNode.AppendChild(constantsNode);
+                }
+                XmlNode factorNode = constantsNode.SelectSingleNode("//constant[@name='factors']");
+                if (factorNode == null)
+                {
+                    factorNode = constantsNode.OwnerDocument.CreateElement("constant");
+                    constantsNode.AppendChild(factorNode);
+                }
+                XmlHelper.SetAttribute(factorNode, "name", "factors");
+                factorNode.InnerText = factorsList;
+                constantsComponent.Contents = componentNode.OuterXml;
             }
             else
             {
