@@ -76,6 +76,8 @@ public class Leaf : BaseOrgan, AboveGround
     public Function MinimumNConc = null;
     [Link]
     public Function StructuralFraction = null;
+    [Link(IsOptional = true)]
+    public Function DMDemandFunction = null;
     [Link (IsOptional = true)]
     public Function ShadeInducedBranchMortality = null;
     [Link(IsOptional = true)]
@@ -794,6 +796,12 @@ public class Leaf : BaseOrgan, AboveGround
             double Demand = 0.0;
             foreach (LeafCohort L in Leaves)
                 Demand += L.DMDemand;
+
+            // Need a better way to do this - perhaps via refactoring leaf cohorts.  Need to
+            // allow a DM demand that comes from allometry or some method other than leaf sizes.
+            if (DMDemandFunction != null)
+                Demand = Math.Min(DMDemandFunction.Value,Demand);
+
             return Demand;
         }
     }
