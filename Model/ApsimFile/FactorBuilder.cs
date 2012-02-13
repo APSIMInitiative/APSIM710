@@ -248,8 +248,9 @@ namespace ApsimFile
         }
         public override void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
         {
-           if (factorsList != "")
-              factorsList += ", ";
+            if (factorsList != "")
+                factorsList += ", ";
+
             foreach (string par in Parameters)
             {
               if (NextItem != null)
@@ -375,14 +376,15 @@ namespace ApsimFile
                     {
                         foreach (XmlNode target in varNode.ChildNodes)
                         {
-                            if (target.InnerText.Contains(SimulationPath))
+                            string spath = SimulationPath + "/";
+                            if (target.InnerText.Contains(spath))
                                 targets.Add(target.InnerText);
                         }
                     }
                     if (targets.Count > 0)
                     {
- 		 				            List<string> variableTypes = new List<string>();
-	 		 			            LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
+ 		 				List<string> variableTypes = new List<string>();
+	 		 			LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
                         if (comp.ChildNodes.Count == 1 && variableTypes.Contains(comp.ChildNodes[0].Type.ToLower()))//(comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
                         {
                             //process variables within manager code
