@@ -3,7 +3,7 @@ set major 7
 set minor 4
 
 # Get the revision number
-if {[catch {set msg [exec svn log -q -r BASE ../..]} emsg] } {
+if {[catch {set msg [exec svn log -q -r HEAD ../..]} emsg] } {
   puts $emsg
   set releaseNumber "r0"
 } else {
