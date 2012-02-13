@@ -5,7 +5,6 @@ using System.Reflection;
 using ModelFramework;
 using CSGeneral;
 
-
 /// <summary>
 /// A more-or-less direct port of the Fortran Erosion model
 /// Ported by Eric Zurcher Feb 2011
@@ -638,6 +637,41 @@ public partial class SoilErosion
         if (soil_loss_bed + soil_loss_susp > 0.0 && reduce_profile)
             MoveProfile();
 
+        wind_threshold = 100.0;
+        if (wind_type == windDataType.daily)
+        {
+            // What is the best way to cope with "low density" wind data? Daily values aren't
+            // really quite enough. We could try to make use of maximum gust speed, if 
+            // those values were available. For now, however, we'll infer a Weibull distribution
+            // of hourly wind speeds throughout the day.
+
+            // If you just want to assume a steady wind speed all day, use the following line:
+            // vertFlux = VerticalFlux(wind * 100.0) * 24.0 * 3600.0;  // Flux will have units of g/cm^2
+
+            vertFlux = 0.0;
+            if (wind > 0.0)
+            {
+                // First pass at statistical reconstruction of wind speeds.
+                // We take the daily value as a average, and then generate
+                // 24 hourly values using the Weibull distribution.
+                // In theory, we should autocorrelate the generated values,
+                // but within the daily timestep, the order of the generated values
+                // shouldn't really matter.
+                // Infer the 2 parameters for the Weibull distribution from the average speed.
+                // For a site of average variability, the justus_wind_variability factor is 0.94. See Justus et al. 1977.
+                double k = justus_wind_variability * Math.Sqrt(wind);
+                double c = wind / MathUtility.Gamma(1.0 + 1.0 / k);
+                double[] hourly = new double[24];
+                Random rnd = new Random();
+                for (int hour = 0; hour < 24; hour++)
+                {
+                    double hourly_wind = c * Math.Pow(-Math.Log(rnd.NextDouble()), 1.0 / k);
+                    // Need to multiply wind speed by 100 to convert m/s to cm/s
+                    vertFlux += VerticalFlux(hourly_wind * 100.0) * 3600.0;  // Flux will have units of g/cm^2
+                }
+            }
+        }
+
         if (wind_type == windDataType.hourly) // Wind erosion, based on hourly wind data
         {
             // Need to multiply by 100 to convert m/s to cm/s
@@ -678,18 +712,10 @@ public partial class SoilErosion
             vertFlux += VerticalFlux(wind15 * 100.0) * 3.0 * 3600.0;
             vertFlux += VerticalFlux(wind18 * 100.0) * 3.0 * 3600.0;
             vertFlux += VerticalFlux(wind21 * 100.0) * 3.0 * 3600.0;
-//            if (vertFlux > 0.0)
-//                Console.WriteLine("Got some wind erosion!");
         }
+//        if (vertFlux > 0.0)
+//          Console.WriteLine("Got some wind erosion!");
 
-        if (wind_type == windDataType.daily)
-        {
-            // This approach is too simplistic. We should also be able to make use
-            // of gust information, or use inferred wind speed distributions to 
-            // calculate likely gust speeds (and duration???)
-            // Need to multiply by 100 to convert m/s to cm/s
-            vertFlux = VerticalFlux(wind * 100.0) * 24.0 * 3600.0;  // Flux will have units of g/cm^2
-        }
     }
 
     protected void SetOtherVariables()

@@ -268,6 +268,10 @@ public partial class SoilErosion
     [Description("Height at which wind speed was measured")]
     public double wind_height = 10;
 
+    [Param(IsOptional = true, MinVal = 0.75, MaxVal = 1.15)]
+    [Description("Factor indicating wind speed constancy; lower values indicate higher variability (see Justus et al 1977)")]
+    public double justus_wind_variability = 0.95;
+
     /// <summary>
     /// Variable to hold the overall plant cover
     /// </summary>
@@ -288,6 +292,11 @@ public partial class SoilErosion
     protected double[] ppsd_disp = null;
     protected double[] smoothThreshold = null;  // Threshold friction velocity for a smooth surface for a given particle size
     protected double[] horizFlux = null;
+
+    // Use these if you want to use Shao's weighting of minimally vs. fully dispersed PSDs when calculating horizontal flux
+//    protected double[] psds = null;  
+//    protected double[] dpsds = null;
+//    protected double[] ppsds = null;
 
     [Output]
     [Description("Total horizonal flux")]
@@ -311,6 +320,12 @@ public partial class SoilErosion
     [Description("Smallest threshold friction velocity for any particle size")]
     [Units("m/s")]
     protected double ustar_t_min;  // Minimum value for threshold velocity, expressed in m/s
+
+    [Output]
+    [Description("Wind erosion threshold")]
+    [Units("m/s")]
+    protected double wind_threshold;  // Minimum value for measured wind speed at which erosion may begin, expressed in m/s
+    protected double windThreshold; 
 
     int iDust = 0; // Index of last particle size class considered to be dust
 
@@ -428,16 +443,33 @@ public partial class SoilErosion
     {
         if (wind_model.ToLower() == "shao")
         {
+
             GetCover();
+
             double lambda_vegetated = -c_lambda * Math.Log(1.0 - plant_cover);
 
-            /// I don't really know what should be used here! I gather it depends on the roughness of the bare surface
+            // Use this block of code for the algorithm from Shao et al. 1996
+            // I'm not sure why, but Shao's source code mulitplies the input values for cover by 2
+            // For now, I'm using Shao's logic (since it doesn't require guessing a value for lambda_bare),
+            // but using an unmodified cover value.
+            // double lambda_vegetated = -c_lambda * Math.Log(1.0 - plant_cover * 2.0); 
+
+            double xc = 1.0 / (sigma_bare * m_bare);
+            if (lambda_vegetated >= xc)
+                return 999.0;
+            else
+                return (1.0 / Math.Sqrt(1.0 - sigma_bare * m_bare * lambda_vegetated)) * (1.0 / Math.Sqrt(1.0 + m_bare * beta_bare * lambda_vegetated));
+
+
+            // The following block implements the modified version appearing in Darmenova et al. 2009
+            // which merges the values for bare and vegetated surfaces in a slightly different way.
+            /// I don't really know what should be used for "lambda_bare". I gather it depends on the roughness of the bare surface
             /// Darmenova et al. used 0.002 for "sandy" and 0.15 for "gobi" deserts
-            double lambda_bare = 0.01;
-            return (1.0 / Math.Sqrt(1.0 - sigma_vegetated * m_vegetated * lambda_vegetated)) *
-                   (1.0 / Math.Sqrt(1.0 + m_vegetated * beta_vegetated * lambda_vegetated)) *
-                   (1.0 / Math.Sqrt(1.0 - sigma_bare * m_bare * lambda_bare / (1.0 - plant_cover))) *
-                   (1.0 / Math.Sqrt(1.0 + m_bare * beta_bare * lambda_bare / (1.0 - plant_cover)));
+            // double lambda_bare = 0.01;
+            // return (1.0 / Math.Sqrt(1.0 - sigma_vegetated * m_vegetated * lambda_vegetated)) *
+            //       (1.0 / Math.Sqrt(1.0 + m_vegetated * beta_vegetated * lambda_vegetated)) *
+            //       (1.0 / Math.Sqrt(1.0 - sigma_bare * m_bare * lambda_bare / (1.0 - plant_cover))) *
+            //       (1.0 / Math.Sqrt(1.0 + m_bare * beta_bare * lambda_bare / (1.0 - plant_cover)));
         }
         else if (wind_model.ToLower() == "mb95")
         {
@@ -518,6 +550,10 @@ public partial class SoilErosion
             }
             else if (flux_model.ToLower() == "white")
             {
+// Shao's code uses an incorrect form of White's equation (Actually, the original mistake was White's)
+// The incorrect form yields a value roughly half what it should be.
+//                double bad = (coeff_flux * rho_air * fv3 / gravity) * (1.0 + Sqr(thresholdVelocity) / fv2)
+//                    * (1.0 - thresholdVelocity / frictionVelocity);
                 return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - Sqr(thresholdVelocity) / fv2)
                     * (1.0 + thresholdVelocity / frictionVelocity);
             }
@@ -526,6 +562,9 @@ public partial class SoilErosion
         }
     }
 
+    // private double[] qbin; // Used for making comparisions with Shao's code
+    // private int[] ins_l;
+    // private int[] ins_h;
     /// <summary>
     /// This function is intended to integrate the horizontal flux over all particle sizes 
     /// (within the range of saltation).
@@ -555,6 +594,18 @@ public partial class SoilErosion
                 if (dd[i] <= 2.0) // Defined as clay if < 2 microns
                     iClay = i;
             }
+
+            // Creates "bins" of sand-sized particles
+            // This is solely for comparison of outputs with Shao code
+            // Rather quirky....
+            //ins_l = new int [32] {117,135,141,146,149,153,156,159,161,163,
+            //                      166,168,169,171,172,173,175,176,177,179,
+            //                      180,181,182,183,184,185,186,187,188,189,190,191};
+            //ins_h = new int [32] {134,140,145,149,152,156,158,161,163,166,
+            //                      168,169,171,173,174,176,177,178,180,181,
+            //                      182,183,184,185,186,187,188,189,190,191,192,193};
+            //qbin = new double[32];
+                 
         }
 
         if (percent_clay < 0.0)
@@ -567,16 +618,52 @@ public partial class SoilErosion
 
         // Now get the flux associated with each particle size, and weight the result
         // by the probability density of that size class
+        double[] rawHorizFlux = new double[dd.Length];
         totHorizFlux = 0.0;
         double ustar_t;
         ustar_t_min = Double.MaxValue;
         for (int i = 0; i < dd.Length; i++)
         {
-            horizFlux[i] = HorizontalFlux(frictionVelocity, i, out ustar_t) * dpsd[i];
+            rawHorizFlux[i] = HorizontalFlux(frictionVelocity, i, out ustar_t);
+            horizFlux[i] = rawHorizFlux[i] * dpsd[i];
             totHorizFlux += horizFlux[i];
             if (ustar_t / 100.0 < ustar_t_min)
                 ustar_t_min = ustar_t / 100.0;  // Convert cm/sec to m/sec
         }
+
+        double k = 0.4; // The von Karman constant
+        double D = 0.0; // The zero-displacment height, in cm
+        double height_cm = height * 100.0; // Convert measurement height to cm; must be same units as roughness length
+        windThreshold = ustar_t_min * (Math.Log((height_cm - D) / aeolian_roughness_length)) / k;
+        
+        // Use this to parallel Shao's code
+        // By making use of a weighting of fully vs. minimally dispersed...
+//        if (wind_model.ToLower() == "shao" && frictionVelocity / 100.0 > ustar_t_min)
+//        {
+//            totHorizFlux = 0.0;
+//            double ghl = Math.Exp(-0.5 * Math.Pow(frictionVelocity / 100.0 - ustar_t_min, 3.0));
+//            for (int i = 0; i < dd.Length; i++)
+//            {
+//                dpsds[i] = ghl * dpsd[i] + (1.0 - ghl) * dpsd_disp[i];
+//                psds[i] = ghl * psd[i] + (1.0 - ghl) * psd_disp[i];
+//                ppsds[i] = ghl * ppsd[i] + (1.0 - ghl) * ppsd_disp[i];
+//                horizFlux[i] = rawHorizFlux[i] * dpsds[i];
+//                totHorizFlux += horizFlux[i];
+//            }
+//        }
+
+        // Calculate flux values for comparision with Shao's code
+        //    for (int k = 0; k < 32; k++)
+        //    {
+        //        qbin[k] = 0.0;
+        //        for (int ki = ins_l[k]; ki <= ins_h[k]; ki++)
+        //        {
+        //            qbin[k] += horizFlux[ki - 1];
+        //        }
+        //       qbin[k] /= ins_h[k] - ins_l[k] + 1;
+        //    }
+
+      
         return totHorizFlux;
     }
 
@@ -592,6 +679,7 @@ public partial class SoilErosion
     public double VerticalFlux(double windSpeed)
     {
         double totHorizFlux = TotalHorizontalFlux(windSpeed, wind_height);
+        wind_threshold = Math.Min(wind_threshold, windThreshold);
         if (wind_model.ToLower() == "mb95")
         {
             // The units of alpha are cm^-1
@@ -621,8 +709,8 @@ public partial class SoilErosion
                     double sigma_p = dpsd[j] / dpsd_disp[j];
                     double term1 = shao_c_y * dpsd_disp[j] * ((1.0 - gamma) + gamma * sigma_p);
                     double term2 = 1.0 + sigma_m;      // dimensionless
-                    double term3 = horizFlux[i] * gravity / Sqr(frictionVelocity); // I think this gives us units of g/m^2/sec, but it's exceeding the mb95 outputs by around a factor of 1000
-                    flux[i, j] = term1 * term2 * term3;
+                    double term3 = horizFlux[i] * gravity / Sqr(frictionVelocity); // This gives us units of g/m^2/sec
+                    flux[i, j] = term1 * term2 * term3 * 1e-4; // Convert units to g/cm^2/sec
                 }
 
             double totVertFlux = 0.0;
@@ -633,6 +721,7 @@ public partial class SoilErosion
                     vertFlux += flux[i, j];
                 totVertFlux += vertFlux;
             }
+//            Console.Write(" " + (totHorizFlux * 1e8).ToString() + " " + (totVertFlux * 1e10).ToString());
             return totVertFlux;
         }
         else
@@ -854,6 +943,9 @@ public partial class SoilErosion
         deltaPSD = new double[nSizes];
         cumProb = new double[nSizes];
         horizFlux = new double[nSizes];
+//        psds = new double[nSizes];
+//        dpsds = new double[nSizes];
+//        ppsds = new double[nSizes];
 
         // Estimate diameters using log10 scale
         const double minSize = 0.1;     // Smallest particle size class starts at 0.1 microns
