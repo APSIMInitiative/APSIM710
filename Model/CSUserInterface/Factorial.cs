@@ -29,34 +29,37 @@ namespace CSUserInterface
             FactorBuilder builder = new FactorBuilder();
             List<string> SimsToRun = new List<string>();
             ApsimFile.ApsimFile.ExpandSimsToRun(Controller.ApsimData.RootComponent, ref SimsToRun);
-            int iTotalCount = 0;
+            double iTotalCount = 0;
             foreach (string SimulationPath in SimsToRun)
             {
-                int iCount = 0;
+                double iCount = 0;
                 List<FactorItem> items = builder.BuildFactorItems(Controller.ApsimData.FactorComponent, SimulationPath);
                 foreach (FactorItem item in items)
                 {
                     iCount += item.CalcCount();
                 }
+                int tmpCounter = 0;
                 ApsimFile.Component tmpComp = Controller.ApsimData.Find(SimulationPath);
                 if (tmpComp != null)
                 {
                     TreeNode treeNode = treeSims.Nodes.Add(tmpComp.Name + " (" + iCount.ToString() + ")");
                     treeNode.ImageIndex = 0;
                     treeNode.SelectedImageIndex = 0;
-                    if (items.Count > 0)
+                    foreach(FactorItem item in items)
                     {
-                       List<String> factorials = new List<string>();
+                        List<String> factorials = new List<string>();
                        string factorsList = ""; 
                        int counter = 0;
-                       items[0].CalcFactorialList(factorials, factorsList, ref counter, 0);
-                       AddFactorsToTreeNode(items[0], treeNode, factorials);
+
+                       item.CalcFactorialList(factorials, factorsList, ref counter, 0);
+                       AddFactorsToTreeNode(item, treeNode, factorials);
+                       tmpCounter += counter;
                     }
                 }
-                iTotalCount += iCount;
+                iTotalCount += tmpCounter;
                 txtTotalSims.Text = iTotalCount.ToString();
             }
-
+            //double tmp = treeSims.Nodes[0].Nodes.Count;
             XmlNode varNode = Data.SelectSingleNode("//settings");
             string s = "";
             if(varNode != null)

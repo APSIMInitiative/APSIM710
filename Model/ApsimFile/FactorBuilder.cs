@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Linq;
 using CSGeneral;
 
 namespace ApsimFile
@@ -17,40 +18,69 @@ namespace ApsimFile
         {
             Builder = b;
         }
+        public string FolderLevel { get; set; }
         public virtual string getDesc()
         {
-            return FactorComponent.Name;
+            if(FactorComponent!=null)
+                return FactorComponent.Name;
+            return "unknown";
         }
         //getCount returns the number of parameters for this factor only
         public virtual int getCount()
         {
-            if(FactorComponent != null)
+            if (FactorComponent != null)
+            {
+                if (FactorComponent.Type == "folder")
+                    return 1;
                 return FactorComponent.ChildNodes.Count;
+            }
             return 0;
         }
         //CalcCount returns the number of parameters for the chain of factors
-        public virtual int CalcCount()
+        public virtual double CalcCount()
         {
             if (NextItem != null)
+            {
+                if(FactorComponent.Type == "folder")
+                    return NextItem.CalcCount();
                 return NextItem.CalcCount() * FactorComponent.ChildNodes.Count;
+            }
+            if (FactorComponent.Type == "folder")
+                return 1;
             return FactorComponent.ChildNodes.Count; 
         }
         public virtual void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
         {
            if (factorsList != "")
               factorsList += ", ";
-           foreach (Component child in FactorComponent.ChildNodes)
+           if (FactorComponent.Type == "folder")
            {
-              if (NextItem != null)
-              {
-                 //call next factor in the list
-                 NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter, totalCount * getCount());
-              }
-              else
-              {
-                 ++counter;
-                 factorials.Add(factorsList + FactorComponent.Name + " = " + child.Name);
-              }
+               if (NextItem != null)
+               {
+                   //call next factor in the list
+                   NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + FolderLevel, ref counter, totalCount );
+               }
+               else
+               {
+                   ++counter;
+                   factorials.Add(factorsList + FactorComponent.Name + " = " + FolderLevel);
+               }
+           }
+           else
+           {
+               foreach (Component child in FactorComponent.ChildNodes)
+               {
+                   if (NextItem != null)
+                   {
+                       //call next factor in the list
+                       NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter, totalCount * getCount());
+                   }
+                   else
+                   {
+                       ++counter;
+                       factorials.Add(factorsList + FactorComponent.Name + " = " + child.Name);
+                   }
+               }
            }
         }
 
@@ -240,7 +270,7 @@ namespace ApsimFile
             return 0;
         }
         //CalcCount returns the number of parameters for the chain of factors
-        public override int CalcCount()
+        public override double CalcCount()
         {
             if (NextItem != null)
                 return NextItem.CalcCount() * Parameters.Count;
@@ -349,10 +379,31 @@ namespace ApsimFile
             if (s == "1")
                 TitleIsSingleLine = false;
 
-            FactorItem lastItem = null;
-            List<FactorItem> items = new List<FactorItem>();
-            ProcessFactorNodes(factorial, ref lastItem, ref items, SimulationPath);
-            return items;
+            List<FactorItem> factorItems = new List<FactorItem>();
+            List<Component> leaves = new List<Component>();
+            FindLeaves(factorial, leaves);
+            if (leaves.Count() > 0)
+            {
+                //leaves require a different way of calculating the factors
+                //they work from the final leaf and then work back up the tree using parents
+                //the difficult path is work out inheritance, so need to create the list, and then process it?
+                foreach (var leaf in leaves)
+                {
+                    //build a list of factors for each leaf - work up through it's parents
+                    bool folderlevel = true;
+                    List<FactorItem> leafFactorItems = new List<FactorItem>();
+                    ProcessAdvancedFactorItems(leaf, leafFactorItems, folderlevel, SimulationPath);
+                    if(leafFactorItems.Count > 0)
+                        factorItems.Add(leafFactorItems[0]);
+                }
+            }
+            else
+            {
+                FactorItem lastItem = null;
+                List<FactorItem> items = new List<FactorItem>();
+                ProcessFactorNodes(factorial, ref lastItem, ref factorItems, SimulationPath);
+            }
+            return factorItems;
         }
         public void LoadVariableTypes(XmlNode metNode, List<string> variableTypes)
         {
@@ -383,8 +434,8 @@ namespace ApsimFile
                     }
                     if (targets.Count > 0)
                     {
- 		 				List<string> variableTypes = new List<string>();
-	 		 			LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
+                        List<string> variableTypes = new List<string>();
+                        LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
                         if (comp.ChildNodes.Count == 1 && variableTypes.Contains(comp.ChildNodes[0].Type.ToLower()))//(comp.ChildNodes[0].Type == "manager" || comp.ChildNodes[0].Type == "rule" || comp.ChildNodes[0].Type == "cropui"))
                         {
                             //process variables within manager code
@@ -422,6 +473,107 @@ namespace ApsimFile
                 else
                 {
                     ProcessFactorNodes(comp, ref lastItem, ref items, SimulationPath);
+                }
+            }
+        }
+
+        private void ProcessAdvancedFactorItems(Component leaf, List<FactorItem> factorItems, bool folderlevel, string simulationPath)
+        {
+            List<string> variableTypes = new List<string>();
+            LoadVariableTypes(Types.Instance.MetaDataNode("Factor", "FactorVariables"), variableTypes);
+
+            //add any childnodes that are factors
+            var result = (from c in leaf.ChildNodes
+                          where c.Type == "factor" && c.ContentsAsXML.SelectSingleNode("targets") != null
+                          select c);
+            
+            foreach (var factor in result)
+            {
+                List<string> targets = new List<string>();
+                string spath = simulationPath + "/";
+                foreach (XmlNode node in factor.ContentsAsXML.SelectSingleNode("//targets").ChildNodes)
+                {
+                    if (node.InnerText.Contains(spath))
+                        targets.Add(node.InnerText);
+                }
+                if (targets.Count > 0)
+                {
+                    //manager factor or normal
+                    if (factor.ChildNodes.Count == 1 && variableTypes.Contains(factor.ChildNodes[0].Type.ToLower()))
+                    {
+                        
+                        XmlNodeList varNodes = factor.ContentsAsXML.SelectNodes("//vars/*");
+                        foreach (XmlNode node in varNodes)
+                        {
+                            ManagerFactorItem item = new ManagerFactorItem(this);
+                            item.Targets = targets;
+                            item.FactorComponent = factor;
+                            item.Variable = node;
+                            string[] pars = node.InnerText.Split(",".ToCharArray());
+                            List<string> parameters = new List<string>();
+                            parameters.AddRange(pars);
+                            item.Parameters = parameters;
+                            if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
+                            {
+                                item.NextItem = factorItems[0];
+                                factorItems.Insert(0, item);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        FactorItem item = new FactorItem(this);
+                        item.Targets = targets;
+                        item.FactorComponent = factor;
+                        if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
+                        {
+                            if(factorItems.Count > 0)
+                                item.NextItem = factorItems[0];
+                            factorItems.Insert(0,item);
+                        }
+                    }
+                }
+            }
+            if (leaf.Parent != null && leaf.Parent.Parent != null)//PArent.Parent is to check against the root node
+            {
+                if (leaf.Parent.Type == "folder" && folderlevel)
+                {
+                    //parent is a factorfolder
+                    FactorItem item = new FactorItem(this);
+                    //item.Targets = targets;
+                    item.FactorComponent = leaf.Parent;
+                    item.FolderLevel = leaf.Name;
+                    if ((from f in factorItems where f.getDesc() == item.getDesc() select f).Count() == 0)
+                    {
+                        if (factorItems.Count > 0)
+                            item.NextItem = factorItems[0];
+                        factorItems.Insert(0, item);
+                    }
+
+                }
+                ProcessAdvancedFactorItems(leaf.Parent, factorItems, !folderlevel, simulationPath);
+            }
+        }
+
+
+        private void FindLeaves(Component comp, List<Component> leaves)
+        {
+            //List<Component> leaves = new List<Component>();
+            var result = (from c in comp.ChildNodes
+                          where c.Type == "folder"
+                          select c);
+            if (result.Count() > 0)
+            {
+                foreach (var folder in result)
+                {
+                    FindLeaves(folder, leaves);
+                }
+            }
+            else
+            {
+                if (comp.Type == "folder")
+                {
+                    leaves.Add(comp);    
                 }
             }
         }
