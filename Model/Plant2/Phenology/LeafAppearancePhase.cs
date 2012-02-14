@@ -7,10 +7,6 @@ public class LeafAppearancePhase : Phase
     [Link]
     Leaf Leaf = null;
 
-    [Link]
-    Function ThermalTime = null;
-
-    //private double CumulativeTT;
     private double CohortNoAtStart;
     bool First = true;
 
@@ -33,18 +29,15 @@ public class LeafAppearancePhase : Phase
     /// </summary>
     public override double DoTimeStep(double PropOfDayToUse)
     {
+        base.DoTimeStep(PropOfDayToUse);
+        
         if (First)
         {
             CohortNoAtStart = Leaf.ExpandedCohortNo;
             First = false;
         }
 
-        //
         FractionCompleteYesterday = FractionComplete;
-
-        // Accumulate thermal time.
-        _TTForToday = ThermalTime.Value * PropOfDayToUse;
-        _TTinPhase += _TTForToday;
 
         if (Leaf.ExpandedCohortNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
             return 0.00001;

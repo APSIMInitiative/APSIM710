@@ -7,9 +7,6 @@ public class EndPhase : Phase
 {
     private double _CumulativeValue;
 
-    [Link]
-    Function ThermalTime = null;
-
     [Output]
     public double CumulativeValue { get { return _CumulativeValue; } }
 

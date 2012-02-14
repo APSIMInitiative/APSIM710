@@ -7,10 +7,6 @@ public class LeafDeathPhase : Phase
 {
     [Link]
     private Leaf Leaf = null;
-    [Link]
-    private Function ThermalTime = null;
-    [Link]
-    public Phenology Phenology = null;
 
     private double DeadNodeNoAtStart;
     bool First = true;
@@ -20,15 +16,13 @@ public class LeafDeathPhase : Phase
     /// </summary>
     public override double DoTimeStep(double PropOfDayToUse)
     {
+        base.DoTimeStep(PropOfDayToUse);
+        
         if (First)
         {
             DeadNodeNoAtStart = Leaf.DeadCohortNo;
             First = false;
         }
-
-        // Accumulate thermal time.
-        _TTForToday = ThermalTime.Value * PropOfDayToUse;
-        _TTinPhase += _TTForToday;
 
         if (Leaf.DeadCohortNo >= Leaf.FinalLeafNo)
             return 0.00001;

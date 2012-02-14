@@ -92,8 +92,8 @@ public class Phenology
 
     /// <summary>
     /// Perform our daily timestep function. Get the current phase to do its
-    /// development for the day. Any left over TT that it can't use is then
-    /// given to the next phase.
+    /// development for the day. If TT is leftover after Phase is progressed, 
+    /// and the timestep for the subsequent phase is calculated using leftover TT
     /// </summary>
     public void DoTimeStep()
     {

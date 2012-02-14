@@ -10,9 +10,6 @@ public class FacultativeVernalisationPhase : Phase
 
     [Link]
     Function Target = null;
-
-    [Link]
-    public Function ThermalTime = null;
     
     //Class Parameters
     private double ExtentOfVernYesterday;
@@ -27,21 +24,19 @@ public class FacultativeVernalisationPhase : Phase
     public override void ResetPhase() { ExtentOfVernYesterday = 0; }
 
     /// <summary>
-    /// Do our timestep development
+    /// This function increments vernalisation units accumulated in phase 
+    /// and returns a non-zero value if the phase target is met today so
+    /// the phenology class knows to progress to the next phase and how
+    /// much tt to pass it on the first day.
     /// </summary>
     public override double DoTimeStep(double PropOfDayToUse)
     {
-        _TTForToday = ThermalTime.Value * PropOfDayToUse;
-        _TTinPhase += _TTForToday;
-        
         // Calculate the Vern for today.
         ExtentOfVern = JuvenileDevelopmentIndex.Value * PropOfDayToUse;
 
         // Get the Target TT
         double Target = CalcTarget();
 
-        // Work out if we've reached our target. 
-        // If we have then return the left over day to our caller.
         double PropOfDayUnused = 0.0;
         if (ExtentOfVern > Target)
         {

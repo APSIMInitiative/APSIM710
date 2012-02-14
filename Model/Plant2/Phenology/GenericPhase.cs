@@ -5,36 +5,24 @@ using System.Text;
 
 public class GenericPhase : Phase
 {
-    [Link]
-    public Function ThermalTime = null;
-
-    [Link(IsOptional=true)]
-    public Function Stress = null;
-
     [Link(IsOptional=true)]
     public Function Target = null;
 
     /// <summary>
-    /// Do our timestep development
+    /// This function increments thermal time accumulated in each phase 
+    /// and returns a non-zero value if the phase target is met today so
+    /// the phenology class knows to progress to the next phase and how
+    /// much tt to pass it on the first day.
     /// </summary>
     public override double DoTimeStep(double PropOfDayToUse)
     {
-        // Calculate the TT for today.      
-        _TTForToday = ThermalTime.Value * PropOfDayToUse;
 
-        // Reduce the TT for today if a "stress" function is present.
-        if (Stress != null)
-            _TTForToday *= Stress.Value;
-
-        // Accumulate the TT
-        _TTinPhase += _TTForToday;
+        base.DoTimeStep(PropOfDayToUse);
 
         // Get the Target TT
         double Target = CalcTarget();
 
-        // Work out if we've reached our target. 
-        // If we have then return the left over day to our caller.
-        double PropOfDayUnused = 0.0;
+
         if (_TTinPhase > Target)
         {
             double LeftOverValue = _TTinPhase - Target;

@@ -16,7 +16,6 @@ class EmergingPhase : GenericPhase
       SowingDepth = SowingDetails.Depth;
       }
 
-
    /// <summary>
    /// Return the target to caller. Can be overridden by derived classes.
    /// </summary>
