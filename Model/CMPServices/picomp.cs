@@ -1099,6 +1099,7 @@ namespace CMPServices
                     sDDMLType = TypeSpec.TYPEEMPTY;
 
                 newEvent = new TEventInfo(sDDMLType, sShortDescr, sFullDescr, "");
+                newEvent.sDDMLTypeName = newEvent.Name; //store the ddml type name="" value
                 newEvent.Name = sName;
                 newEvent.iKind = iKind;
 

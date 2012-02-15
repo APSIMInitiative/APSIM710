@@ -32,7 +32,7 @@ namespace CMPServices
       ///</example>
       /// </summary>
       //============================================================================
-      public const String typeTIMESTEP = "<type name=\"timestep\">"
+      public const String typeTIMESTEP = "<type name=\"Time\">"
                              + "<field name=\"startDay\"     kind=\"integer4\" unit=\"d\" />"
                              + "<field name=\"startSec\"     kind=\"integer4\" unit=\"s\" />"
                              + "<field name=\"startSecPart\" kind=\"double\"   unit=\"s\" />"

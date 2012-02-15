@@ -22,6 +22,7 @@ namespace CMPServices
     /// This is the case when using the full .net engine.
     /// </summary>
     //============================================================================
+    [ComVisible(true)]
     public abstract class TBaseComp : TAbstractComponent
     {
         /// <summary>
@@ -471,6 +472,7 @@ namespace CMPServices
                     sDDMLType = TypeSpec.TYPEEMPTY;
 
                 newEvent = new TEventInfo(sDDMLType, sShortDescr, sFullDescr, "");
+                newEvent.sDDMLTypeName = newEvent.Name; //store the ddml type name="" value
                 newEvent.Name = sName;
                 newEvent.iKind = iKind;
 

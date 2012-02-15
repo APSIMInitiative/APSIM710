@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace CMPServices
 {
@@ -292,6 +293,10 @@ namespace CMPServices
         /// </summary>
         public int iKind;
         /// <summary>
+        /// The DDML type name
+        /// </summary>
+        public String sDDMLTypeName;
+        /// <summary>
         /// Short description
         /// </summary>
         public String sDescr;
@@ -394,6 +399,7 @@ namespace CMPServices
     /// Base class for all components.
     /// </summary>
     //==============================================================================
+    [ComVisible(true)]
     public abstract class TAbstractComponent
     {
         /// <summary>
@@ -1273,6 +1279,8 @@ namespace CMPServices
                 {
                     sBuf.Append("<event name=\"");
                     sBuf.Append(anEvent.Name);
+                    sBuf.Append("\" typename=\"");
+                    sBuf.Append(anEvent.sDDMLTypeName);
                     sBuf.Append("\" descr=\"");
                     sBuf.Append(anEvent.sDescr);
                     sBuf.Append("\" kind=\"");
