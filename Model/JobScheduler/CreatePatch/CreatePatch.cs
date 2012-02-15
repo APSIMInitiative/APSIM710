@@ -23,7 +23,22 @@ public partial class MainForm : Form
     {
         if (Args.Length == 1)
             Directory.SetCurrentDirectory(Args[0]);
-
+        else
+        {
+            string CWD = Directory.GetCurrentDirectory();
+            if (!File.Exists(Path.Combine(CWD, "apsim.xml")))
+            {
+                // Look up to parent.
+                string Parent = Path.GetDirectoryName(CWD);  // parent dir.
+                if (Parent == null || !File.Exists(Path.Combine(Parent, "apsim.xml")))
+                {
+                    Console.WriteLine("Cannot find apsim.ini");
+                    MessageBox.Show("Cannot find apsim directory structure", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                    Directory.SetCurrentDirectory(Parent);
+            }
+        }
         System.Windows.Forms.Application.EnableVisualStyles();
         System.Windows.Forms.Application.Run(new MainForm());
     }
@@ -46,6 +61,9 @@ public partial class MainForm : Form
         try
         {
             Cursor.Current = Cursors.WaitCursor;
+
+            DirectoryLabel.Text = Directory.GetCurrentDirectory();
+
 
             // Get the revision number of this directory.
             string svnName = "svn";
@@ -98,7 +116,7 @@ public partial class MainForm : Form
 
                                 // Need to make sure the FileName isn't a directory. This can happen when the user adds a 
                                 // directory in SVN. The stat command above will report the directory name.
-                                if (!Directory.Exists(FileName))
+                                if (!Directory.Exists(FileName) || Status == "Deleted")
                                 {
                                     ListViewItem item1 = new ListViewItem(FileName);
                                     item1.SubItems.Add(Path.GetDirectoryName(FileName));
@@ -218,8 +236,10 @@ public partial class MainForm : Form
                 {
                     if (Item.Checked)
                     {
-                        FileNames.Add(Item.Text);
-                        Revisions.WriteLine(StringManip.DQuote(Item.Text) + " " + Item.SubItems[3].Text + " " + Item.SubItems[4].Text);
+                        string Status = Item.SubItems[3].Text;
+                        if (Status != "Deleted")
+                            FileNames.Add(Item.Text);
+                        Revisions.WriteLine(StringManip.DQuote(Item.Text) + " " + Status + " " + Item.SubItems[4].Text);
                         if (Item.SubItems[3].Text == "OutOfDate")
                             SomeAreOutOfDate = true;
                     }
