@@ -1515,14 +1515,14 @@ namespace ManagedComponent.MvOZCOT
             // Update each field with the init value
             if (found)
             {
-                if (modCultivarParams.pclint != 0.0) modCultivar.SetElementValue("percent_l", modCultivarParams.pclint);
-                if (modCultivarParams.scboll != 0.0) modCultivar.SetElementValue("scboll", modCultivarParams.scboll);
-                if (modCultivarParams.respcon != 0.0) modCultivar.SetElementValue("respcon", modCultivarParams.respcon);
-                if (modCultivarParams.sqcon != 0.0) modCultivar.SetElementValue("sqcon", modCultivarParams.sqcon);
-                if (modCultivarParams.fcutout != 0.0) modCultivar.SetElementValue("fcutout", modCultivarParams.fcutout);
-                if (modCultivarParams.flai != 0.0) modCultivar.SetElementValue("flai", modCultivarParams.flai);
-                if (modCultivarParams.ddisq != 0.0) modCultivar.SetElementValue("DDISQ", modCultivarParams.ddisq);
-                if (modCultivarParams.tipout != 0.0) modCultivar.SetElementValue("TIPOUT", modCultivarParams.tipout);
+                if (modCultivarParams.pclint != 0.0) modCultivar.Element("percent_l").SetValue(modCultivarParams.pclint);
+                if (modCultivarParams.scboll != 0.0) modCultivar.Element("scboll").SetValue(modCultivarParams.scboll);
+                if (modCultivarParams.respcon != 0.0) modCultivar.Element("respcon").SetValue(modCultivarParams.respcon);
+                if (modCultivarParams.sqcon != 0.0) modCultivar.Element("sqcon").SetValue(modCultivarParams.sqcon);
+                if (modCultivarParams.fcutout != 0.0) modCultivar.Element("fcutout").SetValue(modCultivarParams.fcutout);
+                if (modCultivarParams.flai != 0.0) modCultivar.Element("flai").SetValue(modCultivarParams.flai);
+                if (modCultivarParams.ddisq != 0.0) modCultivar.Element("DDISQ").SetValue(modCultivarParams.ddisq);
+                if (modCultivarParams.tipout != 0.0) modCultivar.Element("TIPOUT").SetValue(modCultivarParams.tipout);
 
                 i = 1;
                 foreach(XElement fruddVal in modCultivar.Element("FRUDD").Descendants("val"))
@@ -1545,13 +1545,13 @@ namespace ManagedComponent.MvOZCOT
                     i++;
                 }
 
-                if (modCultivarParams.dlds_max != 0.0) modCultivar.SetElementValue("dlds_max", modCultivarParams.dlds_max);
-                if (modCultivarParams.rate_emergence != 0.0) modCultivar.SetElementValue("rate_emergence", modCultivarParams.rate_emergence);
-                if (modCultivarParams.popcon != 0.0) modCultivar.SetElementValue("popcon", modCultivarParams.popcon);
-                if (modCultivarParams.fburr != 0.0) modCultivar.SetElementValue("fburr", modCultivarParams.fburr);
-                if (modCultivarParams.acotyl != 0.0) modCultivar.SetElementValue("ACOTYL", modCultivarParams.acotyl);
-                if (modCultivarParams.rlai != 0.0) modCultivar.SetElementValue("RLAI", modCultivarParams.rlai);
-                if (modCultivarParams.bckGndRetn != 0.0) modCultivar.SetElementValue("BckGndRetn", modCultivarParams.bckGndRetn);
+                if (modCultivarParams.dlds_max != 0.0) modCultivar.Element("dlds_max").SetValue(modCultivarParams.dlds_max);
+                if (modCultivarParams.rate_emergence != 0.0) modCultivar.Element("rate_emergence").SetValue(modCultivarParams.rate_emergence);
+                if (modCultivarParams.popcon != 0.0) modCultivar.Element("popcon").SetValue(modCultivarParams.popcon);
+                if (modCultivarParams.fburr != 0.0) modCultivar.Element("fburr").SetValue(modCultivarParams.fburr);
+                if (modCultivarParams.acotyl != 0.0) modCultivar.Element("ACOTYL").SetValue(modCultivarParams.acotyl);
+                if (modCultivarParams.rlai != 0.0) modCultivar.Element("RLAI").SetValue(modCultivarParams.rlai);
+                if (modCultivarParams.bckGndRetn != 0.0) modCultivar.Element("BckGndRetn").SetValue(modCultivarParams.bckGndRetn);
 
                 //Note: no need to save results as this has directly updated the STATIC XDocument XDocCultivars
                 //       so all reads of this XDocument will reflect the changes.
