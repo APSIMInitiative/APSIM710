@@ -9,8 +9,8 @@ class InductivePhase : public VernalPhase
 
       virtual void updateTTTargets();
    public:
-      InductivePhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : VernalPhase (scienceAPI, p, stage_name){};
+      InductivePhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : VernalPhase (scienceAPI, p, StartStageName, EndStageName){};
 
    };
 

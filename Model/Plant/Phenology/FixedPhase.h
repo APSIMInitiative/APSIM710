@@ -11,8 +11,8 @@ class FixedPhase : public Phase
       virtual float stress();
    public:
       void read();
-      FixedPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : Phase (scienceAPI, p, stage_name){};
+      FixedPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : Phase (scienceAPI, p, StartStageName, EndStageName){};
       virtual string description();
    };
 

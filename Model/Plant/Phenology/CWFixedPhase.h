@@ -10,8 +10,8 @@ class CWFixedPhase : public CWVernalPhase
       float stress();
 
    public:
-      CWFixedPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : CWVernalPhase (scienceAPI, p, stage_name){};
+      CWFixedPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : CWVernalPhase (scienceAPI, p, StartStageName, EndStageName){};
 
       virtual string description();
       virtual void read();

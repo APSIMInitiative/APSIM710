@@ -84,6 +84,9 @@ class EXPORT ScienceAPI
       // set methods
       void set(const std::string& name, const std::string& units, std::vector<float>& data);
 
+      #define IntSetter(address) boost::function1<void, int>(boost::bind(address, this, _1))
+      void exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, int> fn);
+      
       #define FloatSetter(address) boost::function1<void, float>(boost::bind(address, this, _1))
       void exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, float> fn);
 

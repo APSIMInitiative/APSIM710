@@ -16,8 +16,8 @@ class EmergentPhase : public Phase
 
    public:
       void read();
-      EmergentPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : Phase (scienceAPI, p, stage_name){};
+      EmergentPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : Phase (scienceAPI, p, StartStageName, EndStageName){};
       void setupTTTarget(void);
       virtual string description();
       float stress();

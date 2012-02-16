@@ -34,7 +34,7 @@ class CWVernalPhase : public Phase
       virtual float TT() {return dlt_tt;}
             
    public:
-      CWVernalPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name);
+      CWVernalPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName);
 
       virtual void reset(void);
       virtual void process();

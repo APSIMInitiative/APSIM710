@@ -5,7 +5,7 @@
 class WaitingPhase : public Phase
    {
    public:
-      WaitingPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name);
+      WaitingPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName);
 
    };
 

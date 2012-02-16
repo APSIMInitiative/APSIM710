@@ -10,8 +10,8 @@ class CWEmergentPhase : public CWVernalPhase
       virtual float stress();
 
    public:
-      CWEmergentPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : CWVernalPhase (scienceAPI, p, stage_name){};
+      CWEmergentPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : CWVernalPhase (scienceAPI, p, StartStageName, EndStageName){};
 
       virtual void read();
       virtual void OnSow(float sowing_depth);

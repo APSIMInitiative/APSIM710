@@ -507,6 +507,16 @@ class CMPSetter : public DeletableThing
 // -------------------------------------------------------------
 // Exposing a SETtable variable
 // -------------------------------------------------------------
+void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, int> handler)
+   {
+   typedef CMPSetter<boost::function1<void, int>, int> WrapperType;
+   WrapperType* wrapper = new WrapperType (handler, name, protocol::DTint4);
+   stuffToDelete.push_back(wrapper);
+   boost::function2<bool, protocol::Component*, protocol::QuerySetValueData &> fn;
+   fn = boost::bind(&WrapperType::CMPFunction, wrapper, _1, _2);
+
+   component->addSettableVar(name.c_str(), protocol::DTint4, wrapper->DDML(), fn, units.c_str(), description.c_str());
+   }
 void ScienceAPI::exposeWritable(const std::string& name, const std::string& units, const std::string& description, boost::function1<void, float> handler)
    {
    typedef CMPSetter<boost::function1<void, float>, float> WrapperType;

@@ -5,8 +5,8 @@
 class CWSowingPhase : public CWVernalPhase
    {
    public:
-      CWSowingPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : CWVernalPhase (scienceAPI, p, stage_name){};
+      CWSowingPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : CWVernalPhase (scienceAPI, p, StartStageName, EndStageName){};
 
       void calcPhaseDevelopment(int das,
                                 float& dlt_tt_phenol, float& phase_devel);

@@ -20,8 +20,8 @@ class LeafAppPhase : public Phase
 
    public:
       void read();
-      LeafAppPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : Phase (scienceAPI, p, stage_name){};
+      LeafAppPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : Phase (scienceAPI, p, StartStageName, EndStageName){};
       void updateTTTargets();
       virtual string description();
       virtual void reset();

@@ -16,8 +16,8 @@ class PhotoPhase : public Phase
 
    public:
       void read();
-      PhotoPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : Phase (scienceAPI, p, stage_name) {}
+      PhotoPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : Phase (scienceAPI, p, StartStageName, EndStageName) {}
       void updateTTTargets();
       virtual string description();
    };

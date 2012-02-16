@@ -21,12 +21,19 @@ string CWFixedPhase::description()
    return "         tt_"+name()+string(pad, ' ') + " = "+ftoa(target, "7.0")+ " (dd)\n";
    }
 
-void CWFixedPhase::calcPhaseDevelopment(int /*das*/,
-                                      float& dlt_tt_phenol, float& phase_devel)
+void CWFixedPhase::calcPhaseDevelopment(int das, float& dlt_tt_phenol, float& phase_devel)
    {
    dlt_tt_phenol = TT() * stress();
 
-   phase_devel = (float)divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
+   if (DaysFromSowingToEndOfPhase > 0)
+      {
+      if (das >= DaysFromSowingToEndOfPhase)
+         phase_devel = 1;
+      else
+         phase_devel = 0;
+      }
+   else
+      phase_devel = (float)divide(getTT() + dlt_tt_phenol, getTTTarget(), 1.0);
    }
 
 float CWFixedPhase::stress()

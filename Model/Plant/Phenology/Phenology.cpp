@@ -67,7 +67,7 @@ void Phenology::onInit1(protocol::Component *)
 void Phenology::initialise()
    {
    clear();
-   phases.push_back(new Phase(scienceAPI, plant, "out"));
+   phases.push_back(new Phase(scienceAPI, plant, "out", ""));
 
    // Read the sequential list of stage names
    vector<string> phase_types;
@@ -77,33 +77,38 @@ void Phenology::initialise()
 
    for (unsigned i=0;i!=phase_names.size();i++)
       {
+      string StartStageName = phase_names[i];
+      string EndStageName;
+      if (i+1 < phase_names.size())
+         EndStageName =  phase_names[i+1];
+      
       Phase* newPhase;
       if(phase_types[i]=="sowing")
-         newPhase = new SowingPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new SowingPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="generic")
-         newPhase = new Phase(scienceAPI, plant, phase_names[i]);
+         newPhase = new Phase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="vernal")
-         newPhase = new VernalPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new VernalPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="photo")
-         newPhase = new PhotoPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new PhotoPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="emergent")
-         newPhase = new EmergentPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new EmergentPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="inductive")
-         newPhase = new InductivePhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new InductivePhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="leafapp")
-         newPhase = new LeafAppPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new LeafAppPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="fixed")
-         newPhase = new FixedPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new FixedPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="cwemergent")
-         newPhase = new CWEmergentPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new CWEmergentPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="cwinductive")
-         newPhase = new CWInductivePhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new CWInductivePhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="cwfixed")
-         newPhase = new CWFixedPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new CWFixedPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="cwsowing")
-         newPhase = new CWSowingPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new CWSowingPhase(scienceAPI, plant, StartStageName, EndStageName);
       else if(phase_types[i]=="waiting")
-         newPhase = new WaitingPhase(scienceAPI, plant, phase_names[i]);
+         newPhase = new WaitingPhase(scienceAPI, plant, StartStageName, EndStageName);
       else
          throw runtime_error("Invalid phase type: " + phase_types[i]);
 

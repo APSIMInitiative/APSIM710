@@ -1,4 +1,4 @@
-<folder version="28" name="simulations">
+<folder version="29" name="simulations">
   <simulation name="Wheat">
     <metfile name="met">
       <filename name="filename" input="yes">%APSIM%\\Examples\MetFiles\goond.met</filename>
@@ -2455,7 +2455,7 @@
             <class type="classes" description="Enter crop growth class : ">plant</class>
             <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
         if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
@@ -2486,12 +2486,12 @@
         <filename output="yes">Wheat.out</filename>
         <title>Wheat</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" array="?" description="Date (dd/mm/yyyy)" />
-          <variable name="biomass" array="?" description="Biomass" />
-          <variable name="yield" array="?" description="Yield" />
-          <variable name="grain_protein" array="?" description="grain protein content" />
-          <variable name="grain_size" array="?" description="Size of each grain" />
-          <variable name="esw" array="?" description="Extractable Soil Water (mm)" />
+          <variable name="dd/mm/yyyy as Date" />
+          <variable name="biomass" />
+          <variable name="yield" />
+          <variable name="grain_protein" />
+          <variable name="grain_size" />
+          <variable name="esw" />
           <variable name="roottotalwt" />
           <variable name="stemtotalwt" />
           <variable name="leaftotalwt" />
@@ -4984,6 +4984,84 @@
         <events name="Reporting Frequency" shortcut="/simulations/Wheat/paddock/outputfile/Reporting Frequency" />
       </outputfile>
       <weed />
+    </area>
+  </simulation>
+  <simulation name="WheatWithSetEmergenceDate" shortcut="/simulations/Wheat">
+    <metfile name="met" shortcut="/simulations/Wheat/met" />
+    <clock shortcut="/simulations/Wheat/clock" />
+    <summaryfile shortcut="/simulations/Wheat/summaryfile" />
+    <area name="paddock" shortcut="/simulations/Wheat/paddock">
+      <soil name="Soil" shortcut="/simulations/Wheat/paddock/Soil">
+        <InitWater name="Initial water" shortcut="/simulations/Wheat/paddock/Soil/Initial water" />
+        <Water shortcut="/simulations/Wheat/paddock/Soil/Water">
+          <SoilCrop name="Barley" shortcut="/simulations/Wheat/paddock/Soil/Water/Barley" />
+          <SoilCrop name="Broccoli" shortcut="/simulations/Wheat/paddock/Soil/Water/Broccoli" />
+          <SoilCrop name="Butterflypea" shortcut="/simulations/Wheat/paddock/Soil/Water/Butterflypea" />
+          <SoilCrop name="Canola" shortcut="/simulations/Wheat/paddock/Soil/Water/Canola" />
+          <SoilCrop name="Centro" shortcut="/simulations/Wheat/paddock/Soil/Water/Centro" />
+          <SoilCrop name="Chickpea" shortcut="/simulations/Wheat/paddock/Soil/Water/Chickpea" />
+          <SoilCrop name="Cowpea" shortcut="/simulations/Wheat/paddock/Soil/Water/Cowpea" />
+          <SoilCrop name="Fababean" shortcut="/simulations/Wheat/paddock/Soil/Water/Fababean" />
+          <SoilCrop name="Fieldpea" shortcut="/simulations/Wheat/paddock/Soil/Water/Fieldpea" />
+          <SoilCrop name="Horsegram" shortcut="/simulations/Wheat/paddock/Soil/Water/Horsegram" />
+          <SoilCrop name="LabLab" shortcut="/simulations/Wheat/paddock/Soil/Water/LabLab" />
+          <SoilCrop name="Lettuce" shortcut="/simulations/Wheat/paddock/Soil/Water/Lettuce" />
+          <SoilCrop name="Lucerne" shortcut="/simulations/Wheat/paddock/Soil/Water/Lucerne" />
+          <SoilCrop name="Lupin" shortcut="/simulations/Wheat/paddock/Soil/Water/Lupin" />
+          <SoilCrop name="Mucuna" shortcut="/simulations/Wheat/paddock/Soil/Water/Mucuna" />
+          <SoilCrop name="Mungbean" shortcut="/simulations/Wheat/paddock/Soil/Water/Mungbean" />
+          <SoilCrop name="Navybean" shortcut="/simulations/Wheat/paddock/Soil/Water/Navybean" />
+          <SoilCrop name="Oats" shortcut="/simulations/Wheat/paddock/Soil/Water/Oats" />
+          <SoilCrop name="Peanut" shortcut="/simulations/Wheat/paddock/Soil/Water/Peanut" />
+          <SoilCrop name="Pigeonpea" shortcut="/simulations/Wheat/paddock/Soil/Water/Pigeonpea" />
+          <SoilCrop name="Potato" shortcut="/simulations/Wheat/paddock/Soil/Water/Potato" />
+          <SoilCrop name="Soybean" shortcut="/simulations/Wheat/paddock/Soil/Water/Soybean" />
+          <SoilCrop name="Stylo" shortcut="/simulations/Wheat/paddock/Soil/Water/Stylo" />
+          <SoilCrop name="SweetCorn" shortcut="/simulations/Wheat/paddock/Soil/Water/SweetCorn" />
+          <SoilCrop name="SweetSorghum" shortcut="/simulations/Wheat/paddock/Soil/Water/SweetSorghum" />
+          <SoilCrop name="Weed" shortcut="/simulations/Wheat/paddock/Soil/Water/Weed" />
+          <SoilCrop name="Wheat" shortcut="/simulations/Wheat/paddock/Soil/Water/Wheat" />
+        </Water>
+        <SoilWat shortcut="/simulations/Wheat/paddock/Soil/SoilWat" />
+        <SoilOrganicMatter shortcut="/simulations/Wheat/paddock/Soil/SoilOrganicMatter" />
+        <Analysis shortcut="/simulations/Wheat/paddock/Soil/Analysis" />
+        <Sample name="Initial nitrogen" shortcut="/simulations/Wheat/paddock/Soil/Initial nitrogen" />
+      </soil>
+      <surfaceom name="surface organic matter" shortcut="/simulations/Wheat/paddock/surface organic matter" />
+      <fertiliser shortcut="/simulations/Wheat/paddock/fertiliser" />
+      <wheat shortcut="/simulations/Wheat/paddock/wheat" />
+      <folder name="Manager folder" shortcut="/simulations/Wheat/paddock/Manager folder">
+        <manager name="Sow on a fixed date">
+          <ui>
+            <category description="Sowing criteria" type="category" />
+            <date type="text" description="Enter sowing date (dd-mmm) : ">1-jun</date>
+            <category description="Sowing parameters" type="category" />
+            <crop type="crop" description="Enter name of crop to sow : ">wheat</crop>
+            <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
+            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
+            <cultivar type="cultivars" description="Enter cultivar : ">hartog</cultivar>
+            <class type="classes" description="Enter crop growth class : ">plant</class>
+            <row_spacing type="text" description="Enter row spacing (mm) : ">500</row_spacing>
+          </ui>
+          <script>
+            <text>
+        if (today = date('[date]') then
+              [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
+              [crop].DaysToGermination = 35
+              [crop].DaysToEmergence = 40
+        endif
+               </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule" shortcut="/simulations/Wheat/paddock/Manager folder/Harvesting rule" />
+      </folder>
+      <outputfile shortcut="/simulations/Wheat/paddock/outputfile">
+        <filename output="yes">WheatWithSetEmergenceDate.out</filename>
+        <title>WheatWithSetEmergenceDate</title>
+        <variables name="Variables" shortcut="/simulations/Wheat/paddock/outputfile/Variables" />
+        <events name="Reporting Frequency" shortcut="/simulations/Wheat/paddock/outputfile/Reporting Frequency" />
+      </outputfile>
     </area>
   </simulation>
 </folder>

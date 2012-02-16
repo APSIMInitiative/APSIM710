@@ -16,8 +16,8 @@ class VernalPhase : public Phase
 
    public:
       void read();
-      VernalPhase(ScienceAPI& scienceAPI, plantInterface& plant, const string& stage_name)
-         : Phase (scienceAPI, plant, stage_name){};
+      VernalPhase(ScienceAPI& scienceAPI, plantInterface& plant, const std::string& StartStageName, const std::string& EndStageName)
+         : Phase (scienceAPI, plant, StartStageName, EndStageName){};
       void updateTTTargets();
       virtual void reset();
       virtual string description();

@@ -20,13 +20,24 @@ bool SowingPhase::germinating()
 
 void SowingPhase::calcPhaseDevelopment(int das, float& dlt_tt_phenol, float& phase_devel)
    {
-   // can't germinate on same day as sowing, because we would miss out on
-   // day of sowing elsewhere.
-   if (das > 0 && germinating())
-      phase_devel = 1.999f;
+   if (DaysFromSowingToEndOfPhase > 0)
+      {
+      if (das >= DaysFromSowingToEndOfPhase)
+         phase_devel = 1.999f;
+      else
+         phase_devel = 0.999f;
+      }
    else
-      phase_devel = 0.999f;
-   dlt_tt_phenol = TT();
+      {
+       
+      // can't germinate on same day as sowing, because we would miss out on
+      // day of sowing elsewhere.
+      if (das > 0 && germinating())
+         phase_devel = 1.999f;
+      else
+         phase_devel = 0.999f;
+      dlt_tt_phenol = TT();
+      }
    }
 
 

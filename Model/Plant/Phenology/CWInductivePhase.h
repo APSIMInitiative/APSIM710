@@ -8,8 +8,8 @@ class CWInductivePhase : public CWVernalPhase
       virtual float stress();
 
    public:
-      CWInductivePhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-         : CWVernalPhase (scienceAPI, p, stage_name){};
+      CWInductivePhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+         : CWVernalPhase (scienceAPI, p, StartStageName, EndStageName){};
 
       virtual void read();
 

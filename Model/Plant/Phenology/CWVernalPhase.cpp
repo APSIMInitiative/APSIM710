@@ -4,8 +4,8 @@
 #include "../Environment.h"
 #include "Phenology.h"
 
-CWVernalPhase::CWVernalPhase(ScienceAPI& scienceAPI, plantInterface& p, const string& stage_name)
-   : Phase (scienceAPI, p, stage_name)
+CWVernalPhase::CWVernalPhase(ScienceAPI& scienceAPI, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName)
+   : Phase (scienceAPI, p, StartStageName, EndStageName)
    {
    reset();
    }
