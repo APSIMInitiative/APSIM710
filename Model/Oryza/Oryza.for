@@ -1651,21 +1651,21 @@
          ! Rate of increase in spikelet number   !no. ha-1 d-1
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(no. ha-1 d-1)'   ! variable units
+     :              ,'(no._ha-1_d-1)'   ! variable units
      :              ,g%gnsp)            ! variable
 
       elseif (variable_name .eq. 'spgf') then
          ! Spikelet growth factor   !no. kg-1
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(no. kg-1)'       ! variable units
+     :              ,'(no._kg-1)'       ! variable units
      :              ,p%spgf)            ! variable
 
       elseif (variable_name .eq. 'coldtt') then
          ! Accumulated cold degree days (degree days)
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(degree days)'       ! variable units
+     :              ,'(degree_days)'       ! variable units
      :              ,g%coldtt)            ! variable
 
       elseif (variable_name .eq. 'sf1') then
@@ -1706,35 +1706,35 @@
          ! Number of spikelets   !no. ha-1
          call respond2get_real_var (
      :               variable_name     ! variable name
-     :              ,'(no. ha-1)'              ! variable units
+     :              ,'(no._ha-1)'              ! variable units
      :              ,g%nsp)            ! variable
 
       elseif (variable_name .eq. 'gngr') then
          ! Rate of increase in grain number   !no. ha-1 d-1
          call respond2get_real_var (
      :               variable_name     ! variable name
-     :              ,'(no. ha-1 d-1)'              ! variable units
+     :              ,'(no._ha-1_d-1)'              ! variable units
      :              ,g%gngr)            ! variable
 
       elseif (variable_name .eq. 'ggr') then
          ! Rate of increase in grain weight  !kg DM ha-1 d-1
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(kg DM ha-1 d-1)' ! variable units
+     :              ,'(kg_DM_ha-1_d-1)' ! variable units
      :              ,g%ggr)             ! variable
 
       elseif (variable_name .eq. 'ngr') then
          ! Number of grains  !no ha-1
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(no ha-1)'        ! variable units
+     :              ,'(no_ha-1)'        ! variable units
      :              ,g%ngr)             ! variable
 
       elseif (variable_name .eq. 'wgrmx') then
          ! Maximum individual grain weight  !kg grain-1
          call respond2get_real_var (
      :               variable_name      ! variable name
-     :              ,'(kg grain-1)'        ! variable units
+     :              ,'(kg_grain-1)'        ! variable units
      :              ,p%wgrmx)             ! variable
 
 ! dsg 230507  apswim needs a 'sw_demand'
