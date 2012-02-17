@@ -51,7 +51,7 @@ namespace CSUserInterface
                        string factorsList = ""; 
                        int counter = 0;
 
-                       item.CalcFactorialList(factorials, factorsList, ref counter, 0);
+                       item.CalcFactorialList(factorials, factorsList, ref counter);
                        AddFactorsToTreeNode(item, treeNode, factorials);
                        tmpCounter += counter;
                     }

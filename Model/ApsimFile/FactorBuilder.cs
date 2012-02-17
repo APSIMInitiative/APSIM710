@@ -49,7 +49,7 @@ namespace ApsimFile
                 return 1;
             return FactorComponent.ChildNodes.Count; 
         }
-        public virtual void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
+        public virtual void CalcFactorialList(List<String> factorials, string factorsList, ref int counter)
         {
            if (factorsList != "")
               factorsList += ", ";
@@ -58,7 +58,7 @@ namespace ApsimFile
                if (NextItem != null)
                {
                    //call next factor in the list
-                   NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + FolderLevel, ref counter, totalCount );
+                   NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + FolderLevel, ref counter);
                }
                else
                {
@@ -73,7 +73,7 @@ namespace ApsimFile
                    if (NextItem != null)
                    {
                        //call next factor in the list
-                       NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter, totalCount * getCount());
+                       NextItem.CalcFactorialList(factorials, factorsList + FactorComponent.Name + " = " + child.Name, ref counter);
                    }
                    else
                    {
@@ -88,30 +88,46 @@ namespace ApsimFile
         {
             if (factorsList != "")
                 factorsList += ";";
-            foreach (Component child in FactorComponent.ChildNodes)
+            if (FactorComponent.Type != "folder")
             {
-                //replace each target that is within the provided simulation with the child's xml
-                foreach (string target in Targets)
+                foreach (Component child in FactorComponent.ChildNodes)
                 {
-                    //need to remove the path of this simulation from the target to get the relative path
-                    string relativePath = target.Substring(Simulation.FullPath.Length+1);
-                    Component targetComp = Simulation.Find(relativePath);
-                    if (targetComp != null)
+                    //replace each target that is within the provided simulation with the child's xml
+                    foreach (string target in Targets)
                     {
-                       //replace target nodes with factor nodes - add child factor nodes if they don't exist 
-                       //don't remove any children from the target
-                       ReplaceComponent(targetComp, child);
+                        //need to remove the path of this simulation from the target to get the relative path
+                        string relativePath = target.Substring(Simulation.FullPath.Length + 1);
+                        Component targetComp = Simulation.Find(relativePath);
+                        if (targetComp != null)
+                        {
+                            //replace target nodes with factor nodes - add child factor nodes if they don't exist 
+                            //don't remove any children from the target
+                            ReplaceComponent(targetComp, child);
+                        }
+                    }
+                    if (NextItem != null)
+                    {
+                        //call next factor in the list
+                        NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch);
+                    }
+                    else
+                    {
+                        ++counter;
+                        CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount, arch);
                     }
                 }
+            }
+            else
+            {
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount(), arch);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + child.Name, ref counter, totalCount * getCount(), arch);
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + FactorComponent.Name + "=" + FolderLevel, ref counter, totalCount, arch);
                 }
             }
         }
@@ -276,7 +292,7 @@ namespace ApsimFile
                 return NextItem.CalcCount() * Parameters.Count;
             return Parameters.Count;
         }
-        public override void CalcFactorialList(List<String> factorials, string factorsList, ref int counter, int totalCount)
+        public override void CalcFactorialList(List<String> factorials, string factorsList, ref int counter)
         {
             if (factorsList != "")
                 factorsList += ", ";
@@ -286,7 +302,7 @@ namespace ApsimFile
               if (NextItem != null)
               {
                  //call next factor in the list
-                 NextItem.CalcFactorialList(factorials, factorsList + Variable.Name + " = " + par, ref counter, totalCount * getCount());
+                 NextItem.CalcFactorialList(factorials, factorsList + Variable.Name + " = " + par, ref counter);
               }
               else
               {
@@ -331,12 +347,12 @@ namespace ApsimFile
                 if (NextItem != null)
                 {
                     //call next factor in the list
-                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount(), arch);
+                    NextItem.Process(SimFiles, Simulation, SimulationPath, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch);
                 }
                 else
                 {
                     ++counter;
-                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount * getCount(), arch);
+                    CreateJobFromSimulation(SimFiles, Simulation, factorsList + Variable.Name + "=" + par, ref counter, totalCount, arch);
                 }
             }
         }
@@ -393,6 +409,7 @@ namespace ApsimFile
                     bool folderlevel = true;
                     List<FactorItem> leafFactorItems = new List<FactorItem>();
                     ProcessAdvancedFactorItems(leaf, leafFactorItems, folderlevel, SimulationPath);
+                    SortLeafFactors(leafFactorItems);
                     if(leafFactorItems.Count > 0)
                         factorItems.Add(leafFactorItems[0]);
                 }
@@ -404,6 +421,31 @@ namespace ApsimFile
                 ProcessFactorNodes(factorial, ref lastItem, ref factorItems, SimulationPath);
             }
             return factorItems;
+        }
+
+        private void SortLeafFactors(List<FactorItem> leafFactorItems)
+        {
+            //move from the back, push factors that point to folders to the front.
+            //make sure you stop before overlapping the start again
+            //then reset the next items on each factor
+            int idx = leafFactorItems.Count-1;
+            for (int i = leafFactorItems.Count - 1; i >= 0; --i)
+            {
+                if (leafFactorItems[idx].FactorComponent.Type == "folder")
+                {
+                    FactorItem tmp = leafFactorItems[idx];
+                    leafFactorItems.RemoveAt(idx);
+                    leafFactorItems.Insert(0, tmp);
+                }
+                else
+                {
+                    --idx;
+                }
+            }
+            for (int i = 0; i < leafFactorItems.Count - 1; ++i)
+            {
+                leafFactorItems[i].NextItem = leafFactorItems[i + 1];
+            }
         }
         public void LoadVariableTypes(XmlNode metNode, List<string> variableTypes)
         {
@@ -476,7 +518,7 @@ namespace ApsimFile
                 }
             }
         }
-
+        
         private void ProcessAdvancedFactorItems(Component leaf, List<FactorItem> factorItems, bool folderlevel, string simulationPath)
         {
             List<string> variableTypes = new List<string>();
@@ -554,8 +596,6 @@ namespace ApsimFile
                 ProcessAdvancedFactorItems(leaf.Parent, factorItems, !folderlevel, simulationPath);
             }
         }
-
-
         private void FindLeaves(Component comp, List<Component> leaves)
         {
             //List<Component> leaves = new List<Component>();
@@ -592,12 +632,16 @@ namespace ApsimFile
                 {
                     FactorBuilder builder = new FactorBuilder();
                     List<FactorItem> items = builder.BuildFactorItems(FactorComponent, SimulationPath);
+                    int counter = 0;
+                    double totalCount = 0;
+                    foreach (FactorItem item in items)
+                        totalCount += item.CalcCount();
+                    
                     foreach (FactorItem item in items)
                     {
-                        int counter = 0;
                         string factorsList = "";
 
-                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, 1, Configuration.getArchitecture());
+                        item.Process(SimFiles, Simulation, SimulationPath, factorsList, ref counter, (int)totalCount, Configuration.getArchitecture());
                     }
                 }
                 catch (Exception ex)
