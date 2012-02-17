@@ -34,7 +34,7 @@ public class TerminateFinalNodeNumber
     public double _AttainableFinalNodeNumber = 0;
     public double _VernalisationFinalNodeNumber = 0;
     public double _PhotoperiodFinalNodeNumber = 0;
-    public double _CommitPrimordia = 0;
+    public double _CommitHaunStage = 0;
     public double _TerminatedFinalNodeNumber = 0;
 
     [Output]
@@ -57,6 +57,9 @@ public class TerminateFinalNodeNumber
     public double VernalisationIndex { get { return _VernalisationIndex; } }
     //Vernalisation index is 1 if fully saturated, 0 if not vernalised at all and some where in between is vernalisation is partly completed.
     [Output]
+    public double AttainableFinalNodeNumber { get { return _AttainableFinalNodeNumber; } }
+    //Attainable final leaf number is the number of leaves that may be aquired given the current vernalisation staturation
+    [Output]
     public double VernalisationFinalNodeNumber { get { return _VernalisationFinalNodeNumber; } }
     //LongDayFinalNodeNumber is the number of leaves that the crop will produce if grown in long photoperiod (greater than the saturating photoperiod)
     //This number increases each day as new primordia are initiated on the apex and is fixed when the crop is vernalised
@@ -68,14 +71,14 @@ public class TerminateFinalNodeNumber
     public double TerminatedFinalNodeNumber { get { return _TerminatedFinalNodeNumber; } }
     //This is the ultimate number of leaves that the crop will produce.  It it changes with DayLengthFinalNodeNumber until the number of primordia equals DayLengthFinalNodeNumber + 4 and then is fixed.
     [Output]
-    public double CommitPrimordia { get { return _CommitPrimordia; } }
+    public double CommitHaunStage { get { return _CommitHaunStage; } }
     //This is the primordia threshold at which the final node number is fixed when primordia number first exceeds this value.
     [Output]
     public double TargetFinalNodeNumber
     {
         get
         {
-            return Math.Round(Math.Max(_AttainableFinalNodeNumber, _TerminatedFinalNodeNumber));
+            return Math.Max(AttainableFinalNodeNumber, TerminatedFinalNodeNumber);
         }
     }
     //This returns an estimate of the final node number that the crop will committ to starting off with maximum node number, decreasing as the crop is vernalised and then changing in response to photoperiod 
@@ -88,16 +91,16 @@ public class TerminateFinalNodeNumber
         MaxT = NewMet.maxt;
         MinT = NewMet.mint;
         MeanT = (MaxT + MinT) / 2;
-        if (_VernalisationIndex < 1.0)
+        if (VernalisationIndex < 1.0)
             IncrementVernalisation();
     }
 
     public void UpdateTerminateNodeVariables()
     {
-        AttainableFinalNodeNumber();
+        AttainableFinalNodeNumberFunction();
         VernalisationFinalNodeNumberFunction();
         PhotoperiodFinalNodeNumberFunction();
-        CommitPrimordiaFunction();
+        CommitHaunStageFunction();
         TerminatedFinalNodeNumberFunction();
     }
 
@@ -135,14 +138,14 @@ public class TerminateFinalNodeNumber
      /// AttainableFinalNodeNumber is the final leaf number that the crop may committ to 
      /// It decreases from the MaximumNodeNumber toward a minimum depending on the extent of vernalisation
      /// </summary>
-    public void AttainableFinalNodeNumber()
+    public void AttainableFinalNodeNumberFunction()
      {
-             _AttainableFinalNodeNumber = Leaf.MaxNodeNo * (1 - _VernalisationIndex);
+             _AttainableFinalNodeNumber = (Leaf.MaxNodeNo - 7) * (1 - VernalisationIndex) + 7; //Fixme. Assuming minimum leaf number is 7.  Need t make this a variable
      }
 
     public void VernalisationFinalNodeNumberFunction()
     {
-        if ((Leaf.AppearedCohortNo >= 3.0) && (JuvenileDevelopmentIndex >= 1.0))
+        if (((Leaf.ExpandedNodeNo >= 2.0) && (JuvenileDevelopmentIndex >= 1.0)) | ((Leaf.ExpandedNodeNo >= 2.0) && (AttainableFinalNodeNumber <= Leaf.PrimordiaNo)))
         { } // do nothing
         else
         _VernalisationFinalNodeNumber = (Leaf.PrimordiaNo);
@@ -153,18 +156,18 @@ public class TerminateFinalNodeNumber
          double PhotoPeriodResponse = 0;
          if (Photoperiod.Value <SaturationPhotoperiod)
              PhotoPeriodResponse = PhotoperiodSensitivity * (SaturationPhotoperiod - Photoperiod.Value);
-         _PhotoperiodFinalNodeNumber = _VernalisationFinalNodeNumber + PhotoPeriodResponse;
+         _PhotoperiodFinalNodeNumber = VernalisationFinalNodeNumber + PhotoPeriodResponse;
      }
 
-    public void CommitPrimordiaFunction()
-     {
-         _CommitPrimordia = _TerminatedFinalNodeNumber + 4;
-     }
+    public void CommitHaunStageFunction()
+    {
+         _CommitHaunStage = PhotoperiodFinalNodeNumber / 2;
+    }
 
     public void TerminatedFinalNodeNumberFunction()
     {
-        if (Leaf.PrimordiaNo <= _CommitPrimordia)
-           _TerminatedFinalNodeNumber = _PhotoperiodFinalNodeNumber;
+        if (Leaf.ExpandedNodeNo <= CommitHaunStage)
+        _TerminatedFinalNodeNumber = PhotoperiodFinalNodeNumber;
     }
  #endregion
 }

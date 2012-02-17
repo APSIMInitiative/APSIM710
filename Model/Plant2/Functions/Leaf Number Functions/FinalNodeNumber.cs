@@ -25,7 +25,6 @@ public class FinalNodeNumber
     //Class data members
     private double _PrimordiaNumber = 0;
     private double _FinalLeafNumber = 0;
-
     public void Clear()
     {
         _FinalLeafNumber = 0;
@@ -55,7 +54,7 @@ public class FinalNodeNumber
     {
         if (TerminateFinalNodeNumber != null)
         {
-            TerminateFinalNodeNumber.AttainableFinalNodeNumber();
+            TerminateFinalNodeNumber.AttainableFinalNodeNumberFunction();
         }
         CalculateFinalLeafNumber();
     }
@@ -67,7 +66,6 @@ public class FinalNodeNumber
     public void CalculateFinalLeafNumber()
     {
         if (TerminateFinalNodeNumber != null)
-            //_FinalLeafNumber = Math.Max(InitialLeafPrimordia, Math.Min(_PrimordiaNumber, TerminateFinalNodeNumber.TerminatedFinalNodeNumber));
             _FinalLeafNumber = Math.Max(InitialLeafPrimordia, TerminateFinalNodeNumber.TargetFinalNodeNumber);
         else if (PhotoperiodFactor != null)
             _FinalLeafNumber = PhotoperiodFactor.Value * MaxNodeNo;

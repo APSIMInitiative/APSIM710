@@ -114,6 +114,8 @@ public class Leaf : BaseOrgan, AboveGround
     public double StartFractionExpanded = 0;
     public double _ThermalTime = 0;
     public double ProportionStemMortality = 0;
+    public double FinalLeafFraction = 1;
+    public bool FinalLeafAppeared = false;
         
  #endregion
 
@@ -180,7 +182,10 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 if (L.IsAppeared)
                     Count++;
-            return Count;
+            if (FinalLeafAppeared)
+                return Count - (1 - FinalLeafFraction);
+            else
+                return Count;
         }
     }
     [Output]
@@ -210,16 +215,16 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
 
     [Description("Number of leaf cohorts that are fully expanded")]
-    public int ExpandedCohortNo
+    public double ExpandedCohortNo
     {
         get
         {
-            int count = 0;
+            int Count = 0;
             foreach (LeafCohort L in Leaves)
                 if (L.IsFullyExpanded)
-                    count++;
-            return count;
-        }
+                    Count++;
+            return Math.Min(Count, FinalLeafNo);
+         }
     }
     [Output]
 
@@ -228,12 +233,15 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            double count = 0;
-            foreach (LeafCohort L in Leaves)
+            double Count = 0;
+             foreach (LeafCohort L in Leaves)
                 if (L.IsGreen)
-                    count += 1;
-            return count;
-        }
+                    Count += 1;
+             if (FinalLeafAppeared)
+                 return Count - (1 - FinalLeafFraction);
+             else
+                 return Count;
+         }
     }
     [Output]
 
@@ -622,7 +630,10 @@ public class Leaf : BaseOrgan, AboveGround
     public override void DoPotentialGrowth()
     {
         EP = 0;
-
+        if ((AppearedCohortNo == (int)FinalLeafNo) && (AppearedCohortNo > 0.0) && (AppearedCohortNo < MaxNodeNo)) //If last interger leaf has appeared set the fraction of the final part leaf.
+        {
+            FinalLeafFraction = FinalLeafNo - AppearedCohortNo;
+        }
         //Calculate final leaf number changes due to peremergence vernalisation.  
         //FIXME  HEB.  This is not a very robust test as won't work if the emergence phase is not called "Emerging"  Need something better.
         if (Phenology.CurrentPhaseName == "Emerging")
@@ -648,7 +659,7 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 L.DoFrost(FrostFraction.Value);
 
-        if (PrimordiaNo >= Leaves.Count + 1) //When primordia number is 1 more than current cohort number produce a new cohort
+        if (PrimordiaNo >= Leaves.Count + FinalLeafFraction) //When primordia number is 1 more than current cohort number produce a new cohort
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeInitiationRate.  Your NodeInitiationRate is triggering a new leaf cohort before leaves have been initialised.");
@@ -662,13 +673,14 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves.Add(NewLeaf);
         }
 
-        if (AppearedNodeNo >= AppearedCohortNo + 1) //When Node number is 1 more than current cohort number make a new leaf appear and start growing
+        if ((AppearedNodeNo >= AppearedCohortNo + FinalLeafFraction) && (FinalLeafFraction > 0.0))//When Node number is 1 more than current appeared leaf number make a new leaf appear and start growing
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
-
-            int AppearingNode = (int)AppearedNodeNo;
-            double CohortAge = (AppearedNodeNo - AppearingNode) * NodeAppearanceRate.Value;
+            if (FinalLeafFraction != 1.0)
+                FinalLeafAppeared = true;
+            int AppearingNode = (int)(AppearedNodeNo + (1 - FinalLeafFraction));
+            double CohortAge = (AppearedNodeNo - AppearingNode) * NodeAppearanceRate.Value * FinalLeafFraction;
             double BranchNumber = Population.Value * PrimaryBudNo;
             if (Leaves.Count > 0)
             {
@@ -676,13 +688,13 @@ public class Leaf : BaseOrgan, AboveGround
                 BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
             BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
-            
+
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
             Leaves[i].Rank = AppearingNode;
             Leaves[i]._Population = BranchNumber;
             Leaves[i].Age = CohortAge; 
-            Leaves[i].DoAppearance();
+            Leaves[i].DoAppearance(FinalLeafFraction);
             NewLeaf.Invoke();
         }
 
@@ -721,8 +733,8 @@ public class Leaf : BaseOrgan, AboveGround
             {
                 Leaf._Population = Population.Value * PrimaryBudNo;
                 Leaf.DoInitialisation();
-                AppearedNodeNo += 1;
-                Leaf.DoAppearance();
+                AppearedNodeNo += 1.0;
+                Leaf.DoAppearance(1.0);
             }
             else //Leaves are primordia and have not yet emerged, initialise but do not set appeared values yet
             Leaf.DoInitialisation();

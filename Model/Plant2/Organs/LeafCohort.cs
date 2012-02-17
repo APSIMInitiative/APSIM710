@@ -403,7 +403,7 @@ public class LeafCohort
         IsInitialised = true;
         Age = 0;
     }
-    public void DoAppearance()
+    public void DoAppearance(double LeafFraction)
     {
         // _Population will equal 0 when the APSIM infrastructure creates this object.
         // It will already be set if PLANT creates this object and population is passed
@@ -411,8 +411,8 @@ public class LeafCohort
         IsAppeared = true;
         if (_Population == 0)
             _Population = PopulationFunction.Value * Leaf.PrimaryBudNo;
-        MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
-        GrowthDuration = GrowthDurationFunction.Value;
+        MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor * LeafFraction;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
+        GrowthDuration = GrowthDurationFunction.Value * LeafFraction;
         LagDuration = LagDurationFunction.Value;
         SenescenceDuration = SenescenceDurationFunction.Value;
         DetachmentLagDuration = DetachmentLagDurationFunction.Value;
