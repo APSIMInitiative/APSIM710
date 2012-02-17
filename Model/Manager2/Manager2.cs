@@ -119,6 +119,22 @@ public class Manager2
 
                     Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
                 }
+                if (Errors != "" && Errors.Contains("No inputs specified. Line number: 0"))
+                {
+                    // This can happen on condor execute nodes that don't have write access to the 
+                    // temp directory.
+                    Params.TempFiles = new TempFileCollection(".");
+                    results = Provider.CompileAssemblyFromSource(Params, source);
+                    Errors = "";
+                    foreach (CompilerError err in results.Errors)
+                    {
+                        if (Errors != "")
+                            Errors += "\r\n";
+
+                        Errors += err.ErrorText + ". Line number: " + err.Line.ToString();
+                    }
+
+                }
                 if (Errors != "")
                     throw new Exception(Errors);
 

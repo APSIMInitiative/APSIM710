@@ -553,7 +553,7 @@ namespace CSGeneral
 
                 // Some child nodes need to be checked sequentially because they don't have
                 // a "name" attribute e.g. <Layer> and <Script>
-                string[] SequentialNodeTypes = new string[] { "Layer", "script" };
+                string[] SequentialNodeTypes = new string[] { "Layer", "script", "operation" };
 
                 // Perform lookup comparison for all non sequential nodes.
                 foreach (XmlNode Child1 in XmlHelper.ChildNodes(Node1, ""))
