@@ -18,7 +18,7 @@ namespace ManagedComponent.MvOZCOT
         private static String _STYPE = "mvOZCOT model";  //CompClass
         private static String _SVERSION = "2.00";
         private static String _SAUTHOR = "CSIRO Plant Industry - Cotton Research";
-      //  protected static String _PROXY_COMP = "mvCotton.dll";                     //obsolete 
+      //  protected static String _PROXY_COMP = "mvCotton.dll";                    //obsolete 
 
         //subscribed events
         private const int EVENT_SOW = 1;           //sow using 5 input parameters
@@ -275,7 +275,10 @@ namespace ManagedComponent.MvOZCOT
         private const int PROP_dm_senesced = PROP_START_INDEX + 172;
         private const int PROP_dlt_dm_green = PROP_START_INDEX + 173;
         private const int PROP_n_green = PROP_START_INDEX + 174;
-        private const int PROP_n_senesced = PROP_START_INDEX + 175;  
+        private const int PROP_n_senesced = PROP_START_INDEX + 175;
+
+        private const int PROP_dm = PROP_START_INDEX + 176;
+        private const int PROP_daysAfterSowing = PROP_START_INDEX + 177;  
 
 
         // end of owned properties list
@@ -361,24 +364,6 @@ namespace ManagedComponent.MvOZCOT
 
 
         
-                //   <type name="FOMLayer">
-                //   <field name="Type" kind="string" /> 
-                //- <field name="Layer" array="T">
-                //- <element>
-                //- <field name="FOM">
-                //  <field name="amount" kind="single" unit="kg/ha" /> 
-                //  <field name="C" kind="single" unit="kg/ha" /> 
-                //  <field name="N" kind="single" unit="kg/ha" /> 
-                //  <field name="P" kind="single" unit="kg/ha" /> 
-                //  <field name="AshAlk" kind="single" unit="kg/ha" /> 
-                //  </field>
-                //  <field name="CNR" kind="single" /> 
-                //  <field name="LabileP" kind="single" /> 
-                //  </element>
-                //  </field>
-
-                //   </type>
-
         // This is a full listing of this event type, not all available fields will be populated.
         public const string typeIncorpFOM = @"<type name=""FOMLayer"">
                                                    <field name=""Type""   kind=""string"" /> 
@@ -1352,17 +1337,19 @@ namespace ManagedComponent.MvOZCOT
             addProperty("dw_total", PROP_dw_total, true, false, false, "kg/ha", false, "double", "total crop dry wt", "dry wt of the complete crop");  //TODO: check units???
             addProperty("dw_boll", PROP_dw_boll, true, false, false, "kg/ha", false, "double", "dry wt bolls", "dry wt bolls");
             addProperty("dn_plant", PROP_dn_plant, true, false, false, "kg/ha", false, "double", "daily increment of plant n to system", "daily increment of plant n to system");
-            addProperty("assimilate", PROP_assimilate, true, false, false, "-", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
-            addProperty("GrowthWt", PROP_GrowthWt, true, false, false, "g/m2", false, "double", "same as assimilate", "same as assimilate");
-            addProperty("dm_green", PROP_dm_green, true, false, false, "g/m2", false, "double", "dry wt of growing crop", "dry wt of growing crop");
-            addProperty("dm_senesced", PROP_dm_senesced, true, false, false, "g/m2", false, "double", "dry wt of senesced crop", "dry wt of senesced crop");
-            addProperty("dlt_dm_green", PROP_dlt_dm_green, true, false, false, "g/m2", false, "double", "daily change in crop dry matter wt", "daily change in crop dry matter wt");
-            addProperty("n_green", PROP_n_green, true, false, false, "g/m2", false, "double", "N content of green crop", "N content of green crop");
-            addProperty("n_senesced", PROP_n_senesced, true, false, false, "g/m2", false, "double", "N content of senesced crop", "N content of senesced crop");
+            addProperty("assimilate", PROP_assimilate, true, false, false, "kg/ha", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
+            addProperty("GrowthWt", PROP_GrowthWt, true, false, false, "kg/ha", false, "double", "same as assimilate", "same as assimilate");
+            addProperty("dm", PROP_dm, true, false, false, "kg/ha", false, "double", "total dry wt of crop", "Total dry wt of growing crop");
+            addProperty("dm_green", PROP_dm_green, true, false, false, "kg/ha", true, "double", "dry wt of growing crop", "dry wt of growing crop");
+            addProperty("dm_senesced", PROP_dm_senesced, true, false, false, "kg/ha", true, "double", "dry wt of senesced crop", "dry wt of senesced crop");
+            addProperty("dlt_dm_green", PROP_dlt_dm_green, true, false, false, "kg/ha", true, "double", "daily change in crop dry matter wt", "daily change in crop dry matter wt");
+            addProperty("n_green", PROP_n_green, true, false, false, "kg/ha", true, "double", "N content of green crop", "N content of green crop");
+            addProperty("n_senesced", PROP_n_senesced, true, false, false, "kg/ha", true, "double", "N content of senesced crop", "N content of senesced crop");
             addProperty("ep", PROP_ep, true, false, false, "-", false, "double", "plant evapotranspiration", "plant evapotranspiration");
             addProperty("crop_in", PROP_crop_in, true, false, false, "-", false, "integer4", "status flag - crop planted", "status flag - crop is in the ground");
 
             addProperty("das", PROP_das, true, false, false, "days", false, "integer4", "Days After Sowing", "Days After Sowing");
+            addProperty("DaysAfterSowing", PROP_daysAfterSowing, true, false, false, "days", false, "integer4", "Days After Sowing", "Days After Sowing");
             addProperty("sites", PROP_sites, true, false, false, "1/m2", false, "double", "sites", "number of sites");
             addProperty("squarz", PROP_squarz, true, false, false, "1/m2", false, "double", "squares", "number of squares");
             addProperty("fru_no_cat", PROP_fru_no_cat, true, false, false, "-", true, "double", "fruit numbers by category", "fruit numbers by fruit category");
@@ -2730,29 +2717,28 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_lai: aValue.setValue(alai);
                     break;
 
-                case PROP_dw_total: aValue.setValue(dw_total*10.0);  // g/m2  --> kg/ha
+                case PROP_dw_total: aValue.setValue(dw_total * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                case PROP_dw_boll: aValue.setValue(dw_boll*10.0);
+                case PROP_dw_boll: aValue.setValue(dw_boll * 10.0);   // g/m2  --> kg/ha
                     break;
 
-                case PROP_dn_plant: aValue.setValue(dn_plant*10.0);
+                case PROP_dn_plant: aValue.setValue(dn_plant * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                case PROP_assimilate: aValue.setValue(assimilate);
+                case PROP_assimilate: aValue.setValue(assimilate * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                case PROP_GrowthWt: aValue.setValue(assimilate);
+                case PROP_GrowthWt: aValue.setValue(assimilate * 10.0);  // g/m2  --> kg/ha
                     break;
 
-                // case PROP_n_green: aValue.setValue(dn_plant * 10.0);   // g/m2  --> kg/ha
-                case PROP_n_green:  // (g/m2)
+                case PROP_n_green:  // (kg/ha)
                     Array.Clear(dm_N, 0, dm_N.Length);   // 1 based array  
-                    dm_N[root] = root_n;
+                    dm_N[root] = root_n * 10.0;  // g/m2  --> kg/ha
                     dm_N[meal] = 0.0;      // meal is included in pod
-                    dm_N[stem] = stem_n;
-                    dm_N[leaf] = leaf_n;
-                    dm_N[pod] = boll_n;
+                    dm_N[stem] = stem_n * 10.0;
+                    dm_N[leaf] = leaf_n * 10.0;
+                    dm_N[pod] = boll_n * 10.0;
 
                     aValue.setElementCount((uint)dm_N.Length - 1);
                     for (i = 1; i < dm_N.Length; i++)
@@ -2761,12 +2747,12 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_n_senesced:  // (g/m2)
+                case PROP_n_senesced:  // (kg/ha)
                     Array.Clear(dm_N, 0, dm_N.Length);   // 1 based array  
                     dm_N[root] = 0.0;
                     dm_N[meal] = 0.0;      // meal is included in pod
                     dm_N[stem] = 0.0;
-                    dm_N[leaf] = leaf_res_n;
+                    dm_N[leaf] = leaf_res_n * 10.0;   // g/m2  --> kg/ha
                     dm_N[pod] = 0.0;      // frudw_shed
 
                     aValue.setElementCount((uint)dm_N.Length-1);
@@ -2776,13 +2762,13 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_dlt_dm_green:  // (g/m2)
+                case PROP_dlt_dm_green:  // (kg/ha)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
-                    dm_crop[root] = ddw_root;
+                    dm_crop[root] = ddw_root * 10.0;  // g/m2  --> kg/ha
                     dm_crop[meal] = 0.0;      // meal is included in pod
-                    dm_crop[stem] = ddw_stem;
-                    dm_crop[leaf] = ddw_leaf;
-                    dm_crop[pod] = ddw_boll;
+                    dm_crop[stem] = ddw_stem * 10.0;
+                    dm_crop[leaf] = ddw_leaf * 10.0;
+                    dm_crop[pod] = ddw_boll * 10.0;
 
                     aValue.setElementCount((uint)dm_crop.Length-1);
                     for (i = 1; i < dm_crop.Length; i++)
@@ -2791,14 +2777,16 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                // case PROP_dm_green: aValue.setValue(dw_total * 10.0);  //kg/ha
-                case PROP_dm_green:  // (g/m2)
+                case PROP_dm: aValue.setValue(dw_total * 10.0);  // g/m2  --> kg/ha
+                    break;
+
+                case PROP_dm_green:  // (kg/ha)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
-                    dm_crop[root] = dw_root;
-                    dm_crop[meal] = openwt;      
-                    dm_crop[stem] = dw_stem;
-                    dm_crop[leaf] = dw_leaf;
-                    dm_crop[pod] = Math.Max( (dw_boll - openwt), 0.0);
+                    dm_crop[root] = dw_root * 10.0;  // g/m2  --> kg/ha
+                    dm_crop[meal] = openwt * 10.0;
+                    dm_crop[stem] = dw_stem * 10.0;
+                    dm_crop[leaf] = dw_leaf * 10.0;
+                    dm_crop[pod] = (Math.Max( (dw_boll - openwt), 0.0)) * 10.0;
 
                     aValue.setElementCount((uint)dm_crop.Length-1);
                     for (i = 1; i < dm_crop.Length; i++)
@@ -2807,12 +2795,12 @@ namespace ManagedComponent.MvOZCOT
                     }
                     break;
 
-                case PROP_dm_senesced:  // (g/m2)
+                case PROP_dm_senesced:  // (kg/ha)
                     Array.Clear(dm_crop, 0, dm_crop.Length);   // 1 based array  
                     dm_crop[root] = 0.0;
                     dm_crop[meal] = 0.0;      
                     dm_crop[stem] = 0.0;
-                    dm_crop[leaf] = leaf_res;
+                    dm_crop[leaf] = leaf_res * 10.0;  // g/m2  --> kg/ha
                     dm_crop[pod] = 0.0;   // frudw_shed
 
                     aValue.setElementCount((uint)dm_crop.Length-1);
@@ -2837,6 +2825,9 @@ namespace ManagedComponent.MvOZCOT
                     break;
 
                 case PROP_das: aValue.setValue(DAS);
+                    break;
+
+                case PROP_daysAfterSowing: aValue.setValue(DAS);
                     break;
 
                 case PROP_sites: aValue.setValue(sites);
@@ -6435,8 +6426,6 @@ namespace ManagedComponent.MvOZCOT
             //      the 'init' subroutine.                                      c
             //ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-
-            double pi;
             double amp;
             double tmax;
             double zeta;
