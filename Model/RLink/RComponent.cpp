@@ -211,11 +211,16 @@ void RComponent::onInit2(void)
       {
       string versionString;
       if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
-         throw std::runtime_error("No R version info");
+	     if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
+            throw std::runtime_error("No R version info");
       
       string installPathKey = "Software\\R-core\\R\\" + versionString ;
       if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-         throw std::runtime_error("No R install info in " + installPathKey);
+	     {
+		 installPathKey = "Software\\R-core\\R32\\" + versionString ;
+         if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+            throw std::runtime_error("No R install info in " + installPathKey);
+	     }		
       }
    apsimAPI.write("Loading R from " + installPath + "\n");
    string Rdll = installPath + "\\bin\\i386\\R.dll";
