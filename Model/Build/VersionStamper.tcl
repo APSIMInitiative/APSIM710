@@ -1,6 +1,6 @@
 # Set the APSIM version number
 set major 7
-set minor 4
+set minor 5
 
 # Get the revision number
 if {[catch {set msg [exec svn log -q -r HEAD ../..]} emsg] } {
