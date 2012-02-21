@@ -25,25 +25,27 @@ static RComponent *currentComponent = NULL;
 #ifdef __WIN32__
 bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueName, std::string &strValue)
 {
+   strValue = "";
    HKEY  keys[] = {HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER};
    for (int i = 0; i < 2; i++) 
      {
      HKEY CurrentKey = keys[i];
      HKEY hKey;
      LONG lRes = RegOpenKeyEx(CurrentKey, strKeyName.c_str(), 0, KEY_READ, &hKey);
-     if (lRes != ERROR_SUCCESS) throw std::runtime_error("R is not in the Registry");
-     strValue = "";
-     char szBuffer[1024];
-     DWORD dwBufferSize = sizeof(szBuffer);
-     ULONG nError;
-     nError = RegQueryValueEx(hKey, strValueName.c_str(), 0, NULL, (LPBYTE)szBuffer, &dwBufferSize);
-     if (ERROR_SUCCESS == nError)
-	   {
-       strValue = szBuffer;
-	   return true;
-	   }
-     }	   
-    return false;
+     if (lRes == ERROR_SUCCESS) 
+        {
+        char szBuffer[1024];
+        DWORD dwBufferSize = sizeof(szBuffer);
+        ULONG nError;
+        nError = RegQueryValueEx(hKey, strValueName.c_str(), 0, NULL, (LPBYTE)szBuffer, &dwBufferSize);
+        if (ERROR_SUCCESS == nError)
+	      {
+          strValue = szBuffer;
+	      return true;
+	      }
+        }
+     }	
+   return false;
 }
 #endif
 
