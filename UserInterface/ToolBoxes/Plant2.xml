@@ -293,42 +293,7 @@ General Format:
     </WeightedTemperatureFunction>
   </Folder>
   <Folder name="Organs">
-    <Population>
-      <Value>4</Value>
-    </Population>
-    <Arbitrator>
-      <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
-      <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
-	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
-	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
-	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
-	  Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
-	  The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
-	  
-	  N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
-      Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
-	  N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
-	  N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
-	  N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
-	  N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
-
-	
-      In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
-	  1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
-	  2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
-	  3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
-	  
-	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
-	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
-      
-	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
-		   
-        </Memo>
-      <Constant name="RetransWtNRatio">
-        <Value type="text" description="Value">0</Value>
-      </Constant>
-    </Arbitrator>
-    <GenericOrgan>
+    <GenericAboveGroundOrgan>
       <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
       <Biomass name="Live" />
       <Biomass name="Dead" />
@@ -386,7 +351,101 @@ General Format:
         <Values type="text" description="Values">   0.005             0.005          0.005              0.005                0.005       .005</Values>
         <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
       </StageBasedInterpolation>
-    </GenericOrgan>
+    </GenericAboveGroundOrgan>
+    <GenericBelowGroundOrgan>
+      <Memo>This is an example generic organ with all of the necessary child functions.  Parameter values need to be changed and functions can be replaced with different functions (and renamed with the same name) to make the desired functionality.  There may be bits missing from this still</Memo>
+      <Biomass name="Live" />
+      <Biomass name="Dead" />
+      <Constant name="SenescenceRateFunction">
+        <Value type="text" description="Value">0</Value>
+        <Memo>Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.  </Memo>
+      </Constant>
+      <Constant name="NReallocationFactor">
+        <Value type="text" description="Value">0</Value>
+        <Memo>Controls the proportion of Non-Structural and senesing Metabolic N that may be Reallocated to other organs each day.  </Memo>
+      </Constant>
+      <Constant name="NRetranslocationFactor">
+        <Value type="text" description="Value">0.1</Value>
+        <Memo>sets the proportion of Metabolic N that may be Remobilised to meet the demand of other organs each day.  A value of zero means the crop will favor maintaining the N concentration and photosynthetic capacity of its current leaf area (behaviour of crops such as potato and wheat).  Increasing this will enable the crop to grow and increased leaf area with diluted N concentration, favoring larger leaf area over the higher N concentration and photosynthetic capacity of leaves (behaviour of crops such as maize) </Memo>
+      </Constant>
+      <PhaseBasedSwitch name="NitrogenDemandSwitch">
+        <Start type="text" description="Start">Transplanting</Start>
+        <End type="text" description="End">Maturity</End>
+        <Memo>Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.</Memo>
+      </PhaseBasedSwitch>
+      <Constant name="DMRetranslocationFactor">
+        <Value type="text" description="Value">0</Value>
+        <Memo>Default value is 0 which means the organ will not retranslocate NonStructural biomass.  If retranslocation is desired turn change this to a value between 0 - 1.  This represents the proportion of NonStructural biomass in the organ that can be retranslocated each day.</Memo>
+      </Constant>
+      <Constant name="StructuralFraction">
+        <Value type="text" description="Value">1</Value>
+        <Memo>The DMDemand Function sets demand for structural DM in Generic Organ.  The organ may also assimilate Non-structural DM up to a maximum non-structural fraction (StructuralFraction - 1).  Non-structural DM will only be assimilated if DM is left over after satisfying the Structural and Metabolic DM demands of organs</Memo>
+      </Constant>
+      <AllometricDemandFunction name="DMDemandFunction">
+        <Power type="text" description="Power term in allometric power function">1.52</Power>
+        <XProperty type="text" description="Value from which demand is calculated">Leaf.LAI</XProperty>
+        <YProperty type="text" description="DM pool for which demand is calculated">Stem.Live.Wt</YProperty>
+        <Const type="text" description="Constant term in allometric power function">30.57</Const>
+        <Memo> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
+      </AllometricDemandFunction>
+      <Constant name="InitialWtFunction">
+        <Value type="text" description="Value">0</Value>
+        <Memo>Sets the Wt of the organ on the day of initialisation</Memo>
+      </Constant>
+      <Constant name="InitialStructuralFraction">
+        <Value type="text" description="Value">1</Value>
+        <Memo>Sets structural fraction on the day of initialisation</Memo>
+      </Constant>
+      <Constant name="WaterContent">
+        <Value type="text" description="Value">0</Value>
+        <Memo>Sets the proportion of the organ that is water used to calculate fresh wt of the organ</Memo>
+      </Constant>
+      <StageBasedInterpolation name="MaximumNConc">
+        <Stages type="text" description="Stages">Transplanting EndShock FloralInitiation StartBudding  Buttoning Maturity</Stages>
+        <Values type="text" description="Values">   0.02             0.02          0.02              0.02                0.02       .02</Values>
+        <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
+      </StageBasedInterpolation>
+      <StageBasedInterpolation name="MinimumNConc">
+        <Stages type="text" description="Stages">Transplanting EndShock FloralInitiation StartBudding  Buttoning Maturity</Stages>
+        <Values type="text" description="Values">   0.005             0.005          0.005              0.005                0.005       .005</Values>
+        <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
+      </StageBasedInterpolation>
+    </GenericBelowGroundOrgan>
+    <Population>
+      <Value>4</Value>
+    </Population>
+    <Arbitrator>
+      <ArbitrationOption type="text" description="ArbitrationOption">PriorityAllocation</ArbitrationOption>
+      <Memo>  There are a number of passes involved in the allocation of Weight (Wt).  
+	  Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
+	  Wt_Step 2. In this step freshly fixed Wt is partitioned to organs based on their relative Structural and Metabolic demands such that if there is not enough freshly fixed Wt to meet these demands the organs with the highest demands get the greatest share of the photosynthesis.
+	  Wt_Step 3. In the second step any freshly fixed DM that was surplus to Structural and Metabolic demands is partitioned to sink organs.  An organ will be a sink if it is parameterised to have a Non-structural (mobile) component and the capacity of each organ to receive excess DM depends on its structural fraction (which determines the Non-structural Fraction and subsequent sink capacity).  If there is still fresh DM unallocated after the second pass this remains unallocated with the assumption that in this case the plant would down regulate photosynthesis due to lack of sink capacity.
+	  Wt_Step 4. In this step, Non-structural DM is reallocated from Non-Structural pools if there was insufficient DM to meet the structural and metabolic DM demands of organs.
+	  The arbitrator then sends a potential DM allocation to each organ that they use to calculate their N demands and then steps through N partitioning routines.  The final pass in biomass partitioning comes after N partitioning
+	  
+	  N_Step 1. Set up N supplies and demands.  Each organ may (or may not) supply N in a number of ways.  Each organ has (potentially) a structural, metabolic and Non-structural N Demand.  The structural N demand is that required to grow immobile biomass components, Metabolic N is that required to produce working biomass such as the photosynthetic mechanism in the leaves.  The Non-structural N demand is considered to be the luxury uptake and storage of highly mobile N compounds such as nitrate.
+      Each of the following 4 steps have a number of processes in common; Firstly the arbitrator determines each organs current N demand (that outstanding after previous N partitioning steps), then it allocates N to each demanding organ (There are three ways that N can be allocated, see below), then it sets for each supplying organ the amount of N that was taken up.
+	  N_Step 2. NReallocation.  This is the supply of N within the plant by the reallocation of sensing and/or Non-structural N which is the lowest energy form of N available to the plant so is partitioned first.
+	  N_Step 3. NUptake.  This is the supply of mineral N from the environment (typically by roots from the soil). In this step the arbitrator partitions the potential N uptake supply to satisfy all organs N demands (Structural, Metabolic and Non-structural).  If supply is sufficient this will replenish all Non-structural N that was reallocated in the previous step.  If not the N conc of organs with a Non-structural N component will begin to fall.  If total N demand is less than the uptake supply the crop will leave the surplus mineral N in the soil.
+	  N_Step 4. NFixation.  This is the supply of symbiotically fixed N and is redundant for Non-fixers!  The arbitrator will asks all N fixing organs (typically nodules) for their potential N fixation supply and then partition this to meet the Structural and Metabolic N demands of organs.  The arbitrator will not fix N to meet Non-structural N demands to minimise the biomass cost of fixation which is metabolically expensive.  Fixation follows uptake to enable the arbitrator to capture the "Lazy" N fixing behaviour of some legumes.  Once fixation is calculated the arbitrator determines the DM cost of this fixation.
+	  N_Step 5. NRetranslocation.  This is only invoked under sever N shortage when NReallocation and Uptake (and fixation if appropriate) cannot meet structural and metabolic N demands.  It this step the arbitrator will remove Metabolic N from older leaf cohorts to meet the N demand of new leaves and reproductive organs.
+
+	
+      In all of these N partitioning steps there are three options the developer may chose for determining the allocation of N between demanding organs.
+	  1. RelativeAllocation.  If this option is used all N is partitioned to organs relative to their demand so that the organs with the larger N demand get a larger share of a limited N supply.
+	  2. PriorityAllocation.  If this option is used the arbitrator steps through all organs in order of priority (set by the order they appear in the IDE) allocating N to meet all of the first organs structural and metabolic N demands before partitioning any to the next organ in the hierarchy.  Once it has stepped through all organs and allocated their minimum (structural and metabolic) N demands it will then step through them again and allocate their luxury (Non-structural) N demands in the same way.
+	  3. PrioritythenRelativeAllocation.  If this option is used the arbitrator steps through all organs in order of priority allocating N to meet minimum N demands.  However on the second pass it allocated N relative to the organs outstanding demands such that the organ with the greatest luxury N demand will get the greatest share of the N allocation.
+	  
+	  Wt_Step 5. Once N is allocated the arbitrator then reduces the Wt allocation of each organ to account for the metabolic cost of N fixation.  The Wt reduction is spread around all organs and an organ will only have its Wt allocation limited until it reaches maximum N conc.
+	  Wt_Step 6. Then the arbitrator determines if the N allocated to each organ is sufficient for that organ to reach its minimum N concentration.  If not the arbitrator will constrain the biomass growth of that organ and discards the surplus biomass.  This assume that under sever N stress photosynthesis would be down regulated due to N inadequacy limiting sink strength.  
+      
+	  Once these steps are complete the Arbitrator finally communicates to each organ its state changes as a result of arbitration.
+		   
+        </Memo>
+      <Constant name="RetransWtNRatio">
+        <Value type="text" description="Value">0</Value>
+      </Constant>
+    </Arbitrator>
     <HIReproductiveOrgan>
       <Biomass name="Live" />
       <Biomass name="Dead" />

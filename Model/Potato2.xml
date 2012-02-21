@@ -136,7 +136,7 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <GenericOrgan name="Tuber">
+      <GenericAboveGroundOrgan name="Tuber">
         <Biomass name="Live" />
         <Biomass name="Dead" />
         <Memo>This organ inherits from SIRIUSGeneric organ so has the same 6 optional paramaters and default values for these paramaters.
@@ -223,7 +223,7 @@ In addition this organ has a relative growth rate variable and a tubers per stem
           </XYPairs>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </LinearInterpolationFunction>
-      </GenericOrgan>
+      </GenericAboveGroundOrgan>
       <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
@@ -618,7 +618,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">0</Value>
         </Constant>		
       </Leaf>
-      <GenericOrgan name="Stem">
+      <GenericAboveGroundOrgan name="Stem">
         <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2. NReallocationFactor.  Default value is 0 which means the organ will not allow any of its N to be reallocated as it senesses.  If reallocation of senessing N is required place a function on the organ named NReallocationFactor.  It needs to be a number from 0 - 1 that represents the proportion of senessing N that is available for reallocation
@@ -669,7 +669,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-      </GenericOrgan>
+      </GenericAboveGroundOrgan>
       <StageBasedInterpolation name="StageCode">
         <Stages type="text" description="Stages">Planting Peeping Emergence TuberInitiation FinalLeaf FullSenescence Maturity </Stages>
         <Values type="text" description="Values">1           2                       3                 4                    5                 6              7                 </Values>
