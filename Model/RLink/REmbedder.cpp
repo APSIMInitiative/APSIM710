@@ -13,10 +13,9 @@ typedef void __attribute__((stdcall)) (*V_CHAR_FN)(const char*);
 static V_CHAR_FN apsimCallback = NULL;
 
 // C++ Callbacks.
-bool apsimPublishNull( std::string eventName ){
-  if (apsimCallback == NULL) return false;
-  apsimCallback(eventName.c_str());
-  return true ;
+extern "C" void apsimPublishNull( std::string eventName ){
+  if (apsimCallback != NULL) 
+    apsimCallback(eventName.c_str());
 }
 
 RCPP_MODULE(apsim){
@@ -26,18 +25,32 @@ RCPP_MODULE(apsim){
 
 ///////////////////START
 // Return false on error
-extern "C" bool EmbeddedR_Start(const char *R_Home)
+extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
 {
-  int argc = 0;
-  char **argv = NULL;
+   int argc = 0;
+   char **argv = NULL;
+   //std::cout << "EmbeddedR_Start  called" << std::endl; std::cout.flush();
+   if (R_Home != NULL) { setenv("R_HOME", R_Home, 1) ; /*std::cout << "R Home is " << R_Home << std::endl; std::cout.flush(); */}
+   if (UserLibs != NULL) { setenv("R_LIBS_USER", UserLibs, 1); /*std::cout << "R_UserLibs is " << UserLibs << std::endl; std::cout.flush();*/ }
+   // TMPDIR??
+   // R_USER??
 
-  if (setenv("R_HOME", R_Home, 1) != 0) return false;
+   try {
+     R = new RInside(argc, argv, true); 
+   } catch (std::exception& ex) {
+        std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
+		return false; 
+   } 	 
+   //printf("EmbeddedR_Start RInside called OK\n");
+   try {
+     (*R)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
+   } catch (std::exception& ex) {
+        std::cerr << "R Exception: " << ex.what() << std::endl; std::cerr.flush();
+		return false; 
+   } 	 
+   //std::cout << "EmbeddedR_Start RCPP modules called OK\n";
   
-  R = new RInside(argc, argv, true); 
-
-  (*R)["apsim"] = LOAD_RCPP_MODULE(apsim) ;
-  
-  return true;
+   return true;
 }
 
 extern "C" bool EmbeddedR_Stop(const char *)

@@ -68,6 +68,7 @@ extern "C" void EXPORT STDCALL componentCallback(const char *s)
 //--------------------------- R Embedder DLL initialisation
 typedef bool (*B_VOID_FN)(void);
 typedef bool (*B_CHAR_FN)(const char*);
+typedef bool (*B_CHAR2_FN)(const char*, const char*);
 typedef bool (*B_VOIDPTR_FN)(void *);
 typedef bool (*B_BOOL_FN)(const char*, bool *);
 typedef bool (*B_INT_FN)(const char*, int *);
@@ -75,18 +76,18 @@ typedef bool (*B_VEC_FN)(const char*, char *, unsigned int, unsigned int, unsign
 typedef bool (*B_2CHAR_FN)(const char*, char*, int);
 
 // Load and initialise the dll. Call once.
-void StartR (const char *R_Home, const char *exeName)
+bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
    {
     RDLLHandle = loadDLL(exeName);
     if (RDLLHandle == NULL) 
       throw std::runtime_error(string("Can't load R DLL ") + exeName);     
 
-    B_CHAR_FN R_StartFn;
-    R_StartFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Start");
+    B_CHAR2_FN R_StartFn;
+    R_StartFn = (B_CHAR2_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Start");
     if (R_StartFn == NULL) 
        throw std::runtime_error(string("Can't find EmbeddedR_Start in ") + exeName);     
 
-    if (!R_StartFn(R_Home)) 
+    if (!R_StartFn(R_Home, UserLibs )) 
        throw std::runtime_error(string("R_Start failed in ") + exeName);     
 
     B_VOIDPTR_FN R_SetCallbackFn;
@@ -95,7 +96,8 @@ void StartR (const char *R_Home, const char *exeName)
        throw std::runtime_error(string("R_SetComponent failed in ") + exeName);     
 
 	   //FIXME setup function pointer cache here
-  }
+    return 1; 
+ }
 
 // Delete an interpreter
 void StopR(void)
@@ -205,38 +207,48 @@ void RComponent::onInit2(void)
    string apsimDLL = apsimAPI.getExecutableFileName();
    replaceAll(apsimDLL, "\\", "/"); 
 #ifdef __WIN32__
+   string installPath, userlibs;
    // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
-   string installPath;
-   if (rules["RInstallDir"] != "")
-      installPath =  rules["RInstallDir"];
-   else	  
-      {
-      string versionString;
-      if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
-	     if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
-            throw std::runtime_error("No R version info");
-      
-      string installPathKey = "Software\\R-core\\R\\" + versionString ;
+   string versionString;
+   if (!GetStringRegKey("Software\\R-core\\R", "Current Version", versionString))
+     if (!GetStringRegKey("Software\\R-core\\R32", "Current Version", versionString))
+         throw std::runtime_error("No R version info");
+   
+   string installPathKey = "Software\\R-core\\R\\" + versionString ;
+   if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
+     {
+	 installPathKey = "Software\\R-core\\R32\\" + versionString ;
       if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-	     {
-		 installPathKey = "Software\\R-core\\R32\\" + versionString ;
-         if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
-            throw std::runtime_error("No R install info in " + installPathKey);
-	     }		
-      }
+         throw std::runtime_error("No R install info in " + installPathKey);
+     }		
+   replace(installPath.begin(), installPath.end(), '\\', '/'); 
    apsimAPI.write("Loading R from " + installPath + "\n");
-   string Rdll = installPath + "\\bin\\i386\\R.dll";
+   string Rdll = installPath + "/bin/i386/R.dll";
    if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);  
 
    apsimAPI.write("Embedding R in " + fileDirName(apsimDLL) + "\n");
    string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
 
+   char *p = getenv("USERPROFILE");
+   if (p != NULL) {
+	  userlibs = p;
+      replace(userlibs.begin(), userlibs.end(), '\\', '/');
+	  userlibs += "/Documents/R/win-library/";
+	  vector<string> vnums;
+	  split(versionString, ".", vnums);
+      userlibs += vnums[0];
+	  userlibs += ".";
+	  userlibs += vnums[1];
+   }
+
+   if (!StartR(installPath.c_str(), 
+               userlibs.c_str(), 
+		       EXE.c_str()))
+		throw std::runtime_error("Cant Start R");
 #else
    string EXE = fileDirName(apsimDLL) + "/REmbed.so";;
+   StartR(NULL, NULL, EXE.c_str());
 #endif
-
-   replaceAll(installPath, "\\", "/"); 
-   StartR(installPath.c_str(), EXE.c_str());
 
    // write copyright notice(s).
    apsimAPI.write(SimpleREval("R.version.string") + "\n");
@@ -348,6 +360,7 @@ void RComponent::respondToGet(const std::string &variableName, std::vector<std::
 // ------------------------------------------------------------------
 void RComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
    {
+   //cout << "set v= " << variableName << endl; cout.flush();
    string cmd = variableName;
    cmd += "<-";
    if (value.size() > 1) 
@@ -364,6 +377,7 @@ void RComponent::respondToSet(const std::string &variableName, std::vector<std::
       }
    else
       cmd += value[0];
+   //cout << "cmd = " << cmd << endl; cout.flush();
    REvalQ(cmd.c_str());
    }
    
