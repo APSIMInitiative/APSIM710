@@ -374,9 +374,7 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
-    [Output]
-    [Units("g/m2")]
-    public override double DMAllocation
+    public override DMAllocationType DMAllocation
     {
         set
         {
@@ -420,10 +418,10 @@ public class Root : BaseOrgan, BelowGround
             {
                 if (TotalRAw > 0)
 
-                    LayerLive[layer].StructuralWt += value * RAw[layer] / TotalRAw;
-                else if (value > 0)
+                    LayerLive[layer].StructuralWt += value.Allocation * RAw[layer] / TotalRAw;
+                else if (value.Allocation > 0)
                     throw new Exception("Error trying to partition root biomass");
-                allocated += value * RAw[layer] / TotalRAw;
+                allocated += value.Allocation * RAw[layer] / TotalRAw;
             }
         }
     }
@@ -446,27 +444,59 @@ public class Root : BaseOrgan, BelowGround
             return TotalDeficit * _NitrogenDemandSwitch;
         }
     }
-    [Output]
-    [Units("g/m2")]
-    public override double NUptakeSupply
+
+    public override NSupplyType NSupply
     {
         get
         {
-            double[] no3supply = new double[dlayer.Length];
-            double[] nh4supply = new double[dlayer.Length];
-            SoilNSupply(no3supply, nh4supply);
-            double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
-            return NSupply;
+            if (dlayer != null)
+            {
+                double[] no3supply = new double[dlayer.Length];
+                double[] nh4supply = new double[dlayer.Length];
+                SoilNSupply(no3supply, nh4supply);
+                double NSupply = (Math.Min(MathUtility.Sum(no3supply), MaxDailyNUptake.Value) + Math.Min(MathUtility.Sum(nh4supply), MaxDailyNUptake.Value)) * kgha2gsm;
+                return new NSupplyType { Uptake = NSupply };
+            }
+            else
+                return new NSupplyType();
         }
     }
-    [Output]
-    [Units("g/m2")]
-    public override double NUptake_gsm
+    public override NAllocationType NAllocation
     {
         set
         {
-            _Nuptake = value;
-            double Uptake = value / kgha2gsm;
+            // Recalculate N defict following DM allocation for checking N allocation and partitioning N between layers   
+            double Demand = 0.0;
+            foreach (Biomass Layer in LayerLive)
+            {
+                double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
+                Demand += NDeficit;
+            }
+            double Supply = value.Allocation;
+            double NAllocated = 0;
+            if ((Demand == 0) && (Supply > 0.0000000001))
+            { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
+
+            // Allocate N to each layer
+            if (Demand > 0)
+            {
+                foreach (Biomass Layer in LayerLive)
+                {
+                    double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
+                    double fraction = NDeficit / Demand;
+                    double Allocation = fraction * Supply;
+                    Layer.StructuralN += Allocation;
+                    NAllocated += Allocation;
+                }
+            }
+            if (!MathUtility.FloatsAreEqual(NAllocated - Supply, 0.0))
+            {
+                throw new Exception("Error in N Allocation: " + Name);
+            }
+
+            // uptake_gsm
+            _Nuptake = value.Uptake_gsm;
+            double Uptake = value.Uptake_gsm / kgha2gsm;
             NitrogenChangedType NitrogenUptake = new NitrogenChangedType();
             NitrogenUptake.DeltaNO3 = new double[dlayer.Length];
             NitrogenUptake.DeltaNH4 = new double[dlayer.Length];
@@ -493,40 +523,7 @@ public class Root : BaseOrgan, BelowGround
                     NitrogenChanged.Invoke(NitrogenUptake);
 
             }
-        }
-    }
-    public override double NAllocation
-    {
-        set
-        {
-            // Recalculate N defict following DM allocation for checking N allocation and partitioning N between layers   
-            double Demand = 0.0;
-            foreach (Biomass Layer in LayerLive)
-            {
-                double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                Demand += NDeficit;
-            }
-            double Supply = value;
-            double NAllocated = 0;
-            if ((Demand == 0) && (Supply > 0.0000000001))
-            { throw new Exception("Cannot Allocate N to roots in layers when demand is zero"); }
 
-            // Allocate N to each layer
-            if (Demand > 0)
-            {
-                foreach (Biomass Layer in LayerLive)
-                {
-                    double NDeficit = Math.Max(0.0, MaximumNConc.Value * Layer.Wt - Layer.N);
-                    double fraction = NDeficit / Demand;
-                    double Allocation = fraction * Supply;
-                    Layer.StructuralN += Allocation;
-                    NAllocated += Allocation;
-                }
-            }
-            if (!MathUtility.FloatsAreEqual(NAllocated - Supply, 0.0))
-            {
-                throw new Exception("Error in N Allocation: " + Name);
-            }
         }
     }
     public override double MaxNconc

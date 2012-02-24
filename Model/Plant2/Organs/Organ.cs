@@ -12,6 +12,36 @@ public interface BelowGround
 public interface Reproductive
    {
    }
+
+public class DMSupplyType
+{
+    public double Photosynthesis;
+    public double Retranslocation;
+}
+public class DMAllocationType
+{
+    public double Allocation;
+    public double ExcessAllocation;
+    public double Retranslocation;
+    public double Respired; 
+}
+public class NAllocationType
+{
+    public double Allocation;
+    public double Reallocation;
+    // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2
+    // This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
+    public double Uptake_gsm;
+    public double Fixation;
+    public double Retranslocation;
+}
+public class NSupplyType
+{
+    public double Reallocation;
+    public double Uptake;
+    public double Fixation;
+    public double Retranslocation;
+}
 abstract public class Organ
 {
     [Link(IsOptional=true)]
@@ -28,27 +58,14 @@ abstract public class Organ
     //DryMatter methods
     abstract public double DMDemand { get; }
     abstract public double DMSinkCapacity { get; }
-    abstract public double DMSupply { get; }
-    abstract public double DMRetranslocationSupply { get; }
+    abstract public DMSupplyType DMSupply { get; }
     abstract public double DMPotentialAllocation { set; }
-    abstract public double DMAllocation { set; }
-    abstract public double DMExcessAllocation { set; }
-    abstract public double DMRetranslocation { set; }
-    abstract public double DMRespired { set; }
+    abstract public DMAllocationType DMAllocation { set; }
 
     //Nitrogen methods
     abstract public double NDemand { get; }
-    abstract public double NReallocationSupply { get; }
-    abstract public double NUptakeSupply { get; }
-    abstract public double NFixationSupply { get; }
-    abstract public double NRetranslocationSupply { get; }
-    abstract public double NAllocation { set; }
-    abstract public double NReallocation { set; }
-    // The "_gsm" suffix of the following variable indicates that this variable, primarily used internally, is in units of g/m^2
-    // This is in constrast to the Root output variable, NUptake, which is in units of kg/ha
-    abstract public double NUptake_gsm { set; }  
-    abstract public double NFixation { set; }
-    abstract public double NRetranslocation { set; }
+    abstract public NSupplyType NSupply { get; }
+    abstract public NAllocationType NAllocation { set; }
 
     //Water methods
     abstract public double WaterDemand { get; }

@@ -91,8 +91,8 @@ public class GenericOrgan : BaseOrgan
         }
 
         StartLive = Live;
-        StartNReallocationSupply = NReallocationSupply;
-        StartNRetranslocationSupply = NRetranslocationSupply;
+        StartNReallocationSupply = NSupply.Reallocation;
+        StartNRetranslocationSupply = NSupply.Retranslocation;
     }
     public override void DoActualGrowth()
     {
@@ -134,14 +134,15 @@ public class GenericOrgan : BaseOrgan
             PotentialDMAllocation = value;
         }
     }
-    public override double DMRetranslocationSupply
+    public override DMSupplyType DMSupply
     {
         get
         {
             double _DMRetranslocationFactor = 0;
             if (DMRetranslocationFactor != null) //Default of 0 means retranslocation is always truned off!!!!
                 _DMRetranslocationFactor = DMRetranslocationFactor.Value;
-            return StartLive.NonStructuralWt * _DMRetranslocationFactor;
+            return new DMSupplyType { Photosynthesis = 0, 
+                                      Retranslocation = StartLive.NonStructuralWt * _DMRetranslocationFactor };
         }
     }
     public override double NDemand
@@ -155,91 +156,78 @@ public class GenericOrgan : BaseOrgan
             return NDeficit * _NitrogenDemandSwitch;
         }
     }
-    public override double NReallocationSupply
+    public override NSupplyType NSupply
     {
         get
         {
+            NSupplyType Supply = new NSupplyType();
+
+            // Calculate Reallocation Supply.
             double _NReallocationFactor = 0;
             if (NReallocationFactor != null) //Default of zero means N reallocation is truned off
                 _NReallocationFactor = NReallocationFactor.Value;
-            return SenescenceRate * StartLive.NonStructuralN * _NReallocationFactor;
-        }
-    }
-    public override double NRetranslocationSupply
-    {
-        get
-        {
+            Supply.Reallocation = SenescenceRate * StartLive.NonStructuralN * _NReallocationFactor;
+
+            // Calculate Retranslocation Supply.
             double _NRetranslocationFactor = 0;
             if (NRetranslocationFactor != null) //Default of zero means retranslocation is turned off
                 _NRetranslocationFactor = NRetranslocationFactor.Value;
             double LabileN = Math.Max(0, StartLive.NonStructuralN - StartLive.NonStructuralWt * MinimumNConc.Value);
-            double Nretrans = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
-            return Nretrans;
+            Supply.Retranslocation = (LabileN - StartNReallocationSupply) * _NRetranslocationFactor;
+
+            return Supply;
         }
     }
+
     //Set Methods to change Cohort Status
-    public override double DMAllocation
+    public override DMAllocationType DMAllocation
     {
         set
         {
-            Live.StructuralWt += Math.Min(value, StructuralDMDemand);
-            Live.NonStructuralWt += Math.Max(0, value - StructuralDMDemand);
-        }
-    }
-    public override double DMExcessAllocation
-    {
-        set
-        {
-            if (value < -0.0000000001)
+            Live.StructuralWt += Math.Min(value.Allocation, StructuralDMDemand);
+            Live.NonStructuralWt += Math.Max(0, value.Allocation - StructuralDMDemand);
+     
+            // Excess allocation
+            if (value.ExcessAllocation < -0.0000000001)
                 throw new Exception("-ve ExcessDM Allocation to " + Name);
-            if ((value - DMSinkCapacity) > 0.0000000001)
+            if ((value.ExcessAllocation - DMSinkCapacity) > 0.0000000001)
                 throw new Exception("ExcessDM Allocation to " + Name + " is in excess of its Capacity");
             if (DMSinkCapacity > 0)
-                Live.NonStructuralWt += value;
-        }
-    }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value - StartLive.NonStructuralWt > 0.0000000001)
+                Live.NonStructuralWt += value.ExcessAllocation;
+     
+            // Retranslocation
+            if (value.Retranslocation - StartLive.NonStructuralWt > 0.0000000001)
                 throw new Exception("Retranslocation exceeds nonstructural biomass in organ: " + Name);
-            Live.NonStructuralWt -= value;
+            Live.NonStructuralWt -= value.Retranslocation;
         }
     }
-    public override double NReallocation
+    public override NAllocationType NAllocation
     {
         set
         {
-            if (MathUtility.IsGreaterThan(value, StartLive.NonStructuralN))
-                throw new Exception("N Reallocation exceeds nonstructural nitrogen in organ: " + Name);
-            if (value < -0.000000001)
-                throw new Exception("-ve N Reallocation requested from " + Name);
-            Live.NonStructuralN -= value;
-        }
-    }
-    public override double NAllocation
-    {
-        set
-        {
-            if (value > 0)
+            // Allocation
+            if (value.Allocation > 0)
             {
                 double StructuralNRequirement = Math.Max(0.0, Live.StructuralWt * MinimumNConc.Value - Live.StructuralN);
-                double StructuralAllocation = Math.Min(StructuralNRequirement, value);
+                double StructuralAllocation = Math.Min(StructuralNRequirement, value.Allocation);
                 Live.StructuralN += StructuralAllocation;
-                Live.NonStructuralN += Math.Max(0.0, value - StructuralAllocation);
+                Live.NonStructuralN += Math.Max(0.0, value.Allocation - StructuralAllocation);
             }
-        }
-    }
-    public override double NRetranslocation
-    {
-        set
-        {
-            if (MathUtility.IsGreaterThan(value, StartLive.NonStructuralN - StartNRetranslocationSupply))
+
+            // Retranslocation
+            if (MathUtility.IsGreaterThan(value.Retranslocation, StartLive.NonStructuralN - StartNRetranslocationSupply))
                 throw new Exception("N Retranslocation exceeds nonstructural nitrogen in organ: " + Name);
-            if (value < -0.000000001)
+            if (value.Retranslocation < -0.000000001)
                 throw new Exception("-ve N Retranslocation requested from " + Name);
-            Live.NonStructuralN -= value;
+            Live.NonStructuralN -= value.Retranslocation;
+
+            // Reallocation
+            if (MathUtility.IsGreaterThan(value.Reallocation, StartLive.NonStructuralN))
+                throw new Exception("N Reallocation exceeds nonstructural nitrogen in organ: " + Name);
+            if (value.Reallocation < -0.000000001)
+                throw new Exception("-ve N Reallocation requested from " + Name);
+            Live.NonStructuralN -= value.Reallocation;
+
         }
     }
     //

@@ -203,8 +203,8 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         }
     }
 
-    public override double DMAllocation
-    { set { Live.StructuralWt += value; DailyGrowth = value; } }
+    public override DMAllocationType DMAllocation
+    { set { Live.StructuralWt += value.Allocation; DailyGrowth = value.Allocation; } }
     public override double NDemand
     {
         get
@@ -217,11 +217,11 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         }
 
     }
-    public override double NAllocation
+    public override NAllocationType NAllocation
     {
         set
         {
-            Live.StructuralN += value;
+            Live.StructuralN += value.Allocation;
         }
     }
 

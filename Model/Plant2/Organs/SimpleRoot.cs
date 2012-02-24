@@ -18,17 +18,11 @@ public class SimpleRoot : BaseOrgan // FIXME HEB This was inheriting from organ 
     private bool TalkDirectlyToRoot;
 
     public override double DMDemand { get { return 0; } }
-    public override double DMSupply { get { return 0; } }
-    public override double DMRetranslocationSupply { get { return 0; } }
-    public override double DMRetranslocation { set { } }
-    public override double DMAllocation { set { } }
+    public override DMSupplyType DMSupply { get { return new DMSupplyType { Photosynthesis = 0, Retranslocation = 0 }; } }
+    public override DMAllocationType DMAllocation { set { } }
 
     public override double NDemand { get { return 0; } }
-    public override double NUptakeSupply { get { return 0; } }
-    public override double NRetranslocationSupply { get { return 0; } }
-    public override double NRetranslocation { set { } }
-    public override double NAllocation { set { } }
-    public override double NUptake_gsm { set { } }
+    public override NSupplyType NSupply { get { return new NSupplyType(); } }
     public override double WaterDemand { get { return 0; } }
 
     [Output]

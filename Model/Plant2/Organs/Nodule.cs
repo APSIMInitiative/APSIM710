@@ -36,11 +36,12 @@ public class Nodule : GenericOrgan, BelowGround
             return FixationMetabolicCost.Value;
         }
     }
-    public override double NFixation
+    public override NAllocationType NAllocation
     {
         set
         {
-            _NFixed = value;
+            base.NAllocation = value;    // give N allocation to base first.
+            _NFixed = value.Fixation;    // now get our fixation value.
         }
     }
     [Output]
@@ -51,20 +52,26 @@ public class Nodule : GenericOrgan, BelowGround
             return RespiredWt;
         }
     }
-    [Output]
-    public override double NFixationSupply
+    public override NSupplyType NSupply
     {
         get
         {
-            return Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
+            NSupplyType Supply = base.NSupply;   // get our base GenericOrgan to fill a supply structure first.
+            if (Live != null)
+            {
+                // Now add in our fixation
+                Supply.Fixation = Live.StructuralWt * SpecificNitrogenaseActivity.Value * Math.Min(FT.Value, Math.Min(FW.Value, FWlog.Value));
+            }
+            return Supply;
         }
     }
-    public override double DMRespired
+    public override DMAllocationType DMAllocation
     {
         set
         //This is the DM that is consumed to fix N.  this is calculated by the arbitrator and passed to the nodule to report
         {
-            RespiredWt = value;
+            base.DMAllocation = value;      // Give the allocation to our base GenericOrgan first
+            RespiredWt = value.Respired;    // Now get the respired value for ourselves.
         }
     }
     [Output]

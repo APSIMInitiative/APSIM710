@@ -43,15 +43,15 @@ class SimpleLeaf : BaseOrgan
     {
         get { return 1; }
     }
-    public override double DMSupply
+    public override DMSupplyType DMSupply
     {
-        get { return 1; }
+        get { return new DMSupplyType { Photosynthesis = 1, Retranslocation = 0 } ; }
     }
-    public override double DMAllocation
+    public override DMAllocationType DMAllocation
     {
         set
         {
-            Live.StructuralWt += value;
+            Live.StructuralWt += value.Allocation;
         }
     }
     [Output]

@@ -118,6 +118,33 @@ public class Arbitrator
     private double NBalanceError = 0;
  #endregion
 
+    public void DoArbitrator(List<Organ> Organs)
+    {
+        //Work out how much each organ would grow in the absence of nutirent limitaiton
+        DoDMSetup(Organs);
+        DoPotentialDMAllocation(Organs);
+        //Work out how much nutrient can be allocated to each organ
+        DoNutrientSetup(Organs);
+        DoNutrientReAllocation(Organs);
+        DoNutrientUptake(Organs);
+        DoNutrientRetranslocation(Organs);
+        DoNutrientFixation(Organs);
+        //Work out how much DM can be assimilated based on the most limiting nutrient
+        DoActualDMAllocation(Organs);
+        //Work out how much nutrient is allocated to each organ based on Actual DM allocation according to most limiting nutrient
+        if (PAware || KAware)
+        {   //Repeat nutrient allocation routines using actual DM allocation 
+            DoNutrientSetup(Organs);
+            DoNutrientReAllocation(Organs);
+            DoNutrientUptake(Organs);
+            DoNutrientRetranslocation(Organs);
+            DoNutrientFixation(Organs);  //Note for legumes the cost of N fixiation will be over predicted if growth is limited by another nutrient.  Need to check this cost is not being counted twice and over estimating the effect of nutrient shortage on DM pdn
+        }
+        DoNutrientAllocation(Organs);
+    }
+
+
+
  #region Arbitration step functions
     virtual public void DoDMSetup(List<Organ> Organs)
     { 
@@ -146,8 +173,9 @@ public class Arbitrator
         // GET SUPPLIES AND CALCULATE TOTAL
         for (int i = 0; i < Organs.Count; i++)
         {
-            DMFreshSupplyOrgan[i] = Organs[i].DMSupply;
-            DMStoreSupplyOrgan[i] = Organs[i].DMRetranslocationSupply;
+            DMSupplyType DM = Organs[i].DMSupply;
+            DMFreshSupplyOrgan[i] = DM.Photosynthesis;
+            DMStoreSupplyOrgan[i] = DM.Retranslocation;
         }
         TotalFreshDMSupply = MathUtility.Sum(DMFreshSupplyOrgan);
         TotalStoreDMSupply = MathUtility.Sum(DMStoreSupplyOrgan);
@@ -286,10 +314,11 @@ public class Arbitrator
         for (int i = 0; i < Organs.Count; i++)
         {
             NDemandOrgan[i] = Organs[i].NDemand;
-            NReallocationSupply[i] = Organs[i].NReallocationSupply;
-            NUptakeSupply[i] = Organs[i].NUptakeSupply;
-            NFixationSupply[i] = Organs[i].NFixationSupply;
-            NRetranslocationSupply[i] = Organs[i].NRetranslocationSupply;
+            NSupplyType NSupply = Organs[i].NSupply;
+            NReallocationSupply[i] = NSupply.Reallocation;
+            NUptakeSupply[i] = NSupply.Uptake;
+            NFixationSupply[i] = NSupply.Fixation;
+            NRetranslocationSupply[i] = NSupply.Retranslocation;
             NReallocation[i] = 0;
             NUptake[i] = 0;
             NFixation[i] = 0;
@@ -461,10 +490,13 @@ public class Arbitrator
         // Send DM allocations to all Plant Organs
         for (int i = 0; i < Organs.Count; i++)
         {
-            Organs[i].DMAllocation = DMAllocation[i];
-            Organs[i].DMExcessAllocation = DMExcessAllocation[i];
-            Organs[i].DMRespired = FixationWtLoss[i];
-            Organs[i].DMRetranslocation = DMRetranslocation[i];
+            Organs[i].DMAllocation = new DMAllocationType
+            {
+                Allocation = DMAllocation[i],
+                ExcessAllocation = DMExcessAllocation[i],
+                Respired = FixationWtLoss[i],
+                Retranslocation = DMRetranslocation[i]
+            };
         }
     }
     virtual public void DoNutrientAllocation(List<Organ> Organs)
@@ -476,12 +508,14 @@ public class Arbitrator
                 throw new Exception("-ve N Allocation");
             else if (NAllocated[i] < 0.0)
                 NAllocated[i] = 0.0;
-
-            Organs[i].NReallocation = NReallocation[i];
-            Organs[i].NUptake_gsm = NUptake[i];
-            Organs[i].NFixation = NFixation[i];
-            Organs[i].NRetranslocation = NRetranslocation[i];
-            Organs[i].NAllocation = NAllocated[i];
+            Organs[i].NAllocation = new NAllocationType
+            {
+                Allocation = NAllocated[i],
+                Fixation = NFixation[i],
+                Reallocation = NReallocation[i],
+                Retranslocation = NRetranslocation[i],
+                Uptake_gsm = NUptake[i]
+            };
         }
 
         //Finally Check Mass balance adds up

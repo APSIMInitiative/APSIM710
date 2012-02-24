@@ -2,48 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 public class BaseOrgan : Organ
 {
     public override double DMDemand { get { return 0; } }
-    public override double DMSupply { get { return 0; } }
+    public override DMSupplyType DMSupply { get { return new DMSupplyType(); } }
     public override double DMSinkCapacity { get { return 0; } }
-    public override double DMRetranslocationSupply { get { return 0; } }
     public override double DMPotentialAllocation { set { } }
-    public override double DMAllocation { set { } }
-    public override double DMExcessAllocation { set { } }
-    public override double DMRetranslocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply retranslocation");
-        }
-    }
-    public override double DMRespired { set { } }
+    public override DMAllocationType DMAllocation { set { } }
 
     public override double NDemand { get { return 0; } }
-    public override double NUptakeSupply { get { return 0; } }
-    public override double NRetranslocationSupply { get { return 0; } }
-    public override double NAllocation { set { } }
-    public override double NRetranslocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply N retranslocation");
-        }
-    }
-    public override double NUptake_gsm
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply N Uptake");
-        }
-    }
-    public override double NFixationSupply { get { return 0; } }
+    public override NSupplyType NSupply { get { return new NSupplyType(); } }
+    public override NAllocationType NAllocation { set {  } }
     public override double NFixationCost { get { return 0; } }
-    public override double NFixation { set { } }
 
     public override double WaterDemand { get { return 0; } }
     public override double WaterSupply { get { return 0; } }
@@ -63,13 +34,15 @@ public class BaseOrgan : Organ
 
     public override double MaxNconc { get { return 0; } }
     public override double MinNconc { get { return 0; } }
-    public override double NReallocationSupply { get { return 0; } }
-    public override double NReallocation
-    {
-        set
-        {
-            if (value > 0)
-                throw new Exception(Name + " cannot supply N reallocation");
-        }
-    }
+
+    // Provide some variables for output until we get a better REPORT component that
+    // can do structures e.g. NSupply.Fixation
+
+    [Output]
+    [Units("g/m^2")]
+    public double DMSupplyPhotosynthesis { get { return DMSupply.Photosynthesis; } }
+
+    [Output]
+    [Units("g/m^2")]
+    public double NSupplyUptake { get { return NSupply.Uptake; } }
 }
