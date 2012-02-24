@@ -4,16 +4,12 @@ using System.Text;
 using System.Reflection;
 using ModelFramework;
 
-/// <summary>
-/// Sum the values of the child nodes of this node
-/// </summary>
-
+[Description("Adds the value of all childern functions to the previous days accumulation between start and end phases")]
 public class AccumulateFunction : Function
 {
     //Class members
     public double AccumulatedValue = 0;
-    //private bool AccumulatedToday;
-
+    
     [Link]
     Phenology Phenology = null;
 
@@ -23,17 +19,14 @@ public class AccumulateFunction : Function
     [Param]
     private string EndStageName = "";
 
-    //Set flag to false so it accumulates on the first pass today
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
     {
-        //AccumulatedToday = false;
         if (Phenology.Between(StartStageName, EndStageName))
         {
         double DailyIncrement = 0.0;
         foreach (Function F in My.ChildrenAsObjects)
         {
-            //Function F = ModelEnvironment.Link<Function>(ChildName);
             DailyIncrement = DailyIncrement + F.Value;
         }
         AccumulatedValue += DailyIncrement;

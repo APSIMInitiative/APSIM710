@@ -4,10 +4,7 @@ using System.Text;
 using System.Reflection;
 using CSGeneral;
 
-/// <summary>
-/// Returns the value of a nominated internal Plant2 numerical variable
-/// </summary>
-
+[Description("Returns the value of a nominated internal Plant2 numerical variable")]
 public class Variable : Function
 {
    [Link] Plant Plant = null;

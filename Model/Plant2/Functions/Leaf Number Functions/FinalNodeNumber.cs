@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
+//Fixme This function should be renamed "NodeInitiationRate"
+
+[Description("Calculates daily increment of new leaf primordia (as the value of ThermalTime function divided by the value of NodeInitiationRate Function) and stops further increase in primordia number when primordia number reaches the MaximumNodeNumber specified or when it reaches the value returned by a FinalLeafNumber function")]
 public class FinalNodeNumber
 {
     //Class Linkages
     [Link]
     protected Function ThermalTime = null;
     [Link(IsOptional = true)]
-    protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;
+    protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;  //This Should be renamed "FinalLeafNumber"
     [Link(IsOptional = true)]
-    protected Function NodeInitiationRate = null;
+    protected Function NodeInitiationRate = null;  //Fixme.  This variable should be renamed "PrimordiaInitiationRate"
     [Link(IsOptional = true)]
     protected Function PhotoperiodFactor = null;
     //Class Parameters
@@ -65,7 +68,7 @@ public class FinalNodeNumber
     }
     public void CalculateFinalLeafNumber()
     {
-        if (TerminateFinalNodeNumber != null)
+        if (TerminateFinalNodeNumber != null) //This should be changed to only terminate wth a function called "Final leaf number" with a numbe of leaf number functions being able to be named this and deliver final leaf numbers.
             _FinalLeafNumber = Math.Max(InitialLeafPrimordia, TerminateFinalNodeNumber.TargetFinalNodeNumber);
         else if (PhotoperiodFactor != null)
             _FinalLeafNumber = PhotoperiodFactor.Value * MaxNodeNo;

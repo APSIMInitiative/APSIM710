@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 
-/// <summary>
-/// Starting with the first child value of this node, recursively divide by the values of the subsequent child values 
-/// </summary>
-
+[Description("Starting with the first child function, recursively divide by the values of the subsequent child functions")]
 public class DivideFunction : Function
 {
     [Output]

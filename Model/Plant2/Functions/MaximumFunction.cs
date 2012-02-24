@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using CSGeneral;
 
+[Description("Returns the maximum value of all childern functions")]
 class MaximumFunction : Function
    {
    [Output]

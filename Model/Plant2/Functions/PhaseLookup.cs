@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-[Description("A value is determined depending upon the current phenological growth phase for the crop.")]
+[Description("Determines which PhaseLookupValue child functions start and end stages bracket the current phenological stage and returns the value of the grand child function decending from the applicable PhaseLookupValue function.")]
 public class PhaseLookup : Function
 {
     [Output]

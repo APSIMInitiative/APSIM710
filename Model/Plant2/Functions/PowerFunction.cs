@@ -4,10 +4,7 @@ using System.Text;
 using System.Reflection;
 using CSGeneral;
 
-/// <summary>
-/// Raises the value of the child to the power of the especified exponent parameter
-/// </summary>
-
+[Description("Raises the value of the child to the power of the exponent specified")]
 public class PowerFunction : Function
 {
     [Param]

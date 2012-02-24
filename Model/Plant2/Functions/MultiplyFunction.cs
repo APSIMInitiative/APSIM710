@@ -6,6 +6,7 @@ using System.Reflection;
 /// <summary>
 /// Multiplies the values of the children of this node
 /// </summary>
+[Description("Returns the product of all childern function values")]
 public class MultiplyFunction : Function
 {
     [Output]

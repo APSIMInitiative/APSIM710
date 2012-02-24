@@ -8,11 +8,8 @@ using CSGeneral;
 using System.Data;
 using EBMath;
 
-/// <summary>
-/// Evaluate a mathematical expression using the EvaluateExpression dll. 
-/// Obs: Expression can contain variable names from Plant2
-/// </summary>
 
+//FIXME  This class finds this ambigious.  [Description("Evaluate a mathematical expression using the EvaluateExpression dll. Obs: Expression can contain variable names from Plant2")]
 public class ExpressionFunction : Function
 {
     [Link]

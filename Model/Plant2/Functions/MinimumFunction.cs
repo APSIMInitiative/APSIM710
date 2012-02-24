@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using CSGeneral;
 
+[Description("Returns the Minimum value of all children functions")]
 class MinimumFunction : Function
    {
    [Output]

@@ -4,10 +4,7 @@ using System.Text;
 using System.Reflection;
 using ModelFramework;
 
-/// <summary>
-/// Sum the values of the child nodes of this node
-/// </summary>
-
+[Description("Add the values of all child functions")]
 public class AddFunction : Function
 {
     [Output]

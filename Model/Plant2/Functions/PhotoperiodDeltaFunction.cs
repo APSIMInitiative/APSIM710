@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSGeneral;
 
-    /// <summary>
-    /// Purpose: Calculates the difference between today's and yesterday's photoperiods in hours.
-    /// </summary>
-
+[Description("Returns the difference between today's and yesterday's photoperiods in hours.")]
 class PhotoperiodDeltaFunction : Function
 {
     [Param]

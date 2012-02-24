@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ModelFramework;
 
+[Description("Base class from which other functions inherit")]
 abstract public class Function
 {
     abstract public double Value { get; }

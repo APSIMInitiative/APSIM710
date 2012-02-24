@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using CSGeneral;
 
+[Description("Returns the age (in years) of the crop")]
 class AgeCalculatorFunction : Function
 {
     private int _Age = 0;

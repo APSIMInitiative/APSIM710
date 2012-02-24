@@ -4,9 +4,9 @@ using System.Text;
 using System.Reflection;
 
 /// <summary>
-/// From the first child value of this node subtract the values of the subsequent children 
+/// 
 /// </summary>
-
+[Description("From the value of the first child function, subtract the values of the subsequent children functions")]
 public class SubtractFunction : Function
 {
     [Output]

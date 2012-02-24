@@ -66,8 +66,6 @@ public class Leaf : BaseOrgan, AboveGround
     public Function ExpansionStress = null;
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
     public Function DroughtInducedSenAcceleration;
-    [Link(NamePath = "DroughtPhenologyAcelleration", IsOptional = true)]  //This parameter should not be here, applied in thermal time calculation
-    public Function DroughtPhenologyAcelleration;
     [Link]
     public Function CriticalNConc = null;
     [Link]
@@ -1260,9 +1258,8 @@ public class Leaf : BaseOrgan, AboveGround
     public void OnNewMet(NewMetType NewMet)
     {
         //This is a fudge until we get around to making canopy temperature drive phenology dirrectly.
-        //FixMe HEB.  This should be using DroughtInducedSenAcceleration not  DroughtPhenologyAcelleration
-        if ((DroughtPhenologyAcelleration != null) && (DroughtPhenologyAcelleration.Value > 1.0))
-            _ThermalTime = ThermalTime.Value * DroughtPhenologyAcelleration.Value;
+        if ((DroughtInducedSenAcceleration != null) && (DroughtInducedSenAcceleration.Value > 1.0))
+            _ThermalTime = ThermalTime.Value * DroughtInducedSenAcceleration.Value;
         else _ThermalTime = ThermalTime.Value;
     }
  #endregion

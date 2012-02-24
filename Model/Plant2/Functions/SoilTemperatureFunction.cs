@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+[Description("returns the temperature of the surface soil layer")]
 public class SoilTemperatureFunction : Function
 {
     #region Class Data Members

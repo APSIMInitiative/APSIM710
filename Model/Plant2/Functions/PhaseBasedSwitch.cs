@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-[Description("A value is determined depending upon the current phenological growth phase for the crop.")]
+[Description("Returns a value of 1 if phenology is between start and end phases and otherwise a value of 0.")]
 public class PhaseBasedSwitch : Function
 {
     //Fixme.  This can be removed an phase lookup returnig a constant of 1 if in phase.

@@ -4,7 +4,7 @@ using System.Text;
 using CSGeneral;
 using System.Xml;
 
-
+[Description("Returns a y value from the specified xy maxrix corresponding to the current value of the Xproperty")]
 public class XYPairs : Function
 {
     [Param]
