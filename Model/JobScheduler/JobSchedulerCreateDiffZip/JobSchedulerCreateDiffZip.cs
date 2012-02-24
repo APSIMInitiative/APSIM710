@@ -57,10 +57,11 @@ class Program
             if (Line.Length >= 9)
             {
                 string FileName = Line.Substring(8);
+                string Status = Line.Substring(0, 1);
                 string FullSourceFileName = Path.Combine(DirectoryName, FileName);
                 string FullDestFileName = Path.Combine(TempDirectory, FileName);
 
-                if (!Directory.Exists(FullSourceFileName) && Path.GetFileName(FullSourceFileName) != "DotNetProxies.cs")
+                if (!Directory.Exists(FullSourceFileName) && Path.GetFileName(FullSourceFileName) != "DotNetProxies.cs" && Status != "D")
                     ModifiedFiles.Add(FullSourceFileName);
             }
         }

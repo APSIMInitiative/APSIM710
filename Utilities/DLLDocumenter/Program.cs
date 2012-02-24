@@ -354,6 +354,7 @@ namespace DLLDocumenter
 
             String AssemblyName = myAssembly.GetName().Name;
             Type[] types = myAssembly.GetTypes();
+            Module[] modules = myAssembly.GetLoadedModules();
             String[] ObjectNames = new String[types.Length];
             List<Details>[] AllDetails = new List<Details>[types.Length];
             // Get the types contained in the assembly and print their names
@@ -362,7 +363,7 @@ namespace DLLDocumenter
                 List<Details> myList = new List<Details>();
                 AllDetails[i] = myList;
                 Type objectType = types[i];
-                if (objectType.BaseType != null && objectType.BaseType.ToString().Equals("Instance"))
+                //if (objectType.BaseType != null && objectType.BaseType.ToString().Equals("Instance"))
                 {
                     ObjectNames[i] = objectType.Name;
                     foreach (MemberInfo p in objectType.GetMembers())
@@ -384,6 +385,10 @@ namespace DLLDocumenter
             {
                 DateTime date = DateTime.Now;
                 createHTML(AssemblyName, ObjectNames, AllDetails);
+            }
+            else
+            {
+                Console.Out.WriteLine("No I/O details found in DLL");
             }
         }
 
@@ -425,7 +430,7 @@ namespace DLLDocumenter
 
         private static void printUsage()
         {
-            Console.WriteLine("Usage: ApsimXMLMaker [dll|directory]");
+            Console.WriteLine("Usage: DLLDocumenter [dll|directory]");
             Console.WriteLine("  Apsim module documention creator");
             Console.WriteLine("  This will create html files with the format [assembly name].html in the current directory");
         }

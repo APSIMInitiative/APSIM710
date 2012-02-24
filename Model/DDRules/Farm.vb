@@ -2,14 +2,16 @@
 
 Public Class Farm
     Private myDebugLevel As Integer = 0
-    Private myPaddocks As List(Of LocalPaddockType)         ' Full list of apsim paddocks
-    Private myPaddocks2 As Dictionary(Of String, LocalPaddockType)         ' Full list of apsim paddocks
+    Private myPaddocks As List(Of PaddockWrapper)         ' Full list of apsim paddocks
+    Private myPaddocks2 As Dictionary(Of String, PaddockWrapper)         ' Full list of apsim paddocks
     Private myMilkingHerd As SimpleHerd                            ' Dairy herd / on milking platform
     Private myDryCowHerd As SimpleHerd                            ' Dry Cow herd / on or off milking platform
     Private MyFarmArea As Double
+    Public myEffluentPond As New EffluentPond
+    Public myEffluentIrrigator As New EffluentIrrigator
 
-    Dim PaddockQueue As Queue(Of LocalPaddockType)
-    Private GrazedList As List(Of LocalPaddockType)         ' List of grazed paddocks
+    Dim PaddockQueue As Queue(Of PaddockWrapper)
+    Private GrazedList As List(Of PaddockWrapper)         ' List of grazed paddocks
     Private myGrazingResidual As Integer = 1600
     Private myGrazingInterval As Integer = 30
     Private myDayPerHa As Double 'this value is used to control rotation speed
@@ -24,8 +26,6 @@ Public Class Farm
     Private myTimeInDairyShed As Double = 0
     Public myEffluentPaddocksPercentage As Double = 1.0 '[default = 1.0 = spread to all paddocks]
 
-    Public myEffluentPond As New EffluentPond
-    Public myEffluentIrrigator As New EffluentIrrigator
     Public AllocationType As Integer = 0
     'LUDF Process
     Private EnableCutting As Boolean = True
@@ -38,7 +38,7 @@ Public Class Farm
     Public Sub New()
         myMilkingHerd = New SimpleHerd()
         myDryCowHerd = New SimpleHerd()
-        myPaddocks2 = New Dictionary(Of String, LocalPaddockType)
+        myPaddocks2 = New Dictionary(Of String, PaddockWrapper)
     End Sub
 
     Public Sub Init(ByVal MasterPM As Paddock, ByVal Year As Integer, ByVal Month As Integer, ByVal FarmArea As Double)
@@ -49,9 +49,9 @@ Public Class Farm
             Console.WriteLine("   Month    = " + Month.ToString())
             Console.WriteLine("   FarmArea = " + FarmArea.ToString())
         End If
-        myPaddocks = New List(Of LocalPaddockType)
-        PaddockQueue = New Queue(Of LocalPaddockType)
-        GrazedList = New List(Of LocalPaddockType)
+        myPaddocks = New List(Of PaddockWrapper)
+        PaddockQueue = New Queue(Of PaddockWrapper)
+        GrazedList = New List(Of PaddockWrapper)
         Dim i As Integer = -1
         ' find paddocks with an area property set by user
         ' Loop throught all paddocks
@@ -126,11 +126,11 @@ Public Class Farm
             Dim TempArea As Double = DefaultArea
             'If (TempList.ContainsKey(SubPaddock.Name)) Then
             '    TempArea = TempList(SubPaddock.Name).ToString
-            '    myLaneways = New LocalPaddockType(i, SubPaddock, TempArea)
+            '    myLaneways = New PaddockWrapper(i, SubPaddock, TempArea)
             '    myPaddocks.Add(myLaneways)
             '    MyFarmArea -= myLaneways.Area
             'Else
-            Dim pdk As New LocalPaddockType(i, SubPaddock, TempArea)
+            Dim pdk As New PaddockWrapper(i, SubPaddock, TempArea)
             myPaddocks.Add(pdk)
             'End If
 
@@ -145,7 +145,7 @@ Public Class Farm
             End If
         Next
 
-        For Each pdk As LocalPaddockType In myPaddocks
+        For Each pdk As PaddockWrapper In myPaddocks
             myPaddocks2.Add(pdk.Name.ToLower, pdk)
         Next
 
@@ -161,13 +161,13 @@ Public Class Farm
         Me.Month = Month
         myDate = New Date(Year, Month, Day)
         Me.end_week = end_week
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             Paddock.OnPrepare()
         Next
 
         myMilkingHerd.onPrepare(Year, Month)
 
-        'For Each p As LocalPaddockType In GrazedList
+        'For Each p As PaddockWrapper In GrazedList
         '        p.setJustGrazed()
         'Next
         SilageHeap.Prepare()
@@ -201,7 +201,7 @@ Public Class Farm
 
             If (DebugLevel > 1) Then
                 Console.WriteLine(" DDRules - Grazing paddock queue : Day = " & start_of_week.ToString)
-                For Each pdk As LocalPaddockType In PaddockQueue
+                For Each pdk As PaddockWrapper In PaddockQueue
                     Console.WriteLine("    " & pdk.ToString())
                 Next
                 Console.WriteLine(" DDRules - Grazing paddock queue - done")
@@ -221,7 +221,7 @@ Public Class Farm
         doConservation()
         doSprayEffluient()
 
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             Paddock.OnPost()
         Next
         myAverageCover.Add(AverageCover)
@@ -229,8 +229,8 @@ Public Class Farm
 
     Sub Allocate_Paddocks()
         SortPaddocksByCover()
-        PaddockQueue = New Queue(Of LocalPaddockType)
-        For Each Paddock As LocalPaddockType In myPaddocks
+        PaddockQueue = New Queue(Of PaddockWrapper)
+        For Each Paddock As PaddockWrapper In myPaddocks
             If (Not Paddock.Closed And Paddock.Grazable) Then
                 Paddock.GrazingCounter = Paddock.Area * myDayPerHa
                 PaddockQueue.Enqueue(Paddock) 'add all paddock to the queue (including close ones)
@@ -246,10 +246,10 @@ Public Class Farm
         Dim UnallocatedArea As Double = AreaToGraze * 7
 
         'First allocate paddock that need to be returned to
-        Dim TempList As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+        Dim TempList As List(Of PaddockWrapper) = New List(Of PaddockWrapper)
 
         'Need to keep tabs on paddocks currently being grazed i.e not down to residual or for holding long 
-        For Each pdk As LocalPaddockType In myPaddocks
+        For Each pdk As PaddockWrapper In myPaddocks
             If (pdk.BeingGrazed()) Then
                 pdk.GrazingCounter = Math.Min(pdk.GrazingCounter, pdk.Area * myDayPerHa)
                 TempList.Add(pdk)
@@ -257,10 +257,10 @@ Public Class Farm
             End If
         Next
 
-        TempList.Sort(LocalPaddockType.getSortListByCover(True))
+        TempList.Sort(PaddockWrapper.getSortListByCover(True))
 
-        PaddockQueue = New Queue(Of LocalPaddockType)
-        For Each pdk As LocalPaddockType In TempList
+        PaddockQueue = New Queue(Of PaddockWrapper)
+        For Each pdk As PaddockWrapper In TempList
             If (DebugLevel > 2) Then
                 Console.WriteLine("  DDRules - re-adding paddock to graze down properly " & pdk.ToString())
             End If
@@ -271,7 +271,7 @@ Public Class Farm
         'If (EnableCutting) Then
         '        SortPaddocksByCover() '1: Rank all paddocks by mass
         '        If (FeedSituation() > 0) Then '2: If in surplus then cut (some?) paddock for silage
-        '                For Each pdk As LocalPaddockType In myPaddocks
+        '                For Each pdk As PaddockWrapper In myPaddocks
         '                        If (Not pdk.BeingGrazed And pdk.Cover > IdealPreGrazingCover()) Then 'should this cut every paddock above the line?
         '                                pdk.Closed = True
         '                                PaddocksClosed += 1
@@ -281,7 +281,7 @@ Public Class Farm
         'End If
 
         SortPaddocksByCover() 'Rank all paddocks again by mass
-        For Each pdk As LocalPaddockType In myPaddocks
+        For Each pdk As PaddockWrapper In myPaddocks
             If (UnallocatedArea <= 0) Then
                 Exit For
             End If
@@ -295,7 +295,7 @@ Public Class Farm
 
         If (DebugLevel > 1) Then
             Console.WriteLine(" DDRules - Grazing paddock queue")
-            For Each pdk As LocalPaddockType In PaddockQueue
+            For Each pdk As PaddockWrapper In PaddockQueue
                 Console.WriteLine("    " & pdk.ToString())
             Next
             Console.WriteLine(" DDRules - Grazing paddock queue - done")
@@ -309,7 +309,7 @@ Public Class Farm
         GrazedList.Clear()
         Dim PastureHarvested As Double = 0
         While (myMilkingHerd.RemainingFeedDemand > 1 And PaddockQueue.Count > 0)
-            Dim p As LocalPaddockType = PaddockQueue.Peek()
+            Dim p As PaddockWrapper = PaddockQueue.Peek()
             Dim removed As BioMass = myMilkingHerd.Graze(p, GrazingResidual)
             PastureHarvested += removed.DM_Total
             GrazedList.Add(p)
@@ -318,7 +318,7 @@ Public Class Farm
             'If (p.GrazingCounter <= 0) Then 'p.AvalibleDryMater <= 1 Or 
             If (p.GrazingCounter <= 0) Then
                 '                        If (p.AvalibleDryMater <= 50) Then
-                Dim pdk As LocalPaddockType = PaddockQueue.Dequeue()
+                Dim pdk As PaddockWrapper = PaddockQueue.Dequeue()
                 pdk.JustGrazed = True
                 'PaddockQueue.Enqueue(pdk)
             Else
@@ -337,8 +337,8 @@ Public Class Farm
         Console.WriteLine("CutToFeedWedge begin: Surplus = " + surplus.ToString())
 
         updateCovers()
-        myPaddocks.Sort(LocalPaddockType.getSortListByCover(True))
-        For Each pdk As LocalPaddockType In myPaddocks
+        myPaddocks.Sort(PaddockWrapper.getSortListByCover(True))
+        For Each pdk As PaddockWrapper In myPaddocks
             If Not (myLanewayPaddocks.Contains(pdk)) Then 'don't include laneway paddocks
                 Dim cutResidual As Integer = Optimum_residual + (i * interval)
                 Dim temp As BioMass = pdk.Harvest(cutResidual, SilageCutWastage)
@@ -521,7 +521,7 @@ Public Class Farm
     Function updateCovers() As Double()
         Dim result(myPaddocks.Count) As Double
         Dim i As Integer = 0
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             Paddock.UpdateCovers()
             result(i) = Paddock.Cover
         Next
@@ -529,7 +529,7 @@ Public Class Farm
     End Function
 
     Sub updateGrazingResidual(ByVal residual As Integer)
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             Paddock.GrazingResidual = residual
         Next
     End Sub
@@ -574,9 +574,9 @@ Public Class Farm
 
     Sub SortPaddocksByCover()
         'shufflePaddocks()
-        myPaddocks.Sort(LocalPaddockType.getSortListByCover())
+        myPaddocks.Sort(PaddockWrapper.getSortListByCover())
         If (DebugLevel > 2) Then
-            For Each lp As LocalPaddockType In myPaddocks
+            For Each lp As PaddockWrapper In myPaddocks
                 Console.Out.WriteLine(" By Cover ********* " + lp.index.ToString() + " - " + lp.Name + " - " + lp.Cover().ToString("0"))
             Next
             Console.Out.WriteLine()
@@ -584,9 +584,9 @@ Public Class Farm
     End Sub
 
     Sub SortByIndex()
-        myPaddocks.Sort(LocalPaddockType.getSortListByIndex())
+        myPaddocks.Sort(PaddockWrapper.getSortListByIndex())
         If (DebugLevel > 2) Then
-            For Each lp As LocalPaddockType In myPaddocks
+            For Each lp As PaddockWrapper In myPaddocks
                 Console.Out.WriteLine(" By Index ********* " + lp.index.ToString() + " - " + lp.Name + " - " + lp.Cover().ToString("0"))
             Next
             Console.Out.WriteLine()
@@ -595,7 +595,7 @@ Public Class Farm
 
     Private Sub PrintPaddocks()
         If (myDebugLevel > 0) Then
-            For Each pdk As LocalPaddockType In myPaddocks
+            For Each pdk As PaddockWrapper In myPaddocks
                 Console.WriteLine(pdk.ToString)
             Next
         End If
@@ -604,8 +604,8 @@ Public Class Farm
     Public Function AverageCover() As Double
         Dim TotalCover As Double = 0
         Dim TotalArea As Double = 0
-        For Each pdk As LocalPaddockType In myPaddocks
-            'For Each lp As LocalPaddockType In myPaddocks
+        For Each pdk As PaddockWrapper In myPaddocks
+            'For Each lp As PaddockWrapper In myPaddocks
             '        Console.Out.WriteLine(" Average Cover ********* " + lp.index.ToString() + " - " + lp.Name() + " - " + lp.Cover().ToString("0") + " kgDM/ha - " + lp.Area.ToString("0.0") + " ha")
             'Next
             TotalCover += pdk.Cover() * pdk.Area
@@ -702,7 +702,7 @@ Public Class Farm
 
     Private Sub ClosePaddocks()
         updateCovers()
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             ' if Paddock is not closed already and
             '            is grazable i.e. not removed from the rotation and
             '            the cover is above the trigger point (CDM) and
@@ -717,7 +717,7 @@ Public Class Farm
 
     Private Function doHarvest(ByVal loss As Double) As BioMass
         Dim result As New BioMass
-        For Each Paddock As LocalPaddockType In myPaddocks
+        For Each Paddock As PaddockWrapper In myPaddocks
             If (Paddock.Closed) Then                        'Harvest all closed paddocks
                 Dim CutDM As BioMass = Paddock.Harvest(CR, loss)
                 CutDM.digestibility = SilageDigestability
@@ -735,7 +735,7 @@ Public Class Farm
 
 #Region "Additional Output Variables"
     Public Sub PrepareOutputs()
-        myPaddocks.Sort(LocalPaddockType.getSortListByIndex)
+        myPaddocks.Sort(PaddockWrapper.getSortListByIndex)
         DM_Eaten = myMilkingHerd.DM_Eaten / FarmArea()
         DM_Eaten_Pasture = myMilkingHerd.DM_Eaten_Pasture / FarmArea()
         DM_Eaten_Silage = myMilkingHerd.DM_Eaten_Silage / FarmArea()
@@ -823,7 +823,7 @@ Public Class Farm
     Public Property PaddockGrazable(ByVal i As Integer) As Boolean
         Get
             If (i >= 0 And i < myPaddocks.Count) Then
-                Dim p As LocalPaddockType = myPaddocks(i)
+                Dim p As PaddockWrapper = myPaddocks(i)
                 Return p.Grazable
             Else
                 Return False 'not a paddock in the simulation? Or not know to DDRules atleast!
@@ -831,7 +831,7 @@ Public Class Farm
         End Get
         Set(ByVal value As Boolean)
             If (i >= 0 And i < myPaddocks.Count) Then
-                Dim p As LocalPaddockType = myPaddocks(i)
+                Dim p As PaddockWrapper = myPaddocks(i)
                 p.Grazable = value
             End If
         End Set
@@ -865,7 +865,7 @@ Public Class Farm
             Dim growth As Double = 0
             Dim area As Double = 0
             'sort by index here
-            For Each pdk As LocalPaddockType In myPaddocks
+            For Each pdk As PaddockWrapper In myPaddocks
                 growth += pdk.AverageGrowthRate() * pdk.Area
                 area += pdk.Area
             Next
@@ -972,10 +972,10 @@ Public Class Farm
 #End Region
 
     Private Sub shufflePaddocks()
-        Dim list() As LocalPaddockType = myPaddocks.ToArray()
+        Dim list() As PaddockWrapper = myPaddocks.ToArray()
         Dim i As Integer = 0
         Dim j As Integer
-        Dim tmp As LocalPaddockType
+        Dim tmp As PaddockWrapper
 
         While i < list.Length
             j = Rnd(list.Length)
@@ -1036,7 +1036,7 @@ Public Class Farm
         Set(ByVal value As Integer)
             myDebugLevel = value
             If Not (myPaddocks Is Nothing) Then
-                For Each paddock As LocalPaddockType In myPaddocks
+                For Each paddock As PaddockWrapper In myPaddocks
                     paddock.DebugLevel = value - 1
                 Next
             End If
@@ -1046,7 +1046,7 @@ Public Class Farm
 
     Public Sub TestFeedWedge(ByVal post As Integer)
         SortPaddocksByCover()
-        For Each pdk As LocalPaddockType In myPaddocks
+        For Each pdk As PaddockWrapper In myPaddocks
 
         Next
         SortByIndex()
@@ -1110,7 +1110,7 @@ Public Class Farm
 
     Public Function GetEffluentArea() As Double
         Dim result As Double = 0
-        For Each pdk As LocalPaddockType In myEffluentPaddocks
+        For Each pdk As PaddockWrapper In myEffluentPaddocks
             result += pdk.Area
         Next
         Return result
@@ -1126,7 +1126,7 @@ Public Class Farm
             '        Dim effArea As Double = GetEffluentArea()
             '        data.Amount *= MyFarmArea / (MyFarmArea - effArea)
             'End If
-            For Each pdk As LocalPaddockType In myPaddocks
+            For Each pdk As PaddockWrapper In myPaddocks
                 If (myEffluentPaddocks Is Nothing Or ApplyToEffPdks) Then 'apply to all paddocks
                     pdk.Apply(data)
                     totalArea += pdk.Area
@@ -1147,37 +1147,37 @@ Public Class Farm
         End If
     End Function
 
-    Function Irrigate(ByVal data As IrrigationApplicationType, ByVal efficiency As Double) As Double
-        If (data.Amount > 0) Then
-            Dim total As Double = 0
-            Dim area As Double = 0
-            data.Amount *= CSng(efficiency)
-            For Each paddock As LocalPaddockType In myPaddocks
-                area += data.Crop_Area
-                total += (data.Amount * data.Crop_Area / efficiency)
-                paddock.Irrigate(data)
-            Next
-            If (DebugLevel > 0) Then
-                Console.WriteLine(total / FarmArea)
-            End If
-            Return total / area
-        Else
-            Return 0.0
-        End If
-    End Function
+    'Function Irrigate(ByVal data As IrrigationApplicationType, ByVal efficiency As Double) As Double
+    '    If (data.Amount > 0) Then
+    '        Dim total As Double = 0
+    '        Dim area As Double = 0
+    '        data.Amount *= CSng(efficiency)
+    '        For Each paddock As PaddockWrapper In myPaddocks
+    '            area += data.Crop_Area
+    '            total += (data.Amount * data.Crop_Area / efficiency)
+    '            paddock.Irrigate(data)
+    '        Next
+    '        If (DebugLevel > 0) Then
+    '            Console.WriteLine(total / FarmArea)
+    '        End If
+    '        Return total / area
+    '    Else
+    '        Return 0.0
+    '    End If
+    'End Function
 
-    Public ReadOnly Property PlantAvalibleWater(ByVal atDepth As Single) As Single
-        Get
-            Dim total As Double = 0
-            Dim area As Double = 0
-            For Each paddock As LocalPaddockType In myPaddocks
-                Dim swd As Double = paddock.PlantAvalibleWater(atDepth)
-                area += paddock.Area
-                total += (swd * paddock.Area)
-            Next
-            Return total / area
-        End Get
-    End Property
+    'Public ReadOnly Property PlantAvalibleWater(ByVal atDepth As Single) As Single
+    '    Get
+    '        Dim total As Double = 0
+    '        Dim area As Double = 0
+    '        For Each paddock As PaddockWrapper In myPaddocks
+    '            Dim swd As Double = paddock.PlantAvalibleWater(atDepth)
+    '            area += paddock.Area
+    '            total += (swd * paddock.Area)
+    '        Next
+    '        Return total / area
+    '    End Get
+    'End Property
 
     'Proportion of farm to return effluient to
     Public Property EffluentPaddocksPercentage() As Double
@@ -1199,7 +1199,7 @@ Public Class Farm
         myMilkingHerd.setMilkSolids(values)
     End Sub
 
-    Public Function getMilkSolids() As Double()        
+    Public Function getMilkSolids() As Double()
         Return myMilkingHerd.getMilkSolids()
     End Function
 
@@ -1214,19 +1214,19 @@ Public Class Farm
 
 
 #Region "Effluent Retun from Dairy Shed"
-    Dim myEffluentPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+    Dim myEffluentPaddocks As List(Of PaddockWrapper) = New List(Of PaddockWrapper)
 
     'Simulation passing a list of paddock names
     Sub setEffluentPaddocks(ByVal values As String())
         If (values Is Nothing) Then
-            myEffluentPaddocks = New List(Of LocalPaddockType)()
+            myEffluentPaddocks = New List(Of PaddockWrapper)()
             Return
         End If
         If (values.Length > 0) Then
-            myEffluentPaddocks = New List(Of LocalPaddockType)(values.Length)
+            myEffluentPaddocks = New List(Of PaddockWrapper)(values.Length)
             For Each strPaddockName As String In values
                 If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                    Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
+                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName)
                     Console.WriteLine(p)
                     myEffluentPaddocks.Add(myPaddocks2(strPaddockName))
                 End If
@@ -1242,7 +1242,7 @@ Public Class Farm
         End If
         Dim result(myEffluentPaddocks.Count) As String
         Dim i As Integer = 0
-        For Each pdk As LocalPaddockType In myEffluentPaddocks
+        For Each pdk As PaddockWrapper In myEffluentPaddocks
             result(i) = pdk.Name
             i += 1
         Next
@@ -1251,10 +1251,10 @@ Public Class Farm
 
     Sub doSprayEffluient()
         If (end_week And myEffluentPond.Volume > 0) Then
-            Dim aList As New List(Of LocalPaddockType)
+            Dim aList As New List(Of PaddockWrapper)
             If (myEffluentPaddocks IsNot Nothing) Then 'effluent paddock set via a list
                 Console.Out.WriteLine("Spraying dairy shed effluent to paddocks;")
-                For Each pdk As LocalPaddockType In myEffluentPaddocks
+                For Each pdk As PaddockWrapper In myEffluentPaddocks
                     Console.Out.WriteLine(" - " + pdk.Name)
                 Next
                 myEffluentIrrigator.Irrigate(myEffluentPond, myEffluentPaddocks)
@@ -1269,14 +1269,14 @@ Public Class Farm
 #End Region
 
 #Region "Laneways"
-    Dim myLanewayPaddocks As List(Of LocalPaddockType) = New List(Of LocalPaddockType)
+    Dim myLanewayPaddocks As List(Of PaddockWrapper) = New List(Of PaddockWrapper)
     'Simulation passing a list of paddock names
     Sub setLanewayPaddocks(ByVal values As String())
-        myLanewayPaddocks = New List(Of LocalPaddockType)()
+        myLanewayPaddocks = New List(Of PaddockWrapper)()
         If (values IsNot Nothing) AndAlso (values.Length > 0) Then
             For Each strPaddockName As String In values
                 If (myPaddocks2.ContainsKey(strPaddockName)) Then
-                    Dim p As LocalPaddockType = myPaddocks2(strPaddockName)
+                    Dim p As PaddockWrapper = myPaddocks2(strPaddockName)
                     p.Grazable = False 'not part of grazing rotation
                     myLanewayPaddocks.Add(myPaddocks2(strPaddockName))
                     myPaddocks.Remove(p)
@@ -1285,11 +1285,11 @@ Public Class Farm
         End If
         If (myLanewayPaddocks.Count > 0) Then
             Dim newArea As Double = FarmArea / myPaddocks.Count
-            For Each pdk As LocalPaddockType In myPaddocks
+            For Each pdk As PaddockWrapper In myPaddocks
                 pdk.Area = newArea
             Next
             Dim lArea As Double = FarmArea * myPorportionOfFarmInLaneWays / myLanewayPaddocks.Count
-            For Each pdk As LocalPaddockType In myLanewayPaddocks
+            For Each pdk As PaddockWrapper In myLanewayPaddocks
                 pdk.Area = lArea
             Next
         End If
@@ -1327,15 +1327,15 @@ Public Class Farm
         If (DebugLevel > 0) Then
 
             Console.WriteLine("     Grazing Paddocks")
-            For Each pdk As LocalPaddockType In myPaddocks
+            For Each pdk As PaddockWrapper In myPaddocks
                 Console.WriteLine("             " & pdk.ToString())
             Next
             Console.WriteLine("     Effluent Paddocks")
-            For Each pdk As LocalPaddockType In myEffluentPaddocks
+            For Each pdk As PaddockWrapper In myEffluentPaddocks
                 Console.WriteLine("             " & pdk.ToString())
             Next
             Console.WriteLine("     Laneway Paddocks")
-            For Each pdk As LocalPaddockType In myLanewayPaddocks
+            For Each pdk As PaddockWrapper In myLanewayPaddocks
                 Console.WriteLine("             " & pdk.ToString())
             Next
         End If
@@ -1372,4 +1372,11 @@ Public Class Farm
             myMilkingHerd.setCowNumbers(total * (1 - value))
         End Set
     End Property
+
+    Public Sub setEffluent(ByVal effPond As EffluentPond, ByVal effIrrigator As EffluentIrrigator)
+        myEffluentPond = effPond
+        myEffluentIrrigator = effIrrigator
+    End Sub
+
+
 End Class

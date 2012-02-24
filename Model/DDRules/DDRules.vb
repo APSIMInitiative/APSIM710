@@ -32,12 +32,12 @@ Imports ModelFramework
 '       post 1480 = 7-8 clicks
 '       pre 3100-3200
 '       average 2300-2400
-'       20 day during growth
-'       out to 35 days at drying off
+'       rotation: 20 days during peak growth
+'                 out to 35 days at drying off
 '       Paddocks over pre-graze taken out and cut imediatly
 
 ' Silage cutting
-'   Only remove surplus e.g. if in surplus by 18TDM only remove 18 TDM at cutting (see weekly notes)
+'   Only remove surplus e.g. if in surplus by 18TDM only remove 18 TDM at cutting by changing the residual (not realistic, see weekly notes)
 
 ' Feed deficit?
 ' Short 14TDM on wedge == feed 2 TDM/day for the week
@@ -49,6 +49,9 @@ Public Class DDRules
     <Link()> Public MyClock As Clock
     <Input()> Public is_end_week As Boolean
     <Input()> Public is_start_week As Boolean
+    <Link()> Public myEffluentPond As New EffluentPond
+    <Link()> Public myEffluentIrrigator As New EffluentIrrigator
+
     Private myFarm As Farm
     Private myHerd As SimpleHerd 'local handle to the herd contained in Farm. Is this only a short term fix?
 
@@ -60,12 +63,12 @@ Public Class DDRules
 
     Dim strEffluentPaddocks() As String
     Dim strLanewayPaddocks() As String
-    Dim myIrrigationAmount As Double = 0
+    'Dim myIrrigationAmount As Double = 0
     Dim myFertiliserAmount As Double = 0
     Private TotalFarmArea As Double = 0
     Private GrazingIntervalIsSet As Boolean = False
     Private GrazingResidualIsSet As Boolean = False
-    Dim myIrrigation_efficiency As Double = 1.0
+    'Dim myIrrigation_efficiency As Double = 1.0
 
     Public Sub New()
         myFarm = New Farm()
@@ -104,6 +107,7 @@ Public Class DDRules
         End If
 
         myFarm.Init(MySimulation, MyClock.year, MyClock.month, TotalFarmArea)
+        myFarm.setEffluent(myEffluentPond, myEffluentIrrigator)
         myFarm.setEffluentPaddocks(strEffluentPaddocks)
         myFarm.setLanewayPaddocks(strLanewayPaddocks)
 
@@ -126,7 +130,7 @@ Public Class DDRules
         GrazingResidualIsSet = False
         'PaddockGrazable(0) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
         'PaddockGrazable(2) = 0 'testing removal of a paddock from the rotation i.e. for forage crops etc.
-        myIrrigation_efficiency = 1.0
+        'myIrrigation_efficiency = 1.0
         If (DebugLevel > 2) Then
             Console.WriteLine("DDRules OnInit2() Complete!")
         End If
@@ -135,7 +139,7 @@ Public Class DDRules
 
     <Description("Reset tracked output variables")> _
     <EventHandler()> Sub OnNewMet(ByVal NewMet As NewMetType)
-        myIrrigationAmount = 0
+        'myIrrigationAmount = 0
         myFertiliserAmount = 0
     End Sub
 
@@ -204,36 +208,32 @@ Public Class DDRules
     <Output()> Public ApplyFertToEffluentPdks As Boolean = False
     'Whole farm fertiliser application
 
-    <Description("Whole farm fertiliser event")> _
+    <Description("Whole farm fertiliser event - this will become a manager script")> _
     <EventHandler()> Public Sub OnApplyFertiliser(ByVal amount As FertiliserApplicationType)
-        'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
         myFertiliserAmount += myFarm.Fertilise(amount, ApplyFertToEffluentPdks)
-        'Console.WriteLine("   myFertiliserAmount  = " + myFertiliserAmount.ToString())
     End Sub
 
-    <Description("Whole farm irrigation application")> _
-    <EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
-        'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
-        myIrrigationAmount += myFarm.Irrigate(amount, myIrrigation_efficiency)
-        'Console.WriteLine("   myIrrigationAmount  = " + myIrrigationAmount.ToString())
-    End Sub
+    '<Description("Whole farm irrigation application - this will become a manager script")> _
+    '<EventHandler()> Public Sub OnApplyIrrigation(ByVal amount As IrrigationApplicationType)
+    '    myIrrigationAmount += myFarm.Irrigate(amount, myIrrigation_efficiency)
+    'End Sub
 
-    <Description("Overloaded irrigation Apply event")> _
-    <EventHandler()> Public Sub OnApply(ByVal amount As IrrigationApplicationType)
-        OnApplyIrrigation(amount)
-    End Sub
+    '<Description("Overloaded irrigation Apply event")> _
+    '<EventHandler()> Public Sub OnApply(ByVal amount As IrrigationApplicationType)
+    '    OnApplyIrrigation(amount)
+    'End Sub
 
     <Description("Overloaded fertiliser Apply event")> _
     <EventHandler()> Public Sub OnApply(ByVal amount As FertiliserApplicationType)
         OnApplyFertiliser(amount)
     End Sub
 
-    <Description("Amount of water applied in relation to the whole farm")> _
-    <Output()> <Units("mm/ha")> Public ReadOnly Property Irrigation() As Double
-        Get
-            Return myIrrigationAmount
-        End Get
-    End Property
+    '<Description("Amount of water applied in relation to the whole farm")> _
+    '<Output()> <Units("mm/ha")> Public ReadOnly Property Irrigation() As Double
+    '    Get
+    '        Return myIrrigationAmount
+    '    End Get
+    'End Property
 
     <Description("Amount of fertiliser applied in relation to the whole farm")> _
     <Output()> <Units("kg/ha")> Public ReadOnly Property Fertiliser() As Double
@@ -243,21 +243,21 @@ Public Class DDRules
     End Property
 #End Region
 
-    <Description("Proportion of applied irrgation that reaches the soil surface")> _
-    <Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
-        Get
-            Return myIrrigation_efficiency
-        End Get
-        Set(ByVal value As Double)
-            If (value < 0) Then
-                myIrrigation_efficiency = 0
-            ElseIf (value > 1) Then
-                myIrrigation_efficiency = 1
-            Else
-                myIrrigation_efficiency = value
-            End If
-        End Set
-    End Property
+    '<Description("Proportion of applied irrgation that reaches the soil surface")> _
+    '<Output()> <Units("0-1")> Public Property irrigation_efficiency() As Double
+    '    Get
+    '        Return myIrrigation_efficiency
+    '    End Get
+    '    Set(ByVal value As Double)
+    '        If (value < 0) Then
+    '            myIrrigation_efficiency = 0
+    '        ElseIf (value > 1) Then
+    '            myIrrigation_efficiency = 1
+    '        Else
+    '            myIrrigation_efficiency = value
+    '        End If
+    '    End Set
+    'End Property
 
     <Description("Effective farm area [ha]")> _
     <Output()> <Units("ha")> Public Property FarmArea() As Double
@@ -1074,7 +1074,7 @@ Public Class DDRules
     <Description("Amount of effluient being held in storage")> _
     <Output()> <Units("TBC")> Public ReadOnly Property EffluientPondVolume() As Double
         Get
-            Return myFarm.myEffluentPond.Volume
+            Return myEffluentPond.Volume
         End Get
     End Property
 #End Region
@@ -1117,38 +1117,38 @@ Public Class DDRules
     <Description("Control animal grazing to simulate break feeding of individual paddocks [0=No, 1=Yes]")> _
     <Param()> Property BreakFeeding() As Integer
         Get
-            If LocalPaddockType.DebugTestBreakFeeding Then
+            If PaddockWrapper.DebugTestBreakFeeding Then
                 Return 1
             Else
                 Return 0
             End If
         End Get
         Set(ByVal value As Integer)
-            LocalPaddockType.DebugTestBreakFeeding = value > 0
+            PaddockWrapper.DebugTestBreakFeeding = value > 0
         End Set
     End Property
 
     <Description("Switch to include stolon mass in calculations and reporting [0=No, 1=Yes]")> _
     <Param()> Property IncludeStolon() As Integer
         Get
-            If LocalPaddockType.IncludeStolon Then
+            If PaddockWrapper.IncludeStolon Then
                 Return 1
             Else
                 Return 0
             End If
         End Get
         Set(ByVal value As Integer)
-            LocalPaddockType.IncludeStolon = value > 0
+            PaddockWrapper.IncludeStolon = value > 0
         End Set
     End Property
 
     <Description("Testing: Use a moving average of daily growth to predict future growth based in past growth")> _
     <Param()> Property GrowthRateWindowSize() As Integer
         Get
-            Return LocalPaddockType.MovingAverageSeriesLength
+            Return PaddockWrapper.MovingAverageSeriesLength
         End Get
         Set(ByVal value As Integer)
-            LocalPaddockType.MovingAverageSeriesLength = value
+            PaddockWrapper.MovingAverageSeriesLength = value
             Farm.MovingAverageSeriesLength = value
         End Set
 
@@ -1269,12 +1269,12 @@ Public Class DDRules
         End Set
     End Property
 
-    <Description("Average plant available water (proportion availble in the top 300mm)")> _
-    <Output()> <Units("0-1")> Public ReadOnly Property PlantAvalibleWater As Single
-        Get
-            Return myFarm.PlantAvalibleWater(300)
-        End Get
-    End Property
+    '<Description("Average plant available water (proportion availble in the top 300mm)")> _
+    '<Output()> <Units("0-1")> Public ReadOnly Property PlantAvalibleWater As Single
+    '    Get
+    '        Return myFarm.PlantAvalibleWater(300)
+    '    End Get
+    'End Property
 
     <Description("Set milk production data")> _
     <Output()> <Units("kgMS/cow/day")> Public Property MilkCurve As Double()
@@ -1290,7 +1290,6 @@ Public Class DDRules
                 End If
                 values(i) = value((i + 6) Mod 12)
                 If (DebugLevel > 0) Then
-                    'Console.WriteLine(" [ha] = " + (values(i) * BaseStockingRate).ToString("0.00"))
                     Console.WriteLine(" [ha] = " + (values(i) * StockingRate).ToString("0.00"))
                 End If
             Next

@@ -9,3 +9,7 @@ Scott.
 TODO:
 - be able to handle old / non .net dlls
 - create links between html file when reading multiple DLLs
+
+Usage: DLLDocumenter.exe [dll|directory]
+  Apsim module documention creator
+  This will create html files with the format [assembly name].html in the current directory
