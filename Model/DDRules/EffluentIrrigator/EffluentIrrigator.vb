@@ -1,5 +1,5 @@
 ﻿
-<Model()>
+<Model()> _
 Public Class EffluentIrrigator
     Public DebugLevel As Integer = 0
     <Output()> Public Type As String = "Test Irrigator"

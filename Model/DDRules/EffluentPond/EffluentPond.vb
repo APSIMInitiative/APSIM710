@@ -1,6 +1,6 @@
 ﻿Imports ModelFramework
 
-<Model()>
+<Model()> _
 Public Class EffluentPond
     Private myExcreta As New Excreta
     Private myWater As Double 'litres
@@ -10,7 +10,7 @@ Public Class EffluentPond
         myWater += amount.N_to_urine / 0.08
     End Sub
 
-    <Description("Remove all effluient from storage")>
+    <Description("Remove all effluient from storage")> _
     Public Function Empty() As Excreta
         Dim amount As New Excreta(myExcreta)
         myExcreta.Clear()
