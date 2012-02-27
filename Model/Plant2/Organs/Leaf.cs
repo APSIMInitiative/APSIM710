@@ -258,16 +258,15 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
 
     [Description("Number of leaf cohorts that have fully Senesced")]
-    public int DeadCohortNo
+    public double DeadCohortNo
     {
         get
         {
-            int count = 0;
+            int Count = 0;
             foreach (LeafCohort L in Leaves)
                 if (L.IsDead)
-                    count++;
-
-            return count;
+                    Count++;
+            return Math.Min(Count, FinalLeafNo);
         }
     }
     //Plant leaf number state variables
