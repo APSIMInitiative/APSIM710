@@ -1,28 +1,152 @@
-<folder version="28" name="simulations">
+<folder version="30" name="simulations">
   <simulation name="Test">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Tests\ApsimX\Goondiwindi.met</filename>
     </metfile>
     <clock>
-      <start_date type="date" description="Enter the start date of the simulation">01/01/1900</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">30/11/2010</end_date>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1940</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">02/01/1940</end_date>
     </clock>
     <summaryfile />
-    <manager2 name="Script">
-      <ui />
-      <text>
+    <area name="paddock">
+      <manager2 name="Script">
+        <ui>
+          <A type="text" description="Param A">2.6</A>
+          <ChildClass type="text" description="Create child class:">ScriptChild</ChildClass>
+        </ui>
+        <text>
 using System;
 using ModelFramework;
+using CSGeneral;
 
 public class Script
-   {
-   [Output][Units("oC")] public double C = 0;
+{
+   [Param] 
+   private double A = 0;
 
-   [EventHandler] public void OnPost()
-      {
-      }
+   [Input] 
+   public int Year = 0;
+   
+   [Output][Units("oC")] 
+   public double C = 0;
+   
+   [Link]
+   public Paddock MyPaddock;
+   
+   [Link]
+   public Component My;
+
+   [Event]
+   public event NullTypeDelegate Do_output;   
+   
+   [EventHandler] 
+   public void OnInitialised()
+   {
+      // Write out our name and our full name.
+      Console.WriteLine("Name: " + My.Name);
+      Console.WriteLine("Full name: " + My.FullName);
+      
    }
+   
+   [EventHandler] 
+   public void OnProcess()
+   {
+      // Make sure the [Param] has worked.
+      if (A != 2.6)
+         throw new Exception("Incorrect value for A: " + A.ToString());
+
+      // Make sure the [Input] has worked.
+      if (Year != 1940)
+         throw new Exception("Incorrect value for Year: " + Year.ToString());
+      
+      // Make sure the [Output] works. This should be written to the output file.
+      C = 1234;
+            
+      // ========================================================================
+      // Children method
+      // ========================================================================
+      Console.WriteLine("Script children:");
+      foreach (Component Child in My.Children)
+         Console.WriteLine("   " + Child.FullName);
+      
+      Console.WriteLine("Paddock children:");
+      foreach (Component Child in MyPaddock.Children)
+         Console.WriteLine("   " + Child.FullName);
+     
+      Console.WriteLine("Simulation children:");
+      foreach (Component Child in MyPaddock.Parent.Children)
+         Console.WriteLine("   " + Child.FullName);      
+    
+      // ========================================================================
+      // Paddock.Crops
+      // ========================================================================
+      Console.WriteLine("Paddock crops:");
+      foreach (Component Child in MyPaddock.Crops)
+         Console.WriteLine("   " + Child.FullName);
+      
+      // ========================================================================
+      // Link method
+      // ========================================================================
+      ScriptChild ScriptChild = My.LinkByName("ScriptChild") as ScriptChild;
+      if (ScriptChild == null)
+         throw new Exception("Cannot find ScriptChild");
+      
+      ScriptChild ScriptChild2 = MyPaddock.LinkByName(".paddock.Script.ScriptChild") as ScriptChild;
+      if (ScriptChild2 == null)
+         throw new Exception("Cannot find .paddock.Script.ScriptChild");
+      
+      Clock Clock = MyPaddock.LinkByName("Clock") as Clock;
+      if (Clock == null)
+         throw new Exception("Cannot find Clock");
+      
+      Clock Clock2 = MyPaddock.LinkByType("Clock") as Clock;
+      if (Clock2 == null)
+         throw new Exception("Cannot find a Clock type");
+      
+      // ========================================================================
+      // Paddock.Get
+      // ========================================================================
+      // Test using scoping to find a variable in top level simulation.
+      double Latitude;
+      MyPaddock.Get("Latitude", out Latitude);
+      if (!MathUtility.FloatsAreEqual(Latitude, -28.55))
+         throw new Exception("Incorrect latitude: " + Latitude.ToString());
+      
+      // Test using a full address to variable.
+      MyPaddock.Get(".Met.Latitude", out Latitude);
+      if (!MathUtility.FloatsAreEqual(Latitude, -28.55))
+         throw new Exception("Incorrect latitude2: " + Latitude.ToString());      
+      
+      // Test getting a double array from current paddock
+      //double[] dlayer;
+      //MyPaddock.Get("dlayer", out dlayer);
+      //if (!MathUtility.AreEqual(dlayer, new double[] {100, 100, 250, 250, 350, 450}))
+      //   throw new Exception("Incorrect dlayer: " + StringManip.BuildString(dlayer, "f2"));      
+
+      // Test getting a child variable value
+      int ChildVariable;
+      bool ok = MyPaddock.Get("Script.ScriptChild.A", out ChildVariable);
+      if (!ok)
+         throw new Exception("Cannot find child variable");
+      if (ChildVariable != 12345)
+         throw new Exception("Incorrect child variable value: " + ChildVariable.ToString());
+
+      // Test using a paddock relative address to variable.
+      //double Yield;
+      //MyPaddock.Get("wheat.yield", out Yield);
+      //if (Yield != 0)
+     //    throw new Exception("Cannot find yield");
+   }
+}
+
+
+public class ScriptChild
+{
+   [Output]
+   public int A = 12345;
+}
     </text>
-    </manager2>
+      </manager2>
+    </area>
   </simulation>
 </folder>

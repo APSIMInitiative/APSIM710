@@ -13,6 +13,8 @@ Version                = 7.5
 Title                  = Test
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
    Component                       "Script" = %apsim%\Model\Manager2.dll
 
 ------- clock Initialisation --------------------------------------------------
@@ -27,15 +29,38 @@ Title                  = Test
         do_stock
         post
         end_step
-     Simulation start date =  1/01/1900
-     Simulation end date   = 30/11/2010
+     Simulation start date =  1/01/1940
+     Simulation end date   =  2/01/1940
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: %apsim%\Tests\ApsimX\Goondiwindi.met
 
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
 ------- Script Initialisation -------------------------------------------------
+Name: Script
+Full name: .paddock.Script.Script
 ------- Start of simulation  --------------------------------------------------
-30 November 2010(Day of year=334), clock: 
-     Simulation is terminating due to end criteria being met.
+Script children:
+   .paddock.Script.ScriptChild
+Paddock children:
+   .paddock.accum
+   .paddock.Script
+Simulation children:
+   .clock
+   .met
+   .paddock
+Paddock crops:
+1 January 1940(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM  Fatal  Error
+                      -------------------
+     Cannot find child variable .MasterPM.paddock.Script.Process
+     Component name: Script
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     

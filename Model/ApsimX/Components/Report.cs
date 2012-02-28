@@ -9,7 +9,6 @@ class Report
    {
    [Param] private string FileName = "";
 
-   [Input] private ModelAPIInterface ScienceAPI = null;
    private SQLite Connection;
    private IntPtr Query;
    [Param] private string[] Variables = null;
@@ -89,8 +88,8 @@ class Report
       {
       // Get all variable values.
       List<object> OutputValues = new List<object>();
-      foreach (string VariableName in Variables)
-         OutputValues.Add(ScienceAPI.Get(VariableName));
+      //foreach (string VariableName in Variables)
+      //   OutputValues.Add(ScienceAPI.Get(VariableName));
       
       if (Connection == null)
          {

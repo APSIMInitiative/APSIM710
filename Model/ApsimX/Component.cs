@@ -14,95 +14,49 @@ namespace ModelFramework
 		// to at runtime. It is a wrapper around a method in an object.
 		// --------------------------------------------------------------------
 		public delegate void NullFunction();
-
-		private NullFunction F;
 		}
-    /// <summary>
-    /// --------------------------------------------------------------------
-    /// Returns the singleton instance of a reflection class that is
-    /// capable of returning metadata about the structure of the simulation.
-    /// --------------------------------------------------------------------
-    /// </summary>
+
     public class Component
     {
-       // protected ApsimComponent HostComponent;
+        internal ModelInstance Instance;
         protected String FTypeName;
         protected String ParentCompName;            //Name of the parent component in the simulation
         protected String FQN;                       //Name of the actual component
+        protected string _Name;
 
         public String TypeName
         {
             get { return FTypeName; }
         }
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="TypeNameToMatch"></param>
-        /// <returns></returns>
-        // --------------------------------------------------------------------
-        //public override bool IsOfType(String TypeNameToMatch)
-        //{
-        //    return TypeName.ToLower() == TypeNameToMatch.ToLower();
-        //}
-        // --------------------------------------------------------------------
+
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
-        // --------------------------------------------------------------------
-        //public Component(Instance In)
-        //{
-        //    //get the name of the owner component of the Instance (e.g. Plant2)
-        //    FQN = In.ParentComponent().GetName();
-        //    ParentCompName = "";
-        //    if (FQN.LastIndexOf('.') > -1)
-        //        ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.')); //e.g. Paddock
-        //    //get the name of the host component for the calling object
-        //    HostComponent = In.ParentComponent();   //e.g. Plant2
-        //    FTypeName = HostComponent.CompClass;     //type of Plant2
-        //}
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="_FullName">Name of the actual component</param>
-        /// <param name="component">The apsim component that hosts this object</param>
-        // --------------------------------------------------------------------
-        public Component(String _FullName/*, ApsimComponent component*/)
+        internal Component(ModelInstance Inst)
         {
-            FQN = _FullName;
-            //ParentCompName = "";
-            //if (FQN.LastIndexOf('.') > -1)
-            //    ParentCompName = FQN.Substring(0, FQN.LastIndexOf('.'));
-            //HostComponent = component;
-            ////get the type for this component
-            //List<TComp> comps = new List<TComp>();
-            //if (_FullName != ".MasterPM") 
-            //    component.Host.queryCompInfo(FQN, TypeSpec.KIND_COMPONENT, ref comps);
-            //if (comps.Count > 0)
-            //    FTypeName = comps[0].CompClass;
-            //else
-            //    FTypeName = this.GetType().Name;
+            Instance = Inst;
+            _Name = Inst.Name;
+            FQN = Inst.FullName;
         }
-        // --------------------------------------------------------------------
+
         /// <summary>
-        /// Return a list of all sibling components to caller.
-        /// </summary>
-        // --------------------------------------------------------------------
-        //public TypedList<Component> ComponentList
-        //{
-        //    get
-        //    {
-        //        TypedList<Component> Children = new TypedList<Component>();
-        //        foreach (KeyValuePair<uint, TComp> pair in HostComponent.SiblingComponents)
-        //        {
-        //            Component C = new Component(pair.Value.name, HostComponent);
-        //            Children.Add(C);
-        //        }
-        //        return Children;
-        //    }
-        //}
+        /// Return a list of children to caller.
+        /// <summary>
+        public List<Component> Children
+        {
+            get
+            {
+                List<Component> Childs = new List<Component>();
+                foreach (ModelInstance Inst in Instance.Children)
+                {
+                    Childs.Add(new Component(Inst));
+                }
+                return Childs;
+            }            
+        }
+
+
+
         // --------------------------------------------------------------------
         /// <summary>
         /// Returns a reference to a variable.
@@ -146,7 +100,7 @@ namespace ModelFramework
         public string Name
         {
 			get {
-            throw new NotImplementedException();
+                return _Name;
 			}
         }
         // --------------------------------------------------------------------
@@ -162,27 +116,20 @@ namespace ModelFramework
             throw new NotImplementedException();
         }
 		
-        //=========================================================================
         /// <summary>
         /// Returns a component that is a child of the paddock
-        /// <param name="TypeToFind">The type to find. [Type.]ProxyClass</param>
         /// </summary>
-        //=========================================================================
         public object LinkByType(String TypeToFind)
         {
-            throw new NotImplementedException();
+            return Instance.FindModelByType(TypeToFind);
         }
-        //=========================================================================
         /// <summary>
         /// Return a child component of the paddock by unqualified name.
         /// </summary>
-        /// <param name="NameToFind">Unqualified name</param>
-        /// <returns></returns>
-        //=========================================================================
-        public object LinkByName(String NameToFind)
-			{
-            throw new NotImplementedException();
-			}
+        public object LinkByName(string NameToFind)
+        {
+            return Instance.FindModel(NameToFind);
+        }
         // --------------------------------------------------------------------
         /// <summary>
         /// Fully qualified name of component eg. .MasterPM.paddock1.wheat
@@ -221,7 +168,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out int Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -230,7 +177,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out float Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -239,7 +186,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out double Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -248,7 +195,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out string Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -257,7 +204,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out int[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -266,7 +213,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out float[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -275,7 +222,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out double[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
@@ -284,7 +231,7 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out string[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Get(NamePath, out Data);
         }
          /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -351,7 +298,15 @@ namespace ModelFramework
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
+        /// the model. The ModelAssembly contains the model.
+        /// </summary>
+        public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
+        {
+            Instance.AddModel(ModelDescription, ModelAssembly);
+        }
  
-    }
 
+    }
 }

@@ -12,42 +12,48 @@ namespace ModelFramework
 
     public class Paddock : Component
     {
-        //public Dictionary<uint, TComp> ChildComponents;
-        // --------------------------------------------------------------------
+        private ModelInstance Instance;
+
+
         /// <summary>
         /// Encapsulates an APSIM paddock in a simulation.
         /// </summary>
-        /// <param name="Nam">Name of the paddock or system</param>
-        /// <param name="component">The hosting component</param>
-        // --------------------------------------------------------------------
-        public Paddock(String Nam /*, ApsimComponent component*/)
-            : base(Nam)
+        internal Paddock(ModelInstance Inst)
+            : base(Inst)
         {
-            //ChildComponents = new Dictionary<uint, TComp>();
-            queryChildComponents(Nam);
+            Instance = Inst;
         }
-        // --------------------------------------------------------------------
+
         /// <summary>
-        /// 
+        /// Returns the parent Paddock or null if there is no parent.
         /// </summary>
-        /// <param name="In">Instance of a root/leaf/shoot/phenology</param>
-        // --------------------------------------------------------------------
-        //public Paddock(Instance In)
-        //    : base(In)
-        //{
-        //    if (Types.Instance.TypeNames.Length == 0)
-        //        PlugIns.LoadAll();
-        //}
-        // --------------------------------------------------------------------
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="FQN"></param>
-        /// <returns></returns>
-        // --------------------------------------------------------------------
-        protected int queryChildComponents(String FQN)
+        public Paddock Parent
         {
-            throw new NotImplementedException();
+            get
+            {
+                if (Instance.Parent == null)
+                    return null;
+                else
+                    return new Paddock(Instance.Parent);
+            }
+        }
+
+
+        /// <summary>
+        /// Return a list of children to caller.
+        /// <summary>
+        public List<Component> Children
+        {
+            get
+            {
+                // Go find parent paddock.
+                List<Component> Childs = new List<Component>();
+                foreach (ModelInstance Inst in Instance.Children)
+                {
+                    Childs.Add(new Component(Inst));
+                }
+                return Childs;
+            }
         }
 
         // --------------------------------------------------------------------
@@ -81,17 +87,7 @@ namespace ModelFramework
             throw new NotImplementedException();
             
         }
-        //=========================================================================
-        /// <summary>
-        /// Return a child component of the paddock by unqualified name.
-        /// </summary>
-        /// <param name="NameToFind">Unqualified name</param>
-        /// <returns></returns>
-        //=========================================================================
-        public Component ComponentByName(String NameToFind)
-        {
-            throw new NotImplementedException();
-        }
+
         /// <summary>
         /// Returns a reference to a variable.
         /// <param name="VariableName"></param>
@@ -121,16 +117,18 @@ namespace ModelFramework
         //{
         //    throw new NotImplementedException();
         //}
-        //// --------------------------------------------------------------------
+
         /// <summary>
         /// Return a list of all child crops to caller.
         /// </summary>
-        // --------------------------------------------------------------------
         public List<Component> Crops
         {
             get
             {
-                throw new NotImplementedException();
+                List<Component> crops = new List<Component>();
+                foreach (ModelInstance crop in Instance.Crops)
+                    crops.Add(new Component(crop));
+                return crops;
             }
         }
 
@@ -140,14 +138,7 @@ namespace ModelFramework
          set{throw new NotImplementedException();}
          }
 
-        /// <summary>
-        /// Add a new model to the simulation. The ModelDescription describes the parameterisation of
-        /// the model. The ModelAssembly contains the model.
-        /// </summary>
-        public void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
-        {
-            throw new NotImplementedException();
-        }
+
   
 
     }

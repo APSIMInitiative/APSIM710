@@ -60,6 +60,20 @@ class ToString : VariableBase
       }
    public override Type Type { get { return typeof(string); } }
    }
+class ToDateTime : VariableBase
+{
+    private VariableBase Var;
+    public ToDateTime(VariableBase var) { Var = var; Name = var.Name; }
+    public override object Value
+    {
+        get
+        {
+            return Convert.ToDateTime(Var.Value);
+        }
+        set { new NotImplementedException("Type converters are not settable"); }
+    }
+    public override Type Type { get { return typeof(string); } }
+}
 class ToDoubleArray : VariableBase
    {
    private VariableBase Var;
@@ -166,6 +180,8 @@ class TypeConverter
             return new ToDoubleArray(From);
          else if (To.Type.Name == "String[]")
             return new ToStringArray(From);
+         else if (To.Type.Name == "DateTime")
+             return new ToDateTime(From);
          //else if (To.Type.Name == "LinearInterpolation")
          //   return new ToLinearInterpolation(From);
          else

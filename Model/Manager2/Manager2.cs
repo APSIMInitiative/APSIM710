@@ -18,16 +18,16 @@ public class Manager2
     XmlNode Manager2Xml = null;
 
     [Link]
-    Paddock MyPaddock = null;
+    ModelFramework.Component My = null;
 
     string DllFileName;
 
     [EventHandler]
     public void OnInitialised()
     {
-        Assembly CompiledAssembly = CompileTextToAssembly();
+        DllFileName = Assembly.GetExecutingAssembly().Location;
 
-        DllFileName = CompiledAssembly.Location;
+        Assembly CompiledAssembly = CompileTextToAssembly();
 
         // Go look for our class name.
         string ScriptClassName = null;
@@ -65,7 +65,7 @@ public class Manager2
 
         try
         {
-            MyPaddock.AddModel(ScriptNode, CompiledAssembly);
+            My.AddModel(ScriptNode, CompiledAssembly);
         }
         catch (Exception err)
         {
@@ -96,8 +96,13 @@ public class Manager2
                 Params.TreatWarningsAsErrors = false;
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
-                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
-                Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
+                if (Path.GetFileNameWithoutExtension(DllFileName).ToLower() == "manager2x")
+                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimX.exe"));
+                else
+                {
+                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));
+                    Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "DotNetProxies.dll"));
+                }
                 Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSGeneral.dll"));
 
                 foreach (string val in XmlHelper.ValuesRecursive(Manager2Xml.ParentNode, "reference"))
