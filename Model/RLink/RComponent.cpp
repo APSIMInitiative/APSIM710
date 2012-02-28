@@ -4,6 +4,7 @@
 #ifdef __WIN32__
 #include <windows.h>
 #endif
+#include <iostream>
 
 #include <General/platform.h>
 #include <General/string_functions.h>
@@ -11,8 +12,8 @@
 #include <General/path.h>
 #include <General/dll.h>
 
-#include <ApsimShared/ApsimDirectories.h>
-#include <ApsimShared/ApsimRegistry.h>
+//#include <ApsimShared/ApsimDirectories.h>
+//#include <ApsimShared/ApsimRegistry.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 
@@ -268,41 +269,55 @@ void RComponent::onInit2(void)
 	   }
 
    apsimAPI.write("--->End\n");
-   apsimAPI.write("--->Exported R Variables:\n");
 
    // Expose variables
-   vector<string> variables;
-   Split_string(rules["my variables"], "\r\n", variables); 
-   for (vector<string>::iterator i = variables.begin(); i != variables.end(); i++)
+   vector<string> rawVariables; vector<string> variables;
+   Split_string(rules["my variables"], "\r\n", rawVariables); 
+   for (vector<string>::iterator i = rawVariables.begin(); i != rawVariables.end(); i++)
        {
+	   unsigned int p = i->find('#');
+	   if (p != string::npos) 
+	      *i = i->substr(0, p);
+       stripLeadingTrailing(*i, " ");
 	   if (*i != "") 
+	      variables.push_back(*i);
+       }
+   if (variables.size() > 0) 
+      {
+	  apsimAPI.write("--->Exported R Variables:\n");
+      for (vector<string>::iterator i = variables.begin(); i != variables.end(); i++)
 	      {
           apsimAPI.write(*i + "\n");
           expose(*i);
 		  }
-       }
-
+      }
    // find the apsim variables we want before every event
-   apsimAPI.write("--->Imported APSIM Variables:\n");
    variables.clear();
    Split_string(rules["apsim variables"], "\r\n", variables); 
-   for (vector<string>::iterator i = variables.begin(); i != variables.end(); i++)
+   if (variables.size() > 0) 
       {
-	  vector<string> words;
-      SplitStringHonouringQuotes(*i, " ", words);
-	  if (words.size() == 1)
-	    { apsimVariables[words[0]] = words[0]; apsimAPI.write(words[0] + "\n"); }
+      apsimAPI.write("--->Imported APSIM Variables:\n");
+      for (vector<string>::iterator i = variables.begin(); i != variables.end(); i++)
+        {
+	    vector<string> words;
+        SplitStringHonouringQuotes(*i, " ", words);
+	    if (words.size() == 1)
+	       {
+		   apsimVariables[words[0]] = words[0]; 
+		   apsimAPI.write(words[0] + "\n"); 
+		   }
+	    else if (words.size() == 3 && words[1] == "as")
+	       {
+ 	   	   stripLeadingTrailing(words[0], "\"");
+	   	   apsimVariables[words[0]] = words[2]; 
+	   	   apsimAPI.write(words[2] + " <- " + words[0] + "\n"); 
+	   	   }
+	    else if (words.size() > 0) 
+	   	   throw std::runtime_error("Cant make sense of '" + *i + "'");
+        }	  
+      }
 
-	  else if (words.size() == 3 && words[1] == "as")
-	    {
-		stripLeadingTrailing(words[0], "\"");
-		apsimVariables[words[0]] = words[2]; 
-		apsimAPI.write(words[2] + " <- " + words[0] + "\n"); 
-		}
-	  else if (words.size() > 0) 
-		throw std::runtime_error("Cant make sense of '" + *i + "'");
-      }	  
-   // Do the init rule if specified..
+	  // Do the init rule if specified..
    string initRule = rules["init"];
    if (initRule != "")
       {
@@ -360,7 +375,7 @@ void RComponent::respondToGet(const std::string &variableName, std::vector<std::
 // ------------------------------------------------------------------
 void RComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
    {
-   //cout << "set v= " << variableName << endl; cout.flush();
+   cerr << "xxxxset v= " << variableName << endl; cerr.flush(); 
    string cmd = variableName;
    cmd += "<-";
    if (value.size() > 1) 
@@ -377,7 +392,7 @@ void RComponent::respondToSet(const std::string &variableName, std::vector<std::
       }
    else
       cmd += value[0];
-   //cout << "cmd = " << cmd << endl; cout.flush();
+   cout << "cmd = " << cmd << endl; cout.flush();
    REvalQ(cmd.c_str());
    }
    

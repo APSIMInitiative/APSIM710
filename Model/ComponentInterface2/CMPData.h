@@ -430,17 +430,19 @@ class NamedMethod : public Packable
       virtual std::string ddml() {return DDML(variable);}
    };
 
-template <class FT, class T>
+template <typename FT, typename T>
 class NamedDualMethod : public Packable
    {
    private:
       std::string apsimName;
       FT getter;
       FT setter;
-      T variable;
+	  T variable;
    public:
-      NamedDualMethod(const std::string &name, FT& get, FT& set) : getter(get), setter(set) 
-      	 { 
+      NamedDualMethod(const std::string &name, FT& get, FT& set) : 
+	    getter(get), 
+		setter(set) 
+      	 {
          apsimName = name;
       	 }
 
@@ -457,8 +459,104 @@ class NamedDualMethod : public Packable
          }
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {
-         ::unpack(messageData, variable);
-         setter(apsimName, variable);
+         bool sourceIsArray;
+         std::string sourceKind;
+         getKindAndArray(sourceDDML, sourceKind, sourceIsArray);
+         if (sourceKind == "")
+            throw std::runtime_error("Cannot convert from a structure to a scalar");
+         else
+            {
+            if (sourceIsArray)
+               {
+               if (sourceKind == "bool")
+                  {
+                  std::vector<bool> value;
+                  ::unpack(messageData, value);
+				  T convertedValue;
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "integer4")
+                  {
+                  std::vector<int> value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "single")
+                  {
+                  std::vector<float> value;
+                  ::unpack(messageData, value);
+				  T convertedValue;
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "double")
+                  {
+                  std::vector<double> value;
+                  ::unpack(messageData, value);
+				  T convertedValue;
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "string")
+                  {
+                  std::vector<std::string> value;
+                  ::unpack(messageData, value);
+				  T convertedValue;
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else
+                  throw std::runtime_error("Bad kind found in ddml: " + sourceDDML);
+               }
+            else
+               {
+               if (sourceKind == "bool")
+                  {
+                  bool value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "integer4")
+                  {
+                  int value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "single")
+                  {
+                  float value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "double")
+                  {
+                  double value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else if (sourceKind == "string")
+                  {
+                  std::string value;
+				  T convertedValue;
+                  ::unpack(messageData, value);
+                  Convert(value, convertedValue);
+                  setter(apsimName, convertedValue);
+                  }
+               else
+                  throw std::runtime_error("Bad kind found in ddml: " + sourceDDML);
+               }
+            }
          }
       virtual std::string ddml()
          {

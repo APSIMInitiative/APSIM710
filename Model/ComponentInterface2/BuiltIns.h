@@ -152,7 +152,7 @@ inline unsigned int memorySize(const std::string& value)
    {return (unsigned)value.length() + 4;}
 inline void unpack(MessageData& messageData, std::string& value)
    {
-   int numChars;
+   int numChars = 0;
    unpack(messageData, numChars);
    value = std::string(messageData.ptr(), numChars);
    messageData.movePtrBy(numChars);
