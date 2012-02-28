@@ -460,9 +460,14 @@ namespace ApsimFile
          List<string> Crops = SortCrops(Soil.CropsMeasured(SoilNode));
          foreach (string Crop in Crops)
             {
-            VariableNames.Add(Crop + " LL(mm/mm)");
-            VariableNames.Add(Crop + " KL(/day)");
-            VariableNames.Add(Crop + " XF(0-1)");
+            // See if this crop variable is already in variable list.
+            string CropLLName = Crop + " LL (mm/mm)";
+            if (StringManip.IndexOfCaseInsensitive(VariableNames, CropLLName) == -1)
+            {
+                VariableNames.Add(Crop + " LL (mm/mm)");
+                VariableNames.Add(Crop + " KL (/day)");
+                VariableNames.Add(Crop + " XF (0-1)");
+            }
             }
 
          // Get a Thickness
@@ -504,6 +509,8 @@ namespace ApsimFile
                   Var = Soil.Get(SoilNode, Name);
                   Var.Units = Units;
                   Values = Var.Strings;
+                  if (Values == null && MathUtility.ValuesInArray(Var.Doubles))
+                      Values = MathUtility.DoublesToStrings(Var.Doubles);
                   Codes = Var.Codes;
                   Units = Var.Units;
                   }
@@ -523,6 +530,8 @@ namespace ApsimFile
                   // layered variable.
                   //Var.Units = Units;
                   Values = Var.Strings;
+                  if (Values == null && MathUtility.ValuesInArray(Var.Doubles))
+                      Values = MathUtility.DoublesToStrings(Var.Doubles);
                   Codes = Var.Codes;
                   Units = Var.Units;
                   }
