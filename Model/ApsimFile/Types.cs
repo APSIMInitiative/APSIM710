@@ -138,36 +138,38 @@ public class Types
             else
             {
                 //attempt to get these details from getDescription() (works for CPI components)
+                String descr = "";
                 TOSInterface.CompilationMode mode = TOSInterface.isManaged(DLLFileName);
                 if ( (mode == TOSInterface.CompilationMode.Native) || (mode == TOSInterface.CompilationMode.Mixed) )
                 {
-                    String descr = "";
                     //now I can probe this dll for it's description.
                     descr = getNativeDescription(DLLFileName);
-                    if (descr.Length > 0)
-                    {
-                        TComponentDescrParser comp = new TComponentDescrParser(descr);
-                        //need to read all the properties information
-                        String propertySDML = comp.firstProperty();
-                        while (propertySDML.Length > 0)
-                        {
-                            //create a property attribute of this class
-                            TCompProperty newProperty;
-                            newProperty = new TCompProperty(propertySDML);
-                            if ((newProperty.Name.ToLower() != STRSUBEVENT_ARRAY) &&
-                                 (newProperty.Name.ToLower() != STRPUBEVENT_ARRAY) &&
-                                 (newProperty.Name.ToLower() != STRDRIVER_ARRAY))
-                            {
-                                MetaDataInfo Info = new MetaDataInfo();
-                                Info.Name = newProperty.Name;
-                                Info.Description = newProperty.sDescr;
-                                Info.IsArray = newProperty.InitValue.isArray();
-                                Names.Add(Info);
-                            }
-                            propertySDML = comp.nextProperty();
-                        }
-                    }
+                }
+                else if (mode == TOSInterface.CompilationMode.CLR) 
+                    descr = getDotNetDescription(DLLFileName);
 
+                if (descr.Length > 0)
+                {
+                    TComponentDescrParser comp = new TComponentDescrParser(descr);
+                    //need to read all the properties information
+                    String propertySDML = comp.firstProperty();
+                    while (propertySDML.Length > 0)
+                    {
+                        //create a property attribute of this class
+                        TCompProperty newProperty;
+                        newProperty = new TCompProperty(propertySDML);
+                        if ((newProperty.Name.ToLower() != STRSUBEVENT_ARRAY) &&
+                             (newProperty.Name.ToLower() != STRPUBEVENT_ARRAY) &&
+                             (newProperty.Name.ToLower() != STRDRIVER_ARRAY))
+                        {
+                            MetaDataInfo Info = new MetaDataInfo();
+                            Info.Name = newProperty.Name;
+                            Info.Description = newProperty.sDescr;
+                            Info.IsArray = newProperty.InitValue.isArray();
+                            Names.Add(Info);
+                        }
+                        propertySDML = comp.nextProperty();
+                    }
                 }
             }
         }
@@ -455,5 +457,108 @@ public class Types
             FDllHandle = IntPtr.Zero;
         }
         return FCompDescription;
+    }
+    //for managed code components
+    protected object modelObj;                         //the TBaseComp<-TComponentInstance object within the component
+    protected Type modelType;                          //the type of the TBaseComp
+    protected MethodInfo miDelInstance;
+    //=======================================================================
+    /// <summary>
+    /// Accesses the component dll to get the component description SDML text.
+    /// </summary>
+    /// <param name="filename">The full path name of the component dll.</param>
+    /// <returns>The component description xml.</returns>
+    //=======================================================================
+    public string getDotNetDescription(String filename)
+    {
+        MethodInfo miDescription;
+        String descr = "";
+        bool proceed = true;
+
+        if (modelType == null) //must have called the constructor before getting the description
+        {
+            proceed = initDLLComponent(filename);
+        }
+        if (proceed)
+        {
+            miDescription = modelType.GetMethod("description");
+            if (miDescription != null)
+            {
+                Object[] argArray = new Object[1];
+                argArray[0] = "";
+                if (modelObj != null)
+                    descr = (String)miDescription.Invoke(modelObj, argArray);
+            }
+        }
+        return descr;
+    }
+    //============================================================================
+    /// <summary>
+    /// Initialises the logic component by creating an TComponentInstance
+    /// </summary>
+    /// <param name="filename">The name of the component dll.</param>
+    /// <returns>True if the constructor for the component succeeds.</returns>
+    //============================================================================
+    protected bool initDLLComponent(String filename)
+    {
+        bool bLoaded = false;                   //default to failure
+
+        if (modelType == null)                  //if this component instance has not been created yet
+        {
+            if (filename.Length > 0)     //if this component is implemented in a dll then
+            {
+                if (File.Exists(filename))
+                {
+                    string sCurrent = Directory.GetCurrentDirectory();
+                    string sModuleDir = Path.GetDirectoryName(filename);
+
+                    if (sModuleDir != String.Empty)
+                        Directory.SetCurrentDirectory(sModuleDir);
+
+                    //use reflection to create a TComponentInstance 
+                    try
+                    {
+                        string namesp = "CMPComp";
+                        Assembly modelAssembly = Assembly.LoadFrom(filename);
+                        modelType = modelAssembly.GetType(namesp + ".TComponentInstance");//object type for TComponentInstance
+                        miDelInstance = modelType.GetMethod("deleteInstance");
+                        if (modelType != null)
+                        {
+                            try
+                            {
+                                Object[] argArray = new Object[3];
+                                argArray[0] = (uint)1;  //dummy values
+                                argArray[1] = (uint)1;
+                                argArray[2] = (MessageFromLogic)null;
+                                //call the constructor
+                                modelObj = Activator.CreateInstance(modelType, argArray);
+                                if (modelObj != null)
+                                    bLoaded = true;
+                            }
+                            catch (MissingMethodException e)
+                            {
+                                throw new Exception(e.Message);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e.Message + " in initDLLComponent()");
+                    }
+                    finally
+                    {
+                        Directory.SetCurrentDirectory(sCurrent);
+                    }
+                }
+                else
+                {
+                    throw new Exception(filename + " cannot be found!");
+                }
+            }
+        }
+        else
+            bLoaded = true; //already loaded
+
+        return bLoaded;
     }
 }
