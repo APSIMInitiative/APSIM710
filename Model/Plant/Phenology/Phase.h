@@ -24,12 +24,8 @@ class Phase
      int DaysFromSowingToEndOfPhase;
      std::string EndStageName;
      interpolationFunction y_tt;
-
-     virtual float stress() {return 1.0;}  // no stress.
-     int getDaysAfter(void) {return (int)days_after;}
-     void setDaysTo(int NumDaysTo);
-     
    public:
+
      Phase(ScienceAPI& api, plantInterface& p, const std::string& StartStageName, const std::string& EndStageName);
      virtual ~Phase() {};
 
@@ -54,6 +50,10 @@ class Phase
      virtual void updateTTTargets(){};
      //virtual void onSow(protocol::SowType Sow){};
      virtual void setupTTTarget(void){};
+
+     virtual float stress() {return 1.0;}  // no stress.
+     int getDaysAfter(void) {return (int)days_after;}
+     void setDaysTo(int NumDaysTo);
    };
 
 bool operator == (const Phase &a, const Phase &b);

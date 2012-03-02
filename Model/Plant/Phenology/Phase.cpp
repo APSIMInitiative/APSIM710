@@ -18,7 +18,7 @@ Phase::Phase(ScienceAPI& api, plantInterface& p, const std::string& StartStageNa
    scienceAPI.exposeFunction("DaysAfter" + myName, "day", myName + " - days spent in this phase", IntGetter(&Phase::getDaysAfter));
    if (EndStageName != "")
       scienceAPI.exposeWritable("DaysTo" + EndStageName, "day", "Settable number of days to " + EndStageName, 
-                                IntSetter(&Phase::setDaysTo));
+                                IntSetter(&Phase::setDaysTo) );
    }
 
 bool operator == (const Phase &a, const Phase &b)
