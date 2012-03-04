@@ -1,19 +1,16 @@
 #include <string.h>
 #include <stdlib.h>
+#include <iostream>
 
 #ifdef __WIN32__
 #include <windows.h>
 #endif
-#include <iostream>
 
 #include <General/platform.h>
 #include <General/string_functions.h>
 #include <General/stristr.h>
 #include <General/path.h>
 #include <General/dll.h>
-
-//#include <ApsimShared/ApsimDirectories.h>
-//#include <ApsimShared/ApsimRegistry.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 
@@ -22,6 +19,22 @@
 using namespace std;
 static void *RDLLHandle = NULL;
 static RComponent *currentComponent = NULL;
+
+extern "C" EXPORT RComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
+   {
+   return new RComponent(scienceAPI);
+   }
+
+extern "C" void EXPORT STDCALL deleteComponent(RComponent* component)
+   {
+   if (component)
+     delete component;
+   }
+
+extern "C" void EXPORT STDCALL componentCallback(const char *s)
+   {
+	if (currentComponent) currentComponent->publishNull(string(s));
+   }
 
 #ifdef __WIN32__
 bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueName, std::string &strValue)
@@ -48,24 +61,7 @@ bool GetStringRegKey(const std::string &strKeyName,const std::string &strValueNa
      }	
    return false;
 }
-#endif
 
-extern "C" EXPORT RComponent  * STDCALL createComponent(ScienceAPI2& scienceAPI)
-   {
-   return new RComponent(scienceAPI);
-   }
-
-extern "C" void EXPORT STDCALL deleteComponent(RComponent* component)
-   {
-   if (component)
-     delete component;
-   }
-
-extern "C" void EXPORT STDCALL componentCallback(const char *s)
-   {
-	if (currentComponent) currentComponent->publishNull(string(s));
-   }
-   
 //--------------------------- R Embedder DLL initialisation
 typedef bool (*B_VOID_FN)(void);
 typedef bool (*B_CHAR_FN)(const char*);
@@ -76,6 +72,14 @@ typedef bool (*B_INT_FN)(const char*, int *);
 typedef bool (*B_VEC_FN)(const char*, char *, unsigned int, unsigned int, unsigned int *);
 typedef bool (*B_2CHAR_FN)(const char*, char*, int);
 
+B_CHAR2_FN   R_StartFn;
+B_VOIDPTR_FN R_SetCallbackFn;
+B_CHAR_FN    R_EvalCharFn;
+B_BOOL_FN    R_EvalBoolFn;
+B_INT_FN     R_EvalIntFn;
+B_VEC_FN     R_GetVecFn;
+B_2CHAR_FN   R_EvalCharSimpleFn;
+
 // Load and initialise the dll. Call once.
 bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
    {
@@ -83,22 +87,27 @@ bool StartR (const char *R_Home, const char *UserLibs, const char *exeName)
     if (RDLLHandle == NULL) 
       throw std::runtime_error(string("Can't load R DLL ") + exeName);     
 
-    B_CHAR2_FN R_StartFn;
     R_StartFn = (B_CHAR2_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Start");
     if (R_StartFn == NULL) 
-       throw std::runtime_error(string("Can't find EmbeddedR_Start in ") + exeName);     
+       goto baddll; 
 
     if (!R_StartFn(R_Home, UserLibs )) 
        throw std::runtime_error(string("R_Start failed in ") + exeName);     
 
-    B_VOIDPTR_FN R_SetCallbackFn;
     R_SetCallbackFn = (B_VOIDPTR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SetComponent");
     if (!R_SetCallbackFn((void *)&componentCallback)) 
        throw std::runtime_error(string("R_SetComponent failed in ") + exeName);     
 
-	   //FIXME setup function pointer cache here
-    return 1; 
- }
+    if (NULL == (R_EvalCharFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"))) goto baddll; 
+    if (NULL == (R_EvalBoolFn = (B_BOOL_FN) dllProcAddress(RDLLHandle, "EmbeddedR_BoolEval"))) goto baddll; 
+    if (NULL == (R_EvalIntFn = (B_INT_FN) dllProcAddress(RDLLHandle, "EmbeddedR_IntEval"))) goto baddll;
+    if (NULL == (R_GetVecFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"))) goto baddll;
+    if (NULL == (R_EvalCharSimpleFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"))) goto baddll;
+    
+	return 1; 
+baddll:
+    throw std::runtime_error(string("DLL missing symbol in ") + exeName);     
+    }
 
 // Delete an interpreter
 void StopR(void)
@@ -111,42 +120,21 @@ void StopR(void)
 // Quietly evaluate something   
 void REvalQ(const char *s) 
 {
-   B_CHAR_FN R_EvalFn;
-   R_EvalFn = (B_CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_Eval"); //FIXME cache this
-   if (R_EvalFn != NULL) R_EvalFn(s);
+   if (R_EvalCharFn != NULL) R_EvalCharFn(s);
 }
+
 bool BoolREval(const char *s) 
 {
    bool result = false;
-   B_BOOL_FN R_EvalFn;
-   R_EvalFn = (B_BOOL_FN) dllProcAddress(RDLLHandle, "EmbeddedR_BoolEval"); //FIXME cache this
-   if (R_EvalFn != NULL) R_EvalFn(s, &result);
-   return (result);
-}
-int IntREval(const char *s) 
-{
-   int result = 0;
-   B_INT_FN R_EvalFn;
-   R_EvalFn = (B_INT_FN) dllProcAddress(RDLLHandle, "EmbeddedR_IntEval"); //FIXME cache this
-   if (R_EvalFn != NULL) R_EvalFn(s, &result);
+   if (R_EvalBoolFn != NULL) R_EvalBoolFn(s, &result);
    return (result);
 }
 
-bool RInquireExists(const char *s)
+int IntREval(const char *s) 
 {
-   std::string command = "exists('";
-   command += s;
-   command += "')";
-   return(BoolREval(command.c_str()));
-}
-int RVectorLength(const char *s)
-{
-   std::string command = "if (exists('";
-   command += s;
-   command += "')) length(";
-   command += s;
-   command += ")";
-   return(IntREval(command.c_str()));
+   int result = 0;
+   if (R_EvalIntFn != NULL) R_EvalIntFn(s, &result);
+   return (result);
 }
 
 void RGetVector(const char *s, std::vector<std::string> &result)
@@ -157,9 +145,7 @@ void RGetVector(const char *s, std::vector<std::string> &result)
    char *buffer = new char [2048 * numWidth];
    memset(buffer, 0, sizeof(buffer));
    unsigned int numReturned = 0;
-   B_VEC_FN R_EvalFn;
-   R_EvalFn = (B_VEC_FN) dllProcAddress(RDLLHandle, "EmbeddedR_GetVector"); //FIXME cache this
-   if (R_EvalFn != NULL) R_EvalFn (s, buffer, sizeof(buffer), numWidth, &numReturned);
+   if (R_GetVecFn != NULL) R_GetVecFn (s, buffer, sizeof(buffer), numWidth, &numReturned);
    result.resize(numReturned);
    char *ptr = buffer;
    for (int i = 0; i < numReturned; i++) 
@@ -170,15 +156,25 @@ void RGetVector(const char *s, std::vector<std::string> &result)
    delete [] buffer;	 
 }
 
-// Evaluate something and retuen as concanteneated string
-string SimpleREval(const char *s) 
+// Evaluate something and return as concantenated string
+std::string SimpleREval(const char *s) 
 {
    char buffer[1024];
-   B_2CHAR_FN R_EvalFn;
-   R_EvalFn = (B_2CHAR_FN) dllProcAddress(RDLLHandle, "EmbeddedR_SimpleCharEval"); //FIXME cache this
-   if (R_EvalFn != NULL) R_EvalFn(s, buffer, sizeof(buffer));
-   return (string(buffer));
+   if (R_EvalCharSimpleFn != NULL) R_EvalCharSimpleFn(s, buffer, sizeof(buffer));
+   return (std::string(buffer));
 }
+#else
+
+// unix/gcc equivalents are simpler.
+extern int IntREval(const char *s) ;
+extern bool BoolREval(const char *s); 
+extern void REvalQ(const char *s) ;
+extern void StopR(void);
+extern bool StartR (const char *R_Home, const char *UserLibs);
+extern void RGetVector(const char *s, std::vector<std::string> &result);
+extern std::string SimpleREval(const char *s);
+
+#endif
 
 // ------------------------------------------------------------------
 // Initialise and destroy the component. 
@@ -248,7 +244,7 @@ void RComponent::onInit2(void)
 		throw std::runtime_error("Cant Start R");
 #else
    string EXE = fileDirName(apsimDLL) + "/REmbed.so";;
-   StartR(NULL, NULL, EXE.c_str());
+   StartR(NULL, NULL);
 #endif
 
    // write copyright notice(s).
@@ -347,18 +343,21 @@ void RComponent::subscribeNull(const std::string &event, const std::string &scri
 
 void RComponent::publishNull(const std::string &event) 
    {
-   apsimAPI.publish(event);
+   if (!hasFatalError) apsimAPI.publish(event);
    }
 
 // Deal with an event coming from the system to us
 void RComponent::onNullEventCallback(const std::string &s)
    {
-   string rule = rules[s];
-   if (rule != "")
-      {
-      importVariables();	 
-      REvalQ(rule.c_str());
-	  }
+   if (!hasFatalError) 
+     {
+     string rule = rules[s];
+     if (rule != "")
+       {
+       importVariables();	 
+       REvalQ(rule.c_str());
+	   }
+     }
    }
 
 // ------------------------------------------------------------------
@@ -375,12 +374,11 @@ void RComponent::respondToGet(const std::string &variableName, std::vector<std::
 // ------------------------------------------------------------------
 void RComponent::respondToSet(const std::string &variableName, std::vector<std::string> &value)
    {
-   cerr << "xxxxset v= " << variableName << endl; cerr.flush(); 
    string cmd = variableName;
    cmd += "<-";
    if (value.size() > 1) 
       {	
-	  cmd += "c(";
+      cmd += "c(";
       for (std::vector<string>::iterator p = value.begin(); p != value.end(); p++)
 	      {
 		  if (p != value.begin()) cmd += ",";
@@ -392,7 +390,6 @@ void RComponent::respondToSet(const std::string &variableName, std::vector<std::
       }
    else
       cmd += value[0];
-   cout << "cmd = " << cmd << endl; cout.flush();
    REvalQ(cmd.c_str());
    }
    
