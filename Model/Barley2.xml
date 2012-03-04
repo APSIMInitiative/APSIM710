@@ -1,4 +1,4 @@
-<Type version="29" name="Barley2">
+<Type version="30" name="Barley2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -179,6 +179,29 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
+      <Structure>
+        <HeightFunction name="Height">
+          <Memo> 
+			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
+		</Memo>
+          <LinearInterpolationFunction name="PotentialHeight">
+            <XProperty>StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>3 20</XY>
+              <XY>4.2 100</XY>
+              <XY>5 1100</XY>
+              <XY>6 1200</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="WaterStress">
+            <XProperty>WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0.3 0</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </HeightFunction>
+      </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
@@ -634,22 +657,6 @@
         <Constant name="NonStructuralFraction">
           <Value type="text" description="Value">0</Value>
         </Constant>
-        <LinearInterpolationFunction name="Height">
-          <XProperty>StageCode.Value</XProperty>
-          <XYPairs>
-            <XY>3 20</XY>
-            <XY>4.2 100</XY>
-            <XY>5 1100</XY>
-            <XY>6 1200</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="HeightExpansionStress">
-          <XProperty>WaterSupplyDemandRatio</XProperty>
-          <XYPairs>
-            <XY>0.3 0</XY>
-            <XY>1 1</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -982,7 +989,7 @@
 </Memo>
             </Variable>
             <Variable name="DeltaHeight">
-              <VariableName type="text" description="Variable Name">Leaf.DeltaHeight</VariableName>
+              <VariableName type="text" description="Variable Name">Structure.Height.DeltaHeight</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
             </Variable>

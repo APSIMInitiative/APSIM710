@@ -95,7 +95,18 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <Root>
+      <Structure>
+	    <LinearInterpolationFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 5000</XY>
+            <XY>200 5000</XY>
+            <XY>1200 5000</XY>
+            <XY>4000 5000</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+	  </Structure>
+	  <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -420,7 +431,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.5</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="Height">
+        <LinearInterpolationFunction name="yHeight">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 5000</XY>

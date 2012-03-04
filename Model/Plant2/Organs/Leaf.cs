@@ -40,6 +40,8 @@ public class Leaf : BaseOrgan, AboveGround
     [Link]
     public Arbitrator Arbitrator = null;
     [Link]
+    public Structure Structure = null;
+    [Link]
     public Phenology Phenology = null;
     [Link]
     public RUEModel Photosynthesis = null;
@@ -58,10 +60,10 @@ public class Leaf : BaseOrgan, AboveGround
     public Function FrostFraction = null;
     [Link]
     public Function BranchingRate = null;
-    [Link(NamePath = "Height")]
-    public Function HeightModel = null;
-    [Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
-    Function HeightExpansionStress = null;
+    //[Link(NamePath = "Height")]
+    //public Function HeightModel = null;
+    //[Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
+    //Function HeightExpansionStress = null;
     [Link]
     public Function ExpansionStress = null;
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
@@ -746,14 +748,15 @@ public class Leaf : BaseOrgan, AboveGround
         foreach (LeafCohort L in Leaves)
             L.DoActualGrowth(_ThermalTime);
 
+        Height = Structure.Height;
 
-        double Stress = 1;
+        /*double Stress = 1;
         if (HeightExpansionStress != null)  //FIX me.  This should not be optional
             Stress = HeightExpansionStress.Value;
         double PotentialHeightIncrement = HeightModel.Value - PotentialHeightYesterday;
         DeltaHeight = PotentialHeightIncrement * Stress;
         Height += DeltaHeight;
-        PotentialHeightYesterday = HeightModel.Value;
+        PotentialHeightYesterday = HeightModel.Value; */
 
         PublishNewCanopyEvent();
 

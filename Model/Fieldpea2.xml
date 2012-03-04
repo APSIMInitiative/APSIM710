@@ -156,7 +156,16 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
-      <ReproductiveOrgan name="Grain">
+      <Structure>      
+	    <LinearInterpolationFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 10</XY>
+            <XY>300 750</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+	  </Structure>
+	  <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.4</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -721,7 +730,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.5</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="Height">
+        <LinearInterpolationFunction name="yHeight">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 10</XY>

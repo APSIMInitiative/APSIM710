@@ -114,7 +114,16 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
-      <ReproductiveOrgan name="Pod">
+      <Structure>      
+	    <LinearInterpolationFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 50</XY>
+            <XY>300 750</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+	  </Structure>
+	  <ReproductiveOrgan name="Pod">
         <MaximumSize type="text" description="MaximumSize">0.68</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -391,7 +400,7 @@
           <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="Height">
+        <LinearInterpolationFunction name="yHeight">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 50</XY>

@@ -1,4 +1,4 @@
-<Type version="28" name="Potato2">
+<Type version="29" name="Potato2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -136,6 +136,17 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
+      <Structure>
+        <LinearInterpolationFunction name="Height">
+          <XProperty>Stem.Live.Wt</XProperty>
+          <XYPairs>
+            <XY>0 20</XY>
+            <XY>200 300</XY>
+            <XY>1200 700</XY>
+            <XY>4000 900</XY>
+          </XYPairs>
+        </LinearInterpolationFunction>
+      </Structure>
       <GenericAboveGroundOrgan name="Tuber">
         <Biomass name="Live" />
         <Biomass name="Dead" />
@@ -470,10 +481,10 @@ For Potato the potential branching rate is the branching pattern that would be o
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <MultiplyFunction name="ExtinctionCoeff">
           <Memo>Quantifies the relationship between Leaf area index and radiation interception.  The PotentialExtinctionCoeff is the unstressed value and extinction coefficient declines in response to water stress as leaves wilt to reduce their radiation load</Memo>
           <Constant name="PotentialExtinctionCoeff">
@@ -585,7 +596,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.5</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="Height">
+        <LinearInterpolationFunction name="yHeight">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 20</XY>
@@ -616,7 +627,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
       </Leaf>
       <GenericAboveGroundOrgan name="Stem">
         <Memo>The stem inherits from the generic organ so has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
