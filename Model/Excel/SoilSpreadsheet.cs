@@ -504,7 +504,7 @@ namespace ApsimFile
                {
                // Only put crop variable values into the table where we have crop variables.
                string CropName = Name.Substring(0, Name.IndexOf(" "));
-               if (Array.IndexOf(Soil.CropsMeasured(SoilNode), CropName) != -1)
+               if (StringManip.IndexOfCaseInsensitive(Soil.CropsMeasured(SoilNode), CropName) != -1)
                   {
                   Var = Soil.Get(SoilNode, Name);
                   Var.Units = Units;
