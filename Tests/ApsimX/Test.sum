@@ -1,66 +1,21 @@
-     ###     ######     #####   #   #     #   
-    #   #    #     #   #        #   ##   ##   
-   #     #   #     #   #        #   ##   ##   
-   #######   ######     #####   #   # # # #   
-   #     #   #              #   #   #  #  #   
-   #     #   #         #####    #   #  #  #   
-                                              
-                                              
- The Agricultural Production Systems Simulator
-             Copyright(c) APSRU               
-
-Version                = 7.5
-Title                  = Test
-   Component                        "clock" = %apsim%\Model\Clock.dll
-   Component                          "met" = %apsim%\Model\Input.dll
-Paddock:
-   Component                        "accum" = %apsim%\Model\Accum.dll
-   Component                       "Script" = %apsim%\Model\Manager2.dll
-
-------- clock Initialisation --------------------------------------------------
-     Sequencer phases:
-        prepare
-        init_step
-        do_management
-        run_one_step
-        do_pasture_water
-        process
-        do_pasture_growth
-        do_stock
-        post
-        end_step
-     Simulation start date =  1/01/1940
-     Simulation end date   =  2/01/1940
-     Time step =           = 1440 (mins)
-
-------- met Initialisation ----------------------------------------------------
-     Sparse data is not allowed
-     INPUT File name: %apsim%\Tests\ApsimX\Goondiwindi.met
-
-------- accum Initialisation --------------------------------------------------
-     Initialising
-
-------- Script Initialisation -------------------------------------------------
 Name: Script
-Full name: .paddock.Script.Script
-------- Start of simulation  --------------------------------------------------
+Full name: .paddock.Script
 Script children:
    .paddock.Script.ScriptChild
 Paddock children:
-   .paddock.accum
    .paddock.Script
 Simulation children:
-   .clock
    .met
+   .clock
    .paddock
 Paddock crops:
-1 January 1940(Day of year=1): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     Cannot find child variable .MasterPM.paddock.Script.Process
-     Component name: Script
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+Script children:
+   .paddock.Script.ScriptChild
+Paddock children:
+   .paddock.Script
+Simulation children:
+   .met
+   .clock
+   .paddock
+Paddock crops:
+Simulation terminated normally

@@ -167,7 +167,7 @@ public class ApsimRunToolStrip
                     Component Simulation = _F.Find(SimulationPath);
 
                     // Check to see if fast APSIM can run the simulation
-                    if (IsApsimXCompatible(Simulation))
+                    if (Path.GetExtension(Controller.ApsimData.FileName) == ".apsimx")
                     {
                         RunApsimXJob NewJob = new RunApsimXJob(_F.FileName, SimulationPath, _JobRunner);
                         _JobRunner.Add(NewJob);
@@ -199,21 +199,6 @@ public class ApsimRunToolStrip
             return;
         }
         Timer.Enabled = true;
-    }
-
-    /// <summary>
-    /// Return true if the specified simulation is ApsimX compatible.
-    /// </summary>
-    private bool IsApsimXCompatible(Component Simulation)
-    {
-        foreach (Component Child in Simulation.ChildNodes)
-        {
-            if (!Types.Instance.IsApsimXCompatible(Child.Type))
-                return false;
-            if (!IsApsimXCompatible(Child))
-                return false;
-        }
-        return true;
     }
 
     public ApsimFile.ApsimFile CreateCopy(ApsimFile.ApsimFile apsimfile)

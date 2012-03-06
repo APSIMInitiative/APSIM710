@@ -53,7 +53,7 @@ class Program
                 // Run ConToSim, find the .sim files created, and insert them back into the tree
                 CreateConJobXML(DirFileSpec, Node);
             }
-            else if (Path.GetExtension(DirFileSpec).ToLower() == ".apsim")
+            else if (Path.GetExtension(DirFileSpec).ToLower() == ".apsim" || Path.GetExtension(DirFileSpec).ToLower() == ".apsimx")
             {
                 CreateApsimJobXML(DirFileSpec, Node);
             }
@@ -87,6 +87,18 @@ class Program
                     // Book in another instance to call Create[Con|Apsim]Job
                     ScheduleJobXML(FileName, NodePath, RootNode);
                     XML = "AddXML~" + NodePath + "/CreateSims~" + Doc.DocumentElement.OuterXml;
+                }
+                else if (Path.GetExtension(FileName).ToLower() == ".apsimx")
+                {
+                    string SumFileName = Path.ChangeExtension(FileName, ".sum");
+                    XmlDocument DocX = new XmlDocument();
+                    XmlNode Node = DocX.AppendChild(DocX.CreateElement("dummy"));
+                    XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
+                    XmlHelper.SetName(JobNode, "ApsimX " + FileName);
+                    XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(FileName));
+                    XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "ApsimX.exe")) + " " + StringManip.DQuote(FileName) + " > " + StringManip.DQuote(SumFileName)));
+                    XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "ApsimX.x")) + " " + StringManip.DQuote(FileName) + " > " + StringManip.DQuote(SumFileName)));
+                    XML = "AddXML~" + NodePath + "/RunApsim~" + DocX.OuterXml;
                 }
                 else
                 {
@@ -124,29 +136,48 @@ class Program
         ApsimFile.ApsimFile Apsim = new ApsimFile.ApsimFile();
         PlugIns.LoadAll();
         Apsim.OpenFile(FileName);
+        
         foreach (ApsimFile.Component Child in Apsim.RootComponent.ChildNodes)
         {
-            CreateApsimJobXML(Child, Node);
+            CreateApsimJobXML(Child, Node, FileName);
         }
     }
-    private static void CreateApsimJobXML(Component Comp, XmlNode Node)
+    private static void CreateApsimJobXML(Component Comp, XmlNode Node, string FileName)
     {
         if (Comp.Type.ToLower() == "simulation" && Comp.Enabled)
         {
-            string SimFileName = ApsimToSim.WriteSimFile(Comp);
-            if (Path.DirectorySeparatorChar == '\\') SimFileName = SimFileName.Replace('/', '\\'); else SimFileName = SimFileName.Replace('\\', '/');
+            bool IsApsimX = Path.GetExtension(FileName).ToLower() == ".apsimx";
+            string SimFileName;
+            string Executable;
+            string LinuxExecutable;
+            if (IsApsimX)
+            {
+                SimFileName = FileName;
+                Executable = "ApsimX.exe";
+                LinuxExecutable = "ApsimX.x";
+            }
+            else
+            {
+                SimFileName = ApsimToSim.WriteSimFile(Comp);
+                Executable = "Apsim.exe";
+                LinuxExecutable = "Apsim.x";
+            }
+            if (Path.DirectorySeparatorChar == '\\') 
+                SimFileName = SimFileName.Replace('/', '\\'); 
+            else 
+                SimFileName = SimFileName.Replace('\\', '/');
             string SumFileName = Path.ChangeExtension(SimFileName, ".sum");
             XmlNode JobNode = Node.AppendChild(Node.OwnerDocument.CreateElement("Job"));
-            XmlHelper.SetName(JobNode, "Apsim.exe " + SimFileName);
+            XmlHelper.SetName(JobNode, Executable + " " + SimFileName);
             XmlHelper.SetValue(JobNode, "WorkingDirectory", Path.GetDirectoryName(SimFileName));
-            XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.exe")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
-            XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", "Apsim.x")) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+            XmlHelper.SetValue(JobNode, "CommandLine", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", Executable)) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
+            XmlHelper.SetValue(JobNode, "CommandLineUnix", ReplaceEnvironmentVariables(StringManip.DQuote(Path.Combine("%APSIM%", "Model", LinuxExecutable)) + " " + StringManip.DQuote(SimFileName) + " > " + StringManip.DQuote(SumFileName)));
         }
         else if (Comp.Type.ToLower() == "folder" && Comp.Enabled)
         {
             foreach (Component Child in Comp.ChildNodes)
                if (Child.Type == "simulation" || Child.Type == "folder")
-                   CreateApsimJobXML(Child, Node);
+                   CreateApsimJobXML(Child, Node, FileName);
         }
     }
     /// <summary>

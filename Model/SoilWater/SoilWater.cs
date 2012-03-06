@@ -1527,9 +1527,9 @@ public class SoilWater
          {
          int num_layers = au.count_of_real_vals(_dlayer, max_layer); //dlt_solute.GetLength(1);
          double[] temp_dlt_solute_double = new double[num_layers];
-         float[] temp_dlt_solute = new float[num_layers]; 
+         float[] temp_dlt_solute = new float[num_layers];
 
-         SoilN SoilNModel = (SoilN)MyPaddock.LinkByType("soiln");
+         Component SoilNModel = (Component)MyPaddock.LinkByType("soiln");
          Component ClModel = MyPaddock.LinkByName("Cl") as Component;
          Component BrModel = MyPaddock.LinkByName("Br") as Component;
 
@@ -1548,13 +1548,13 @@ public class SoilWater
             switch (solute_names[solnum])
                {
                case "no3":
-                  SoilNModel.dlt_no3 = temp_dlt_solute;
+                       MyPaddock.Set(SoilNModel.FullName + ".dlt_no3", temp_dlt_solute);
                   break;
                case "nh4":
-                  SoilNModel.dlt_nh4 = temp_dlt_solute;
+                   MyPaddock.Set(SoilNModel.FullName + ".dlt_nh4", temp_dlt_solute);
                   break;
                case "urea":
-                  SoilNModel.dlt_urea = temp_dlt_solute;
+                   MyPaddock.Set(SoilNModel.FullName + ".dlt_urea", temp_dlt_solute);
                   break;
                case "cl":
                   MyPaddock.Set(ClModel.FullName + ".dlt_cl", temp_dlt_solute);

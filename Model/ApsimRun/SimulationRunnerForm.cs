@@ -110,7 +110,7 @@ namespace ApsimRun
             }
             else if (Path.GetExtension(FileName).ToLower() == ".con")
                 SimulationsToRun = ConFile.GetSimsInConFile(FileName);
-            else if (Path.GetExtension(FileName).ToLower() == ".apsim")
+            else if (Path.GetExtension(FileName).ToLower() == ".apsim" || Path.GetExtension(FileName).ToLower() == ".apsimx")
                 SimulationsToRun = ApsimFile.ApsimFile.GetSimsInApsimFile(FileName);
             else if (Path.GetExtension(FileName).ToLower() == ".txt")
             {
@@ -143,8 +143,10 @@ namespace ApsimRun
                 {
                     if (Path.GetExtension(FileName).ToLower() == ".con")
                         _JobRunner.Add(new RunConJob(FileName, SimulationName, _JobRunner));
-                    else
+                    else if (Path.GetExtension(FileName).ToLower() == ".apsim")
                         _JobRunner.Add(new RunApsimFileJob(FileName, SimulationName, _JobRunner));
+                    else
+                        _JobRunner.Add(new RunApsimXJob(FileName, SimulationName, _JobRunner));
                 }
             }
             else if (Path.GetExtension(FileName).ToLower() != ".txt")
