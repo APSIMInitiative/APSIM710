@@ -403,7 +403,7 @@ Public Class OutputFileDescUI
       For Each Variable As XmlNode In XmlHelper.ChildNodes(Data, "")
             If Variable.Name <> "constants" Then
                 Dim NewRow As DataRow = Table.NewRow()
-                NewRow(0) = XmlHelper.Name(Variable)
+                NewRow(0) = Variable.InnerText
                 Table.Rows.Add(NewRow)
             End If
       Next
@@ -548,7 +548,7 @@ Public Class OutputFileDescUI
       For Each VariableName As String In VariableNames
          If VariableName <> "" Then
             Dim Variable As XmlNode = Data.AppendChild(Data.OwnerDocument.CreateElement(PropertyType))
-            XmlHelper.SetName(Variable, VariableName)
+                Variable.InnerText = VariableName
          End If
       Next
 

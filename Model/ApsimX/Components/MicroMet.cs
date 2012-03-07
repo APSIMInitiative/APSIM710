@@ -14,7 +14,8 @@ class MicroMet
       CanopyWB.Canopy[0].name = "Plant";
       CanopyWB.Canopy[0].PotentialEp = 2.0F;
 
-      Canopy_Water_Balance.Invoke(CanopyWB);
+       if (Canopy_Water_Balance != null)
+          Canopy_Water_Balance.Invoke(CanopyWB);
       }
 
    }

@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 30;
+        public static int CurrentVersion = 31;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -63,7 +63,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion27),
                                           new UpgraderDelegate(ToVersion28),
                                           new UpgraderDelegate(ToVersion29),
-                                          new UpgraderDelegate(ToVersion30)
+                                          new UpgraderDelegate(ToVersion30),
+                                          new UpgraderDelegate(ToVersion31)
                                        };
             if (Data != null)
             {
@@ -1819,17 +1820,40 @@ namespace ApsimFile
             }
         }
 
+        /// <summary>
+        /// Remove <registrations> from under <area> 
+        /// </summary>
         private static void ToVersion30(XmlNode Node)
         {
-            // ----------------------------------------------------------------
-            // Remove <registrations> from under <area>
-            // ---------------------------------------------------------------
 
             if (Node.Name.ToLower() == "area")
             {
                 XmlNode RegistrationsNode = XmlHelper.FindByType(Node, "registrations");
                 if (RegistrationsNode != null)
                     Node.RemoveChild(RegistrationsNode);
+            }
+        }
+
+
+        /// <summary>
+        /// Rearrange <variable> nodes from
+        ///    <variable name="dlayer" /> to
+        ///    <variable>dlayer</variable>
+        /// </summary>
+        private static void ToVersion31(XmlNode Node)
+        {
+            if (Node.Name.ToLower() == "variables" || Node.Name.ToLower() == "events" || Node.Name.ToLower() == "tracker")
+            {
+                foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
+                {
+                    if (Child.Name == "variable" || Child.Name == "event")
+                    {
+                        string Name = XmlHelper.Name(Child);
+                        XmlHelper.DeleteAttribute(Child, "name");
+                        Child.InnerText = Name;
+                    }
+                }
+                
             }
         }
 

@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CSGeneral;
 
 public class Clock
 {
     private TimeSpan OneDay = new TimeSpan(1, 0, 0, 0);
+    private TimeType t = new TimeType();
+    private DateTime _Today;
+    private bool FirstDay = true;
 
     public delegate void NullDelegate();
     public event NullDelegate Initialised;
-    public event NullDelegate Tick;
+    public event TimeDelegate Tick;
     public event NullDelegate Prepare;
     public event NullDelegate Process;
     public event NullDelegate Post;
@@ -22,22 +26,39 @@ public class Clock
     public DateTime End_Date;
 
     [Output]
-    DateTime Today;
+    DateTime Today
+    {
+        get
+        {
+            if (_Today.Year == 1)
+            {
+                _Today = Start_Date;
+                t.startday = DateUtility.DateTimeToJulianDayNumber(Today);
+                t.endday = t.startday;
+                FirstDay = true;
+            }
+             return _Today;
+        }
+    }
 
     [EventHandler]
     public void OnTimeStep()
     {
-        if (Today.Year == 1)
-            Today = Start_Date;
-        else
-            Today += OneDay;
-
-        if (Today > End_Date)
+        if (!FirstDay)
+        {
+            t.startday++;
+            t.endday++;
+            _Today += OneDay;
+        }
+        FirstDay = false;
+        
+        if (_Today > End_Date)
             throw new FinishedException("Simulation terminated normally");
 
         if (Initialised != null)
             Initialised.Invoke();
-        Tick.Invoke();
+
+        Tick.Invoke(t);
         if (Prepare != null)
             Prepare.Invoke();
         if (Process != null)

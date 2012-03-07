@@ -27,6 +27,7 @@ internal class ModelInstance
     public XmlNode Node;
     public ModelInstance Parent;
     public object TheModel;
+    public static string Title;
     private string _FullName;
 
 
@@ -51,16 +52,17 @@ internal class ModelInstance
             _FullName = ParentInstance.FullName + "." + XmlHelper.Name(_Node);
         else
         {
-            // Root element.
+            // Root element - register an "OnTick" handler and a "Title" output variable.
             MethodInfo OnTickMethod = GetType().GetMethod("OnTick");
             Subscribers.Add(new EventSubscriber(OnTickMethod, this));
+            FieldInfo TitleFieldInfo = GetType().GetField("Title");
+            Outputs.Add(new FieldVariable(TitleFieldInfo, TheModel));
+
             _FullName = "";
-
+            Title = XmlHelper.Name(_Node);
         }
-
         Node = _Node;
         ClassType = GetClassType(Node.Name, Assembly);
-
         if (ClassType == null)
             throw new Exception("Cannot find a model class called: " + Node.Name);
 
@@ -68,14 +70,29 @@ internal class ModelInstance
         TheModel = Activator.CreateInstance(ClassType);
         CollectVariablesAndEvents();
 
+        // If this model doesn't have a [Param] of type XmlNode then go through all children
+        // and assume that those that aren't a [Param] must be a nested model.
         if (!ModelHasXMLParam())
         {
             foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
             {
+                bool Enabled = XmlHelper.Attribute(Child, "enabled") != "no";
+
                 // If the model has a [Param] with the same name as this child xml node
                 // then don't go and try create a nested simulation object for this xml node.
-                if (!ModelHasParam(Child.Name) && Child.Name.ToLower() != "summaryfile")
-                    Children.Add(new ModelInstance(Child, this, Assembly));
+
+                
+                if (!ModelHasParam(Child.Name) && Enabled)
+                {
+                    if (Child.Name == "soil")
+                        Children.Add(new ModelInstance(ConvertSoilNode(Child), this, Assembly));
+                    else
+                    {
+                        Type ChildClassType = GetClassType(Child.Name, Assembly);
+                        if (ChildClassType != null)
+                            Children.Add(new ModelInstance(Child, this, Assembly));
+                    }
+                }
             }
         }
     }
@@ -304,7 +321,7 @@ internal class ModelInstance
             Child.UpdateValues();
     }
 
-    public void OnTick()
+    public void OnTick(TimeType t)
     {
         UpdateValues();
 
@@ -326,6 +343,9 @@ internal class ModelInstance
             Child.GetAllOutputValues(ref Values);
     }
 
+    /// <summary>
+    /// Returns true if this model has a [Param] with the specified name.
+    /// </summary>
     internal bool ModelHasParam(string ParamName)
     {
         foreach (VariableBase Param in Params)
@@ -394,6 +414,43 @@ internal class ModelInstance
 
     }
 
+    private XmlNode ConvertSoilNode(XmlNode ModelDescription)
+    {
+        string SoilFileName = Path.Combine(Configuration.ApsimBinDirectory(), "Soil with new water model.xml");
+        
+        XmlDocument SoilType = new XmlDocument();
+        SoilType.Load(SoilFileName);
+        XmlNode ApsimToSim = XmlHelper.Find(SoilType, "Soil/MetaData/ApsimToSim");
+        string Contents = Soil.ReplaceSoilMacros(ModelDescription, ApsimToSim.InnerXml);
+        ApsimFile.Macro M = new Macro();
+        string NewContents = M.Go(ModelDescription, Contents);
+
+        // Get rid of the [Model SoilWater]
+        XmlNode SoilWaterModel = XmlHelper.Find(SoilType, "Soil/SoilWater");
+        if (SoilWaterModel == null)
+            throw new Exception("Cannot find <Model name=\"SoilWater\"> in Soil.xml");
+        NewContents = NewContents.Replace("[Model SoilWater]", SoilWaterModel.InnerXml);
+
+        XmlDocument SoilDoc = new XmlDocument();
+        SoilDoc.LoadXml("<soil>" + NewContents + "</soil>");
+        XmlNode SoilWaterNode = XmlHelper.FindByType(SoilDoc.DocumentElement, "component/initdata/SoilWater");
+
+        XmlNode InitDataNode = XmlHelper.FindByType(SoilDoc.DocumentElement, "component/initdata");
+        foreach (XmlNode InitDataChild in XmlHelper.ChildNodes(InitDataNode, ""))
+        {
+            if (XmlHelper.ChildNames(InitDataChild, "").Length == 0)
+            {
+                XmlNode NodeToOverride = XmlHelper.FindRecursively(SoilWaterNode, InitDataChild.Name);
+                if (NodeToOverride == null)
+                    throw new Exception("Cannot find node to override in soil. Node name = " + InitDataChild.Name);
+                NodeToOverride.InnerText = InitDataChild.InnerText;
+
+            }
+        }
+
+        return SoilWaterNode;
+    }
+
     /// <summary>
     /// Collect all variables and events from the specified instance and all child instances.
     /// </summary>
@@ -417,7 +474,11 @@ internal class ModelInstance
                     if (Var.Type.ToString() == "ModelAPIInterface")
                         ModelAPI = Var;
                     else if (Attribute is Input)
+                    {
+                        Input i = (Input)Attribute;
+                        Var.IsOptional = i.IsOptional;
                         Inputs.Add(Var);
+                    }
                     else if (Attribute is Output)
                         Outputs.Add(Var);
                     else
@@ -445,9 +506,15 @@ internal class ModelInstance
                             if (ParamNode != null)
                                 ParamValue = ParamNode.InnerXml;
                             if (ParamValue == null)
-                                throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
-                            VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(ParamName, ParamValue), Var);
-                            Var.Value = ConvertedVariable.Value;
+                            {
+                                if (!p.IsOptional)
+                                    throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
+                            }
+                            else
+                            {
+                                VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(ParamName, ParamValue), Var);
+                                Var.Value = ConvertedVariable.Value;
+                            }
                         }
                         Params.Add(Var);
                     }
@@ -466,7 +533,11 @@ internal class ModelInstance
                 {
                     PropertyVariable Var = new PropertyVariable(Property, TheModel);
                     if (Attribute is Input)
+                    {
+                        Input i = (Input)Attribute;
+                        Var.IsOptional = i.IsOptional;
                         Inputs.Add(Var);
+                    }
                     else if (Attribute is Output)
                         Outputs.Add(Var);
                     else
@@ -475,12 +546,19 @@ internal class ModelInstance
                     // If this is a param then go find a value for it.
                     if (Attribute is Param)
                     {
+                        Param p = (Param)Attribute;
                         string ParamValue = XmlHelper.Value(Node, Property.Name);
                         if (ParamValue == "")
-                            throw new Exception("Cannot find a parameter value for: " + Property.Name);
-
-                        VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(Property.Name, ParamValue), Var);
-                        Var.Value = ConvertedVariable.Value;
+                        {
+                            if (!p.IsOptional)
+                                throw new Exception("Cannot find a parameter value for: " + Property.Name);
+                        }
+                        else
+                        {
+                            VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(Property.Name, ParamValue), Var);
+                            Var.Value = ConvertedVariable.Value;
+                        }
+                        Params.Add(Var);
                     }
                 }
             }
@@ -617,7 +695,7 @@ internal class ModelInstance
     {
         foreach (VariableBase Var in Inputs)
         {
-            if (!Var.IsConnected)
+            if (!Var.IsConnected && !Var.IsOptional)
                 throw new Exception("Cannot find an input value for: " + Var.Name + " in " + Name);
         }
         foreach (ModelInstance Child in Children)
@@ -658,7 +736,7 @@ internal class ModelInstance
         VariableBase V = FindOutput(NamePath);
         if (V != null)
         {
-            Data = (T[])Convert.ChangeType(V.Value, typeof(T));
+            Data = (T[])Convert.ChangeType(V.Value, typeof(T[]));
             return true;
         }
         else
@@ -673,7 +751,16 @@ internal class ModelInstance
         VariableBase V = FindOutput(NamePath);
         if (V != null)
         {
-            Data = V.Value.ToString();
+            if (V.Type.IsArray)
+            {
+                string st = "";
+                Array a = (Array) V.Value;
+                foreach (object o in a)
+                    st += "   " + o.ToString();
+                Data = st;
+            }
+            else
+                Data = V.Value.ToString();
             return true;
         }
         else

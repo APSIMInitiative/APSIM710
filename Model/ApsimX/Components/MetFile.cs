@@ -65,7 +65,7 @@ public class MetFile
     }
 
     [EventHandler]
-    public void OnTick()
+    public void OnTick(TimeType t)
     {
         int RowIndex = (Today - FirstDateInMetFile).Days;
 

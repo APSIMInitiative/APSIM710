@@ -566,13 +566,18 @@ public class DataProcessor
 
     private DataTable ProcessReportDb(XmlNode Node)
     {
-        SQLiteConnection sql_con = new SQLiteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
-        sql_con.Open();
-        string SQL = "SELECT Title, Data.* FROM Simulations, Data WHERE Simulations.ID = Data.SimulationID";
-        SQLiteDataAdapter DB = new SQLiteDataAdapter(SQL, sql_con);
-        DataSet DS = new DataSet();
-        DB.Fill(DS);
-        return DS.Tables[0];
+        if (File.Exists("Output.db"))
+        {
+            SQLiteConnection sql_con = new SQLiteConnection("Data Source=Output.db;Version=3;New=False;Compress=True;");
+            sql_con.Open();
+            string SQL = "SELECT Title, Data.* FROM Simulations, Data WHERE Simulations.ID = Data.SimulationID";
+            SQLiteDataAdapter DB = new SQLiteDataAdapter(SQL, sql_con);
+            DataSet DS = new DataSet();
+            DB.Fill(DS);
+            return DS.Tables[0];
+        }
+        else
+            return null;
     }
 
     #endregion

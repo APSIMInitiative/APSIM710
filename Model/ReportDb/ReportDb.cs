@@ -56,9 +56,10 @@ public class ReportDb
     }
 
     /// <summary>
-    /// We have been initialised - create .nc file.
+    /// We have been initialised - create .db file.
     /// </summary>
-    public void DoInitialisation()
+    [EventHandler]
+    public void OnInitialised()
     {
 
         Connection = new SQLiteConnection("Data Source=" + FileName + ";Version=3;New=False;Compress=True;");
@@ -316,9 +317,6 @@ public class ReportDb
     [EventHandler]
     public void OnPost()
     {
-        if (SimulationID == -1)
-            DoInitialisation();
-
         List<KeyValuePair<string, object>> Values = GetValues();
 
         EnsureDataTableHasCorrectFields(Values);

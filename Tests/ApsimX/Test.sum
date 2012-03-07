@@ -1,9 +1,75 @@
 Name: Script
 Full name: .paddock.Script
+   - Reading Soil Profile Parameters
+Initial soilwater distributed using "sw" parameter.
+
+                 Soil Profile Properties
+   ---------------------------------------------------------------------
+         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+   ---------------------------------------------------------------------
+        0 -  150  0.120  0.240  0.520  0.570  0.520  1.050  0.762  0.300
+      150 -  300  0.232  0.290  0.520  0.570  0.520  1.060  0.190  0.300
+      300 -  600  0.310  0.310  0.500  0.550  0.500  1.110  0.048  0.300
+      600 -  900  0.310  0.310  0.500  0.550  0.500  1.120  0.000  0.300
+      900 - 1200  0.310  0.310  0.490  0.540  0.490  1.130  0.000  0.300
+     1200 - 1500  0.310  0.310  0.480  0.530  0.480  1.170  0.000  0.300
+     1500 - 1800  0.310  0.310  0.470  0.520  0.470  1.200  0.000  0.300
+   ---------------------------------------------------------------------
+
+
+             Soil Water Holding Capacity
+     ---------------------------------------------------------
+         Depth    Unavailable Available  Max Avail.  Drainable
+                     (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                       mm        mm          mm         mm
+     ---------------------------------------------------------
+        0 -  150      36.00      42.00      42.00       7.50
+      150 -  300      43.50      34.50      34.50       7.50
+      300 -  600      93.00      57.00      57.00      15.00
+      600 -  900      93.00      57.00      57.00      15.00
+      900 - 1200      93.00      54.00      54.00      15.00
+     1200 - 1500      93.00      51.00      51.00      15.00
+     1500 - 1800      93.00      48.00      48.00      15.00
+     ---------------------------------------------------------
+           Totals    544.50     343.50     343.50      90.00
+     ---------------------------------------------------------
+
+
+
+
+             Initial Soil Parameters
+     ---------------------------------------------------------
+            Insoil        Salb     Dif_Con   Dif_Slope
+     ---------------------------------------------------------
+               NaN        0.12       40.00       16.00
+     ---------------------------------------------------------
+
+
+             Runoff is predicted using scs curve number:
+           Cn2  Cn_Red  Cn_Cov   H_Eff_Depth 
+                                      mm     
+     ---------------------------------------------------------
+         73.00   20.00    0.80      450.00
+     ---------------------------------------------------------
+
+
+      Using Ritchie evaporation model
+        Stage 1 Duration (U): Summer         6.00  (mm)
+                              Winter         4.00  (mm)
+        Stage 2       (CONA): Summer         3.50  (mm^0.5)
+                              Winter         2.50  (mm^0.5)
+       Critical Dates:       Summer        1-Nov
+                             Winter        1-Apr
+
+       Eo from priestly-taylor
+
 Script children:
    .paddock.Script.ScriptChild
 Paddock children:
    .paddock.Script
+   .paddock.SoilWater
+   .paddock.ReportDb
 Simulation children:
    .met
    .clock
@@ -13,6 +79,8 @@ Script children:
    .paddock.Script.ScriptChild
 Paddock children:
    .paddock.Script
+   .paddock.SoilWater
+   .paddock.ReportDb
 Simulation children:
    .met
    .clock

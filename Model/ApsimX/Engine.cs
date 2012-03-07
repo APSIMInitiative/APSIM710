@@ -61,8 +61,8 @@ public class Engine
 
         Simulation = ModelInstance.CreateModelInstance(SimulationNode);
         Simulation Sim = (Simulation)Simulation.TheModel;
+        Simulation.UpdateValues(); 
         Sim.InvokeInitialised();
-        Simulation.UpdateValues();
     }
 
     /// <summary>
