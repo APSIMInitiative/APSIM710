@@ -314,11 +314,12 @@ namespace ApsimFile
                     double[] ToThickness = value;
                     if (!MathUtility.AreEqual(ToThickness, ThicknessMM))
                     {
-                        _Doubles = MapToTarget(Name, Units, Doubles, _ThicknessMM, ToThickness, _SoilNode);
+                        _Doubles = MapToTarget(_SoilNode, Name, Units, Doubles, _ThicknessMM, ToThickness, _SoilNode);
                         _Strings = null;
 
                         Constrain(_Doubles, ToThickness);
                         _ThicknessMM = ToThickness;
+
                         if (Codes == null)
                             Codes = new string[_ThicknessMM.Length];
                         if (Codes.Length != _ThicknessMM.Length)
@@ -334,6 +335,7 @@ namespace ApsimFile
                     }
                 }
             }
+
 
             /// <summary>
             /// Constrain the values passin according to bounds specified in the 
@@ -492,7 +494,7 @@ namespace ApsimFile
             /// Map the values/thickness passed in, into the target layer 
             /// thicknesses. Uses the variable name to determine the method.
             /// </summary>
-            private static double[] MapToTarget(string VariableName, string Units,
+            private static double[] MapToTarget(XmlNode _SoilNode, string VariableName, string Units,
                                                 double[] Values, double[] FromThickness,
                                                 double[] ToThickness, XmlNode SoilNode)
             {
@@ -502,12 +504,12 @@ namespace ApsimFile
                     return ToThickness;
                 else if (Units == "kg/ha")
                 {
-                    FillValuesDownToSoilDepth(VariableName, Units, ref Values, ref FromThickness, ToThickness, SoilNode);
+                    FillValuesDownToSoilDepth(_SoilNode, VariableName, Units, ref Values, ref FromThickness, ToThickness, SoilNode);
                     return MassRedistributeInternal(Values, FromThickness, ToThickness, SoilNode);
                 }
                 else
                 {
-                    FillValuesDownToSoilDepth(VariableName, Units, ref Values, ref FromThickness, ToThickness, SoilNode);
+                    FillValuesDownToSoilDepth(_SoilNode, VariableName, Units, ref Values, ref FromThickness, ToThickness, SoilNode);
                     Values = MathUtility.Multiply(Values, FromThickness);
                     Values = SpatialRedistributeInternal(Values, FromThickness, ToThickness);
                     return MathUtility.Divide(Values, ToThickness);
@@ -534,7 +536,7 @@ namespace ApsimFile
             ///      1100-1700         5
             ///      1700-2100         0
             /// </summary>
-            private static void FillValuesDownToSoilDepth(string VariableName, string Units, ref double[] Values, ref double[] ValueThickness, double[] ToThickness, XmlNode SoilNode)
+            private static void FillValuesDownToSoilDepth(XmlNode _SoilNode, string VariableName, string Units, ref double[] Values, ref double[] ValueThickness, double[] ToThickness, XmlNode SoilNode)
             {
                 // Copy all non missing values to our return arrays.
                 List<double> NewValues = new List<double>();
@@ -556,11 +558,25 @@ namespace ApsimFile
 
                     NewThickness.Add(LastThickness);
                     NewThickness.Add(LastThickness);
+                    NewThickness.Add(1000);
                     NewValues.Add(LastValue * 0.8);
                     NewValues.Add(LastValue * 0.4);
+                    NewValues.Add(0);  // This will be constrained below to cropLL.
 
-                    NewThickness.Add(1000);
-                    NewValues.Add(0);  // This will be constrained later to cropLL.
+                    // Get the first crop ll
+                    string[] Crops = Soil.CropsMeasured(_SoilNode);
+                    Soil.Variable LL;
+                    if (Crops.Length > 0)
+                        LL = Soil.Get(_SoilNode, Crops[0] + " LL");
+                    else
+                        LL = Soil.Get(_SoilNode, "LL15");
+                    if (LL == null)
+                        throw new Exception("Cannot find crop lower limit or LL15 in soil");
+                    LL.ThicknessMM = NewThickness.ToArray();
+
+                    // Make sure all SW values below LastIndex don't go below CLL.
+                    for (int i = LastIndex + 1; i < NewThickness.Count; i++)
+                        NewValues[i] = Math.Max(NewValues[i], LL.Doubles[i]);
 
                 }
                 else if (VariableName.ToLower() == "airdry" ||
