@@ -203,6 +203,53 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </HeightFunction>
+        <MultiplyFunction name="BranchingRate">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <LinearInterpolationFunction name="PotentialBranchingRate">
+            <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
+            <XYPairs>
+              <XY>3 0</XY>
+              <XY>4 0.7</XY>
+              <XY>5 0.7</XY>
+              <XY>6 0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="WaterStress">
+            <XProperty>WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>
+        <PhaseLookup name="ShadeInducedBranchMortality">
+          <PhaseLookupValue>
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">StartGrainFill</End>
+            <LinearInterpolationFunction name="ShadeInducedBranchMortality">
+              <XProperty type="text" description="XProperty">Leaf.CoverGreen</XProperty>
+              <XYPairs>
+                <XY>0 0</XY>
+                <XY>0.98 0</XY>
+                <XY>0.99 0.04</XY>
+                <XY>1 0.04</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="DroughtInducedBranchMortality">
+          <PhaseLookupValue>
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">EndGrainFill</End>
+            <LinearInterpolationFunction name="DroughtInducedBranchMortality">
+              <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
+              <XYPairs>
+                <XY>0.1 0.1</XY>
+                <XY>0.6 0</XY>
+              </XYPairs>
+            </LinearInterpolationFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
       </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
@@ -630,7 +677,7 @@
             <XY>6 600</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <MultiplyFunction name="BranchingRate">
+        <MultiplyFunction name="xBranchingRate">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="PotentialBranchingRate">
             <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
@@ -734,7 +781,7 @@
           </XYPairs>
         </LinearInterpolationFunction>
         <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime" />
-        <PhaseLookup name="ShadeInducedBranchMortality">
+        <PhaseLookup name="xShadeInducedBranchMortality">
           <PhaseLookupValue>
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">StartGrainFill</End>
@@ -749,7 +796,7 @@
             </LinearInterpolationFunction>
           </PhaseLookupValue>
         </PhaseLookup>
-        <PhaseLookup name="DroughtInducedBranchMortality">
+        <PhaseLookup name="xDroughtInducedBranchMortality">
           <PhaseLookupValue>
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">EndGrainFill</End>

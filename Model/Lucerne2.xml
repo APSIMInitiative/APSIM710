@@ -237,6 +237,20 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             </XYPairs>
           </XYPairs>
         </LinearInterpolationFunction>
+        <LinearInterpolationFunction name="BranchingRate">
+          <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
+          <XYPairs>
+            <XY>2 0</XY>
+            <XY>5 0</XY>
+          </XYPairs>
+          <Memo>this is causing a crash in the program when set to any value (guess: is it because SLA was artifitialy made very high?)</Memo>
+        </LinearInterpolationFunction>		
+        <Constant name="ShadeInducedBranchMortality">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="DroughtInducedBranchMortality">
+          <Value type="text" description="Value">0</Value>
+        </Constant>		
 	  </Structure>
 	  <Leaf>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
@@ -519,14 +533,6 @@ LAI expansion needs attention in the future.</Memo>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
         </Constant>
-        <LinearInterpolationFunction name="BranchingRate">
-          <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
-          <XYPairs>
-            <XY>2 0</XY>
-            <XY>5 0</XY>
-          </XYPairs>
-          <Memo>this is causing a crash in the program when set to any value (guess: is it because SLA was artifitialy made very high?)</Memo>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="ExtinctionCoeff">
           <XProperty>Leaf.LAI</XProperty>
           <XYPairs>

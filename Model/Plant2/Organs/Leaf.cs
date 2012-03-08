@@ -58,8 +58,8 @@ public class Leaf : BaseOrgan, AboveGround
     public Function NodeAppearanceRate = null;
     [Link]
     public Function FrostFraction = null;
-    [Link]
-    public Function BranchingRate = null;
+    //[Link]
+    //public Function BranchingRate = null;
     //[Link(NamePath = "Height")]
     //public Function HeightModel = null;
     //[Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
@@ -78,10 +78,10 @@ public class Leaf : BaseOrgan, AboveGround
     public Function StructuralFraction = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
-    [Link (IsOptional = true)]
-    public Function ShadeInducedBranchMortality = null;
-    [Link(IsOptional = true)]
-    public Function DroughtInducedBranchMortality = null;
+    //[Link (IsOptional = true)]
+    //public Function ShadeInducedBranchMortality = null;
+    //[Link(IsOptional = true)]
+    //public Function DroughtInducedBranchMortality = null;
  #endregion
 
  #region Class Data Members
@@ -686,7 +686,7 @@ public class Leaf : BaseOrgan, AboveGround
                 int j = (int)AppearedCohortNo - 1;
                 BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
-            BranchNumber += BranchingRate.Value * Population.Value * PrimaryBudNo;
+            BranchNumber += Structure.BranchingRate * Population.Value * PrimaryBudNo;
 
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
@@ -698,17 +698,17 @@ public class Leaf : BaseOrgan, AboveGround
         }
 
         //Work out stem mortanity from shading
-        if (ShadeInducedBranchMortality != null)
-            ProportionStemMortality = ShadeInducedBranchMortality.Value;
+        //if (ShadeInducedBranchMortality != null)
+        //    ProportionStemMortality = ShadeInducedBranchMortality.Value;
 
-        if (DroughtInducedBranchMortality != null)
-            ProportionStemMortality += DroughtInducedBranchMortality.Value;
+        //if (DroughtInducedBranchMortality != null)
+        //    ProportionStemMortality += DroughtInducedBranchMortality.Value;
         
         FractionNextleafExpanded = 0;
         bool NextExpandingLeaf = false;
         foreach (LeafCohort L in Leaves)
         {
-            L.DoPotentialGrowth(_ThermalTime, ProportionStemMortality);
+            L.DoPotentialGrowth(_ThermalTime, Structure.ProportionStemMortality);
             if ((L.IsFullyExpanded == false) && (NextExpandingLeaf == false))
             {
                 NextExpandingLeaf = true;

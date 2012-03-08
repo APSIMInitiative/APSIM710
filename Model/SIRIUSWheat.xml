@@ -226,6 +226,31 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </HeightFunction>
+        <MultiplyFunction name="BranchingRate">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <LinearInterpolationFunction name="PotentialBranchingRate">
+            <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
+            <XYPairs>
+              <XY>3 0</XY>
+              <XY>4 1</XY>
+              <XY>7 1</XY>
+              <XY>8 0</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="WaterStress">
+            <XProperty>WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>1 1</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>		
+        <Constant name="ShadeInducedBranchMortality">
+          <Value type="text" description="Value">0</Value>
+        </Constant>
+        <Constant name="DroughtInducedBranchMortality">
+          <Value type="text" description="Value">0</Value>
+        </Constant>		
       </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
@@ -612,25 +637,6 @@
             <XY>6 600</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <MultiplyFunction name="BranchingRate">
-          <Memo>Multiplies the values of the children of this node</Memo>
-          <LinearInterpolationFunction name="PotentialBranchingRate">
-            <XProperty type="text" description="XProperty">Leaf.AppearedCohortNo</XProperty>
-            <XYPairs>
-              <XY>3 0</XY>
-              <XY>4 1</XY>
-              <XY>7 1</XY>
-              <XY>8 0</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-          <LinearInterpolationFunction name="WaterStress">
-            <XProperty>WaterSupplyDemandRatio</XProperty>
-            <XYPairs>
-              <XY>0 0</XY>
-              <XY>1 1</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </MultiplyFunction>
         <Constant name="RelativeBranchLeafSize">
           <Value type="text" description="Value">1</Value>
         </Constant>
