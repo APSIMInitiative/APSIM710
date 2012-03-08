@@ -327,6 +327,7 @@ Public Class Farm
         End While
     End Sub
 
+    'This function cuts any paddock of the required residual. This can leave the farm in deficit...but under normal circumstances it will be small
     Public Function CutToFeedWedge(ByVal Optimum_residual As Integer, ByVal Rotation As Integer, Optional ByVal Stocking_rate As Double = 3.0, Optional ByVal Intake As Double = 18.0) As BioMass '
         Dim pre As Integer = CalcPregrazingCoverTarget(Stocking_rate, Intake, Rotation, Optimum_residual)
         Dim interval As Double = (pre - Optimum_residual) / (myPaddocks.Count)
@@ -683,7 +684,7 @@ Public Class Farm
             Dim HarvestedDM As BioMass = New BioMass()
             Select Case (AllocationType)
                 Case 1
-                    If (FeedSituation() / IdealGrazingCover() > 0.2) Then 'Cut when 10% in surplus?
+                    If (FeedSituation() / IdealGrazingCover() > 0.2) Then 'Cut when 20% in surplus?
                         HarvestedDM = CutToFeedWedge(myGrazingResidual, myGrazingInterval, MilkingCows() / FarmArea, myMilkingHerd.ME_Demand_Cow / DefaultPastureME)
                     End If
                 Case Else

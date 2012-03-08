@@ -157,7 +157,7 @@ Public Class DDRules
             Console.WriteLine("   Rotation Length " & GrazingInterval.ToString)
             Console.WriteLine("   Residual " & GrazingResidual.ToString)
             Console.WriteLine("   Stocking Rate " & StockingRate.ToString)
-        End If
+        End If        
     End Sub
 
     <Description("Pasture covers pre-grazing")> _
