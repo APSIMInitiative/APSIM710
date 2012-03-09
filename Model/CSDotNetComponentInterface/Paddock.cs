@@ -101,6 +101,23 @@ namespace ModelFramework
 
         // --------------------------------------------------------------------
         /// <summary>
+        /// Return the fully-qualified name of a component, given its ID
+        /// This implementation only works for components "owned" by this paddock
+        /// It could be extended to be more general...
+        /// </summary>
+        // --------------------------------------------------------------------
+        public string SiblingNameFromId(int compId)
+        {
+            queryChildComponents();
+            TComp aComp;
+            if (ChildComponents.TryGetValue((uint)compId, out aComp))
+                return aComp.name;
+            else
+                return "";
+        }
+
+        // --------------------------------------------------------------------
+        /// <summary>
         /// Return a list of all child crops to caller.
         /// </summary>
         // --------------------------------------------------------------------
