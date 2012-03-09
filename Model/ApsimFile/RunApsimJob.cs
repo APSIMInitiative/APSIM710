@@ -10,7 +10,7 @@ public class RunApsimJob : RunExternalJob
    protected string _SimFileName = "";
    protected string _SumFileName = "";
    protected StreamWriter _SumFile = null;
-   protected bool _DeleteSim = true;
+   public bool _DeleteSim = true;
 
 
    public RunApsimJob(String Name, JobRunner JobRunner) 

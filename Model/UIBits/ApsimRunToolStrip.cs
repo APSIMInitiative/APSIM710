@@ -17,6 +17,7 @@ public class ApsimRunToolStrip
     private static ApsimRunToolStrip Singleton = null;
     private JobRunner _JobRunner = null;
     ToolStrip _Strip;
+    public Boolean deleteSims = true;
 
     public ApsimRunToolStrip()
     {
@@ -179,6 +180,7 @@ public class ApsimRunToolStrip
 
                         RunApsimJob NewJob = new RunApsimJob(Simulation.Name, _JobRunner);
                         NewJob.SimFileName = SimFileName;
+                        NewJob._DeleteSim = deleteSims;
                         _JobRunner.Add(NewJob);
                     }
                 }
@@ -230,7 +232,8 @@ public class ApsimRunToolStrip
             foreach (var item in SimFiles)
             {
                 RunApsimJob NewJob = new RunApsimJob(item.SimName, _JobRunner);
-                NewJob.SimFileName = item.SimFileName;
+                NewJob.SimFileName = item.SimFileName; 
+                NewJob._DeleteSim = deleteSims;
                 _JobRunner.Add(NewJob);
             }
         }
@@ -262,10 +265,12 @@ public class ApsimRunToolStrip
         else if (SimsToRun.Count == 1)
         {
             UserMsg = "Created simulation file:";
+            deleteSims = false;
         }
         else
         {
             UserMsg = "Created simulation files:";
+            deleteSims = false;
         }
         try
         {

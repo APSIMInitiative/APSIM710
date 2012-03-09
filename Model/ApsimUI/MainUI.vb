@@ -617,6 +617,7 @@ Public Class MainUI
     End Sub
     Private Sub OnFileNameChanged(ByVal FileName As String)
         UpdateCaption()
+        ApsimRunToolStrip.Instance.deleteSims = True
     End Sub
     Private Sub UpdateCaption()
         ' ----------------------------------------
