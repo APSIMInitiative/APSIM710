@@ -120,11 +120,11 @@ class Factory
         else
             CreatedInstance = new Instance(Model);
 
-        if (CreatedInstance.GetType().IsSubclassOf(typeof(DerivedInstance)))
-        {
-            ((DerivedInstance)CreatedInstance).Initialise(Node, ParentInstance, ParentComponent);
-        }
-        else if (CreatedInstance != null)
+        //if (CreatedInstance.GetType().IsSubclassOf(typeof(DerivedInstance)))
+        //{
+        //    ((DerivedInstance)CreatedInstance).Initialise(Node, ParentInstance, ParentComponent);
+        //}
+        if (CreatedInstance != null)
         {
             CreatedInstance.Initialise(XmlHelper.Name(Node), ParentInstance, ParentComponent);
             GetAllProperties(CreatedInstance, Parent);
@@ -239,17 +239,14 @@ class Factory
             {
                 if (Attr.GetType() == typeof(EventHandler)) 
                 {
-                    string EventName;
+                    string EventName = null;
                     if ((Attr as EventHandler).EventName != "")
                         EventName = (Attr as EventHandler).EventName;
                     else if (Method.Name.Length > 2 && Method.Name.Substring(0, 2) == "On")
                         EventName = Method.Name.Substring(2);
-                    else
-                        return;
-                        // I think it would be better to throw an exception when no event name is apparent,
-                        // rather than simply return, but this currently creates a problem with the UnitTests
-                        // throw new Exception("The event name was not properly specified for the EventHandler \"" + Method.Name + "\"");
-                    RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj.Model, EventName));
+                    
+                    if (EventName != null)
+                        RegisteredEventHandlers.Add(new FactoryEventHandler(Method, Obj.Model, EventName));
                 }
             }
         }
@@ -332,7 +329,8 @@ class Factory
                         // Ignore memo fields.
                     }
                     else if (!Child.HasChildNodes && (Child.InnerText == ""))
-                        throw new Exception("Cannot have a blank value for property: " + Child.Name);
+                    {
+                    }
                     else if (Child.HasChildNodes)
                     {
                         FactoryProperty Parameter = FindProperty(Child);

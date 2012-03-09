@@ -74,6 +74,47 @@ class ToDateTime : VariableBase
     }
     public override Type Type { get { return typeof(string); } }
 }
+class ToSingleArray : VariableBase
+{
+    private VariableBase Var;
+    public ToSingleArray(VariableBase var) { Var = var; Name = var.Name; }
+    public override object Value
+    {
+        get
+        {
+            try
+            {
+                if (Var.Value == null)
+                    return null;
+                else if (Var.Value.GetType().Name == "String")
+                {
+                    string ValueString = (string)Var.Value;
+                    string[] StringValues = ValueString.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    float[] Values = new float[StringValues.Length];
+                    for (int i = 0; i < StringValues.Length; i++)
+                        Values[i] = Convert.ToSingle(StringValues[i]);
+                    return Values;
+                }
+                else if (Var.Value.GetType().Name == "Double[]")
+                {
+                    double[] DoubleValues = (double[])Var.Value;
+                    float[] Values = new float[DoubleValues.Length];
+                    for (int i = 0; i < DoubleValues.Length; i++)
+                        Values[i] = Convert.ToSingle(DoubleValues[i]);
+                    return Values;
+                }
+                else
+                    throw new Exception("");
+            }
+            catch (Exception)
+            {
+                throw new Exception("Cannot convert " + Var.Value.ToString() + " to a single array. Variable name is " + Var.Name);
+            }
+        }
+        set { new NotImplementedException("Type converters are not settable"); }
+    }
+    public override Type Type { get { return typeof(double); } }
+}
 class ToDoubleArray : VariableBase
    {
    private VariableBase Var;
@@ -84,7 +125,9 @@ class ToDoubleArray : VariableBase
          {
          try
             {
-            if (Var.Value.GetType().Name == "String")
+            if (Var.Value == null)
+                    return null; 
+             else if (Var.Value.GetType().Name == "String")
                {
                string ValueString = (string)Var.Value;
                string[] StringValues = ValueString.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -93,6 +136,14 @@ class ToDoubleArray : VariableBase
                   Values[i] = Convert.ToDouble(StringValues[i]);
                return Values;
                }
+            else if (Var.Value.GetType().Name == "Single[]")
+            {
+                float[] SingleValues = (float[])Var.Value;
+                double[] DoubleValues = new double[SingleValues.Length];
+                for (int i = 0; i < SingleValues.Length; i++)
+                    DoubleValues[i] = Convert.ToDouble(SingleValues[i]);
+                return DoubleValues;
+            }
             else
                throw new Exception("");
             }
@@ -115,7 +166,9 @@ class ToStringArray : VariableBase
          {
          try
             {
-            if (Var.Value.GetType().Name == "String")
+            if (Var.Value == null)
+                return null;
+            else if (Var.Value.GetType().Name == "String")
                {
                string ValueString = (string)Var.Value;
 
@@ -146,50 +199,37 @@ class ToStringArray : VariableBase
       }
    public override Type Type { get { return typeof(double); } }
    }
-//class ToLinearInterpolation : Variable
-//   {
-//   private Variable Var;
-//   public ToLinearInterpolation(Variable var) { Var = var; Name = var.Name; }
-//   public override object Value
-//      {
-//      get
-//         {
-//         LinearInterpolation LI = new LinearInterpolation();
-//         XmlDocument Doc = new XmlDocument();
-//         Doc.LoadXml("<XYPairs>" + Var.Value + "</XYPairs>");
-//         LI.ReadFromXML(Doc.DocumentElement);
-//         return LI;
-//         }
-//      set { new NotImplementedException("Type converters are not settable"); }
-//      }
-//   public override Type Type { get { return typeof(string); } }
-//   }
 class TypeConverter
-   {
-   public static VariableBase CreateConverterIfNecessary(VariableBase From, VariableBase To)
-      {
-      if (From.Type != To.Type)
-         {
-         if (To.Type.Name == "Double")
-            return new ToDouble(From);
-         else if (To.Type.Name == "Int32")
-            return new ToInt(From);
-         else if (To.Type.Name == "String")
-            return new ToString(From);
-         else if (To.Type.Name == "Double[]")
-            return new ToDoubleArray(From);
-         else if (To.Type.Name == "String[]")
-            return new ToStringArray(From);
-         else if (To.Type.Name == "DateTime")
-             return new ToDateTime(From);
-         //else if (To.Type.Name == "LinearInterpolation")
-         //   return new ToLinearInterpolation(From);
-         else
-            throw new Exception("Cannot convert from type " + From.Type.ToString() + " to type " + To.Type.ToString());
-         }
-      return From;
-      }
-
-
-   }
+{
+    public static VariableBase CreateConverterIfNecessary(VariableBase From, Type ToType)
+    {
+        if (From.Type != ToType)
+        {
+            if (ToType.Name == "Double")
+                return new ToDouble(From);
+            else if (ToType.Name == "Int32")
+                return new ToInt(From);
+            else if (ToType.Name == "String")
+                return new ToString(From);
+            else if (ToType.Name == "Single[]")
+                return new ToSingleArray(From);
+            else if (ToType.Name == "Double[]")
+                return new ToDoubleArray(From);
+            else if (ToType.Name == "String[]")
+                return new ToStringArray(From);
+            else if (ToType.Name == "DateTime")
+                return new ToDateTime(From);
+            //else if (To.Type.Name == "LinearInterpolation")
+            //   return new ToLinearInterpolation(From);
+            else
+                throw new Exception("Cannot convert from type " + From.Type.ToString() + " to type " + ToType.ToString());
+        }
+        return From;
+    }
+    public static object Convert<T>(T From, Type ToType)
+    {
+        VariableBase V = new StringVariable<T>("", From);
+        return CreateConverterIfNecessary(V, ToType).Value;
+    }
+}
 

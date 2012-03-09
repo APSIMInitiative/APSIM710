@@ -239,7 +239,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, int Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -247,7 +247,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, float Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -255,7 +255,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, double Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -263,7 +263,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, string Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -271,7 +271,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, int[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -279,7 +279,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, float[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -287,7 +287,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, double[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
         /// <summary>
         /// Attempts to set the value of a variable that matches the specified name path. 
@@ -295,7 +295,7 @@ namespace ModelFramework
         /// </summary>
         public bool Set(string NamePath, string[] Data)
         {
-            throw new NotImplementedException();
+            return Instance.Set(NamePath, Data);
         }
 
         /// <summary>

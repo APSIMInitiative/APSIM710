@@ -197,7 +197,14 @@ namespace ModelFramework
                                 InsertParameterIntoModel(Parameter, InitData.ChildNodes[0]);
                             }
                         }
-                        BuildObjects(InitData.ChildNodes[0], modelAssembly);
+                        if (InitData.ChildNodes[0].Name == "PerformInstructions")
+                        {
+                             XmlNode ModelDescription = null;
+                             PerformInstructions(InitData.ChildNodes[0], ref ModelDescription);
+                             BuildObjects(ModelDescription, modelAssembly);
+                        }
+                        else
+                            BuildObjects(InitData.ChildNodes[0], modelAssembly);
                     }
                     //process any init1's in the component
                     for (int i = 0; i != Fact.EventHandlers.Count; i++)
@@ -271,6 +278,7 @@ namespace ModelFramework
                         Console.Write(line);
                         Console.WriteLine();
                     }
+                    GetAllInputs();
                     if (!IsPlant)                   //plant will do this at sow time in BuildObjects()
                         Fact.Initialise();
                     for (int i = 0; i != Fact.EventHandlers.Count; i++)
@@ -657,6 +665,15 @@ namespace ModelFramework
                     if (ModelDescription == null)
                         throw new Exception("Cannot find referenced node: " + Instruction.InnerText);
                 }
+                if (Instruction.Name == "ConstructModel")
+                {
+                    if (XmlHelper.ChildNodes(Instruction, "").Count == 0)
+                    {
+                        if (ModelDescription == null)
+                            throw new Exception("Cannot find referenced node: " + Instruction.InnerText);
+                    }
+                    ModelDescription = XmlHelper.ChildNodes(Instruction, "")[0];
+                }
                 else if (Instruction.Name == "Goto")
                 {
                     XmlNode ReferencedNode = XmlHelper.Find(InitData, Instruction.InnerText);
@@ -666,20 +683,44 @@ namespace ModelFramework
                 }
                 else if (Instruction.Name == "Override")
                 {
-                    String ReferencedNodeName = XmlHelper.Name(Instruction).Replace(".", "/");
-                    XmlNode ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
-                    if (ReferencedNode == null)
-                        throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
-                    foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
-                    {
-                        XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
-                        if (NodeToRemove == null)
-                            throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
-                        XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
-                        ReferencedNode.InsertAfter(NewNode, NodeToRemove);
-                        ReferencedNode.RemoveChild(NodeToRemove);
-                    }
+                    Override(ModelDescription, Instruction);
                 }
+                else if (Instruction.Name == "OverrideIf")
+                {
+                    string Condition = XmlHelper.Attribute(Instruction, "condition");
+                    if (!Condition.Contains("="))
+                        throw new Exception("Invalid <overrideif> condition: " + Condition);
+                    int PosEquals = Condition.IndexOf('=');
+                    string VariableName = Condition.Substring(0, PosEquals).Replace(".", "/");
+                    string VariableValue = Condition.Substring(PosEquals + 1);
+                    XmlNode VariableNode = XmlHelper.Find(ModelDescription, VariableName);
+                    if (VariableNode == null)
+                        throw new Exception("Cannot find referenced node in <overrideif>: " + VariableName);
+                    if (VariableNode.InnerText.ToLower() == VariableValue.ToLower())
+                        Override(ModelDescription, Instruction);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform an override on the specified modeldescription using the specified instruction.
+        /// </summary>
+        private static void Override(XmlNode ModelDescription, XmlNode Instruction)
+        {
+            String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
+            XmlNode ReferencedNode = ModelDescription;
+            if (ReferencedNodeName != "")
+                ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
+            if (ReferencedNode == null)
+                throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
+            foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
+            {
+                XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
+                if (NodeToRemove == null)
+                    throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
+                XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
+                ReferencedNode.InsertAfter(NewNode, NodeToRemove);
+                ReferencedNode.RemoveChild(NodeToRemove);
             }
         }
         // ----------------------------------------------

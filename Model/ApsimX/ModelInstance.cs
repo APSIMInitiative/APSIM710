@@ -54,7 +54,7 @@ internal class ModelInstance
         {
             // Root element - register an "OnTick" handler and a "Title" output variable.
             MethodInfo OnTickMethod = GetType().GetMethod("OnTick");
-            Subscribers.Add(new EventSubscriber(OnTickMethod, this));
+            Subscribers.Add(new EventSubscriber(null, OnTickMethod, this));
             FieldInfo TitleFieldInfo = GetType().GetField("Title");
             Outputs.Add(new FieldVariable(TitleFieldInfo, TheModel));
 
@@ -85,7 +85,10 @@ internal class ModelInstance
                 if (!ModelHasParam(Child.Name) && Enabled)
                 {
                     if (Child.Name == "soil")
-                        Children.Add(new ModelInstance(ConvertSoilNode(Child), this, Assembly));
+                    {
+                        Children.Add(new ModelInstance(ConvertSoilNode(Child, "Water"), this, Assembly));
+                        Children.Add(new ModelInstance(ConvertSoilNode(Child, "Nitrogen"), this, Assembly));
+                    }
                     else
                     {
                         Type ChildClassType = GetClassType(Child.Name, Assembly);
@@ -414,9 +417,9 @@ internal class ModelInstance
 
     }
 
-    private XmlNode ConvertSoilNode(XmlNode ModelDescription)
+    private XmlNode ConvertSoilNode(XmlNode ModelDescription, string ModelType)
     {
-        string SoilFileName = Path.Combine(Configuration.ApsimBinDirectory(), "Soil with new water model.xml");
+        string SoilFileName = Path.Combine(Configuration.ApsimBinDirectory(), "Soil with new " + ModelType + " model.xml");
         
         XmlDocument SoilType = new XmlDocument();
         SoilType.Load(SoilFileName);
@@ -425,30 +428,77 @@ internal class ModelInstance
         ApsimFile.Macro M = new Macro();
         string NewContents = M.Go(ModelDescription, Contents);
 
-        // Get rid of the [Model SoilWater]
-        XmlNode SoilWaterModel = XmlHelper.Find(SoilType, "Soil/SoilWater");
-        if (SoilWaterModel == null)
-            throw new Exception("Cannot find <Model name=\"SoilWater\"> in Soil.xml");
-        NewContents = NewContents.Replace("[Model SoilWater]", SoilWaterModel.InnerXml);
-
         XmlDocument SoilDoc = new XmlDocument();
         SoilDoc.LoadXml("<soil>" + NewContents + "</soil>");
-        XmlNode SoilWaterNode = XmlHelper.FindByType(SoilDoc.DocumentElement, "component/initdata/SoilWater");
 
-        XmlNode InitDataNode = XmlHelper.FindByType(SoilDoc.DocumentElement, "component/initdata");
-        foreach (XmlNode InitDataChild in XmlHelper.ChildNodes(InitDataNode, ""))
+        // Find the component with the correct name.
+        XmlNode ComponentNode = null;
+        foreach (XmlNode ChildNode in XmlHelper.ChildNodes(SoilDoc.DocumentElement, "component"))
         {
-            if (XmlHelper.ChildNames(InitDataChild, "").Length == 0)
-            {
-                XmlNode NodeToOverride = XmlHelper.FindRecursively(SoilWaterNode, InitDataChild.Name);
-                if (NodeToOverride == null)
-                    throw new Exception("Cannot find node to override in soil. Node name = " + InitDataChild.Name);
-                NodeToOverride.InnerText = InitDataChild.InnerText;
+            if (XmlHelper.Name(ChildNode).Contains(" " + ModelType))
+                ComponentNode = ChildNode;
+        }
+        if (ComponentNode == null)
+            throw new Exception("Cannot find a component of node type: " + ModelType + " in <ApsimToSim>");
 
+        // Now go look for a performinstructions node under this component node.
+        XmlNode InstructionNode = XmlHelper.FindByType(ComponentNode, "initdata/PerformInstructions");
+        return ProcessInstructions(InstructionNode);
+    }
+
+    private XmlNode ProcessInstructions(XmlNode InstructionNode)
+    {
+        XmlNode ModelDescription = null;
+        foreach (XmlNode Instruction in InstructionNode.ChildNodes)
+        {
+            if (Instruction.Name == "ConstructModel")
+            {
+                if (XmlHelper.ChildNodes(Instruction, "").Count == 0)
+                    throw new Exception("No child XML node under <ConstructModel>. Nothing to construct.");
+                ModelDescription = XmlHelper.ChildNodes(Instruction, "")[0];
+            }
+            else if (Instruction.Name == "Override")
+            {
+                Override(ModelDescription, Instruction);
+            }
+            else if (Instruction.Name == "OverrideIf")
+            {
+                string Condition = XmlHelper.Attribute(Instruction, "condition");
+                if (!Condition.Contains("="))
+                    throw new Exception("Invalid <overrideif> condition: " + Condition);
+                int PosEquals = Condition.IndexOf('=');
+                string VariableName = Condition.Substring(0, PosEquals).Replace(".", "/");
+                string VariableValue = Condition.Substring(PosEquals + 1);
+                XmlNode VariableNode = XmlHelper.Find(ModelDescription, VariableName);
+                if (VariableNode == null)
+                    throw new Exception("Cannot find referenced node in <overrideif>: " + VariableName);
+                if (VariableNode.InnerText.ToLower() == VariableValue.ToLower())
+                    Override(ModelDescription, Instruction);
             }
         }
-
-        return SoilWaterNode;
+        return ModelDescription;
+    }
+    
+    /// <summary>
+    /// Perform an override on the specified modeldescription using the specified instruction.
+    /// </summary>
+    private static void Override(XmlNode ModelDescription, XmlNode Instruction)
+    {
+        String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
+        XmlNode ReferencedNode = ModelDescription;
+        if (ReferencedNodeName != "")
+            ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
+        if (ReferencedNode == null)
+            throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
+        foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
+        {
+            XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
+            if (NodeToRemove == null)
+                throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
+            XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
+            ReferencedNode.InsertAfter(NewNode, NodeToRemove);
+            ReferencedNode.RemoveChild(NodeToRemove);
+        }
     }
 
     /// <summary>
@@ -511,10 +561,7 @@ internal class ModelInstance
                                     throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
                             }
                             else
-                            {
-                                VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(ParamName, ParamValue), Var);
-                                Var.Value = ConvertedVariable.Value;
-                            }
+                                Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
                         }
                         Params.Add(Var);
                     }
@@ -554,10 +601,7 @@ internal class ModelInstance
                                 throw new Exception("Cannot find a parameter value for: " + Property.Name);
                         }
                         else
-                        {
-                            VariableBase ConvertedVariable = TypeConverter.CreateConverterIfNecessary(new StringVariable(Property.Name, ParamValue), Var);
-                            Var.Value = ConvertedVariable.Value;
-                        }
+                            Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
                         Params.Add(Var);
                     }
                 }
@@ -572,7 +616,10 @@ internal class ModelInstance
         {
             foreach (object Attribute in EventHandler.GetCustomAttributes(false))
                 if (Attribute.ToString() == "EventHandler")
-                    Subscribers.Add(new EventSubscriber(EventHandler, TheModel));
+                {
+                    EventHandler Handler = (EventHandler)Attribute;
+                    Subscribers.Add(new EventSubscriber(Handler.EventName, EventHandler, TheModel));
+                }
         }
 
         // Now go and do the same for all child models.
@@ -638,7 +685,7 @@ internal class ModelInstance
             VariableBase Output = FindOutput(Input.Name);
             if (Output != null)
             {
-                Output = TypeConverter.CreateConverterIfNecessary(Output, Input);
+                Output = TypeConverter.CreateConverterIfNecessary(Output, Input.Type);
                 Input.ConnectTo(Output);
             }
         }
@@ -736,7 +783,7 @@ internal class ModelInstance
         VariableBase V = FindOutput(NamePath);
         if (V != null)
         {
-            Data = (T[])Convert.ChangeType(V.Value, typeof(T[]));
+            Data = (T[]) TypeConverter.CreateConverterIfNecessary(V, typeof(T[])).Value;
             return true;
         }
         else
@@ -783,5 +830,29 @@ internal class ModelInstance
             Data = null;
             return false;
         }
+    }
+
+
+    internal bool Set<T>(string NamePath, T Data)
+    {
+        VariableBase V = FindOutput(NamePath);
+        if (V != null)
+        {
+            V.Value = Data;
+            return true;
+        }
+        else
+            return false;
+    }
+    internal bool Set<T>(string NamePath, T[] Data)
+    {
+        VariableBase V = FindOutput(NamePath);
+        if (V != null)
+        {
+            V.Value = TypeConverter.Convert(Data, V.Type);
+            return true;
+        }
+        else
+            return false;
     }
 }

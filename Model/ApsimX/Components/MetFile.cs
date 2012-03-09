@@ -46,7 +46,10 @@ public class MetFile
     {
         get
         {
-            return Convert.ToDouble(File.Constant("Latitude").Value);
+            if (File.Constant("Latitude") == null)
+                return 0;
+            else
+                return Convert.ToDouble(File.Constant("Latitude").Value);
         }
     }
     [Output]

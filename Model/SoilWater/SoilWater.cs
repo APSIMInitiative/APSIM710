@@ -395,7 +395,7 @@ public class SoilWater
         }
     }
 
-    private double _max_pond = Double.NaN;
+    private double _max_pond = 0;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Units("()")]
@@ -1535,10 +1535,6 @@ public class SoilWater
             double[] temp_dlt_solute_double = new double[num_layers];
             float[] temp_dlt_solute = new float[num_layers];
 
-            Component SoilNModel = (Component)MyPaddock.LinkByType("soiln");
-            Component ClModel = MyPaddock.LinkByName("Cl") as Component;
-            Component BrModel = MyPaddock.LinkByName("Br") as Component;
-
             for (int solnum = au.si; solnum <= au.ci(num_solutes); solnum++)
             {
                 //convert 2D array to 1D array
@@ -1554,19 +1550,19 @@ public class SoilWater
                 switch (solute_names[solnum])
                 {
                     case "no3":
-                        MyPaddock.Set(SoilNModel.FullName + ".dlt_no3", temp_dlt_solute);
+                        MyPaddock.Set("dlt_no3", temp_dlt_solute);
                         break;
                     case "nh4":
-                        MyPaddock.Set(SoilNModel.FullName + ".dlt_nh4", temp_dlt_solute);
+                        MyPaddock.Set("dlt_nh4", temp_dlt_solute);
                         break;
                     case "urea":
-                        MyPaddock.Set(SoilNModel.FullName + ".dlt_urea", temp_dlt_solute);
+                        MyPaddock.Set("dlt_urea", temp_dlt_solute);
                         break;
                     case "cl":
-                        MyPaddock.Set(ClModel.FullName + ".dlt_cl", temp_dlt_solute);
+                        MyPaddock.Set("dlt_cl", temp_dlt_solute);
                         break;
                     case "br":
-                        MyPaddock.Set(BrModel.FullName + ".dlt_br", temp_dlt_solute);
+                        MyPaddock.Set("dlt_br", temp_dlt_solute);
                         break;
                     default:
                         throw new Exception("SoilWater cannot alter the change in solute (due to solute movement with water) for solute: " + solute_names[solnum] + " SoilWater does not know what module owns this solute.");
@@ -2709,28 +2705,6 @@ public class SoilWater
 
     private void soilwat2_soil_profile_param()
     {
-
-
-        //TODO: Someone needs to fix the problem below properly.
-        //The following is necessay because the ini file requires you to put in a default value (an array of 3 values) so that when ApsimToSim creates a sim from the gui it has a spot to put the values in the sim file.
-        // This only effects Optional parameters. Non optionals must have a value specified by the user in the gui so they get these default values (array of 3 elements from ini file) written over with a full array. 
-        // Optional parameters however are allowed to not be specified. And if they don't then this model instead of reading in a null value, reads in the default value from the ini file (3 element array) 
-        // So we here we do a test to see if we have a default value from the ini file read in, and if so set them to null.
-
-        if (au.IsIniDefault(mwcon))
-        {
-            mwcon = null;
-        }
-        if (au.IsIniDefault(ks))
-        {
-            ks = null;
-        }
-        if (au.IsIniDefault(klat))
-        {
-            klat = null;
-        }
-
-
         //##################
         //Soil Profile  -->  soilwat2_soil_profile_param()
         //##################
@@ -4939,7 +4913,7 @@ public class SoilWater
 
 
 
-
+    
     //EVENT HANDLERS
 
     #region Functions used in Event Handlers (mainly in Init, Reset, UserInit, and Write Summary Report Event Handlers)

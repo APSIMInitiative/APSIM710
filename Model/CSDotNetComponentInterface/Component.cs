@@ -299,10 +299,6 @@ namespace ModelFramework
             HostComponent.Warning(Message);
         }
 
-        public bool Override(Type aType, String targetName)
-        {
-            return In.Override(aType, targetName);
-        }
 
         #region Get methods
         /// <summary>

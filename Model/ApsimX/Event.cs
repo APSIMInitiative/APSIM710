@@ -33,8 +33,11 @@ class EventSubscriber
 {
     internal MethodInfo Info;
     internal object TheModel;
-    public EventSubscriber(MethodInfo I, object Model)
+    private string _Name;
+    public EventSubscriber(string Name, MethodInfo I, object Model)
     {
+        if (Name != null)
+            _Name = Name;
         Info = I;
         TheModel = Model;
     }
@@ -42,6 +45,8 @@ class EventSubscriber
     {
         get
         {
+            if (_Name != null)
+                return _Name;
             string FullName = Info.Name;
             if (FullName.Substring(0, 2) == "On")
                 FullName = FullName.Remove(0, 2);

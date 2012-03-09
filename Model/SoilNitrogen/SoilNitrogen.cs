@@ -10,7 +10,7 @@ using System.Xml;
 /// A more-or-less direct port of the Fortran SoilN model
 /// Ported by Eric Zurcher Sept/Oct 2010
 /// </summary>
-public class SoilN
+public class SoilNitrogen
 {
     [Link]
     Paddock MyPaddock = null;
@@ -1201,8 +1201,8 @@ public class SoilN
 #endregion
 
 #region Events to which we subscribe, and their handlers
-    [EventHandler("init2")]
-    public void OnInit2()
+    [EventHandler]
+    public void OnInitialised()
     {
         GetSiteVariables();
         GetOtherVariables();  // Get information which may vary through time
@@ -1214,7 +1214,7 @@ public class SoilN
     }
 
 
-    [EventHandler("process")]
+    [EventHandler(EventName = "process")]
     public void OnProcess() 
     {
         //GetOtherVariables(); // Should occur automatically once we're up and running...
@@ -1225,7 +1225,7 @@ public class SoilN
             SendActualResidueDecompositionCalculated();
     }
 
-    [EventHandler("reset")]
+    [EventHandler(EventName = "reset")]
     public void OnReset() 
     {
         SaveState();          // Save state
@@ -1238,13 +1238,13 @@ public class SoilN
         DeltaState();         // Change of state
     }
 
-    [EventHandler("sum_report")]
+    [EventHandler(EventName = "sum_report")]
     public void OnSum_report() 
     { 
         SumReport(); 
     }
 
-    [EventHandler("IncorpFOM")]
+    [EventHandler(EventName = "IncorpFOM")]
     public void OnIncorpFOM(FOMLayerType IncorpFOM) 
     {
     //    We partition the C and N into fractions in each layer.
@@ -1297,7 +1297,7 @@ public class SoilN
         }
     }
 
-    [EventHandler("tick")]
+    [EventHandler(EventName = "tick")]
     public void OnTick(TimeType time) 
     {
         //DateUtility.JulianDayNumberToDayOfYear(time.startday, out day_of_year, out year);
@@ -1314,7 +1314,7 @@ public class SoilN
    
     }
 
-    [EventHandler("NewMet")]
+    [EventHandler(EventName = "NewMet")]
     public void OnNewmet(NewMetType NewMet) 
     {
         radn = NewMet.radn;
@@ -1322,7 +1322,7 @@ public class SoilN
         mint = NewMet.mint;
     }
 
-    [EventHandler("PotentialResidueDecompositionCalculated")]
+    [EventHandler(EventName = "PotentialResidueDecompositionCalculated")]
     public void OnPotentialResidueDecompositionCalculated(SurfaceOrganicMatterDecompType SurfaceOrganicMatterDecomp) 
     {
     //+  Purpose
@@ -1356,7 +1356,7 @@ public class SoilN
         }
     }
 
-    [EventHandler("IncorpFOMPool")]
+    [EventHandler(EventName = "IncorpFOMPool")]
     public void OnIncorpFOMPool(FOMPoolType IncorpFOMPool)
     {
         // INCREMENT THE POOLS wtih the unpacked deltas
@@ -1378,7 +1378,7 @@ public class SoilN
         }
     }
 
-    [EventHandler("new_profile")]
+    [EventHandler(EventName = "new_profile")]
     public void OnNew_profile(NewProfileType NewProfile) 
     {
         ll15_dep = NewProfile.ll15_dep;
@@ -1390,7 +1390,7 @@ public class SoilN
         CheckProfile(NewProfile.dlayer);
     }
 
-    [EventHandler("NitrogenChanged")]
+    [EventHandler(EventName = "NitrogenChanged")]
     public void OnNitrogenChanged(NitrogenChangedType NitrogenChanged) 
     {
         for (int layer = 0; layer < NitrogenChanged.DeltaNO3.Length; ++layer)
@@ -1413,7 +1413,7 @@ public class SoilN
         }
     }
 
-    [EventHandler("AddUrine")]
+    [EventHandler(EventName = "AddUrine")]
     public void OnAddUrine(AddUrineType UrineAdded) 
     {
        // Starting with the minimalist version. To be updated by Val's group to
@@ -1438,7 +1438,6 @@ public class SoilN
     private bool use_external_ph = false;
     private bool p_n_reduction = false;
     private bool useOrganicSolutes = false;
-    private bool soiltypeOverridden;
     private double radn;    // solar radiation (MJ/m^2/day)
     private double maxt;    // maximum air temperature (oC)
     private double mint;    // minimum air temperature (oC)
@@ -1474,20 +1473,11 @@ public class SoilN
            
 #endregion
 
-    [EventHandler("Initialised")]
-    public void OnInitialised()
-    {
-        soiltypeOverridden = My.Override(typeof(SoilTypeDefinition), soiltype);
-    }
-
     private void ReadParam()  // Could do checking of the parameters here....
     {
         Console.WriteLine();
         Console.WriteLine("        - Reading Parameters");
         
-        DoubleType val = new DoubleType();
-        DoubleArrayType arrayVal = new DoubleArrayType();
-
         use_external_st = MyPaddock.Get("ave_soil_temp", out st) && (st != null);
         if (!use_external_st)
         {
@@ -1535,13 +1525,8 @@ public class SoilN
     {
         Console.WriteLine();
         Console.WriteLine("        - Reading Constants");
-        if (soiltype != "standard")
-        {
-            if (soiltypeOverridden)
-                Console.WriteLine("     Using soil mineralisation specification for " + soiltype);
-            else
-                Console.WriteLine("     Using standard soil mineralisation for soil type " + soiltype);
-        }
+        Console.WriteLine("     Using " + soiltype + " soil mineralisation specification.");
+
         if (num_fom_types != fract_carb.Length)
             throw new Exception("Number of \"fract_carb\" different to \"fom_type\"");
         if (num_fom_types != fract_cell.Length)

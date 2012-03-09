@@ -89,10 +89,10 @@ class PropertyVariable : VariableBase
 /// <summary>
 /// A simple string variable class for holding a string value. Used with [Param] variables.
 /// </summary>
-class StringVariable : VariableBase
+class StringVariable<T> : VariableBase
 {
-    private string Val;
-    public StringVariable(string name, string value)
+    private T Val;
+    public StringVariable(string name, T value)
     {
         Name = name;
         Val = value;

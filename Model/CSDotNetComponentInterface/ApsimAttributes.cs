@@ -15,11 +15,10 @@ public class EventHandler : Attribute
         _EventName = "";
     }
 
-    public EventHandler(String eventName)
+    public EventHandler(string Name)
     {
-        _EventName = eventName;
+        _EventName = Name;
     }
-
     public string EventName
     {
         get { return _EventName; }

@@ -67,7 +67,14 @@ public class Output : System.Attribute
 
 [AttributeUsage(AttributeTargets.Method)]
 public class EventHandler : System.Attribute
-{ }
+{
+    private string _Name;
+    public string EventName
+    {
+        get { return _Name; }
+        set { _Name = value; }
+    }
+}
 
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
@@ -109,4 +116,5 @@ public class Units : System.Attribute
 [AttributeUsage(AttributeTargets.Event)]
 public class Event : System.Attribute
 {
+
 }
