@@ -772,7 +772,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         DeltaNodeNumber = 0;
         if (NodeAppearanceRate.Value > 0)
-            DeltaNodeNumber = _ThermalTime / NodeAppearanceRate.Value;
+            DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
         AppearedNodeNo += DeltaNodeNumber;
         AppearedNodeNo = Math.Min(AppearedNodeNo, FinalLeafNo);
     }
