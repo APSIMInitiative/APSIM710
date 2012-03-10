@@ -1,4 +1,4 @@
-<Type version="30" name="SIRIUSWheat">
+<Type version="31" name="SIRIUSWheat">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -205,6 +205,8 @@
         </EndPhase>
       </Phenology>
       <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <HeightFunction name="Height">
           <Memo> 
 			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
@@ -244,13 +246,38 @@
               <XY>1 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-        </MultiplyFunction>		
+        </MultiplyFunction>
         <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
+        </Constant>
+        <MultiplyFunction name="ThermalTime" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime">
+          <PhaseLookup shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup">
+            <PhaseLookupValue name="SoilTemperature" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">
+              <SoilTemperatureFunction name="ThermalTime" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime">
+                <XYPairs shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime/XYPairs" />
+              </SoilTemperatureFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="AirTemperature" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature">
+              <AirTemperatureFunction name="ThermalTime" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime">
+                <XYPairs shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime/XYPairs" />
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+          <AddFunction name="DroughtPhenologyAcelleration" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration">
+            <Memo shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Memo" />
+            <Constant name="One" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/One" />
+            <MultiplyFunction name="Stress" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress">
+              <Memo shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/Memo" />
+              <Constant name="StressResponseCoefficient" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressResponseCoefficient" />
+              <LinearInterpolationFunction name="StressFactor" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor">
+                <XYPairs shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor/XYPairs" />
+              </LinearInterpolationFunction>
+            </MultiplyFunction>
+          </AddFunction>
+        </MultiplyFunction>
       </Structure>
       <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.042</MaximumSize>
@@ -424,10 +451,8 @@
         </PhaseBasedSwitch>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">50</Area>

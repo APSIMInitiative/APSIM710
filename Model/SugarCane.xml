@@ -1,4 +1,4 @@
-<Type version="29" name="SugarCane">
+<Type version="31" name="SugarCane">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -125,15 +125,17 @@
           </AirTemperatureFunction>
         </GenericPhase>
       </Phenology>
-      <Structure>      
-	    <LinearInterpolationFunction name="Height">
+      <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>StageValue.Value</XProperty>
           <XYPairs>
             <XY>3 100</XY>
             <XY>5 6000</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-		<LinearInterpolationFunction name="BranchingRate">
+        <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>4 0</XY>
@@ -146,13 +148,14 @@
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
-	  </Structure>
-	  <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/SugarCane/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/SugarCane/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <Leaf>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1000</Area>
@@ -400,10 +403,10 @@
         </LinearInterpolationFunction>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>

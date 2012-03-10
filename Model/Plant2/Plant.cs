@@ -16,11 +16,13 @@ public class Plant
     [Link(IsOptional=true)]
     Arbitrator Arbitrator = null;
 
+    [Link(IsOptional = true)]
+    Structure Structure = null;
+
     [Link]
     Component My = null;
 
     public string Name { get { return My.Name; } }
-
 
     private List<Organ> _Organs = new List<Organ>();
     public List<Organ> Organs
@@ -76,6 +78,8 @@ public class Plant
     }
     public void DoPotentialGrowth()
     {
+        if (Structure != null)
+            Structure.DoPotentialGrowth();
         foreach (Organ o in Organs)
             o.DoPotentialGrowth();
     }

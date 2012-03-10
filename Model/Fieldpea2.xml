@@ -1,4 +1,4 @@
-<Type version="29" name="FieldPea2">
+<Type version="31" name="FieldPea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -156,8 +156,42 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
-      <Structure>      
-	    <LinearInterpolationFunction name="Height">
+      <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">3</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">StartPodGrowth</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">20</Value>
+          </Constant>
+          <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndGrainFill</End>
+          <Memo>Determines how quickly nodes appear</Memo>
+          <LinearInterpolationFunction name="Phyllochron">
+            <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
+            <XYPairs>
+              <XY>2 50</XY>
+              <XY>3 40</XY>
+              <XY>4 30</XY>
+              <XY>5 30</XY>
+              <XY>5.5 25</XY>
+              <XY>6 100</XY>
+              <XY>7 1000</XY>
+            </XYPairs>
+            <Memo>Determines how quickly nodes appear</Memo>
+          </LinearInterpolationFunction>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">40</Value>
+        </Constant>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 10</XY>
@@ -187,15 +221,18 @@
           </LinearInterpolationFunction>
           <Memo name="Memo1">The branching rates sets the number of new branches initiated.  If we have a plant with one stem and branching rate is set as zero this plant will continue to have only one stem.  If this value increases to 1 for the appearance of 1 mainstem node and then reduces to zero again the plant will produce one branch on its mainstem that has the same properties as the mainstem.  The higher this number is and the longer is remains above 0 the more branches the plant will produce.
 For Potato the potential branching rate is the branching pattern that would be observed in wide spaced plantings.  There is a cover response factor to reduce branching rates in closer spacings.</Memo>
-        </MultiplyFunction>		
+        </MultiplyFunction>
         <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>	  
-	  </Structure>
-	  <ReproductiveOrgan name="Grain">
+        </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/FieldPea2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.4</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -509,10 +546,8 @@ For Potato the potential branching rate is the branching pattern that would be o
         </PhaseBasedSwitch>
       </GenericAboveGroundOrgan>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>100</Area>

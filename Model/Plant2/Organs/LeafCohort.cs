@@ -84,6 +84,8 @@ public class LeafCohort
     [Link]
     public Plant Plant = null;
     [Link]
+    Structure Structure = null;
+    [Link]
     public Paddock MyPaddock;
     [Link]
     public Leaf Leaf = null;
@@ -410,7 +412,7 @@ public class LeafCohort
         // in as an argument in the constructor below. Confusing isn't it?
         IsAppeared = true;
         if (_Population == 0)
-            _Population = PopulationFunction.Value * Leaf.PrimaryBudNo;
+            _Population = PopulationFunction.Value * Structure.PrimaryBudNo;
         MaxArea = MaxAreaFunction.Value * CellDivisionStressFactor * LeafFraction;//Reduce potential leaf area due to the effects of stress prior to appearance on cell number 
         GrowthDuration = GrowthDurationFunction.Value * LeafFraction;
         LagDuration = LagDurationFunction.Value;
@@ -450,7 +452,7 @@ public class LeafCohort
             double FractionStemMortality = 0;
             if (StemMortality > 0)
             {
-            double DeltaPopn = Math.Min(StemMortality * (_Population - Leaf.MainStemPopn), _Population - PopulationFunction.Value);
+            double DeltaPopn = Math.Min(StemMortality * (_Population - Structure.MainStemPopn), _Population - PopulationFunction.Value);
             FractionStemMortality = DeltaPopn / _Population;
             _Population -= DeltaPopn;
             }
@@ -645,7 +647,7 @@ public class LeafCohort
     /// <returns>(mm2 leaf/cohort position/m2 soil/day)</returns>
     virtual public double PotentialAreaGrowthFunction(double TT)
     {
-        double BranchNo = Leaf.TotalStemPopn - Leaf.MainStemPopn;
+        double BranchNo = Leaf.TotalStemPopn - Structure.MainStemPopn;
         double leafSizeDelta = SizeFunction(Age + TT) - SizeFunction(Age); //mm2 of leaf expanded in one day at this cohort (Today's minus yesterday's Area/cohort)
         double growth = Population * leafSizeDelta; // Daily increase in leaf area for that cohort position in a per m2 basis (mm2/m2/day)
         return growth;                              // FIXME-EIT Unit conversion to m2/m2 could happen here and population could be considered at higher level only (?)
@@ -727,7 +729,7 @@ public class LeafCohort
     [EventHandler]
     public void OnInitialised()
     {
-        MyPaddock.Subscribe(Leaf.InitialiseStage, DoInitialisation);
+        MyPaddock.Subscribe(Structure.InitialiseStage, DoInitialisation);
     }
     //Leaf Status variabules
     public double MaxSize

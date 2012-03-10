@@ -16,17 +16,17 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Max cover")]
     [Units("max units")]
     public double MaxCover;
-    [Param]
-    [Output]
-    [Description("Primary Bud")]
-    public double PrimaryBudNo = 1;
+    //[Param]
+    //[Output]
+    //[Description("Primary Bud")]
+    //public double PrimaryBudNo = 1;
     [Param]
     [Description("Extinction Coefficient (Dead)")]
     public double KDead = 0;
-    [Output]
-    [Param]
-    [Description("The stage name that leaves get initialised.")]
-    public string InitialiseStage = "";
+    //[Output]
+    //[Param]
+    //[Description("The stage name that leaves get initialised.")]
+    //public string InitialiseStage = "";
     //Model Inputs
     [Input]
     public int Day = 0;
@@ -131,9 +131,9 @@ public class Leaf : BaseOrgan, AboveGround
     [Output]
     [Units("/m2")]
     [Description("Number of Mainstem units per meter")]
-    public double MainStemPopn
+    private double MainStemPopn
     {
-        get { return Population.Value * PrimaryBudNo; }
+        get { return Population.Value * Structure.PrimaryBudNo; }
     }
     [Output]
     [Units("/m2")]
@@ -291,7 +291,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
     public double PrimaryBudAppearedLeafNo
     {
-        get { return PlantAppearedLeafNo / PrimaryBudNo; }
+        get { return PlantAppearedLeafNo / Structure.PrimaryBudNo; }
     }
     [Output]
     [Units("/plant")]
@@ -646,7 +646,7 @@ public class Leaf : BaseOrgan, AboveGround
             CalculateNodeNumber();
         }
 
-        if (Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+        if (Phenology.OnDayOf(Structure.InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
         {
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
@@ -680,13 +680,13 @@ public class Leaf : BaseOrgan, AboveGround
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(AppearedNodeNo + (1 - FinalLeafFraction));
             double CohortAge = (AppearedNodeNo - AppearingNode) * NodeAppearanceRate.Value * FinalLeafFraction;
-            double BranchNumber = Population.Value * PrimaryBudNo;
+            double BranchNumber = Population.Value * Structure.PrimaryBudNo;
             if (Leaves.Count > 0)
             {
                 int j = (int)AppearedCohortNo - 1;
                 BranchNumber = Leaves[j].Population; //Retrive the branch number of the previous cohort so this can be appended with additional branching
             }
-            BranchNumber += Structure.BranchingRate * Population.Value * PrimaryBudNo;
+            BranchNumber += Structure.BranchingRate * Population.Value * Structure.PrimaryBudNo;
 
             //Set the properties of the appearing cohort so it begins growing 
             int i = AppearingNode -1;
@@ -730,7 +730,7 @@ public class Leaf : BaseOrgan, AboveGround
         {
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
-                Leaf._Population = Population.Value * PrimaryBudNo;
+                Leaf._Population = Population.Value * Structure.PrimaryBudNo;
                 Leaf.DoInitialisation();
                 AppearedNodeNo += 1.0;
                 Leaf.DoAppearance(1.0);
@@ -1138,7 +1138,7 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnPrune(PruneType Prune)
     {
-        PrimaryBudNo = Prune.BudNumber;
+        Structure.PrimaryBudNo = Prune.BudNumber;
         CohortsInitialised = false;
         ZeroLeaves();
     }
@@ -1155,7 +1155,7 @@ public class Leaf : BaseOrgan, AboveGround
         if (Sow.MaxCover <= 0.0)
            throw new Exception("MaxCover must exceed zero in a Sow event.");
         MaxCover = Sow.MaxCover;
-        PrimaryBudNo = Sow.BudNumber;
+        Structure.PrimaryBudNo = Sow.BudNumber;
         //StemPopulation = Sow.Population * Sow.BudNumber;
         if (FinalNodeNumber != null)
             MaxNodeNo = FinalNodeNumber.MaximumNodeNumber;

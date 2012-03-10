@@ -1,4 +1,4 @@
-<Type version="29" name="lucerne2">
+<Type version="31" name="lucerne2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -226,7 +226,9 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
 </Memo>
       </Phenology>
       <Structure>
-	    <LinearInterpolationFunction name="Height">
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 1</XY>
@@ -244,19 +246,20 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <XY>5 0</XY>
           </XYPairs>
           <Memo>this is causing a crash in the program when set to any value (guess: is it because SLA was artifitialy made very high?)</Memo>
-        </LinearInterpolationFunction>		
+        </LinearInterpolationFunction>
         <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
-	  </Structure>
-	  <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <Leaf>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.5</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1</Area>

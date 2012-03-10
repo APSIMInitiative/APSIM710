@@ -1,4 +1,4 @@
-<Type version="29" name="Chickpea2">
+<Type version="31" name="Chickpea2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -174,7 +174,9 @@
         </EndPhase>
       </Phenology>
       <Structure>
-	    <LinearInterpolationFunction name="Height">
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 10</XY>
@@ -189,15 +191,18 @@
             <XY>10 0</XY>
             <XY>11 0</XY>
           </XYPairs>
-        </LinearInterpolationFunction>		
-	    <Constant name="ShadeInducedBranchMortality">
+        </LinearInterpolationFunction>
+        <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
-	  </Structure>
-	  <ReproductiveOrgan name="Grain">
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <ReproductiveOrgan name="Grain">
         <MaximumSize type="text" description="MaximumSize">0.68</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -302,7 +307,7 @@
         <OnEventFunction name="NumberFunction">
           <SetEvent type="text" description="SetEvent">Flowering</SetEvent>
           <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
-		  <Constant name="PreEventValue">
+          <Constant name="PreEventValue">
             <Value type="text" description="Value">0</Value>
           </Constant>
           <LinearInterpolationFunction name="PostEventValue">
@@ -390,10 +395,8 @@
         </Constant>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1000</Area>

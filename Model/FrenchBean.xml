@@ -1,4 +1,4 @@
-<Type version="29" name="FrenchBean">
+<Type version="31" name="FrenchBean">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -114,15 +114,17 @@
           <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Phenology/ThermalTime" />
         </EndPhase>
       </Phenology>
-      <Structure>      
-	    <LinearInterpolationFunction name="Height">
+      <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 50</XY>
             <XY>300 750</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-		<LinearInterpolationFunction name="BranchingRate">
+        <LinearInterpolationFunction name="BranchingRate">
           <XProperty>Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
             <XY>4 0</XY>
@@ -136,8 +138,11 @@
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
-		</Structure>
-	  <ReproductiveOrgan name="Pod">
+        <AirTemperatureFunction name="ThermalTime" shortcut="/FrenchBean/Model/Plant/Leaf/ThermalTime">
+          <XYPairs shortcut="/FrenchBean/Model/Plant/Leaf/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <ReproductiveOrgan name="Pod">
         <MaximumSize type="text" description="MaximumSize">0.68</MaximumSize>
         <RipeStage type="text" description="RipeStage">Ripe</RipeStage>
         <Biomass name="Live" />
@@ -323,10 +328,8 @@
         </Constant>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">0.3</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1000</Area>

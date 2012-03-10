@@ -1,4 +1,4 @@
-<Type version="29" name="Vine">
+<Type version="31" name="Vine">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -118,10 +118,10 @@
       <Phenology>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
-            <XY>7 0.0</XY>
-            <XY>22 15.0</XY>
-            <XY>30 15.0</XY>
-            <XY>35 0.0</XY>
+            <XY>7 0</XY>
+            <XY>22 15</XY>
+            <XY>30 15</XY>
+            <XY>35 0</XY>
           </XYPairs>
         </AirTemperatureFunction>
         <GenericPhase name="Dormant">
@@ -190,8 +190,10 @@
           <PhaseNameToGoto>Dormant</PhaseNameToGoto>
         </GotoPhase>
       </Phenology>
-      <Structure>      
-	    <LinearInterpolationFunction name="Height">
+      <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">BudBurst</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 1800.0</XY>
@@ -205,19 +207,20 @@
             <XY>10 0.0</XY>
             <XY>11 0.0</XY>
           </XYPairs>
-        </LinearInterpolationFunction>		
-		<Constant name="ShadeInducedBranchMortality">
+        </LinearInterpolationFunction>
+        <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Vine/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/Vine/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
       </Structure>
-	  <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+      <Leaf>
         <MaxCover type="text" description="MaxCover">.5</MaxCover>
         <KDead type="text" description="KDead">.5</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">BudBurst</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">1000</Area>
@@ -259,10 +262,10 @@
         </FinalNodeNumber>
         <AirTemperatureFunction name="ThermalTime">
           <XYPairs>
-            <XY>7 0.0</XY>
-            <XY>22 15.0</XY>
-            <XY>30 15.0</XY>
-            <XY>35 0.0</XY>
+            <XY>7 0</XY>
+            <XY>22 15</XY>
+            <XY>30 15</XY>
+            <XY>35 0</XY>
           </XYPairs>
         </AirTemperatureFunction>
         <Constant name="StructuralFraction">

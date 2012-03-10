@@ -1,4 +1,4 @@
-<Type version="28" name="Egrandis2">
+<Type version="31" name="Egrandis2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -96,7 +96,9 @@
         </EndPhase>
       </Phenology>
       <Structure>
-	    <LinearInterpolationFunction name="Height">
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Planting</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 5000</XY>
@@ -129,15 +131,18 @@ For Potato the potential branching rate is the branching pattern that would be o
               <XY>1 0</XY>
             </XYPairs>
           </LinearInterpolationFunction>
-        </MultiplyFunction>		
+        </MultiplyFunction>
         <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>	  
-	  </Structure>
-	  <Root>
+        </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/Egrandis2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -227,10 +232,8 @@ For Potato the potential branching rate is the branching pattern that would be o
         </Constant>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.01</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Planting</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">900</Area>
@@ -285,10 +288,10 @@ Initial ages and initial areas are array fields so the size and age of multiple 
         </Constant>
         <Constant name="DetachmentLagDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>		
+        </Constant>
         <Constant name="DetachmentDuration">
           <Value type="text" description="Value">1e6</Value>
-        </Constant>						
+        </Constant>
         <LinearInterpolationFunction name="MaxArea">
           <XProperty type="text" description="XProperty">Leaf.AppearedNodeNo</XProperty>
           <XYPairs>
@@ -456,15 +459,15 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         </LinearInterpolationFunction>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0</Value>
-        </Constant>				
+        </Constant>
         <LinearInterpolationFunction name="ShadeInducedSenescenceRate">
           <XProperty type="text" description="XProperty">Leaf.Leaves[Leaf.CurrentRank].CoverAbove</XProperty>
           <XYPairs>
             <XY>0 0</XY>
             <XY>0.9 0</XY>
           </XYPairs>
-        </LinearInterpolationFunction>		
-		</Leaf>
+        </LinearInterpolationFunction>
+      </Leaf>
       <GenericAboveGroundOrgan name="Stem">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.

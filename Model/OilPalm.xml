@@ -1,4 +1,4 @@
-<Type version="29" name="OilPalm">
+<Type version="31" name="OilPalm">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -102,8 +102,10 @@
           </AirTemperatureFunction>
         </EndPhase>
       </Phenology>
-      <Structure>  
-		<LinearInterpolationFunction name="Height">
+      <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Planting</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
             <XY>0 5000</XY>
@@ -114,15 +116,18 @@
         </LinearInterpolationFunction>
         <Constant name="BranchingRate">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
-		<Constant name="ShadeInducedBranchMortality">
+        </Constant>
+        <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
-		</Structure>
-	  <Root>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/OilPalm/Model/Plant/Leaf/ThermalTime">
+          <XYPairs shortcut="/OilPalm/Model/Plant/Leaf/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <Root>
         <ll type="text" description="ll">   0.29  0.29  0.29  0.29  0.3   0.31  0.32  0.33  0.34  0.35  0.36 </ll>
         <kl type="text" description="kl">   0.07  0.07  0.07  0.07  0.05  0.05  0.04  0.04  0.04  0.04  0.04 </kl>
         <xf type="text" description="xf">   1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00  1.00 </xf>
@@ -212,10 +217,8 @@
         </Constant>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.01</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Planting</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank type="text" description="Rank">1</Rank>
           <Area type="text" description="Area">900</Area>

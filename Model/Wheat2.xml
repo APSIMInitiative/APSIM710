@@ -1,4 +1,4 @@
-<Type version="29" name="Wheat2">
+<Type version="31" name="Wheat2">
   <MetaData>
     <UItype>VBUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -372,7 +372,9 @@
         </Memo>
       </Arbitrator>
       <Structure>
-		<LinearInterpolationFunction name="Height">
+        <PrimaryBudNo>1</PrimaryBudNo>
+        <InitialiseStage>Emergence</InitialiseStage>
+        <LinearInterpolationFunction name="Height">
           <XProperty>StageCode.Value</XProperty>
           <XYPairs>
             <XY>3 100</XY>
@@ -386,15 +388,18 @@
             <XY> 5 0.7</XY>
             <XY> 8 0.0</XY>
           </XYPairs>
-        </LinearInterpolationFunction>		
+        </LinearInterpolationFunction>
         <Constant name="ShadeInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
         </Constant>
         <Constant name="DroughtInducedBranchMortality">
           <Value type="text" description="Value">0</Value>
-        </Constant>		
-	  </Structure>
-	  <ReproductiveOrgan name="Grain">
+        </Constant>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Wheat2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/Wheat2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
+      </Structure>
+      <ReproductiveOrgan name="Grain">
         <MaximumSize>0.042</MaximumSize>
         <RipeStage>Ripe</RipeStage>
         <Biomass name="Live" />
@@ -594,10 +599,8 @@
         </Constant>
       </GenericAboveGroundOrgan>
       <Leaf>
-        <PrimaryBudNo>1</PrimaryBudNo>
         <MaxCover>1.0</MaxCover>
         <KDead>0.5</KDead>
-        <InitialiseStage>Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>200</Area>

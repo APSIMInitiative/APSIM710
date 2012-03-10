@@ -1,4 +1,4 @@
-<Type version="30" name="Potato2">
+<Type version="31" name="Potato2">
   <MetaData>
     <UItype type="text" description="UItype">VBUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -137,6 +137,11 @@
         </EndPhase>
       </Phenology>
       <Structure>
+        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
+        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
+          <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
+        </AirTemperatureFunction>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -146,6 +151,41 @@
             <XY>4000 900</XY>
           </XYPairs>
         </LinearInterpolationFunction>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">3</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FinalLeaf</End>
+          <DivideFunction name="NodeInitiationRateFunction">
+            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
+            <Variable name="Phyllochron">
+              <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Phyllochron.Value</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                 </Memo>
+            </Variable>
+            <Constant name="PrimordiaPerMainstemNode">
+              <Value type="text" description="Value">2</Value>
+            </Constant>
+          </DivideFunction>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FinalLeaf</End>
+          <LinearInterpolationFunction name="Phyllochron">
+            <XProperty type="text" description="XProperty">Leaf.RelativeLeafApperance</XProperty>
+            <XYPairs>
+              <XY>0 5</XY>
+              <XY>0.15 30</XY>
+              <XY>0.74 30</XY>
+              <XY>0.75 60</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Memo>Determines how quickly nodes appear</Memo>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">34</Value>
+        </Constant> 
         <MultiplyFunction name="BranchingRate">
           <Memo>The branching rates sets the number of new branches initiated.  If we have a plant with one stem and branching rate is set as zero this plant will continue to have only one stem.  If this value increases to 1 for the appearance of 1 mainstem node and then reduces to zero again the plant will produce one branch on its mainstem that has the same properties as the mainstem.  The higher this number is and the longer is remains above 0 the more branches the plant will produce.
 For Potato the potential branching rate is the branching pattern that would be observed in wide spaced plantings.  There is a cover response factor to reduce branching rates in closer spacings.</Memo>
@@ -372,10 +412,8 @@ In addition this organ has a relative growth rate variable and a tubers per stem
         </LinearInterpolationFunction>
       </Root>
       <Leaf>
-        <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
         <KDead type="text" description="KDead">.03</KDead>
-        <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
         <LeafCohort name="Leaves[1]">
           <Rank>1</Rank>
           <Area>900</Area>
@@ -627,15 +665,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.5</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="yHeight">
-          <XProperty>Stem.Live.Wt</XProperty>
-          <XYPairs>
-            <XY>0 20</XY>
-            <XY>200 300</XY>
-            <XY>1200 700</XY>
-            <XY>4000 900</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty type="text" description="XProperty">Leaf.MinT</XProperty>
           <XYPairs>
