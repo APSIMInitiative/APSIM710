@@ -740,7 +740,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
         
         // Add fraction of top leaf expanded to node number.
-        AppearedNodeNo = AppearedNodeNo + Leaves[(int)AppearedNodeNo - 1].FractionExpanded;
+        //AppearedNodeNo = AppearedNodeNo + Leaves[(int)AppearedNodeNo - 1].FractionExpanded;
 
     }
     public override void DoActualGrowth()
