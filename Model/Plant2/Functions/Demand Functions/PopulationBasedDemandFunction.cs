@@ -10,7 +10,7 @@ public class PopulationBasedDemandFunction : Function
     public Function ThermalTime = null;
 
     [Link]
-    Leaf Leaf = null;
+    Structure Structure = null;
 
     [Link]
     StageBasedInterpolation StageCode = null;
@@ -52,7 +52,7 @@ public class PopulationBasedDemandFunction : Function
             if ((StageCode.Value >= StartStage) && (AccumulatedThermalTime < GrowthDuration))
             {
                 double Rate = MaximumOrganWt / GrowthDuration;
-                Value = Rate * ThermalTimeToday * Leaf.TotalStemPopn;
+                Value = Rate * ThermalTimeToday * Structure.TotalStemPopn;
             }
 
             return Value * ExpansionStress.Value;

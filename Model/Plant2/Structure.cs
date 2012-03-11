@@ -13,7 +13,8 @@ public class Structure
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
-    
+    //[Link]
+    //public FinalNodeNumber FinalNodeNumber = null;
     [Link]
     public Population Population = null;
     [Param]
@@ -51,16 +52,70 @@ public class Structure
     public Function DroughtInducedBranchMortality = null;
     #endregion
 
+    #region Output Variables
     [Output]
     [Units("/m2")]
-    [Description("Number of Mainstem units per meter")]
+    [Description("Number of mainstems per meter")]
     public double MainStemPopn
     {
         get { return Population.Value * PrimaryBudNo; }
     }
+    [Output]
+    [Units("/m2")]
+    [Description("Number of stems per meter including main and branch stems")]
+    public double TotalStemPopn
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaf.Leaves)
+                n = Math.Max(n, L.Population);
+            return n;
+        }
+    }
+    [Output]
+    [Description("Number of mainstem primordia initiated")] //Note: PrimordiaNo is a double that increase gradually each day
+    public double MainStemPrimordiaNo { get { return Leaf.PrimordiaNo; } }
+    [Output]
+    [Description("Number of mainstem nodes appeared")] //Note: AppearedNodeNo is a double that increase gradually each day
+    public double MainStemNodeNo = 0;
+
+    //Plant leaf number state variables
+    [Output]
+    [Units("/plant")]
+    [Description("Number of leaves appeared per plant including all main stem and branch leaves")]
+    public double PlantMainStemNodeNo
+    {
+        get
+        {
+            double n = 0;
+            foreach (LeafCohort L in Leaf.Leaves)
+                if (L.IsAppeared)
+                    n += L.Population;
+            return n / Population.Value;
+        }
+    }
+    [Output]
+    [Units("/PrimaryBud")]
+    [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
+    public double PrimaryBudMainStemNodeNo
+    {
+        get { return PlantMainStemNodeNo / PrimaryBudNo; }
+    }
     
-    #region Structural variables
-    public double MainStemPrimordiaNumber
+    //Leaf State Variables regarding final leaf number
+    [Output]
+    [Description("Number of leaves that will appear on the mainstem before it terminates")]
+    public double MainStemFinalNodeNo { get { return Leaf.FinalLeafNo; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
+    [Output]
+    [Units("0-1")]
+    [Description("Relative progress toward final leaf")]
+    public double RelativeNodeApperance { get { return MainStemNodeNo / MainStemFinalNodeNo; } }
+    [Output]
+    [Description("Number of leaves yet to appear")]
+    public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
+
+    /*public double MainStemPrimordiaNumber
     {
         get
         {
@@ -73,7 +128,7 @@ public class Structure
         {
             return _MainStemNodeNumber;
         }
-    }
+    } */
     //public double MainStemFinalNodeNumber
     //{
     //    get

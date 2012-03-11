@@ -7,6 +7,9 @@ public class LeafAppearancePhase : Phase
     [Link]
     Leaf Leaf = null;
 
+    [Link]
+    Structure Structure = null;
+
     private double CohortNoAtStart;
     bool First = true;
 
@@ -39,7 +42,7 @@ public class LeafAppearancePhase : Phase
 
         FractionCompleteYesterday = FractionComplete;
 
-        if (Leaf.ExpandedCohortNo >= (int)(Leaf.FinalLeafNo - RemainingLeaves))
+        if (Leaf.ExpandedCohortNo >= (int)(Structure.MainStemFinalNodeNo - RemainingLeaves))
             return 0.00001;
         else
             return 0;
@@ -52,7 +55,7 @@ public class LeafAppearancePhase : Phase
     {
         get
         {
-            double F = (Leaf.ExpandedNodeNo - CohortNoAtStart) / ((Leaf.FinalLeafNo-RemainingLeaves) - CohortNoAtStart);
+            double F = (Leaf.ExpandedNodeNo - CohortNoAtStart) / ((Structure.MainStemFinalNodeNo - RemainingLeaves) - CohortNoAtStart);
             if (F < 0) F = 0;
             if (F > 1) F = 1;
             return Math.Max(F, FractionCompleteYesterday); //Set to maximum of FractionCompleteYesterday so on days where final leaf number increases phenological stage is not wound back.

@@ -11,6 +11,9 @@ public class TerminateFinalNodeNumber
     Leaf Leaf = null;
 
     [Link]
+    Structure Structure = null;
+
+    [Link]
     Function Photoperiod = null;
 
     //Class Parameters
@@ -44,12 +47,12 @@ public class TerminateFinalNodeNumber
     { 
         get 
         {
-            if (Leaf.PrimordiaNo == 0)
+            if (Structure.MainStemPrimordiaNo == 0)
                 return _VernalisationIndex;
-            else if ((_VernalisationIndex >= 1) || (Leaf.PrimordiaNo >= _AttainableFinalNodeNumber))
+            else if ((_VernalisationIndex >= 1) || (Structure.MainStemPrimordiaNo >= _AttainableFinalNodeNumber))
                 return 1.0;
             else
-                return Math.Max(Leaf.PrimordiaNo / _AttainableFinalNodeNumber, _VernalisationIndex);
+                return Math.Max(Structure.MainStemPrimordiaNo / _AttainableFinalNodeNumber, _VernalisationIndex);
         } 
     }
     //JuvenileDevelopmentIndex is a combination of progress toward vernalisation saturation and vegetative development toward final leaf number
@@ -145,10 +148,10 @@ public class TerminateFinalNodeNumber
 
     public void VernalisationFinalNodeNumberFunction()
     {
-        if (((Leaf.ExpandedNodeNo >= 2.0) && (JuvenileDevelopmentIndex >= 1.0)) | ((Leaf.ExpandedNodeNo >= 2.0) && (AttainableFinalNodeNumber <= Leaf.PrimordiaNo)))
+        if (((Leaf.ExpandedNodeNo >= 2.0) && (JuvenileDevelopmentIndex >= 1.0)) | ((Leaf.ExpandedNodeNo >= 2.0) && (AttainableFinalNodeNumber <= Structure.MainStemPrimordiaNo)))
         { } // do nothing
         else
-        _VernalisationFinalNodeNumber = (Leaf.PrimordiaNo);
+        _VernalisationFinalNodeNumber = (Structure.MainStemPrimordiaNo);
     }
 
     public void PhotoperiodFinalNodeNumberFunction()

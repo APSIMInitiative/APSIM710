@@ -10,13 +10,16 @@ public class InternodeDemandFunction : Function
     Function InterNodeWt = null;
 
     [Link]
+    Structure Structure = null;
+
+    [Link]
     Leaf Leaf = null;
 
     public override double Value
     {
         get
         {
-            return Leaf.DeltaNodeNumber * Leaf.TotalStemPopn * InterNodeWt.Value;
+            return Leaf.DeltaNodeNumber * Structure.TotalStemPopn * InterNodeWt.Value;
         }
     }
 }
