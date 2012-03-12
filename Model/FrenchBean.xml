@@ -117,6 +117,33 @@
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">6</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">StartPodGrowth</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">30</Value>
+          </Constant>
+          <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start>Emergence</Start>
+          <End>Maturity</End>
+          <LinearInterpolationFunction name="Function">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>1 60</XY>
+              <XY>3 60</XY>
+              <XY>6 60</XY>
+              <XY>30 60</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">40</Value>
+        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -432,19 +459,6 @@
           </XYPairs>
           <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
         </LinearInterpolationFunction>
-        <PhaseLookupValue name="NodeAppearanceRate">
-          <Start>Emergence</Start>
-          <End>Maturity</End>
-          <LinearInterpolationFunction name="Function">
-            <XProperty>Structure.MainStemNodeNo</XProperty>
-            <XYPairs>
-              <XY>1 60</XY>
-              <XY>3 60</XY>
-              <XY>6 60</XY>
-              <XY>30 60</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </PhaseLookupValue>
         <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>

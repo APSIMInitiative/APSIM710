@@ -228,6 +228,143 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">6</Value>
+        </Constant>
+        <PhaseLookup name="MainStemPrimordiaInitiationRate">
+          <PhaseLookupValue name="Juvenile">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">EndJuvenile</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegSeedling">
+            <Start type="text" description="Start">EndJuvenile</Start>
+            <End type="text" description="End">Flowering</End>
+            <OnEventFunction name="Target">
+              <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </LinearInterpolationFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepSeedling">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegRegrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">RGFlowering</End>
+            <OnEventFunction name="Target">
+              <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </LinearInterpolationFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepRegrowth">
+            <Start type="text" description="Start">RGFlowering</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+        </PhaseLookup>
+        <PhaseLookup name="MainStemNodeAppearanceRate">
+          <PhaseLookupValue name="Juvenile">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">EndJuvenile</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegSeedling">
+            <Start type="text" description="Start">EndJuvenile</Start>
+            <End type="text" description="End">Flowering</End>
+            <OnEventFunction name="Target">
+              <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </LinearInterpolationFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepSeedling">
+            <Start type="text" description="Start">Flowering</Start>
+            <End type="text" description="End">Maturity</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="VegRegrowth">
+            <Start type="text" description="Start">StartRegrowth</Start>
+            <End type="text" description="End">RGFlowering</End>
+            <OnEventFunction name="Target">
+              <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
+              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
+              <Constant name="PreEventValue">
+                <Value type="text" description="Value">0</Value>
+              </Constant>
+              <LinearInterpolationFunction name="PostEventValue">
+                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
+                <XYPairs>
+                  <XY>10.5 51</XY>
+                  <XY>12.5 34</XY>
+                  <XY>24 34</XY>
+                </XYPairs>
+              </LinearInterpolationFunction>
+            </OnEventFunction>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="RepRegrowth">
+            <Start type="text" description="Start">RGFlowering</Start>
+            <End type="text" description="End">EndRegrowth</End>
+            <Constant name="Function">
+              <Value type="text" description="Value">51</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <Memo>Rationale for parameterization is:
+
+Long phyllochron 51oC/node occurs at:
+- Juvenile
+- Reproductive stages
+
+Shorter phyllochrons 34 to 51oCd as f = (photoperiod) during vegetative stages
+
+</Memo>
+        </PhaseLookup>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">150</Value>
+        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -378,76 +515,6 @@ Teixeira E. I., Brown H., Moot D. J., Meenken E. D., 2011 (submitted). Growth an
             <XYPairs shortcut="/lucerne2/Model/Plant/Phenology/ThermalTime/XYPairs" />
           </AirTemperatureFunction>
         </FinalNodeNumber>
-        <PhaseLookup name="NodeAppearanceRate">
-          <PhaseLookupValue name="Juvenile">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">EndJuvenile</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">51</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="VegSeedling">
-            <Start type="text" description="Start">EndJuvenile</Start>
-            <End type="text" description="End">Flowering</End>
-            <OnEventFunction name="Target">
-              <SetEvent type="text" description="SetEvent">EndJuvenile</SetEvent>
-              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
-              <Constant name="PreEventValue">
-                <Value type="text" description="Value">0</Value>
-              </Constant>
-              <LinearInterpolationFunction name="PostEventValue">
-                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-                <XYPairs>
-                  <XY>10.5 51</XY>
-                  <XY>12.5 34</XY>
-                  <XY>24 34</XY>
-                </XYPairs>
-              </LinearInterpolationFunction>
-            </OnEventFunction>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="RepSeedling">
-            <Start type="text" description="Start">Flowering</Start>
-            <End type="text" description="End">Maturity</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">51</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="VegRegrowth">
-            <Start type="text" description="Start">StartRegrowth</Start>
-            <End type="text" description="End">RGFlowering</End>
-            <OnEventFunction name="Target">
-              <SetEvent type="text" description="SetEvent">StartRegrowth</SetEvent>
-              <ReSetEvent type="text" description="ReSetEvent">never</ReSetEvent>
-              <Constant name="PreEventValue">
-                <Value type="text" description="Value">0</Value>
-              </Constant>
-              <LinearInterpolationFunction name="PostEventValue">
-                <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-                <XYPairs>
-                  <XY>10.5 51</XY>
-                  <XY>12.5 34</XY>
-                  <XY>24 34</XY>
-                </XYPairs>
-              </LinearInterpolationFunction>
-            </OnEventFunction>
-          </PhaseLookupValue>
-          <PhaseLookupValue name="RepRegrowth">
-            <Start type="text" description="Start">RGFlowering</Start>
-            <End type="text" description="End">EndRegrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">51</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <Memo>Rationale for parameterization is:
-
-Long phyllochron 51oC/node occurs at:
-- Juvenile
-- Reproductive stages
-
-Shorter phyllochrons 34 to 51oCd as f = (photoperiod) during vegetative stages
-
-</Memo>
-        </PhaseLookup>
         <MultiplyFunction name="MaxArea">
           <Memo>Leaf area expansion
 
@@ -730,7 +797,7 @@ LAI expansion needs attention in the future.</Memo>
         <MultiplyFunction name="DMDemandFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Variable name="NodesAppearing">
-            <VariableName type="text" description="Variable Name">Leaf.DeltaNodeNumber</VariableName>
+            <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
           </Variable>

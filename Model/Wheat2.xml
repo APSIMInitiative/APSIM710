@@ -374,6 +374,30 @@
       <Structure>
         <PrimaryBudNo>1</PrimaryBudNo>
         <InitialiseStage>Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">4</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start>Emergence</Start>
+          <End>FloralInitiation</End>
+          <Constant name="Function">
+            <Value>95.0</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start>Emergence</Start>
+          <End>Maturity</End>
+          <LinearInterpolationFunction name="Function">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>1 95</XY>
+              <XY>30 95</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">40</Value>
+        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>StageCode.Value</XProperty>
           <XYPairs>
@@ -704,24 +728,6 @@
             <XY>34 0</XY>
           </XYPairs>
         </AirTemperatureFunction>
-        <PhaseLookupValue name="NodeInitiationRate">
-          <Start>Emergence</Start>
-          <End>FloralInitiation</End>
-          <Constant name="Function">
-            <Value>95.0</Value>
-          </Constant>
-        </PhaseLookupValue>
-        <PhaseLookupValue name="NodeAppearanceRate">
-          <Start>Emergence</Start>
-          <End>Maturity</End>
-          <LinearInterpolationFunction name="Function">
-            <XProperty>Structure.MainStemNodeNo</XProperty>
-            <XYPairs>
-              <XY>1 95</XY>
-              <XY>30 95</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </PhaseLookupValue>
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty>WaterSupplyDemandRatio</XProperty>
           <XYPairs>

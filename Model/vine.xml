@@ -193,6 +193,27 @@
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">BudBurst</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">3</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">BudBurst</Start>
+          <End type="text" description="End">Veraison</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">30</Value>
+          </Constant>
+          <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start>BudBurst</Start>
+          <End>Veraison</End>
+          <Constant name="Function">
+            <Value>30.0</Value>
+          </Constant>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">24</Value>
+        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -326,13 +347,6 @@
             <XY>500 1800.0</XY>
           </XYPairs>
         </LinearInterpolationFunction>
-        <PhaseLookupValue name="NodeAppearanceRate">
-          <Start>BudBurst</Start>
-          <End>Veraison</End>
-          <Constant name="Function">
-            <Value>30.0</Value>
-          </Constant>
-        </PhaseLookupValue>
         <LinearInterpolationFunction name="LagDuration">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>

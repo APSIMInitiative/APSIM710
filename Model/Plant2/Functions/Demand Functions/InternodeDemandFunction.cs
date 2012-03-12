@@ -19,7 +19,7 @@ public class InternodeDemandFunction : Function
     {
         get
         {
-            return Leaf.DeltaNodeNumber * Structure.TotalStemPopn * InterNodeWt.Value;
+            return Structure.DeltaNodeNumber * Structure.TotalStemPopn * InterNodeWt.Value;
         }
     }
 }

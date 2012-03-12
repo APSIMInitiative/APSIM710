@@ -54,8 +54,8 @@ public class Leaf : BaseOrgan, AboveGround
     public Population Population = null;
     [Link]
     public Function ExtinctionCoeff = null;
-    [Link]
-    public Function NodeAppearanceRate = null;
+    //[Link]
+    //public Function NodeAppearanceRate = null;
     [Link]
     public Function FrostFraction = null;
     //[Link]
@@ -630,7 +630,7 @@ public class Leaf : BaseOrgan, AboveGround
         }
         //Calculate final leaf number changes due to peremergence vernalisation.  
         //FIXME  HEB.  This is not a very robust test as won't work if the emergence phase is not called "Emerging"  Need something better.
-        if (Phenology.CurrentPhaseName == "Emerging")
+        /*if (Phenology.CurrentPhaseName == "Emerging")
         {
             FinalNodeNumber.PreEmergenceCalculate();
         }
@@ -647,7 +647,7 @@ public class Leaf : BaseOrgan, AboveGround
             InitialiseCohorts();
             FinalNodeNumber.Calculate();
             CohortsInitialised = true;
-        }
+        }*/
 
         if (FrostFraction.Value > 0)
             foreach (LeafCohort L in Leaves)
@@ -674,7 +674,7 @@ public class Leaf : BaseOrgan, AboveGround
             if (FinalLeafFraction != 1.0)
                 FinalLeafAppeared = true;
             int AppearingNode = (int)(Structure.MainStemNodeNo + (1 - FinalLeafFraction));
-            double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * NodeAppearanceRate.Value * FinalLeafFraction;
+            double CohortAge = (Structure.MainStemNodeNo - AppearingNode) * Structure.MainStemNodeAppearanceRate.Value * FinalLeafFraction;
             double BranchNumber = Population.Value * Structure.PrimaryBudNo;
             if (Leaves.Count > 0)
             {
@@ -765,11 +765,11 @@ public class Leaf : BaseOrgan, AboveGround
     }
     public void CalculateNodeNumber()
     {
-        DeltaNodeNumber = 0;
+        /*DeltaNodeNumber = 0;
         if (NodeAppearanceRate.Value > 0)
             DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
         Structure.MainStemNodeNo += DeltaNodeNumber;
-        Structure.MainStemNodeNo = Math.Min(Structure.MainStemNodeNo, Structure.MainStemFinalNodeNo);
+        Structure.MainStemNodeNo = Math.Min(Structure.MainStemNodeNo, Structure.MainStemFinalNodeNo); */
     }
     public virtual void ZeroLeaves()
     {

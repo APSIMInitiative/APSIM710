@@ -31,13 +31,13 @@ public class Structure
     //public Function MainStemInitialPrimordiaNumber = null;
     //[Link(NamePath = "MainStemPrimordiaInitiationRate")]
     //public Function MainStemPrimordiaInitiationRate = null;
-    //[Link(NamePath = "MainStemNodeAppearanceRate")]
-    //[Output]
-    //public Function MainStemNodeAppearanceRate = null;
+    [Link(NamePath = "MainStemNodeAppearanceRate")]
+    [Output]
+    public Function MainStemNodeAppearanceRate = null;
     //[Link(NamePath = "MainStemFinalNodeNumber")]
     //public Function FinalNodeNumber = null;
     public double _MainStemPrimordiaNumber = 0;
-    public double _MainStemNodeNumber = 0;
+    //public double _MainStemNodeNumber = 0;
     public double DeltaNodeNumber = 0;
     public double _ThermalTime = 0;
         
@@ -115,27 +115,6 @@ public class Structure
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
 
-    /*public double MainStemPrimordiaNumber
-    {
-        get
-        {
-            return _MainStemPrimordiaNumber;
-        }
-    }
-    public double MainStemNodeNumber
-    {
-        get
-        {
-            return _MainStemNodeNumber;
-        }
-    } */
-    //public double MainStemFinalNodeNumber
-    //{
-    //    get
-    //    {
-    //        return FinalNodeNumber.Value;
-    //    }
-    //}
     public double Height 
     {
         get
@@ -162,6 +141,26 @@ public class Structure
     #region Functions
     public void DoPotentialGrowth()
     {
+
+        if (Phenology.CurrentPhaseName == "Emerging")
+        {
+            Leaf.FinalNodeNumber.PreEmergenceCalculate();
+        }
+
+        if (Leaf.CohortsInitialised) //Leaves are initialised so calculate apperance
+        {
+            Leaf.FinalNodeNumber.Calculate();
+           // Leaf.CalculateNodeNumber();
+        }
+
+        if (Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+        {
+            Leaf.CopyLeaves(Leaf.Leaves, Leaf.InitialLeaves);
+            Leaf.InitialiseCohorts();
+            Leaf.FinalNodeNumber.Calculate();
+            Leaf.CohortsInitialised = true;
+        }
+
         /*   if ((Leaf.AppearedCohortNo == (int)MainStemFinalNodeNumber) && (Leaf.AppearedCohortNo > 0.0) && (Leaf.AppearedCohortNo < Leaf.MaxNodeNo)) //If last interger leaf has appeared set the fraction of the final part leaf.
            {
                //Leaf.FinalLeafFraction = MainStemFinalNodeNumber - Leaf.AppearedCohortNo;
@@ -173,17 +172,20 @@ public class Structure
            else if (MainStemPrimordiaInitiationRate.Value > 0.0)
                _MainStemPrimordiaNumber += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
            _MainStemPrimordiaNumber = Math.Min(_MainStemPrimordiaNumber, MainStemFinalNodeNumber);
-
+        */
         //Calculate Node number
-           if (MainStemNodeNumber > 0) //If statement needs to go
+           
+           if (Phenology.OnDayOf(InitialiseStage))
+           {} //do nothing
+           else if (MainStemNodeNo > 0)  //If statement needs to go
            {
                DeltaNodeNumber = 0;
                if (MainStemNodeAppearanceRate.Value > 0)
-                   DeltaNodeNumber = _ThermalTime / MainStemNodeAppearanceRate.Value;
-               _MainStemNodeNumber += DeltaNodeNumber;
-               _MainStemNodeNumber = Math.Min(_MainStemNodeNumber, MainStemFinalNodeNumber);
+                   DeltaNodeNumber = ThermalTime.Value / MainStemNodeAppearanceRate.Value;
+               MainStemNodeNo += DeltaNodeNumber;
+               MainStemNodeNo = Math.Min(MainStemNodeNo, MainStemFinalNodeNo);
            }
-
+        /*
            // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
            if (Phenology.OnDayOf(InitialiseStage))
            {
@@ -209,7 +211,7 @@ public class Structure
     [EventHandler]
     public void Clear()
     {
-        _MainStemNodeNumber = 0;
+        MainStemNodeNo = 0;
         _MainStemPrimordiaNumber = 0;
     }
     #endregion

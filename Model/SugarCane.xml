@@ -128,6 +128,33 @@
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">4</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndCrop</End>
+          <Constant name="Function">
+            <Value type="text" description="Value">80</Value>
+          </Constant>
+          <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="MainStemNodeAppearanceRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">EndCrop</End>
+          <LinearInterpolationFunction name="Function">
+            <XProperty>Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>1 80</XY>
+              <XY>20 105</XY>
+              <XY>30 125</XY>
+              <XY>40 150</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+        </PhaseLookupValue>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">100</Value>
+        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>StageValue.Value</XProperty>
           <XYPairs>
@@ -237,13 +264,6 @@
           <Value type="text" description="Value">0</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="yHeight">
-          <XProperty>StageValue.Value</XProperty>
-          <XYPairs>
-            <XY>3 100</XY>
-            <XY>5 6000</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>
@@ -253,19 +273,6 @@
           </XYPairs>
           <Memo>Sets the proportion of leaf area that is killed by frost</Memo>
         </LinearInterpolationFunction>
-        <PhaseLookupValue name="NodeAppearanceRate">
-          <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">EndCrop</End>
-          <LinearInterpolationFunction name="Function">
-            <XProperty>Structure.MainStemNodeNo</XProperty>
-            <XYPairs>
-              <XY>1 80</XY>
-              <XY>20 105</XY>
-              <XY>30 125</XY>
-              <XY>40 150</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </PhaseLookupValue>
         <LinearInterpolationFunction name="GrowthDuration">
           <XProperty>Structure.MainStemNodeNo</XProperty>
           <XYPairs>

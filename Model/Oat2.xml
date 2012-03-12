@@ -184,6 +184,42 @@
       <Structure>
         <PrimaryBudNo type="text" description="PrimaryBudNo">1</PrimaryBudNo>
         <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+        <Constant name="MainStemInitialPrimordiaNumber">
+          <Value type="text" description="Value">4</Value>
+        </Constant>
+        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+          <Start type="text" description="Start">Emergence</Start>
+          <End type="text" description="End">FinalLeaf</End>
+          <DivideFunction name="NodeInitiationRateFunction">
+            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
+            <Variable name="Phyllochron">
+              <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Phyllochron.Value</VariableName>
+              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+                 </Memo>
+            </Variable>
+            <Constant name="PrimordiaPerMainstemNode">
+              <Value type="text" description="Value">2</Value>
+            </Constant>
+          </DivideFunction>
+        </PhaseLookupValue>
+        <MultiplyFunction name="MainStemNodeAppearanceRate">
+          <Memo>Multiplies the values of the children of this node</Memo>
+          <LinearInterpolationFunction name="LeafStageFactor">
+            <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
+            <XYPairs>
+              <XY>0 0.75</XY>
+              <XY>1.9999 1</XY>
+              <XY>7.999 1</XY>
+              <XY>8 1.3</XY>
+            </XYPairs>
+          </LinearInterpolationFunction>
+          <Constant name="BasePhyllochron">
+            <Value type="text" description="Value">80</Value>
+          </Constant>
+        </MultiplyFunction>
+        <Constant name="MainStemFinalNodeNumber">
+          <Value type="text" description="Value">34</Value>
+        </Constant>
         <HeightFunction name="Height">
           <Memo> 
 			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
@@ -664,7 +700,7 @@
         <MultiplyFunction name="GrowthDuration">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Variable name="Phyllochron">
-            <VariableName type="text" description="Variable Name">Leaf.NodeAppearanceRate.BasePhyllochron.Value</VariableName>
+            <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
           </Variable>
@@ -1091,7 +1127,7 @@
           <MultiplyFunction name="PotentialDMAccumulation">
             <Memo>Multiplies the values of the children of this node</Memo>
             <Variable name="NodesAppearing">
-              <VariableName type="text" description="Variable Name">Leaf.DeltaNodeNumber</VariableName>
+              <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
               <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
             </Variable>
@@ -1129,7 +1165,7 @@
         <MultiplyFunction name="yDMDemandFunction">
           <Memo>Multiplies the values of the children of this node</Memo>
           <Variable name="NodesAppearing">
-            <VariableName type="text" description="Variable Name">Leaf.DeltaNodeNumber</VariableName>
+            <VariableName type="text" description="Variable Name">Structure.DeltaNodeNumber</VariableName>
             <Memo>Returns the value of a nominated internal Plant2 numerical variable
 </Memo>
           </Variable>
