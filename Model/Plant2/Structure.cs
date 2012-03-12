@@ -136,6 +136,13 @@ public class Structure
             return DroughtInducedBranchMortality.Value + ShadeInducedBranchMortality.Value;
         }
     }
+    public double AttainableFinalNodeNumber
+    {
+        get
+        {
+            return Leaf.FinalNodeNumber.TerminateFinalNodeNumber.AttainableFinalNodeNumber;
+        }
+    }
     #endregion
 
     #region Functions

@@ -12,9 +12,6 @@ public class InternodeDemandFunction : Function
     [Link]
     Structure Structure = null;
 
-    [Link]
-    Leaf Leaf = null;
-
     public override double Value
     {
         get

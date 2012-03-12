@@ -12,7 +12,7 @@ public class FinalNodeNumber
     [Link]
     protected Function ThermalTime = null;
     [Link(IsOptional = true)]
-    protected TerminateFinalNodeNumber TerminateFinalNodeNumber = null;  //This Should be renamed "FinalLeafNumber"
+    public TerminateFinalNodeNumber TerminateFinalNodeNumber = null;  //This Should be renamed "FinalLeafNumber"
     [Link(IsOptional = true)]
     protected Function NodeInitiationRate = null;  //Fixme.  This variable should be renamed "PrimordiaInitiationRate"
     [Link(IsOptional = true)]

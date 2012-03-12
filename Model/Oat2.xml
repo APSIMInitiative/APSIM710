@@ -95,6 +95,29 @@
             </MultiplyFunction>
           </AddFunction>
         </MultiplyFunction>
+        <VernalisationSIRIUS>
+          <VernalisationType type="text" description="VernalisationType">1</VernalisationType>
+          <PhaseLookup name="Vernalisation">
+            <PhaseLookupValue name="SoilTemperature">
+              <Start type="text" description="Start">Sowing</Start>
+              <End type="text" description="End">FloralInitiation</End>
+              <SoilTemperatureFunction name="ThermalTime">
+                <XYPairs>
+                  <XY>0 0.012</XY>
+                  <XY>11 0.0187</XY>
+                  <XY>15 0</XY>
+                </XYPairs>
+              </SoilTemperatureFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="AirTemperature">
+              <Start type="text" description="Start">FloralInitiation</Start>
+              <End type="text" description="End">HarvestRipe</End>
+              <AirTemperatureFunction name="ThermalTime">
+                <XYPairs shortcut="/Oat2/Model/Plant/Phenology/VernalisationSIRIUS/Vernalisation/SoilTemperature/ThermalTime/XYPairs" />
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </VernalisationSIRIUS>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
           <End>Germination</End>
@@ -112,9 +135,31 @@
           <Constant name="Target">
             <Value>1.0</Value>
           </Constant>
-          <Variable name="JuvenileDevelopmentIndex">
-            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.JuvenileDevelopmentIndex</VariableName>
-          </Variable>
+          <MultiplyFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime">
+            <PhaseLookup shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup">
+              <PhaseLookupValue name="SoilTemperature" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">
+                <SoilTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature/ThermalTime/XYPairs" />
+                </SoilTemperatureFunction>
+              </PhaseLookupValue>
+              <PhaseLookupValue name="AirTemperature" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature">
+                <AirTemperatureFunction name="ThermalTime" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/PhaseLookup/AirTemperature/ThermalTime/XYPairs" />
+                </AirTemperatureFunction>
+              </PhaseLookupValue>
+            </PhaseLookup>
+            <AddFunction name="DroughtPhenologyAcelleration" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration">
+              <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Memo" />
+              <Constant name="One" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/One" />
+              <MultiplyFunction name="Stress" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress">
+                <Memo shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/Memo" />
+                <Constant name="StressResponseCoefficient" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressResponseCoefficient" />
+                <LinearInterpolationFunction name="StressFactor" shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor">
+                  <XYPairs shortcut="/Oat2/Model/Plant/Phenology/ThermalTime/DroughtPhenologyAcelleration/Stress/StressFactor/XYPairs" />
+                </LinearInterpolationFunction>
+              </MultiplyFunction>
+            </AddFunction>
+          </MultiplyFunction>
         </FacultativeVernalisationPhase>
         <LeafAppearancePhase name="FloralInitiationToFlagLeaf">
           <Start>FloralInitiation</Start>

@@ -85,6 +85,29 @@
             </MultiplyFunction>
           </AddFunction>
         </MultiplyFunction>
+        <VernalisationSIRIUS>
+          <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
+          <PhaseLookup name="Vernalisation">
+            <PhaseLookupValue name="SoilTemperature">
+              <Start type="text" description="Start">Sowing</Start>
+              <End type="text" description="End">FloralInitiation</End>
+              <SoilTemperatureFunction name="ThermalTime">
+                <XYPairs>
+                  <XY>0 0.012</XY>
+                  <XY>11 0.0187</XY>
+                  <XY>15 0</XY>
+                </XYPairs>
+              </SoilTemperatureFunction>
+            </PhaseLookupValue>
+            <PhaseLookupValue name="AirTemperature">
+              <Start type="text" description="Start">FloralInitiation</Start>
+              <End type="text" description="End">HarvestRipe</End>
+              <AirTemperatureFunction name="ThermalTime">
+                <XYPairs shortcut="/SIRIUSWheat/Model/Plant/Phenology/VernalisationSIRIUS/Vernalisation/SoilTemperature/ThermalTime/XYPairs" />
+              </AirTemperatureFunction>
+            </PhaseLookupValue>
+          </PhaseLookup>
+        </VernalisationSIRIUS>
         <GerminatingPhase name="Germinating">
           <Start>Sowing</Start>
           <End>Germination</End>
@@ -102,9 +125,6 @@
           <Constant name="Target">
             <Value>1.0</Value>
           </Constant>
-          <Variable name="JuvenileDevelopmentIndex">
-            <VariableName type="text" description="Variable Name">Leaf.FinalNodeNumber.TerminateFinalNodeNumber.JuvenileDevelopmentIndex</VariableName>
-          </Variable>
           <MultiplyFunction name="ThermalTime" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime">
             <PhaseLookup shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup">
               <PhaseLookupValue name="SoilTemperature" shortcut="/SIRIUSWheat/Model/Plant/Phenology/ThermalTime/PhaseLookup/SoilTemperature">

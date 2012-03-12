@@ -1113,5 +1113,28 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       <EndStageForCumulativeVD type="text" description="EndStageForCumulativeVD">
       </EndStageForCumulativeVD>
     </VernalisationCW>
+    <VernalisationSIRIUS>
+      <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
+      <PhaseLookup name="Vernalisation">
+        <PhaseLookupValue name="SoilTemperature">
+          <Start type="text" description="Start">Sowing</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <SoilTemperatureFunction name="ThermalTime">
+            <XYPairs>
+              <XY>0 0.012</XY>
+              <XY>11 0.0187</XY>
+              <XY>15 0</XY>
+            </XYPairs>
+          </SoilTemperatureFunction>
+        </PhaseLookupValue>
+        <PhaseLookupValue name="AirTemperature">
+          <Start type="text" description="Start">FloralInitiation</Start>
+          <End type="text" description="End">HarvestRipe</End>
+          <AirTemperatureFunction name="ThermalTime">
+            <XYPairs />
+          </AirTemperatureFunction>
+        </PhaseLookupValue>
+      </PhaseLookup>
+    </VernalisationSIRIUS>
   </Folder>
 </folder>

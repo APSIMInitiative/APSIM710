@@ -6,22 +6,24 @@ using System.Text;
 public class FacultativeVernalisationPhase : Phase
 {
     [Link]
-    Function JuvenileDevelopmentIndex = null;
+    Function Target = null;
 
     [Link]
-    Function Target = null;
+    Structure Structure = null;
+
+    [Link]
+    VernalisationSIRIUS VernalisationSIRIUS = null;
     
     //Class Parameters
-    private double ExtentOfVernYesterday;
-    private double ExtentOfVern;
+    private double ExtentOfDevelopmentYesterday;
+    private double ExtentOfDevelopment;
+    public double _JuvenileDevelopmentIndex = 0;
+    public bool InitialLoop = true;
 
-    [Output]
-    public double CumulativeVern { get { return ExtentOfVern; } }
-    
     /// <summary>
     /// Reset phase
     /// </summary>
-    public override void ResetPhase() { ExtentOfVernYesterday = 0; }
+    public override void ResetPhase() { ExtentOfDevelopmentYesterday = 0; }
 
     /// <summary>
     /// This function increments vernalisation units accumulated in phase 
@@ -29,30 +31,50 @@ public class FacultativeVernalisationPhase : Phase
     /// the phenology class knows to progress to the next phase and how
     /// much tt to pass it on the first day.
     /// </summary>
+    public double JuvenileDevelopmentIndex
+    {
+        get
+        {
+            return _JuvenileDevelopmentIndex;
+        }
+    }
+    
+    public void UpdateJuvenileDevelopmentIndex()
+    {
+            if (Structure.MainStemPrimordiaNo == 0)
+                _JuvenileDevelopmentIndex = VernalisationSIRIUS.AccumulatedVernalisation;
+            else if ((VernalisationSIRIUS.AccumulatedVernalisation >= 1) || (Structure.MainStemPrimordiaNo >= Structure.AttainableFinalNodeNumber))
+                _JuvenileDevelopmentIndex = 1.0;
+            else
+                _JuvenileDevelopmentIndex = Math.Max(Structure.MainStemPrimordiaNo / Structure.AttainableFinalNodeNumber, VernalisationSIRIUS.AccumulatedVernalisation);
+        }
+
     public override double DoTimeStep(double PropOfDayToUse)
     {
         // Calculate the Vern for today.
-        ExtentOfVern = JuvenileDevelopmentIndex.Value * PropOfDayToUse;
-
+        UpdateJuvenileDevelopmentIndex();
+        ExtentOfDevelopment = JuvenileDevelopmentIndex * PropOfDayToUse;
+        
         // Get the Target TT
         double Target = CalcTarget();
 
         double PropOfDayUnused = 0.0;
-        if (ExtentOfVern > Target)
+        if (ExtentOfDevelopment > Target)
         {
-            double LeftOverValue = ExtentOfVern - Target;
-            if (ExtentOfVern > 0.0)
+            double LeftOverValue = ExtentOfDevelopment - Target;
+            if (ExtentOfDevelopment > 0.0)
             {
-                double PropOfValueUnused = LeftOverValue / (ExtentOfVern - ExtentOfVernYesterday);
+                double PropOfValueUnused = LeftOverValue / (ExtentOfDevelopment - ExtentOfDevelopmentYesterday);
                 PropOfDayUnused = PropOfValueUnused * PropOfDayToUse;
             }
             else
                 PropOfDayUnused = 1.0;
         }
-        if (ExtentOfVern == Target)
+        if (ExtentOfDevelopment == Target)
             PropOfDayUnused = 1.0;
 
-        ExtentOfVernYesterday = ExtentOfVern;
+        ExtentOfDevelopmentYesterday = ExtentOfDevelopment;
+        //AccumulatedVernalisation += Vernalisation.Value;
         return PropOfDayUnused;
     }
 
@@ -71,9 +93,12 @@ public class FacultativeVernalisationPhase : Phase
     {
         get
         {
-            return ExtentOfVern / CalcTarget();
+            return ExtentOfDevelopment / CalcTarget();
         }
     }
+
+ 
+
 }
 
 
