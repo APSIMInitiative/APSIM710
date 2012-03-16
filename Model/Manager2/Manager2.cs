@@ -93,6 +93,7 @@ public class Manager2
             {
                 CompilerParameters Params = new CompilerParameters();
                 Params.GenerateInMemory = true;      //Assembly is created in memory
+                Params.TempFiles = new TempFileCollection(Path.GetTempPath(), false);
                 Params.TreatWarningsAsErrors = false;
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
