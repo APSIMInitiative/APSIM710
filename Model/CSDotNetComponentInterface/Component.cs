@@ -208,6 +208,26 @@ namespace ModelFramework
             RuntimeEventHandler Event = new RuntimeEventHandler(NamePrefix + EventName, F);
             HostComponent.Subscribe(Event);
         }
+        //
+        /// <summary>
+        /// Manually register a property.
+        /// This is NOT meant to be the normal way to do things. It is here largely for
+        /// backwards compatibility.
+        /// </summary>
+        /// <param name="sName">name of the property</param>
+        /// <param name="sDDML">DDML describing the property type</param>
+        /// <param name="read">can the property be read</param>
+        /// <param name="write">can the property be written</param>
+        /// <param name="init">is it an initialisation value</param>
+        /// <param name="sDescr">short description</param>
+        /// <param name="sFullDescr">full description</param>
+        /// <param name="pDelegate">delegate pointing to a function handling requests to read or write the property value</param>
+        /// <returns></returns>
+        public virtual int RegisterProperty(String sName, String sDDML, Boolean read, Boolean write, Boolean init, String sDescr, String sFullDescr, propertyDelegate pDelegate)
+        {
+            return HostComponent.RegisterProperty(sName, sDDML, read, write, init, sDescr, sFullDescr, pDelegate);
+        }
+
         // --------------------------------------------------------------------
         /// <summary>
         /// </summary>

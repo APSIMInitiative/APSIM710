@@ -12,6 +12,30 @@ using ApsimFile;
 
 namespace ModelFramework
 {
+    /// <summary>
+    /// Extends the TPropertyInfo class by adding a delegate pointing to a function which can be used
+    /// to read or write the property.
+    /// This is NOT meant to be used to any great extent, and is largely for backwards compatability,
+    /// allowing for registration of new outputs on the fly
+    /// </summary>
+    class TExtendedPropertyInfo : TPropertyInfo
+    {
+        public propertyDelegate pDelegate;
+        public TExtendedPropertyInfo(String sDDMLType, String sShortDescr, String sFullDescr, String sBaseType, propertyDelegate pDeleg)
+            : base(sDDMLType, sShortDescr, sFullDescr, sBaseType)
+        {
+            pDelegate = pDeleg;
+        }
+    }
+    /// <summary>
+    /// Defines a delegate type for callbacks to read or write a manually-added property.
+    /// </summary>
+    /// <param name="propID">The propertyID</param>
+    /// <param name="value">Receives the new value (if a read operation); holds the value to be used in a write (request set) operation(</param>
+    /// <param name="isSetRequest">If true, the call is a request to set the property; if false, a request to read it.</param>
+    /// <returns></returns>
+    public delegate bool propertyDelegate(int propID, ref TPropertyInfo value, bool isSetRequest);
+
     // --------------------------------------------------------------------
     /// <summary>
     /// This is the main host for an Apsim component such as Plant2.
@@ -31,7 +55,7 @@ namespace ModelFramework
         public uint ComponentID;
         //private String Name;
         private String DllFileName;
-        private Dictionary<int, TPropertyInfo> RegistrationsPropStatic;     //component properties (for plant2 they are 'static' properties and will not be deregistered)
+        private Dictionary<int, TExtendedPropertyInfo> RegistrationsPropStatic;     //component properties (for plant2 they are 'static' properties and will not be deregistered)
         private Dictionary<int, FactoryProperty> RegistrationsProp;         //component instance properties
         private Dictionary<int, FactoryProperty> RegistrationsDriver;
         private Dictionary<FactoryProperty, int> ReverseRegDriver;
@@ -72,7 +96,7 @@ namespace ModelFramework
             instanceNumber = instancenumber;
             modelAssembly = ModelAssembly;
             DllFileName = ModelAssembly.Location;
-            RegistrationsPropStatic = new Dictionary<int, TPropertyInfo>();
+            RegistrationsPropStatic = new Dictionary<int, TExtendedPropertyInfo>();
             RegistrationsProp = new Dictionary<int, FactoryProperty>();
             RegistrationsDriver = new Dictionary<int, FactoryProperty>();
             ReverseRegDriver = new Dictionary<FactoryProperty, int>();
@@ -177,8 +201,8 @@ namespace ModelFramework
                         POSTINDEX = SOWINDEX + 2;
                         registerEvent(null, "Post", "<type/>", POSTINDEX, TypeSpec.KIND_SUBSCRIBEDEVENT, 0, 0);
                         //need a 'static' property here so other components know something of plant
-                        int propertyID = RegisterProperty("plant_status", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead");
-                        TPropertyInfo staticProperty;
+                        int propertyID = RegisterProperty("plant_status", "<type kind=\"string\"/>", true, false, false, "Plant status", "out, alive, dead", null);
+                        TExtendedPropertyInfo staticProperty;
                         if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
                         {
                             staticProperty.setValue("out"); //default to no crop in
@@ -352,10 +376,10 @@ namespace ModelFramework
         /// <param name="sDescr"></param>
         /// <param name="sFullDescr"></param>
         // ----------------------------------------------
-        public int RegisterProperty(String sName, String sDDML, Boolean read, Boolean write, Boolean init, String sDescr, String sFullDescr)
+        public int RegisterProperty(String sName, String sDDML, Boolean read, Boolean write, Boolean init, String sDescr, String sFullDescr, propertyDelegate pDeleg)
         {
             int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
-            TPropertyInfo property = new TPropertyInfo(sDDML, sDescr, sFullDescr, "");
+            TExtendedPropertyInfo property = new TExtendedPropertyInfo(sDDML, sDescr, sFullDescr, "", pDeleg);
             property.Name = sName;
             RegistrationsPropStatic.Add(RegistrationIndex, property);
             Host.addProperty(sName, RegistrationIndex, true, false, false, sDDML, sDescr, sFullDescr);
@@ -872,6 +896,7 @@ namespace ModelFramework
                 ModelInstance = null;
             }
         }
+
         // -----------------------------------------------------------------------
         /// <summary>
         /// Handler for all QueryValue messages.
@@ -894,10 +919,13 @@ namespace ModelFramework
             {
                 //the propertyID wasn't found in the model instance's registered list so search the list
                 //of 'static' properties that may have been registered in this class.
-                TPropertyInfo staticProperty;
+                TExtendedPropertyInfo staticProperty;
                 if (RegistrationsPropStatic.TryGetValue(propertyID, out staticProperty))
                 {
-                    result = ReadStaticProperty("plant_status", staticProperty, aValue);
+                    if (staticProperty.pDelegate != null)
+                      result = staticProperty.pDelegate.Invoke(propertyID, ref aValue, false);
+                    else
+                      result = ReadStaticProperty("plant_status", staticProperty, aValue);
                 }
             }
             return result;
