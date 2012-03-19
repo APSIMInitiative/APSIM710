@@ -1605,6 +1605,7 @@ c      read(ret_string, *, iostat = err_code) g%rain
        double precision conc_adsorb_solute(0:M)
        double precision dble_dis(0:M)
        double precision dble_exco(0:M)
+       double precision dble_fip(0:M)
        double precision dr              ! timestep rainfall (during g%dt)(mm)
        double precision dummy(0:M)
        double precision eo
@@ -1947,6 +1948,19 @@ cnh added as per request by Dr Val Snow
      :            dble_exco(0),
      :            p%n+1)
 
+      else if (index(Variable_name,'fip_').eq.1) then            !VOS added 19 March 2012
+
+         solnum = apswim_solute_number (Variable_name(5:))
+         do 210 node=0,p%n
+            dble_fip(node) = p%fip(solnum,node)
+  210    continue
+
+         call respond2Get_double_array (
+     :            Variable_name,
+     :            '()',
+     :            dble_fip(0),
+     :            p%n+1)
+
       else if (index(Variable_name,'dis_').eq.1) then
 
          solnum = apswim_solute_number (Variable_name(5:))
@@ -2045,6 +2059,7 @@ cnh added as per request by Dr Val Snow
       double precision suction(0:M)
       integer solnum
       double precision sol_exco(0:M)  ! solute exchange coefficient
+      double precision sol_fip(0:M)  ! solute exchange coefficient
       double precision sol_dis(0:M)   ! solute dispersion coefficient
 
 *- Implementation Section ----------------------------------
@@ -2092,6 +2107,22 @@ cnh added as per request by Dr Val Snow
          do 300 node=0,numvals-1
             p%ex(solnum,node) = sol_exco(node)*p%rhob(node)
   300    continue
+
+      else if (index(Variable_name,'fip_').eq.1) then          !VOS added 19 March 2012
+
+         solnum = apswim_solute_number (Variable_name(5:))
+         call collect_double_array (
+     :              Variable_name,
+     :              p%n+1,
+     :              '()',
+     :              sol_fip(0),
+     :              numvals,
+     :              c%lb_fip,
+     :              c%ub_fip)
+
+         do 310 node=0,numvals-1
+            p%fip(solnum,node) = sol_fip(node)
+  310    continue
 
       else if (index(Variable_name,'dis_').eq.1) then
 
