@@ -35,14 +35,26 @@ class ModifyProjectForApsimX
         XmlDocument Doc = new XmlDocument();
         Doc.Load(SourceProjectFileName);
 
-        string[] ItemsToExclude = { "DotNetProxies", "EntryPoints.cs", "CMPServices",
-                                    "CSDotNetComponentInterface"};
+        string[] ItemsToExclude = { "DotNetProxies", "EntryPoints.cs", "CMPServices", "CSDotNetComponentInterface"};
 
         foreach (XmlNode ItemGroup in XmlHelper.ChildNodes(Doc.DocumentElement, "ItemGroup"))
             foreach (XmlNode Child in XmlHelper.ChildNodes(ItemGroup, ""))
                 foreach (string Item in ItemsToExclude)
                     if (Child.ParentNode != null && XmlHelper.Attribute(Child, "Include").Contains(Item))
                         Child.ParentNode.RemoveChild(Child);
+
+        // Extend <DefineConstants> to include APSIMX
+        foreach (XmlNode PropertyGroup in XmlHelper.ChildNodes(Doc.DocumentElement, "PropertyGroup"))
+        {
+            if (XmlHelper.Attribute(PropertyGroup, "Condition") != "")
+            {
+                string newDefines = "APSIMX";
+                string oldDefines = XmlHelper.Value(PropertyGroup, "DefineConstants");
+                if (oldDefines != "")
+                    newDefines += ";" + oldDefines;
+                XmlHelper.SetValue(PropertyGroup, "DefineConstants", newDefines);
+            }
+        }
 
         // Add in a reference to ApsimX
         XmlNode ReferenceNode = XmlHelper.FindRecursively(Doc.DocumentElement, "Reference");
