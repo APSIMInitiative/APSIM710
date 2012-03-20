@@ -109,14 +109,17 @@
           <Value type="text" description="Value">3</Value>
         </Constant>
         <Variable name="MainStemPrimordiaInitiationRate">
-          <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate</VariableName>
+          <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Value</VariableName>
         </Variable>
         <Constant name="MainStemNodeAppearanceRate">
           <Value type="text" description="Value">14</Value>
         </Constant>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">500</Value>
-        </Constant>
+        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">500</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+        </PhaseLengthFinalNodeNumber>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -243,6 +246,14 @@
           <Rank type="text" description="Rank">3</Rank>
           <Area type="text" description="Area">300</Area>
         </LeafCohort>
+        <LeafCohort name="Leaves[4]">
+          <Rank type="text" description="Rank">4</Rank>
+          <Area type="text" description="Area">0</Area>
+        </LeafCohort>
+        <LeafCohort name="Leaves[5]">
+          <Rank type="text" description="Rank">5</Rank>
+          <Area type="text" description="Area">0</Area>
+        </LeafCohort>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 
 Initial ages and initial areas are array fields so the size and age of multiple leaves can be entered, separated by a space.  The initial age is used to set how far through its expansion phase each leaf is on the day of planting.</Memo>
@@ -270,10 +281,6 @@ Initial ages and initial areas are array fields so the size and age of multiple 
             <XY>20 1</XY>
           </XYPairs>
         </AirTemperatureFunction>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">500</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
-        </FinalNodeNumber>
         <Constant name="GrowthDuration">
           <Value type="text" description="Value">70</Value>
         </Constant>

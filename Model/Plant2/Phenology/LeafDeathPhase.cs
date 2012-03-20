@@ -27,7 +27,7 @@ public class LeafDeathPhase : Phase
             First = false;
         }
 
-        if (Leaf.DeadCohortNo >= Structure.MainStemFinalNodeNo)
+        if ((Leaf.DeadCohortNo >= Structure.MainStemFinalNodeNo)||(Leaf.CohortsInitialised == false))
             return 0.00001;
         else
             return 0;

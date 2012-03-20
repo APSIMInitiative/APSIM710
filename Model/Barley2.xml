@@ -94,7 +94,7 @@
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
                   <XY>0 0.012</XY>
-                  <XY>11 0.0187</XY>
+                  <XY>11 0.0307</XY>
                   <XY>15 0</XY>
                 </XYPairs>
               </SoilTemperatureFunction>
@@ -230,21 +230,23 @@
         <Constant name="MainStemInitialPrimordiaNumber">
           <Value type="text" description="Value">4</Value>
         </Constant>
-        <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
-          <Start type="text" description="Start">Germination</Start>
-          <End type="text" description="End">FlagLeaf</End>
-          <DivideFunction name="NodeInitiationRateFunction">
-            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-            <Variable name="Phyllochron">
-              <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
+        <PhaseLookup name="MainStemPrimordiaInitiationRate">
+          <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
+            <Start type="text" description="Start">Emergence</Start>
+            <End type="text" description="End">FlagLeaf</End>
+            <DivideFunction name="NodeInitiationRateFunction">
+              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
+              <Variable name="Phyllochron">
+                <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
+                <Memo>Returns the value of a nominated internal Plant2 numerical variable
                  </Memo>
-            </Variable>
-            <Constant name="PrimordiaPerMainstemNode">
-              <Value type="text" description="Value">2</Value>
-            </Constant>
-          </DivideFunction>
-        </PhaseLookupValue>
+              </Variable>
+              <Constant name="PrimordiaPerMainstemNode">
+                <Value type="text" description="Value">2</Value>
+              </Constant>
+            </DivideFunction>
+          </PhaseLookupValue>
+        </PhaseLookup>
         <MultiplyFunction name="MainStemNodeAppearanceRate">
           <Memo>Multiplies the values of the children of this node</Memo>
           <LinearInterpolationFunction name="LeafStageFactor">
@@ -260,9 +262,26 @@
             <Value type="text" description="Value">95</Value>
           </Constant>
         </MultiplyFunction>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">34</Value>
-        </Constant>
+        <CerealFinalNodeNumber name="MainStemFinalNodeNumber">
+          <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
+          <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
+          <MaximumMainStemNodeNumber type="text" description="Maximum mainstem node number">26</MaximumMainStemNodeNumber>
+          <MinimumMainStemNodeNumber type="text" description="Minimum mainstem node number">7</MinimumMainStemNodeNumber>
+          <PhotoperiodFunction name="Photoperiod">
+            <Twilight type="text" description="Twilight">-6</Twilight>
+          </PhotoperiodFunction>
+          <Memo> 
+			This Function calculates the final mainstem leaf number using the approaches outlined by Jamieson and Brooking and implemented in the SIRIUS wheat model.
+			Note:  This function is dependent on the FacultativeVernalisationPhase
+			It works something like this:  
+			- The crop will not comitt to a final leaf number until the crop complets its juvinle phase.  Juvinalisy ends in 3 ways.
+			   1. Spring crop types are "borne" vernalised and end their juvinle phase at leaf number 3.
+			   2. Winter crop types will end their juvinle phase when their vernalisation requirement is fully saturated.
+			   3. Winter crop types may also end their juvenile phase when the number of primordia accumulated exceeds the attainable leaf number which starts at a maximum and decreases as the crop progresses toward saturation of its vernalisation requirement.  Thus a crop will eventually end its juvinele phase even if it is not vernalised and partial vernalisation will shorten this phase.
+		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
+			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
+			</Memo>
+        </CerealFinalNodeNumber>
         <HeightFunction name="Height">
           <Memo> 
 			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
@@ -565,36 +584,6 @@
           <ArraySize>Leaf.MaxNodeNo</ArraySize>
           <Property>Leaf.Leaves[].Dead</Property>
         </ArrayBiomass>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">26</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">4</InitialLeafPrimordia>
-          <PhaseLookupValue name="NodeInitiationRate">
-            <Start type="text" description="Start">Germination</Start>
-            <End type="text" description="End">FlagLeaf</End>
-            <DivideFunction name="NodeInitiationRateFunction">
-              <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-              <Variable name="Phyllochron">
-                <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.BasePhyllochron.Value</VariableName>
-                <Memo>Returns the value of a nominated internal Plant2 numerical variable
-                 </Memo>
-              </Variable>
-              <Constant name="PrimordiaPerMainstemNode">
-                <Value type="text" description="Value">2</Value>
-              </Constant>
-            </DivideFunction>
-          </PhaseLookupValue>
-          <TerminateFinalNodeNumber>
-            <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
-            <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-            <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
-            <VernalisationIntercept type="text" description="VernalisationIntercept">0.012</VernalisationIntercept>
-            <VernalisationSlope type="text" description="VernalisationSlope">0.0017</VernalisationSlope>
-            <PhotoperiodFunction name="Photoperiod">
-              <Twilight type="text" description="Twilight">-6</Twilight>
-            </PhotoperiodFunction>
-          </TerminateFinalNodeNumber>
-          <AirTemperatureFunction name="ThermalTime" shortcut="/Barley2/Model/Plant/Phenology/ThermalTime" />
-        </FinalNodeNumber>
         <RUEModel name="Photosynthesis">
           <Constant name="RUE">
             <Value type="text" description="Value">1.5</Value>

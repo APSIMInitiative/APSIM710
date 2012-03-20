@@ -5,7 +5,7 @@ using System.Reflection;
 
 [Description("This Function uses the Jamieson and Brooking phenology model to determine the final main-stem leaf number of a cereal plant")]
 public class TerminateFinalNodeNumber
-{
+{/*
  #region Setup
     [Link]
     Leaf Leaf = null;
@@ -172,5 +172,5 @@ public class TerminateFinalNodeNumber
         if (Leaf.ExpandedNodeNo <= CommitHaunStage)
         _TerminatedFinalNodeNumber = PhotoperiodFinalNodeNumber;
     }
- #endregion
+ #endregion*/
 }

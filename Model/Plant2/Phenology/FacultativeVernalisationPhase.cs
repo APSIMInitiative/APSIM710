@@ -47,6 +47,7 @@ public class FacultativeVernalisationPhase : Phase
                 _JuvenileDevelopmentIndex = 1.0;
             else
                 _JuvenileDevelopmentIndex = Math.Max(Structure.MainStemPrimordiaNo / Structure.AttainableFinalNodeNumber, VernalisationSIRIUS.AccumulatedVernalisation);
+            double test = Structure.VernalisationIndex;
         }
 
     public override double DoTimeStep(double PropOfDayToUse)

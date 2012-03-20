@@ -1,4 +1,4 @@
-<folder version="30" name="simulations">
+<folder version="31" name="simulations">
   <simulation name="ReleasedWheat">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\goond.met</filename>
@@ -1191,18 +1191,18 @@
         <filename output="yes">ReleasedWheat.out</filename>
         <title>ReleasedWheat</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="stage" />
-          <variable name="stagename" />
-          <variable name="LAI" />
-          <variable name="biomass_wt" />
-          <variable name="biomass" />
-          <variable name="sw_dep()" />
-          <variable name="surfaceom_wt" />
-          <variable name="no3()" />
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>stage</variable>
+          <variable>stagename</variable>
+          <variable>LAI</variable>
+          <variable>biomass_wt</variable>
+          <variable>biomass</variable>
+          <variable>sw_dep()</variable>
+          <variable>surfaceom_wt</variable>
+          <variable>no3()</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event name="daily" />
+          <event>daily</event>
         </events>
       </outputfile>
     </area>
@@ -1261,19 +1261,19 @@
         <filename output="yes">Wheat2.out</filename>
         <title>Wheat2</title>
         <variables name="Variables">
-          <variable name="dd/mm/yyyy as Date" />
-          <variable name="StageCodeValue" />
-          <variable name="PhenologyCurrentPhaseName" />
-          <variable name="LeafLAI" />
-          <variable name="AboveGroundWt" />
-          <variable name="sw_dep()" />
-          <variable name="WaterDemand" />
-          <variable name="LeafFw" />
-          <variable name="LeafTranspiration" />
-          <variable name="LeafWaterDemand" />
-          <variable name="RootWaterUptake" />
-          <variable name="surfaceom_wt" />
-          <variable name="no3()" />
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>StageCodeValue</variable>
+          <variable>PhenologyCurrentPhaseName</variable>
+          <variable>LeafLAI</variable>
+          <variable>AboveGroundWt</variable>
+          <variable>sw_dep()</variable>
+          <variable>WaterDemand</variable>
+          <variable>LeafFw</variable>
+          <variable>LeafTranspiration</variable>
+          <variable>LeafWaterDemand</variable>
+          <variable>RootWaterUptake</variable>
+          <variable>surfaceom_wt</variable>
+          <variable>no3()</variable>
         </variables>
         <events name="Reporting Frequency" shortcut="/simulations/ReleasedWheat/paddock/outputfile/Reporting Frequency" />
       </outputfile>
@@ -1478,6 +1478,18 @@ if (date_within('[date1], [date2]') = 1) then
     </area>
   </simulation>
   <Graph name="LAI">
+    <Legend>
+      <CheckedTitles> LeafLAI, ReleasedWheat</CheckedTitles>
+      <CheckedTitles> LeafLAI, {Checkpoint} ReleasedWheat</CheckedTitles>
+      <CheckedTitles> LeafLAI, Wheat2</CheckedTitles>
+      <CheckedTitles> LeafLAI, {Checkpoint} Wheat2</CheckedTitles>
+      <CheckedTitles> LAI, Wheat2</CheckedTitles>
+      <CheckedTitles> LAI, {Checkpoint} Wheat2</CheckedTitles>
+      <CheckedTitles> LAI, Wheat2 With CO2</CheckedTitles>
+      <CheckedTitles> LAI, {Checkpoint} Wheat2 With CO2</CheckedTitles>
+      <CheckedTitles> LAI, Wheat2WithSWIM3</CheckedTitles>
+      <CheckedTitles> LAI, {Checkpoint} Wheat2WithSWIM3</CheckedTitles>
+    </Legend>
     <Plot>
       <SeriesType>Solid line</SeriesType>
       <PointType>Circle</PointType>

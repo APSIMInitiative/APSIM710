@@ -395,9 +395,12 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </PhaseLookupValue>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">40</Value>
-        </Constant>
+        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+        </PhaseLengthFinalNodeNumber>
         <LinearInterpolationFunction name="Height">
           <XProperty>StageCode.Value</XProperty>
           <XYPairs>
@@ -647,18 +650,6 @@
         <CompositeBiomass name="Dead">
           <Property>Leaf.Leaves[].Dead</Property>
         </CompositeBiomass>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">4</InitialLeafPrimordia>
-          <PhaseLookupValue name="NodeInitiationRate">
-            <Start>Emergence</Start>
-            <End>FloralInitiation</End>
-            <Constant name="Function">
-              <Value>95.0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <AirTemperatureFunction shortcut="/Wheat2/Model/Plant/Leaf/ThermalTime" />
-        </FinalNodeNumber>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Leaf.MinT</XProperty>
           <XYPairs>

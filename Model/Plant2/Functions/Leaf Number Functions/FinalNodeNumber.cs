@@ -8,7 +8,7 @@ using System.Reflection;
 [Description("Calculates daily increment of new leaf primordia (as the value of ThermalTime function divided by the value of NodeInitiationRate Function) and stops further increase in primordia number when primordia number reaches the MaximumNodeNumber specified or when it reaches the value returned by a FinalLeafNumber function")]
 public class FinalNodeNumber
 {
-    //Class Linkages
+   /* //Class Linkages
     [Link]
     protected Function ThermalTime = null;
     [Link(IsOptional = true)]
@@ -86,6 +86,6 @@ public class FinalNodeNumber
             _PrimordiaNumber = Math.Min(_PrimordiaNumber, MaxNodeNo);
         }
         else _PrimordiaNumber = MaxNodeNo;
-    }
+    }*/
 
 }

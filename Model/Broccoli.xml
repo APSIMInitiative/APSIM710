@@ -156,19 +156,11 @@
           <Value type="text" description="Value">3</Value>
         </Constant>
         <PhaseLookupValue name="MainStemPrimordiaInitiationRate">
-          <Start type="text" description="Start">Emergence</Start>
-          <End type="text" description="End">FinalLeaf</End>
-          <DivideFunction name="NodeInitiationRateFunction">
-            <Memo>Starting with the first child value of this node, recursively divide by the values of the subsequent child values </Memo>
-            <Variable name="Phyllochron">
-              <VariableName type="text" description="Variable Name">Structure.MainStemNodeAppearanceRate.Phyllochron.Value</VariableName>
-              <Memo>Returns the value of a nominated internal Plant2 numerical variable
-                 </Memo>
-            </Variable>
-            <Constant name="PrimordiaPerMainstemNode">
-              <Value type="text" description="Value">2</Value>
-            </Constant>
-          </DivideFunction>
+          <Start type="text" description="Start">Transplanting</Start>
+          <End type="text" description="End">FloralInitiation</End>
+          <Constant>
+            <Value type="text" description="Value">15</Value>
+          </Constant>
         </PhaseLookupValue>
         <PhaseLookupValue name="MainStemNodeAppearanceRate">
           <Start type="text" description="Start">EndShock</Start>
@@ -183,9 +175,6 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </PhaseLookupValue>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">34</Value>
-        </Constant>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -210,6 +199,12 @@
         <AirTemperatureFunction name="ThermalTime" shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Broccoli/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
+        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+        </PhaseLengthFinalNodeNumber>
       </Structure>
       <Leaf>
         <MaxCover type="text" description="MaxCover">1.0</MaxCover>
@@ -271,18 +266,6 @@
             <XY>35 0</XY>
           </XYPairs>
         </AirTemperatureFunction>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">8</InitialLeafPrimordia>
-          <PhaseLookupValue name="NodeInitiationRate">
-            <Start>Transplanting</Start>
-            <End>FloralInitiation</End>
-            <Constant name="Function">
-              <Value>15.0</Value>
-            </Constant>
-          </PhaseLookupValue>
-          <AirTemperatureFunction shortcut="/Broccoli/Model/Plant/Leaf/ThermalTime" />
-        </FinalNodeNumber>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 

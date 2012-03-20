@@ -16,18 +16,9 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Max cover")]
     [Units("max units")]
     public double MaxCover;
-    //[Param]
-    //[Output]
-    //[Description("Primary Bud")]
-    //public double PrimaryBudNo = 1;
     [Param]
     [Description("Extinction Coefficient (Dead)")]
     public double KDead = 0;
-    //[Output]
-    //[Param]
-    //[Description("The stage name that leaves get initialised.")]
-    //public string InitialiseStage = "";
-    //Model Inputs
     [Input]
     public int Day = 0;
     [Input]
@@ -45,8 +36,6 @@ public class Leaf : BaseOrgan, AboveGround
     public Phenology Phenology = null;
     [Link]
     public RUEModel Photosynthesis = null;
-    [Link]
-    public FinalNodeNumber FinalNodeNumber = null;
     //Child Functions
     [Link]
     public Function ThermalTime = null;
@@ -54,16 +43,8 @@ public class Leaf : BaseOrgan, AboveGround
     public Population Population = null;
     [Link]
     public Function ExtinctionCoeff = null;
-    //[Link]
-    //public Function NodeAppearanceRate = null;
     [Link]
     public Function FrostFraction = null;
-    //[Link]
-    //public Function BranchingRate = null;
-    //[Link(NamePath = "Height")]
-    //public Function HeightModel = null;
-    //[Link(IsOptional = true)]  //Fixme Hamish.  This parameter should not be optional but have made it so until I get round to putting it into all the crop .xml files.
-    //Function HeightExpansionStress = null;
     [Link]
     public Function ExpansionStress = null;
     [Link(NamePath = "DroughtInducedSenAcceleration", IsOptional = true)]
@@ -78,10 +59,6 @@ public class Leaf : BaseOrgan, AboveGround
     public Function StructuralFraction = null;
     [Link(IsOptional = true)]
     public Function DMDemandFunction = null;
-    //[Link (IsOptional = true)]
-    //public Function ShadeInducedBranchMortality = null;
-    //[Link(IsOptional = true)]
-    //public Function DroughtInducedBranchMortality = null;
  #endregion
 
  #region Class Data Members
@@ -128,31 +105,10 @@ public class Leaf : BaseOrgan, AboveGround
     ///Variables that represent the number of primordia or nodes (double) in a particular state on an individual mainstem are called number variables (e.g NodeNo or PrimordiaNo suffix)
     ///Variables that the number of leaves on a plant or a primary bud have Plant or Primary bud prefixes
     /// </summary>
-    //[Output]
-    //[Units("/m2")]
-    //[Description("Number of Mainstem units per meter")]
-    //private double MainStemPopn
-    //{
-    //    get { return Population.Value * Structure.PrimaryBudNo; }
-    //}
- /*   [Output]
-    [Units("/m2")]
-    [Description("Number of stems per meter including main and branch stems")]
-    public double TotalStemPopn
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-                n = Math.Max(n, L.Population);
-            return n;
-        }
-    }*/
     //Mainstem unit (nodes or cohorts) state variables
     [Output]
-
     [Description("Number of primordia initiated on each main stem")] //Note: PrimordiaNo is a double that increase gradually each day
-    public double PrimordiaNo { get { return FinalNodeNumber.PrimordiaNumber; } }
+    public double PrimordiaNo { get { return Structure.MainStemPrimordiaNo; } }
     [Output]
     [Description("Number of leaf cohort objects that have been initialised")] //Note:  InitialisedCohortNo is an interger of Primordia Number, increasing every time primordia increses by one and a new cohort is initialised
     public double InitialisedCohortNo 
@@ -166,9 +122,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Count;
         }
     }
-    //[Output]
-    //[Description("Number of leaf mainstem nodes that have appeared")] //Note: AppearedNodeNo is a double that increase gradually each day
-    //public double AppearedNodeNo = 0;
     [Output]
     [Description("Number of leaf cohort that have appeared")] //Note:  AppearedCohortNo is an interger of AppearedNodeNo, increasing every time AppearedNodeNo increses by one and a new cohort is appeared
     public double AppearedCohortNo
@@ -186,7 +139,6 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-
     [Description("Number of leaf cohorts that have appeared but not yet fully expanded")]
     public double ExpandingCohortNo
     {
@@ -210,7 +162,6 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-
     [Description("Number of leaf cohorts that are fully expanded")]
     public double ExpandedCohortNo
     {
@@ -224,7 +175,6 @@ public class Leaf : BaseOrgan, AboveGround
          }
     }
     [Output]
-
     [Description("Number of leaf cohorts that are have expanded but not yet fully senesced")]
     public double GreenCohortNo
     {
@@ -255,7 +205,6 @@ public class Leaf : BaseOrgan, AboveGround
         }
     }
     [Output]
-
     [Description("Number of leaf cohorts that have fully Senesced")]
     public double DeadCohortNo
     {
@@ -268,28 +217,6 @@ public class Leaf : BaseOrgan, AboveGround
             return Math.Min(Count, Structure.MainStemFinalNodeNo);
         }
     }
-    /*/Plant leaf number state variables
-    [Output]
-    [Units("/plant")]
-    [Description("Number of Appeared leaves per plant including all main stem and branch leaves")]
-    public double PlantAppearedLeafNo
-    {
-        get
-        {
-            double n = 0;
-            foreach (LeafCohort L in Leaves)
-                if (L.IsAppeared)
-                    n += L.Population;
-            return n / Population.Value;
-        }
-    }
-    [Output]
-    [Units("/PrimaryBud")]
-    [Description("Number of appeared leaves per primary bud unit including all main stem and branch leaves")]
-    public double PrimaryBudAppearedLeafNo
-    {
-        get { return PlantAppearedLeafNo / Structure.PrimaryBudNo; }
-    }*/
     [Output]
     [Units("/plant")]
     [Description("Number of appeared leaves per plant that have appeared but not yet fully senesced on each plant")]
@@ -307,14 +234,7 @@ public class Leaf : BaseOrgan, AboveGround
     //Leaf State Variables regarding final leaf number
     [Output]
     [Description("Number of leaves that will appear on the mainstem before it terminates")]
-    public double FinalLeafNo { get { return FinalNodeNumber.FinalLeafNumber; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
-    /*[Output]
-    [Units("0-1")]
-    [Description("Relative progress toward final leaf")]
-    public double RelativeLeafApperance { get { return Structure.MainStemNodeNo / FinalLeafNo; } }
-    [Output]
-    [Description("Number of leaves yet to appear")]
-    public double RemainingNodeNo { get { return FinalLeafNo - Structure.MainStemNodeNo; } }*/
+    public double FinalLeafNo { get { return Structure.MainStemFinalNodeNumber.Value; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
     
     //Canopy State variables
     [Output("Height")]
@@ -628,32 +548,13 @@ public class Leaf : BaseOrgan, AboveGround
         {
             FinalLeafFraction = Structure.MainStemFinalNodeNo - AppearedCohortNo;
         }
-        //Calculate final leaf number changes due to peremergence vernalisation.  
-        //FIXME  HEB.  This is not a very robust test as won't work if the emergence phase is not called "Emerging"  Need something better.
-        /*if (Phenology.CurrentPhaseName == "Emerging")
-        {
-            FinalNodeNumber.PreEmergenceCalculate();
-        }
-
-        if (CohortsInitialised) //Leaves are initialised so calculate apperance
-        {
-            FinalNodeNumber.Calculate();
-            CalculateNodeNumber();
-        }
-
-        if (Phenology.OnDayOf(Structure.InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-        {
-            CopyLeaves(Leaves, InitialLeaves);
-            InitialiseCohorts();
-            FinalNodeNumber.Calculate();
-            CohortsInitialised = true;
-        }*/
 
         if (FrostFraction.Value > 0)
             foreach (LeafCohort L in Leaves)
                 L.DoFrost(FrostFraction.Value);
 
-        if (Structure.MainStemPrimordiaNo >= Leaves.Count + FinalLeafFraction) //When primordia number is 1 more than current cohort number produce a new cohort
+        //When primordia number is 1 more than current cohort number produce a new cohort
+        if (Structure.MainStemPrimordiaNo >= Leaves.Count + FinalLeafFraction) 
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeInitiationRate.  Your NodeInitiationRate is triggering a new leaf cohort before leaves have been initialised.");
@@ -667,7 +568,8 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves.Add(NewLeaf);
         }
 
-        if ((Structure.MainStemNodeNo >= AppearedCohortNo + FinalLeafFraction) && (FinalLeafFraction > 0.0))//When Node number is 1 more than current appeared leaf number make a new leaf appear and start growing
+        //When Node number is 1 more than current appeared leaf number make a new leaf appear and start growing
+        if ((Structure.MainStemNodeNo >= AppearedCohortNo + FinalLeafFraction) && (FinalLeafFraction > 0.0))
         {
             if (CohortsInitialised == false)
                 throw new Exception("Trying to initialse new cohorts prior to InitialStage.  Check the InitialStage parameter on the leaf object and the parameterisation of NodeAppearanceRate.  Your NodeAppearanceRate is triggering a new leaf cohort before the initial leaves have been triggered.");
@@ -692,15 +594,9 @@ public class Leaf : BaseOrgan, AboveGround
             NewLeaf.Invoke();
         }
 
-        //Work out stem mortanity from shading
-        //if (ShadeInducedBranchMortality != null)
-        //    ProportionStemMortality = ShadeInducedBranchMortality.Value;
-
-        //if (DroughtInducedBranchMortality != null)
-        //    ProportionStemMortality += DroughtInducedBranchMortality.Value;
-        
         FractionNextleafExpanded = 0;
         bool NextExpandingLeaf = false;
+        
         foreach (LeafCohort L in Leaves)
         {
             L.DoPotentialGrowth(_ThermalTime, Structure.ProportionStemMortality);
@@ -717,12 +613,14 @@ public class Leaf : BaseOrgan, AboveGround
         }
         _ExpandedNodeNo = ExpandedCohortNo + FractionNextleafExpanded;
     }
+    
     public virtual void InitialiseCohorts() //This sets up cohorts on the day growth starts (eg at emergence)
     {
         Leaves.Clear();
         CopyLeaves(InitialLeaves, Leaves);
         foreach (LeafCohort Leaf in Leaves)
         {
+            CohortsInitialised = true;
             if (Leaf.Area > 0)//If initial cohorts have an area set the are considered to be appeared on day of emergence so we do appearance and count up the appeared nodes on the first day
             {
                 Leaf._Population = Population.Value * Structure.PrimaryBudNo;
@@ -732,11 +630,8 @@ public class Leaf : BaseOrgan, AboveGround
             }
             else //Leaves are primordia and have not yet emerged, initialise but do not set appeared values yet
             Leaf.DoInitialisation();
+            Structure.MainStemPrimordiaNo += 1.0;
         }
-        
-        // Add fraction of top leaf expanded to node number.
-        //AppearedNodeNo = AppearedNodeNo + Leaves[(int)AppearedNodeNo - 1].FractionExpanded;
-
     }
     public override void DoActualGrowth()
     {
@@ -763,18 +658,10 @@ public class Leaf : BaseOrgan, AboveGround
             FractionDied = DeltaDeadLeaves / GreenCohortNo;
         }
     }
-    public void CalculateNodeNumber()
-    {
-        /*DeltaNodeNumber = 0;
-        if (NodeAppearanceRate.Value > 0)
-            DeltaNodeNumber = ThermalTime.Value / NodeAppearanceRate.Value;
-        Structure.MainStemNodeNo += DeltaNodeNumber;
-        Structure.MainStemNodeNo = Math.Min(Structure.MainStemNodeNo, Structure.MainStemFinalNodeNo); */
-    }
     public virtual void ZeroLeaves()
     {
         Structure.MainStemNodeNo = 0;
-        FinalNodeNumber.Clear();
+        Structure.Clear();
         Leaves.Clear();
         Console.WriteLine("Removing Leaves from plant");
     }
@@ -1152,8 +1039,8 @@ public class Leaf : BaseOrgan, AboveGround
         MaxCover = Sow.MaxCover;
         Structure.PrimaryBudNo = Sow.BudNumber;
         //StemPopulation = Sow.Population * Sow.BudNumber;
-        if (FinalNodeNumber != null)
-            MaxNodeNo = FinalNodeNumber.MaximumNodeNumber;
+        //if (FinalNodeNumber != null)
+            MaxNodeNo = Structure.MaximumNodeNumber;
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
@@ -1198,7 +1085,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine(Indent + new string('-', Title.Length));
 
         Structure.MainStemNodeNo = 0;
-        FinalNodeNumber.Clear();
+        Structure.Clear();
         Live.Clear();
         Dead.Clear();
         Leaves.Clear();

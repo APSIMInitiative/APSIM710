@@ -200,9 +200,12 @@
             </XYPairs>
           </LinearInterpolationFunction>
         </PhaseLookupValue>
-        <Constant name="MainStemFinalNodeNumber">
-          <Value type="text" description="Value">40</Value>
-        </Constant>
+        <PhaseLengthFinalNodeNumber name="MainStemFinalNodeNumber">
+          <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">40</MaximumMainStemNodeNumber>
+          <Memo> 
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+        </PhaseLengthFinalNodeNumber>
         <LinearInterpolationFunction name="Height">
           <XProperty>Stem.Live.Wt</XProperty>
           <XYPairs>
@@ -469,21 +472,6 @@
         <AirTemperatureFunction name="ThermalTime" shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">40</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">6</InitialLeafPrimordia>
-          <PhaseLookupValue name="NodeInitiationRate">
-            <Start type="text" description="Start">Emergence</Start>
-            <End type="text" description="End">StartPodGrowth</End>
-            <Constant name="Function">
-              <Value type="text" description="Value">40</Value>
-            </Constant>
-            <Memo>Determines how quickly Nodes are initiatted on the Apex of the mainstem</Memo>
-          </PhaseLookupValue>
-          <AirTemperatureFunction shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime">
-            <XYPairs shortcut="/Chickpea2/Model/Plant/Phenology/ThermalTime/XYPairs" />
-          </AirTemperatureFunction>
-        </FinalNodeNumber>
         <Constant name="StructuralFraction">
           <Value type="text" description="Value">.99</Value>
           <Memo>StructuralFraction sets the size of the metabolic pool with Metabolic DM demand calculated as: 

@@ -11,6 +11,7 @@ public class VernalisationSIRIUS
     [Param]
     private double VernalisationType = 0;
 
+    [Output]
     public double AccumulatedVernalisation = 0;
     
     
@@ -21,6 +22,7 @@ public class VernalisationSIRIUS
     public void OnNewMet(NewMetType NewMet)
     {
         AccumulatedVernalisation += Vernalisation.Value;
+        AccumulatedVernalisation = Math.Min(AccumulatedVernalisation, 1.0);
     }
 
     /// <summary>

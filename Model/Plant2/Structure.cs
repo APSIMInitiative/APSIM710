@@ -13,31 +13,28 @@ public class Structure
     Leaf Leaf = null;
     [Link]
     public Phenology Phenology = null;
-    //[Link]
-    //public FinalNodeNumber FinalNodeNumber = null;
     [Link]
     public Population Population = null;
     [Param]
     [Output]
     [Description("Primary Bud")]
     public double PrimaryBudNo = 1;
+    public double MaximumNodeNumber = 0;
 
     [Output]
     [Param]
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
     
-    //[Link(NamePath = "MainStemInitialPrimordiaNumber")]
-    //public Function MainStemInitialPrimordiaNumber = null;
-    //[Link(NamePath = "MainStemPrimordiaInitiationRate")]
-    //public Function MainStemPrimordiaInitiationRate = null;
+    [Link(NamePath = "MainStemInitialPrimordiaNumber")]
+    public Function MainStemInitialPrimordiaNumber = null;
+    [Link(NamePath = "MainStemPrimordiaInitiationRate")]
+    public Function MainStemPrimordiaInitiationRate = null;
     [Link(NamePath = "MainStemNodeAppearanceRate")]
-    [Output]
     public Function MainStemNodeAppearanceRate = null;
-    //[Link(NamePath = "MainStemFinalNodeNumber")]
-    //public Function FinalNodeNumber = null;
-    public double _MainStemPrimordiaNumber = 0;
-    //public double _MainStemNodeNumber = 0;
+    [Link(NamePath = "MainStemFinalNodeNumber")]
+    public Function MainStemFinalNodeNumber = null;
+    
     public double DeltaNodeNumber = 0;
     public double _ThermalTime = 0;
         
@@ -75,7 +72,7 @@ public class Structure
     }
     [Output]
     [Description("Number of mainstem primordia initiated")] //Note: PrimordiaNo is a double that increase gradually each day
-    public double MainStemPrimordiaNo { get { return Leaf.PrimordiaNo; } }
+    public double MainStemPrimordiaNo = 0;
     [Output]
     [Description("Number of mainstem nodes appeared")] //Note: AppearedNodeNo is a double that increase gradually each day
     public double MainStemNodeNo = 0;
@@ -110,7 +107,16 @@ public class Structure
     [Output]
     [Units("0-1")]
     [Description("Relative progress toward final leaf")]
-    public double RelativeNodeApperance { get { return MainStemNodeNo / MainStemFinalNodeNo; } }
+    public double RelativeNodeApperance 
+    { 
+        get 
+        {
+            if (Leaf.CohortsInitialised == false) //FIXME introduced to removed colateral damage during testing.  Need to remove and fix max leaf area parameterisation in potato.xml
+                return 0;
+            else
+                return MainStemNodeNo / MainStemFinalNodeNo; 
+        } 
+    }
     [Output]
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
@@ -140,7 +146,7 @@ public class Structure
     {
         get
         {
-            return Leaf.FinalNodeNumber.TerminateFinalNodeNumber.AttainableFinalNodeNumber;
+            return MainStemFinalNodeNumber.AttainableFinalNodeNumber;
         }
     }
     #endregion
@@ -149,38 +155,27 @@ public class Structure
     public void DoPotentialGrowth()
     {
 
-        if (Phenology.CurrentPhaseName == "Emerging")
-        {
-            Leaf.FinalNodeNumber.PreEmergenceCalculate();
-        }
-
-        if (Leaf.CohortsInitialised) //Leaves are initialised so calculate apperance
-        {
-            Leaf.FinalNodeNumber.Calculate();
-           // Leaf.CalculateNodeNumber();
-        }
+           if (MainStemPrimordiaInitiationRate != null)
+            {
+                if (Phenology.OnDayOf(InitialiseStage))
+                { }//MainStemPrimordiaNo = MainStemInitialPrimordiaNumber.Value;
+                else if (MainStemPrimordiaInitiationRate.Value > 0.0)
+                    MainStemPrimordiaNo += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
+                
+                MainStemFinalNodeNumber.UpdateVariables();
+                MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
+            }
+            else MainStemPrimordiaNo = MainStemFinalNodeNumber.Value;
+        
+       
 
         if (Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
         {
             Leaf.CopyLeaves(Leaf.Leaves, Leaf.InitialLeaves);
             Leaf.InitialiseCohorts();
-            Leaf.FinalNodeNumber.Calculate();
-            Leaf.CohortsInitialised = true;
+            //Leaf.FinalNodeNumber.Calculate();
+            //Leaf.CohortsInitialised = true;
         }
-
-        /*   if ((Leaf.AppearedCohortNo == (int)MainStemFinalNodeNumber) && (Leaf.AppearedCohortNo > 0.0) && (Leaf.AppearedCohortNo < Leaf.MaxNodeNo)) //If last interger leaf has appeared set the fraction of the final part leaf.
-           {
-               //Leaf.FinalLeafFraction = MainStemFinalNodeNumber - Leaf.AppearedCohortNo;
-           }
-        
-         //Calculate primordia number
-           if (Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-                _MainStemPrimordiaNumber = MainStemInitialPrimordiaNumber.Value;
-           else if (MainStemPrimordiaInitiationRate.Value > 0.0)
-               _MainStemPrimordiaNumber += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
-           _MainStemPrimordiaNumber = Math.Min(_MainStemPrimordiaNumber, MainStemFinalNodeNumber);
-        */
-        //Calculate Node number
            
            if (Phenology.OnDayOf(InitialiseStage))
            {} //do nothing
@@ -192,19 +187,7 @@ public class Structure
                MainStemNodeNo += DeltaNodeNumber;
                MainStemNodeNo = Math.Min(MainStemNodeNo, MainStemFinalNodeNo);
            }
-        /*
-           // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-           if (Phenology.OnDayOf(InitialiseStage))
-           {
-               //Leaf.InitialLeafSetup();
-           }
-
-           //When primordia number is 1 more than current Leaf cohort number produce a new cohort
-           if (MainStemPrimordiaNumber >= Leaf.InitialisedCohortNo + Leaf.FinalLeafFraction)
-           {
-               //Leaf.InitialiseNewCohort();
-           }*/
-    }
+      }
    
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
@@ -219,8 +202,18 @@ public class Structure
     public void Clear()
     {
         MainStemNodeNo = 0;
-        _MainStemPrimordiaNumber = 0;
+        MainStemPrimordiaNo = 0;
+    }
+
+    [EventHandler]
+    public void OnSow(SowPlant2Type Sow)
+    {
+        MainStemFinalNodeNumber.SetFinalNodeNumber();
+        MaximumNodeNumber = MainStemFinalNodeNumber.Value;
     }
     #endregion
+
+    public double VernalisationIndex
+    { get { return MainStemFinalNodeNumber._VernalisationIndex; } }
 }
 

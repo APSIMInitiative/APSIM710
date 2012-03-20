@@ -450,19 +450,6 @@ Initial ages and initial areas are array fields so the size and age of multiple 
         <AirTemperatureFunction name="ThermalTime" shortcut="/Potato2/Model/Plant/Phenology/ThermalTime">
           <XYPairs shortcut="/Potato2/Model/Plant/Phenology/ThermalTime/XYPairs" />
         </AirTemperatureFunction>
-        <FinalNodeNumber>
-          <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
-          <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
-          <LinearInterpolationFunction name="xPhotoperiodFactor">
-            <XProperty type="text" description="XProperty">Phenology.Photoperiod.Value</XProperty>
-            <XYPairs>
-              <XY>8 0.3</XY>
-              <XY>14 0.3</XY>
-              <XY>15 1</XY>
-              <XY>20 1</XY>
-            </XYPairs>
-          </LinearInterpolationFunction>
-        </FinalNodeNumber>
         <LinearInterpolationFunction name="Growthduration">
           <XProperty type="text" description="XProperty">Structure.RelativeNodeApperance</XProperty>
           <XYPairs>
@@ -735,7 +722,9 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </Cultivar>
     <Cultivar name="JerseyBenny">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override NodeToOverride="Leaf.FinalNodeNumber.MaxNodeNo">19</Override>
+      <Override NodeToOverride="Structure.MainStemFinalNodeNumber">
+	    <Value type="text" description="Value">19</Value>
+	  </Override>
       <Override NodeToOverride="Structure.BranchingRate.Potential_Branching_Rate">
         <XYPairs>
           <XY>0 0</XY>
@@ -754,8 +743,10 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </Cultivar>
     <Cultivar name="MarisPiper">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override NodeToOverride="Leaf.FinalNodeNumber.MaxNodeNo">50</Override>
-      <Override NodeToOverride="Structure.BranchingRate.Potential_Branching_Rate">
+      <Override NodeToOverride="Structure.MainStemFinalNodeNumber">
+	    <Value type="text" description="Value">50</Value>
+	  </Override>
+	  <Override NodeToOverride="Structure.BranchingRate.Potential_Branching_Rate">
         <XYPairs>
           <XY>0 0</XY>
           <XY>7 0</XY>
@@ -821,7 +812,9 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </Cultivar>
     <Cultivar name="RussetBurbankLong">
       <Construct type="text" description="Construct">Plant</Construct>
-      <Override NodeToOverride="Leaf.FinalNodeNumber.MaxNodeNo">46</Override>
-    </Cultivar>
+            <Override NodeToOverride="Structure.MainStemFinalNodeNumber">
+	    <Value type="text" description="Value">46</Value>
+	  </Override>
+	</Cultivar>
   </Model>
 </Type>

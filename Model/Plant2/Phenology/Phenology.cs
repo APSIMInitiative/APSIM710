@@ -13,8 +13,10 @@ public class Phenology
     private Component My = null;
     [Link]
     private Paddock MyPaddock = null;
-    //[Link]
-    //public Phase Phase = null;
+    [Link(IsOptional = true)]
+    VernalisationSIRIUS VernalisationSIRIUS = null;
+    [Link(IsOptional = true)]
+    FacultativeVernalisationPhase FacultativeVernalisationPhase = null;
 
     private List<Phase> Phases = new List<Phase>();
     [Output]
@@ -66,6 +68,27 @@ public class Phenology
     /// Constructor
     /// </summary>
     public Phenology() { }
+
+    public double JuvenileDevelopmentIndex
+    {
+        get
+        {
+            if (FacultativeVernalisationPhase != null)
+                return FacultativeVernalisationPhase.JuvenileDevelopmentIndex;
+            else
+                return 0;
+        }
+    }
+    public double AccumulatedVernalisation
+    {
+        get
+        {
+            if (VernalisationSIRIUS != null)
+                return VernalisationSIRIUS.AccumulatedVernalisation;
+            else
+                return 0;
+        }
+    }
 
     [EventHandler]
     public void OnInitialised()
