@@ -9,7 +9,9 @@ everything: $(APSIM)/Model/ApsimX.exe $(APSIM)/Model/ModifyProjectForApsimX.exe 
 			$(APSIM)/Model/Manager2X.dll \
 			$(APSIM)/Model/SoilWaterX.dll \
 			$(APSIM)/Model/ReportDbX.dll \
-			$(APSIM)/Model/SoilNitrogenX.dll
+			$(APSIM)/Model/SoilNitrogenX.dll \
+         $(APSIM)/Model/SurfaceOrganicMatterX.dll \
+         $(APSIM)/Model/MicroClimateX.dll
 			
 
 $(APSIM)/Model/ApsimX.exe $(APSIM)/Model/ModifyProjectForApsimX.exe:
@@ -34,5 +36,13 @@ $(APSIM)/Model/ReportDbX.dll: $(APSIM)/Model/ReportDb.dll
 $(APSIM)/Model/SoilNitrogenX.dll: $(APSIM)/Model/SoilNitrogen.dll
 	$(RUN) $(APSIM)/Model/ModifyProjectForApsimX.exe $(APSIM)/Model/SoilNitrogen/SoilNitrogen.csproj
 	$(RUN) "$(VS100COMNTOOLS)..\IDE\devenv" $(APSIM)/Model/SoilNitrogen/SoilNitrogenX.csproj /build release	
+
+$(APSIM)/Model/SurfaceOrganicMatterX.dll: $(APSIM)/Model/SurfaceOrganicMatter.dll
+	$(RUN) $(APSIM)/Model/ModifyProjectForApsimX.exe $(APSIM)/Model/SurfaceOrganicMatter/SurfaceOrganicMatter.csproj
+	$(RUN) "$(VS100COMNTOOLS)..\IDE\devenv" $(APSIM)/Model/SurfaceOrganicMatter/SurfaceOrganicMatterX.csproj /build release	
+
+$(APSIM)/Model/MicroClimateX.dll: $(APSIM)/Model/MicroClimate.dll
+	$(RUN) $(APSIM)/Model/ModifyProjectForApsimX.exe $(APSIM)/Model/MicroClimate/MicroClimate.vbproj
+	$(RUN) "$(VS100COMNTOOLS)..\IDE\devenv" $(APSIM)/Model/MicroClimate/MicroClimateX.vbproj /build release
 
 include $(APSIM)/Model/Build/$(PLATFORM)DOTNET.make

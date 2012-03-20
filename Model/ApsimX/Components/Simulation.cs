@@ -31,3 +31,8 @@ public class Area
 
 }
 
+public class SummaryFile
+{
+
+}
+

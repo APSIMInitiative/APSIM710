@@ -32,7 +32,7 @@ public partial class SurfaceOM
     }
     
     [EventHandler]
-    public void OnInit2() { OnReset(); }
+    public void OnInitialised() { OnReset(); }
     
     [EventHandler]
     public void OnReset() { initialised = true; surfom_Reset(); }

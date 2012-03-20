@@ -29,6 +29,7 @@ internal class ModelInstance
     public object TheModel;
     public static string Title;
     private string _FullName;
+    private List<string> ComponentOrder = null;
 
 
     /// <summary>
@@ -38,8 +39,38 @@ internal class ModelInstance
     public static ModelInstance CreateModelInstance(XmlNode Node)
     {
         ModelInstance RootInstance = new ModelInstance(Node, null, Assembly.GetExecutingAssembly());
+        RootInstance.SortChildren();
         RootInstance.Initialise();
         return RootInstance;
+    }
+
+    private int CompareModelInstances(ModelInstance x, ModelInstance y)
+    {
+        int xIndex = StringManip.IndexOfCaseInsensitive(ComponentOrder, x.ClassType.Name);
+        int yIndex = StringManip.IndexOfCaseInsensitive(ComponentOrder, y.ClassType.Name);
+        if (xIndex == yIndex)
+            return 0;
+        if (xIndex == -1)
+            return 1;
+        if (yIndex == -1)
+            return -1;
+        if (xIndex < yIndex)
+            return -1;
+        else
+            return 1;
+    }
+
+    /// <summary>
+    /// Sort all child instances according to the proper component order.
+    /// </summary>
+    private void SortChildren()
+    {
+        if (ComponentOrder == null)
+            ComponentOrder = Configuration.Instance.ComponentOrder();
+
+        Children.Sort(CompareModelInstances);
+        foreach (ModelInstance Child in Children)
+            Child.SortChildren();
     }
 
     /// <summary>
@@ -81,24 +112,125 @@ internal class ModelInstance
                 // If the model has a [Param] with the same name as this child xml node
                 // then don't go and try create a nested simulation object for this xml node.
 
-                
-                if (!ModelHasParam(Child.Name) && Enabled)
-                {
-                    if (Child.Name == "soil")
-                    {
-                        Children.Add(new ModelInstance(ConvertSoilNode(Child, "Water"), this, Assembly));
-                        Children.Add(new ModelInstance(ConvertSoilNode(Child, "Nitrogen"), this, Assembly));
-                    }
-                    else
-                    {
-                        Type ChildClassType = GetClassType(Child.Name, Assembly);
-                        if (ChildClassType != null)
-                            Children.Add(new ModelInstance(Child, this, Assembly));
-                    }
-                }
+                if (!(Child is XmlWhitespace) && !ModelHasParam(Child.Name) && Enabled)
+                    TryCreateModelInstance(Child);
             }
         }
     }
+
+    /// <summary>
+    /// Try and create model instance(s) for the specified XmlNode. Two ways that this method
+    /// works. The first (and simplest) is that it uses the Node.Name as a class name and tries to
+    /// locate that in the currently executing assembly. If this works then it will create the model instance
+    /// and it to the children collection.
+    /// If the first method fails then it will use the Node.Name as a class name, try and find an XML file with
+    /// that class name, open it, look for a AtModelRunTime node and then follow the "instructions" inside the
+    /// node.
+    /// </summary>
+    private void TryCreateModelInstance(XmlNode ModelParameterisation)
+    {
+        string XmlFileName = Path.Combine(Configuration.ApsimBinDirectory(), ModelParameterisation.Name + "X.xml");
+        if (File.Exists(XmlFileName))
+        {
+            XmlDocument XmlDoc = new XmlDocument();
+            XmlDoc.Load(XmlFileName);
+            XmlNode RunTimeInstructions = XmlHelper.Find(XmlDoc.DocumentElement, "MetaData/RunTimeInstructions");
+            if (RunTimeInstructions == null)
+                throw new Exception("Cannot determine how to create an instance of class: " + ModelParameterisation.Name);
+            ProcessInstructions(RunTimeInstructions, ModelParameterisation);
+        }
+        else
+        {
+            Assembly CurrentAssembly = Assembly.GetExecutingAssembly();
+            Type ModelClassType = GetClassType(ModelParameterisation.Name, CurrentAssembly);
+            if (ModelClassType != null)
+                Children.Add(new ModelInstance(ModelParameterisation, this, CurrentAssembly));
+        }
+    }
+
+    private XmlNode ProcessInstructions(XmlNode InstructionNode, XmlNode ModelParameterisation)
+    {
+        XmlNode ModelDescription = null;
+        foreach (XmlNode Instruction in InstructionNode.ChildNodes)
+        {
+            if (Instruction.Name == "InstantiateModel")
+            {
+                if (ModelDescription != null)
+                {
+                    // This must be the second model instantiation - add the previous one to "Children"
+                    CreateNewModelInstance(ModelParameterisation, ModelDescription);
+                }
+                ModelDescription = Instruction;
+            }
+            else if (Instruction.Name == "Override")
+            {
+                Override(ModelDescription, Instruction);
+            }
+            else if (Instruction.Name == "OverrideIf")
+            {
+                string Condition = XmlHelper.Attribute(Instruction, "condition");
+                if (!Condition.Contains("="))
+                    throw new Exception("Invalid <overrideif> condition: " + Condition);
+                int PosEquals = Condition.IndexOf('=');
+                string VariableName = Condition.Substring(0, PosEquals).Replace(".", "/");
+                string VariableValue = Condition.Substring(PosEquals + 1);
+                XmlNode VariableNode = XmlHelper.Find(ModelDescription, VariableName);
+                if (VariableNode == null)
+                    throw new Exception("Cannot find referenced node in <overrideif>: " + VariableName);
+                if (VariableNode.InnerText.ToLower() == VariableValue.ToLower())
+                    Override(ModelDescription, Instruction);
+            }
+        }
+        CreateNewModelInstance(ModelParameterisation, ModelDescription);
+        return ModelDescription;
+    }
+
+    private void CreateNewModelInstance(XmlNode ModelParameterisation, XmlNode ModelDescription)
+    {
+        string InnerContents = ModelDescription.InnerXml;
+        if (ModelParameterisation.Name == "soil")
+            InnerContents = Soil.ReplaceSoilMacros(ModelParameterisation, ModelDescription.InnerXml);
+        ApsimFile.Macro M = new Macro();
+        InnerContents = M.Go(ModelParameterisation, InnerContents);
+
+        ModelDescription.InnerXml = InnerContents;
+
+        string ClassName = XmlHelper.Attribute(ModelDescription, "ClassName");
+        if (ClassName == "")
+            throw new Exception("Cannot find a ClassName attribute on InstantiateModel XML element: " + ModelDescription.Name);
+        ModelDescription = XmlHelper.ChangeType(ModelDescription, ClassName);
+        string AssemblyFileName = XmlHelper.Attribute(ModelDescription, "Assembly");
+        if (AssemblyFileName == "")
+            throw new Exception("Cannot find an assembly attribute on InstantiateModel XML element: " + ModelDescription.Name);
+        AssemblyFileName = Path.Combine(Configuration.ApsimBinDirectory(), AssemblyFileName);
+        Assembly ModelAssembly = Assembly.LoadFile(AssemblyFileName);
+        if (ModelAssembly == null)
+            throw new Exception("Cannot find assembly: " + AssemblyFileName);
+        Children.Add(new ModelInstance(ModelDescription, this, ModelAssembly));
+    }
+
+    /// <summary>
+    /// Perform an override on the specified modeldescription using the specified instruction.
+    /// </summary>
+    private static void Override(XmlNode ModelDescription, XmlNode Instruction)
+    {
+        String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
+        XmlNode ReferencedNode = ModelDescription;
+        if (ReferencedNodeName != "")
+            ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
+        if (ReferencedNode == null)
+            throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
+        foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
+        {
+            XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
+            if (NodeToRemove == null)
+                throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
+            XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
+            ReferencedNode.InsertAfter(NewNode, NodeToRemove);
+            ReferencedNode.RemoveChild(NodeToRemove);
+        }
+    }
+
 
     /// <summary>
     /// Initialise this model instance by resolving all variable, events and links.
@@ -417,90 +549,6 @@ internal class ModelInstance
 
     }
 
-    private XmlNode ConvertSoilNode(XmlNode ModelDescription, string ModelType)
-    {
-        string SoilFileName = Path.Combine(Configuration.ApsimBinDirectory(), "Soil with new " + ModelType + " model.xml");
-        
-        XmlDocument SoilType = new XmlDocument();
-        SoilType.Load(SoilFileName);
-        XmlNode ApsimToSim = XmlHelper.Find(SoilType, "Soil/MetaData/ApsimToSim");
-        string Contents = Soil.ReplaceSoilMacros(ModelDescription, ApsimToSim.InnerXml);
-        ApsimFile.Macro M = new Macro();
-        string NewContents = M.Go(ModelDescription, Contents);
-
-        XmlDocument SoilDoc = new XmlDocument();
-        SoilDoc.LoadXml("<soil>" + NewContents + "</soil>");
-
-        // Find the component with the correct name.
-        XmlNode ComponentNode = null;
-        foreach (XmlNode ChildNode in XmlHelper.ChildNodes(SoilDoc.DocumentElement, "component"))
-        {
-            if (XmlHelper.Name(ChildNode).Contains(" " + ModelType))
-                ComponentNode = ChildNode;
-        }
-        if (ComponentNode == null)
-            throw new Exception("Cannot find a component of node type: " + ModelType + " in <ApsimToSim>");
-
-        // Now go look for a performinstructions node under this component node.
-        XmlNode InstructionNode = XmlHelper.FindByType(ComponentNode, "initdata/PerformInstructions");
-        return ProcessInstructions(InstructionNode);
-    }
-
-    private XmlNode ProcessInstructions(XmlNode InstructionNode)
-    {
-        XmlNode ModelDescription = null;
-        foreach (XmlNode Instruction in InstructionNode.ChildNodes)
-        {
-            if (Instruction.Name == "ConstructModel")
-            {
-                if (XmlHelper.ChildNodes(Instruction, "").Count == 0)
-                    throw new Exception("No child XML node under <ConstructModel>. Nothing to construct.");
-                ModelDescription = XmlHelper.ChildNodes(Instruction, "")[0];
-            }
-            else if (Instruction.Name == "Override")
-            {
-                Override(ModelDescription, Instruction);
-            }
-            else if (Instruction.Name == "OverrideIf")
-            {
-                string Condition = XmlHelper.Attribute(Instruction, "condition");
-                if (!Condition.Contains("="))
-                    throw new Exception("Invalid <overrideif> condition: " + Condition);
-                int PosEquals = Condition.IndexOf('=');
-                string VariableName = Condition.Substring(0, PosEquals).Replace(".", "/");
-                string VariableValue = Condition.Substring(PosEquals + 1);
-                XmlNode VariableNode = XmlHelper.Find(ModelDescription, VariableName);
-                if (VariableNode == null)
-                    throw new Exception("Cannot find referenced node in <overrideif>: " + VariableName);
-                if (VariableNode.InnerText.ToLower() == VariableValue.ToLower())
-                    Override(ModelDescription, Instruction);
-            }
-        }
-        return ModelDescription;
-    }
-    
-    /// <summary>
-    /// Perform an override on the specified modeldescription using the specified instruction.
-    /// </summary>
-    private static void Override(XmlNode ModelDescription, XmlNode Instruction)
-    {
-        String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
-        XmlNode ReferencedNode = ModelDescription;
-        if (ReferencedNodeName != "")
-            ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
-        if (ReferencedNode == null)
-            throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
-        foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
-        {
-            XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
-            if (NodeToRemove == null)
-                throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
-            XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
-            ReferencedNode.InsertAfter(NewNode, NodeToRemove);
-            ReferencedNode.RemoveChild(NodeToRemove);
-        }
-    }
-
     /// <summary>
     /// Collect all variables and events from the specified instance and all child instances.
     /// </summary>
@@ -554,14 +602,26 @@ internal class ModelInstance
                             XmlNode ParamNode = XmlHelper.Find(Node, ParamName);
                             string ParamValue = null;
                             if (ParamNode != null)
-                                ParamValue = ParamNode.InnerXml;
-                            if (ParamValue == null)
                             {
-                                if (!p.IsOptional)
-                                    throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
+                                if (ClassType.Assembly.GetType(Field.FieldType.Name) != null)
+                                {
+                                    // we have found a nested param - treat it as a model.
+                                    ModelInstance NewModelInstance = new ModelInstance(ParamNode, this, ClassType.Assembly);
+                                    Children.Add(NewModelInstance);
+                                    Var.Value = NewModelInstance.TheModel;
+                                }
+                                else
+                                {
+                                    ParamValue = ParamNode.InnerXml;
+                                    if (ParamValue == null)
+                                    {
+                                        if (!p.IsOptional)
+                                            throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
+                                    }
+                                    else
+                                        Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
+                                }
                             }
-                            else
-                                Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
                         }
                         Params.Add(Var);
                     }
@@ -641,7 +701,12 @@ internal class ModelInstance
             Type T = Assembly.GetType(ClassName, false, true);
             if (T == null)
             {
-                string AssemblyFileName = Path.Combine(Configuration.ApsimBinDirectory(), ClassName + "X.dll");
+                string AssemblyFileName;
+                if (ClassName == "surfaceom")
+                    AssemblyFileName = "SurfaceOrganicMatter";
+                else
+                    AssemblyFileName = ClassName;
+                AssemblyFileName = Path.Combine(Configuration.ApsimBinDirectory(), AssemblyFileName + "X.dll");
                 if (File.Exists(AssemblyFileName))
                 {
                     Assembly Dll = Assembly.LoadFile(AssemblyFileName);

@@ -444,7 +444,7 @@ public partial class SurfaceOM
 
         //ASSUMING that a value of 0 here means that no C:P ratio was set
         //ASSUMING that this will only be called with a single value in temp_residue_cpr (as was initially coded - the only reason we are using arrays is because that was how the FORTRAN did it)
-        g.phosphorus_aware = temp_residue_cpr[0] > 0;
+        g.phosphorus_aware = temp_residue_cpr.Length > 0 && temp_residue_cpr[0] > 0;
 
         if (!g.phosphorus_aware || temp_residue_cpr.Length < temp_residue_cnr.Length)
         {
@@ -1227,7 +1227,7 @@ public partial class SurfaceOM
         {
             Console.WriteLine("    - Reading default residue tillage info");
 
-            data = tillage.GetTillageData(data.type);
+            data = SOMTillageType.GetTillageData(data.type);
 
             //If we still have no values then stop
             if (data == null)
@@ -1258,7 +1258,7 @@ public partial class SurfaceOM
         {
             Console.WriteLine("    - Reading default residue tillage info");
 
-            TillageType temp = tillage.GetTillageData(data.type);
+            TillageType temp = SOMTillageType.GetTillageData(data.type);
 
             //If we still have no values then stop
             if (temp == null)
@@ -1867,7 +1867,7 @@ public partial class SurfaceOM
     {
 
 
-        ResidueType thistype = residue_types.getResidue(surfom_type);
+        ResidueType thistype = ResiduesType.getResidue(surfom_type);
 
         c.C_fract[i] = bound(thistype.fraction_C, 0, 1);
         c.po4ppm[i] = bound(thistype.po4ppm, 0, 1000);

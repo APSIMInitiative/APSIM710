@@ -4,6 +4,28 @@ using System.Text;
 using System.Xml;
 using CSGeneral;
 
+class ToSingle : VariableBase
+{
+    private VariableBase Var;
+    public ToSingle(VariableBase var) { Var = var; Name = var.Name; }
+    public override object Value
+    {
+        get
+        {
+            try
+            {
+                return Convert.ToSingle(Var.Value);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Cannot convert " + Var.Value.ToString() + " to a single. Variable name is " + Var.Name);
+            }
+        }
+        set { new NotImplementedException("Type converters are not settable"); }
+    }
+    public override Type Type { get { return typeof(double); } }
+}
+
 class ToDouble : VariableBase
    {
    private VariableBase Var;
@@ -205,7 +227,9 @@ class TypeConverter
     {
         if (From.Type != ToType)
         {
-            if (ToType.Name == "Double")
+            if (ToType.Name == "Single")
+                return new ToSingle(From);
+            else if (ToType.Name == "Double")
                 return new ToDouble(From);
             else if (ToType.Name == "Int32")
                 return new ToInt(From);

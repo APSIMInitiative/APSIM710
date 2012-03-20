@@ -13,10 +13,10 @@ public partial class SurfaceOM
     #region BensParams
 
     [Param]
-    public ResiduesType residue_types;
+    public ResiduesType ResiduesType;
 
     [Param]
-    public SOMTillageType tillage;
+    public SOMTillageType SOMTillageType;
 
     [Param]
     [Units("")]

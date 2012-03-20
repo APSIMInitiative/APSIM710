@@ -12,7 +12,7 @@ namespace ModelFramework
 
     public class Paddock : Component
     {
-        private ModelInstance Instance;
+       // private ModelInstance Instance;
 
 
         /// <summary>
@@ -35,24 +35,6 @@ namespace ModelFramework
                     return null;
                 else
                     return new Paddock(Instance.Parent);
-            }
-        }
-
-
-        /// <summary>
-        /// Return a list of children to caller.
-        /// <summary>
-        public List<Component> Children
-        {
-            get
-            {
-                // Go find parent paddock.
-                List<Component> Childs = new List<Component>();
-                foreach (ModelInstance Inst in Instance.Children)
-                {
-                    Childs.Add(new Component(Inst));
-                }
-                return Childs;
             }
         }
 

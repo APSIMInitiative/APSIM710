@@ -5,181 +5,178 @@ using System.Xml;
 using System.Reflection;
 using System.Linq;
 
+public class BaseType
+{
+    protected float[] strToArr(string str)
+    {
+        string[] temp = str.Split(new char[] { ' ', '\t', ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        float[] result = new float[temp.Length];
+
+        for (int i = 0; i < result.Length; i++)
+            result[i] = float.Parse(temp[i]);
+
+        return result;
+    }
+}
+
+public class ResiduesType
+{
+    Dictionary<string, ResidueType> residues;
+
+    [Param]
+    XmlNode xe = null;
+
+    [EventHandler]
+    public void OnInitialised()
+    {
+        residues = new Dictionary<string, ResidueType>();
+
+        foreach (XmlNode xn in xe.ChildNodes)
+            if (xn.NodeType == XmlNodeType.Element)
+                residues.Add(xn.Name, new ResidueType(xn, ref residues));
+
+    }
+
+    public ResidueType getResidue(string name)
+    {
+        if (residues == null)
+            OnInitialised();
+        return residues.ContainsKey(name) ? residues[name] : null;
+    }
+}
+
+public class ResidueType : BaseType
+{
+    public string fom_type { get; private set; }
+    public string derived_from { get; private set; }
+    public float fraction_C { get; private set; }
+    public float po4ppm { get; private set; }
+    public float nh4ppm { get; private set; }
+    public float no3ppm { get; private set; }
+    public float specific_area { get; private set; }
+    public int cf_contrib { get; private set; }
+    public float pot_decomp_rate { get; private set; }
+    public float[] fr_c { get; private set; }
+    public float[] fr_n { get; private set; }
+    public float[] fr_p { get; private set; }
+
+    public ResidueType(XmlNode xn, ref Dictionary<string, ResidueType> residues)
+    {
+        XmlNode xn_derived_from = xn.SelectSingleNode("derived_from");
+
+        try
+        {
+            if (xn_derived_from != null)
+                CloneParent(residues[xn_derived_from.FirstChild.Value]);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            throw new Exception("Error attempting to get residue type '" + xn_derived_from.Value + "' to create derived type '" + xn.Name + "'\r\n\tPlease make sure that any new types you have defined are defined BELOW any types they may derive from");
+        }
+
+        try
+        {
+            foreach (XmlNode xnc in xn.ChildNodes)
+                if (xnc.NodeType == XmlNodeType.Element)
+                    SetVariable(xnc.Name, xnc.FirstChild.Value);
+        }
+        catch (FormatException ex)
+        {
+            throw new Exception("Problem converting value inside Residue Types in SurfaceOM XML: " + ex.Message);
+        }
+
+
+
+    }
+
+    void CloneParent(ResidueType parent)
+    {
+        this.fom_type = parent.fom_type;
+        this.derived_from = parent.derived_from;
+        this.fraction_C = parent.fraction_C;
+        this.po4ppm = parent.po4ppm;
+        this.nh4ppm = parent.nh4ppm;
+        this.no3ppm = parent.no3ppm;
+        this.specific_area = parent.specific_area;
+        this.cf_contrib = parent.cf_contrib;
+        this.pot_decomp_rate = parent.pot_decomp_rate;
+        this.fr_c = parent.fr_c;
+        this.fr_n = parent.fr_n;
+        this.fr_p = parent.fr_p;
+    }
+
+    void SetVariable(string name, string value)
+    {
+        switch (name)
+        {
+            case "fom_type":
+                fom_type = value;
+                break;
+            case "derived_from":
+                derived_from = value;
+                break;
+            case "fraction_C":
+                fraction_C = float.Parse(value);
+                break;
+            case "po4ppm":
+                po4ppm = float.Parse(value);
+                break;
+            case "nh4ppm":
+                nh4ppm = float.Parse(value);
+                break;
+            case "no3ppm":
+                no3ppm = float.Parse(value);
+                break;
+            case "specific_area":
+                specific_area = float.Parse(value);
+                break;
+            case "cf_contrib":
+                cf_contrib = int.Parse(value);
+                break;
+            case "pot_decomp_rate":
+                pot_decomp_rate = float.Parse(value);
+                break;
+            case "fr_c":
+                fr_c = strToArr(value);
+                break;
+            case "fr_n":
+                fr_n = strToArr(value);
+                break;
+            case "fr_p":
+                fr_p = strToArr(value);
+                break;
+            default:
+                throw new Exception("Problem setting residue types from XML, surplus variable found: " + name);
+        }
+    }
+}
+
+public class SOMTillageType : BaseType
+{
+    Dictionary<string, float[]> tillage_types;
+
+    [Param]
+    XmlNode xe = null;
+
+    [EventHandler]
+    public void OnInitialised()
+    {
+        tillage_types = new Dictionary<string, float[]>();
+        foreach (XmlNode xnc in xe.ChildNodes)
+            if (xnc.NodeType == XmlNodeType.Element)
+                tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
+
+    }
+
+    public TillageType GetTillageData(string name)
+    {
+        return tillage_types.ContainsKey(name) ? new TillageType() { type = name, f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
+    }
+}
+
 public partial class SurfaceOM
 {
     const double acceptableErr = 1e-4;
-
-    #region Residue/Tillage Types
-
-    public class ResiduesType
-    {
-        Dictionary<string, ResidueType> residues;
-       
-        [Param]
-        XmlNode xe = null;
-
-        [EventHandler]
-        public void OnInitialised()
-        {
-            residues = new Dictionary<string, ResidueType>();
-
-            foreach (XmlNode xn in xe.ChildNodes)
-                if (xn.NodeType == XmlNodeType.Element)
-                    residues.Add(xn.Name, new ResidueType(xn, ref residues));
-            
-        }
-
-        public ResidueType getResidue(string name)
-        {
-            return residues.ContainsKey(name) ? residues[name] : null;
-        }
-    }
-
-    public class ResidueType : BaseType
-    {
-        public string fom_type { get; private set; }
-        public string derived_from { get; private set; }
-        public float fraction_C { get; private set; }
-        public float po4ppm { get; private set; }
-        public float nh4ppm { get; private set; }
-        public float no3ppm { get; private set; }
-        public float specific_area { get; private set; }
-        public int cf_contrib { get; private set; }
-        public float pot_decomp_rate { get; private set; }
-        public float[] fr_c { get; private set; }
-        public float[] fr_n { get; private set; }
-        public float[] fr_p { get; private set; }
-
-        public ResidueType(XmlNode xn, ref Dictionary<string, ResidueType> residues)
-        {
-            XmlNode xn_derived_from = xn.SelectSingleNode("derived_from");
-
-            try
-            {
-                if (xn_derived_from != null)
-                    CloneParent(residues[xn_derived_from.FirstChild.Value]);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                throw new Exception("Error attempting to get residue type '" + xn_derived_from.Value + "' to create derived type '" + xn.Name + "'\r\n\tPlease make sure that any new types you have defined are defined BELOW any types they may derive from");
-            }
-
-            try
-            {
-                foreach (XmlNode xnc in xn.ChildNodes)
-                    if (xnc.NodeType == XmlNodeType.Element)
-                        SetVariable(xnc.Name, xnc.FirstChild.Value);
-            }
-            catch (FormatException ex)
-            {
-                throw new Exception("Problem converting value inside Residue Types in SurfaceOM XML: " + ex.Message);
-            }
-
-
-
-        }
-
-        void CloneParent(ResidueType parent)
-        {
-            this.fom_type = parent.fom_type;
-            this.derived_from = parent.derived_from;
-            this.fraction_C = parent.fraction_C;
-            this.po4ppm = parent.po4ppm;
-            this.nh4ppm = parent.nh4ppm;
-            this.no3ppm = parent.no3ppm;
-            this.specific_area = parent.specific_area;
-            this.cf_contrib = parent.cf_contrib;
-            this.pot_decomp_rate = parent.pot_decomp_rate;
-            this.fr_c = parent.fr_c;
-            this.fr_n = parent.fr_n;
-            this.fr_p = parent.fr_p;
-        }
-
-        void SetVariable(string name, string value)
-        {
-            switch (name)
-            {
-                case "fom_type":
-                    fom_type = value;
-                    break;
-                case "derived_from":
-                    derived_from = value;
-                    break;
-                case "fraction_C":
-                    fraction_C = float.Parse(value);
-                    break;
-                case "po4ppm":
-                    po4ppm = float.Parse(value);
-                    break;
-                case "nh4ppm":
-                    nh4ppm = float.Parse(value);
-                    break;
-                case "no3ppm":
-                    no3ppm = float.Parse(value);
-                    break;
-                case "specific_area":
-                    specific_area = float.Parse(value);
-                    break;
-                case "cf_contrib":
-                    cf_contrib = int.Parse(value);
-                    break;
-                case "pot_decomp_rate":
-                    pot_decomp_rate = float.Parse(value);
-                    break;
-                case "fr_c":
-                    fr_c = strToArr(value);
-                    break;
-                case "fr_n":
-                    fr_n = strToArr(value);
-                    break;
-                case "fr_p":
-                    fr_p = strToArr(value);
-                    break;
-                default:
-                    throw new Exception("Problem setting residue types from XML, surplus variable found: " + name);
-            }
-        }
-
-    }
-
-    public class SOMTillageType : BaseType
-    {
-        Dictionary<string, float[]> tillage_types;
-
-        [Param]
-        XmlNode xe = null;
-
-        [EventHandler]
-        public void OnInitialised()
-        {
-            tillage_types = new Dictionary<string, float[]>();
-            foreach (XmlNode xnc in xe.ChildNodes)
-                if (xnc.NodeType == XmlNodeType.Element)
-                    tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
-
-        }
-
-        public TillageType GetTillageData(string name)
-        {
-            return tillage_types.ContainsKey(name) ? new TillageType() { type = name, f_incorp = tillage_types[name][0], tillage_depth = tillage_types[name][1] } : null;
-        }
-    }
-
-    public class BaseType
-    {
-        protected float[] strToArr(string str)
-        {
-            string[] temp = str.Split(new char[] { ' ', '\t', ',', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            float[] result = new float[temp.Length];
-
-            for (int i = 0; i < result.Length; i++)
-                result[i] = float.Parse(temp[i]);
-
-            return result;
-        }
-    }
-    
-    #endregion
 
     #region Math Operations
 
@@ -286,7 +283,12 @@ public partial class SurfaceOM
 
     T[] ToArray<T>(string str)
     {
-        string[] temp = str.Split(new char[] { ' ', '\t', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        string[] temp;
+
+        if (str == null || str == "")
+            temp = new string[0];
+        else
+            temp = str.Split(new char[] { ' ', '\t', ',' }, StringSplitOptions.RemoveEmptyEntries);
 
         MethodInfo parser = null;
         if (typeof(T) != typeof(string))

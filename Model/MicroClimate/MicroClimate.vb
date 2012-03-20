@@ -438,7 +438,7 @@ Partial Public Class MicroMet
     End Sub
 
     <EventHandler()> _
-    Public Sub OnInit2()
+    Public Sub OnInitialised()
         Console.WriteLine("     Initialising")
         Console.WriteLine("     ")
         Console.WriteLine("        - Reading Constants")
@@ -834,10 +834,10 @@ Partial Public Class MicroMet
     ''' </summary>
     Private Sub CalculateGa()
         If Not windspeed_checked Then
-            Dim val As New DoubleType()
-            val.Value = [Double].NaN ' Set to NaN so we can test for non-receipt of value
+            Dim val As Double
+            val = [Double].NaN ' Set to NaN so we can test for non-receipt of value
             use_external_windspeed = MyPaddock.Get("windspeed", windspeed) AndAlso (Not [Double].IsNaN(windspeed))
-            windspeed = val.Value
+            windspeed = val
             windspeed_checked = True
         End If
         If Not use_external_windspeed Then
@@ -989,7 +989,6 @@ Partial Public Class MicroMet
         ' need to implement this later
         waterBalance.interception = CSng(totalInterception)
         RaiseEvent Canopy_Water_Balance(waterBalance)
-
     End Sub
 
 End Class
