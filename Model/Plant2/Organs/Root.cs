@@ -242,8 +242,8 @@ public class Root : BaseOrgan, BelowGround
     public event WaterChangedDelegate WaterChanged;
     [Event]
     public event NitrogenChangedDelegate NitrogenChanged;
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+
+    public override void OnSow(SowPlant2Type Sow)
     {
         SowingInfo = Sow;
         if (LayerLive == null)

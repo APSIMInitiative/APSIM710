@@ -189,7 +189,7 @@ public class Structure
     }
 
     [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public void OnInitialised()
     {
         MainStemFinalNodeNumber.SetFinalNodeNumber();
         MaximumNodeNumber = MainStemFinalNodeNumber.Value;

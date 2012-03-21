@@ -82,5 +82,8 @@ abstract public class Organ
     abstract public double MaxNconc { get; }
     abstract public double MinNconc { get; }
     abstract public double NFixationCost { get; }
+
+    // Methods that can be called .e.g from manager
+    abstract public void OnSow(SowPlant2Type Sow);
 }
    

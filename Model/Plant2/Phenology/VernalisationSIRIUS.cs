@@ -26,19 +26,12 @@ public class VernalisationSIRIUS
     }
 
     /// <summary>
-    /// Initialise everything
+    /// Initialise everything - gets called at sowing as well.
     /// </summary>
     [EventHandler] 
     public void OnInitialised()
     {
-        AccumulatedVernalisation = 0;
-    }
-
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
-    {
         AccumulatedVernalisation = VernalisationType;
     }
-
 }
    

@@ -145,7 +145,7 @@ public class CerealFinalNodeNumber : Function
     }
     
     [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public void OnInitialised()
     {
         _AttainableFinalNodeNumber = MaximumMainStemNodeNumber;
         _FinalNodeNumber = MinimumMainStemNodeNumber;

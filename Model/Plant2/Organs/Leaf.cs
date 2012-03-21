@@ -1023,8 +1023,7 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine("Removing Lowest Leaf");
         Leaves.RemoveAt(0);
     }
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public override void OnSow(SowPlant2Type Sow)
     {
         if (Sow.MaxCover <= 0.0)
            throw new Exception("MaxCover must exceed zero in a Sow event.");

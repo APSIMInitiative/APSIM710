@@ -10,7 +10,7 @@ class AgeCalculatorFunction : Function
     private int _Age = 0;
 
     [EventHandler]
-    private void OnTick(TimeType T)
+    public void OnTick(TimeType T)
     {
         _Age = _Age + 1;
     }

@@ -17,7 +17,7 @@ public class PhaseLengthFinalNodeNumber : Function
     public double MaximumMainStemNodeNumber = 0;
 
     [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public void OnInitialised()
     {
         _FinalNodeNumber = MaximumMainStemNodeNumber;
     }

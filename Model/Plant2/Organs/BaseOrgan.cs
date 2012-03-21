@@ -45,4 +45,7 @@ public class BaseOrgan : Organ
     [Output]
     [Units("g/m^2")]
     public double NSupplyUptake { get { return NSupply.Uptake; } }
+
+    // Methods that can be called from manager
+    public override void OnSow(SowPlant2Type SowData) { }
 }

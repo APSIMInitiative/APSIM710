@@ -4,13 +4,19 @@ using System.Text;
 
 
 public class Population
-   {
-   [Param] [Output("Population")] public double Value;
+{
+    [Link]
+    Plant Plant;
 
-   [EventHandler] public void OnSow(SowPlant2Type Sow)
-      {
-      Value = Sow.Population;
-      }
+    [Param]
+    [Output("Population")]
+    public double Value;
 
-   }
+    [EventHandler]
+    public void OnSow(SowPlant2Type Sow)
+    {
+        Value = Plant.SowingData.Population;
+    }
+
+}
 

@@ -23,6 +23,7 @@ public class Plant
     Component My = null;
 
     public string Name { get { return My.Name; } }
+    public SowPlant2Type SowingData;
 
     private List<Organ> _Organs = new List<Organ>();
     public List<Organ> Organs
@@ -262,12 +263,14 @@ public class Plant
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
+        SowingData = Sow;
+
         // Go through all our children and find all organs.
         foreach (object ChildObject in My.ChildrenAsObjects)
         {
             Organ Child = ChildObject as Organ;
             if (Child != null)
-                Organs.Add((Organ)Child);
+                Organs.Add(Child);
         }
 
         if (NewCrop != null)
@@ -280,6 +283,10 @@ public class Plant
         
         if (Sowing != null)
             Sowing.Invoke();
+
+        // tell all our children about sow
+        foreach (Organ Child in Organs)
+            Child.OnSow(Sow);
     }
     [EventHandler]
     public void OnProcess()
@@ -292,7 +299,7 @@ public class Plant
         DoActualGrowth();
     }
     [EventHandler]
-    private void OnEndCrop()
+    public void OnEndCrop()
     {
         NewCropType Crop = new NewCropType();
         Crop.crop_type = CropType;
