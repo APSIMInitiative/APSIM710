@@ -26,8 +26,6 @@ public class Structure
     [Description("The stage name that leaves get initialised.")]
     public string InitialiseStage = "";
     
-    [Link(NamePath = "MainStemInitialPrimordiaNumber")]
-    public Function MainStemInitialPrimordiaNumber = null;
     [Link(NamePath = "MainStemPrimordiaInitiationRate")]
     public Function MainStemPrimordiaInitiationRate = null;
     [Link(NamePath = "MainStemNodeAppearanceRate")]
@@ -71,10 +69,10 @@ public class Structure
         }
     }
     [Output]
-    [Description("Number of mainstem primordia initiated")] //Note: PrimordiaNo is a double that increase gradually each day
+    [Description("Number of mainstem primordia initiated")] 
     public double MainStemPrimordiaNo = 0;
     [Output]
-    [Description("Number of mainstem nodes appeared")] //Note: AppearedNodeNo is a double that increase gradually each day
+    [Description("Number of mainstem nodes appeared")] 
     public double MainStemNodeNo = 0;
 
     //Plant leaf number state variables
@@ -103,7 +101,7 @@ public class Structure
     //Leaf State Variables regarding final leaf number
     [Output]
     [Description("Number of leaves that will appear on the mainstem before it terminates")]
-    public double MainStemFinalNodeNo { get { return Leaf.FinalLeafNo; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
+    public double MainStemFinalNodeNo { get { return MainStemFinalNodeNumber.Value; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
     [Output]
     [Units("0-1")]
     [Description("Relative progress toward final leaf")]
@@ -120,7 +118,15 @@ public class Structure
     [Output]
     [Description("Number of leaves yet to appear")]
     public double RemainingNodeNo { get { return MainStemFinalNodeNo - MainStemNodeNo; } }
-
+    public double AttainableFinalNodeNumber
+    {
+        get
+        {
+            return MainStemFinalNodeNumber.AttainableFinalNodeNumber;
+        }
+    }
+    
+    //Structural Variables
     public double Height 
     {
         get
@@ -142,52 +148,29 @@ public class Structure
             return DroughtInducedBranchMortality.Value + ShadeInducedBranchMortality.Value;
         }
     }
-    public double AttainableFinalNodeNumber
-    {
-        get
-        {
-            return MainStemFinalNodeNumber.AttainableFinalNodeNumber;
-        }
-    }
-    #endregion
+   #endregion
 
     #region Functions
     public void DoPotentialGrowth()
     {
-
-           if (MainStemPrimordiaInitiationRate != null)
+        if (Phenology.OnDayOf(InitialiseStage) == false) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+           if (MainStemPrimordiaInitiationRate.Value > 0.0)
             {
-                if (Phenology.OnDayOf(InitialiseStage))
-                { }//MainStemPrimordiaNo = MainStemInitialPrimordiaNumber.Value;
-                else if (MainStemPrimordiaInitiationRate.Value > 0.0)
-                    MainStemPrimordiaNo += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
-                
-                MainStemFinalNodeNumber.UpdateVariables();
-                MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
+            MainStemPrimordiaNo += ThermalTime.Value / MainStemPrimordiaInitiationRate.Value;
             }
-            else MainStemPrimordiaNo = MainStemFinalNodeNumber.Value;
-        
        
-
-        if (Phenology.OnDayOf(InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
-        {
-            Leaf.CopyLeaves(Leaf.Leaves, Leaf.InitialLeaves);
-            Leaf.InitialiseCohorts();
-            //Leaf.FinalNodeNumber.Calculate();
-            //Leaf.CohortsInitialised = true;
-        }
-           
-           if (Phenology.OnDayOf(InitialiseStage))
-           {} //do nothing
-           else if (MainStemNodeNo > 0)  //If statement needs to go
-           {
+            MainStemFinalNodeNumber.UpdateVariables();
+            MainStemPrimordiaNo = Math.Min(MainStemPrimordiaNo, MaximumNodeNumber);
+            
+            if (MainStemNodeNo > 0)  //If statement needs to go
+            {
                DeltaNodeNumber = 0;
                if (MainStemNodeAppearanceRate.Value > 0)
                    DeltaNodeNumber = ThermalTime.Value / MainStemNodeAppearanceRate.Value;
                MainStemNodeNo += DeltaNodeNumber;
                MainStemNodeNo = Math.Min(MainStemNodeNo, MainStemFinalNodeNo);
-           }
-      }
+            }
+    }
    
     [EventHandler]
     public void OnNewMet(NewMetType NewMet)
@@ -212,8 +195,5 @@ public class Structure
         MaximumNodeNumber = MainStemFinalNodeNumber.Value;
     }
     #endregion
-
-    public double VernalisationIndex
-    { get { return MainStemFinalNodeNumber._VernalisationIndex; } }
 }
 

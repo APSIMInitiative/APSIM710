@@ -90,7 +90,6 @@ public class Leaf : BaseOrgan, AboveGround
     public double CurrentExpandingLeaf = 0;
     public double StartFractionExpanded = 0;
     public double _ThermalTime = 0;
-    public double ProportionStemMortality = 0;
     public double FinalLeafFraction = 1;
     public bool FinalLeafAppeared = false;
         
@@ -231,10 +230,6 @@ public class Leaf : BaseOrgan, AboveGround
             return n / Population.Value;
         }
     } 
-    //Leaf State Variables regarding final leaf number
-    [Output]
-    [Description("Number of leaves that will appear on the mainstem before it terminates")]
-    public double FinalLeafNo { get { return Structure.MainStemFinalNodeNumber.Value; } } //FIXME  For consistency with the naming convention FinalLeafNumber should be called FinalNodeNumber but this will require renaming the finalNodeNumber Object which is a job for another day
     
     //Canopy State variables
     [Output("Height")]
@@ -553,6 +548,12 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 L.DoFrost(FrostFraction.Value);
 
+        if (Phenology.OnDayOf(Structure.InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+        {
+            CopyLeaves(Leaves, InitialLeaves);
+            InitialiseCohorts();
+        }
+
         //When primordia number is 1 more than current cohort number produce a new cohort
         if (Structure.MainStemPrimordiaNo >= Leaves.Count + FinalLeafFraction) 
         {
@@ -639,14 +640,6 @@ public class Leaf : BaseOrgan, AboveGround
             L.DoActualGrowth(_ThermalTime);
 
         Height = Structure.Height;
-
-        /*double Stress = 1;
-        if (HeightExpansionStress != null)  //FIX me.  This should not be optional
-            Stress = HeightExpansionStress.Value;
-        double PotentialHeightIncrement = HeightModel.Value - PotentialHeightYesterday;
-        DeltaHeight = PotentialHeightIncrement * Stress;
-        Height += DeltaHeight;
-        PotentialHeightYesterday = HeightModel.Value; */
 
         PublishNewCanopyEvent();
 
@@ -1030,7 +1023,6 @@ public class Leaf : BaseOrgan, AboveGround
         Console.WriteLine("Removing Lowest Leaf");
         Leaves.RemoveAt(0);
     }
-
     [EventHandler]
     public void OnSow(SowPlant2Type Sow)
     {
@@ -1038,9 +1030,7 @@ public class Leaf : BaseOrgan, AboveGround
            throw new Exception("MaxCover must exceed zero in a Sow event.");
         MaxCover = Sow.MaxCover;
         Structure.PrimaryBudNo = Sow.BudNumber;
-        //StemPopulation = Sow.Population * Sow.BudNumber;
-        //if (FinalNodeNumber != null)
-            MaxNodeNo = Structure.MaximumNodeNumber;
+        MaxNodeNo = Structure.MaximumNodeNumber;
     }
     [EventHandler]
     public void OnCanopy_Water_Balance(CanopyWaterBalanceType CWB)
@@ -1090,7 +1080,6 @@ public class Leaf : BaseOrgan, AboveGround
         Dead.Clear();
         Leaves.Clear();
         InitialiseCohorts();
-
     }
     protected virtual void PublishNewCanopyEvent()
     {

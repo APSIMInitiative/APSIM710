@@ -97,13 +97,17 @@
 		</Memo>
       </RelativeGrowthRateDemandFunction>
     </Folder>
-    <Folder name="Final leaf number functions">
-      <TerminateFinalNodeNumber>
+    <Folder name="Structure functions">
+      <HeightFunction>
+        <Memo> 
+			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
+		</Memo>
+      </HeightFunction>
+      <CerealFinalNodeNumber>
         <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
         <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-        <VernalisationType type="text" description="VernalisationType">0</VernalisationType>
-        <VernalisationIntercept type="text" description="VernalisationIntercept">0.012</VernalisationIntercept>
-        <VernalisationSlope type="text" description="VernalisationSlope">0.0017</VernalisationSlope>
+        <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
+        <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
         <PhotoperiodFunction name="Photoperiod">
           <Twilight type="text" description="Twilight">-6</Twilight>
         </PhotoperiodFunction>
@@ -118,14 +122,13 @@
 		    - Once the Juvenile phase is complete the final leaf number responds to photo period with shorter photoperiods increasing leaf number.  
 			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
 			</Memo>
-      </TerminateFinalNodeNumber>
-    </Folder>
-    <Folder name="Structure functions">
-      <HeightFunction>
+      </CerealFinalNodeNumber>
+      <PhaseLengthFinalNodeNumber>
+        <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
         <Memo> 
-			This Function takes potential height increment for the day from the PotentialHeight function then multiplies it by the smallest of any other childern (stress) functions and returns this number
-		</Memo>
-      </HeightFunction>
+			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
+			</Memo>
+      </PhaseLengthFinalNodeNumber>
       <CerealFinalNodeNumber>
         <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
         <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>

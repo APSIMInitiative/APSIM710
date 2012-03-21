@@ -20,17 +20,8 @@ public class FacultativeVernalisationPhase : Phase
     public double _JuvenileDevelopmentIndex = 0;
     public bool InitialLoop = true;
 
-    /// <summary>
-    /// Reset phase
-    /// </summary>
     public override void ResetPhase() { ExtentOfDevelopmentYesterday = 0; }
 
-    /// <summary>
-    /// This function increments vernalisation units accumulated in phase 
-    /// and returns a non-zero value if the phase target is met today so
-    /// the phenology class knows to progress to the next phase and how
-    /// much tt to pass it on the first day.
-    /// </summary>
     public double JuvenileDevelopmentIndex
     {
         get
@@ -47,8 +38,7 @@ public class FacultativeVernalisationPhase : Phase
                 _JuvenileDevelopmentIndex = 1.0;
             else
                 _JuvenileDevelopmentIndex = Math.Max(Structure.MainStemPrimordiaNo / Structure.AttainableFinalNodeNumber, VernalisationSIRIUS.AccumulatedVernalisation);
-            double test = Structure.VernalisationIndex;
-        }
+    }
 
     public override double DoTimeStep(double PropOfDayToUse)
     {
@@ -73,9 +63,7 @@ public class FacultativeVernalisationPhase : Phase
         }
         if (ExtentOfDevelopment == Target)
             PropOfDayUnused = 1.0;
-
         ExtentOfDevelopmentYesterday = ExtentOfDevelopment;
-        //AccumulatedVernalisation += Vernalisation.Value;
         return PropOfDayUnused;
     }
 

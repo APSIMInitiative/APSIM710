@@ -33,70 +33,47 @@ public class CerealFinalNodeNumber : Function
     public double _CommitHaunStage = 0;
     public double _TerminatedFinalNodeNumber = 0;
     public double _FinalNodeNumber = 0;
+ #endregion
 
+ [Output]
+ public override double Value
+ {
+        get
+        {
+            return _FinalNodeNumber;
+        }
+ }
+
+ #region Output variables
     //Attainable final leaf number is the number of leaves that may be aquired given the current extent of vernalisation staturation
     [Output]
     public override double AttainableFinalNodeNumber { get { return _AttainableFinalNodeNumber; } }
+    
     //VernalisationFinalNodeNumber is the number of leaves that the crop will produce if grown in long photoperiod (greater than the saturating photoperiod)
     //This number increases each day as new primordia are initiated on the apex and is fixed when the crop completes its juvenile phase
     [Output]
     public override double VernalisationFinalNodeNumber { get { return _VernalisationFinalNodeNumber; } }
+    
     //PhotoperiodFinalNodeNumber is the final number of leaves that a fully vernalised crop would produce if it committed its terminated node number on the given day.  
     //This adds leaves to the LongDayFinalNodeNumber depending on how much the photoperiod is below saturating photoperiod and the photoperiod sensitivity of the variety
     [Output]
     public override double PhotoperiodFinalNodeNumber { get { return _PhotoperiodFinalNodeNumber; } }
+    
     //This is the ultimate number of leaves that the crop will produce.  It it changes with DayLengthFinalNodeNumber until the number of primordia equals DayLengthFinalNodeNumber + 4 and then is fixed.
     [Output]
     public override double TerminatedFinalNodeNumber { get { return _TerminatedFinalNodeNumber; } }
+    
     //This is the primordia threshold at which the final node number is fixed when primordia number first exceeds this value.
     [Output]
     public override double CommitHaunStage { get { return _CommitHaunStage; } }
+    
     [Output]
-    public override double TargetFinalNodeNumber
-    {
-        get
-        {
-            return Math.Max(AttainableFinalNodeNumber, TerminatedFinalNodeNumber);
-        }
-    }
-
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
-    {
-        _AttainableFinalNodeNumber = MaximumMainStemNodeNumber;
-        _FinalNodeNumber = MinimumMainStemNodeNumber;
-    }
-
-   public override void SetFinalNodeNumber()
-    {
-        _FinalNodeNumber = MaximumMainStemNodeNumber;
-    }
-
+    public override double TargetFinalNodeNumber  { get {return Math.Max(AttainableFinalNodeNumber, TerminatedFinalNodeNumber); } }
     
-    
-    public override void UpdateVariables()
-    {
-        if (Phenology.CurrentPhaseName == "Emerging")
-        {
-            AttainableFinalNodeNumberFunction();
-            IncrementVernalisation();
-        }//for testing
-        else
-        {
-            AttainableFinalNodeNumberFunction();
-            VernalisationFinalNodeNumberFunction();
-            PhotoperiodFinalNodeNumberFunction();
-            CommitHaunStageFunction();
-            TerminatedFinalNodeNumberFunction();
-            FinalNodeNumberFunction();
-            IncrementVernalisation();
-        }
-    } 
-
  #endregion
-    
 
  #region Final node number functions
+    
     public void AttainableFinalNodeNumberFunction()
      {
          _AttainableFinalNodeNumber = (MaximumMainStemNodeNumber - MinimumMainStemNodeNumber) * (1 - Phenology.AccumulatedVernalisation) + MinimumMainStemNodeNumber;
@@ -136,51 +113,43 @@ public class CerealFinalNodeNumber : Function
     {
         if (Leaf.CohortsInitialised)
         {
-            _FinalNodeNumber = Math.Max(Structure.MainStemInitialPrimordiaNumber.Value, TargetFinalNodeNumber);
+            _FinalNodeNumber = Math.Max(Structure.MainStemNodeNo, TargetFinalNodeNumber);
         }
     }
     
- #endregion
+    public override void SetFinalNodeNumber()
+    {
+        _FinalNodeNumber = MaximumMainStemNodeNumber;
+    }
+
+    public override void UpdateVariables()
+    {
+        if (Phenology.CurrentPhaseName == "Emerging")
+        {
+            AttainableFinalNodeNumberFunction();
+        }
+        else
+        {
+            AttainableFinalNodeNumberFunction();
+            VernalisationFinalNodeNumberFunction();
+            PhotoperiodFinalNodeNumberFunction();
+            CommitHaunStageFunction();
+            TerminatedFinalNodeNumberFunction();
+            FinalNodeNumberFunction();
+         }
+    }
+    
     public void Clear()
     {
         _FinalNodeNumber = 0;
     }
-
-
-
-    [Output]
-    public override double Value
-    {
-        get
-        {
-            return _FinalNodeNumber;
-        }
-    }
-
-    private double MaxT = 0;
-    private double MinT = 0;
-    private double MeanT = 0;
-    private double _VernalisationIncrement = 0;
-    new protected double _VernalisationIndex = 0;
+    
     [EventHandler]
-    public void OnNewMet(NewMetType NewMet)
+    public void OnSow(SowPlant2Type Sow)
     {
-        MaxT = NewMet.maxt;
-        MinT = NewMet.mint;
-        MeanT = (MaxT + MinT) / 2;
-        //if (VernalisationIndex < 1.0)
-        //    IncrementVernalisation();
+        _AttainableFinalNodeNumber = MaximumMainStemNodeNumber;
+        _FinalNodeNumber = MinimumMainStemNodeNumber;
     }
-
-    public void IncrementVernalisation()
-    {
-        if ((MeanT > 0.0) && (MeanT <= 11.0))
-            _VernalisationIncrement = 0.012 + 0.0017 * MeanT;
-        else if ((MeanT > 11.0) && (MeanT <= 15.0))
-            _VernalisationIncrement = (1 - (MeanT - 11.0) / (15.0 - 11.0)) * (0.012 + 0.0017 * 11.0);
-        else
-            _VernalisationIncrement = 0.0;
-
-        _VernalisationIndex += _VernalisationIncrement;
-    }
+    
+ #endregion
 }
