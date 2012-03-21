@@ -180,19 +180,28 @@ namespace ApsimDropBox
                 {
                 ZipEntry Entry;
                 while ((Entry = Zip.GetNextEntry()) != null)
+                {
+                    if (Entry.IsDirectory)
                     {
-                    string DestFileName = Path.Combine(DestFolder, Path.GetFileName(Entry.Name));
-                    string DestDir = Path.GetDirectoryName(DestFileName);
-                    if (!Directory.Exists(DestDir)) { Directory.CreateDirectory(DestDir); }
-                    using (BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.CreateNew)))
+                        string DestDirName = Path.Combine(DestFolder, Path.GetFileName(Entry.Name));
+                        if (!Directory.Exists(DestDirName)) { Directory.CreateDirectory(DestDirName); }
+                        Console.WriteLine("Creating directory " + DestDirName);
+                    }
+                    else if (Entry.IsFile)
+                    {
+                        string DestFileName = Path.Combine(DestFolder, Path.GetFileName(Entry.Name));
+                        Console.WriteLine("Creating file " + DestFileName);
+                        using (BinaryWriter FileOut = new BinaryWriter(new FileStream(DestFileName, FileMode.CreateNew)))
                         {
-                        byte[] buffer = new byte[32768];
-                        int size;
-                        while ((size = Zip.Read(buffer, 0, buffer.Length)) > 0)
-                            FileOut.Write(buffer, 0, size);
-                        FileOut.Close();
+                            byte[] buffer = new byte[32768];
+                            int size;
+                            while ((size = Zip.Read(buffer, 0, buffer.Length)) > 0)
+                                FileOut.Write(buffer, 0, size);
+                            FileOut.Close();
                         }
                     }
+                }
+
                 }
             catch (System.Exception e)
                 {
@@ -398,8 +407,12 @@ namespace ApsimDropBox
                             Directory.CreateDirectory(destination);
                             foreach (string file in Directory.GetFiles(destination, "*", SearchOption.AllDirectories).ToList())
                                 File.Delete(file);
+                            string destZipFileName = Path.Combine(destination, Path.GetFileName(zipfile));
 
-                            Zip.UnZipFiles(zipfile, destination, "");
+                            File.Copy(zipfile, destZipFileName, true);
+
+                            Zip.UnZipFiles(destZipFileName, destination, "");
+                            File.Delete(destZipFileName);
 
                             FileInfo fInfo = new FileInfo(Path.Combine(destination , "ApsimCondorJob.xml"));
                             if (fInfo.Exists)
