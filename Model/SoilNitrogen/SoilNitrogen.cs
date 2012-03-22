@@ -49,6 +49,7 @@ public class SoilNitrogen
     [Param]
     private double soil_cn = 0.0;   // soil C:N ration
 
+    private double[] reset_oc;   // Stores initial parameter value so it can be used for a Reset operation
     private double[] _oc;  // Internal variable for oc. This is set, but doesn't get updated
     [Param]
     [Output]
@@ -68,6 +69,8 @@ public class SoilNitrogen
         }
         set
         {
+            if (!initDone)
+                reset_oc = value;
             _oc = value;
         }
     }
@@ -82,6 +85,7 @@ public class SoilNitrogen
     [Param]
     private double[] finert = null; // initial proportion of total soil C that is not subject to mineralization (0-1) [fr_inert_C]
 
+    private double[] reset_no3ppm;   // Stores initial parameter value so it can be used for a Reset operation
     private double[] _no3ppm;   // local variable to hold parameter value until we can get dlayer!
     [Param]
     [Output]
@@ -101,9 +105,7 @@ public class SoilNitrogen
         }
         set
         {
-            _no3ppm = value;
-            
-            if (initDone && _no3 != null)
+            if (initDone)
             {
                 double sumOld = SumDoubleArray(_no3);
                 Array.Resize(ref _no3, value.Length);
@@ -115,11 +117,19 @@ public class SoilNitrogen
                                 " less than lower limit of " + no3ppm_min);
                     _no3[layer] = MathUtility.Divide(value[layer], convFact, 0.0);
                 }
-                SendExternalMassFlow(SumDoubleArray(_no3) - sumOld);
+                if (!inReset)
+                    SendExternalMassFlow(SumDoubleArray(_no3) - sumOld);
+            }
+            else
+            {
+                _no3ppm = value;
+                if (!initDone)
+                    reset_no3ppm = value;
             }
         }
     }
 
+    private double[] reset_nh4ppm;   // Stores initial parameter value so it can be used for a Reset operation
     private double[] _nh4ppm; // local variable to hold parameter value until we can get dlayer!
     [Param]
     [Output]
@@ -151,13 +161,18 @@ public class SoilNitrogen
                                 " less than lower limit of " + nh4ppm_min);
                     _nh4[layer] = MathUtility.Divide(value[layer], convFact, 0.0);
                 }
-                SendExternalMassFlow(SumDoubleArray(_nh4) - sumOld);
+                if (!inReset)
+                    SendExternalMassFlow(SumDoubleArray(_nh4) - sumOld);
             }
             else
+            {
                 _nh4ppm = value;
+                reset_nh4ppm = value;
+            }
         }
     }
 
+    private double[] reset_ureappm;   // Stores initial parameter value so it can be used for a Reset operation
     private double[] _ureappm; // local variable to hold parameter value until we can get dlayer!
     [Param(IsOptional = true)]
     [Output]
@@ -186,10 +201,14 @@ public class SoilNitrogen
                     double convFact = SoilN2Fac(layer);
                     _urea[layer] = MathUtility.Divide(value[layer], convFact, 0.0);
                 }
-                SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
+                if (!inReset)
+                    SendExternalMassFlow(SumDoubleArray(_urea) - sumOld);
             }
             else
+            {
                 _ureappm = value;
+                reset_ureappm = value;
+            }
         }
     }
 
@@ -1217,7 +1236,7 @@ public class SoilNitrogen
     [EventHandler(EventName = "process")]
     public void OnProcess() 
     {
-        //GetOtherVariables(); // Should occur automatically once we're up and running...
+        //GetOtherVariables(); // Will occur automatically once we're up and running...
         Process();
 //        SendNBalanceEvent();  // Not currently used
 //        SendCBalanceEvent();  // Not currently used
@@ -1228,14 +1247,22 @@ public class SoilNitrogen
     [EventHandler(EventName = "reset")]
     public void OnReset() 
     {
+        inReset = true;
         SaveState();          // Save state
         ZeroVariables();      // Zero internal state variables
         GetSiteVariables();   // Get information specific to the site
         GetOtherVariables();  // Get information which may vary through time
+        // We no longer actually read the parameters from a file.
+        // Instead we reset those that the user may have changed, then call "ReadParam" just to do parameter checking
+        oc = reset_oc;
+        no3ppm = reset_no3ppm;
+        nh4ppm = reset_nh4ppm;
+        ureappm = reset_ureappm;
         ReadParam();          // Get all parameters from parameter file
         ReadConstants();      // Get all coefficients from parameter file
         InitCalc();           // Perform initial calculations from inputs
         DeltaState();         // Change of state
+        inReset = false;
     }
 
     [EventHandler(EventName = "sum_report")]
@@ -1447,6 +1474,7 @@ public class SoilNitrogen
     private double[] nh4_yesterday; // yesterday's ammonium nitrogen(kg/ha)
     private double[] no3_yesterday; // yesterday's nitrate nitrogen (kg/ha)
     private bool initDone = false;
+    private bool inReset = false;
     //private int year;       // year
     //private int day_of_year;  // day of year
     private int num_residues = 0;  // number of residues decomposing
