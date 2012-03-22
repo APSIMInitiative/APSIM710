@@ -115,6 +115,13 @@ Public Class ApsimUIActions
                 Cursor.Current = Cursors.WaitCursor
                 Configuration.Instance.SetSetting("dropboxFolder", F.DropFolder)
                 Configuration.Instance.SetSetting("dropboxApsimVersion", F.Version)
+                If F.archIsUnix Then
+                    Configuration.Instance.SetSetting("dropboxIsUnix", "true")
+                Else
+                    Configuration.Instance.SetSetting("dropboxIsUnix", "false")
+                End If
+                Configuration.Instance.SetSetting("dropboxSimsPerJob", F.simsPerJobNumber.ToString())
+
                 Dim FilesToRun As New List(Of String)
                 If F.FolderOfFiles = "" Then
                     If (Controller.ApsimData.FileName <> "") Then
@@ -125,7 +132,7 @@ Public Class ApsimUIActions
                 End If
                 If (FilesToRun.Count > 0) Then
                     ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, AddressOf UpdateProgress)
-                    MessageBox.Show("You job has been successfully submitted to the cluster. Your outputs will appear in your DropBox folder", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
             End If
         Catch ex As Exception
@@ -136,7 +143,7 @@ Public Class ApsimUIActions
     End Sub
 
    Private Shared Sub UpdateProgress(ByVal Percent As Integer, ByVal Msg As String)
-      ProgressBar.Value = Percent
+        ProgressBar.Value = Math.Min(100, Math.Max(0, Percent))
       ProgressLabel.Text = Msg
       Application.DoEvents()
    End Sub

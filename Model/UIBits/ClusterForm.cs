@@ -34,16 +34,39 @@ namespace UIBits
              DropBoxLocation = Path.GetFullPath(DropBoxLocation);
          }
          DropBoxFolder.Text = DropBoxLocation;
-
          FolderTextBox.Enabled = false;
          BrowseButton.Enabled = false;
-         custom_select.Checked = false;
-         BootlegSelector.Enabled = false;
-         release_select.Checked = true;
-         simsPerJob.Value = 10;
+         if (File.Exists(VersionBox.Text))
+         {
+             BootlegSelector.Enabled = true;
+             release_select.Checked = false;
+             custom_select.Checked = true;
+         }
+         else
+         {
+             BootlegSelector.Enabled = false;
+             custom_select.Checked = false;
+             release_select.Checked = true;
+         }
+         string sims = Configuration.Instance.Setting("dropboxSimsPerJob");
+         if (sims != "") 
+             simsPerJob.Value = Convert.ToDecimal(sims); 
+         else 
+             simsPerJob.Value = 10;
          arch_unix.Enabled = true;
          arch_win32.Enabled = true;
-         arch_win32.Checked = true;
+         isUnix = Configuration.Instance.Setting("dropboxIsUnix") == "true";
+         if (isUnix)
+         {
+             arch_unix.Checked = true;
+             arch_win32.Checked = false;
+         }
+         else
+         {
+             arch_unix.Checked = false;
+             arch_win32.Checked = true;
+         }
+
          }
 
       public string Version { get { return VersionBox.Text; } }

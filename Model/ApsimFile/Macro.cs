@@ -419,6 +419,7 @@ namespace ApsimFile
             else
                {
                ChildName = ChildName.Replace(".", "\\");
+               if (ChildName == "") return null;
                XmlNode NewChild = XmlHelper.Find(Child, ChildName);
                if (NewChild != null)
                   Child = NewChild;

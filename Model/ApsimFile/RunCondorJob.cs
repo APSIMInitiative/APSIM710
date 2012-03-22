@@ -213,8 +213,9 @@ namespace ApsimFile
 						if (File.Exists(ApsimVersion)) 
 						{
 							inputfiles.Add(ApsimVersion);
-						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion));
-							exeWriter.WriteLine ("export APSIM=\"`pwd`/" + Path.GetFileNameWithoutExtension(ApsimVersion) + "\"");
+						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion) + " > /dev/null");
+                            exeWriter.WriteLine("rm -f " + Path.GetFileName(ApsimVersion));
+                            exeWriter.WriteLine("export APSIM=\"`pwd`/" + Path.GetFileNameWithoutExtension(ApsimVersion) + "\"");
 						}
 						else
 						{
@@ -232,9 +233,10 @@ namespace ApsimFile
 						exeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim" + jobCounter.ToString () + ".bat"));
 						if (File.Exists(ApsimVersion)) 
 						{
-							inputfiles.Add(ApsimVersion);
-						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion));
-						    exeWriter.WriteLine ("set APSIM=%CD%\\" + Path.GetFileNameWithoutExtension(ApsimVersion));
+							inputfiles.Add(Path.GetFileName(ApsimVersion));
+						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion) + " > nul");
+                            exeWriter.WriteLine("del /f /q " + Path.GetFileName(ApsimVersion));
+                            exeWriter.WriteLine("set APSIM=Temp");
 						}
 						else
 						{
@@ -265,7 +267,7 @@ namespace ApsimFile
 							if (arch == Configuration.architecture.unix)
 								exeWriter.WriteLine ("rm -rf \"$APSIM\"");
 							else
-								exeWriter.WriteLine ("rmdir /s /q \"%APSIM%\"");
+								exeWriter.WriteLine ("rmdir /s /q /f Temp > nul");
 						exeWriter.Close ();
 						exeWriter = null;
 					    }
@@ -283,7 +285,7 @@ namespace ApsimFile
 					if (arch == Configuration.architecture.unix)
 						exeWriter.WriteLine ("rm -rf \"$APSIM\"");
 					else
-						exeWriter.WriteLine ("rmdir /s /q \"%APSIM%\"");
+						exeWriter.WriteLine ("rmdir /s /q /f Temp > nul");
 				exeWriter.Close ();
 			}
 			if (numSims > 0) {
