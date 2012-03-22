@@ -40,95 +40,114 @@ public class SoilWater
     [Output]
     [Param(MinVal = 0.0, MaxVal = 10.0)]
     [Units("oC")]
+    [Description("Temperature below which eeq decreases")]
     private double min_crit_temp;             //! temperature below which eeq decreases (oC)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 50.0)]
     [Units("oC")]
+    [Description("Temperature above which eeq increases")]
     private double max_crit_temp;             //! temperature above which eeq increases (oC)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Maximum bare ground soil albedo")]
     private double max_albedo;                //! maximum bare ground soil albedo (0-1)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Factor to convert \"A\" to coefficient in Adam's type residue effect on Eos")]
     private double A_to_evap_fact;            //! factor to convert "A" to coefficient in Adam's type residue effect on Eos
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 10.0)]
     [Units("0-10")]
+    [Description("Coefficient in cover Eos reduction equation")]
     private double canopy_eos_coef;           //! coef in cover Eos reduction eqn
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Critical sw ratio in top layer below which stage 2 evaporation occurs")]
     private double sw_top_crit;               //! critical sw ratio in top layer below which stage 2 evaporation occurs
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
+    [Description("Upper limit of sumes1")]
     private double sumes1_max;                //! upper limit of sumes1
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
+    [Description("Upper limit of sumes2")]
     private double sumes2_max;                //! upper limit of sumes2
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Efficiency of moving solute with unsaturated flow")]
     private double[] solute_flow_eff;          //sv- Unsaturated Flow   //! efficiency of moving solute with flow (0-1)
     private int num_solute_flow;   //bound_check_real_array() gives this a value in soilwat2_read_constants()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Efficiency of moving solute with flux (saturated flow)")]
     private double[] solute_flux_eff;         //sv- Drainage (Saturated Flow)   //! efficiency of moving solute with flux (0-1) 
     private int num_solute_flux; //bound_check_real_array() gives this a value in soilwat2_read_constants()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Gradient due to hydraulic differentials")]
     private double gravity_gradient;          //! gradient due to hydraulic differentials (0-1)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 3.0)]
     [Units("g/cm^3")]
+    [Description("Specific bulk density")]
     private double specific_bd;               //! specific bulk density (g/cc)
 
     [Output]
     [Param(MinVal = 1.0, MaxVal = 1000.0)]
     [Units("mm")]
+    [Description("Hydrologically effective depth for runoff")]
     private double hydrol_effective_depth;    //! hydrologically effective depth for runoff (mm)
 
     [Output]
     [Param]
+    [Description("Names of all possible mobile solutes")]
     private string[] mobile_solutes;     //! names of all possible mobile solutes
 
     [Output]
     [Param]
+    [Description("Names of all possible immobile solutes")]
     private string[] immobile_solutes;   //! names of all possible immobile solutes
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Canopy factors for cover runoff effect")]
     private double[] canopy_fact;        //! canopy factors for cover runoff effect ()
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 100000.0)]
     [Units("mm")]
+    [Description("Heights for canopy factors")]
     private double[] canopy_fact_height; //! heights for canopy factors (mm)
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Default canopy factor in absence of height")]
     private double canopy_fact_default;       //! default canopy factor in absence of height ()
 
     [Output]
     [Param]
+    [Description("Actual soil evaporation model being used")]
     private string act_evap_method;           //! actual soil evaporation model being used //sv- hard wired to "ritchie" in the init event handler. 
     private int evap_method;               //sv- integer representation of act_evap_method   
 
@@ -146,7 +165,8 @@ public class SoilWater
 
     [Param(IsOptional = true, MinVal = 0, MaxVal = 100)]
     [Output]
-    private int irrigation_layer = -1;      //! number of soil layer to which irrigation water is applied
+    [Description("Number of soil layer to which irrigation water is applied (where top layer == 1)")]
+    private int irrigation_layer = 0;      //! number of soil layer to which irrigation water is applied
 
 
     #endregion
@@ -164,12 +184,14 @@ public class SoilWater
     //see "obsrunoff" in the Daily Inputs ie. [Input] tag.
     [Output]
     [Param(IsOptional = true, Name = "observed_runoff")]
+    [Description("System variable name of external observed runoff source")]
     private string obsrunoff_name = "";    //! system name of observed runoff
 
 
     private string _eo_source = "";
     [Output]
     [Param(IsOptional = true)]
+    [Description("System variable name of external eo source")]
     public string eo_source      //! system variable name of external eo source
     {
         get { return _eo_source; }
@@ -190,7 +212,7 @@ public class SoilWater
     private double _insoil = Double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
-    [Units("0-10")]
+    [Description("Switch describing how initial soil water is specified")]
     public double insoil            //! switch describing initial soil water  //sv-specifies which option you are using.
     {
         get { return _insoil; }
@@ -223,6 +245,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Initial fraction of esw of profile distributed from top down")]
     public double profile_fesw     //! initial fraction of esw of profile distributed from top down ()
     {
         get { return _profile_fesw; }
@@ -256,6 +279,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm")]
+    [Description("Initial depth of extractable soil water distributed from the top down")]
     public double profile_esw_depth   //! initial depth of extractable soil water distributed from the top down (mm)
     {
         get { return _profile_esw_depth; }
@@ -289,6 +313,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm")]
+    [Description("Initial depth of soil filled to drained upper limit (field capacity)")]
     private double wet_soil_depth   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
     {
         get { return _wet_soil_depth; }
@@ -316,19 +341,20 @@ public class SoilWater
 
     //sv- end of initial sw section
 
-
-
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
+    [Description("Diffusivity constant for soil testure")]
     private double diffus_const = Double.NaN;     //! diffusivity constant for soil testure
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
+    [Description("Slope for diffusivity/soil water content relationship")]
     private double diffus_slope = Double.NaN;     //! slope for diffusivity/soil water content relationship
 
     private double _cn2_bare = Double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 1.0, MaxVal = 100.0)]
+    [Description("Curve number input used to calculate daily runoff")]
     public double cn2_bare         //! curve number input used to calculate daily runoff
     {
         get { return _cn2_bare; }
@@ -347,6 +373,7 @@ public class SoilWater
     private double _cn_red = Double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
+    [Description("Maximum reduction in cn2_bare due to cover")]
     public double cn_red           //! maximum reduction in cn2_bare due to cover
     {
         get { return _cn_red; }
@@ -366,6 +393,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Cover at which cn_red occurs")]
     public double cn_cov           //! cover at which cn_red occurs
     {
         get { return _cn_cov; }
@@ -385,6 +413,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
+    [Description("Maximum surface storage capacity of soil")]
     public double max_pond         //! maximum surface storage capacity of soil  //sv- used to store water from runoff on the surface.
     {
         get { return _max_pond; }
@@ -405,6 +434,7 @@ public class SoilWater
     [Param(MinVal = 0.0001, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Bare soil albedo")]
     private double salb;           //! bare soil albedo (unitless)
 
     //Extra parameters for evaporation models (this module only has Ritchie Evaporation)  
@@ -415,6 +445,7 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 40.0)]
     [Units("mm")]
+    [Description("Upper limit of stage 1 soil evaporation")]
     public double u            //! upper limit of stage 1 soil evaporation (mm)
     {
         get { return _u; }
@@ -424,6 +455,7 @@ public class SoilWater
     private double _cona = Double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
+    [Description("Stage 2 drying coefficient")]
     public double cona         //! stage 2 drying coefficient
     {
         get { return _cona; }
@@ -434,28 +466,35 @@ public class SoilWater
     //summer
     [Output]
     [Param(IsOptional = true)]
+    [Description("Date for start of summer evaporation (dd-mmm)")]
     private string summerdate = "not_read";       //! Date for start of summer evaporation (dd-mmm)
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 40.0)]
     [Units("mm")]
+    [Description("Upper limit of stage 1 soil evaporation during summer")]
     private double summeru = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
+    [Description("Stage 2 drying coefficient during summer")]
     private double summercona = Double.NaN;
+
     //winter
     [Output]
     [Param(IsOptional = true)]
+    [Description("Date for start of winter evaporation (dd-mmm)")]
     private string winterdate = "not_read";       //! Date for start of winter evaporation (dd-mmm)
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Units("mm")]
+    [Description("Upper limit of stage 1 soil evaporation during winter")]
     private double winteru = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
+    [Description("Stage 2 drying coefficient during winter")]
     private double wintercona = Double.NaN;
 
     //end of Extra parameters for evaporation models
@@ -466,15 +505,18 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
+    [Description("Slope")]
     private double slope = Double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]     //1.0e8F = 100000000
     [Units("m")]
+    [Description("Basal width of discharge area")]
     private double discharge_width = Double.NaN;  //! basal width of discharge area (m)
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]     //1.0e8F = 100000000
     [Units("m^2")]
+    [Description("Area over which lateral flow is occuring")]
     private double catchment_area = Double.NaN;   //! area over which lateral flow is occuring (m2)
 
     //sv- end of Lateral flow properties
@@ -485,16 +527,19 @@ public class SoilWater
 
     [Output]
     [Units("mm")]
+    [Description("Total es")]
     private double es                      //! total es
     { get { return MathUtility.Sum(es_layers); } }
 
     [Output]
     [Units("mm")]
+    [Description("Daily effective rainfall")]
     private double eff_rain                  //! daily effective rainfall (mm)
     { get { return rain + runon - runoff - drain; } }
 
     [Output]
     [Units("mm")]
+    [Description("Potential extractable sw in profile")]
     private double esw                       //! potential extractable sw in profile  
     {
         get
@@ -508,41 +553,51 @@ public class SoilWater
     }
 
     [Output]
+    [Description("Effective total cover")]
     private double cover_surface_runoff;     //! effective total cover (0-1)   //residue cover + cover from any crops (tall or short)
 
     [Output]
     [Units("d")]
+    [Description("time after which 2nd-stage soil evaporation begins")]
     private double t;                        //! time after 2nd-stage soil evaporation begins (d)
 
     [Output]
     [Units("mm")]
+    [Description("Effective potential evapotranspiration")]
     private double eo;                       //! effective potential evapotranspiration (mm)
 
     [Output]
     [Units("mm")]
+    [Description("Pot sevap after modification for green cover & residue wt")]
     private double eos;                      //! pot sevap after modification for green cover & residue wt
 
     [Output]
+    [Description("New cn2 after modification for crop cover & residue cover")]
     private double cn2_new;                  //! New cn2  after modification for crop cover & residue cover
 
     [Output]
     [Units("mm")]
-    private double drain;            //! drainage rate from bottom layer (cm/d)
+    [Description("Drainage rate from bottom layer")]
+    private double drain;            //! drainage rate from bottom layer (cm/d) // I think this is in mm, not cm....
 
     [Output]
     [Units("mm")]
+    [Description("Infiltration")]
     private double infiltration;     //! infiltration (mm)
 
     [Output]
     [Units("mm")]
+    [Description("Runoff")]
     private double runoff;           //! runoff (mm)
 
     [Output]
     [Units("mm")]
+    [Description("Evaporation from the surface of the pond")]
     private double pond_evap;      //! evaporation from the surface of the pond (mm)
 
     [Output]
     [Units("mm")]
+    [Description("Surface water ponding depth")]
     private double pond;           //! surface water ponding depth
 
     //Soilwat2Globals
@@ -559,6 +614,7 @@ public class SoilWater
     private double _water_table = Double.NaN;
     [Output]
     [Units("mm")]
+    [Description("Water table depth (depth below the ground surface of the first saturated layer)")]
     public double water_table     //! water table depth (depth below the ground surface of the first saturated layer)
     {
         get { return _water_table; }
@@ -591,6 +647,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm")]
     [Output]
+    [Description("Thickness of soil layer")]
     public double[] dlayer    //! thickness of soil layer (mm)
     {
         get { return _dlayer; }
@@ -657,6 +714,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Saturated water content for layer")]
     public double[] sat       //! saturated water content for layer  
     {
         get
@@ -690,6 +748,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Drained upper limit soil water content for each soil layer")]
     public double[] dul       //! drained upper limit soil water content for each soil layer 
     {
         get
@@ -724,6 +783,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Soil water content of layer")]
     public double[] sw        //! soil water content of layer
     {
         get
@@ -767,6 +827,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("15 bar lower limit of extractable soil water for each soil layer")]
     public double[] ll15      //! 15 bar lower limit of extractable soil water for each soil layer
     {
         get
@@ -799,6 +860,7 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Air dry soil water content")]
     public double[] air_dry   //! air dry soil water content
     {
         get
@@ -832,25 +894,30 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("/d")]
     [Output]
+    [Description("Soil water conductivity constant")]
     private double[] swcon;     //! soil water conductivity constant (1/d) //! ie day**-1 for each soil layer
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
+    [Description("Impermeable soil layer indicator")]
     private double[] mwcon = null;     //! impermeable soil layer indicator
 
     [Output]
+    [Description("Flag to determine if Ks has been chosen for use")]
     private bool using_ks;       //! flag to determine if Ks has been chosen for use. //sv- set in soilwat2_init() by checking if mwcon exists
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm/d")]
     [Output]
+    [Description("Saturated conductivity")]
     private double[] ks = null;        //! saturated conductivity (mm/d)
 
     [Param(MinVal = 0.01, MaxVal = 3.0)]
     [Units("g/cm^3")]
     [Output]
-    private double[] bd;      //! moist bulk density of soil (g/cm^3)
+    [Description("Bulk density of soil")]
+    private double[] bd;      //! moist bulk density of soil (g/cm^3) // ??? Is this "moist" or "dry"; how moist?
 
 
     //sv- Lateral Flow profile   //sv- also from Lateral_read_param()
@@ -864,6 +931,7 @@ public class SoilWater
     private double[] _sat_dep;
     [Output]
     [Units("mm")]
+    [Description("Sat * dlayer")]
     public double[] sat_dep   // sat * dlayer //see soilwat2_init() for initialisation
     {
         get { return _sat_dep; }
@@ -883,6 +951,7 @@ public class SoilWater
     private double[] _dul_dep;
     [Output]
     [Units("mm")]
+    [Description("dul * dlayer")]
     public double[] dul_dep   // dul * dlayer  //see soilwat2_init() for initialisation
     {
         get { return _dul_dep; }
@@ -902,6 +971,7 @@ public class SoilWater
     private double[] _sw_dep;
     [Output]
     [Units("mm")]
+    [Description("sw * dlayer")]
     public double[] sw_dep    // sw * dlayer //see soilwat2_init() for initialisation
     {
         get { return _sw_dep; }
@@ -925,6 +995,7 @@ public class SoilWater
     private double[] _ll15_dep;
     [Output]
     [Units("mm")]
+    [Description("ll15 * dlayer")]
     public double[] ll15_dep  // ll15 * dlayer //see soilwat2_init() for initialisation
     {
         get { return _ll15_dep; }
@@ -945,6 +1016,7 @@ public class SoilWater
     private double[] _air_dry_dep;
     [Output]
     [Units("mm")]
+    [Description("air_dry * dlayer")]
     public double[] air_dry_dep  // air_dry * dlayer //see soilwat2_init() for initialisation
     {
         get { return _air_dry_dep; }
@@ -963,6 +1035,7 @@ public class SoilWater
 
     [Output]
     [Units("mm/mm")]
+    [Description("Soil water content of layer")]
     private double[] sws       //TODO: this appears to just be an output variable and is identical to sw. I think it should be removed.   //! temporary soil water array used in water_table calculation
     {
         get
@@ -977,14 +1050,17 @@ public class SoilWater
  
     [Output]
     [Units("mm")]
+    [Description("Depth of water moving from layer i+1 into layer i because of unsaturated flow; (positive value indicates upward movement into layer i) (negative value indicates downward movement (mm) out of layer i)")]
     private double[] flow;        //sv- Unsaturated Flow //! depth of water moving from layer i+1 into layer i because of unsaturated flow; (positive value indicates upward movement into layer i) (negative value indicates downward movement (mm) out of layer i)
 
     [Output]
     [Units("mm")]
+    [Description("Initially, water moving downward into layer i (mm), then water moving downward out of layer i (saturated flow)")]
     private double[] flux;       //sv- Drainage (Saturated Flow) //! initially, water moving downward into layer i (mm), then water moving downward out of layer i (mm)
 
     [Output]
     [Units("mm")]
+    [Description("flow_water[layer] = flux[layer] - flow[layer]")]
     private double[] flow_water         //flow_water[layer] = flux[layer] - flow[layer] 
     {
         get
@@ -1006,6 +1082,7 @@ public class SoilWater
 
     [Output]
     [Units("mm")]
+    [Description("Lateral outflow")]
     private double[] outflow_lat;   //! outflowing lateral water   //lateral outflow
     //end
 
@@ -1123,6 +1200,10 @@ public class SoilWater
     [Input(IsOptional = true)]
     [Units("mm/d")]
     private double runon = 0.0;      //! external run-on of H2O (mm/d)
+
+    [Input(IsOptional = true)]
+    [Units("mm")]
+    private double snow = 0.0;      //! water content of snow falling during the day
 
     //from crop modules  
     //used in runoff(as part of TotalInterception parameter) and in infilitration
@@ -1512,8 +1593,6 @@ public class SoilWater
         real_eo = 0.0;                          //! eo determined before any ponded water is evaporated (mm)
 
         irrigation_layer = 0;                   //! trickle irrigation input layer
-        //TODO: remove the irrigation_layer above.
-
     }
 
 
@@ -2906,8 +2985,7 @@ public class SoilWater
 
         infiltration_1 = rain + runon - runoff_pot - interception - residueinterception;
 
-        //TODO: in soilwat2_zero_variables() we set irrigation_layer to 0. So this next line will never work.
-        if (irrigation_layer == -1)      //sv- if the user did not enter an irrigation_layer
+        if (irrigation_layer == 0)      //sv- if the user did not enter an irrigation_layer
         {
             infiltration_1 = infiltration_1 + irrigation;
         }
@@ -3922,15 +4000,14 @@ public class SoilWater
         int solnum;     //! solute number counter variable     
         int layer;      //! soil layer
 
-        //TODO: in soilwat2_zero_variables() we set irrigation_layer to 0. So this next line will never work.
-        if (irrigation_layer == -1)   //sv- if user did not enter an irrigation_layer
+        if (irrigation_layer == 0)   //sv- if user did not enter an irrigation_layer
         {
             //!addition at surface
             layer = 0;
         }
         else
         {
-            layer = irrigation_layer;
+            layer = irrigation_layer - 1;
         }
 
         for (solnum = 0; solnum < num_solutes; solnum++)
@@ -4868,11 +4945,10 @@ public class SoilWater
 
         // IRRIGATION
 
-        if (irrigation_layer >= 0)
+        if (irrigation_layer > 0)
         {
             //add the irrigation
-            //TODO:this irrigation_layer is wrong. Should be ci.(irrigation_layer). ALso zeroing of it is wrong which is why it does not work in the fortran version. Also assigning
-            _sw_dep[irrigation_layer] = _sw_dep[irrigation_layer] + irrigation;
+            _sw_dep[irrigation_layer - 1] = _sw_dep[irrigation_layer - 1] + irrigation;
         }
 
         //! save solutes from irrigation
