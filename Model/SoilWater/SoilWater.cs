@@ -11,6 +11,7 @@ using CMPServices;
 ///<summary>
 /// .NET port of the Fortran SoilWat model
 /// Ported by Shaun Verrall Mar 2011
+/// Extended by Eric Zurcher Mar 2012
 ///</summary> 
 
 
@@ -574,19 +575,12 @@ public class SoilWater
 
     #region Soil "Profile" (layered): (Constants & Starting Values from SIM file), and the Outputs
 
-
-    //Has the soilwat_init() been done? If so let the fractional soil arrays (eg. sw, sat, dul etc) now allow "sets".
-    //It is the fractional soil arrays that are read in from the SIM file as [Param]'s.
-    //They are then used to initialise the equivalent "_dep" arrays in soilwat_int() (more specfically by soilwat2_soil_profile_param()).
-    //This causes a problem because the fractional arrays also use their _dep equivalent in their "set".
-    //(because it is the _dep arrays that are actually used by the model not the fractionals. The fractional arrays are just used for input and ouput, so just changing them and not the _dep array is pointless.) 
-    //If the set for the fraction array is called BEFORE the soilwat_init(), then this causes an error. 
-    //Which is exactly what happens at the start of the simulation when the [Param] tags get initialised. 
-    //They call the fractional arrays "set" which tries to use the _dep array which is uninitialised because soilwat_init() has not been called yet. 
-    //This flag is used to prevent in fractional arrays "gets" or "sets" the calling of any code with a _dep array in it before the soilwat_init() has been called. 
-
+    //Has the soilwat_init() been done? If so, let the fractional soil arrays (eg. sw, sat, dul etc) check the profile
+    //layers when a "set" occurs. If not, save reset values so they can be applied if a reset event is sent.
     bool initDone = false;
-
+    //If doing a reset, we don't want to check profile layer data until ALL the various values have been reset. This flag
+    //tells us whether we're doing a reset; if so, we can skip checking.
+    bool inReset = false;
 
     //SIM file gets them from .APSIM file
 
@@ -622,6 +616,17 @@ public class SoilWater
                 Array.Resize(ref _dlayer, num_layers);
                 Array.Resize(ref bd, num_layers);
                 Array.Resize(ref es_layers, num_layers);
+                Array.Resize(ref flow, num_layers);
+                Array.Resize(ref flux, num_layers);
+                Array.Resize(ref outflow_lat, num_layers);
+                //also resize for all solutes in this simulation.
+                for (int solnum = 0; solnum < num_solutes; solnum++)
+                {
+                    Array.Resize(ref solutes[solnum].amount, num_layers);
+                    Array.Resize(ref solutes[solnum].leach, num_layers);
+                    Array.Resize(ref solutes[solnum].up, num_layers);
+                    Array.Resize(ref solutes[solnum].delta, num_layers);
+                }
             }
 
             for (int layer = 0; layer < _dlayer.Length; layer++)
@@ -649,7 +654,6 @@ public class SoilWater
     }
 
 
-    private double[] _sat;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
@@ -657,14 +661,10 @@ public class SoilWater
     {
         get
         {
-            if (initDone)
-            {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _sat[layer] = MathUtility.Divide(_sat_dep[layer], _dlayer[layer], 0.0);
-                }
-            }
+            int num_layers = _dlayer.Length;
+            double[] _sat = new double[num_layers];
+            for (int layer = 0; layer < num_layers; layer++)
+                _sat[layer] = MathUtility.Divide(_sat_dep[layer], _dlayer[layer], 0.0);
             return _sat;
         }
         set
@@ -676,24 +676,17 @@ public class SoilWater
                 reset_sat = new double[value.Length];
                 Array.Copy(value, reset_sat, value.Length);
             }
-
             //* made settable to allow for erosion
-            _sat = new double[value.Length];
-            Array.Copy(value, _sat, value.Length);  //This fractional value is used in soilwat_init() to initialise _sat_dep. That is the only place it is used. Everywhere else uses _sat_dep.
-            if (initDone)
+            int num_layers = _dlayer.Length;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _sat_dep[layer] = value[layer] * _dlayer[layer];   //change sat_dep NOT sat. The sat variable is just for inputting and outputting and is immediately converted to sw_dep.
-                    soilwat2_check_profile(layer);
-                }
+                _sat_dep[layer] = value[layer] * _dlayer[layer];   //change sat_dep NOT sat. The sat variable is just for inputting and outputting and is immediately converted to sw_dep.
+                soilwat2_check_profile(layer);
             }
         }
     }
 
 
-    private double[] _dul;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
@@ -701,15 +694,11 @@ public class SoilWater
     {
         get
         {
+            int num_layers = _dlayer.Length;
+            double[] _dul = new double[num_layers];
             //* made settable to allow for erosion
-            if (initDone)
-            {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _dul[layer] = MathUtility.Divide(_dul_dep[layer], _dlayer[layer], 0.0);
-                }
-            }
+            for (int layer = 0; layer < num_layers; layer++)
+                _dul[layer] = MathUtility.Divide(_dul_dep[layer], _dlayer[layer], 0.0);
             return _dul;
         }
         set
@@ -722,22 +711,16 @@ public class SoilWater
                 Array.Copy(value, reset_dul, value.Length);
             }
             //* made settable to allow for erosion
-            _dul = new double[value.Length];
-            Array.Copy(value, _dul, value.Length);  //This fractional value is used in soilwat_init() to initialise _dul_dep. That is the only place it is used. Everywhere else uses _dul_dep. 
-            if (initDone)
+            int num_layers = _dlayer.Length;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _dul_dep[layer] = value[layer] * _dlayer[layer];   //change dul_dep NOT dul. The dul variable is just for inputting and outputting and is immediately converted to sw_dep.
-                    soilwat2_check_profile(layer);
-                }
+                _dul_dep[layer] = value[layer] * _dlayer[layer];   //change dul_dep NOT dul. The dul variable is just for inputting and outputting and is immediately converted to sw_dep.
+                soilwat2_check_profile(layer);
             }
         }
     }
 
     private int numvals_sw = 0;                        //! number of values returned for sw 
-    private double[] _sw;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
@@ -745,14 +728,10 @@ public class SoilWater
     {
         get
         {
-            if (initDone)
-            {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _sw[layer] = MathUtility.Divide(_sw_dep[layer], _dlayer[layer], 0.0);
-                }
-            }
+            int num_layers = _dlayer.Length;
+            double[] _sw = new double[num_layers];
+            for (int layer = 0; layer < num_layers; layer++)
+                _sw[layer] = MathUtility.Divide(_sw_dep[layer], _dlayer[layer], 0.0);
             return _sw;
         }
         set
@@ -766,32 +745,25 @@ public class SoilWater
                 Array.Copy(value, reset_sw, value.Length);
             }
 
-            if (initDone)
+            double[] sw_dep_old;
+            double sw_dep_lyr, sw_dep_delta_sum;
+            sw_dep_old = _sw_dep;
+            soilwat2_zero_default_variables();
+            int num_layers = _dlayer.Length;
+            sw_dep_delta_sum = 0.0;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                double[] sw_dep_old;
-                double sw_dep_lyr, sw_dep_delta_sum;
-                sw_dep_old = _sw_dep;
-                soilwat2_zero_default_variables();
-                int num_layers = _dlayer.Length;
-                sw_dep_delta_sum = 0.0;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    sw_dep_lyr = value[layer] * _dlayer[layer];   //sw_dep = sw * dlayer
-                    sw_dep_delta_sum = sw_dep_delta_sum + (sw_dep_lyr - sw_dep_old[layer]);   //accumulate the change in the entire soil profile.
-                    _sw_dep[layer] = sw_dep_lyr;  //change sw_dep NOT sw. The sw variable is just for inputting and outputting and is immediately converted to sw_dep.    
-                    soilwat2_check_profile(layer);
-                }
-
-                soilwat2_ExternalMassFlow(sw_dep_delta_sum);     //tell the "System Balance" module (if there is one) that the user has changed the water by this amount.
+                sw_dep_lyr = value[layer] * _dlayer[layer];   //sw_dep = sw * dlayer
+                sw_dep_delta_sum = sw_dep_delta_sum + (sw_dep_lyr - sw_dep_old[layer]);   //accumulate the change in the entire soil profile.
+                _sw_dep[layer] = sw_dep_lyr;  //change sw_dep NOT sw. The sw variable is just for inputting and outputting and is immediately converted to sw_dep.    
+                soilwat2_check_profile(layer);
             }
+            if (initDone)
+              soilwat2_ExternalMassFlow(sw_dep_delta_sum);     //tell the "System Balance" module (if there is one) that the user has changed the water by this amount.
             numvals_sw = value.Length;          //used in soilwat2_set_default()
-            _sw = new double[value.Length];
-            Array.Copy(value, _sw, value.Length);       //This fractional value is used in soilwat_init() to initialise _sw_dep. That is the only place it is used. Everywhere else uses _sw_dep.
         }
     }
 
-
-    private double[] _ll15;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
@@ -799,14 +771,10 @@ public class SoilWater
     {
         get
         {
-            if (initDone)
-            {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _ll15[layer] = MathUtility.Divide(_ll15_dep[layer], _dlayer[layer], 0.0);
-                }
-            }
+            int num_layers = _dlayer.Length;
+            double[] _ll15 = new double[num_layers];
+            for (int layer = 0; layer < num_layers; layer++)
+                _ll15[layer] = MathUtility.Divide(_ll15_dep[layer], _dlayer[layer], 0.0);
             return _ll15;
         }
         set
@@ -819,22 +787,15 @@ public class SoilWater
                 Array.Copy(value, reset_ll15, value.Length);
             }
             //* made settable to allow for erosion
-            _ll15 = new double[value.Length];
-            Array.Copy(value, _ll15, value.Length);      //This fractional value is used in soilwat_init() to initialise _ll15_dep. That is the only place it is used. Everywhere else uses _ll15_dep.
-            if (initDone)
+            int num_layers = _dlayer.Length;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _ll15_dep[layer] = value[layer] * _dlayer[layer];   //change ll15_dep NOT dul. The dll15 variable is just for inputting and outputting and is immediately converted to sw_dep.
-                    soilwat2_check_profile(layer);
-                }
+                _ll15_dep[layer] = value[layer] * _dlayer[layer];   //change ll15_dep NOT dul. The dll15 variable is just for inputting and outputting and is immediately converted to sw_dep.
+                soilwat2_check_profile(layer);
             }
         }
     }
 
-
-    private double[] _air_dry;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Output]
@@ -842,14 +803,10 @@ public class SoilWater
     {
         get
         {
-            if (initDone)
-            {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _air_dry[layer] = MathUtility.Divide(_air_dry_dep[layer], _dlayer[layer], 0.0);
-                }
-            }
+            int num_layers = _dlayer.Length;
+            double[] _air_dry = new double[num_layers];
+            for (int layer = 0; layer < num_layers; layer++)
+                _air_dry[layer] = MathUtility.Divide(_air_dry_dep[layer], _dlayer[layer], 0.0);
             return _air_dry;
         }
         set
@@ -863,16 +820,11 @@ public class SoilWater
             }
 
             //* made settable to allow for erosion  
-            _air_dry = new double[value.Length];
-            Array.Copy(value, _air_dry, value.Length);  //This fractional value is used in soilwat_init() to initialise _air_dry_dep. That is the only place it is used. Everywhere else uses _air_dry_dep.
-            if (initDone)
+            int num_layers = _dlayer.Length;
+            for (int layer = 0; layer < num_layers; layer++)
             {
-                int num_layers = _dlayer.Length;
-                for (int layer = 0; layer < num_layers; layer++)
-                {
-                    _air_dry_dep[layer] = value[layer] * _dlayer[layer];   //change air_dry_dep NOT dul. The air_dry variable is just for inputting and outputting and is immediately converted to sw_dep.
-                    soilwat2_check_profile(layer);
-                }
+                _air_dry_dep[layer] = value[layer] * _dlayer[layer];   //change air_dry_dep NOT dul. The air_dry variable is just for inputting and outputting and is immediately converted to sw_dep.
+                soilwat2_check_profile(layer);
             }
         }
     }
@@ -1100,6 +1052,17 @@ public class SoilWater
                 Array.Resize(ref _dlayer, num_layers);
                 Array.Resize(ref bd, num_layers);
                 Array.Resize(ref es_layers, num_layers);
+                Array.Resize(ref flow, num_layers);
+                Array.Resize(ref flux, num_layers);
+                Array.Resize(ref outflow_lat, num_layers);
+                //also resize for all solutes in this simulation.
+                for (int solnum = 0; solnum < num_solutes; solnum++)
+                {
+                    Array.Resize(ref solutes[solnum].amount, num_layers);
+                    Array.Resize(ref solutes[solnum].leach, num_layers);
+                    Array.Resize(ref solutes[solnum].up, num_layers);
+                    Array.Resize(ref solutes[solnum].delta, num_layers);
+                }
             }
 
             soilwat2_New_Profile_Event();
@@ -1149,8 +1112,7 @@ public class SoilWater
 
     [Input(IsOptional = true)]
     [Units("0-1")]
-    private double surfaceom_cover;        //basically this just gets renamed to the residue_cover variable below
-    private double residue_cover;          //! residue cover reduces  cn2_bare //this is the internal variable name for surfaceom_cover 
+    private double surfaceom_cover = 0.0;
 
     //end of soilwat2_get_residue_variables()
 
@@ -1197,11 +1159,6 @@ public class SoilWater
 
     #region Get Variables from other Modules (if need to do stuff AFTER inputting)
 
-
-    private void soilwat2_get_residue_variables()
-    {
-        residue_cover = surfaceom_cover;  //surfaceom_cover is an [input] 
-    }
 
     private void soilwat2_get_crop_variables()
     {
@@ -1259,33 +1216,14 @@ public class SoilWater
         }
     }
 
-
-    private void soilwat2_get_environ_variables()
-    {
-        //also called in prepare event
-
-        if (Double.IsNaN(runon))
-            runon = 0.0;
-        if (Double.IsNaN(interception))
-            interception = 0.0;
-        if (Double.IsNaN(residueinterception))
-            residueinterception = 0.0;
-
-    }
-
-
     //this is called in the On Process event handler
     //it just calls all the methods above.
     private void soilwat2_get_other_variables()
     {
 
-        soilwat2_get_residue_variables();
-
         soilwat2_get_crop_variables();
 
         soilwat2_get_solute_variables();
-
-        soilwat2_get_environ_variables();
 
     }
 
@@ -1478,27 +1416,6 @@ public class SoilWater
     #region Functions to Zero Variables
 
 
-    private void InstantiateArrays_PureOutputs()
-    {
-
-        //need this for arrays below.
-        int num_layers = _dlayer.Length;
-
-        //INSTANTIATE THE ARRAYS
-        //----------------------      
-
-        //profile outputs
-        _sat_dep = new double[num_layers];
-        _dul_dep = new double[num_layers];
-        _sw_dep = new double[num_layers];
-        _ll15_dep = new double[num_layers];
-        _air_dry_dep = new double[num_layers];
-        flow = new double[num_layers];
-        flux = new double[num_layers];
-        outflow_lat = new double[num_layers];
-    }
-
-
     private void soilwat2_zero_variables()
     {
 
@@ -1560,9 +1477,6 @@ public class SoilWater
         ZeroArray(ref es_layers);                //! actual soil evaporation (mm)
 
         ZeroArray(ref outflow_lat);
-
-        //Inputs
-        residue_cover = 0.0;                    //! residue cover reduces  cn2_bare
 
         //Local Variables
 
@@ -1640,7 +1554,6 @@ public class SoilWater
         canopy_height = null;
         //ZeroArray(ref crop_module, max_crops);
 
-        residue_cover = 0.0;
         eo = 0.0;
         eos = 0.0;
         cn2_new = 0.0;
@@ -2153,10 +2066,6 @@ public class SoilWater
         //End of Initial SW
         //*****************
 
-
-
-
-
         //If this function has been called by a Reset Event
         //then reset (all the variables that are "Settable" by the user) back to the original values read in by [Param]  
         if (initDone)
@@ -2187,16 +2096,11 @@ public class SoilWater
 
         }
 
-
-
-
         //sv- the following test is removed from soilwat2_soil_property_param()
         if (_cn_red >= _cn2_bare)
         {
             _cn_red = _cn2_bare - 0.00009;
         }
-
-
 
 
         //****************
@@ -2332,31 +2236,17 @@ public class SoilWater
         //then reset (all the variables that are "Settable" by the user) back to the original values read in by [Param]  
         if (initDone)
         {
+            inReset = true; // Temporarily turn of profile checking, until we've reset all values
             //soil profile
             _dlayer = new double[reset_dlayer.Length];
             Array.Copy(reset_dlayer, _dlayer, reset_dlayer.Length);
-            _sat = new double[reset_sat.Length];
-            Array.Copy(reset_sat, _sat, reset_sat.Length);
-            _dul = new double[reset_dul.Length];
-            Array.Copy(reset_dul, _dul, reset_dul.Length);
+            sat = reset_sat;
+            dul = reset_dul;
             numvals_sw = reset_numvals_sw;  //used in soilwat2_set_default();
-            _sw = new double[reset_sw.Length];
-            Array.Copy(reset_sw, _sw, reset_sw.Length);
-            _ll15 = new double[reset_ll15.Length];
-            Array.Copy(reset_ll15, _ll15, reset_ll15.Length);
-            _air_dry = new double[reset_air_dry.Length];
-            Array.Copy(reset_air_dry, _air_dry, reset_air_dry.Length);
-        }
-
-        //recalculate ALL the _dep arrays  (I don't know if this is really necessary since they are calculated in "Set" of property) 
-
-        for (int i = 0; i < _dlayer.Length; i++)
-        {
-            _sat_dep[i] = _sat[i] * _dlayer[i];
-            _dul_dep[i] = _dul[i] * _dlayer[i];
-            _sw_dep[i] = _sw[i] * _dlayer[i];
-            _ll15_dep[i] = _ll15[i] * _dlayer[i];
-            _air_dry_dep[i] = _air_dry[i] * _dlayer[i];
+            sw = reset_sw;
+            ll15 = reset_ll15;
+            air_dry = reset_air_dry;
+            inReset = false;
         }
 
 
@@ -2380,29 +2270,15 @@ public class SoilWater
             //sv- isn't this a mistake? what if you want to use a user specifed sw method (ie. insoil > 1). I assume soilwat2_set_default() caters for this.
         }
 
-
-
-
-
-
         //sv- Since you have initialised all the _dep[] profile variables 
         //sv- AND you have got all your numvals flags indicating what initial sw method was selected sorted out
         //sv- now you can set your initial sw for the profile.
         soilwat2_set_default();
         //sv-end
 
-
-        //check each layer of the init sw profile
-        for (int layer = 0; layer < _dlayer.Length; layer++)
-        {
-            soilwat2_check_profile(layer);
-        }
-
         //*****************
         //End of Initial SW  
         //*****************
-
-
 
         //##################
         //End of Soil Profile
@@ -2540,8 +2416,6 @@ public class SoilWater
         }
     }
 
-
-
     private void soilwat2_check_profile(int layer)
     {
         //*+  Purpose
@@ -2553,6 +2427,9 @@ public class SoilWater
         //*           - ll15 is below min_sw
         //*           - sat is above max_sw
         //*           - sw > sat or sw < min_sw      
+
+        if (inReset || !initDone)
+            return;
 
         //Constant Values
         double min_sw_local = 0.0;
@@ -2572,7 +2449,6 @@ public class SoilWater
         double sw_errmargin;        //! rounding error margin for swc
 
         double max_sw_local;              //! largest acceptable value for sat (mm water/mm soil)
-
 
         max_sw_local = 1.0 - MathUtility.Divide(bd[layer], specific_bd, 0.0);  //ie. Total Porosity
 
@@ -2903,7 +2779,7 @@ public class SoilWater
 
         //! add cover known to affect runoff
         //!    ie residue with canopy shading residue         
-        cover_surface_runoff = add_cover(cover_surface_crop, residue_cover);
+        cover_surface_runoff = add_cover(cover_surface_crop, surfaceom_cover);
     }
 
 
@@ -3212,7 +3088,7 @@ public class SoilWater
         //   ! BUT taking into account that residue can be a mix of
         //   ! residues from various crop types <dms june 95>
 
-        if (residue_cover >= 1.0)
+        if (surfaceom_cover >= 1.0)
         {
             //! We test for 100% to avoid log function failure.
             //! The algorithm applied here approaches 0 as cover approaches
@@ -3229,7 +3105,7 @@ public class SoilWater
             //!    [DM. Silburn unpublished data, June 95 ]
             //!    <temporary value - will reproduce Adams et al 75 effect>
             //!     c%A_to_evap_fact = 0.00022 / 0.0005 = 0.44
-            eos_residue_fract = Math.Pow((1.0 - residue_cover), A_to_evap_fact);
+            eos_residue_fract = Math.Pow((1.0 - surfaceom_cover), A_to_evap_fact);
         }
 
         //! Reduce potential soil evap under canopy to that under residue (mulch)
@@ -4819,8 +4695,6 @@ public class SoilWater
         Console.WriteLine();
     }
 
-
-
     //Init2, Reset, UserInit
     private void soilwat2_init()
     {
@@ -4843,9 +4717,11 @@ public class SoilWater
 
         initDone = true;     //let the classes properties to now allow "sets"
 
+        for (int layer = 0; layer < _dlayer.Length; layer++)
+            soilwat2_check_profile(layer);
+
         //publish event saying there is a new soil profile.
         soilwat2_New_Profile_Event();
-
 
     }
 
@@ -4889,9 +4765,6 @@ public class SoilWater
         day = Today.DayOfYear;
         year = Today.Year;
 
-        //sv- I had to put this in so that _sw_dep is instantiated and then soilwat2_save_state() does not throw an error. 
-        InstantiateArrays_PureOutputs();
-
         //Save State
         soilwat2_save_state();
 
@@ -4926,7 +4799,6 @@ public class SoilWater
         soilwat2_zero_daily_variables();
         Lateral_zero_daily_variables();     //sv- I added this from Lateral_prepare()
         soilwat2_get_crop_variables();
-        soilwat2_get_environ_variables();
 
         //! potential: sevap + transpiration:
         soilwat2_pot_evapotranspiration();
@@ -5432,7 +5304,7 @@ public class SoilWater
         newProfile.bd = ToFloatArray(bd);
         newProfile.dlayer = ToFloatArray(_dlayer);
         newProfile.dul_dep = ToFloatArray(_dul_dep);
-        newProfile.ll15_dep = ToFloatArray(_ll15);
+        newProfile.ll15_dep = ToFloatArray(_ll15_dep);
         newProfile.sat_dep = ToFloatArray(_sat_dep);
         newProfile.sw_dep = ToFloatArray(_sw_dep);
         if (newProfile != null)
