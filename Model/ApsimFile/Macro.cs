@@ -660,7 +660,8 @@ namespace ApsimFile
             return false;
          if (s.Count == 1)
             return (s[0].IndexOf('[') == -1 || s[0].IndexOf(']') == -1);
-
+         if (s.Count == 2)
+             return true;
          //			if (s.Count != 3)
          //				throw new Exception("Badly formatted if statement: " + IfMacro);
          char[] operators = { '<', '>' };
