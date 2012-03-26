@@ -9,6 +9,7 @@ public class Leaf : BaseOrgan, AboveGround
 {
  #region Class inputs
     //Input Parameters
+    [Output]
     [Param]
     public List<LeafCohort> Leaves;
     [Param]
@@ -592,7 +593,8 @@ public class Leaf : BaseOrgan, AboveGround
             Leaves[i]._Population = BranchNumber;
             Leaves[i].Age = CohortAge; 
             Leaves[i].DoAppearance(FinalLeafFraction);
-            NewLeaf.Invoke();
+            if (NewLeaf != null)
+                NewLeaf.Invoke();
         }
 
         FractionNextleafExpanded = 0;

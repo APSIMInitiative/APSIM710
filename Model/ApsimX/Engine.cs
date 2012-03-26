@@ -113,7 +113,7 @@ public class Engine
     /// </summary>
     public object FindModel(string ModelName)
     {
-        return Simulation.FindModel(ModelName);
+        return Simulation.FindModelByName(ModelName);
     }
 
 }

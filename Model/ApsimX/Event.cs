@@ -25,8 +25,17 @@ class EventPublisher
     {
         Delegate D = Delegate.CreateDelegate(Info.EventHandlerType, Subscriber.TheModel, Subscriber.Info);
         Info.AddEventHandler(TheModel, D);
+        Subscriber.Publisher = this;
+        Subscriber.D.Add(D);
     }
 
+
+    internal void DisconnectTo(EventSubscriber Subscriber)
+    {
+        Delegate[] DL = Subscriber.D[0].GetInvocationList();
+        Info.RemoveEventHandler(TheModel, Subscriber.D[0]);
+        
+    }
 }
 
 class EventSubscriber
@@ -34,6 +43,8 @@ class EventSubscriber
     internal MethodInfo Info;
     internal object TheModel;
     private string _Name;
+    internal EventPublisher Publisher;
+    internal List<Delegate> D = new List<Delegate>();
     public EventSubscriber(string Name, MethodInfo I, object Model)
     {
         if (Name != null)
@@ -58,5 +69,12 @@ class EventSubscriber
         if (Info != null)
             Info.Invoke(TheModel, null);
     }
+
+    public void Disconnect()
+    {
+        if (Publisher != null)
+            Publisher.DisconnectTo(this);
+    }
+
 
 }

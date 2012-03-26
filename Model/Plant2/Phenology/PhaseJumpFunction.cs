@@ -17,7 +17,8 @@ class PhaseJumpFunction
     [Param]
     private string Event = "";
     [Link]
-    private Paddock MyPaddock = null;
+    private Paddock MyPaddock
+    = null;
 
     [EventHandler]
     public void OnInitialised()

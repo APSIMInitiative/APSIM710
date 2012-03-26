@@ -1,21 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ModelFramework;
 
 
 public class Population
 {
     [Link]
-    Plant Plant;
+    Plant Plant = null;
 
-    [Param]
     [Output("Population")]
-    public double Value;
-
-    [EventHandler]
-    public void OnSow(SowPlant2Type Sow)
+    public double Value
     {
-        Value = Plant.SowingData.Population;
+        get { return Plant.SowingData.Population; }
     }
 
 }

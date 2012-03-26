@@ -48,4 +48,6 @@ public class BaseOrgan : Organ
 
     // Methods that can be called from manager
     public override void OnSow(SowPlant2Type SowData) { }
+    public override void OnHarvest() { }
+    public override void OnEndCrop() { }
 }

@@ -86,8 +86,26 @@ namespace ModelFramework
         //=========================================================================
         public override void Publish(String EventName)
         {
-            throw new NotImplementedException();
+            Instance.Publish(EventName);
         }
+
+        public void Activate(string ComponentName)
+        {
+            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            if (I == null)
+                throw new Exception("Cannot find component: " + ComponentName + ". Cannot activate it.");
+            I.Activate();
+        }
+
+        public void Deactivate(string ComponentName)
+        {
+            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            if (I == null)
+                throw new Exception("Cannot find component: " + ComponentName + ". Cannot deactivate it.");
+            I.Deactivate();
+            I.PublishToChildren("Initialised");
+        }
+
         //=========================================================================
         /// <summary>
         /// Publish an event that has associated data. This event is broadcast to all components within scope.

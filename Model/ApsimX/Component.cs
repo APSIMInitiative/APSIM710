@@ -89,7 +89,8 @@ namespace ModelFramework
         // --------------------------------------------------------------------
         public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
         {
-            throw new NotImplementedException();
+            Instance.AddSubscriber(EventName, F.Method, F.Target);
+            Instance.ConnectEvents();
         }		
 		
         // --------------------------------------------------------------------
@@ -128,7 +129,7 @@ namespace ModelFramework
         /// </summary>
         public object LinkByName(string NameToFind)
         {
-            return Instance.FindModel(NameToFind);
+            return Instance.FindModelByName(NameToFind);
         }
         // --------------------------------------------------------------------
         /// <summary>
@@ -142,13 +143,17 @@ namespace ModelFramework
                 return FQN;
             }
         }
-		
+
         public virtual List<object> ChildrenAsObjects
-				{
-				get {
-				throw new NotImplementedException();
-					}
-				}
+        {
+            get
+            {
+                List<object> Childs = new List<object>();
+                foreach (ModelInstance Inst in Instance.Children)
+                    Childs.Add(Inst.TheModel);
+                return Childs;
+            }
+        }
 
         /// <summary>
         /// 
@@ -159,8 +164,17 @@ namespace ModelFramework
         {
             throw new NotImplementedException(); 
         }
- 
- 
+
+
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
+        public bool Get(string NamePath, out object Data)
+        {
+            return Instance.Get(NamePath, out Data);
+        }
          /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
         /// The method will return true if found or false otherwise. The value of the variable will be 

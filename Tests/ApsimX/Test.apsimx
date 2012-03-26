@@ -5,7 +5,7 @@
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1900</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/1904</end_date>
     </clock>
     <summaryfile />
     <area name="paddock">
@@ -355,6 +355,50 @@ public class ScriptChild
               <Thickness>300</Thickness>
               <ll code="FM">0.45</ll>
               <kl>0.03</kl>
+              <xf>1</xf>
+            </Layer>
+          </SoilCrop>
+          <SoilCrop name="wheat2">
+            <Layer>
+              <Thickness units="mm">150</Thickness>
+              <ll units="mm/mm" code="FM">0.24</ll>
+              <kl units="/day">0.06</kl>
+              <xf units="0-1">1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>150</Thickness>
+              <ll code="FM">0.29</ll>
+              <kl>0.06</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="FM">0.31</ll>
+              <kl>0.06</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="FM">0.33</ll>
+              <kl>0.04</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="FM">0.37</ll>
+              <kl>0.04</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="FM">0.42</ll>
+              <kl>0.02</kl>
+              <xf>1</xf>
+            </Layer>
+            <Layer>
+              <Thickness>300</Thickness>
+              <ll code="FM">0.47</ll>
+              <kl>0.02</kl>
               <xf>1</xf>
             </Layer>
           </SoilCrop>
@@ -748,11 +792,13 @@ public class ScriptChild
       </soil>
       <ReportDb>
         <variables name="Variables">
+          <variable>LAI</variable>
           <variable>sw</variable>
           <variable>maxt</variable>
           <variable>surfaceom_wt</variable>
           <variable>interception</variable>
           <variable>no3</variable>
+          <variable>CurrentPhaseName</variable>
         </variables>
       </ReportDb>
       <Graph name="XY">
@@ -785,6 +831,47 @@ public class ScriptChild
         <c_interception name="c_interception">0.0</c_interception>
         <d_interception name="d_interception">0.0</d_interception>
       </micromet>
+      <wheat2 name="Wheat2" />
+      <manager2 name="Script(C#)">
+        <text>
+using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Link] Paddock MyPaddock;
+   [Link] Plant Wheat2; 
+   [Input] DateTime Today;   
+   [Input] string CurrentPhaseName; 
+   
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      MyPaddock.Deactivate("wheat2");
+   }
+      
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+      if (Today.Day == 1 &amp;&amp; Today.Month == 6) 
+      {
+         MyPaddock.Activate("wheat2");
+         SowPlant2Type Sow = new SowPlant2Type {Cultivar = "Hartog", Population = 150, Depth = 50, RowSpacing = 500, MaxCover=1, BudNumber=1};
+         Wheat2.OnSow(Sow);
+      }
+      
+      if (CurrentPhaseName == "ReadyForHarvesting")
+      {
+         Wheat2.OnHarvest();
+         Wheat2.OnEndCrop();
+         MyPaddock.Deactivate("wheat2");
+      }
+      
+   }
+   
+}
+       </text>
+      </manager2>
     </area>
   </simulation>
 </folder>

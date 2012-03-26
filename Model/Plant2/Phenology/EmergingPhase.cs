@@ -5,7 +5,7 @@ using System.Text;
 class EmergingPhase : GenericPhase
 {
     [Link]
-    Plant Plant;
+    Plant Plant = null;
 
     [Param]
     private double ShootLag = 0;

@@ -98,7 +98,12 @@ public class Manager2
                 Params.WarningLevel = 2;
                 Params.ReferencedAssemblies.Add("System.dll");
                 if (Path.GetFileNameWithoutExtension(DllFileName).ToLower() == "manager2x")
+                {
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "ApsimX.exe"));
+                    foreach (string ApsimXFileName in Directory.GetFiles(Configuration.ApsimBinDirectory(), "*X.dll"))
+                        Params.ReferencedAssemblies.Add(ApsimXFileName);
+
+                }
                 else
                 {
                     Params.ReferencedAssemblies.Add(Path.Combine(Configuration.ApsimBinDirectory(), "CSDotNetComponentInterface.dll"));

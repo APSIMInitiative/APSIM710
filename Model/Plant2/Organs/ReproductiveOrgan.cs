@@ -120,10 +120,10 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [Event]
     public event NullTypeDelegate Harvesting;
 
-    [EventHandler]
-    public void OnHarvest()
+    public override void OnHarvest()
     {
-        Harvesting.Invoke();
+        if (Harvesting != null)
+            Harvesting.Invoke();
 
         DateTime Today = new DateTime(Year, 1, 1);
         Today = Today.AddDays(Day - 1);

@@ -166,6 +166,14 @@ class ToDoubleArray : VariableBase
                     DoubleValues[i] = Convert.ToDouble(SingleValues[i]);
                 return DoubleValues;
             }
+            else if (Var.Value.GetType().Name == "String[]")
+            {
+                string[] StringValues = (string[])Var.Value;
+                double[] DoubleValues = new double[StringValues.Length];
+                for (int i = 0; i < StringValues.Length; i++)
+                    DoubleValues[i] = Convert.ToDouble(StringValues[i]);
+                return DoubleValues;
+            }
             else
                throw new Exception("");
             }

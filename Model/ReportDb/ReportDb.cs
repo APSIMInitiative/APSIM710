@@ -315,7 +315,7 @@ public class ReportDb
     /// Daily timestep handler.
     /// </summary>
     [EventHandler]
-    public void OnPost()
+    public void OnHarvesting()
     {
         List<KeyValuePair<string, object>> Values = GetValues();
 

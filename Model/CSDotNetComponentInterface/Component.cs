@@ -326,6 +326,21 @@ namespace ModelFramework
         /// The method will return true if found or false otherwise. The value of the variable will be 
         /// returned through the out parameter.
         /// </summary>
+        public bool Get(string NamePath, out object Data)
+        {
+            Data = FindInternalEntity(NamePath);
+            if (Data is Entity)
+            {
+                Data = (Data as Entity).Get();
+                return true;
+            }
+            return Data != null;
+        }
+        /// <summary>
+        /// Attempts to find and return the value of a variable that matches the specified name path. 
+        /// The method will return true if found or false otherwise. The value of the variable will be 
+        /// returned through the out parameter.
+        /// </summary>
         public bool Get(string NamePath, out int Data)
         {
             WrapBuiltInVariable<int> Value = new WrapBuiltInVariable<int>();

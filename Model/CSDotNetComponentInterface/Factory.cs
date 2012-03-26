@@ -195,10 +195,16 @@ class Factory
             }
             if (AddProperty)
             {
-                FactoryProperty NewProperty = new FactoryProperty(new ReflectedProperty(Property, Obj.Model), Parent);
-                if (IsOutput)
-                    RemoveRegisteredOutput(NewProperty.OutputName);
-                RegisteredProperties.Add(NewProperty);
+                if (Property.PropertyType.Name == "String" || 
+                    Property.PropertyType.IsValueType ||
+                    Property.PropertyType.IsArray ||
+                    Property.PropertyType.GetInterface("ApsimType") != null)
+                {
+                    FactoryProperty NewProperty = new FactoryProperty(new ReflectedProperty(Property, Obj.Model), Parent);
+                    if (IsOutput)
+                        RemoveRegisteredOutput(NewProperty.OutputName);
+                    RegisteredProperties.Add(NewProperty);
+                }
             }
         }
     }

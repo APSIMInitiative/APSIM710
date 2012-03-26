@@ -49,7 +49,10 @@ public class Root : BaseOrgan, BelowGround
     private double[] DeltaNH4;
     private double[] DeltaNO3;
     
+    [Output]
     public Biomass[] LayerLive;
+
+    [Output]
     public Biomass[] LayerDead;
     public Biomass[] LayerLengthDensity;
     private SowPlant2Type SowingInfo = null;
@@ -279,8 +282,7 @@ public class Root : BaseOrgan, BelowGround
             }
         }
     }
-    [EventHandler]
-    public void OnEndCrop()
+    public override void OnEndCrop()
     {
         FOMLayerLayerType[] FOMLayers = new FOMLayerLayerType[dlayer.Length];
 

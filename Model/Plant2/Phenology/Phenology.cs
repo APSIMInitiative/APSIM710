@@ -38,7 +38,10 @@ public class Phenology
     {
         get
         {
-            return CurrentPhase.Name;
+            if (CurrentPhase == null)
+                return "";
+            else
+                return CurrentPhase.Name;
         }
         set
         {
@@ -93,7 +96,10 @@ public class Phenology
     [EventHandler]
     public void OnInitialised()
     {
+        Phases.Clear();
         JustInitialised = true;
+        CurrentlyOnFirstDayOfPhase = "";
+        CurrentPhaseIndex = 0;
         foreach (object ChildObject in My.ChildrenAsObjects)
         {
             Phase Child = ChildObject as Phase;
@@ -136,7 +142,8 @@ public class Phenology
 
             CurrentPhase = Phases[CurrentPhaseIndex + 1];
 
-            GrowthStage.Invoke();
+            if (GrowthStage != null)
+                GrowthStage.Invoke();
 
             // Tell the new phase to use the fraction of day left.
             FractionOfDayLeftOver = CurrentPhase.DoTimeStep(FractionOfDayLeftOver);
@@ -151,7 +158,10 @@ public class Phenology
     {
         get
         {
-            return Phases[CurrentPhaseIndex];
+            if (CurrentPhaseIndex >= Phases.Count)
+                return null;
+            else
+                return Phases[CurrentPhaseIndex];
         }
         set
         {

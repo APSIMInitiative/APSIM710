@@ -41,8 +41,7 @@ class HIReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     }
     [Event]
     public event NullTypeDelegate Harvesting;
-    [EventHandler]
-    public void OnHarvest()
+    public override void OnHarvest()
     {
         Harvesting.Invoke();
 

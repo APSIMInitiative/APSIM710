@@ -85,5 +85,7 @@ abstract public class Organ
 
     // Methods that can be called .e.g from manager
     abstract public void OnSow(SowPlant2Type Sow);
+    abstract public void OnHarvest();
+    abstract public void OnEndCrop();
 }
    

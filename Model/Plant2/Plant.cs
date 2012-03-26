@@ -26,6 +26,7 @@ public class Plant
     public SowPlant2Type SowingData;
 
     private List<Organ> _Organs = new List<Organ>();
+    [Output]
     public List<Organ> Organs
     {
         // Public property to return our organs to caller. Used primarily for unit testing.
@@ -174,8 +175,8 @@ public class Plant
             return Convert.ToDouble(ExpressionFunction.Evaluate(this, PropertyName));
         else
         {
-            object ArrayObject = My.LinkByName(PropertyName.Substring(0, PosBracket));
-            if (ArrayObject != null)
+            object ArrayObject;
+            if (My.Get(PropertyName.Substring(0, PosBracket), out ArrayObject))
             {
                 string RemainderOfPropertyName = PropertyName;
                 string ArraySpecifier = StringManip.SplitOffBracketedValue(ref RemainderOfPropertyName, '[', ']');
@@ -188,7 +189,7 @@ public class Plant
                 int ArrayIndex;
                 if (int.TryParse(ArraySpecifier, out ArrayIndex))
                     return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[ArrayIndex]));
-                
+
                 else if (ArraySpecifier.Contains("."))
                 {
                     object I = GetPlantVariable(ArraySpecifier);
@@ -215,6 +216,8 @@ public class Plant
                     return Sum;
                 }
             }
+            else
+                throw new Exception("Cannot find property: " + PropertyName);
         return 0;
         }
     }
@@ -299,12 +302,20 @@ public class Plant
         DoActualGrowth();
     }
     [EventHandler]
+    public void OnHarvest()
+    {
+        // tell all our children about sow
+        foreach (Organ Child in Organs)
+            Child.OnHarvest();
+    }
+    [EventHandler]
     public void OnEndCrop()
     {
         NewCropType Crop = new NewCropType();
         Crop.crop_type = CropType;
         Crop.sender = Name;
-        CropEnding.Invoke(Crop);
+        if (CropEnding != null)
+            CropEnding.Invoke(Crop);
 
         BiomassRemovedType BiomassRemovedData = new BiomassRemovedType();
         BiomassRemovedData.crop_type = CropType;
@@ -335,6 +346,10 @@ public class Plant
             i++;
         }
         BiomassRemoved.Invoke(BiomassRemovedData);
+
+        // tell all our children about sow
+        foreach (Organ Child in Organs)
+            Child.OnEndCrop();
     }
     [EventHandler]
     private void OnCut()
