@@ -28,24 +28,8 @@ public class AllometricDemandFunction : Function
         get
         {
             double returnValue = 0.0;
-            double XValue = 0.0;
-            object Value = Plant.GetPlantVariable(XProperty);
-            if (Value == null)
-                throw new Exception("Could not find XProperty value for: " + Name);
-            else if (Value is string)
-                throw new Exception("Value for allometric XProperty needs to be a numeric value");
-            else
-                XValue = Convert.ToDouble(Value);
-
-            double YValue = 0.0;
-            Value = Plant.GetPlantVariable(YProperty);
-            if (Value == null)
-                throw new Exception("Could not find XProperty value for: " + Name);
-            else if (Value is string)
-                throw new Exception("Value for allometric YProperty needs to be a numeric value");
-            else
-                YValue = Convert.ToDouble(Value);
-
+            double XValue = Plant.GetObject(XProperty);
+            double YValue = Plant.GetObject(YProperty);
             double Target = Const * Math.Pow(XValue, Power);
             returnValue = Math.Max(0.0,Target - YValue);
 

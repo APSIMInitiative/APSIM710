@@ -238,7 +238,7 @@ public class Leaf : BaseOrgan, AboveGround
     protected double Height = 0;
     [Output]
     [Units("m^2/m^2")]
-    public virtual double LAI
+    public double LAI
     {
         get
         {
@@ -251,7 +251,7 @@ public class Leaf : BaseOrgan, AboveGround
     }
     [Output]
     [Units("m^2/m^2")]
-    public virtual double LAIDead
+    public double LAIDead
     {
         get
         {

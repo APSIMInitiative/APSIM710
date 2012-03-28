@@ -321,6 +321,8 @@ namespace ModelFramework
 
 
         #region Get methods
+        Dictionary<string, Entity> VariableCache = new Dictionary<string, Entity>();
+
         /// <summary>
         /// Attempts to find and return the value of a variable that matches the specified name path. 
         /// The method will return true if found or false otherwise. The value of the variable will be 
@@ -328,11 +330,25 @@ namespace ModelFramework
         /// </summary>
         public bool Get(string NamePath, out object Data)
         {
+            //// Look in cache first.
+            if (VariableCache.ContainsKey(NamePath))
+            {
+                Data = VariableCache[NamePath].Get();
+                return true;
+            }
+
             Data = FindInternalEntity(NamePath);
             if (Data is Entity)
             {
+                VariableCache.Add(NamePath, Data as Entity);
                 Data = (Data as Entity).Get();
                 return true;
+            }
+            if (Data == null)
+            {
+                 WrapBuiltInVariable<double> Value = new WrapBuiltInVariable<double>();
+                 if (GetInternal<double>(NamePath, Value))
+                     Data = Value.Value;
             }
             return Data != null;
         }

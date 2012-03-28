@@ -30,6 +30,11 @@ public class Phenology
     private string CurrentlyOnFirstDayOfPhase = "";
     private bool JustInitialised = true;
 
+    [Input]
+    public DateTime Today;
+
+    private DateTime SowDate;
+
     /// <summary>
     /// This property is used to retrieve or set the current phase name.
     /// </summary>
@@ -93,11 +98,23 @@ public class Phenology
         }
     }
 
+    public int DaysAfterSowing
+    {
+        get
+        {
+            if (SowDate == null)
+                return 0;
+            else
+                return (Today - SowDate).Days;
+        }
+    }
+
     [EventHandler]
     public void OnInitialised()
     {
         Phases.Clear();
         JustInitialised = true;
+        SowDate = Today;
         CurrentlyOnFirstDayOfPhase = "";
         CurrentPhaseIndex = 0;
         foreach (object ChildObject in My.ChildrenAsObjects)

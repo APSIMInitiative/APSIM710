@@ -23,6 +23,7 @@ internal class ModelInstance
     public List<LinkField> Refs = new List<LinkField>();
     public List<EventPublisher> Publishers = new List<EventPublisher>();
     public List<EventSubscriber> Subscribers = new List<EventSubscriber>();
+    
 
     public Type ClassType;
     public XmlNode Node;
@@ -34,7 +35,7 @@ internal class ModelInstance
     private string _FullName;
     private List<string> ComponentOrder = null;
     private bool Enabled = true;
-
+    private Dictionary<string, VariableBase> VariableCache = new Dictionary<string, VariableBase>();
 
     /// <summary>
     /// Create instances of all objects specified by the XmlNode. Returns the top 
@@ -432,6 +433,17 @@ internal class ModelInstance
 
     public VariableBase FindOutput(string NameToFind)
     {
+        if (VariableCache.ContainsKey(NameToFind))
+            return VariableCache[NameToFind];
+
+        VariableBase V = FindOutputInternal(NameToFind);
+        if (V != null)
+            VariableCache.Add(NameToFind, V);
+        return V;
+    }
+
+    private VariableBase FindOutputInternal(string NameToFind)
+    {
         if (NameToFind.Contains("."))
         {
             // absolute address.
@@ -439,12 +451,14 @@ internal class ModelInstance
             ModelInstance I = FindModelInstance(NameToFind.Substring(0, PosLastPeriod));
             if (I == null)
                 throw new Exception("Cannot find output variable: " + NameToFind);
-            return I.FindOutput(NameToFind.Substring(PosLastPeriod + 1));
+            // See if we have the output
+            foreach (VariableBase V in I.Outputs)
+                if (V.Name.ToLower() == NameToFind.Substring(PosLastPeriod+1).ToLower())
+                    return V;
+            return null;
         }
         else
         {
-            // Predicate<VariableBase> equals = V => V.Name.ToLower() == NameToFind.ToLower();
-
             // If we get this far, then we haven't found it - check our children.
             VariableBase V1 = FindOutputInChildren(NameToFind);
             if (V1 != null)
@@ -454,7 +468,7 @@ internal class ModelInstance
             if (Parent == null)
                 return null;
             else
-                return Parent.FindOutput(NameToFind);
+                return Parent.FindOutputInternal(NameToFind);
         }
     }
 
@@ -462,14 +476,13 @@ internal class ModelInstance
     private VariableBase FindOutputInChildren(string NameToFind)
     {
         // See if we have the output
-        Predicate<VariableBase> equals = V => V.Name.ToLower() == NameToFind.ToLower();
-        VariableBase V1 = Outputs.Find(equals);
-        if (V1 != null)
-            return V1;
+        foreach (VariableBase V in Outputs)
+            if (V.Name.ToLower() == NameToFind.ToLower())
+                return V;
 
         foreach (ModelInstance Child in Children)
         {
-            V1 = Child.FindOutputInChildren(NameToFind);
+            VariableBase V1 = Child.FindOutputInChildren(NameToFind);
             if (V1 != null)
                 return V1;
         }
@@ -549,6 +562,7 @@ internal class ModelInstance
 
     void ResolveAllRefsAndEvents()
     {
+        VariableCache.Clear();
         ConnectInputsAndOutputs();
         ResolveRefs();
         if (Enabled)
@@ -567,6 +581,7 @@ internal class ModelInstance
         Root.DisconnectAllEvents();
         Subscribers.Clear();
         Publishers.Clear();
+        VariableCache.Clear();
         foreach (ModelInstance Child in Children)
         {
             Child.TearDownModel();

@@ -161,7 +161,18 @@ public class Biomass
         StructuralN = 0;
         NonStructuralN = 0;
         MetabolicN = 0;
-
+    }
+    public static Biomass operator +(Biomass a, Biomass b)
+    {
+        return new Biomass
+        {
+            StructuralWt = a.StructuralWt + b.StructuralWt,
+            NonStructuralWt = a.NonStructuralWt + b.NonStructuralWt,
+            MetabolicWt = a.MetabolicWt + b.MetabolicWt,
+            StructuralN = a.StructuralN + b.StructuralN,
+            NonStructuralN = a.NonStructuralN + b.NonStructuralN,
+            MetabolicN = a.MetabolicN + b.MetabolicN
+        };
 
     }
 

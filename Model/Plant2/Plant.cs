@@ -152,15 +152,9 @@ public class Plant
         foreach (Organ o in Organs)
             o.DoActualGrowth();
     }
-    public object GetPlantVariable(string VariablePath)
-    {
-        double ValueFromGet;
-        if (!My.Get(VariablePath, out ValueFromGet) || ValueFromGet == Double.NaN)
-            return null;
-        return ValueFromGet;
+#endregion
 
-    }
-
+ #region Low level variable finding routines
     /// <summary>
     /// Return an internal plant object. PropertyName can use dot and array notation (square brackets).
     /// e.g. Leaf.MinT
@@ -172,11 +166,11 @@ public class Plant
     {
         int PosBracket = PropertyName.IndexOf('[');
         if (PosBracket == -1)
-            return Convert.ToDouble(ExpressionFunction.Evaluate(this, PropertyName));
+            return Convert.ToDouble(GetValueOfVariable(PropertyName));
         else
         {
-            object ArrayObject;
-            if (My.Get(PropertyName.Substring(0, PosBracket), out ArrayObject))
+            object ArrayObject = GetValueOfVariable(PropertyName.Substring(0, PosBracket));
+            if (ArrayObject != null)
             {
                 string RemainderOfPropertyName = PropertyName;
                 string ArraySpecifier = StringManip.SplitOffBracketedValue(ref RemainderOfPropertyName, '[', ']');
@@ -188,17 +182,16 @@ public class Plant
                 IList Array = (IList)ArrayObject;
                 int ArrayIndex;
                 if (int.TryParse(ArraySpecifier, out ArrayIndex))
-                    return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[ArrayIndex]));
+                    return Convert.ToDouble(GetMemberInfo(RemainderOfPropertyName, Array[ArrayIndex]).Value);
 
                 else if (ArraySpecifier.Contains("."))
                 {
-                    object I = GetPlantVariable(ArraySpecifier);
-                    if (I != null)
+                    int Index;
+                    if (My.Get(ArraySpecifier, out Index))
                     {
-                        int Index = Convert.ToInt32(I);
                         if (Index < 0 || Index >= Array.Count)
                             throw new Exception("Invalid index of " + Index.ToString() + " found while indexing into variable: " + PropertyName);
-                        return Convert.ToDouble(GetValueOfField(RemainderOfPropertyName, Array[Index]));
+                        return Convert.ToDouble(GetMemberInfo(RemainderOfPropertyName, Array[Index]).Value);
                     }
                 }
                 else
@@ -206,7 +199,7 @@ public class Plant
                     double Sum = 0.0;
                     for (int i = 0; i < Array.Count; i++)
                     {
-                        object Obj = GetValueOfField(RemainderOfPropertyName, Array[i]);
+                        object Obj = GetMemberInfo(RemainderOfPropertyName, Array[i]).Value;
                         if (Obj == null)
                             throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
 
@@ -223,31 +216,98 @@ public class Plant
     }
 
 
+    private object GetValueOfVariable(string VariableName)
+    {
+        
+        //// Look internally
+        //Info I = GetMemberInfo(VariableName, this);
+        //if (I != null)
+        //{
+        //    VariableCache.Add(VariableName, I);
+        //    return I.Value;
+        //}
+
+        // Look externally
+        object Data;
+        if (My.Get(VariableName, out Data))
+            return Data;
+        
+        // Still didn't find it
+        throw new Exception("Cannot find variable: " + VariableName);
+    }
+
+
+
+    internal class Info
+    {
+        public object Target;
+        public MemberInfo Member;
+
+        public object Value
+        {
+            get
+            {
+                if (Member is FieldInfo)
+                    return (Member as FieldInfo).GetValue(Target);
+                else
+                    return (Member as PropertyInfo).GetValue(Target, null);
+            }
+        }
+    }
+
     /// <summary>
     /// Return the value (using Reflection) of the specified property on the specified object.
     /// Returns null if not found.
     /// </summary>
-    private static object GetValueOfField(string PropertyName, object I)
+    internal static Info GetMemberInfo(string PropertyName, object Target)
     {
+        FieldInfo FI;
+        PropertyInfo PI;
         string[] Bits = PropertyName.Split(".".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < Bits.Length; i++)
+        for (int i = 0; i < Bits.Length - 1; i++)
         {
-
-            FieldInfo FI = I.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            if (FI == null)
+            // First check for organs.
+            bool Found = false;
+            if (Target is Plant)
             {
-                PropertyInfo PI = I.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-                if (PI == null)
-                    return null;
-                else
-                    I = PI.GetValue(I, null);
+                foreach (Organ O in (Target as Plant).Organs)
+                {
+                    if (O.Name == Bits[i])
+                    {
+                        Found = true;
+                        Target = O;
+                        break;
+                    }
+                }
             }
-            else
-                I = FI.GetValue(I);
-        }
-        return I;
-    }
 
+            if (!Found)
+            {
+                FI = Target.GetType().GetField(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                if (FI == null)
+                {
+                    PI = Target.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                    if (PI == null)
+                        return null;
+                    else
+                        Target = PI.GetValue(Target, null);
+                }
+                else
+                    Target = FI.GetValue(Target);
+            }
+        }
+
+        // By now we should have a target - go get the field / property.
+        FI = Target.GetType().GetField(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+        if (FI == null)
+        {
+            PI = Target.GetType().GetProperty(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            if (PI == null)
+                return null;
+            return new Info { Target = Target, Member = PI };
+        }
+        return new Info { Target = Target, Member = FI };
+    }
 
  #endregion
 

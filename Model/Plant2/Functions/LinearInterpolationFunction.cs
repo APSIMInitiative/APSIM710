@@ -27,7 +27,7 @@ public class LinearInterpolationFunction : Function
             double XValue;
             if (ArraySpec == "")
             {
-                object v = ExpressionFunction.Evaluate(Plant, XProperty);
+                object v = Plant.GetObject(XProperty);
                 if (v == null)
                     throw new Exception("Cannot find value for "+ Name +" XProperty: " + XProperty);
                 XValue = Convert.ToDouble(v);
