@@ -170,7 +170,7 @@ namespace ModelFramework
         /// <param name="VariableName"></param>
         /// <returns></returns>
         // --------------------------------------------------------------------
-        protected virtual Variable Variable(String VariableName)
+        public virtual Variable Variable(String VariableName)
         {
             return new Variable(HostComponent, FQN + '.' + VariableName);
         }
