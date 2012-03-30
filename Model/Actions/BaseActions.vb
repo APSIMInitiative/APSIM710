@@ -236,10 +236,7 @@ Public Class BaseActions
                                ByVal ExportDirectory As String, ByVal ExportExtension As String)
       Contr = Controller
 
-      ' cleanup all previous files.
-      Utility.DeleteFiles(ExportDirectory + "\\*" + ExportExtension, True)
-
-      ' go export all graphs that we can find.
+        ' go export all graphs that we can find.
       ExportAllRecursively(Selection, ExportDirectory, ExportExtension)
 
    End Sub
