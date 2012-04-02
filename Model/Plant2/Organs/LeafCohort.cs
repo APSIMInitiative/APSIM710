@@ -428,7 +428,9 @@ public class LeafCohort
             NonStructuralFraction = NonStructuralFractionFunction.Value;
         if (InitialNConcFunction != null) //FIXME HEB I think this can be removed
             InitialNConc = InitialNConcFunction.Value;
-            Age = Area / MaxArea * GrowthDuration;
+        //if (Area > MaxArea)  FIXMEE HEB  This error trap should be activated but throws errors in chickpea so that needs to be fixed first.
+        //    throw new Exception("Initial Leaf area is greater that the Maximum Leaf Area.  Check set up of initial leaf area values to make sure they are not to large and check MaxArea function and CellDivisionStressFactor Function to make sure the values they are returning will not be too small.");
+        Age = Area / MaxArea * GrowthDuration;
         LiveArea = Area * _Population;
         Live.StructuralWt = LiveArea / ((SpecificLeafAreaMax + SpecificLeafAreaMin)/2) * StructuralFraction;
         Live.StructuralN = Live.StructuralWt * InitialNConc;
@@ -462,6 +464,8 @@ public class LeafCohort
         {
             CellDivisionStressDays += 1;
             CellDivisionStressAccumulation += CellDivisionStress.Value;
+            //FIXME HEB  The limitation below should be used to avoid zero values for maximum leaf size.
+            //CellDivisionStressFactor = Math.Max(CellDivisionStressAccumulation / CellDivisionStressDays, 0.01);
             CellDivisionStressFactor = CellDivisionStressAccumulation / CellDivisionStressDays;
         }
         
@@ -739,6 +743,8 @@ public class LeafCohort
             if (MaxLiveArea == 0)
                 return 0;
             else
+                //Fixme.  This function is not returning the correct values.  Use commented out line
+                //return MaxArea / Population;
                 return MaxLiveArea / Population;
         }
     }

@@ -549,7 +549,8 @@ public class Leaf : BaseOrgan, AboveGround
             foreach (LeafCohort L in Leaves)
                 L.DoFrost(FrostFraction.Value);
 
-        if (Phenology.OnDayOf(Structure.InitialiseStage)) // We have no leaves set up and nodes have just started appearing - Need to initialise Leaf cohorts
+        // On the initial day set up initial cohorts and set their properties
+        if (Phenology.OnDayOf(Structure.InitialiseStage)) 
         {
             CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
@@ -636,6 +637,7 @@ public class Leaf : BaseOrgan, AboveGround
             Structure.MainStemPrimordiaNo += 1.0;
         }
     }
+
     public override void DoActualGrowth()
     {
         foreach (LeafCohort L in Leaves)

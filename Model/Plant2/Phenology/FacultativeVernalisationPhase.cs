@@ -42,6 +42,8 @@ public class FacultativeVernalisationPhase : Phase
 
     public override double DoTimeStep(double PropOfDayToUse)
     {
+        base.DoTimeStep(PropOfDayToUse);
+        
         // Calculate the Vern for today.
         UpdateJuvenileDevelopmentIndex();
         ExtentOfDevelopment = JuvenileDevelopmentIndex * PropOfDayToUse;

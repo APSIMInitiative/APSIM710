@@ -26,7 +26,17 @@
     </ApsimToSim>
   </MetaData>
   <Model>
-    <Plant>
+   <Cultivar name="Claire">
+     <Construct type="text" description="Construct">Plant</Construct>
+   </Cultivar>
+   <Cultivar name="Batten_Spring">
+     <Construct type="text" description="Construct">Plant</Construct>
+	 <Override NodeToOverride="Phenology.VernalisationSIRIUS.VernalisationType">1</Override> 
+   </Cultivar>
+   <Cultivar name="Batten_Winter">
+     <Construct type="text" description="Construct">Plant</Construct>
+   </Cultivar> 
+  <Plant>
       <CropType type="text" description="CropType">Wheat</CropType>
       <Population />
       <Arbitrator>
@@ -91,9 +101,9 @@
               <End type="text" description="End">FloralInitiation</End>
               <SoilTemperatureFunction name="ThermalTime">
                 <XYPairs>
-                  <XY>0 0.012</XY>
-                  <XY>11 0.0307</XY>
-                  <XY>15 0</XY>
+                  <XY>0 0.008</XY>
+                  <XY>8 0.032</XY>
+                  <XY>15.5 0</XY>
                 </XYPairs>
               </SoilTemperatureFunction>
             </PhaseLookupValue>
@@ -252,13 +262,13 @@
             </XYPairs>
           </LinearInterpolationFunction>
           <Constant name="BasePhyllochron">
-            <Value type="text" description="Value">95</Value>
+            <Value type="text" description="Value">110</Value>
           </Constant>
         </MultiplyFunction>
         <CerealFinalNodeNumber name="MainStemFinalNodeNumber">
           <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
           <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
-          <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
+          <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">19</MaximumMainStemNodeNumber>
           <MinimumMainStemNodeNumber type="text" description="Photoperiod that minimises leaf number">7</MinimumMainStemNodeNumber>
           <PhotoperiodFunction name="Photoperiod">
             <Twilight type="text" description="Twilight">-6</Twilight>
@@ -1148,38 +1158,5 @@
         <Property type="text" description="Property">Organs[AboveGround].Live</Property>
       </CompositeBiomass>
     </Plant>
-    <Cultivar name="Claire">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Omaka">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Booma">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Sherwood">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Triumph">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Optic">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Retriver">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Hooded">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="County">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="GoldenPromise">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Enmer">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-  </Model>
+ </Model>
 </Type>

@@ -129,7 +129,7 @@
 			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
 			</Memo>
       </PhaseLengthFinalNodeNumber>
-      <CerealFinalNodeNumber>
+      <CerealFinalNodeNumber name="CerealFinalNodeNumber1">
         <PhotoperiodSensitivity type="text" description="Number of additional leaves added per hour reduction in photoperiod">.4</PhotoperiodSensitivity>
         <SaturationPhotoperiod type="text" description="Photoperiod that minimises leaf number">16</SaturationPhotoperiod>
         <MaximumMainStemNodeNumber type="text" description="Number of additional leaves added per hour reduction in photoperiod">26</MaximumMainStemNodeNumber>
@@ -149,7 +149,7 @@
 			- Final leaf number will change daily in response to photoperiod until primordia number equals the final leaf number + 4.  At this point final leaf number is fixed and will not change.
 			</Memo>
       </CerealFinalNodeNumber>
-      <PhaseLengthFinalNodeNumber>
+      <PhaseLengthFinalNodeNumber name="PhaseLengthFinalNodeNumber1">
         <MaximumMainStemNodeNumber type="text" description="Maximum number of mainstem leaves that the plant can produce">26</MaximumMainStemNodeNumber>
         <Memo> 
 			This Function allows final node number to increase as primordia are initiated and it is fixed at the value or primordia that are initiated when initiation finishes.  
@@ -491,6 +491,15 @@ General Format:
       <MaxCover type="text" description="MaxCover">1.0</MaxCover>
       <KDead type="text" description="KDead">.03</KDead>
       <InitialiseStage type="text" description="InitialiseStage">Emergence</InitialiseStage>
+      <FinalNodeNumber>
+        <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
+        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
+        <Constant name="NodeInitiationRate">
+          <Value type="text" description="Value">30</Value>
+          <Memo>NodeInitiationRate is the number of degree days required for a primordia to initiate on the shoot apex.  This is an optional parameter and if omitted primordia number will be set to MaximumNodeNo from the beginning</Memo>
+        </Constant>
+        <Memo>FinalNodeNumber is an essential element of leaf as it determines how many mainstem leaves may appear.  TerminateFinalNodeNumber or PhotoperiodFactor functions are included FinalleafNumber may become less then MaximumNodeNo</Memo>
+      </FinalNodeNumber>
       <LeafCohort name="Leaves[1]">
         <Rank>1</Rank>
         <Area>900</Area>
@@ -530,15 +539,6 @@ General Format:
         </XYPairs>
         <Memo>Returns thermal time value used to drive leaf appearance, expansion and senescence</Memo>
       </AirTemperatureFunction>
-      <FinalNodeNumber>
-        <MaxNodeNo type="text" description="MaximumNodeNo">34</MaxNodeNo>
-        <InitialLeafPrimordia type="text" description="InitialLeafPrimordia">0</InitialLeafPrimordia>
-        <Constant name="NodeInitiationRate">
-          <Value type="text" description="Value">30</Value>
-          <Memo>NodeInitiationRate is the number of degree days required for a primordia to initiate on the shoot apex.  This is an optional parameter and if omitted primordia number will be set to MaximumNodeNo from the beginning</Memo>
-        </Constant>
-        <Memo>FinalNodeNumber is an essential element of leaf as it determines how many mainstem leaves may appear.  TerminateFinalNodeNumber or PhotoperiodFactor functions are included FinalleafNumber may become less then MaximumNodeNo</Memo>
-      </FinalNodeNumber>
       <Constant name="NodeAppearanceRate">
         <Value type="text" description="Value">30</Value>
         <Memo>NodeAppearanceRate is the number of degree days required for a leaf to appear and begin expanding.</Memo>

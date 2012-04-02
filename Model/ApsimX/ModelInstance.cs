@@ -450,7 +450,7 @@ internal class ModelInstance
             int PosLastPeriod = NameToFind.LastIndexOf('.');
             ModelInstance I = FindModelInstance(NameToFind.Substring(0, PosLastPeriod));
             if (I == null)
-                throw new Exception("Cannot find output variable: " + NameToFind);
+                return null;
             // See if we have the output
             foreach (VariableBase V in I.Outputs)
                 if (V.Name.ToLower() == NameToFind.Substring(PosLastPeriod+1).ToLower())
