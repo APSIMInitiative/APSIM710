@@ -45,6 +45,8 @@ class EventSubscriber
     private string _Name;
     internal EventPublisher Publisher;
     internal List<Delegate> D = new List<Delegate>();
+    public bool _Enabled = true;
+
     public EventSubscriber(string Name, MethodInfo I, object Model)
     {
         if (Name != null)
@@ -66,7 +68,7 @@ class EventSubscriber
     }
     public void Invoke()
     {
-        if (Info != null)
+        if (Info != null && Enabled)
             Info.Invoke(TheModel, null);
     }
 
@@ -74,6 +76,28 @@ class EventSubscriber
     {
         if (Publisher != null)
             Publisher.DisconnectTo(this);
+    }
+
+    public bool Enabled
+    {
+        get
+        {
+            return _Enabled;
+        }
+        set
+        {
+            if (_Enabled != value)
+            {
+                _Enabled = value;
+                if (Publisher != null)
+                {
+                    if (Enabled)
+                        Publisher.ConnectTo(this);
+                    else
+                        Publisher.DisconnectTo(this);
+                }
+            }
+        }
     }
 
 

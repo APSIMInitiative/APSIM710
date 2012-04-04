@@ -95,6 +95,7 @@ namespace ModelFramework
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot activate it.");
             I.Activate();
+            //I.PublishToChildren("Initialised");
         }
 
         public void Deactivate(string ComponentName)
@@ -103,7 +104,27 @@ namespace ModelFramework
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot deactivate it.");
             I.Deactivate();
-            I.PublishToChildren("Initialised");
+            //I.PublishToChildren("Initialised");
+        }
+
+
+        public XmlNode Checkpoint(string ComponentName)
+        {
+            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            if (I == null)
+                throw new Exception("Cannot find component: " + ComponentName + ". Cannot checkpoint it.");
+            XmlDocument Doc = new XmlDocument();
+            Doc.AppendChild(Doc.CreateElement("Checkpoint"));
+            I.Checkpoint(Doc.DocumentElement);
+            return Doc.DocumentElement;
+        }
+
+        public void RestoreFromCheckpoint(string ComponentName, XmlNode Checkpoint)
+        {
+            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            if (I == null)
+                throw new Exception("Cannot find component: " + ComponentName + ". Cannot RestoreFromCheckpoint.");
+            I.RestoreFromCheckpoint(Checkpoint.ChildNodes[0]);
         }
 
         //=========================================================================

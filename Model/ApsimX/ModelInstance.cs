@@ -14,12 +14,11 @@ using ApsimFile;
 /// </summary>
 internal class ModelInstance
 {
-    public VariableBase ModelAPI;
     public List<ModelInstance> Children = new List<ModelInstance>();
-    public List<VariableBase> Inputs = new List<VariableBase>();
-    public List<VariableBase> Outputs = new List<VariableBase>();
-    public List<VariableBase> Params = new List<VariableBase>();
-    public List<VariableBase> States = new List<VariableBase>();
+    public List<ClassVariable> Inputs = new List<ClassVariable>();
+    public List<ClassVariable> Outputs = new List<ClassVariable>();
+    public List<ClassVariable> Params = new List<ClassVariable>();
+    public List<ClassVariable> States = new List<ClassVariable>();
     public List<LinkField> Refs = new List<LinkField>();
     public List<EventPublisher> Publishers = new List<EventPublisher>();
     public List<EventSubscriber> Subscribers = new List<EventSubscriber>();
@@ -35,7 +34,7 @@ internal class ModelInstance
     private string _FullName;
     private List<string> ComponentOrder = null;
     private bool Enabled = true;
-    private Dictionary<string, VariableBase> VariableCache = new Dictionary<string, VariableBase>();
+    private Dictionary<string, ClassVariable> VariableCache = new Dictionary<string, ClassVariable>();
 
     /// <summary>
     /// Create instances of all objects specified by the XmlNode. Returns the top 
@@ -101,7 +100,7 @@ internal class ModelInstance
             MethodInfo OnTickMethod = GetType().GetMethod("OnTick");
             Subscribers.Add(new EventSubscriber(null, OnTickMethod, this));
             FieldInfo TitleFieldInfo = GetType().GetField("Title");
-            Outputs.Add(new FieldVariable(TitleFieldInfo, TheModel));
+            Outputs.Add(new ClassVariable(TitleFieldInfo, TheModel));
 
             _FullName = "";
             Title = InstanceName;
@@ -263,13 +262,11 @@ internal class ModelInstance
     internal void Initialise()
     {
         ConnectInputsAndOutputs();
-
-        // If we're not enabled then we don't connect events. This will stop it from running but keep all the
-        // models ready to go.
-        if (Enabled)
-            ConnectEvents();   
+        ConnectEvents();
+        if (!Enabled)
+            foreach (EventSubscriber Subscriber in Subscribers)
+                Subscriber.Enabled = false;
         ResolveRefs();
-        CheckAllInputs();
         UpdateValues();
         foreach (ModelInstance Child in Children)
             Child.Initialise();
@@ -431,18 +428,18 @@ internal class ModelInstance
     /// instance passed in plus all child instances.
     /// </summary>
 
-    public VariableBase FindOutput(string NameToFind)
+    public ClassVariable FindOutput(string NameToFind)
     {
         if (VariableCache.ContainsKey(NameToFind))
             return VariableCache[NameToFind];
 
-        VariableBase V = FindOutputInternal(NameToFind);
+        ClassVariable V = FindOutputInternal(NameToFind);
         if (V != null)
             VariableCache.Add(NameToFind, V);
         return V;
     }
 
-    private VariableBase FindOutputInternal(string NameToFind)
+    private ClassVariable FindOutputInternal(string NameToFind)
     {
         if (NameToFind.Contains("."))
         {
@@ -452,15 +449,16 @@ internal class ModelInstance
             if (I == null)
                 return null;
             // See if we have the output
-            foreach (VariableBase V in I.Outputs)
-                if (V.Name.ToLower() == NameToFind.Substring(PosLastPeriod+1).ToLower())
+            NameToFind = NameToFind.Substring(PosLastPeriod + 1);
+            foreach (ClassVariable V in I.Outputs)
+                if (string.Equals(V.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
                     return V;
             return null;
         }
         else
         {
             // If we get this far, then we haven't found it - check our children.
-            VariableBase V1 = FindOutputInChildren(NameToFind);
+            ClassVariable V1 = FindOutputInChildren(NameToFind);
             if (V1 != null)
                 return V1;
 
@@ -473,16 +471,16 @@ internal class ModelInstance
     }
 
 
-    private VariableBase FindOutputInChildren(string NameToFind)
+    private ClassVariable FindOutputInChildren(string NameToFind)
     {
         // See if we have the output
-        foreach (VariableBase V in Outputs)
+        foreach (ClassVariable V in Outputs)
             if (V.Name.ToLower() == NameToFind.ToLower())
                 return V;
 
         foreach (ModelInstance Child in Children)
         {
-            VariableBase V1 = Child.FindOutputInChildren(NameToFind);
+            ClassVariable V1 = Child.FindOutputInChildren(NameToFind);
             if (V1 != null)
                 return V1;
         }
@@ -496,7 +494,7 @@ internal class ModelInstance
     /// </summary>
     public void UpdateValues()
     {
-        foreach (VariableBase Input in Inputs)
+        foreach (ClassVariable Input in Inputs)
             Input.UpdateValue();
     }
 
@@ -536,13 +534,15 @@ internal class ModelInstance
         if (!Enabled)
         {
             // We're going to tear everything down and create a new, fresh model.
-            TearDownModel();
+            //TearDownModel();
             Enabled = true;
-            CreateInstanceOfModel();
-            Root.ResolveAllRefsAndEvents();
-            PublishToChildren("Initialised");
+            EnableEvents();
+            //CreateInstanceOfModel();
+            //Root.ResolveAllRefsAndEvents();
+            //PublishToChildren("Initialised");
         }
     }
+
 
     /// <summary>
     /// Need to tear down entire model and reinstate a fresh one.
@@ -552,12 +552,29 @@ internal class ModelInstance
         if (Enabled)
         {
             Enabled = false;
-            TearDownModel();
-            CreateInstanceOfModel();
-            Initialise();
-            Root.ResolveAllRefsAndEvents();
-            PublishToChildren("Initialised");
+            DisableEvents();
+            //TearDownModel();
+            //CreateInstanceOfModel();
+            //Initialise();
+            //Root.ResolveAllRefsAndEvents();
+            //PublishToChildren("Initialised");
         }
+    }
+
+    private void EnableEvents()
+    {
+        foreach (EventSubscriber Subscriber in Subscribers)
+            Subscriber.Enabled = true;
+        foreach (ModelInstance Child in Children)
+            Child.EnableEvents();
+    }
+
+    private void DisableEvents()
+    {
+        foreach (EventSubscriber Subscriber in Subscribers)
+            Subscriber.Enabled = false;
+        foreach (ModelInstance Child in Children)
+            Child.DisableEvents();
     }
 
     void ResolveAllRefsAndEvents()
@@ -592,7 +609,7 @@ internal class ModelInstance
 
     internal void GetAllOutputNames(ref List<string> VariableNames)
     {
-        foreach (VariableBase Output in Outputs)
+        foreach (ClassVariable Output in Outputs)
             VariableNames.Add(Name + "." + Output.Name);
         foreach (ModelInstance Child in Children)
             Child.GetAllOutputNames(ref VariableNames);
@@ -600,7 +617,7 @@ internal class ModelInstance
 
     internal void GetAllOutputValues(ref List<object> Values)
     {
-        foreach (VariableBase Output in Outputs)
+        foreach (ClassVariable Output in Outputs)
             Values.Add(Output.Value);
         foreach (ModelInstance Child in Children)
             Child.GetAllOutputValues(ref Values);
@@ -611,7 +628,7 @@ internal class ModelInstance
     /// </summary>
     internal bool ModelHasParam(string ParamName)
     {
-        foreach (VariableBase Param in Params)
+        foreach (ClassVariable Param in Params)
         {
             if (Param.Name.ToLower() == ParamName.ToLower())
                 return true;
@@ -621,9 +638,9 @@ internal class ModelInstance
 
     internal bool ModelHasXMLParam()
     {
-        foreach (VariableBase Param in Params)
+        foreach (ClassVariable Param in Params)
         {
-            if (Param is FieldVariable && (Param as FieldVariable).Value is XmlNode)
+            if (Param.Type == typeof(XmlNode))
                 return true;
         }
         return false;
@@ -679,152 +696,12 @@ internal class ModelInstance
     {
         // Collection all fields.
         foreach (FieldInfo Field in GetAllFields(TheModel.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-        {
-            foreach (Attribute Attribute in Field.GetCustomAttributes(false))
-            {
-                if (Attribute is Link)
-                {
-                    Link LinkAttribute = (Link)Attribute;
-                    if (LinkAttribute.NamePath == null)
-                        LinkAttribute.NamePath = Field.Name;
-                    Refs.Add(new LinkField(TheModel, LinkAttribute.NamePath, Field, LinkAttribute.IsOptional));
-                }
-                else
-                {
-                    FieldVariable Var = new FieldVariable(Field, TheModel);
-                    if (Var.Type.ToString() == "ModelAPIInterface")
-                        ModelAPI = Var;
-                    else if (Attribute is Input)
-                    {
-                        Input i = (Input)Attribute;
-                        Var.IsOptional = i.IsOptional;
-                        Inputs.Add(Var);
-                    }
-                    else if (Attribute is Output)
-                        Outputs.Add(Var);
-                    else
-                        States.Add(Var);
-
-                    // If this is a param then go find a value for it.
-                    if (Attribute is Param)
-                    {
-                        // Get the parameter name taking any alias' into account.
-                        string ParamName = Field.Name;
-                        Param p = (Param)Attribute;
-                        if (p.Alias != null)
-                            ParamName = p.Alias;
-                        Var.Name = ParamName;
-
-                        // Get the parameter value.
-                        if (ParamName.ToLower() == "name")
-                            Var.Value = Name;
-                        else if (Field.FieldType.Name == "XmlNode")
-                            Var.Value = Node;
-                        else
-                        {
-                            XmlNode ParamNode = XmlHelper.Find(Node, ParamName);
-                            string ParamValue = null;
-                            if (ParamNode != null)
-                            {
-                                if (ClassType.Assembly.GetType(Field.FieldType.Name) != null)
-                                {
-                                    // we have found a nested param - treat it as a model.
-                                    ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ParamNode), ParamNode, this, ClassType.Assembly);
-                                    Children.Add(NewModelInstance);
-                                    Var.Value = NewModelInstance.TheModel;
-                                }
-                                else
-                                {
-                                    ParamValue = ParamNode.InnerXml;
-                                    if (ParamValue == null)
-                                    {
-                                        if (!p.IsOptional)
-                                            throw new Exception("Cannot find a parameter value for: " + Field.Name + " for " + Name);
-                                    }
-                                    else
-                                        Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
-                                }
-                            }
-                            else if (Field.FieldType.IsArray && ParamName[ParamName.Length - 1] == 's')
-                            {
-                                // We have encountered a [Param] that is an array e.g.
-                                // [Param] string[] XYs;
-                                // The name "XYs" is converted to a non plural name: XY
-                                // and all child values of this XML Node with a type of "XY" will be found and 
-                                // inserted into a newly created array.
-                                string ParamNameNoPlural = ParamName.Substring(0, ParamName.Length - 1);
-                                List<string> Values = XmlHelper.Values(Node, ParamNameNoPlural);
-                                if (Values.Count > 0)
-                                    Var.Value = TypeConverter.Convert<string[]>(Values.ToArray(), Field.FieldType);
-                            }
-                            else
-                            {
-                                // Look for ParamName[1] - an array of nested models e.g.
-                                // [Param] List<LeafCohort> Leaves;
-                                ParamNode = XmlHelper.Find(Node, ParamName + "[1]");
-                                if (ParamNode != null)
-                                {
-                                    IList L = (IList)Activator.CreateInstance(Field.FieldType);
-                                    int index = 1;
-                                    XmlNode ChildNode = XmlHelper.Find(Node, ParamName + "[" + index.ToString() + "]");
-                                    while (ChildNode != null)
-                                    {
-                                        ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ChildNode), ChildNode, this, ClassType.Assembly);
-                                        Children.Add(NewModelInstance);
-                                        L.Add(NewModelInstance.TheModel);
-                                        index++;
-                                        ChildNode = XmlHelper.Find(Node, ParamName + "[" + index.ToString() + "]");
-                                    }
-                                    Var.Value = L;
-                                }
-
-                            }
-
-                        }
-                        Params.Add(Var);
-                    }
-                }
-            }
-        }
+            ProcessClassMember(Field);
+        
         // Collect all properties.
         foreach (PropertyInfo Property in TheModel.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-        {
-            foreach (object Attribute in Property.GetCustomAttributes(false))
-            {
-                if (Attribute is Link)
-                {
-                }
-                else
-                {
-                    PropertyVariable Var = new PropertyVariable(Property, TheModel);
-                    if (Attribute is Input)
-                    {
-                        Input i = (Input)Attribute;
-                        Var.IsOptional = i.IsOptional;
-                        Inputs.Add(Var);
-                    }
-                    else if (Attribute is Output)
-                        Outputs.Add(Var);
-                    else
-                        States.Add(Var);
-
-                    // If this is a param then go find a value for it.
-                    if (Attribute is Param)
-                    {
-                        Param p = (Param)Attribute;
-                        string ParamValue = XmlHelper.Value(Node, Property.Name);
-                        if (ParamValue == "")
-                        {
-                            if (!p.IsOptional)
-                                throw new Exception("Cannot find a parameter value for: " + Property.Name);
-                        }
-                        else
-                            Var.Value = TypeConverter.Convert<string>(ParamValue, Var.Type);
-                        Params.Add(Var);
-                    }
-                }
-            }
-        }
+            ProcessClassMember(Property);
+        
         // Look for all events in the model
         foreach (EventInfo Event in TheModel.GetType().GetEvents(BindingFlags.Instance | BindingFlags.Public))
             Publishers.Add(new EventPublisher(Event, TheModel));
@@ -847,6 +724,104 @@ internal class ModelInstance
         }
     }
 
+    private void ProcessClassMember(MemberInfo Member)
+    {
+        // Exclude delegates.
+        if (Member is FieldInfo)
+        {
+            bool IsDelegate = (Member as FieldInfo).FieldType.BaseType.Name == "MulticastDelegate";
+            if (IsDelegate)
+                return;
+        }
+        // First off look for [Link]
+        object[] LinkAttributes = Member.GetCustomAttributes(typeof(Link), false);
+        if (LinkAttributes.Length != 0)
+        {
+            if (Member is PropertyInfo)
+                throw new Exception("Not allowed to have a link on a property. Name is: " + Member.Name);
+
+            Link LinkAttribute = LinkAttributes[0] as Link;
+            if (LinkAttribute.NamePath == null)
+                LinkAttribute.NamePath = Member.Name;
+            Refs.Add(new LinkField(TheModel, LinkAttribute.NamePath, Member as FieldInfo, LinkAttribute.IsOptional));
+            return;
+        }
+
+        // Not a link so it must be a normal class variable.
+        ClassVariable Variable = new ClassVariable(Member, TheModel);
+
+        if (Variable.IsInput)
+            Inputs.Add(Variable);
+        else if (Variable.IsOutput)
+            Outputs.Add(Variable);
+
+        if (Variable.IsParam)
+        {
+            string ParamName = Variable.Name;
+            object ParamValue = null;
+
+            // Get the parameter value.
+            if (ParamName.ToLower() == "name")
+                ParamValue = Name;
+            else if (Variable.Type.Name == "XmlNode")
+                ParamValue = Node;
+            else
+            {
+                List<XmlNode> ParamNodes = XmlHelper.ChildNodesByName(Node, ParamName);
+                if (ParamNodes.Count > 0)
+                {
+                    if (Variable.Type.Name == "List`1")
+                    {
+                        IList L = (IList)Activator.CreateInstance(Variable.Type);
+                        ParamValue = L;
+
+                        foreach (XmlNode ParamNode in ParamNodes)
+                        {
+                            ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ParamNode), ParamNode, this, ClassType.Assembly);
+                            Children.Add(NewModelInstance);
+                            L.Add(NewModelInstance.TheModel);
+                        }
+                    }
+                    else if (ClassType.Assembly.GetType(Variable.Type.Name) != null)
+                    {
+                        // we have found a nested param - treat it as a model.
+                        ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ParamNodes[0]), ParamNodes[0], this, ClassType.Assembly);
+                        Children.Add(NewModelInstance);
+                        ParamValue = NewModelInstance.TheModel;
+                    }
+                    else
+                    {
+                        // Simple parameter value from XML.
+                        string ParamStringValue = ParamNodes[0].InnerXml;
+                        if (ParamStringValue != null)
+                            ParamValue = TypeConverter.Convert(ParamName, ParamStringValue, Variable.Type);
+                    }
+                }
+                else if (Variable.Type.IsArray && ParamName[ParamName.Length - 1] == 's')
+                {
+                    // We have encountered a [Param] that is an array e.g.
+                    // [Param] string[] XYs;
+                    // The name "XYs" is converted to a non plural name: XY
+                    // and all child values of this XML Node with a type of "XY" will be found and 
+                    // inserted into a newly created array.
+                    string ParamNameNoPlural = ParamName.Substring(0, ParamName.Length - 1);
+                    List<string> Values = XmlHelper.Values(Node, ParamNameNoPlural);
+                    if (Values.Count > 0)
+                        ParamValue = TypeConverter.Convert(ParamName, Values.ToArray(), Variable.Type);
+                }
+            }
+            if (ParamValue == null && !Variable.IsOptional)
+                throw new Exception("Cannot find a parameter value for: " + Variable.Name + " for " + Name);
+            else if (ParamValue != null)
+                Variable.Value = ParamValue;
+            
+            Params.Add(Variable);
+        }
+
+        if (Variable.IsState)
+            States.Add(Variable);
+    }
+
     internal void AddSubscriber(string EventName, MethodInfo EventHandler, object Model)
     {
         Subscribers.Add(new EventSubscriber(EventName, EventHandler, Model));
@@ -857,6 +832,16 @@ internal class ModelInstance
     /// </summary>
     internal void Publish(string EventName)
     {
+        int PosPeriod = EventName.LastIndexOf('.');
+        if (PosPeriod != -1)
+        {
+            string ModelName = EventName.Substring(0, PosPeriod);
+            ModelInstance i = FindModelInstance(EventName.Substring(0, PosPeriod));
+            if (i == null)
+                throw new Exception("Cannot publish event to model: " + ModelName + ". Model not found");
+            i.PublishToChildren(EventName.Substring(PosPeriod + 1));
+            return;
+        }
         PublishToChildren(EventName);
         if (Parent != null)
             Parent.Publish(EventName);
@@ -929,12 +914,11 @@ internal class ModelInstance
     /// </summary>
     private void ConnectInputsAndOutputs()
     {
-        foreach (VariableBase Input in Inputs)
+        foreach (ClassVariable Input in Inputs)
         {
-            VariableBase Output = FindOutput(Input.Name);
+            ClassVariable Output = FindOutput(Input.Name);
             if (Output != null)
             {
-                Output = TypeConverter.CreateConverterIfNecessary(Output, Input.Type);
                 Input.ConnectTo(Output);
             }
         }
@@ -973,7 +957,7 @@ internal class ModelInstance
     {
         foreach (EventPublisher Publisher in Publishers)
         {
-            if (Publisher.Name.ToLower() == EventName.ToLower())
+            if (string.Equals(Publisher.Name, EventName, StringComparison.CurrentCultureIgnoreCase))
                 return Publisher;
         }
 
@@ -986,19 +970,6 @@ internal class ModelInstance
         return null;
     }
     
-    /// <summary>
-    /// Check to make sure all inptus are connected to an output.
-    /// </summary>
-    private void CheckAllInputs()
-    {
-        foreach (VariableBase Var in Inputs)
-        {
-            if (!Var.IsConnected && !Var.IsOptional)
-                throw new Exception("Cannot find an input value for: " + Var.Name + " in " + Name);
-        }
-    }
-
-
     /// <summary>
     /// Return a list of crops.
     /// </summary>
@@ -1014,7 +985,7 @@ internal class ModelInstance
 
     internal bool Get<T>(string NamePath, out T Data) where T: new()
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
             Data = (T)Convert.ChangeType(V.Value, typeof(T));
@@ -1029,10 +1000,10 @@ internal class ModelInstance
 
     internal bool Get<T>(string NamePath, out T[] Data) where T : new()
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
-            Data = (T[]) TypeConverter.CreateConverterIfNecessary(V, typeof(T[])).Value;
+            Data = (T[]) TypeConverter.Convert(NamePath, V.Value, typeof(T[]));
             return true;
         }
         else
@@ -1044,7 +1015,7 @@ internal class ModelInstance
 
     internal bool Get(string NamePath, out string Data)
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
             if (V.Type.IsArray)
@@ -1068,7 +1039,7 @@ internal class ModelInstance
 
     internal bool Get(string NamePath, out object Data)
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
             Data = V.Value;
@@ -1083,10 +1054,10 @@ internal class ModelInstance
 
     internal bool Get(string NamePath, out string[] Data)
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
-            Data = (string[]) new ToStringArray(V).Value;
+            Data = (string[]) TypeConverter.Convert(NamePath, V.Type, typeof(string[]));
             return true;
         }
         else
@@ -1099,7 +1070,7 @@ internal class ModelInstance
 
     internal bool Set<T>(string NamePath, T Data)
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
             V.Value = Data;
@@ -1110,13 +1081,163 @@ internal class ModelInstance
     }
     internal bool Set<T>(string NamePath, T[] Data)
     {
-        VariableBase V = FindOutput(NamePath);
+        ClassVariable V = FindOutput(NamePath);
         if (V != null)
         {
-            V.Value = TypeConverter.Convert(Data, V.Type);
+            V.Value = TypeConverter.Convert(NamePath, Data, V.Type);
             return true;
         }
         else
             return false;
     }
+
+    /// <summary>
+    /// Checkpoint the specified ModelInstance and all children by writing their values to the specified node
+    /// Captures the values of all state variables.
+    /// </summary>
+    internal void Checkpoint(XmlNode ParentNode)
+    {
+        XmlNode Node = ParentNode.AppendChild(ParentNode.OwnerDocument.CreateElement(Name));
+        foreach (ClassVariable State in States)
+            SerialiseObject(State.Name, State.Type, State.Value, Node);
+
+        foreach (ModelInstance Child in Children)
+            Child.Checkpoint(Node);
+
+    }
+
+    private static void SerialiseObject(string Name, Type Type, object Value, XmlNode ParentNode)
+    {
+        bool WriteBlank = Value == null;// ||
+                            //(Type.IsArray && (Value as Array).Length == 0) ||
+                            //(Type.Name == "List`1" && (Value as IList).Count == 0);
+
+        if (WriteBlank)
+            XmlHelper.SetValue(ParentNode, Name, "");
+        else
+        {
+            if (!TypeConverter.CanHandleType(Type))
+            {
+                // We don't know about this type - ask class to serialise.
+                MethodInfo Serialise = Value.GetType().GetMethod("Serialise");
+                if (Serialise != null)
+                    Serialise.Invoke(Value, null);
+                else
+                {
+                    // Class doesn't have a serialise method so try and go through each member and write to node.
+                    XmlNode Node = ParentNode.AppendChild(ParentNode.OwnerDocument.CreateElement(Name));
+                    foreach (FieldInfo Field in GetAllFields(Value.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                        SerialiseObject(Field.Name, Field.FieldType, Field.GetValue(Value), Node);
+                }
+            }
+            else
+                XmlHelper.SetValue(ParentNode, Name, TypeConverter.Convert(Name, Value, typeof(string)) as string);
+        }
+    }
+
+    /// <summary>
+    /// Use the specified checkpoint XML node to initialise all objects.
+    /// </summary>
+    /// <param name="ParentNode"></param>
+    internal void RestoreFromCheckpoint(XmlNode ParentNode)
+    {
+        foreach (XmlNode ChildNode in ParentNode.ChildNodes)
+        {
+            // See if this node is a state.
+            ClassVariable FoundState = null;
+            foreach (ClassVariable State in States)
+                if (State.Name == ChildNode.Name)
+                {
+                    FoundState = State;
+                    break;
+                }
+
+            if (FoundState == null)
+            {
+                // Not a state - so it must be a child.
+                ModelInstance FoundChild = null;
+                foreach (ModelInstance Child in Children)
+                    if (Child.Name == ChildNode.Name)
+                    {
+                        FoundChild = Child;
+                        break;
+                    }
+
+                if (FoundChild == null)
+                    throw new Exception("Cannot find class: " + ChildNode.Name + " while restoring from a checkpoint");
+
+                FoundChild.RestoreFromCheckpoint(ChildNode);
+            }
+            else
+            {
+                FoundState.Value = DeSerialiseObject(FoundState.Name, FoundState.Type, FoundState.Value, ChildNode);
+
+            }
+
+
+        }
+    }
+
+    /// <summary>
+    /// "Value" is what the model currently has.
+    /// </summary>
+    /// <param name="Name"></param>
+    /// <param name="Type"></param>
+    /// <param name="Value"></param>
+    /// <param name="Node"></param>
+    /// <returns></returns>
+    private object DeSerialiseObject(string Name, Type Type, object Value, XmlNode Node)
+    {
+        // Found a state - set its value.
+        string st = Node.InnerText;
+        if (st == "" && Node.InnerXml == "")
+            return null;
+
+        else
+        {
+            if (!TypeConverter.CanHandleType(Type))
+            {
+                // We don't know about this type - ask class to deserialise.
+                MethodInfo DeSerialise = Type.GetMethod("DeSerialise");
+                if (DeSerialise != null)
+                    return DeSerialise.Invoke(Value, null);
+                else
+                {
+                    if (Type.Name == "List`1")
+                    {
+                        int size = Convert.ToInt32(XmlHelper.Value(Node, "_size"));
+                        if (size != 0)
+                            throw new NotImplementedException();
+                        if (Value != null)
+                        {
+                            (Value as IList).Clear();
+                            return Value;
+                        }
+                        else
+                            throw new NotImplementedException();
+                    }
+                    else if (Type.IsArray)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    // Class doesn't have a deserialise method so try and go through each member and deserialise manually
+                    foreach (FieldInfo Field in GetAllFields(Value.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                    {
+                        // Need to find correct child XML node.
+                        XmlNode ChildNode = XmlHelper.Find(Node, Field.Name);
+                        if (ChildNode == null)
+                            throw new Exception("Cannot find child node: " + Field.Name + " in checkpoint under: " + Node.Name);
+                        Field.SetValue(Value, DeSerialiseObject(Field.Name, Field.FieldType, Field.GetValue(Value), ChildNode));
+                    }
+                    return Value;
+                }
+            }
+            else
+                return TypeConverter.Convert(Name, st, Type);
+
+        }
+        
+    }
+
 }

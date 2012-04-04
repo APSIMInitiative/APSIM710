@@ -5,7 +5,7 @@
     </metfile>
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">01/01/1900</start_date>
-      <end_date type="date" description="Enter the end date of the simulation">31/12/1904</end_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/12/2000</end_date>
     </clock>
     <summaryfile />
     <area name="paddock">
@@ -836,6 +836,7 @@ public class ScriptChild
         <text>
 using System;
 using ModelFramework;
+using System.Xml;
 
 public class Script 
 {      
@@ -844,10 +845,14 @@ public class Script
    [Input] DateTime Today;   
    [Input] string CurrentPhaseName; 
    
+   XmlNode Checkpoint;
+   
    // The following event handler will be called once at the beginning of the simulation
    [EventHandler] public void OnInitialised()
    {
       MyPaddock.Deactivate("wheat2");
+      Checkpoint = MyPaddock.Checkpoint("wheat2");
+      Console.Write(Checkpoint.InnerXml);
    }
       
    // The following event handler will be called each day at the beginning of the day
@@ -856,15 +861,23 @@ public class Script
       if (Today.Day == 1 &amp;&amp; Today.Month == 6) 
       {
          MyPaddock.Activate("wheat2");
-         SowPlant2Type Sow = new SowPlant2Type {Cultivar = "Hartog", Population = 150, Depth = 50, RowSpacing = 500, MaxCover=1, BudNumber=1};
+         MyPaddock.RestoreFromCheckpoint("wheat2", Checkpoint);
+         MyPaddock.Publish("wheat2.Initialised");
+         SowPlant2Type Sow = new SowPlant2Type {Cultivar = "Hartog", Population = 150, Depth = 50, RowSpacing = 500, MaxCover = 1, BudNumber = 1};
          Wheat2.OnSow(Sow);
       }
       
+   }
+
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPost()
+   {
       if (CurrentPhaseName == "ReadyForHarvesting")
       {
          Wheat2.OnHarvest();
          Wheat2.OnEndCrop();
          MyPaddock.Deactivate("wheat2");
+         MyPaddock.RestoreFromCheckpoint("wheat2", Checkpoint);
       }
       
    }

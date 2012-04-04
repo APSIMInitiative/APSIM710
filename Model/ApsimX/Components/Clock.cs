@@ -55,9 +55,6 @@ public class Clock
         if (_Today > End_Date)
             throw new FinishedException("Simulation terminated normally");
 
-        if (Initialised != null)
-            Initialised.Invoke();
-
         Tick.Invoke(t);
         if (Prepare != null)
             Prepare.Invoke();

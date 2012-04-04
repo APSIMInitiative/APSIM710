@@ -544,6 +544,8 @@ public class SoilWater
     {
         get
         {
+            if (_dlayer == null)
+                return 0;
            int num_layers = _dlayer.Length;
            double result = 0.0;
            for (int layer = 0; layer < num_layers; layer++)

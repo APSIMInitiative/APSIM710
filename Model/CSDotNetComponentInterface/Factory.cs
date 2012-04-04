@@ -172,6 +172,7 @@ class Factory
             }
             if (AddProperty)
             {
+               
                 FactoryProperty NewProperty = new FactoryProperty(new ReflectedField(Property, Obj.Model), Parent);
                 if (IsOutput)
                     RemoveRegisteredOutput(NewProperty.OutputName);

@@ -285,6 +285,25 @@ namespace CSGeneral
             }
             return MatchingChildren;
         }
+        public static List<XmlNode> ChildNodesByName(XmlNode Node, string NameFilter)
+        {
+            // ----------------------------------------------------
+            // Return an array of children that match the specified
+            // filter. The filter can be an empty string to match
+            // all child XmlNodes
+            // ----------------------------------------------------
+            List<XmlNode> MatchingChildren = new List<XmlNode>();
+            if (Node != null)
+            {
+                foreach (XmlNode Child in Node.ChildNodes)
+                {
+                    if (Child.Name != "#text" && Child.Name != "#comment" && Child.Name != "#cdata-section" &&
+                        NameFilter == "" || Name(Child).ToLower() == NameFilter.ToLower())
+                        MatchingChildren.Add(Child);
+                }
+            }
+            return MatchingChildren;
+        }
         public static string[] ChildNames(XmlNode Node, string TypeFilter)
         {
             List<XmlNode> Children = ChildNodes(Node, TypeFilter);

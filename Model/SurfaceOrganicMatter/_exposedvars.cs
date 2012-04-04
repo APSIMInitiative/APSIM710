@@ -34,9 +34,9 @@ public partial class SurfaceOM
     [Units("")]
     public string standing_fraction;
 
-    [Param]
+    [Param (IsOptional=true)]
     [Units("")]
-    public string cpr;
+    public string cpr = null;
 
     [Param(IsOptional = true)]
     [Units("")]

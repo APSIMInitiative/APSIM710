@@ -182,7 +182,7 @@ public class Plant
                 IList Array = (IList)ArrayObject;
                 int ArrayIndex;
                 if (int.TryParse(ArraySpecifier, out ArrayIndex))
-                    return Convert.ToDouble(GetMemberInfo(RemainderOfPropertyName, Array[ArrayIndex]).Value);
+                    return Convert.ToDouble(GetValueOfMember(RemainderOfPropertyName, Array[ArrayIndex]));
 
                 else if (ArraySpecifier.Contains("."))
                 {
@@ -191,7 +191,7 @@ public class Plant
                     {
                         if (Index < 0 || Index >= Array.Count)
                             throw new Exception("Invalid index of " + Index.ToString() + " found while indexing into variable: " + PropertyName);
-                        return Convert.ToDouble(GetMemberInfo(RemainderOfPropertyName, Array[Index]).Value);
+                        return Convert.ToDouble(GetValueOfMember(RemainderOfPropertyName, Array[Index]));
                     }
                 }
                 else
@@ -199,7 +199,7 @@ public class Plant
                     double Sum = 0.0;
                     for (int i = 0; i < Array.Count; i++)
                     {
-                        object Obj = GetMemberInfo(RemainderOfPropertyName, Array[i]).Value;
+                        object Obj = GetValueOfMember(RemainderOfPropertyName, Array[i]);
                         if (Obj == null)
                             throw new Exception("Cannot evaluate: " + RemainderOfPropertyName);
 
@@ -238,28 +238,23 @@ public class Plant
 
 
 
-    internal class Info
-    {
-        public object Target;
-        public MemberInfo Member;
 
-        public object Value
-        {
-            get
-            {
-                if (Member is FieldInfo)
-                    return (Member as FieldInfo).GetValue(Target);
-                else
-                    return (Member as PropertyInfo).GetValue(Target, null);
-            }
-        }
+    internal static object GetValueOfMember(string PropertyName, object Target)
+    {
+        object ReturnTarget;
+        MemberInfo ReturnMember;
+        GetMemberInfo(PropertyName, Target, out ReturnMember, out ReturnTarget);
+        if (ReturnMember is FieldInfo)
+            return (ReturnMember as FieldInfo).GetValue(ReturnTarget);
+        else
+            return (ReturnMember as PropertyInfo).GetValue(ReturnTarget, null);
     }
 
     /// <summary>
     /// Return the value (using Reflection) of the specified property on the specified object.
     /// Returns null if not found.
     /// </summary>
-    internal static Info GetMemberInfo(string PropertyName, object Target)
+    internal static void GetMemberInfo(string PropertyName, object Target, out MemberInfo ReturnMember, out object ReturnTarget)
     {
         FieldInfo FI;
         PropertyInfo PI;
@@ -288,7 +283,10 @@ public class Plant
                 {
                     PI = Target.GetType().GetProperty(Bits[i], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
                     if (PI == null)
-                        return null;
+                    {
+                        Target = null;
+                        break;
+                    }
                     else
                         Target = PI.GetValue(Target, null);
                 }
@@ -297,16 +295,24 @@ public class Plant
             }
         }
 
-        // By now we should have a target - go get the field / property.
-        FI = Target.GetType().GetField(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-        if (FI == null)
+        if (Target == null)
+            ReturnMember = null;
+        else
         {
-            PI = Target.GetType().GetProperty(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-            if (PI == null)
-                return null;
-            return new Info { Target = Target, Member = PI };
+            // By now we should have a target - go get the field / property.
+            FI = Target.GetType().GetField(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            if (FI == null)
+            {
+                PI = Target.GetType().GetProperty(Bits[Bits.Length - 1], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                if (PI == null)
+                    ReturnMember = null;
+                else
+                    ReturnMember = PI;
+            }
+            else
+                ReturnMember = FI;
         }
-        return new Info { Target = Target, Member = FI };
+        ReturnTarget = Target;
     }
 
  #endregion

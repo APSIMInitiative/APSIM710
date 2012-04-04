@@ -429,8 +429,11 @@ internal class FactoryProperty : Instance, ApsimType
 
         FQN = CalcParentName(Parent) + this.Name;
         this.OutputName = FQN;
-        Data = GetFieldWrapper(TypeName);
-        sDDML = Data.DDML();
+        Data = GetFieldWrapper(Property.Typ);
+        if (Data != null)
+            sDDML = Data.DDML();
+        else
+            sDDML = "";
         regIndex = -1;
         if (sDDML.Length > 0)
             DDMLValue = new TDDMLValue(sDDML, "");
@@ -494,36 +497,38 @@ internal class FactoryProperty : Instance, ApsimType
         }
     }
 
-    private ApsimType GetFieldWrapper(String typeName)
+    private ApsimType GetFieldWrapper(Type type)
     {
         // ----------------------------------------------
         // Creates a field wrapper for the given property.
         // ----------------------------------------------
 
-        if (typeName == "Single")
+        if (type.Name == "Single")
             return new WrapBuiltIn<Single>(this);
-        else if (typeName == "Double")
+        else if (type.Name == "Double")
             return new WrapBuiltIn<Double>(this);
-        else if (typeName == "Int32")
+        else if (type.Name == "Int32")
             return new WrapBuiltIn<Int32>(this);
-        else if (typeName == "String")
+        else if (type.Name == "String")
             return new WrapBuiltIn<String>(this);
-        else if (typeName == "Single[]")
+        else if (type.Name == "Single[]")
             return new WrapBuiltIn<Single[]>(this);
-        else if (typeName == "Double[]")
+        else if (type.Name == "Double[]")
             return new WrapBuiltIn<Double[]>(this);
-        else if (typeName == "Int32[]")
+        else if (type.Name == "Int32[]")
             return new WrapBuiltIn<Int32[]>(this);
-        else if (typeName == "String[]")
+        else if (type.Name == "String[]")
             return new WrapBuiltIn<String[]>(this);
-        else if (typeName == "DateTime")
+        else if (type.Name == "DateTime")
             return new WrapBuiltIn<DateTime>(this);
-        else if (typeName == "Boolean")
+        else if (type.Name == "Boolean")
             return new WrapBuiltIn<Boolean>(this);
-        else if (typeName == "Boolean[]")
+        else if (type.Name == "Boolean[]")
             return new WrapBuiltIn<Boolean[]>(this);
-        else
+        else if (type.GetInterface("ApsimType") != null)
             return new WrapApsimType(this);
+        else
+            return null;
     }
 
     public String CalcParentName(XmlNode Node)

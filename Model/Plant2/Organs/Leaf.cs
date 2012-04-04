@@ -9,9 +9,8 @@ public class Leaf : BaseOrgan, AboveGround
 {
  #region Class inputs
     //Input Parameters
-    [Output]
     [Param]
-    public List<LeafCohort> Leaves;
+    public List<LeafCohort> InitialLeaves;
     [Param]
     [Output]
     [Description("Max cover")]
@@ -67,7 +66,8 @@ public class Leaf : BaseOrgan, AboveGround
     public event NewCanopyDelegate New_Canopy;
     [Event]
     public event NullTypeDelegate NewLeaf;
-    public List<LeafCohort> InitialLeaves = new List<LeafCohort>();
+    [Output]
+    public List<LeafCohort> Leaves = new List<LeafCohort>();
     public double ExpansionStressValue //This property is necessary so the leaf class can update Expansion stress value each day an pass it down to cohorts
     {
         get
@@ -551,10 +551,7 @@ public class Leaf : BaseOrgan, AboveGround
 
         // On the initial day set up initial cohorts and set their properties
         if (Phenology.OnDayOf(Structure.InitialiseStage)) 
-        {
-            CopyLeaves(Leaves, InitialLeaves);
             InitialiseCohorts();
-        }
 
         //When primordia number is 1 more than current cohort number produce a new cohort
         if (Structure.MainStemPrimordiaNo >= Leaves.Count + FinalLeafFraction) 

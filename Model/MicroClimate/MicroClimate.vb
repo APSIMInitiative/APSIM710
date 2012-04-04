@@ -103,22 +103,22 @@ Partial Public Class MicroMet
     <Description("")> _
     Private refheight As Double = 2.0
 
-    <Param(MinVal:=0.0, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
     <Units("0-1")> _
     <Description("")> _
     Private albedo As Double = 0.15
 
-    <Param(MinVal:=0.9, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.9, MaxVal:=1.0)> _
     <Units("0-1")> _
     <Description("")> _
     Private emissivity As Double = 0.96
 
-    <Param(MinVal:=0.0, MaxVal:=1.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1.0)> _
     <Units("m/s")> _
     <Description("")> _
     Private gsmax As Double = 0.01
 
-    <Param(MinVal:=0.0, MaxVal:=1000.0)> _
+    <Param(IsOptional:=True, MinVal:=0.0, MaxVal:=1000.0)> _
     <Units("W/m^2")> _
     <Description("")> _
     Private r50 As Double = 200

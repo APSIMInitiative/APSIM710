@@ -733,7 +733,7 @@ public class LeafCohort
     [EventHandler]
     public void OnInitialised()
     {
-        MyPaddock.Subscribe(Structure.InitialiseStage, DoInitialisation);
+        //MyPaddock.Subscribe(Structure.InitialiseStage, DoInitialisation);
     }
     //Leaf Status variabules
     public double MaxSize

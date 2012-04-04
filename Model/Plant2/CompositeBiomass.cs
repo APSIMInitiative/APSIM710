@@ -14,21 +14,32 @@ public class CompositeBiomass : Biomass
     [Param]
     private string[] Propertys = null;
 
+    Biomass ReturnBiomass = new Biomass();
 
     class CompositeInfo
     {
-        public Plant.Info Info;
+        public object Target;
+        public MemberInfo Member;
+
+        public object Value
+        {
+            get
+            {
+                if (Member is FieldInfo)
+                    return (Member as FieldInfo).GetValue(Target);
+                else
+                    return (Member as PropertyInfo).GetValue(Target, null);
+            }
+        }
+        
         public string ArrayFieldName = null;
         public string ArraySpecifier = "";
-        public object Value { get { return Info.Value; } }
-
     }
     private List<CompositeInfo> Infos = new List<CompositeInfo>();
 
     /// <summary>
     ///  Cannot use the OnInitialised event handler because our parent plant hasn't yet been initialised.
     /// </summary>
-    [EventHandler]
     public bool HaveBeenInitialised()
     {
         if (Plant.SowingData != null && Infos.Count == 0)
@@ -45,10 +56,15 @@ public class CompositeBiomass : Biomass
                 }
 
                 ArraySpecifier = StringManip.SplitOffBracketedValue(ref PropertyNameMinusArray, '[', ']');
-                Plant.Info I = Plant.GetMemberInfo(PropertyNameMinusArray, Plant);
-                if (I == null)
+                object Target;
+                MemberInfo Member;
+                Plant.GetMemberInfo(PropertyNameMinusArray, Plant, out Member, out Target);
+                if (Member == null)
                     throw new Exception("In ComponentBiomass, cannot find property: " + PropertyName);
-                Infos.Add(new CompositeInfo { Info = I, ArrayFieldName = ArrayFieldName, ArraySpecifier = ArraySpecifier });
+                Infos.Add(new CompositeInfo { Target = Target, 
+                                              Member = Member,
+                                              ArrayFieldName = ArrayFieldName, 
+                                              ArraySpecifier = ArraySpecifier });
             }
         }
         return Plant.SowingData != null && Infos.Count > 0;
@@ -58,7 +74,7 @@ public class CompositeBiomass : Biomass
     {
         get
         {
-            Biomass ReturnBiomass = new Biomass();
+            ReturnBiomass.Clear();
             if (HaveBeenInitialised())
             {
                 foreach (CompositeInfo I in Infos)
@@ -67,10 +83,10 @@ public class CompositeBiomass : Biomass
                     if (Value is Array)
                     {
                         foreach (Biomass b in Value as Array)
-                            ReturnBiomass += b;
+                            AddToReturnBiomass(b);
                     }
                     else if (Value is Biomass)
-                        ReturnBiomass += Value as Biomass;
+                        AddToReturnBiomass(Value as Biomass);
                     else if (Value is IList)
                     {
                         // Could be a list of any type of object.
@@ -80,18 +96,18 @@ public class CompositeBiomass : Biomass
                             {
                                 if (I.ArraySpecifier == "" || Utility.IsOfType(Obj.GetType(), I.ArraySpecifier))
                                 {
-                                    Plant.Info ObjectInfo = Plant.GetMemberInfo(I.ArrayFieldName, Obj);
-                                    if (ObjectInfo == null)
+                                    object MemberValue = Plant.GetValueOfMember(I.ArrayFieldName, Obj);
+                                    if (MemberValue == null)
                                         throw new Exception("Cannot find field: " + I.ArrayFieldName + " in type: " + Obj.GetType().Name);
 
-                                    ReturnBiomass += ObjectInfo.Value as Biomass;
+                                    AddToReturnBiomass(MemberValue as Biomass);
                                 }
                             }
                         }
                         else
                         {
                             foreach (Biomass b in Value as IList)
-                                ReturnBiomass += b;
+                                AddToReturnBiomass(b);
                         }
 
 
@@ -103,6 +119,15 @@ public class CompositeBiomass : Biomass
         }
     }
 
+    private void AddToReturnBiomass(Biomass a)
+    {
+        ReturnBiomass.StructuralWt += a.StructuralWt;
+        ReturnBiomass.NonStructuralWt += a.NonStructuralWt;
+        ReturnBiomass.MetabolicWt += a.MetabolicWt;
+        ReturnBiomass.StructuralN += a.StructuralN;
+        ReturnBiomass.NonStructuralN += a.NonStructuralN;
+        ReturnBiomass.MetabolicN += a.MetabolicN;
+    }
     [Output]
     [Units("g/m^2")]
     override public double NonStructuralN
