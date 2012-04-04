@@ -630,7 +630,8 @@ namespace ModelFramework
                 {
                     // NamePath might be Leaf.MinT (which doesn't exist anywhere in the simulation
                     // If we pass this to HostComponent.Get, it will throw - we don't want that.
-                    if (IsComponentASibling(StringManip.ParentName(NamePath)))
+                    bool isAusFarm = FullName[0] != '.';
+                    if (isAusFarm || IsComponentASibling(StringManip.ParentName(NamePath)))
                         return HostComponent.Get(NamePath, Data, true);
                     else
                         return false;

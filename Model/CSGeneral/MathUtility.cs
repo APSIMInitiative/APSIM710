@@ -710,6 +710,8 @@ namespace CSGeneral
             return Values;
         }
 
+        public static double Sqr(double x) { return x * x; }
+
         public static double LnGamma(double xx)
         {
             double x = xx - 1.0;

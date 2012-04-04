@@ -349,9 +349,10 @@ public partial class SoilErosion
                 double covgreen; //  = Comp.Variable("cover_tot").ToDouble(); 
                 double covtot;
                 double height;
-                Comp.Get(Comp.FullName + ".height", out height);
-                Comp.Get(Comp.FullName + ".cover_tot", out covtot);
-                Comp.Get(Comp.FullName + ".cover_green", out covgreen);
+                string FullCompName = Comp.FullName;
+                Comp.Get(FullCompName + ".height", out height);
+                Comp.Get(FullCompName + ".cover_tot", out covtot);
+                Comp.Get(FullCompName + ".cover_green", out covgreen);
                 // double height = Comp.Variable("height").ToDouble();
                 plant_cover = 1.0 - (1.0 - plant_cover) * (1.0 - covtot);
             }
@@ -418,7 +419,7 @@ public partial class SoilErosion
             }
 
             double swGrav = 100.0 * soilWater * rho_water / bd[0]; //Gravimetric soil water, as a % - YUCK. Why did M&B use percentages for this stuff?
-            double wPrime = 0.0014 * Sqr(percent_clay) + 0.17 * percent_clay;
+            double wPrime = 0.0014 * MathUtility.Sqr(percent_clay) + 0.17 * percent_clay;
             if (swGrav < wPrime)
                 return 1.0;
             else
@@ -542,19 +543,19 @@ public partial class SoilErosion
             return 0.0;
         else
         {
-            double fv2 = Sqr(frictionVelocity); // square of friction velocity
+            double fv2 = MathUtility.Sqr(frictionVelocity); // square of friction velocity
             double fv3 = fv2 * frictionVelocity; // cube of friction velocity
             if (flux_model.ToLower() == "owen")
             {
-                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - Sqr(thresholdVelocity) / fv2);
+                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - MathUtility.Sqr(thresholdVelocity) / fv2);
             }
             else if (flux_model.ToLower() == "white")
             {
 // Shao's code uses an incorrect form of White's equation (Actually, the original mistake was White's)
 // The incorrect form yields a value roughly half what it should be.
-//                double bad = (coeff_flux * rho_air * fv3 / gravity) * (1.0 + Sqr(thresholdVelocity) / fv2)
+//                double bad = (coeff_flux * rho_air * fv3 / gravity) * (1.0 + MathUtility.Sqr(thresholdVelocity) / fv2)
 //                    * (1.0 - thresholdVelocity / frictionVelocity);
-                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - Sqr(thresholdVelocity) / fv2)
+                return (coeff_flux * rho_air * fv3 / gravity) * (1.0 - MathUtility.Sqr(thresholdVelocity) / fv2)
                     * (1.0 + thresholdVelocity / frictionVelocity);
             }
             else
@@ -699,7 +700,7 @@ public partial class SoilErosion
                 return 0.0;
             bulkDensity = bd[0] * 1000.0;  // Shao uses units of kg/m^3 for density
             double zeta = frictionVelocity * Math.Sqrt(bulkDensity / plastic_pressure);  // zeta is dimensionless
-            double sigma_m = 12.0 * Sqr(zeta) * (1.0 + 14.0 * zeta);       // sigma_m is dimenionless
+            double sigma_m = 12.0 * MathUtility.Sqr(zeta) * (1.0 + 14.0 * zeta);       // sigma_m is dimenionless
             double gamma = Math.Exp(-shao_k_gamma * Math.Pow((frictionVelocity - ustar_t_min), 3.0)); // ghl of Shao's code. I think the result is meant to be dimensionless, although the velocities start with units
 
             double[,] flux = new double[dd.Length, iDust + 1];
@@ -709,7 +710,7 @@ public partial class SoilErosion
                     double sigma_p = dpsd[j] / dpsd_disp[j];
                     double term1 = shao_c_y * dpsd_disp[j] * ((1.0 - gamma) + gamma * sigma_p);
                     double term2 = 1.0 + sigma_m;      // dimensionless
-                    double term3 = horizFlux[i] * gravity / Sqr(frictionVelocity); // This gives us units of g/m^2/sec
+                    double term3 = horizFlux[i] * gravity / MathUtility.Sqr(frictionVelocity); // This gives us units of g/m^2/sec
                     flux[i, j] = term1 * term2 * term3 * 1e-4; // Convert units to g/cm^2/sec
                 }
 
@@ -969,7 +970,7 @@ public partial class SoilErosion
                 double diamSD = dist[j].sigma;
                 double partialProbDensity = 0;
                 if (weight > 0.0 && diamSD > 0.0)
-                    partialProbDensity = weight * cn / diamSD * Math.Exp(-(Sqr(Math.Log(diamMid[i]) - diamMean)) / (2.0 * Sqr(diamSD)));
+                    partialProbDensity = weight * cn / diamSD * Math.Exp(-(MathUtility.Sqr(Math.Log(diamMid[i]) - diamMean)) / (2.0 * MathUtility.Sqr(diamSD)));
                 probDensity += partialProbDensity;
             }
             deltaPSD[i] = probDensity * deltaLn;
@@ -993,6 +994,4 @@ public partial class SoilErosion
             cumProb[i] /= cumProb[nSizes - 1];
         }
     }
-
-    public double Sqr(double x) { return x * x; }
 }
