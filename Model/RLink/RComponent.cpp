@@ -213,25 +213,32 @@ void RComponent::onInit2(void)
       if (!GetStringRegKey(installPathKey, "InstallPath", installPath))
          throw std::runtime_error("No R install info in " + installPathKey);
      }		
+
+   char pathBuffer[8192];
+   GetEnvironmentVariable("PATH", pathBuffer, 8192);
+   std::string newPath = installPath + "\\bin\\i386;" + pathBuffer;
+   SetEnvironmentVariable("PATH", newPath.c_str());
+   //apsimAPI.write("Setting path:" + newPath + "\n");
+   
    replace(installPath.begin(), installPath.end(), '\\', '/'); 
    apsimAPI.write("Loading R from " + installPath + "\n");
    string Rdll = installPath + "/bin/i386/R.dll";
    if (loadDLL(Rdll) == NULL) throw std::runtime_error("Can't load R DLL " + Rdll);  
 
-   apsimAPI.write("Embedding R in " + fileDirName(apsimDLL) + "\n");
    string EXE = fileDirName(apsimDLL) + "/REmbed.dll";
 
    char *p = getenv("USERPROFILE");
    if (p != NULL) {
 	  userlibs = p;
       replace(userlibs.begin(), userlibs.end(), '\\', '/');
-	  userlibs += "/Documents/R/win-library/";
+	  userlibs += "/My Documents/R/win-library/";
 	  vector<string> vnums;
 	  split(versionString, ".", vnums);
       userlibs += vnums[0];
 	  userlibs += ".";
 	  userlibs += vnums[1];
    }
+   apsimAPI.write("Userlibs = " + userlibs + "\n");
 
    if (!StartR(installPath.c_str(), 
                userlibs.c_str(), 

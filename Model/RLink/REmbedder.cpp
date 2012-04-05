@@ -126,6 +126,13 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
 {
    int argc = 0;
    char **argv = NULL;
+#ifdef WIN32
+   std::string newPath = getenv("PATH");
+   std::replace(newPath.begin(), newPath.end(), '\\', '/'); 
+   newPath = std::string(R_Home) + "/bin/i386;" + newPath;
+   setenv("PATH", newPath.c_str(), 1);
+#endif
+
    if (R_Home != NULL) { setenv("R_HOME", R_Home, 1) ; }
    if (UserLibs != NULL) { setenv("R_LIBS_USER", UserLibs, 1); }
    // TMPDIR??

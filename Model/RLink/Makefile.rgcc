@@ -4,7 +4,7 @@
 #     to build this dll. Don't forget to copy it to the runtime dll directory.
 
 # May be necessary. 
-R_HOME = C:/R-2.14.1
+R_HOME = "C:/Program Files/R/R-2.15.0"
 
 CXXFLAGS :=
 
@@ -20,9 +20,9 @@ RCPPLIBS := 		$(shell echo 'Rcpp:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --van
 RINSIDEINCL := 		$(shell echo 'RInside:::CxxFlags()' | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RINSIDELIBS := 		$(shell echo 'RInside:::LdFlags()'  | $(R_HOME)/bin/R $(R_ARCH) --vanilla --slave)
 RCPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CPPFLAGS)
-RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
+RCXXFLAGS := 		$(RCPPFLAGS) $(RRCPPFLAGS) "$(RCPPINCL)" "$(RINSIDEINCL)" $(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXXFLAGS)
 RLDFLAGS = $(RRLDFLAGS) 
-RLDLIBS :=  $(RINSIDELIBS) $(RCPPLIBS) $(RRCPPLIBS)
+RLDLIBS :=  $(RINSIDELIBS) "$(RCPPLIBS)" $(RRCPPLIBS)
 RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 
 # Stuff for REmbedder.cpp RInside.cpp here
