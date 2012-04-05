@@ -6,6 +6,8 @@
 # May be necessary. 
 R_HOME = C:/R-2.14.1
 
+CXXFLAGS :=
+
 ## include headers and libraries for R
 RRCPPFLAGS := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config --cppflags)
 RRLDFLAGS := 		$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config --ldflags)
@@ -24,10 +26,12 @@ RLDLIBS :=  $(RINSIDELIBS) $(RCPPLIBS) $(RRCPPLIBS)
 RCXX := 			$(shell $(R_HOME)/bin/R $(R_ARCH) CMD config CXX)
 
 # Stuff for REmbedder.cpp RInside.cpp here
-../REmbed.dll: REmbedder.o
-	$(RCXX) -c $(RCXXFLAGS)  REmbedder.cpp 
-	$(RCXX) -shared -s -static-libgcc -o $@ REmbedder.o  $(RLDFLAGS) $(RLDLIBS)
+../REmbed.dll: REmbedder.o RDataTypesRcpp.o
+	$(RCXX) $(CXXFLAGS) -shared -s -static-libgcc -o $@ REmbedder.o  RDataTypesRcpp.o $(RLDFLAGS) $(RLDLIBS)
 
-REmbedder.o: REmbedder.cpp
-	$(RCXX) -c $(RCXXFLAGS)  REmbedder.cpp 
+REmbedder.o: REmbedder.cpp apsimPublish.cpp
+	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  REmbedder.cpp 
+
+RDataTypesRcpp.o: RDataTypesRcpp.cpp
+	$(RCXX) -c $(CXXFLAGS) $(RCXXFLAGS)  RDataTypesRcpp.cpp 
 

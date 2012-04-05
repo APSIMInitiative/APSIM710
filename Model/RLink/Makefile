@@ -8,13 +8,14 @@ PROJECTTYPE = dll
 ifeq ($(PLATFORM),WIN32VS)
  LIBS = General ApsimShared ComponentInterface2 
  OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.obj
- SRC = RComponent.cpp 
+ SRC = RComponent.cpp RDataTypes.cpp
+ OBJEXT = obj
 endif
 
 ifeq ($(PLATFORM),Linux)
  LIBS = General ApsimShared ComponentInterface2 
  OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.o
- SRC = RComponent.cpp REmbedder.cpp
+ SRC = RComponent.cpp REmbedder.cpp RDataTypes.cpp RDataTypesRcpp.cpp
 
  ## include headers and libraries for R
  RCPPFLAGS := 		$(shell R $(R_ARCH) CMD config --cppflags)
@@ -27,14 +28,19 @@ ifeq ($(PLATFORM),Linux)
  ## include headers and libraries for RInside embedding classes
  RINSIDEINCL := 	$(shell echo 'RInside:::CxxFlags()' | R $(R_ARCH) --vanilla --slave)
  RINSIDELIBS := 	$(shell echo 'RInside:::LdFlags()'  | R $(R_ARCH) --vanilla --slave)
- #CPPFLAGS := 		-Wall $(shell R $(R_ARCH) CMD config CPPFLAGS)
- #CXXFLAGS := 		$(CPPFLAGS) $(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL) $(shell R $(R_ARCH) CMD config CXXFLAGS)
- #LDFLAGS := 		$(RRLDFLAGS) 
- #LDLIBS :=  		$(RINSIDELIBS) $(RCPPLIBS) $(RRCPPLIBS)
- #CC := 			$(shell R $(R_ARCH) CMD config CXX)
  INCLUDES := $(RCPPFLAGS) $(RCPPINCL) $(RINSIDEINCL)
  EXTRALIBS := $(RLDFLAGS) $(RINSIDELIBS) $(RCPPLIBS) 
+ OBJEXT = o
 endif
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
+
+RComponent.$(OBJEXT): RComponent.cpp RDataTypes.h
+
+RDataTypes.$(OBJEXT): RDataTypes.cpp RDataTypes.h
+
+REmbedder.$(OBJEXT): REmbedder.cpp REmbedder.h apsimPublish.cpp
+
+apsimPublish.cpp RDataTypes.cpp RDataTypes.h RDataTypesRcpp.cpp: ../DataTypes/Datatypes.xml RDataTypes.macro
+	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml RDataTypes.macro
 

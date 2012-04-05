@@ -29,21 +29,22 @@ class RComponent
       ~RComponent(void);
       virtual void onError(void);
       virtual void onInit2(void);
-      void publishNull(const std::string &event);
-      void subscribeNull(const std::string &event, const std::string &script);
-      void onNullEventCallback(const std::string &);
+      void subscribe(const std::string &event, const std::string &type, const std::string &handler );
+      void onRuleCallback(const std::string &);
       void expose(const std::string &variableName);
       	
       void respondToGet(const std::string &variableName, std::vector<std::string> &result);
       void respondToSet(const std::string &variableName, std::vector<std::string> &value);
 
-   private:
       ScienceAPI2& apsimAPI;
+   private:
       Name2RuleMap rules;
       bool hasFatalError;
       Name2RuleMap apsimVariables;
       void importVariables(void);
    };
+
+bool isNumeric(const std::string &s); 
 
 #endif
 
