@@ -7,17 +7,27 @@ using System.Runtime.InteropServices;
 using System.Xml;
 using CSGeneral;
 using System.IO;
+#if __MonoCS__
+using Mono.Data.Sqlite;
+#else
 using System.Data.SQLite;
+#endif
 using System.Data;
 using ModelFramework;
 
 public class ReportDb
 {
+#if __MonoCS__
+    private SqliteConnection Connection;
+    private SqliteCommand InsertCommand;
+    private SqliteTransaction InsertTransaction = null;
+#else
     private SQLiteConnection Connection;
     private SQLiteCommand InsertCommand;
+    private SQLiteTransaction InsertTransaction = null;
+#endif
     private string FileName = "Output.db";
     private int SimulationID = -1;
-    private SQLiteTransaction InsertTransaction = null;
 
     [Input]
     private DateTime Today;
@@ -61,10 +71,15 @@ public class ReportDb
     [EventHandler]
     public void OnInitialised()
     {
-
+#if __MonoCS__
+        Connection = new SqliteConnection("Data Source=" + FileName + ";Version=3;New=False;Compress=True;");
+        Connection.Open();
+        SqliteCommand sql_cmd = new SqliteCommand(Connection);
+#else
         Connection = new SQLiteConnection("Data Source=" + FileName + ";Version=3;New=False;Compress=True;");
         Connection.Open();
         SQLiteCommand sql_cmd = new SQLiteCommand(Connection);
+#endif
 
         // Make sure we have a Simulations table.
         if (!TableNames.Contains("Simulations"))
@@ -111,9 +126,15 @@ public class ReportDb
     /// <returns></returns>
     private int GetSimulationID()
     {
+#if __MonoCS__
+        SqliteCommand Command = new SqliteCommand(Connection);
+        Command.CommandText = "SELECT ID FROM Simulations WHERE Title='" + Title + "'";
+        SqliteDataReader Reader = Command.ExecuteReader();
+#else
         SQLiteCommand Command = new SQLiteCommand(Connection);
         Command.CommandText = "SELECT ID FROM Simulations WHERE Title='" + Title + "'";
         SQLiteDataReader Reader = Command.ExecuteReader();
+#endif
         if (Reader.Read())
             return Reader.GetInt32(0);
         else
@@ -127,9 +148,15 @@ public class ReportDb
     {
         get
         {
+#if __MonoCS__
+            SqliteCommand Command = new SqliteCommand(Connection);
+            Command.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
+            SqliteDataReader Reader = Command.ExecuteReader();
+#else
             SQLiteCommand Command = new SQLiteCommand(Connection);
             Command.CommandText = "SELECT name FROM sqlite_master WHERE type='table'";
             SQLiteDataReader Reader = Command.ExecuteReader();
+#endif
             List<string> TableNames = new List<string>();
             while (Reader.Read())
             {
@@ -146,9 +173,15 @@ public class ReportDb
     {
         get
         {
+#if __MonoCS__
+            SqliteCommand Command = new SqliteCommand(Connection);
+            Command.CommandText = "PRAGMA table_info (Data)";
+            SqliteDataReader Reader = Command.ExecuteReader();
+#else
             SQLiteCommand Command = new SQLiteCommand(Connection);
             Command.CommandText = "PRAGMA table_info (Data)";
             SQLiteDataReader Reader = Command.ExecuteReader();
+#endif
             SortedSet<string> FieldNames = new SortedSet<string>(StringComparer.CurrentCultureIgnoreCase);
             while (Reader.Read())
             {
@@ -184,15 +217,22 @@ public class ReportDb
     {
         if (InsertCommand == null || InsertCommand.Parameters.Count != Values.Count)
         {
-
+#if __MonoCS__
+            InsertCommand = new SqliteCommand(Connection);
+#else
             InsertCommand = new SQLiteCommand(Connection);
+#endif
             string Cmd = "INSERT INTO [" + "Data" + "] (";
             for (int i = 0; i < Values.Count; i++)
             {
                 if (i > 0)
                     Cmd += ",";
                 Cmd += "[" + Values[i].Key + "]";
+#if __MonoCS__
+                InsertCommand.Parameters.Add(new SqliteParameter(Values[i].Key));
+#else
                 InsertCommand.Parameters.Add(new SQLiteParameter(Values[i].Key));
+#endif
             }
             Cmd += ") VALUES (";
 
@@ -282,7 +322,11 @@ public class ReportDb
 
     private void EnsureDataTableHasCorrectFields(List<KeyValuePair<string, object>> Variables)
     {
+#if __MonoCS__
+        SqliteTransaction AlterTransaction = null;
+#else
         SQLiteTransaction AlterTransaction = null;
+#endif
 
         // Work out which fields we need to add to the Data table.
         SortedSet<string> ExistingFieldNames = DataFieldNames;
@@ -301,7 +345,11 @@ public class ReportDb
                 }
 
                 string SQL = "ALTER TABLE Data ADD [" + Variable.Key + "] " + GetDataType(Variable.Value);
+#if __MonoCS__
+                SqliteCommand Command = Connection.CreateCommand();
+#else
                 SQLiteCommand Command = Connection.CreateCommand();
+#endif
                 Command.CommandText = SQL;
                 Command.ExecuteNonQuery();
             }
