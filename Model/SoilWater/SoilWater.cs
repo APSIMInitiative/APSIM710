@@ -3155,7 +3155,9 @@ public class SoilWater
         //!              ...minimum reduction (at cover =0.0) is 1.0
         //!              ...maximum reduction (at cover =1.0) is 0.183.
 
-        cover_tot_sum = 0.0; // ApsimUtil.sum_cover_array(cover_tot, num_crops); // This is a fallow water balance
+        cover_tot_sum = 0.0;
+        for (int i = 0; i < num_crops; i++)
+          cover_tot_sum = 1.0 - (1.0 - cover_tot_sum) * (1.0 - cover_tot[i]);
         eos_canopy_fract = Math.Exp(-1 * canopy_eos_coef * cover_tot_sum);
 
         //   !-----------------------------------------------+
