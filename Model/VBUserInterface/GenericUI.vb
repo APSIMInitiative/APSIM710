@@ -207,48 +207,33 @@ Public Class GenericUI
       Table.Columns.Add("Description", GetType(String))
       Table.Columns.Add("Value", GetType(String))
 
-      If Data.Name.ToLower() = "soil" Then
-         Dim NewRow As DataRow = Table.NewRow()
-         NewRow(0) = "category"
-         NewRow(1) = "category"
-         NewRow(3) = "Soil Description"
-         NewRow(4) = XmlHelper.Name(Data)
-         Table.Rows.Add(NewRow)
+        For Each Child As XmlNode In Data.ChildNodes
+            If Child.ChildNodes.Count <= 1 AndAlso Child.Name <> "TeeChartFormat" AndAlso Child.Name <> "XY" AndAlso _
+               Child.Name.ToLower() <> "layer" Then
+                Dim NewRow As DataRow = Table.NewRow()
+                Table.Rows.Add(NewRow)
+                If Child.Name = "category" Then
+                    NewRow(0) = "category"
+                    NewRow(1) = "category"
+                    NewRow(3) = XmlHelper.Attribute(Child, "description")
+                Else
+                    NewRow(0) = Child.Name
+                    If XmlHelper.Attribute(Child, "type") = "" Then
+                        NewRow(1) = "text"
+                    Else
+                        NewRow(1) = XmlHelper.Attribute(Child, "type")
+                    End If
+                    NewRow(2) = XmlHelper.Attribute(Child, "listvalues")
+                    If XmlHelper.Attribute(Child, "description") = "" Then
+                        NewRow(3) = XmlHelper.Name(Child)
+                    Else
+                        NewRow(3) = XmlHelper.Attribute(Child, "description")
+                    End If
 
-         NewRow = Table.NewRow()
-         NewRow(0) = "SoilType"
-         NewRow(1) = "text"
-         NewRow(3) = "Classification"
-         NewRow(4) = XmlHelper.Value(Data, "SoilType")
-         Table.Rows.Add(NewRow)
-      End If
-      For Each Child As XmlNode In Data.ChildNodes
-         If Child.ChildNodes.Count <= 1 AndAlso Child.Name <> "TeeChartFormat" AndAlso Child.Name <> "XY" AndAlso _
-            Child.Name.ToLower() <> "layer" AndAlso Child.Name <> "SoilType" AndAlso Child.Name <> "Name" Then
-            Dim NewRow As DataRow = Table.NewRow()
-            Table.Rows.Add(NewRow)
-            If Child.Name = "category" Then
-               NewRow(0) = "category"
-               NewRow(1) = "category"
-               NewRow(3) = XmlHelper.Attribute(Child, "description")
-            Else
-               NewRow(0) = Child.Name
-               If XmlHelper.Attribute(Child, "type") = "" Then
-                  NewRow(1) = "text"
-               Else
-                  NewRow(1) = XmlHelper.Attribute(Child, "type")
-               End If
-               NewRow(2) = XmlHelper.Attribute(Child, "listvalues")
-               If XmlHelper.Attribute(Child, "description") = "" Then
-                  NewRow(3) = XmlHelper.Name(Child)
-               Else
-                  NewRow(3) = XmlHelper.Attribute(Child, "description")
-               End If
-
-               NewRow(4) = Child.InnerText
+                    NewRow(4) = Child.InnerText
+                End If
             End If
-         End If
-      Next
+        Next
       CreateTable = Table
    End Function
 

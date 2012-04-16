@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 31;
+        public static int CurrentVersion = 32;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -64,7 +64,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion28),
                                           new UpgraderDelegate(ToVersion29),
                                           new UpgraderDelegate(ToVersion30),
-                                          new UpgraderDelegate(ToVersion31)
+                                          new UpgraderDelegate(ToVersion31),
+                                          new UpgraderDelegate(ToVersion32)
                                        };
             if (Data != null)
             {
@@ -1854,6 +1855,45 @@ namespace ApsimFile
                     }
                 }
                 
+            }
+        }
+
+        /// <summary>
+        /// Make sure <soil> nodes have a ASC_Order and ASC_Sub-order nodes.
+        /// </summary>
+        private static void ToVersion32(XmlNode Node)
+        {
+            if (Node.Name.ToLower() == "soil")
+            {
+                if (XmlHelper.FindByType(Node, "ASC_Order") == null)
+                {
+                    XmlNode NewNode = XmlHelper.EnsureNodeExists(Node, "ASC_Order");
+                    XmlHelper.SetAttribute(NewNode, "description", "Australian Soil Classification Order");
+                    NewNode.ParentNode.InsertBefore(NewNode, NewNode.FirstChild);
+                }
+                if (XmlHelper.FindByType(Node, "ASC_Sub-order") == null)
+                {
+                    XmlNode NewNode = XmlHelper.EnsureNodeExists(Node, "ASC_Sub-order");
+                    XmlHelper.SetAttribute(NewNode, "description", "Australian Soil Classification Sub-Order");
+                    Node.InsertAfter(NewNode, XmlHelper.FindByType(Node, "ASC_Order"));
+                }
+                XmlNode SoilType = XmlHelper.EnsureNodeExists(Node, "SoilType");
+                XmlHelper.SetAttribute(SoilType, "description", "Soil description");
+                Node.InsertAfter(SoilType, XmlHelper.FindByType(Node, "ASC_Sub-order"));
+
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "LocalName"), XmlHelper.FindByType(Node, "SoilType"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Site"), XmlHelper.FindByType(Node, "LocalName"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "NearestTown"), XmlHelper.FindByType(Node, "Site"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Region"), XmlHelper.FindByType(Node, "NearestTown"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "State"), XmlHelper.FindByType(Node, "Region"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Country"), XmlHelper.FindByType(Node, "State"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "NaturalVegetation"), XmlHelper.FindByType(Node, "Country"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "ApsoilNumber"), XmlHelper.FindByType(Node, "NaturalVegetation"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Latitude"), XmlHelper.FindByType(Node, "ApsoilNumber"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Longitude"), XmlHelper.FindByType(Node, "Latitude"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "LocationAccuracy"), XmlHelper.FindByType(Node, "Longitude"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "DataSource"), XmlHelper.FindByType(Node, "LocationAccuracy"));
+                Node.InsertAfter(XmlHelper.EnsureNodeExists(Node, "Comments"), XmlHelper.FindByType(Node, "DataSource"));
             }
         }
 

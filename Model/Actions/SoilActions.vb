@@ -85,11 +85,11 @@ Public Class SoilActions
       Dialog.Title = "Select a spreadsheet to open"
       Dialog.RestoreDirectory = True
       If Dialog.ShowDialog() = DialogResult.OK Then
-         Cursor.Current = Cursors.WaitCursor
-         Dim TempFileName As String = SoilSpreadsheet.OpenXLS(Dialog.FileName, AddressOf UpdateProgress)
-         Controller.ApsimData.NewFromFile(TempFileName)
-         File.Delete(TempFileName)
-         Cursor.Current = Cursors.Default
+            Cursor.Current = Cursors.WaitCursor
+            Dim Table As DataTable = ExcelUtility.ExcelHelper.GetDataFromSheet(Dialog.FileName, "SoilData")
+            Dim Data As XmlNode = SoilDataTable.TableToXML(Table, AddressOf UpdateProgress)
+            Controller.ApsimData.[New](Data.OuterXml)
+            Cursor.Current = Cursors.Default
       End If
       StatusBar.Visible = False
    End Sub
@@ -136,8 +136,14 @@ Public Class SoilActions
       Dialog.DefaultExt = "xls"
       If Dialog.ShowDialog() = DialogResult.OK Then
          Dim Doc As New XmlDocument
-         Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML())
-         SoilSpreadsheet.Export(Dialog.FileName, Doc.DocumentElement, Controller.SelectedPaths)
+            Doc.LoadXml(Controller.ApsimData.RootComponent.FullXML())
+            Dim Paths As New List(Of String)
+            For Each Path As String In Controller.SelectedPaths
+                Paths.Add(Path)
+            Next
+            Dim Table As DataTable = SoilDataTable.XMLToTable(Doc.DocumentElement, Paths)
+            ExcelHelper.SendDataToSheet(Dialog.FileName, "SoilData", Table)
+
          MessageBox.Show("Soils have been successfully exported to '" + Dialog.FileName + "'. It is suggested that you rename soils within the new file to avoid confusion.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
       End If
    End Sub
