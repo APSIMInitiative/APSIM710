@@ -18,11 +18,11 @@ SEXP apsimGet( std::string variableName )
    char dataReturned[8192]; 
    apsimCallback("get", variableName.c_str(), typeReturned, (void *)dataReturned);
    if (!strcmp(typeReturned, "numeric")) {
-      result = Rcpp::wrap((double) *dataReturned);
+      result = Rcpp::wrap(* (double*)dataReturned);
    } else if (!strcmp(typeReturned, "string")) {
       result = Rcpp::wrap(std::string((char *) dataReturned));
    } else if (!strcmp(typeReturned, "numericvec")) {
-      int numReturned = (int) *dataReturned; 
+      int numReturned = * (int *) dataReturned; 
       std::vector<double> v;
       double *buf = (double *) ((char *) dataReturned + sizeof(int));
       for (int i = 0; i < numReturned; i++) { v.push_back(buf[i]); }
