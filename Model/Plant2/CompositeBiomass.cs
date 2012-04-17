@@ -20,6 +20,7 @@ public class CompositeBiomass : Biomass
     {
         public object Target;
         public MemberInfo Member;
+        public MemberInfo ArrayMember = null;
 
         public object Value
         {
@@ -96,7 +97,22 @@ public class CompositeBiomass : Biomass
                             {
                                 if (I.ArraySpecifier == "" || Utility.IsOfType(Obj.GetType(), I.ArraySpecifier))
                                 {
-                                    object MemberValue = Plant.GetValueOfMember(I.ArrayFieldName, Obj);
+                                    if (I.ArrayMember == null)
+                                    {
+                                        // first time through here.
+                                        object ReturnTarget;
+                                        Plant.GetMemberInfo(I.ArrayFieldName, Obj, out I.ArrayMember, out ReturnTarget);
+                                    }
+                                    object MemberValue = null;
+                                    if (I.ArrayMember == null)
+                                        MemberValue = Plant.GetValueOfMember(I.ArrayFieldName, Obj);
+                                    else
+                                    {
+                                        if (I.ArrayMember is FieldInfo)
+                                            MemberValue = (I.ArrayMember as FieldInfo).GetValue(Obj);
+                                        else
+                                            MemberValue = (I.ArrayMember as PropertyInfo).GetValue(Obj, null);
+                                    }
                                     if (MemberValue == null)
                                         throw new Exception("Cannot find field: " + I.ArrayFieldName + " in type: " + Obj.GetType().Name);
 

@@ -1,4 +1,4 @@
-<folder version="31" name="simulations">
+<folder version="32" name="simulations">
   <simulation name="Test">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Tests\ApsimX\Goondiwindi.met</filename>
@@ -148,14 +148,16 @@ public class ScriptChild
     </text>
       </manager2>
       <soil name="Black Vertosol-Waco (Jimbour No014)">
-        <Country>Australia</Country>
-        <Site>Jimbour</Site>
-        <Region>Darling Downs and Granite Belt</Region>
+        <ASC_Order description="Australian Soil Classification Order" />
+        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+        <SoilType description="Soil description">Black Vertosol</SoilType>
         <LocalName />
-        <SoilType description="Classification">Black Vertosol</SoilType>
+        <Site>Jimbour</Site>
         <NearestTown description="Nearest town">Jimbour, Q 4406</NearestTown>
-        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld Blue Grass</NaturalVegetation>
+        <Region>Darling Downs and Granite Belt</Region>
         <State>Queensland</State>
+        <Country>Australia</Country>
+        <NaturalVegetation description="Natural vegetation">Grassland, mainly Qld Blue Grass</NaturalVegetation>
         <ApsoilNumber description="Apsoil number">14</ApsoilNumber>
         <Latitude description="Latitude (WGS84)">-26.943</Latitude>
         <Longitude description="Longitude (WGS84)">151.153</Longitude>
@@ -853,6 +855,7 @@ public class Script
       MyPaddock.Deactivate("wheat2");
       Checkpoint = MyPaddock.Checkpoint("wheat2");
       Console.Write(Checkpoint.InnerXml);
+      MyPaddock.OutputDiagnostics();
    }
       
    // The following event handler will be called each day at the beginning of the day

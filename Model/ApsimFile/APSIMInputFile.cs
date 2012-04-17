@@ -46,6 +46,11 @@ namespace ApsimFile
         public StringCollection Units;
         private ArrayList _Constants = new ArrayList();
         private bool CSV = false;
+        private StreamReaderRandomAccess In;
+        private DateTime FirstDate;
+        private DateTime LastDate;
+        private int FirstLinePosition;
+        private StringCollection Words = new StringCollection();
 
         public ArrayList Constants
         {
@@ -86,19 +91,7 @@ namespace ApsimFile
             // ------------------------------------------------------------------------
             // Read from the specified file and put all data into specified data table.
             // ------------------------------------------------------------------------
-            if (FileName == "")
-                return;
-
-            if (!File.Exists(FileName))
-                throw new Exception("Cannot find file: " + FileName);
-
-            _FileName = FileName;
-            CSV = Path.GetExtension(FileName).ToLower() == ".csv";
-
-            _Constants.Clear();
-
-            StreamReaderRandomAccess In = new StreamReaderRandomAccess(_FileName);
-            ReadApsimHeader(In);
+            Open(FileName);
             ReadAllData(In, Data);
             In.Close();
         }
@@ -152,30 +145,6 @@ namespace ApsimFile
                 }
             }
         }
-        public void GetFirstAndLastRecords(string FileName, DataTable Data)
-        {
-            if (!File.Exists(FileName))
-                throw new Exception("Cannot find file: " + FileName);
-
-            _FileName = FileName;
-            StreamReaderRandomAccess In = new StreamReaderRandomAccess(FileName);
-            ReadApsimHeader(In);
-
-            StringCollection Words = new StringCollection();
-            GetNextLine(In, ref Words);
-            StoreRowInData(In, Words, Data, true);
-
-            In.Seek(-1000, SeekOrigin.End);
-            In.ReadLine(); // throw away partial line.
-
-            while (GetNextLine(In, ref Words)) ;
-
-            if (Words.Count == 0)
-                throw new Exception("Cannot find last row of file: " + FileName);
-            StoreRowInData(In, Words, Data, false);
-        }
-
-
         public void ReadApsimHeader(StreamReaderRandomAccess In)
         {
             // ----------------------------------
@@ -248,9 +217,10 @@ namespace ApsimFile
             DataRow NewMetRow = Data.NewRow();
             for (int w = 0; w != Words.Count; w++)
             {
+                int TableColumnNumber = Data.Columns.IndexOf(Headings[w]);
                 if (CheckHeadingsExist)
                 {
-                    if (Data.Columns.IndexOf(Headings[w]) == -1)
+                    if (TableColumnNumber == -1)
                     {
                         Type ColumnType;
                         if (Words[w] == "?" || Words[w] == "*" || Words[w] == "")
@@ -258,12 +228,13 @@ namespace ApsimFile
                         else
                             ColumnType = StringManip.DetermineType(Words[w], Units[w]);
                         Data.Columns.Add(new DataColumn(Headings[w], ColumnType));
+                        TableColumnNumber = Data.Columns.Count - 1;
                     }
                 }
                 Words[w] = Words[w].Trim();
                 if (Words[w] != "?" && Words[w] != "*" && Words[w] != "")
                 {
-                    if (Data.Columns[Headings[w]].DataType == typeof(DateTime))
+                    if (Data.Columns[TableColumnNumber].DataType == typeof(DateTime))
                     {
                         // Need to get a sanitised date e.g. d/M/yyyy 
                         string DateFormat = Units[w].ToLower();
@@ -277,17 +248,17 @@ namespace ApsimFile
                         try
                         {
                             DateTime Value = DateTime.ParseExact(Words[w], DateFormat, null);
-                            NewMetRow[Headings[w]] = Value;
+                            NewMetRow[TableColumnNumber] = Value;
                         }
                         catch (Exception)
                         { }
                     }
-                    else if (Data.Columns[Headings[w]].DataType == typeof(float))
+                    else if (Data.Columns[TableColumnNumber].DataType == typeof(float))
                     {
-                        NewMetRow[Headings[w]] = Convert.ToDouble(Words[w], new CultureInfo("en-US"));
+                        NewMetRow[TableColumnNumber] = Convert.ToDouble(Words[w] /*, new CultureInfo("en-US")*/);
                     }
                     else
-                        NewMetRow[Headings[w]] = Words[w];
+                        NewMetRow[TableColumnNumber] = Words[w];
                 }
             }
             Data.Rows.Add(NewMetRow);
@@ -340,5 +311,99 @@ namespace ApsimFile
                 return "?";
         }
 
+        /// <summary>
+        /// Open the file ready for reading.
+        /// </summary>
+        public void Open(string FileName)
+        {
+            if (FileName == "")
+                return;
+
+            if (!File.Exists(FileName))
+                throw new Exception("Cannot find file: " + FileName);
+
+            _FileName = FileName;
+            CSV = Path.GetExtension(FileName).ToLower() == ".csv";
+
+            _Constants.Clear();
+
+            In = new StreamReaderRandomAccess(_FileName);
+            ReadApsimHeader(In);
+            FirstLinePosition = In.Position;
+
+            DataTable Data = new DataTable();
+
+            // Get first date.
+            StringCollection Words = new StringCollection();
+            GetNextLine(In, ref Words);
+            StoreRowInData(In, Words, Data, true);
+            try
+            {
+                In.Seek(-1000, SeekOrigin.End);
+            }
+            catch (Exception)
+            {
+            // The seek can fail on small files.
+            }
+
+            In.ReadLine(); // throw away partial line.
+
+            while (GetNextLine(In, ref Words)) ;
+
+            if (Words.Count == 0)
+                throw new Exception("Cannot find last row of file: " + FileName);
+            StoreRowInData(In, Words, Data, false);
+
+            if (Data.Rows.Count == 2)
+            {
+                try
+                {
+                    FirstDate = DataTableUtility.GetDateFromRow(Data.Rows[0]);
+                    LastDate = DataTableUtility.GetDateFromRow(Data.Rows[1]);
+                }
+                catch (Exception)
+                {
+                    // Not all files will have a date.
+                }
+            }
+            In.Seek(FirstLinePosition, SeekOrigin.Begin);
+        }
+        public void SeekToDate(DateTime Date)
+        {
+            int NumRowsToSkip = (Date - FirstDate).Days;
+
+            In.Seek(FirstLinePosition, SeekOrigin.Begin);
+            while (!In.EndOfStream && NumRowsToSkip > 0)
+            {
+                In.ReadLine();
+                NumRowsToSkip--;
+            }
+            int SavedPosition = In.Position;
+            StringCollection Words = new StringCollection();
+            if (GetNextLine(In, ref Words))
+            {
+                // Make sure we found the date.
+                DataTable D = new DataTable();
+                StoreRowInData(In, Words, D, true);
+                DateTime RowDate = DataTableUtility.GetDateFromRow(D.Rows[0]);
+                if (RowDate != Date)
+                    throw new Exception("Non consecutive dates found in file: " + _FileName);
+            }
+            else
+                throw new Exception("End of file reached while trying to find date " + Date.ToShortDateString() +
+                                    " in file " + _FileName);
+
+            // All ok - restore position.
+            In.Seek(SavedPosition, SeekOrigin.Begin);
+        }
+
+        public void GetNextLineOfData(DataTable Table)
+        {
+            Words.Clear();
+            if (GetNextLine(In, ref Words))
+                StoreRowInData(In, Words, Table, Table.Rows.Count == 0);
+            else
+                throw new Exception("End of file reached while reading file: " + _FileName);
+        }
     }
 }

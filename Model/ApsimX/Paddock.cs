@@ -127,6 +127,11 @@ namespace ModelFramework
             I.RestoreFromCheckpoint(Checkpoint.ChildNodes[0]);
         }
 
+        public void OutputDiagnostics()
+        {
+            Instance.Root.OutputDiagnostics();
+        }
+
         //=========================================================================
         /// <summary>
         /// Publish an event that has associated data. This event is broadcast to all components within scope.

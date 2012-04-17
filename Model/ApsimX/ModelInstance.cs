@@ -500,9 +500,12 @@ internal class ModelInstance
 
     public void OnTick(TimeType t)
     {
-        UpdateValues();
-        foreach (ModelInstance Child in Children)
-            Child.OnTick(t);
+        if (Enabled)
+        {
+            UpdateValues();
+            foreach (ModelInstance Child in Children)
+                Child.OnTick(t);
+        }
     }
 
     public void CreateInstanceOfModel()
@@ -535,12 +538,19 @@ internal class ModelInstance
         {
             // We're going to tear everything down and create a new, fresh model.
             //TearDownModel();
-            Enabled = true;
             EnableEvents();
+            UpdateAllValues();
             //CreateInstanceOfModel();
             //Root.ResolveAllRefsAndEvents();
             //PublishToChildren("Initialised");
         }
+    }
+
+    private void UpdateAllValues()
+    {
+        UpdateValues();
+        foreach (ModelInstance Child in Children)
+            Child.UpdateValues();
     }
 
 
@@ -563,6 +573,7 @@ internal class ModelInstance
 
     private void EnableEvents()
     {
+        Enabled = true;
         foreach (EventSubscriber Subscriber in Subscribers)
             Subscriber.Enabled = true;
         foreach (ModelInstance Child in Children)
@@ -1238,6 +1249,18 @@ internal class ModelInstance
 
         }
         
+    }
+
+    internal void OutputDiagnostics()
+    {
+        if (Inputs.Count > 0)
+            Console.WriteLine("Component: " + FullName);
+
+        foreach (ClassVariable Input in Inputs)
+            Console.WriteLine("    " + Input.Name);
+        foreach (ModelInstance Child in Children)
+            Child.OutputDiagnostics();
+
     }
 
 }

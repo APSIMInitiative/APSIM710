@@ -2,6 +2,7 @@
 using System.Text;
 using System.Data;
 using ApsimFile;
+using CSGeneral;
 
 /// <summary>
 /// Reads in met data and makes it available for other components.
@@ -11,7 +12,7 @@ public class MetFile
     private ApsimFile.APSIMInputFile File = new ApsimFile.APSIMInputFile();
     private DataTable Data = new DataTable();
     
-    private DateTime FirstDateInMetFile;
+    private bool HaveReadData = false;
     public event NewMetDelegate NewMet;
     [Param]
     string FileName = "";
@@ -63,22 +64,23 @@ public class MetFile
     [EventHandler]
     public void OnInitialised()
     {
-        File.ReadFromFile(Configuration.RemoveMacros(FileName), Data);
-        FirstDateInMetFile = CSGeneral.DataTableUtility.GetDateFromRow(Data.Rows[0]);
+        File.Open(Configuration.RemoveMacros(FileName));
     }
 
     [EventHandler]
     public void OnTick(TimeType t)
     {
-        int RowIndex = (Today - FirstDateInMetFile).Days;
+        if (!HaveReadData)
+        {
+            File.SeekToDate(Today);
+            HaveReadData = true;
+        }
 
-        if (RowIndex >= Data.Rows.Count)
-            throw new Exception("Cannot find met data for date ");
+        File.GetNextLineOfData(Data);
 
-        DateTime MetToday = CSGeneral.DataTableUtility.GetDateFromRow(Data.Rows[RowIndex]);
-
-        if (MetToday != Today)
-            throw new Exception("Non sequential met data found in file: " + FileName);
+        int RowIndex = Data.Rows.Count - 1;
+        if (Today != DataTableUtility.GetDateFromRow(Data.Rows[RowIndex]))
+            throw new Exception("Non consecutive dates found in file: " + FileName);
 
         Radn = Convert.ToDouble(Data.Rows[RowIndex]["Radn"]);
         MaxT = Convert.ToDouble(Data.Rows[RowIndex]["MaxT"]);
