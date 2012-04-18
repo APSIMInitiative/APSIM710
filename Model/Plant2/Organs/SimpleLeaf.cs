@@ -17,11 +17,8 @@ class SimpleLeaf : BaseOrgan
     public event NewCanopyDelegate New_Canopy;
 
     [Input]
-    private float maxt = 0;
-    [Input]
-    private float mint = 0;
-    [Input]
-    private float vp = 0;
+    public NewMetType MetData;
+
     [Param(Name = "Height")]
     private double _Height;         // Height of the canopy (mm) 
     [Param(Name = "LAI")]
@@ -84,7 +81,7 @@ class SimpleLeaf : BaseOrgan
     {
         get
         {
-            double Tav = (maxt + mint) / 2.0;
+            double Tav = (MetData.maxt + MetData.mint) / 2.0;
             return FT.ValueIndexed(Tav);
         }
     }
@@ -95,10 +92,10 @@ class SimpleLeaf : BaseOrgan
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = VBMet.Humidity.svp(mint) - vp;
+            double VPDmint = VBMet.Humidity.svp(MetData.mint) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = VBMet.Humidity.svp(maxt) - vp;
+            double VPDmaxt = VBMet.Humidity.svp(MetData.maxt) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             double VPD = SVPfrac * VPDmaxt + (1.0 - SVPfrac) * VPDmint;

@@ -265,6 +265,8 @@ internal class FactoryProperty : Instance, ApsimType
         HaveSet = true;
         Property.Set(Value);
     }
+    public Type Type { get { return Property.Typ; } }
+
     /* public void Set(String Value)
         {
             HaveSet = true;
@@ -712,6 +714,11 @@ internal class FactoryProperty : Instance, ApsimType
         public String DDML()
         {
             ApsimType Data = (ApsimType)(Property.Get);
+            if (Data == null)
+            {
+                Data = Activator.CreateInstance(Property.Type) as ApsimType;
+                Property.SetObject(Data);
+            }
             if (Data == null)
                 return "";
             return Data.DDML();

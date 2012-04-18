@@ -740,7 +740,8 @@ internal class ModelInstance
         // Exclude delegates.
         if (Member is FieldInfo)
         {
-            bool IsDelegate = (Member as FieldInfo).FieldType.BaseType.Name == "MulticastDelegate";
+            Type BaseType = (Member as FieldInfo).FieldType.BaseType;
+            bool IsDelegate = BaseType != null && BaseType.Name == "MulticastDelegate";
             if (IsDelegate)
                 return;
         }

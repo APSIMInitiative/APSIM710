@@ -9,7 +9,7 @@ using CSGeneral;
 /// </summary>
 public class MetFile
 {
-    private ApsimFile.APSIMInputFile File = new ApsimFile.APSIMInputFile();
+    private ApsimFile.APSIMInputFile File = null;
     private DataTable Data = new DataTable();
     
     private bool HaveReadData = false;
@@ -19,7 +19,7 @@ public class MetFile
     [Input]
     public DateTime Today;
     [Output]
-    public double Radn;
+    public NewMetType MetData = new NewMetType();
     [Output]
     public double MaxT;
     [Output]
@@ -42,29 +42,28 @@ public class MetFile
             return Today.Year;
         }
     }
-    [Output]
+    [Output (Immutable = true)]
     public double Latitude
     {
         get
         {
+            if (File == null)
+                OnInitialised();
+
             if (File.Constant("Latitude") == null)
                 return 0;
             else
                 return Convert.ToDouble(File.Constant("Latitude").Value);
         }
     }
-    [Output]
-    public double VP
-    {
-        get
-        {
-            return VBMet.Humidity.svp((float)MinT);
-        }
-    }
     [EventHandler]
     public void OnInitialised()
     {
-        File.Open(Configuration.RemoveMacros(FileName));
+        if (File == null)
+        {
+            File = new ApsimFile.APSIMInputFile();
+            File.Open(Configuration.RemoveMacros(FileName));
+        }
     }
 
     [EventHandler]
@@ -82,21 +81,14 @@ public class MetFile
         if (Today != DataTableUtility.GetDateFromRow(Data.Rows[RowIndex]))
             throw new Exception("Non consecutive dates found in file: " + FileName);
 
-        Radn = Convert.ToDouble(Data.Rows[RowIndex]["Radn"]);
-        MaxT = Convert.ToDouble(Data.Rows[RowIndex]["MaxT"]);
-        MinT = Convert.ToDouble(Data.Rows[RowIndex]["MinT"]);
-        Rain = Convert.ToDouble(Data.Rows[RowIndex]["Rain"]);
+        MetData.today = (double)Today.Ticks;
+        MetData.radn = Convert.ToSingle(Data.Rows[RowIndex]["Radn"]);
+        MetData.maxt = Convert.ToSingle(Data.Rows[RowIndex]["MaxT"]);
+        MetData.mint = Convert.ToSingle(Data.Rows[RowIndex]["MinT"]);
+        MetData.rain = Convert.ToSingle(Data.Rows[RowIndex]["Rain"]);
 
         if (NewMet != null)
-        {
-            NewMetType NewMetData = new NewMetType();
-            NewMetData.today = (double)Today.Ticks;
-            NewMetData.maxt = (float)MaxT;
-            NewMetData.mint = (float)MinT;
-            NewMetData.radn = (float)Radn;
-            NewMetData.rain = (float)Rain;
-            NewMet.Invoke(NewMetData);
-        }
+            NewMet.Invoke(MetData);
         RowIndex++;
     }
 }

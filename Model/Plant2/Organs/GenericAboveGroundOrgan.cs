@@ -9,8 +9,6 @@ public class GenericAboveGroundOrgan : GenericOrgan, AboveGround
     [EventHandler]
     public void OnPrune(PruneType Prune)
     {
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Pruning " + Name + " from " + Plant.Name;
         Console.WriteLine("");
@@ -23,8 +21,6 @@ public class GenericAboveGroundOrgan : GenericOrgan, AboveGround
     [EventHandler]
     public void OnCut()
     {
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");

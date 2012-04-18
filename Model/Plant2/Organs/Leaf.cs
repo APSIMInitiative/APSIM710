@@ -20,11 +20,7 @@ public class Leaf : BaseOrgan, AboveGround
     [Description("Extinction Coefficient (Dead)")]
     public double KDead = 0;
     [Input]
-    public int Day = 0;
-    [Input]
-    public int Year = 0;
-    [Input]
-    public double Radn = 0;
+    public NewMetType MetData;
     //Class Links
     [Link]
     public Plant Plant = null;
@@ -289,7 +285,7 @@ public class Leaf : BaseOrgan, AboveGround
     {
         get
         {
-            return CoverGreen * Radn;
+            return CoverGreen * MetData.radn;
         }
     }
     [Output]
@@ -1051,8 +1047,7 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnKillLeaf(KillLeafType KillLeaf)
     {
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
+        DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Killing " + KillLeaf.KillFraction + " of leaves on " + Plant.Name;
         Console.WriteLine("");
@@ -1066,8 +1061,7 @@ public class Leaf : BaseOrgan, AboveGround
     [EventHandler]
     public void OnCut()
     {
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
+        DateTime Today = DateUtility.JulianDayNumberToDateTime(Convert.ToInt32(MetData.today));
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");

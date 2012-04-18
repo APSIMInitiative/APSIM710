@@ -27,10 +27,7 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     protected Function MaxNConcDailyGrowth = null;
 
     [Input]
-    protected int Day = 0;
-
-    [Input]
-    protected int Year = 0;
+    public DateTime Today;
 
     [Param]
     protected double MaximumSize = 0;
@@ -125,8 +122,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
         if (Harvesting != null)
             Harvesting.Invoke();
 
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Harvesting " + Name + " from " + Plant.Name;
         double YieldDW = (Live.Wt + Dead.Wt);
@@ -149,8 +144,6 @@ class ReproductiveOrgan : BaseOrgan, Reproductive, AboveGround
     [EventHandler]
     public void OnCut()
     {
-        DateTime Today = new DateTime(Year, 1, 1);
-        Today = Today.AddDays(Day - 1);
         string Indent = "     ";
         string Title = Indent + Today.ToShortDateString() + "  - Cutting " + Name + " from " + Plant.Name;
         Console.WriteLine("");

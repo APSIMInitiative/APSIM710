@@ -55,9 +55,17 @@ public class Param : System.Attribute
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class Output : System.Attribute
 {
+    private bool _Immutable = false;
     public Output()
     {
     }
+
+    public bool Immutable
+    {
+        get { return _Immutable; }
+        set { _Immutable = value; }
+    }
+
 
     // Deprecated.
     public Output(string Text)

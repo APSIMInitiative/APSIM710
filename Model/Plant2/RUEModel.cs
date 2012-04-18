@@ -27,13 +27,9 @@ public class RUEModel
 
 
     #region Class Data Members
-    private NewMetType MetData;
     [Input]
-    private double MaxT = 0;
-    [Input]
-    private double MinT = 0;
-    [Input]
-    private double VP = 0;
+    public NewMetType MetData;
+
     [Event]
     public event NewPotentialGrowthDelegate NewPotentialGrowth;
     #endregion
@@ -46,10 +42,10 @@ public class RUEModel
         {
             const double SVPfrac = 0.66;
 
-            double VPDmint = VBMet.Humidity.svp((float)MinT) - VP;
+            double VPDmint = VBMet.Humidity.svp((float)MetData.mint) - MetData.vp;
             VPDmint = Math.Max(VPDmint, 0.0);
 
-            double VPDmaxt = VBMet.Humidity.svp((float)MaxT) - VP;
+            double VPDmaxt = VBMet.Humidity.svp((float)MetData.maxt) - MetData.vp;
             VPDmaxt = Math.Max(VPDmaxt, 0.0);
 
             return SVPfrac * VPDmaxt + (1 - SVPfrac) * VPDmint;
@@ -57,13 +53,6 @@ public class RUEModel
     }
 
     #endregion
-
-
-    [EventHandler]
-    public void OnNewMet(NewMetType NewMetData)
-    {
-        MetData = NewMetData;
-    }
 
     /// <summary>
     /// Total plant "actual" radiation use efficiency (for the day) corrected by reducing factors (g biomass/MJ global solar radiation) CHCK-EIT 

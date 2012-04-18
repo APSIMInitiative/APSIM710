@@ -35,9 +35,7 @@ public class GenericOrgan : BaseOrgan
     [Link]
     protected Arbitrator Arbitrator = null;
     [Input]
-    protected int Day = 0;
-    [Input]
-    protected int Year = 0;
+    public DateTime Today;
     #endregion
 
     #region Class data members

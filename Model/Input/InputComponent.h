@@ -35,6 +35,9 @@ class EXPORT InputComponent : public protocol::Component
       unsigned hasDataTodayID;
       unsigned haveReadTodaysDataID;
       unsigned vpID;
+      unsigned metDataID;
+      protocol::NewMetType MetData;
+      
       boost::gregorian::date todaysDate;
       boost::gregorian::date fileDate;
       boost::gregorian::date startDate;

@@ -81,6 +81,7 @@ public class Input : Attribute
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class Output : Attribute
 {
+    private bool _Immutable = false;
     public String Name;
     public Output()
     {
@@ -90,6 +91,8 @@ public class Output : Attribute
     {
         Name = sName;
     }
+
+    public bool Immutable { get { return _Immutable; } set { _Immutable = value; } }
 }
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]

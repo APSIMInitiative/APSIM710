@@ -130,6 +130,7 @@ void InputComponent::doInit1(const protocol::Init1Data& init1Data)
 		 {
 		 daylengthID = addRegistration(::respondToGet, 0, "day_length", dayLengthType);
 		 vpID = addRegistration(::respondToGetSet, 0, "vp", vpType);
+       metDataID = addRegistration(::respondToGet, 0, "MetData", DDML(protocol::NewMetType()).c_str());
 		 }
 	  else
 		 daylengthID = 0;
@@ -311,7 +312,18 @@ void InputComponent::respondToGet(unsigned int& fromID, protocol::QueryValueData
       {
       sendVariable(queryData, (todaysDate == fileDate));
       }
-
+   else if (iAmMet && queryData.ID == metDataID)
+      {
+      MetData.today = todaysDate.julian_day();
+      MetData.maxt = getVariableValue("maxt");
+      MetData.mint = getVariableValue("mint");
+      MetData.radn = getVariableValue("radn");
+      MetData.rain = getVariableValue("rain");
+      MetData.vp = getVariableValue("vp");
+      if (MetData.vp == 0.0)
+         MetData.vp = calcVP(MetData.mint);
+      sendVariable(queryData, MetData);
+      }
    else
       {
 	  if (variables.find(queryData.ID) != variables.end())

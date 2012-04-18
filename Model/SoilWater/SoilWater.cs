@@ -537,7 +537,7 @@ public class SoilWater
     private double eff_rain                  //! daily effective rainfall (mm)
     { get { return rain + runon - runoff - drain; } }
 
-    [Output]
+    [Output(Immutable=true)]
     [Units("mm")]
     [Description("Potential extractable sw in profile")]
     private double esw                       //! potential extractable sw in profile  
@@ -648,7 +648,7 @@ public class SoilWater
     private double[] _dlayer = null;
     [Param(MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Thickness of soil layer")]
     public double[] dlayer    //! thickness of soil layer (mm)
     {
@@ -715,7 +715,7 @@ public class SoilWater
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Saturated water content for layer")]
     public double[] sat       //! saturated water content for layer  
     {
@@ -749,7 +749,7 @@ public class SoilWater
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Drained upper limit soil water content for each soil layer")]
     public double[] dul       //! drained upper limit soil water content for each soil layer 
     {
@@ -828,7 +828,7 @@ public class SoilWater
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("15 bar lower limit of extractable soil water for each soil layer")]
     public double[] ll15      //! 15 bar lower limit of extractable soil water for each soil layer
     {
@@ -861,7 +861,7 @@ public class SoilWater
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Air dry soil water content")]
     public double[] air_dry   //! air dry soil water content
     {
@@ -895,13 +895,13 @@ public class SoilWater
 
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("/d")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Soil water conductivity constant")]
     private double[] swcon;     //! soil water conductivity constant (1/d) //! ie day**-1 for each soil layer
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Impermeable soil layer indicator")]
     private double[] mwcon = null;     //! impermeable soil layer indicator
 
@@ -911,13 +911,13 @@ public class SoilWater
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm/d")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Saturated conductivity")]
     private double[] ks = null;        //! saturated conductivity (mm/d)
 
     [Param(MinVal = 0.01, MaxVal = 3.0)]
     [Units("g/cm^3")]
-    [Output]
+    [Output(Immutable = true)]
     [Description("Bulk density of soil")]
     private double[] bd;      //! moist bulk density of soil (g/cm^3) // ??? Is this "moist" or "dry"; how moist?
 
@@ -926,12 +926,12 @@ public class SoilWater
 
     [Param(IsOptional = true, MinVal = 0, MaxVal = 1.0e3F)] //1.0e3F = 1000
     [Units("mm/d")]
-    [Output]
+    [Output(Immutable = true)]
     private double[] klat = null;
 
 
     private double[] _sat_dep;
-    [Output]
+    [Output(Immutable = true)]
     [Units("mm")]
     [Description("Sat * dlayer")]
     public double[] sat_dep   // sat * dlayer //see soilwat2_init() for initialisation
@@ -951,7 +951,7 @@ public class SoilWater
     }
 
     private double[] _dul_dep;
-    [Output]
+    [Output(Immutable = true)]
     [Units("mm")]
     [Description("dul * dlayer")]
     public double[] dul_dep   // dul * dlayer  //see soilwat2_init() for initialisation
@@ -995,7 +995,7 @@ public class SoilWater
 
 
     private double[] _ll15_dep;
-    [Output]
+    [Output(Immutable = true)]
     [Units("mm")]
     [Description("ll15 * dlayer")]
     public double[] ll15_dep  // ll15 * dlayer //see soilwat2_init() for initialisation
@@ -1016,7 +1016,7 @@ public class SoilWater
 
 
     private double[] _air_dry_dep;
-    [Output]
+    [Output(Immutable = true)]
     [Units("mm")]
     [Description("air_dry * dlayer")]
     public double[] air_dry_dep  // air_dry * dlayer //see soilwat2_init() for initialisation

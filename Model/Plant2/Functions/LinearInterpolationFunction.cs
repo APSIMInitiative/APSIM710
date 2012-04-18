@@ -17,6 +17,11 @@ public class LinearInterpolationFunction : Function
     [Param]
     private string XProperty = "";
 
+    private bool LookedForInternalVariable = false;
+    private MemberInfo Member = null;
+    private object Target = null;
+
+
     [Output]
     public override double Value
     {
@@ -27,7 +32,22 @@ public class LinearInterpolationFunction : Function
             double XValue;
             if (ArraySpec == "")
             {
-                object v = Plant.GetObject(XProperty);
+                // Simple type
+                if (!LookedForInternalVariable)
+                {
+                    Plant.GetMemberInfo(XProperty, Plant, out Member, out Target);
+                }
+                object v = null;
+
+                if (Member != null)
+                {
+                    if (Member is FieldInfo)
+                        v = (Member as FieldInfo).GetValue(Target);
+                    else
+                        v = (Member as PropertyInfo).GetValue(Target, null);
+                }
+                else
+                    v = Plant.GetObject(XProperty);
                 if (v == null)
                     throw new Exception("Cannot find value for "+ Name +" XProperty: " + XProperty);
                 XValue = Convert.ToDouble(v);

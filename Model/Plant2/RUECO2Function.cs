@@ -10,10 +10,7 @@ public class RUECO2Function : Function
     String PhotosyntheticPathway = "";
 
     [Input]
-    double MaxT = 0;
-
-    [Input]
-    double MinT = 0;
+    public NewMetType MetData;
 
     [Input(IsOptional = true)]
     double CO2 = 350;  // If CO2 is not supplied we default to 350 ppm
@@ -27,7 +24,7 @@ public class RUECO2Function : Function
             if (PhotosyntheticPathway == "C3")
             {
 
-                double temp = (MaxT + MinT) / 2.0; // Average temperature
+                double temp = (MetData.maxt + MetData.mint) / 2.0; // Average temperature
 
 
                 if (temp >= 50.0)

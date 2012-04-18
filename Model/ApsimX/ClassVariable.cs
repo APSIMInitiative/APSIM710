@@ -16,6 +16,8 @@ class ClassVariable
     private object TheModel;
     private string _Name;
     private bool _IsOptional;
+    private bool Immutable;
+    private bool HaveUpdatedValue = false;
 
     /// <summary>
     /// A constructor
@@ -32,6 +34,8 @@ class ClassVariable
         }
         else if (InputAttribute != null)
             _IsOptional = InputAttribute.IsOptional;
+        else if (OutputAttribute != null)
+            Immutable = OutputAttribute.Immutable;
         else
             _IsOptional = false;
 
@@ -53,7 +57,7 @@ class ClassVariable
     /// </summary>
     internal string Name { get { return _Name; } }
 
-    /// <summary>
+    /// <summary> 
     /// Update the value of this variable using the source variable.
     /// </summary>
     internal void UpdateValue()
@@ -63,12 +67,13 @@ class ClassVariable
             if (!IsOptional)
                 throw new Exception("Cannot find a value for [Input] variable: " + Name);
         }
-        else
+        else if (!HaveUpdatedValue || !Source.Immutable)
         {
             if (Converter == null)
                 Value = Source.Value;
             else
                 Value = Converter.Invoke(Name, Source.Value);
+            HaveUpdatedValue = true;
         }
     }
 
