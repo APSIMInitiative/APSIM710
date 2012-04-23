@@ -380,6 +380,8 @@ void TrackerVariable::getCurrentValues(vector<float>& currentValues)
       for (unsigned i = 0; i != values[0].size(); ++i)
          {
          float value = 0.0;
+         if (stat == minimumStat)
+            value = 1000000.0;
          for (unsigned v = 0; v != values.size(); ++v)
             {
             switch (stat)
