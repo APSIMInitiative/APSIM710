@@ -25,8 +25,8 @@ public class SoilWater
     private const double mm2m = 1.0 / 1000.0;      //! conversion of mm to m
     private const double sm2smm = 1000000.0;       //! conversion of square metres to square mm
     private const double error_margin = 0.0001;
-    private const double time_step = 1.0;          // (d) Currently always using a one-day time step 
     private const double psi_ll15 = -150.0;        //! water potential (m) at -15 bar (not quite exactly right, is it? Shouldn't it be -1500/9.8 ?)
+    private const int steps_per_day = 100;
 
     #endregion
 
@@ -35,6 +35,7 @@ public class SoilWater
 
     #region Module Constants (from SIM file but it gets from XML file)
 
+    private double time_step = 1.0;          // (d) Currently always using a one-day time step 
     //SIM file gets these from XML file
 
     //Soilwat2Constants       //sv- also from soilwat2_read_constants()
@@ -189,7 +190,7 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 0.1)]
     [Units("mm/d")]
     [Description("Vertical hydraulic conductivity at a water potential of -15 bars")]
-    private double k_ll15 = 0.000005;
+    private double k_ll15 = 0.00005;
     // I think we ultimately want the ability to set this on a layer-by-layer basis
     private double[] k_ll15_dep;
 
@@ -201,7 +202,7 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = -30.0, MaxVal = -0.1)]
     [Units("m")]
     [Description("Water potential at the drained upper limit")]
-    private double psi_dul = -3.0;
+    private double psi_dul = -3.3;
     // I think we ultimately want the ability to set this on a layer-by-layer basis
     private double[] psi_dul_dep;
 
@@ -618,22 +619,26 @@ public class SoilWater
     [Output]
     [Units("mm")]
     [Description("Drainage rate from bottom layer")]
-    private double drain;            //! drainage rate from bottom layer (cm/d) // I think this is in mm, not cm....
+    private double drain            //! drainage rate from bottom layer (cm/d) // I think this is in mm, not cm....
+    { get { return flux[flux.Length - 1]; } }
 
     [Output]
     [Units("mm")]
     [Description("Infiltration")]
     private double infiltration;     //! infiltration (mm)
+    private double ts_infiltration;
 
     [Output]
     [Units("mm")]
     [Description("Runoff")]
     private double runoff;           //! runoff (mm)
+    private double ts_runoff;        // runoff for a sub-day timestep
 
     [Output]
     [Units("mm")]
     [Description("Evaporation from the surface of the pond")]
     private double pond_evap;      //! evaporation from the surface of the pond (mm)
+    private double ts_pond_evap;
 
     [Output]
     [Units("mm")]
@@ -664,7 +669,7 @@ public class SoilWater
     [Description("Water table depth (depth below the ground surface of the first saturated layer)")]
     public double water_table     //! water table depth (depth below the ground surface of the first saturated layer)
     {
-        get { return _water_table; }
+        get { return waterTable / mm2m; }
         set { SetWaterTable(value); }
     }
     private double waterTable = 0.0; // Water table is in meters in the new spec...
@@ -738,6 +743,7 @@ public class SoilWater
                     Array.Resize(ref solutes[solnum].leach, num_layers);
                     Array.Resize(ref solutes[solnum].up, num_layers);
                     Array.Resize(ref solutes[solnum].delta, num_layers);
+                    Array.Resize(ref solutes[solnum].ts_delta, num_layers);
                 }
             }
 
@@ -1187,11 +1193,13 @@ public class SoilWater
     [Units("mm")]
     [Description("Depth of water moving from layer i+1 into layer i because of unsaturated flow; (positive value indicates upward movement into layer i) (negative value indicates downward movement (mm) out of layer i)")]
     private double[] flow;        //sv- Unsaturated Flow //! depth of water moving from layer i+1 into layer i because of unsaturated flow; (positive value indicates upward movement into layer i) (negative value indicates downward movement (mm) out of layer i)
+    private double[] ts_flow;     // Flow within a sub-day timestep
 
     [Output]
     [Units("mm")]
     [Description("Initially, water moving downward into layer i (mm), then water moving downward out of layer i (saturated flow)")]
-    private double[] flux;       //sv- Drainage (Saturated Flow) //! initially, water moving downward into layer i (mm), then water moving downward out of layer i (mm)
+    private double[] flux;       //sv- Drainage (Saturated Flow) //! initially, water moving downward into layer i (mm), then water moving downward out of layer i (mm)\
+    private double[] ts_flux;    // Flux within a sub-day timestep
 
     [Output]
     [Units("mm")]
@@ -1207,7 +1215,11 @@ public class SoilWater
             return water_flow;
         }
     }
-   
+
+    [Output]
+    [Units("mm")]
+    [Description("Drainage rate into water table")]
+    private double drain_wt;          
 
     //Soilwat2Globals
 
@@ -1219,6 +1231,7 @@ public class SoilWater
     [Units("mm")]
     [Description("Lateral outflow")]
     private double[] outflow_lat;   //! outflowing lateral water   //lateral outflow
+    private double[] ts_outflow_lat;
     //end
 
 
@@ -1280,6 +1293,7 @@ public class SoilWater
                     Array.Resize(ref solutes[solnum].leach, num_layers);
                     Array.Resize(ref solutes[solnum].up, num_layers);
                     Array.Resize(ref solutes[solnum].delta, num_layers);
+                    Array.Resize(ref solutes[solnum].ts_delta, num_layers);
                 }
 
                 for (int layer = num_layers; layer < _dlayer.Length; layer++)
@@ -1567,6 +1581,7 @@ public class SoilWater
     private double real_eo;                  //! potential evapotranspiration (mm) 
     //r double eos;
     private double[] es_layers = null;     //! actual soil evaporation (mm)
+    private double[] ts_es_layers;
 
 
     //r double drain;
@@ -1584,7 +1599,8 @@ public class SoilWater
         public double[] retained;  // amount of solute in "retained" water in each layer (kg/ha) - STATE VARIABLE
         public double[] leach;     // amount leached from each layer (kg/ha)
         public double[] up;        // amount "upped" from each layer (kg/ha)
-        public double[] delta;     // change in solute in each layer (kg/ha)
+        public double[] delta;     // change in solute in each layer (kg/ha) over the full day
+        public double[] ts_delta;  // change in solute in each layer (kg/ha) in the current time step
         public double rain_conc;   // concentration entering via rainfall (ppm)
         public double irrigation;  // amount of solute in irrigation water (kg/ha)
         public int get_flow_id;    // registration ID for getting flow values
@@ -1687,7 +1703,7 @@ public class SoilWater
         _water_table = 0.0;                      //! water table depth (mm)
 
         //Outputs
-        drain = 0.0;                            //! drainage rate from bottom layer (cm/d)
+        drain_wt = 0.0;                            //! drainage rate from bottom layer (cm/d)
         infiltration = 0.0;                     //! infiltration (mm)
         runoff = 0.0;                           //! runoff (mm)
 
@@ -1787,7 +1803,7 @@ public class SoilWater
         eo = 0.0;
         eos = 0.0;
         cn2_new = 0.0;
-        drain = 0.0;
+        drain_wt = 0.0;
         infiltration = 0.0;
         runoff = 0.0;
         runoff_pot = 0.0;
@@ -1909,7 +1925,7 @@ public class SoilWater
         double depth_to_root;          //! depth to root in layer (mm)
         double depth_of_root_in_layer; //! depth of root within layer (mm)
 
-        depth_to_layer_bottom = MathUtility.Sum(_dlayer, 0, Layer, 0.0);
+        depth_to_layer_bottom = MathUtility.Sum(_dlayer, 0, Layer + 1, 0.0);
         depth_to_layer_top = depth_to_layer_bottom - _dlayer[Layer - 1];
         depth_to_root = Math.Min(depth_to_layer_bottom, RootDepth);
 
@@ -2796,22 +2812,23 @@ public class SoilWater
         snowpack += time_step * (snow - snowmelt);
 
         pond += time_step * (rain + snowmelt + (irrigation_layer == 0 ? irrigation : 0.0) - interception +
-                runon - runoff - pond_evap - infiltration);
+                runon - ts_runoff - ts_pond_evap - ts_infiltration);
 
-        sumes1 += time_step * Math.Max(-infiltration + MathUtility.Sum(es_layers), -sumes1);
+        sumes1 += time_step * Math.Max(-ts_infiltration + MathUtility.Sum(ts_es_layers), -sumes1);
 
         int num_layers = _dlayer.Length;
         for (int layer = 0; layer < num_layers; layer++)
         {
-            _sw_dep[layer] += time_step * ((irrigation_layer == layer ? irrigation : 0.0) + inflow_lat[layer] - outflow_lat[layer]
-                + (layer == 0 ? infiltration : flux[layer - 1] + flow[layer - 1]) - flux[layer] - flow[layer] - es_layers[layer]
+            _sw_dep[layer] += time_step * ((irrigation_layer == layer ? irrigation : 0.0) + inflow_lat[layer] - ts_outflow_lat[layer]
+                + (layer == 0 ? ts_infiltration : ts_flux[layer - 1] + ts_flow[layer - 1]) - ts_flux[layer] - ts_flow[layer] - ts_es_layers[layer]
                 - root_water_uptake[layer]);
+            if (Double.IsNaN(_sw_dep[layer]) || _sw_dep[layer] < 0.0)
+                throw new Exception("something is wrong...");
             for (int solnum = 0; solnum < num_solutes; solnum++)
             {
-                solutes[solnum].retained[layer] += solutes[solnum].delta[layer];
+                solutes[solnum].retained[layer] += time_step * solutes[solnum].ts_delta[layer];
             }
         }
-
     }
 
     private int FindLayerNo(double Depth)
@@ -2844,15 +2861,17 @@ public class SoilWater
         // Calculate WEIGHT[runoff, i] for process equations, section 4.2 of specification
         int num_layers = _dlayer.Length;
         runoff_weight = new double[num_layers];
+        double hydrol_depth = Math.Min(hydrol_effective_depth, MathUtility.Sum(_dlayer));
+        double ext_param = 0.01; // Andrew' spec uses 0.01, but CREAMS, PERFECT, etc. use the equivalent of 0.0156
 
         double cum_depth = 0.0;
         for (int layer = 0; layer < num_layers; layer++)
         {
-            double exp1 = Math.Min(1.0, MathUtility.Divide(cum_depth, hydrol_effective_depth, 0.0));
+            double exp1 = Math.Min(1.0, MathUtility.Divide(cum_depth, hydrol_depth, 0.0));
             cum_depth = cum_depth + _dlayer[layer];
-            double exp2 = Math.Min(1.0, MathUtility.Divide(cum_depth, hydrol_effective_depth, 0.0));
+            double exp2 = Math.Min(1.0, MathUtility.Divide(cum_depth, hydrol_depth, 0.0));
 
-            runoff_weight[layer] = Math.Pow(0.01, exp1) - Math.Pow(0.01, exp2) / (1.0 - 0.01);
+            runoff_weight[layer] = (Math.Pow(ext_param, exp1) - Math.Pow(ext_param, exp2)) / (1.0 - ext_param);
         }
     }
 
@@ -2888,13 +2907,13 @@ public class SoilWater
 
         for (int layer = num_layers - 1; layer > 0; layer--)
         {
-            backup[layer] = Math.Max(0.0, _sw_dep[layer] + drain_star[layer + 1] - drain_star[layer] + backup[layer + 1] - sat_dep[layer]);
+            backup[layer] = Math.Max(0.0, _sw_dep[layer] + drain_star[layer - 1] - drain_star[layer] + backup[layer + 1] - sat_dep[layer]);
         }
         backup[0] = Math.Max(0.0, _sw_dep[0] + (ppt - runoff_base) - drain_star[0] + (num_layers > 1 ? backup[1] : 0.0) - _sat_dep[0]);
 
-        infiltration = Math.Max(0.0, ppt - runoff_base - backup[0]);
+        ts_infiltration = Math.Max(0.0, ppt - runoff_base - backup[0]);
 
-        runoff = runoff_base + Math.Max(0.0, ppt - runoff_base - infiltration - MathUtility.Divide(max_pond - pond, time_step, 0.0));
+        ts_runoff = runoff_base + Math.Max(0.0, ppt - runoff_base - infiltration - MathUtility.Divide(max_pond - pond, time_step, 0.0));
 
     }
 
@@ -2948,27 +2967,28 @@ public class SoilWater
 
     private void CalcEvaporation()
     {
-        CalcPotEvapotranspiration(); 
-
         double cover_tot_sum = 0.0;
         for (int i = 0; i < num_crops; i++)
             cover_tot_sum = 1.0 - (1.0 - cover_tot_sum) * (1.0 - cover_tot[i]);
 
-        pond_evap = Math.Min(pond, eo * Math.Exp(MathUtility.Divide(-1 * cover_tot_sum, k_standing, 0.0)));
+        ts_pond_evap = Math.Min(pond, eo * Math.Exp(MathUtility.Divide(-1 * cover_tot_sum, k_standing, 0.0)));
 
-        double es_zero = (eo - pond_evap) * Math.Exp(MathUtility.Divide(-1.0 * cover_tot_sum, k_standing, 0.0)) *
+        eos = (eo - ts_pond_evap) * Math.Exp(MathUtility.Divide(-1.0 * cover_tot_sum, k_standing, 0.0)) *
             Math.Pow(1.0 - surfaceom_cover, k_residue);
 
-        double es;
+        double ess;
 
-        if (sumes2 + es_zero <= 0.0)
-            es = es_zero;
+        sumes2 = sumes1 - _u - ts_infiltration;
+
+        if (sumes2 + eos <= 0.0)
+            ess = eos;
         else if (sumes2 < 0.0)
-            es = Math.Abs(sumes2) + _cona * Math.Sqrt(1.0 - MathUtility.Divide(Math.Abs(sumes2), es_zero, 0.0));
+            ess = Math.Abs(sumes2) + _cona * Math.Sqrt(1.0 - MathUtility.Divide(Math.Abs(sumes2), eos, 0.0));
         else
-            es = Math.Sqrt(sumes2 + MathUtility.Sqr(_cona)) - sumes2;
-
-        sumes2 = sumes1 - _u - infiltration;
+        {
+            ess = Math.Sqrt(MathUtility.Sqr(sumes2) + MathUtility.Sqr(_cona)) - sumes2;
+            t = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
+        }
 
         int num_layers = _dlayer.Length;
         double depth_sum = 0.0;
@@ -2986,7 +3006,7 @@ public class SoilWater
             depth_sum += _dlayer[layer];
             double pow2 = Math.Min(1.0, MathUtility.Divide(depth_sum, maxDepth, 0.0));
             double layer_factor = MathUtility.Divide(Math.Pow(0.01, pow1) - Math.Pow(0.01, pow2), 1.0 - 0.01, 0.0);
-            es_layers[layer] = Math.Max(0.0, Math.Min(layer_factor * es, _sw_dep[layer] - _air_dry_dep[layer]));
+            ts_es_layers[layer] = Math.Min(layer_factor * ess, Math.Max(0.0, _sw_dep[layer] - _air_dry_dep[layer]));
         }
     }
 
@@ -3086,7 +3106,7 @@ public class SoilWater
         // Is the rate of drainage out of the profile neglible?
         if (drain_star[num_layers - 1] <= thdr_wt || coeff_water_table == 0.0)
         {
-            drain = 0.0;
+            drain_wt = 0.0;
         }
         else
         {
@@ -3094,11 +3114,11 @@ public class SoilWater
             int layer;
             for (layer = num_layers - 1; layer >= 0; layer--)
             {
-                waterTable = mm2m * (MathUtility.Sum(_dlayer, 0, layer - 1, 0.0) + 
+                waterTable = mm2m * (MathUtility.Sum(_dlayer, 0, layer, 0.0) + 
                                      _dlayer[layer] * Math.Min(1.0, MathUtility.Divide(_sat_dep[layer] - _sw_dep[layer], _sat_dep[layer] - _dul_dep[layer], 0.0)));
 
-                drain = coeff_water_table * (piezometric_head - waterTable);
-                if (drain_star[layer] < drain_star[num_layers - 1] - drain)
+                drain_wt = coeff_water_table * (piezometric_head - waterTable);
+                if (drain_star[layer] < drain_star[num_layers - 1] - drain_wt)
                     break;
             } 
         }
@@ -3108,33 +3128,38 @@ public class SoilWater
     {
         // From Section 4.3 of specification
         int num_layers = _dlayer.Length;
-        drain_star = new double[num_layers];
-        cond = new double[num_layers];
-        // Some more of these could be made class members (either for use elsewhere, or as output values)
-        double[] beta_micro = new double[num_layers];
-        double[] beta_macro = new double[num_layers];
-        double[] k_sat_macro = new double[num_layers];
         double[] sat_fines = sat_fine;
         double[] sw_fines = sw_fine;
-        double[] rel_sat = new double[num_layers];
+        drain_star = new double[num_layers];
+        cond = new double[num_layers];
+        // Some of these could be made class members (either for use elsewhere, or as output values)
+        //double[] beta_micro = new double[num_layers];
+        //double[] beta_macro = new double[num_layers];
+        //double[] k_sat_macro = new double[num_layers];
+        //double[] rel_sat = new double[num_layers];
         for (int layer = num_layers - 1; layer >= 0; layer--) // Work from the bottom up....
         {
-            beta_micro[layer] = MathUtility.Divide(Math.Log((1.0 - prop_cond_dul) * k_dul_dep[layer]) - Math.Log(k_ll15_dep[layer]),
+            double beta_micro = MathUtility.Divide(Math.Log((1.0 - prop_cond_dul) * k_dul_dep[layer]) - Math.Log(k_ll15_dep[layer]),
                           Math.Log(_dul_dep[layer]) - Math.Log(_ll15_dep[layer]),
                           0.0);
-            k_sat_macro[layer] = k_sat_dep[layer] - k_ll15_dep[layer] *
-                          Math.Pow(MathUtility.Divide(_ll15_dep[layer], _sat_dep[layer], 0.0), beta_micro[layer]);
-            beta_macro[layer] = MathUtility.Divide(Math.Log(k_sat_macro[layer]) - Math.Log(prop_cond_dul * k_dul_dep[layer]),
+            double k_sat_macro = Math.Max(1e-10, k_sat_dep[layer] - k_ll15_dep[layer] *
+                          Math.Pow(MathUtility.Divide(_ll15_dep[layer], _sat_dep[layer], 0.0), -beta_micro));
+            double beta_macro = MathUtility.Divide(Math.Log(k_sat_macro) - Math.Log(prop_cond_dul * k_dul_dep[layer]),
                           Math.Log(_sat_dep[layer]) - Math.Log(_dul_dep[layer]),
                           0.0);
-            rel_sat[layer] = MathUtility.Divide(sw_fines[layer], sat_fines[layer], 0.0);
-            cond[layer] = k_sat_macro[layer] * Math.Pow(rel_sat[layer], beta_macro[layer]) +
-                          (k_sat_dep[layer] - k_sat_macro[layer]) * Math.Pow(rel_sat[layer], beta_micro[layer]);
+            double rel_sat = Math.Min(1.0, MathUtility.Divide(sw_fines[layer], sat_fines[layer], 0.0));
+            if (rel_sat <= 0.0) // Handle case where sw hasn't been initialised yet, and is still 0
+                cond[layer] = k_ll15_dep[layer];
+            else if (k_sat_macro == 1e-10)  // We've got some ugly parameters - use field capacity value
+                cond[layer] = k_dul_dep[layer];
+            else
+                cond[layer] = k_sat_macro * Math.Pow(rel_sat, beta_macro) +
+                             (k_sat_dep[layer] - k_sat_macro) * Math.Pow(rel_sat, beta_micro);
             if (_sw_dep[layer] <= _dul_dep[layer])
                 drain_star[layer] = 0.0;
             else
                 drain_star[layer] = MathUtility.Divide(_sw_dep[layer] - _dul_dep[layer], time_step, 0.0) *
-                                    (1.0 - Math.Exp(-cond[layer] / (_sw_dep[layer] - _dul_dep[layer])));
+                                    (1.0 - Math.Exp(-(cond[layer] * time_step) / (_sw_dep[layer] - _dul_dep[layer])));
         }
 
         // Drainage and water table are closely linked
@@ -3146,14 +3171,13 @@ public class SoilWater
         for (int layer = num_layers - 1; layer >= 0; layer--) // Work from the bottom up....
         {
             if (layer == num_layers - 1)
-                flux[layer] = drain_star[layer] + drain;
+                ts_flux[layer] = drain_star[layer] + drain_wt;
             else
             {
-                flux[layer] = Math.Min(drain_star[layer], drain_star[layer + 1] + 
+                ts_flux[layer] = Math.Min(drain_star[layer], drain_star[layer + 1] + 
                                        MathUtility.Divide(_sat_dep[layer + 1] - _sw_dep[layer + 1], time_step, 0.0));
             }
         }
-
     }
 
     private void CalcDiffusion()
@@ -3164,25 +3188,33 @@ public class SoilWater
         double[] diffusivity = new double[num_layers];
         double[] sw_fines = sw_fine;
         double[] ll15_fines = ll15_fine;
+        double[] dul_fines = dul_fine;
         for (int layer = num_layers - 1; layer >= 0; layer--) // Work from the bottom up....
         {
-            b[layer] = MathUtility.Divide(Math.Log(Math.Abs(psi_ll15)) - Math.Log(Math.Abs(psi_dul_dep[layer])),
-                                          Math.Log(_ll15_dep[layer]) - Math.Log(_dul_dep[layer]), 0.0);
-            if (sw_fines[layer] == 0.0)  // Avoid problems if sw hasn't been initialised yet
-                diffusivity[layer] = 0.0;
-            else
-                diffusivity[layer] = 1e3 * cond[layer] * b[layer] * 
-                                 MathUtility.Divide(Math.Abs(psi_ll15), sw_fines[layer], 0.0) *
-                                 Math.Pow(MathUtility.Divide(sw_fines[layer], ll15_fines[layer], 0.0), b[layer]);
-            if (layer == num_layers - 1)
-                flow[layer] = 0.0;
-            else
-            {
-                double geo_mean_diffus = Math.Sqrt(diffusivity[layer] * diffusivity[layer + 1]);
-                double water = MathUtility.Divide(sw_fines[layer] - sw_fines[layer + 1],
-                                                  (_dlayer[layer] + _dlayer[layer + 1]) / 2.0, 0.0);
-                flow[layer] = geo_mean_diffus * water;
-            }
+                b[layer] = MathUtility.Divide(Math.Log(Math.Abs(psi_ll15)) - Math.Log(Math.Abs(psi_dul_dep[layer])),
+                                              Math.Log(_ll15_dep[layer]) - Math.Log(_dul_dep[layer]), 0.0);
+                if (sw_fines[layer] == 0.0)  // Avoid problems if sw hasn't been initialised yet
+                    diffusivity[layer] = 0.0;
+                else
+                {
+                    diffusivity[layer] = 1e3 * cond[layer] * b[layer] *
+                                     MathUtility.Divide(Math.Abs(psi_ll15), sw_fines[layer], 0.0) *
+                                     Math.Pow(MathUtility.Divide(sw_fines[layer], ll15_fines[layer], 0.0), b[layer]);
+                }
+                if (layer == num_layers - 1 || (_sw_dep[layer] >= _dul_dep[layer] && _sw_dep[layer + 1] >= _dul_dep[layer + 1]))
+                    ts_flow[layer] = 0.0;
+                else
+                {
+                    double geo_mean_diffus = Math.Sqrt(diffusivity[layer] * diffusivity[layer + 1]);
+                    double water = MathUtility.Divide(sw_fines[layer] - sw_fines[layer + 1],
+                                                      (_dlayer[layer] + _dlayer[layer + 1]) / 2.0, 0.0);
+                    ts_flow[layer] = geo_mean_diffus * water;
+
+                    // Not in the spec., but we shouldn't be pulling water from the layer below if it's already
+                    // drier than air-dry.
+                    if (ts_flow[layer] < 0.0 && _sw_dep[layer + 1] < _air_dry_dep[layer + 1])
+                        ts_flow[layer] = 0.0;
+                }
         }
     }
 
@@ -3202,35 +3234,37 @@ public class SoilWater
             double prop_leach_1 = 0.0;
             double prop_leach_2 = 0.0;
             double ratio_mobile = 0.0;
-            if (flux[layer] != 0.0)
+            if (ts_flux[layer] != 0.0)
             {
-                double psi_excl = -500;  // Need some values here. What are likely values? 
+                double psi_excl = -310;  // Need some values here. What are likely values? -310 is air-dry, which should be close to what we need
                 double excl = _ll15_dep[layer] * Math.Pow(MathUtility.Divide(psi_excl, psi_ll15, 0.0), MathUtility.Divide(1.0, b[layer], 0.0));
                 double flux_in;
                 if (layer == 0)
-                    flux_in = infiltration;
+                    flux_in = ts_infiltration;
                 else
-                    flux_in = flux[layer - 1];
+                    flux_in = ts_flux[layer - 1];
                 prop_conv_1 = MathUtility.Divide(Math.Max(0.0, Math.Min(0.5 * flux_in, _dul_dep[layer] - _sw_dep[layer])),
-                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * flux[layer] - _dul_dep[layer]),
+                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * ts_flux[layer] - _dul_dep[layer]),
                                          0.0);
-                prop_conv_2 = MathUtility.Divide(Math.Max(0.0, Math.Min(0.5 * flux_in, _dul_dep[layer] - (_sw_dep[layer] + 0.5 * flux_in - 0.5 * flux[layer]))),
-                                         Math.Max(0.0, _sw_dep[layer] + flux_in - flux[layer] - _dul_dep[layer]),
+                prop_conv_2 = MathUtility.Divide(Math.Max(0.0, Math.Min(0.5 * flux_in, _dul_dep[layer] - (_sw_dep[layer] + 0.5 * flux_in - 0.5 * ts_flux[layer]))),
+                                         Math.Max(0.0, _sw_dep[layer] + flux_in - ts_flux[layer] - _dul_dep[layer]),
                                          0.0);
-                ratio_mobile = MathUtility.Divide(Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * flux[layer] - _dul_dep[layer]),
-                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * flux[layer] - excl),
+                ratio_mobile = MathUtility.Divide(Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * ts_flux[layer] - _dul_dep[layer]),
+                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * ts_flux[layer] - excl),
                                          0.0);
-                prop_leach_1 = MathUtility.Divide(0.5 * flux[layer], 
+                prop_leach_1 = MathUtility.Divide(0.5 * ts_flux[layer], 
                                          Math.Max(0.0, _sw_dep[layer] - _dul_dep[layer]), 
                                          0.0);
-                prop_leach_2 = MathUtility.Divide(0.5 * flux[layer],
-                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * flux[layer] - _dul_dep[layer]),
+                prop_leach_1 = Math.Min(1.0, Math.Max(0.0, prop_leach_1)); // Make sure we're in the range 0-1
+                prop_leach_2 = MathUtility.Divide(0.5 * ts_flux[layer],
+                                         Math.Max(0.0, _sw_dep[layer] + 0.5 * flux_in - 0.5 * ts_flux[layer] - _dul_dep[layer]),
                                          0.0);
+                prop_leach_2 = Math.Min(1.0, Math.Max(0.0, prop_leach_2)); // Make sure we're in the range 0-1
 
                 for (int solnum = 0; solnum < num_solutes; solnum++)
                 {
                     double beta = 0.0 ; /// NEED TO GET VALUE(S) AS PARAMETERS
-                    double mass_retained_0 = Math.Min(solutes[solnum].amount[layer], solutes[solnum].retained[layer]);
+                    double mass_retained_0 = Math.Max(0.0, Math.Min(solutes[solnum].amount[layer], solutes[solnum].retained[layer]));
                     double mass_mobile_0 = Math.Max(0.0, solutes[solnum].amount[layer] - solutes[solnum].retained[layer]);
                     double leach_1 = prop_leach_1 * mass_mobile_0;
                     double diffusion = time_step * (1.0 - beta) *
@@ -3239,7 +3273,7 @@ public class SoilWater
                     double mass_mobile_2 = (1 - prop_conv_1) * (mass_mobile_0 + leach_1_from_above[solnum] - leach_1) - diffusion;
                     double leach_2 = prop_leach_2 * mass_mobile_2;
                     solutes[solnum].leach[layer] = leach_1 + leach_2;
-                    solutes[solnum].delta[layer] = mass_retained_2 + prop_conv_2 * (mass_mobile_2 + leach_2_from_above[solnum] - leach_2) - solutes[solnum].retained[layer];
+                    solutes[solnum].ts_delta[layer] = mass_retained_2 + prop_conv_2 * (mass_mobile_2 + leach_2_from_above[solnum] - leach_2) - solutes[solnum].retained[layer];
                     leach_1_from_above[solnum] = leach_1;
                     leach_2_from_above[solnum] = leach_2;
                 }
@@ -3269,7 +3303,7 @@ public class SoilWater
         for (solnum = 0; solnum < num_solutes; solnum++)
         {
             solutes[solnum].amount[layer] += solutes[solnum].irrigation;
-            solutes[solnum].delta[layer] += solutes[solnum].irrigation;
+            solutes[solnum].ts_delta[layer] += solutes[solnum].irrigation;
         }
 
     }
@@ -3338,7 +3372,7 @@ public class SoilWater
             term2 = Math.Max(0.0, Math.Min(1.0, term2));
             double term3 = MathUtility.Divide(discharge_width, catchment_area, 0.0);
             double term4 = MathUtility.Divide(slope, Math.Sqrt(1.0 + MathUtility.Sqr(slope)), 0.0);
-            outflow_lat[layer] = term1 * term2 * term3 * term4;
+            ts_outflow_lat[layer] = term1 * term2 * term3 * term4;
         }
     }
 
@@ -3787,49 +3821,76 @@ public class SoilWater
 
         int num_layers = _dlayer.Length;
 
-        // LATERAL FLOW
-        // 4.5 of specification
-        CalcLateralFlow();
+        time_step = 1.0 / steps_per_day;
 
-        // SNOWMELT
-        // 4.1 of specification
-        MeltSnow();
+        ts_flux = new double[num_layers];
+        ts_flow = new double[num_layers];
+        ts_es_layers = new double[num_layers];
+        ts_outflow_lat = new double[num_layers];
 
-        // INFILTRATION AND RUNOFF
-        // 4.2. 4.3, and 4.4 of specification
-        CalcDrainage(); // This will in turn call CalcDrainage and CalcWaterTable
+        CalcPotEvapotranspiration();  // Can be outside of the timestep loop
 
-        // DIFFUSIVE MOVEMENT
-        // 4.6 of specification
-        CalcDiffusion();
+        for (int step = 1; step <= steps_per_day; step++)
+        {
+            // LATERAL FLOW
+            // 4.5 of specification
+            CalcLateralFlow();
 
-        // EVAPORATION
-        // 4.7 of specification
-        CalcEvaporation();
+            // SNOWMELT
+            // 4.1 of specification
+            MeltSnow();
 
-        // SOLUTE MOVEMENT
-        // 4.8 of specification
-        CalcSoluteMovement();
+            // INFILTRATION AND RUNOFF
+            // 4.2, 4.3, and 4.4 of specification
+            CalcRunoff(); // This will in turn call CalcDrainage and CalcWaterTable
+
+            // DIFFUSIVE MOVEMENT
+            // 4.6 of specification
+            CalcDiffusion();
+
+            // EVAPORATION
+            // 4.7 of specification
+            CalcEvaporation();
+
+            // SOLUTE MOVEMENT
+            // 4.8 of specification
+            CalcSoluteMovement();
+            // Hhmmm. Perhaps this part doesn't require the sub-day timestepping - should be OK if placed outside the timestep loop
+            // and the applies daily values.
 
 
-        //! NIH 180895
-        //! in order to continue capturing irrigation information we zero
-        //! the value here.  If we zero the value at the beginning of the day
-        //! we may zero it after irrigation has already been specified and the
-        //! information would be lost.  The safest way is to hold onto the
-        //! information until it is used then reset the record.
+            //! NIH 180895
+            //! in order to continue capturing irrigation information we zero
+            //! the value here.  If we zero the value at the beginning of the day
+            //! we may zero it after irrigation has already been specified and the
+            //! information would be lost.  The safest way is to hold onto the
+            //! information until it is used then reset the record.
 
-        irrigation = 0.0;
-        for (int solnum = 0; solnum < num_solutes; solnum++)
-            solutes[solnum].irrigation = 0.0;
+            irrigation = 0.0;
+            for (int solnum = 0; solnum < num_solutes; solnum++)
+                solutes[solnum].irrigation = 0.0;
 
+            for (int layer = 0; layer < num_layers; layer++)
+            {
+                flux[layer] += time_step * ts_flux[layer];
+                flow[layer] += time_step * -ts_flow[layer];  // Reverse sign for compatibilty with previous APSIM convention 
+                es_layers[layer] += time_step * ts_es_layers[layer];
+                outflow_lat[layer] += time_step * ts_outflow_lat[layer];
+                infiltration += time_step * ts_infiltration;
+                pond_evap += time_step * ts_pond_evap;
+                for (int solnum = 0; solnum < num_solutes; solnum++)
+                    solutes[solnum].delta[layer] += time_step * solutes[solnum].ts_delta[layer];
+            }
+
+            runoff += time_step * ts_runoff;
+            UpdateStateVariables();
+
+        }
         //! now check that the soil water is not silly
         for (int layer = 0; layer < num_layers; layer++)
         {
             soilwat2_check_profile(layer);
         }
-
-        UpdateStateVariables();
 
         soilwat2_set_other_variables();
 
@@ -3936,6 +3997,7 @@ public class SoilWater
             solutes[num_solutes].amount = new double[nLayers];
             solutes[num_solutes].retained = new double[nLayers];
             solutes[num_solutes].delta = new double[nLayers];
+            solutes[num_solutes].ts_delta = new double[nLayers];
             solutes[num_solutes].leach = new double[nLayers];
             solutes[num_solutes].up = new double[nLayers];
             // Register new "flow" and "leach" outputs for these solutes
