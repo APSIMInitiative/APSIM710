@@ -545,7 +545,7 @@
 !***********************************************************************
 !***********************************************************************
     IF(.NOT.TERMNL ) THEN
-        if (g%ETMOD .ne. ' ') then
+        if (g%etmod .eq. 'PENMAN'  .or. g%etmod .eq. 'MAKKINK' .or. g%etmod .eq. 'PRIESTLEY TAYLOR') then
            call ET2(ITASK, OR_OUTPUT, g%ANGA , g%ANGB   , RDD , TMDA, g%met_vp  , g%met_windspeed , g%lat, &
                     g%iday , 1.0, g%ETMOD, g%CROPSTA, g%sow_establishment, NL  , 1.0 , g%pond_depth,    &
                     WCL, pv%PWCST , LAI, EVSC, ETD , TRC)
@@ -863,7 +863,7 @@
 	    write (line, *) 'Number of plants direct seeded (pl/m^2) = ' , g%sow_nplds
         call writeLine (line)
       else
-        g%sow_nplsb = 0
+        g%sow_nplds = 0
       end if
 
       found = ReadParam('etmethod', '()', 1, g%etmod)
