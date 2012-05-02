@@ -68,7 +68,7 @@ class FortranNullMethod : public Packable
          }
       virtual void pack(MessageData& messageData)
          {
-         throw runtime_error("Cannot call pack on a FortranNullMethod");
+         throw std::runtime_error("Cannot call pack on a FortranNullMethod");
          }
       virtual void unpack(MessageData& messageData, const std::string& sourceDDML)
          {

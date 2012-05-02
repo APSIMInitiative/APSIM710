@@ -1,16 +1,19 @@
-#include "FortranComponentWrapper.h"
-#include <ComponentInterface2/ScienceAPI2.h>
 #ifndef __WIN32__
    #include <dlfcn.h>
 #else
    #include <windows.h>  // for LoadLibrary and mutex
 #endif
 #include <iostream>
-#include <ComponentInterface2/CMPComponentInterface.h>
+#include <General/dll.h>
 #include "DataTypes.h"
-#include "FortranTemplates.h"
+#include <ComponentInterface2/BuiltIns.h>
+#include <ComponentInterface2/Bounded.h>
 #include <ComponentInterface2/FortranArray.h>
 #include <ComponentInterface2/FortranString.h>
+#include <ComponentInterface2/CMPComponentInterface.h>
+#include <ComponentInterface2/ScienceAPI2.h>
+#include "FortranTemplates.h"
+#include "FortranComponentWrapper.h"
 
 using namespace std;
 
@@ -48,11 +51,7 @@ void FortranComponentWrapper::onInit1()
    // Init1 event handler.
    // -----------------------------------------------------------------------
    // get FORTRAN to create new memory blocks.
-   #ifdef __WIN32__
-       allocDealloc = (BoolMethod*) GetProcAddress((HMODULE)dllHandle, "alloc_dealloc_instance");
-   #else
-       allocDealloc = (void (*)(const int* doAllocate))dlsym(dllHandle, "alloc_dealloc_instance");
-   #endif
+   allocDealloc = (BoolMethod*) dllProcAddress(dllHandle, "alloc_dealloc_instance");
 
    if (allocDealloc == NULL)
       throw runtime_error("Cannot find alloc_dealloc_instance routine in FORTRAN model");
@@ -63,22 +62,14 @@ void FortranComponentWrapper::onInit1()
    typedef CommonBlock* CommonBlockPtr;
    typedef CommonBlockPtr (STDCALL GetInstanceMethod)();
 
-   #ifdef __WIN32__
-      GetInstanceMethod* getInstance = (GetInstanceMethod*) GetProcAddress((HMODULE)dllHandle, "getInstance");
-   #else
-      GetInstanceMethod* getInstance = (CommonBlockPtr (*)()) dlsym(dllHandle, "getInstance");
-   #endif
+   GetInstanceMethod* getInstance = (GetInstanceMethod*) dllProcAddress(dllHandle, "getInstance");
    if (getInstance == NULL)
       throw runtime_error("Cannot find getInstance routine in FORTRAN model");
    realCommonBlock = getInstance();
    memcpy(&ourCommonBlock, realCommonBlock, sizeof(CommonBlock));
 
    // Call the FORTRAN OnInit1 routine.
-   #ifdef __WIN32__
-      NullMethod* OnInit1 = (NullMethod*) GetProcAddress((HMODULE)dllHandle, "OnInit1");
-   #else
-      NullMethod* OnInit1 = (void (*)())dlsym(dllHandle, "OnInit1");
-   #endif
+   NullMethod* OnInit1 = (NullMethod*)dllProcAddress(dllHandle, "OnInit1");
    if (OnInit1 == NULL)
       throw runtime_error("Cannot find onInit1 routine in FORTRAN model");
    swapInstanceIn();

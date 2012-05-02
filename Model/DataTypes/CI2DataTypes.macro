@@ -551,6 +551,7 @@ void unpack(MessageData& messageData, const std::string& ddml, F[type.name]Type&
    {
    [foreach type.field]
    [if [field.arrayandstring] = T]
+   memset(data.[field.name], ' ', sizeof(data.[field.name]));
    unpack(messageData, data.num_[field.name]);
    for (int i = 0; i != data.num_[field.name]; i++)
       {

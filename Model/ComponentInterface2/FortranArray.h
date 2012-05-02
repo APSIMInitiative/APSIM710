@@ -15,8 +15,7 @@ class FortranArray
       int MaxValues;
       FortranArray(T* data, int& numvalues, int& maxValues)
          : Data(data), NumValues(numvalues), MaxValues(maxValues)
-         {
-         }
+         {}
       void readFromString(const std::string& st)
          {
          std::vector<std::string> values;
@@ -31,6 +30,8 @@ class FortranArray
          {
          Data[NumValues] = value;
          NumValues++;
+         if (NumValues > MaxValues)
+            throw std::runtime_error("Too many values in FORTRAN array");
          }
    };
 
