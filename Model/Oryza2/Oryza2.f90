@@ -208,7 +208,6 @@
 !      Set the values of variables in other APSIM modules
       type(FOMLayerType) :: IncorpFOM
       type(BiomassRemovedType) :: BiomassRemoved
-      type(CropChoppedType) :: CropChopped
       integer layer
 	  character*(100)  message
 
@@ -247,8 +246,8 @@
       endif
 
       if (sum(g%dlt_root_mass) .ne. 0.0) then
-         write (message,*) 'adding ', sum(g%dlt_root_mass) , 'kg roots'
-		 call writeLine(message)
+         write (message,*) 'Adding ', sum(g%dlt_root_mass) , ' kg/ha roots'
+         call writeLine(message)
          IncorpFOM%Type = g%crop_type
          IncorpFOM%num_layer = g%SoilProfile%num_dlayer
          do layer = 1, g%SoilProfile%num_dlayer
@@ -265,34 +264,25 @@
 
       if (g%dlt_surfaceom .gt. 0.1) then
           write (message,'(a, f7.1, a)') 'Adding ', g%dlt_surfaceom , ' kg/ha to surface residues'
- 		  call writeLine(message)
+          call writeLine(message)
+          BiomassRemoved%fraction_to_Residue(:) = 0.0
           BiomassRemoved%dm_type(:) = ' '
-          BiomassRemoved%dlt_crop_dm(:)         = 0.0
-          BiomassRemoved%dlt_dm_n(:)            = 0.0
-          BiomassRemoved%dlt_dm_p(:)            = 0.0 
-          BiomassRemoved%fraction_to_residue(:) = 0.0
+          BiomassRemoved%dlt_crop_dm(:) = 0.0
+          BiomassRemoved%dlt_dm_N(:) = 0.0
+          BiomassRemoved%dlt_dm_P(:) = 0.0
 
           BiomassRemoved%crop_type = g%crop_type
-          BiomassRemoved%dm_type(1)             = g%crop_type
-          BiomassRemoved%num_dm_type            = 1
-          BiomassRemoved%dlt_crop_dm(1)         = g%dlt_surfaceom
-          BiomassRemoved%num_dlt_crop_dm        = 1
-          BiomassRemoved%dlt_dm_n(1)            = g%dlt_surfaceom_n
-          BiomassRemoved%num_dlt_dm_n           = 1
-          BiomassRemoved%num_dlt_dm_p           = 0
-          BiomassRemoved%fraction_to_residue(1) = 1.0
-          BiomassRemoved%num_fraction_to_residue= 1
-          !call PublishBiomassRemovedType('BiomassRemoved', BiomassRemoved) !FIXME causes infrastructure crash
-		  !CropChopped%crop_type = g%crop_type
-		  !CropChopped%dm_type(1) = g%crop_type
-		  !CropChopped%num_dm_type = 1
-		  !CropChopped%dlt_crop_dm(1) = g%dlt_surfaceom
-		  !CropChopped%num_dlt_crop_dm = 1
-		  !CropChopped%dlt_dm_n(1) = g%dlt_surfaceom_n
-		  !CropChopped%num_dlt_dm_n = 1
-		  !CropChopped%fraction_to_Residue(1) = 1.0
-		  !CropChopped%num_fraction_to_Residue = 1
-          !call PublishCropChoppedType('CropChopped',CropChopped)
+          BiomassRemoved%num_dm_type = 1
+          BiomassRemoved%dm_type(1) = g%crop_type
+          BiomassRemoved%num_dlt_crop_dm = 1
+          BiomassRemoved%dlt_crop_dm(1) = g%dlt_surfaceom
+          BiomassRemoved%num_dlt_dm_n = 1
+          BiomassRemoved%dlt_dm_n(1) = g%dlt_surfaceom_n
+          BiomassRemoved%num_dlt_dm_p = 1
+          BiomassRemoved%dlt_dm_p(1) = 0.0
+          BiomassRemoved%fraction_to_Residue(1) = 1.0
+          BiomassRemoved%num_fraction_to_Residue = 1
+          call PublishBiomassRemovedType('BiomassRemoved',BiomassRemoved)
       endif
       return
       end subroutine
@@ -607,22 +597,15 @@
 
       IF (ITASK == 2) THEN
         DO L = 1, NLAYR
-  	      g%dlt_no3(L) =  (g%no3(L) - PV % PNO3(L))    !NO3 uptake (kg/ha)
+          g%dlt_no3(L) =  (g%no3(L) - PV % PNO3(L))    !NO3 uptake (kg/ha)
           g%dlt_nh4(L) =  (g%nh4(L) - PV % PNH4(L))    !NH4 uptake (kg/ha)
           g%dlt_sw_dep(L) = TRWL(L)                   !H2O uptake (mm/d)
 		  
-          !         Add senesced roots to soil fresh organic matter pools
-          !g%dlt_root_mass(L)  =  pv%PResC(L,1) / 0.40  ! DSSAT has this.
-          !g%dlt_root_mass_n(L) = PV%PResN(L,1)
-          g%dlt_root_mass(L)  = RRDCL(L) / 0.4  !!! FIXME - nothing happens here!!!
-          g%dlt_root_mass_n(L) = RRDNL(L)      
-          g%rlv(L) = pv%prootden(L) ! RRDENSIT(L) ! pv%prootden(L) !* 1.E-10
+          ! Add senesced roots to soil fresh organic matter pools
+          g%dlt_root_mass(L)  = RRDCL(L)
+          g%dlt_root_mass_n(L) = RRDNL(L)
+          g%rlv(L) = pv%prootden(L) 
         end do
-        !write (*,*) 'task = ', itask
-        !write (*,*) 'dlt_no3 = ', sum(g%dlt_no3) , 'kg '
-        !write (*,*) 'dlt_nh4 = ', sum(g%dlt_nh4) , 'kg '
-        !write (*,*) 'dlt_sw = ', sum(g%dlt_sw_dep) , 'mm'
-        !write (*,*) 'dlt_root_mass = ', sum(g%dlt_root_mass) , 'kg roots'
       ELSEIF (ITASK == 3) THEN
         WLVD = WLVD+ (DLDR+LLV)*DELT        
         WAGT = WST + WLVG + WSO + WLVD
@@ -659,7 +642,7 @@
         g%dlt_no3(:) = 0.0
         g%dlt_sw_dep(:) = 0.0
         call oryza2_set_other_variables()
-	    g%plant_status = 'out'
+        g%plant_status = 'out'
         DEALLOCATE(PV) 
     ENDIF
       
@@ -716,7 +699,7 @@
       call Expose('tnsoil', '', 'Soil-N available for crop uptake', .false., g%tnsoil) 
       call Expose('rnstrs', '', 'Decrease factor for RGRL caused by N stress', .false., g%rnstrs) 
       call Expose('ldstrs', '', 'Stress factor for leaf death', .false., g%ldstrs) 
-      call Expose('dlt_sw_dep', 'mm', 'Water uptake', .false., g%dlt_sw_dep, g%SoilProfile%num_dlayer, max_layer)
+      call Expose('dlt_sw_dep_oryza', 'mm', 'Water uptake', .false., g%dlt_sw_dep, g%SoilProfile%num_dlayer, max_layer)
       call Expose('dlt_no3_oryza', 'mm', 'NO3 uptake', .false., g%dlt_no3, g%SoilProfile%num_dlayer, max_layer) 
       call Expose('dlt_nh4_oryza', 'mm', 'NH4 uptake', .false., g%dlt_nh4, g%SoilProfile%num_dlayer, max_layer) 
 
@@ -811,7 +794,7 @@
       if (g%hasInitialised) then
            call fatal_error(err_user, "Crop is already established - call 'end_crop' first.")
            return
-	  end if
+      end if
 
       call publishNull('sowing')
 
@@ -826,8 +809,8 @@
       endif
       call AppendSearchOrder(trim(g%sow_Establishment))
 
-	  call writeLine (' Establishment method = ' // trim(g%sow_establishment))
-	  call writeLine (' Cultivar = ' // trim(g%sow_Cultivar))
+      call writeLine (' Establishment method = ' // trim(g%sow_establishment))
+      call writeLine (' Cultivar = ' // trim(g%sow_Cultivar))
 
       if (g%sow_establishment .ne. 'DIRECT-SEED') then
   	    if (newSow%sbdur .gt. 0) then
@@ -866,8 +849,8 @@
 	    write (line, *) ' Number of plants in seedbed (pl/m^2) = ' , g%sow_nplsb
         call writeLine (line)
       else
-	    g%sow_nplh = 0
-		g%sow_nh = 0
+        g%sow_nplh = 0
+        g%sow_nh = 0
         g%sow_nplsb = 0
       end if
 
