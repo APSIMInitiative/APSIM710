@@ -103,8 +103,7 @@ class MessageData;
        [foreach type.field]              + ::memorySize(data.[field.name])
        [endfor]              ;
       }
-   std::string EXPORT DDML(const [type.name]Type& data)
-      {return [type.cddml];}
+   std::string EXPORT DDML(const [type.name]Type& data)     { return [type.cddml]; }
 
 [endfor]
 [endfile]
@@ -584,7 +583,11 @@ unsigned memorySize(const F[type.name]Type& data)
    {
    unsigned size = 0;
    [foreach type.field]
-      [if [field.array] = T]
+      [if [field.arrayandstring] = T]
+      size += 4;
+      for (int i = 0; i != data.num_[field.name]; i++)
+         size += memorySize(FortranString(&data.[field.name][i*max_array_size], max_array_size));
+      [elseif [field.array] = T]
       size += 4;
       for (int i = 0; i != data.num_[field.name]; i++)
          size += memorySize(data.[field.name][i]);
@@ -593,14 +596,13 @@ unsigned memorySize(const F[type.name]Type& data)
       [else]
       size += memorySize(data.[field.name]);
       [endif]
-   [endfor];
+   [endfor]
    return size;
    }
 std::string EXPORT DDML(const F[type.name]Type& value)
    {
    return [type.cddml];
    }
-
 
 [endfor]
 [endfile]
@@ -651,7 +653,7 @@ extern "C" void EXPORT STDCALL Publish[type.name]Type(const char* EventName,
                                                  unsigned EventNameLength)
    {
    currentWrapper->componentInterface().publish(FortranString(EventName, EventNameLength).toString(),
-                                                new PackableWrapper2< F[type.name]Type >(*Data));
+                                                new PackableWrapper2< F[type.name]Type & >(*Data));
    }
 [endfor]
 [endfile]

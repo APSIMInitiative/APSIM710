@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <vector>
+#include <stdexcept>
 #include <General/string_functions.h>
 
 #include "message.h"
@@ -49,10 +50,14 @@ class MessageData
 
       void movePtrBy(unsigned int numBytes)
          {
+         if (currentPtr + numBytes > startBuffer + bufferSize) 
+            throw std::runtime_error("MessageData buffer has overflowed"); 
          currentPtr += numBytes;
          }
       void copyFrom(const char* from, unsigned int numBytes)
          {
+         if (currentPtr + numBytes > startBuffer + bufferSize) 
+            throw std::runtime_error("MessageData buffer has overflowed"); 
          memcpy(currentPtr, from, numBytes);
          currentPtr += numBytes;
          }
