@@ -6,16 +6,7 @@
       Use infrastructure2
       IMPLICIT NONE
       CHARACTER(LEN=*) :: MODULE, MESSAG
-      call Fatal_error(Err_internal, MODULE // ' ' // MESSAG)
-      end subroutine
-
-!! Hmmm. These two will create trouble. errormodule::fatal_error calls ::error; which will segfault after a few times. Same end, but not nice
-      SUBROUTINE ERROR (ERRKEY,ERRNUM,FILE,LNUM)
-      Use infrastructure2
-      IMPLICIT      NONE
-      CHARACTER*(*) ERRKEY,FILE
-      INTEGER       ERRNUM,LNUM
-      call Fatal_error(Err_internal, 'Oryza: '//errkey)
+      call Fatal( 'Oryza2 ' // MODULE // ': ' // MESSAG)
       end subroutine
 
       SUBROUTINE WARNING (numlines, key, msg)
@@ -59,16 +50,14 @@
       CHARACTER*(*) apsimNAME
       apsimName = ' '
       call UPPERC(XNAME)
-      if (xname .eq. 'NL') then
-         apsimName = 'num_layers'
-      elseif (xname .eq. 'BD') then
-          apsimName = 'bd'
+      if (xname .eq. 'BD') then
+          apsimName = 'BD'
       elseif (xname .eq. 'SOC') then
-          apsimName = 'fom_c'
+          apsimName = 'FOM_C'
       elseif (xname .eq. 'SON') then
-           apsimName = 'fom_n'
+           apsimName = 'FOM_N'
       elseif (xname .eq. 'TKL') then
-          apsimName = 'dlayer'
+          apsimName = 'DLAYER'
       elseif (xname .eq. 'SANDX') then
           apsimName = 'SAND'
       elseif (xname .eq. 'CLAYX') then

@@ -155,6 +155,7 @@
       g%harvestFraction = 0.0
       g%plant_status = 'out'
       g%cropsta = 0
+      g%crop_type = ' '
       return
       end subroutine
 
@@ -213,16 +214,34 @@
 
 !- Implementation Section ----------------------------------
       if (g%Soil_has_N .and. sum(g%dlt_no3) .ne. 0.0) then
+        do layer = 1, g%SoilProfile%num_dlayer
+           if (g%dlt_no3(layer) .gt. g%no3(layer)) then
+              write (message, *) 'Attempting to remove more NO3 (', g%dlt_no3(layer), ') than present (', g%no3(layer), ') in layer ', layer
+              call warning_error(err_user, message)
+           endif
+        end do
         call SetRealArray ('dlt_no3', '(kg/ha)' &
                            ,-1.0*g%dlt_no3, g%SoilProfile%num_dlayer)
       endif
 
       if (g%Soil_has_N .and. sum(g%dlt_nh4) .ne. 0.0) then
+        do layer = 1, g%SoilProfile%num_dlayer
+           if (g%dlt_nh4(layer) .gt. g%nh4(layer)) then
+              write (message, *) 'Attempting to remove more NH4 (', g%dlt_nh4(layer), ') than present (', g%nh4(layer), ') in layer ', layer
+              call warning_error(err_user, message)
+           endif
+        end do
         call SetRealArray ('dlt_nh4', '(kg/ha)' &
                            ,-1.0*g%dlt_nh4, g%SoilProfile%num_dlayer)
       endif
 
       if (g%Soil_has_sw .and. sum(g%dlt_sw_dep) .ne. 0.0) then
+        do layer = 1, g%SoilProfile%num_dlayer
+           if (g%SoilProfile%sw_dep(layer) - g%dlt_sw_dep(layer) .lt. g%SoilProfile%LL15_dep(layer)) then
+              write (message, *) 'Attempting to remove more SW (', g%dlt_sw_dep(layer), ') than LL15 (', g%SoilProfile%LL15_dep(layer), ') in layer ', layer
+              call warning_error(err_user, message)
+           endif
+        end do
         call SetRealArray ('dlt_sw_dep', '(mm)' &
                          ,-1.0*g%dlt_sw_dep, g%SoilProfile%num_dlayer)
       endif
@@ -315,7 +334,6 @@
 
       INTEGER YEAR, IUNITD, IUNITL, L
       LOGICAL TERMNL
-
       if (controlValue .ne. SEASINIT .and. .not. g%hasInitialised) return ! Do nothing until initialisation
       
 !***********************************************************************
@@ -598,7 +616,7 @@
           !g%dlt_root_mass_n(L) = PV%PResN(L,1)
           g%dlt_root_mass(L)  = RRDCL(L) / 0.4  !!! FIXME - nothing happens here!!!
           g%dlt_root_mass_n(L) = RRDNL(L)      
-          g%rlv(L) = RRDENSIT(L)               ! pv%prootden(L) !* 1.E-10
+          g%rlv(L) = pv%prootden(L) ! RRDENSIT(L) ! pv%prootden(L) !* 1.E-10
         end do
         !write (*,*) 'task = ', itask
         !write (*,*) 'dlt_no3 = ', sum(g%dlt_no3) , 'kg '
@@ -698,7 +716,6 @@
       call Expose('tnsoil', '', 'Soil-N available for crop uptake', .false., g%tnsoil) 
       call Expose('rnstrs', '', 'Decrease factor for RGRL caused by N stress', .false., g%rnstrs) 
       call Expose('ldstrs', '', 'Stress factor for leaf death', .false., g%ldstrs) 
-      call Expose('rlv', 'mm3/mm3', 'RLV', .false., g%rlv, g%SoilProfile%num_dlayer, max_layer)
       call Expose('dlt_sw_dep', 'mm', 'Water uptake', .false., g%dlt_sw_dep, g%SoilProfile%num_dlayer, max_layer)
       call Expose('dlt_no3_oryza', 'mm', 'NO3 uptake', .false., g%dlt_no3, g%SoilProfile%num_dlayer, max_layer) 
       call Expose('dlt_nh4_oryza', 'mm', 'NH4 uptake', .false., g%dlt_nh4, g%SoilProfile%num_dlayer, max_layer) 

@@ -312,11 +312,12 @@
 			    ENDIF
 			    SDEP1=SDEP2	
 		    ENDDO
-			!write (*,*) 'trwl=', pv%PTrwl(1:3)
-			!write (*,*) 'sno3=', SNO3X(1:3)
-			!write (*,*) 'snh4=', SNh4x(1:3)
-			!write (*,*) 'spno3=', SpNO3(1:3)
-			!write (*,*) 'spnh4=', SpNh4(1:3)
+!			write (*,*) 'trwl=', pv%PTrwl(1:5)
+!			write (*,*) 'sno3=', SNO3X(1:5)
+!			write (*,*) 'snh4=', SNh4x(1:5)
+!			write (*,*) 'spno3=', SpNO3(1:5)
+!			write (*,*) 'spnh4=', SpNh4(1:5)
+!			write (*,*) 'tnsoil=', tnsoil
 			
 			!--------------END THIS SECTION, TAOLI 27 JULY 2009
 !           Available N uptake is mimimum of soil supply and maximum crop uptake

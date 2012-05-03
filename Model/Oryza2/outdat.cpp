@@ -69,6 +69,7 @@ void nameToDescription (const char * name, char ** desc, char ** units) {
    else if (strcasecmp(name, "ngr") == 0) { *desc = ""; *units = ""; }
    else if (strcasecmp(name, "wgrmx") == 0) { *desc = "Maximum individual grain weight"; *units = "kg/grain"; }
    else if (strcasecmp(name, "rlv") == 0) { *desc = "Root length density"; *units = ""; }
+   else if (strcasecmp(name, "trwl") == 0) { *desc = "Transpiration by layer"; *units = "mm"; }
 
 }
 
@@ -77,7 +78,7 @@ class floatArray {
      float *value;
      int n;
      floatArray(int _n) {n = _n; value = new float [n]; clear();}
-     ~floatArray() {delete [] value;}
+     ~floatArray() { delete [] value; }
      void clear(void) {for (int i = 0; i < n; i++) {value[i] = 0.0;} }
 };
 
@@ -135,8 +136,9 @@ floatArray * Variables::addFloatArray(char *name, int numvals)
    int writeable = 0;
    char * desc; char *units;
    nameToDescription (name, &desc, &units);
-   
-   ExposeRealArray(name, units, desc, &writeable, v->value, &numvals, &numvals, strlen(name), strlen(desc), strlen(desc));
+   if (numvals <= 0)  {throw runtime_error(string(name) + " cannot have zero length");}
+
+   ExposeRealArray(name, units, desc, &writeable, v->value, &v->n, &v->n, strlen(name), strlen(units), strlen(desc));
    return v;
 }
 void Variables::setArray(char *name, float * _value, int numvals)
@@ -196,7 +198,6 @@ extern "C" void EXPORT STDCALL outarr(int *, int *, char *fname, float *value, i
    for (; name[fnamelen] == ' '; fnamelen--) { name[fnamelen] = '\0'; }
 
    outVariables->setArray(name, value, *numvalues);
- //  //cout << "outarr:" << name<<endl;
+   //cout << "outarr:" << name<< " = " << *numvalues << endl;
 }
-
 
