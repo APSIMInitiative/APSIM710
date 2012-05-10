@@ -114,7 +114,8 @@ namespace CSUserInterface
             if (gridManager.Columns.Count > 3)
             {
                 //gridManager.Columns[1].Visible = false;
-                gridManager.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                //gridManager.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                gridManager.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             }
 
         }
@@ -157,14 +158,20 @@ namespace CSUserInterface
                 newRow[3] = ui.InnerText;
 
                 //look for corresponding node in the variables node
-                XmlNode varNode = Data.SelectSingleNode("//vars/" + varName);
-                if (varNode != null)
+                if (varName != "#comment")
                 {
-                    newRow[0] = true;
-                    newRow[3] = varNode.InnerText;
+                    XmlNodeList foundNodes = Data.SelectNodes("//vars/" + varName);
+                    if (foundNodes.Count == 1)
+                    {
+                        XmlNode varNode = foundNodes[0];
+                        if (varNode != null)
+                        {
+                            newRow[0] = true;
+                            newRow[3] = varNode.InnerText;
+                        }
+                    }
+                    Table.Rows.Add(newRow);
                 }
-
-                Table.Rows.Add(newRow);
             }
             return Table;
         }
