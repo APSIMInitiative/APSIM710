@@ -442,10 +442,14 @@ namespace ApsimFile
                     --idx;
                 }
             }
-            for (int i = 0; i < leafFactorItems.Count - 1; ++i)
+            int iNext = 0;
+            for (; iNext < leafFactorItems.Count - 1; ++iNext)
             {
-                leafFactorItems[i].NextItem = leafFactorItems[i + 1];
+                leafFactorItems[iNext].NextItem = leafFactorItems[iNext + 1];
             }
+            if (iNext < leafFactorItems.Count)
+                leafFactorItems[iNext].NextItem = null;
+
         }
         public void LoadVariableTypes(XmlNode metNode, List<string> variableTypes)
         {
