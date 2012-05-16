@@ -209,7 +209,7 @@
       type(FOMLayerType) :: IncorpFOM
       type(BiomassRemovedType) :: BiomassRemoved
       integer layer
-	  character*(100)  message
+	  character*(200)  message
 
 !- Implementation Section ----------------------------------
       if (g%Soil_has_N .and. sum(g%dlt_no3) .ne. 0.0) then
@@ -246,7 +246,7 @@
       endif
 
       if (sum(g%dlt_root_mass) .ne. 0.0) then
-         write (message,*) 'Adding ', sum(g%dlt_root_mass) , ' kg/ha roots'
+         write (message,'(a, f7.1, a)') 'Adding ', sum(g%dlt_root_mass) , ' kg/ha roots to FOM pool'
          call writeLine(message)
          IncorpFOM%Type = g%crop_type
          IncorpFOM%num_layer = g%SoilProfile%num_dlayer
@@ -405,6 +405,8 @@
         CPEW   = 1.0
         g%RNSTRS = 1.0
 
+        ! RootGrowth
+        
         PV % PNL = NLAYR
         IF(INDEX(ISWITCH%ISWWAT,"Y").GT.0) THEN
          TKLT = 0.0
@@ -445,10 +447,17 @@
           g%zrtms = sum(tkl) 
         ENDIF
 !       ESSENTIAL INFORMATION MUST BE PROVIDED FROM UPPER LAYER
-        FILEI1 = 'nul'  ! FIXME should use /dev/null on unix
+!#if _WIN32
+        FILEI1 = 'nul'
         FILEIT = 'nul'
         FILEI2 = 'nul'
-
+!#elif __unix__
+!        FILEI1 = '/dev/null'
+!        FILEIT = '/dev/null'
+!        FILEI2 = '/dev/null'
+!#else
+!#error "FIXME Dont know this archictecture"
+!#endif
         TERMNL = .FALSE.
         IF ((INDEX(ISWITCH%ISWNIT,"Y").gt. 0) .OR. (INDEX(ISWITCH%ISWWAT,"Y") .gt. 0)) THEN
             PV%PROOT_NUTRIENT = .TRUE.
@@ -600,11 +609,6 @@
           g%dlt_no3(L) =  (g%no3(L) - PV % PNO3(L))    !NO3 uptake (kg/ha)
           g%dlt_nh4(L) =  (g%nh4(L) - PV % PNH4(L))    !NH4 uptake (kg/ha)
           g%dlt_sw_dep(L) = TRWL(L)                   !H2O uptake (mm/d)
-		  
-          ! Add senesced roots to soil fresh organic matter pools
-          g%dlt_root_mass(L)  = RRDCL(L)
-          g%dlt_root_mass_n(L) = RRDNL(L)
-          g%rlv(L) = pv%prootden(L) 
         end do
       ELSEIF (ITASK == 3) THEN
         WLVD = WLVD+ (DLDR+LLV)*DELT        
@@ -622,6 +626,13 @@
             g%cover_tot = 1 - exp(-0.5 * g%max_rlai)
         endif
         g%cover_green = 1 - exp(-0.5 * LAI)
+
+        DO L = 1, NLAYR
+          ! Add senesced roots to soil fresh organic matter pools
+          g%dlt_root_mass(L)  = pv%PResC(L,1) / 0.40
+          g%dlt_root_mass_n(L) = PV%PResN(L,1)
+          g%rlv(L) = pv%prootden(L) 
+        end do
         call oryza2_set_other_variables()
       ENDIF
     ENDIF
@@ -638,6 +649,10 @@
         call writeLine(message)
         write (message,'(a, f7.1, a)') 'Removing ', (WLVG + WLVD + WST) * g%harvestFraction , ' kg/ha biomass from field'
         call writeLine(message)
+        DO L = 1, NLAYR
+          g%dlt_root_mass(L)  = ROOTC(L) / 0.40
+          g%dlt_root_mass_n(L) = ROOTN(L)
+        end do
         g%dlt_nh4(:) = 0.0
         g%dlt_no3(:) = 0.0
         g%dlt_sw_dep(:) = 0.0
