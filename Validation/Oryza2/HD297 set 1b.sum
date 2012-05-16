@@ -9,8 +9,8 @@
  The Agricultural Production Systems Simulator
              Copyright(c) APSRU               
 
-Version                = 7.4
-Title                  = HD297
+Version                = 7.5
+Title                  = HD297 set 1b
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
@@ -22,7 +22,6 @@ Paddock:
    Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
    Component               "Irrigation mgt" = %apsim%\Model\Manager.dll
    Component               "Fertiliser mgt" = %apsim%\Model\Manager.dll
-   Component                           "eo" = %apsim%\Model\Eo.dll
    Component                  "HD297 Water" = %apsim%\Model\SoilWat.dll
    Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
    Component               "HD297 Nitrogen" = %apsim%\Model\SoilN.dll
@@ -52,8 +51,8 @@ Paddock:
 ------- Output Initialisation -------------------------------------------------
      Output variables:
         year
-        day
-        timex as time
+        day as time
+        DAY AS DOY
         dae
         trc
         rain
@@ -63,11 +62,9 @@ Paddock:
         wlvg
         wagt
         cover_green
-        zrt
-        parcum
         sla
-        no3()
-        nh4()
+        no3() as sno3
+        nh4() as snh4
         swdep()
         zrt
         trw
@@ -79,9 +76,10 @@ Paddock:
         anlv
         anst
         fnst
-        xxsno3
+        tnsoil
+        dlt_n_min()
 
-     Output file = HD297 Output.out
+     Output file = HD297 set 1b Output.out
      Format = normal
 
 ------- accum Initialisation --------------------------------------------------
@@ -131,7 +129,7 @@ Paddock:
      
      SECTION:- end_of_day
      if (timex > 0) then
-       output do_output
+       output do_end_day_output
        timex = timex + 1
      endif
      if (oryza2.plant_status = 'dead') then
@@ -188,35 +186,10 @@ Paddock:
      SECTION:- init
      
      SECTION:- end_of_day
+     sno3all = no3()
+     snh4all = nh4()
      END of rules
      
-
-------- eo Initialisation -----------------------------------------------------
-     Initialising:
-     
-        - Reading Eo Parameters
-     
-     
-     
-                      Eo Parameters
-          -------------------------------------------------------------------
-        Vpd Factor  Albedo  Max albedo  Z0soil  Dflt_Wind  Dflt_Pa Dflt_instrum_ht
-            (-)       (-)       (-)       (mm)   (km/day)   (hpa)      (mm)
-          -------------------------------------------------------------------
-           0.75      0.13      0.23     3.000     60.00   1000.00   2000.00
-     
-      instrum_disp instrum_z0  extn_cf  plant_method wind_day_fr  adj_fact  wind_mlt
-           (mm)      (mm)       (-)                     (-)         (-)      (-)
-          -------------------------------------------------------------------------
-          37.00      4.00      0.80 eo_transpiration      0.66      1.00      1.00
-          -------------------------------------------------------------------------
-     
-     
-     
-          Default instrument height used =      2000. (mm)
-          Source of VPD is mint
-          Default atmospheric pressure used =   1000.0 (mb)
-          Default wind used =     60.0 (km/day)
 
 ------- HD297 Water Initialisation --------------------------------------------
      
@@ -335,51 +308,6 @@ Paddock:
 ------- HD297 Nitrogen Initialisation -----------------------------------------
      
         - Reading Parameters
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     oc =    0.2000000E-02
-             less than lower limit of   0.1000000E-01
-     Component name: HD297 Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     oc =    0.1000000E-02
-             less than lower limit of   0.1000000E-01
-     Component name: HD297 Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     oc =    0.1000000E-02
-             less than lower limit of   0.1000000E-01
-     Component name: HD297 Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     oc =    0.1000000E-02
-             less than lower limit of   0.1000000E-01
-     Component name: HD297 Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     oc =    0.1000000E-02
-             less than lower limit of   0.1000000E-01
-     Component name: HD297 Nitrogen
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
      
         - Reading Constants
      
@@ -398,12 +326,12 @@ Paddock:
              2     7.00  1.30   23.04   11.52    0.00
              3     7.40  0.65   11.52    5.76    0.00
              4     8.10  0.32    5.76    2.88    0.00
-             5     8.30  0.01    1.15    0.58    0.00
-             6     8.50  0.00    0.23    0.12    0.00
-             7     8.50  0.00    0.05    0.02    0.00
-             8     8.50  0.00    0.01    0.00    0.00
-             9     8.50  0.00    0.00    0.00    0.00
-            10     8.50  0.00    0.00    0.00    0.00
+             5     8.30  0.10    1.15    0.58    0.00
+             6     8.50  0.10    0.23    0.12    0.00
+             7     8.50  0.10    0.05    0.02    0.00
+             8     8.50  0.10    0.01    0.00    0.00
+             9     8.50  0.10    0.00    0.00    0.00
+            10     8.50  0.10    0.00    0.00    0.00
           ------------------------------------------------
            Totals               64.80   32.40    0.00
           ------------------------------------------------
@@ -418,18 +346,18 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      18549.8  1484.0   170.2    21.3     5.5     0.1
-             2      18549.8  1484.0   170.2    21.3     4.0     0.1
-             3       9274.9   742.0    85.1    10.6     3.0     0.1
-             4       4637.5   371.0    42.5     5.3     2.2     0.1
-             5        185.5    14.8     1.7     0.2     1.6     0.0
-             6         28.5     2.3     0.3     0.0     1.2     0.0
-             7         14.3     1.1     0.1     0.0     0.9     0.0
-             8         14.3     1.1     0.1     0.0     0.7     0.0
-             9         14.3     1.1     0.1     0.0     0.5     0.0
-            10         14.3     1.1     0.1     0.0     0.4     0.0
+             1      18096.0  1447.7   624.0    78.0     5.5     0.1
+             2      18231.7  1458.5   488.3    61.0     4.0     0.1
+             3       9189.8   735.2   170.2    21.3     3.0     0.1
+             4       4635.4   370.8    44.6     5.6     2.2     0.1
+             5       1433.0   114.6     7.0     0.9     1.6     0.0
+             6       1433.0   114.6     7.0     0.9     1.2     0.0
+             7       1433.0   114.6     7.0     0.9     0.9     0.0
+             8       1433.0   114.6     7.0     0.9     0.7     0.0
+             9       1433.0   114.6     7.0     0.9     0.5     0.0
+            10       1433.0   114.6     7.0     0.9     0.4     0.0
           ---------------------------------------------------------
-           Totals   51283.1  4102.6   470.5    58.8    20.0     0.5
+           Totals   58750.8  4700.1  1369.2   171.2    20.0     0.5
           ---------------------------------------------------------
 
 ------- Cl Initialisation -----------------------------------------------------
@@ -437,6 +365,8 @@ Paddock:
      
         - Reading Constants
 ------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : sno3all = 70.16545
+     Manager creating a new local real variable : snh4all = 27.39303
 21 May 2003(Day of year=141), Rice sowing rule: 
      Manager sending message :- oryza2 sow  cultivar = hd297, establishment = direct-seed
 21 May 2003(Day of year=141), Oryza2: 
@@ -485,56 +415,9 @@ Paddock:
 5 October 2003(Day of year=278), Oryza2: 
      Harvesting
      Manager sending message :- oryza2 end_crop
-     Crop ended. Rough Rice Yield (dw) =  5233.6 (kg/ha)
-     Removing  5904.1 kg/ha biomass from field
-     Adding   656.0 kg/ha to surface residues
-7 October 2003(Day of year=280): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     pen_mon =   -0.8535359E-01
-             less than lower limit of    0.000000
-     Component name: eo
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-9 October 2003(Day of year=282): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     pen_mon =   -0.1043198
-             less than lower limit of    0.000000
-     Component name: eo
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-11 October 2003(Day of year=284): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     pen_mon =   -0.3960589
-             less than lower limit of    0.000000
-     Component name: eo
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     pen =   -0.8880643E-01
-             less than lower limit of    0.000000
-     Component name: eo
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM Warning Error
-                      -------------------
-     pen =   -0.4856457E-01
-             less than lower limit of    0.000000
-     Component name: eo
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+     Crop ended. Rough Rice Yield (dw) =  5466.2 (kg/ha)
+     Removing  6013.4 kg/ha biomass from field
+     Adding  2570.1 kg/ha roots to FOM pool
+     Adding   668.2 kg/ha to surface residues
 30 October 2003(Day of year=303), clock: 
      Simulation is terminating due to end criteria being met.

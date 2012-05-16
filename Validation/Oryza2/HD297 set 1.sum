@@ -1,0 +1,425 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.5
+Title                  = HD297 set 1
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "Output" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Rice extras" = %apsim%\Model\Manager.dll
+   Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
+   Component               "Irrigation mgt" = %apsim%\Model\Manager.dll
+   Component               "Fertiliser mgt" = %apsim%\Model\Manager.dll
+   Component                  "HD297 Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component               "HD297 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                       "Oryza2" = %apsim%\Model\Oryza2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 13/05/2003
+     Simulation end date   = 30/10/2003
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: CHINA3.met
+
+------- Output Initialisation -------------------------------------------------
+     Output variables:
+        year
+        day as time
+        DAY AS DOY
+        dae
+        trc
+        rain
+        dvs
+        nflv
+        lai
+        wlvg
+        wagt
+        cover_green
+        sla
+        no3() as sno3
+        nh4() as snh4
+        swdep()
+        zrt
+        trw
+        pcew
+        rnstrs
+        nacr
+        ancr
+        fnlv
+        anlv
+        anst
+        fnst
+        tnsoil
+        dlt_n_min()
+        dnit()
+        drain
+
+     Output file = HD297 set 1 Output.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Irrigation Initialisation ---------------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.60
+           depth for calculating available soil water =     300.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Rice extras Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     sand =      0.5     0.5   0.5     0.5     0.3   0.3    0.3    0.3   0.3    0.3
+     clay =      0.3     0.3   0.3     0.3     0.5   0.5    0.5    0.5   0.5    0.5
+     ksat =     3.79    3.79   4.07 1.1648 1.9748 1.148   1.441  1.065 1.065  1.065
+     alphavg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     mvg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     nvg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     co2    = 375.3
+     END of rules
+     
+     Manager creating a new local real variable : sand = 0.50000
+     Manager creating a new local real variable : clay = 0.30000
+     Manager creating a new local real variable : ksat = 3.79000
+     Manager creating a new local real variable : alphavg = 0.30000
+     Manager creating a new local real variable : mvg = 0.30000
+     Manager creating a new local real variable : nvg = 0.30000
+     Manager creating a new local real variable : co2 = 375.29999
+
+------- Rice sowing rule Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (day = 141) then
+         oryza2 sow cultivar = hd297, establishment = direct-seed
+         timex = 1
+     endif
+     
+     SECTION:- end_of_day
+     if (timex > 0) then
+       output do_end_day_output
+       timex = timex + 1
+     endif
+     if (oryza2.plant_status = 'dead') then
+       oryza2 harvest remove = 0.9
+       oryza2 end_crop
+       timex = 0
+     endif
+     
+     SECTION:- init
+     timex = 0
+     END of rules
+     
+     Manager creating a new local real variable : timex = 0.00000
+
+------- Irrigation mgt Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (day = 171) then
+         irrigation apply amount = 40
+     endif
+     if (day = 185) then
+         irrigation apply amount = 60
+     endif
+     if (day = 199) then
+         irrigation apply amount = 20
+     endif
+     if (day = 222) then
+         irrigation apply amount = 20
+     endif
+     if (day = 229) then
+         irrigation apply amount = 40
+     endif
+     if (day = 254) then
+         irrigation apply amount = 60
+     endif
+     END of rules
+     
+
+------- Fertiliser mgt Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (dae = 1) then
+         fertiliser apply amount = 150.0, type = urea
+     endif
+     if (dae = 56) then
+         fertiliser apply amount = 150.0, type = urea
+     endif
+     if (dae = 76) then
+         fertiliser apply amount = 150.0, type = urea
+     endif
+     
+     SECTION:- init
+     
+     SECTION:- end_of_day
+     sno3all = no3()
+     snh4all = nh4()
+     END of rules
+     
+
+------- HD297 Water Initialisation --------------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     diffus_slope =     188.0000
+             exceeds upper limit of    100.0000
+     Component name: HD297 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     mwcon is being replaced with a saturated conductivity. See documentation for details.
+     Component name: HD297 Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.007  0.102  0.372  0.456  0.372  1.440  0.613  0.100
+          100.-  200.  0.007  0.109  0.366  0.456  0.366  1.440  0.243  0.100
+          200.-  300.  0.007  0.105  0.353  0.456  0.353  1.440  0.096  0.100
+          300.-  400.  0.007  0.105  0.381  0.456  0.381  1.440  0.038  0.100
+          400.-  500.  0.007  0.105  0.381  0.456  0.381  1.440  0.009  0.100
+          500.-  600.  0.007  0.105  0.381  0.456  0.381  1.440  0.000  0.100
+          600.-  700.  0.007  0.105  0.381  0.456  0.381  1.440  0.000  0.100
+          700.-  800.  0.007  0.105  0.381  0.456  0.381  1.440  0.000  0.100
+          800.-  900.  0.007  0.105  0.381  0.456  0.381  1.440  0.000  0.100
+          900.- 1000.  0.007  0.105  0.381  0.456  0.381  1.440  0.000  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      10.20      27.00      27.00       8.40
+          100.-  200.      10.90      25.70      25.70       9.00
+          200.-  300.      10.50      24.80      24.80      10.30
+          300.-  400.      10.50      27.60      27.60       7.50
+          400.-  500.      10.50      27.60      27.60       7.50
+          500.-  600.      10.50      27.60      27.60       7.50
+          600.-  700.      10.50      27.60      27.60       7.50
+          700.-  800.      10.50      27.60      27.60       7.50
+          800.-  900.      10.50      27.60      27.60       7.50
+          900.- 1000.      10.50      27.60      27.60       7.50
+          ---------------------------------------------------------
+               Totals     105.10     270.70     270.70      80.20
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.14      450.00      188.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              84.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- SurfaceOM Initialisation ----------------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat           10.0     4.0     0.1     0.0   0.005     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- HD297 Nitrogen Initialisation -----------------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.30   23.04   11.52    0.00
+             2     7.00  1.30   23.04   11.52    0.00
+             3     7.40  0.65   11.52    5.76    0.00
+             4     8.10  0.32    5.76    2.88    0.00
+             5     8.30  0.10    1.15    0.58    0.00
+             6     8.50  0.10    0.23    0.12    0.00
+             7     8.50  0.10    0.05    0.02    0.00
+             8     8.50  0.10    0.01    0.00    0.00
+             9     8.50  0.10    0.00    0.00    0.00
+            10     8.50  0.10    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals               64.80   32.40    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      18720.0  1497.6     0.0     0.0     5.5     0.1
+             2      18720.0  1497.6     0.0     0.0     4.0     0.1
+             3       9360.0   748.8     0.0     0.0     3.0     0.1
+             4       4680.0   374.4     0.0     0.0     2.2     0.1
+             5       1440.0   115.2     0.0     0.0     1.6     0.0
+             6       1440.0   115.2     0.0     0.0     1.2     0.0
+             7       1440.0   115.2     0.0     0.0     0.9     0.0
+             8       1440.0   115.2     0.0     0.0     0.7     0.0
+             9       1440.0   115.2     0.0     0.0     0.5     0.0
+            10       1440.0   115.2     0.0     0.0     0.4     0.0
+          ---------------------------------------------------------
+           Totals   60120.0  4809.6     0.0     0.0    20.0     0.5
+          ---------------------------------------------------------
+
+------- Cl Initialisation -----------------------------------------------------
+     Initialising
+     
+        - Reading Constants
+------- Start of simulation  --------------------------------------------------
+     Manager creating a new local real variable : sno3all = 70.11096
+     Manager creating a new local real variable : snh4all = 27.08806
+21 May 2003(Day of year=141), Rice sowing rule: 
+     Manager sending message :- oryza2 sow  cultivar = hd297, establishment = direct-seed
+21 May 2003(Day of year=141), Oryza2: 
+ SUCCESS
+      Establishment method = DIRECT-SEED
+      Cultivar = hd297
+      Number of plants direct seeded (pl/m^2) =    360.00000
+      Evapotranspiration is (internal) Penman
+      Sowing in seedbed
+22 May 2003(Day of year=142), Fertiliser mgt: 
+     Manager sending message :- fertiliser apply  amount = 150.0, type = urea
+22 May 2003(Day of year=142), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of Urea ferilizer (urea)
+                                         added at depth    0.00 (layer   1)
+20 June 2003(Day of year=171), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 40
+4 July 2003(Day of year=185), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 60
+16 July 2003(Day of year=197), Fertiliser mgt: 
+     Manager sending message :- fertiliser apply  amount = 150.0, type = urea
+16 July 2003(Day of year=197), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of Urea ferilizer (urea)
+                                         added at depth    0.00 (layer   1)
+18 July 2003(Day of year=199), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 20
+5 August 2003(Day of year=217), Fertiliser mgt: 
+     Manager sending message :- fertiliser apply  amount = 150.0, type = urea
+5 August 2003(Day of year=217), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of Urea ferilizer (urea)
+                                         added at depth    0.00 (layer   1)
+10 August 2003(Day of year=222), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 20
+17 August 2003(Day of year=229), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 40
+11 September 2003(Day of year=254), Irrigation mgt: 
+     Manager sending message :- irrigation apply  amount = 60
+ Crop reached maturity
+5 October 2003(Day of year=278), Rice sowing rule: 
+     Manager sending message :- oryza2 harvest  remove = 0.9
+5 October 2003(Day of year=278), Oryza2: 
+     Harvesting
+     Manager sending message :- oryza2 end_crop
+     Crop ended. Rough Rice Yield (dw) =  5885.4 (kg/ha)
+     Removing  7512.7 kg/ha biomass from field
+     Adding  3697.8 kg/ha roots to FOM pool
+     Adding   834.7 kg/ha to surface residues
+30 October 2003(Day of year=303), clock: 
+     Simulation is terminating due to end criteria being met.
