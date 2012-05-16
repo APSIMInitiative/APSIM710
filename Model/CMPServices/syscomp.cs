@@ -750,6 +750,13 @@ namespace CMPServices
                         queryInfoTracker.addQueryMsg(msg.msgID, publisherID, anEvent.name, eventID, TQueryInfoTracker.ANY_DEST_COMP, TQueryInfoTracker.UPD_PUBEVENT_CONN);
 
                         sendMessage(msg);                                  //this system will then handle returnInfo's
+
+             			if (anEvent.compID < 1) // If we couldn't find the named destination, that's a fatal error
+			            {
+				          string buf = "Unable to locate the destination \"" + anEvent.name + "\", for an event published by " + findCompFQN(publisherID);
+                          sendError(buf, true); //send fatal error message
+				          break;
+			            }
                     } //endif
 
                     //build the message and get ownership of it
