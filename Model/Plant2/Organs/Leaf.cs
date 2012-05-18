@@ -9,8 +9,8 @@ public class Leaf : BaseOrgan, AboveGround
 {
  #region Class inputs
     //Input Parameters
-    [Param]
-    public List<LeafCohort> InitialLeaves;
+    [Link]
+    public LeafCohort[] InitialLeaves;
     [Param]
     [Output]
     [Description("Max cover")]
@@ -528,7 +528,7 @@ public class Leaf : BaseOrgan, AboveGround
  #endregion
 
  #region Leaf functions
-    public void CopyLeaves(List<LeafCohort> From, List<LeafCohort> To)
+    public void CopyLeaves(LeafCohort[] From, List<LeafCohort> To)
     {
         foreach (LeafCohort Leaf in From)
             To.Add(Leaf.Clone());

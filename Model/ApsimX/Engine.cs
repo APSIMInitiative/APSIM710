@@ -29,91 +29,49 @@ public class Engine
                 throw new Exception("Usage: FastApsim .ApsimFileName");
 
             Engine ApsimEngine = new Engine();
-            ApsimEngine.Load(args[0]);
-            ApsimEngine.Run();
+            ModelInstance Simulation = ApsimEngine.Load(args[0]);
+            Simulation.Run();
             return 0;
         }
         catch (Exception err)
         {
-            Console.WriteLine(err.Message);
+            if (err.InnerException is FinishedException)
+            {
+                Console.WriteLine(err.InnerException.Message);
+                return 0;
+            }
+            Console.WriteLine(err.ToString());
             return 1;
         }
     }
-
-    // Some data for our engine.
-    private ModelInstance Simulation;
 
     /// <summary>
     /// Load a simulation from the specified file.
     /// </summary>
-    public void Load(string FileName)
+    private ModelInstance Load(string FileName)
     {
         if (!File.Exists(FileName))
             throw new Exception("Cannot find file: " + FileName);
 
-        XmlDocument Doc = new XmlDocument();
-        Doc.Load(FileName);
+        StreamReader In = new StreamReader(FileName);
 
-        // Find the <simulation> element.
-        XmlNode SimulationNode = XmlHelper.FindByType(Doc.DocumentElement, "Simulation");
-        if (SimulationNode == null)
-            throw new Exception("Cannot find a simulation to run");
-
-        Simulation = ModelInstance.CreateModelInstance(SimulationNode);
-        Simulation Sim = (Simulation)Simulation.TheModel;
-        Simulation.UpdateValues(); 
-        Sim.InvokeInitialised();
-    }
-
-    /// <summary>
-    /// Load a simulation from the specified XML
-    /// </summary>
-    public void LoadXml(string XML)
-    {
-        XmlDocument Doc = new XmlDocument();
-        Doc.LoadXml(XML);
-
-        Simulation = ModelInstance.CreateModelInstance(Doc.DocumentElement);
-        Simulation Sim = (Simulation)Simulation.TheModel;
-        Sim.InvokeInitialised();
+        ModelInstance Simulation = CreateModelInstance(In);
         Simulation.UpdateValues();
+        Simulation.PublishToChildren("Initialised");
+        Simulation.Run();
+        return Simulation;
     }
 
     /// <summary>
-    /// Run the simulation previously loaded into memory. Returns 1 on on receiving a finish.
+    /// Create instances of all objects specified by the XmlNode. Returns the top 
+    /// level instance.
     /// </summary>
-    public int RunSingleTimeStep()
+    private static ModelInstance CreateModelInstance(TextReader Reader)
     {
-        try
-        {
-            Simulation Sim = (Simulation)Simulation.TheModel;
-            Sim.InvokeTimeStep();
-        }
-        catch (FinishedException exc)
-        {
-            Console.WriteLine(exc.Message);
-            return 1;
-        }
-
-        return 0;
-    }
-
-    /// <summary>
-    /// Run entire simulation.
-    /// </summary>
-    private void Run()
-    {
-        Simulation.UpdateValues();
-        while (RunSingleTimeStep() == 0) ;
-    }
-
-    /// <summary>
-    /// Find an instance of a model with the specified name.
-    /// Usefull for unit tests.
-    /// </summary>
-    public object FindModel(string ModelName)
-    {
-        return Simulation.FindModelByName(ModelName);
+        ModelInstance RootInstance = XmlSerialiser.Deserialise(Reader);
+        RootInstance.SortChildren();
+        RootInstance.Initialise();
+        return RootInstance;
     }
 
 }

@@ -17,7 +17,7 @@ class ClassVariable
     private string _Name;
     private bool _IsOptional;
     private bool Immutable;
-    private bool HaveUpdatedValue = false;
+    private bool _HaveSetValue = false;
 
     /// <summary>
     /// A constructor
@@ -57,6 +57,12 @@ class ClassVariable
     /// </summary>
     internal string Name { get { return _Name; } }
 
+    /// <summary>
+    /// Return the name of the class member.
+    /// </summary>
+    internal MemberInfo MemberInfo { get { return Member; } }
+
+
     /// <summary> 
     /// Update the value of this variable using the source variable.
     /// </summary>
@@ -67,13 +73,12 @@ class ClassVariable
             if (!IsOptional)
                 throw new Exception("Cannot find a value for [Input] variable: " + Name);
         }
-        else if (!HaveUpdatedValue || !Source.Immutable)
+        else if (!_HaveSetValue || !Source.Immutable)
         {
             if (Converter == null)
                 Value = Source.Value;
             else
                 Value = Converter.Invoke(Name, Source.Value);
-            HaveUpdatedValue = true;
         }
     }
 
@@ -95,9 +100,11 @@ class ClassVariable
                 (Member as FieldInfo).SetValue(TheModel, value);
             else
                 (Member as PropertyInfo).SetValue(TheModel, value, null);
+            _HaveSetValue = true;
         }
     }
 
+    internal bool HaveSetValue { get { return _HaveSetValue; } }
 
     /// <summary>
     /// Return the type of the class member.
@@ -117,11 +124,6 @@ class ClassVariable
     /// Return true if this class variable is an Optional one. [Param] and [Input] variables can be optional.
     /// </summary>
     internal bool IsOptional { get { return _IsOptional; } }
-
-    //public bool IsConnected { get { return Source != null; } }
-
-    //public abstract Type Type { get; }
-    //public abstract object Value { get; set; }
 
     /// <summary>
     /// Return the [Param] attribute for this class variable. Will return null if no
@@ -180,7 +182,8 @@ class ClassVariable
     {
         get
         {
-            return !IsInput && !IsParam && Member is FieldInfo;
+            return !IsInput && !IsParam && Member is FieldInfo &&
+                   Member.GetCustomAttributes(typeof(NonSerializedAttribute), false).Length == 0;
         }
     }
 }

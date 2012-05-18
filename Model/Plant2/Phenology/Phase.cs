@@ -18,7 +18,7 @@ abstract public class Phase
     [Link]
     public Phenology Phenology = null;
 
-    [Link]
+    [Link(IsOptional=true)]
     public Function ThermalTime = null;
     
     [Link(IsOptional = true)]

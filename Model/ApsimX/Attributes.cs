@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 
-[AttributeUsage(AttributeTargets.Class)]
-public class CanHaveChildren : System.Attribute
-{ }
-
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 public class Input : System.Attribute
 {

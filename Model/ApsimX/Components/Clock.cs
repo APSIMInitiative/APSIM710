@@ -12,7 +12,6 @@ public class Clock
     private bool FirstDay = true;
 
     public delegate void NullDelegate();
-    public event NullDelegate Initialised;
     public event TimeDelegate Tick;
     public event NullDelegate Prepare;
     public event NullDelegate Process;

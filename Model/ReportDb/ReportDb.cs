@@ -15,6 +15,12 @@ using System.Data.SQLite;
 using System.Data;
 using ModelFramework;
 
+public class Variables
+{
+    [Param]
+    public string[] Variable = null;
+}
+
 public class ReportDb
 {
 #if __MonoCS__
@@ -32,12 +38,11 @@ public class ReportDb
     [Input]
     private DateTime Today;
 
-    [Param]
-    string[] Variables = null;
-
     [Input]
     string Title = null;
 
+    [Link]
+    Variables Variables = null;
     //[Param]
     //string[] OutputFrequencys = null;
 
@@ -276,11 +281,11 @@ public class ReportDb
 
         Values.Add(new KeyValuePair<string, object>("SimulationID", SimulationID));
         Values.Add(new KeyValuePair<string, object>("Date", Today));
-        for (int i = 0; i < Variables.Length; i++)
+        for (int i = 0; i < Variables.Variable.Length; i++)
         {
             string Value;
-            Paddock.Get(Variables[i], out Value);
-            ConvertVariableToValues(Variables[i], Value, Values);
+            Paddock.Get(Variables.Variable[i], out Value);
+            ConvertVariableToValues(Variables.Variable[i], Value, Values);
         }
         return Values;
     }

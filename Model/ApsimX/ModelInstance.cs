@@ -8,6 +8,7 @@ using CSGeneral;
 using ModelFramework;
 using System.IO;
 using ApsimFile;
+using System.Xml.Serialization;
 
 /// <summary>
 /// Encapculates an instance of a model (e.g. wheat, sorghum, manager).
@@ -29,26 +30,14 @@ internal class ModelInstance
     public ModelInstance Parent;
     public object TheModel;
     public static string Title;
-    public static XmlNode SoilNode;
+    public string ShortCutPath;
     public static Simulation RootSimulation;
     private string _FullName;
     private List<string> ComponentOrder = null;
     private bool Enabled = true;
     private Dictionary<string, ClassVariable> VariableCache = new Dictionary<string, ClassVariable>();
 
-    /// <summary>
-    /// Create instances of all objects specified by the XmlNode. Returns the top 
-    /// level instance.
-    /// </summary>
-    public static ModelInstance CreateModelInstance(XmlNode Node)
-    {
-        string InstanceName = XmlHelper.Name(Node);
-        ModelInstance RootInstance = new ModelInstance(InstanceName, Node, null, Assembly.GetExecutingAssembly());
-        RootInstance.SortChildren();
-        RootInstance.Initialise();
-        RootSimulation = (Simulation) RootInstance.TheModel;
-        return RootInstance;
-    }
+
 
     private int CompareModelInstances(ModelInstance x, ModelInstance y)
     {
@@ -69,7 +58,7 @@ internal class ModelInstance
     /// <summary>
     /// Sort all child instances according to the proper component order.
     /// </summary>
-    private void SortChildren()
+    public void SortChildren()
     {
         if (ComponentOrder == null)
             ComponentOrder = Configuration.Instance.ComponentOrder();
@@ -83,7 +72,7 @@ internal class ModelInstance
     /// Internal recursive constructor to create instances of all objects specified by the 
     /// XmlNode. The parent instance is also passed in. Returns the top level instance.
     /// </summary>
-    internal ModelInstance(string InstanceName, XmlNode _Node, ModelInstance ParentInstance, Assembly Assembly)
+    internal ModelInstance(string InstanceName, XmlNode _Node, ModelInstance ParentInstance, Type _ClassType)
     {
         if (ParentInstance != null)
         {
@@ -102,158 +91,30 @@ internal class ModelInstance
             FieldInfo TitleFieldInfo = GetType().GetField("Title");
             Outputs.Add(new ClassVariable(TitleFieldInfo, TheModel));
 
-            _FullName = "";
+            _FullName = InstanceName;
             Title = InstanceName;
         }
 
         // resolve any shortcuts.
         Node = _Node;
-        string ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
+        ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
         if (ShortCutPath != "")
         {
-            Node = XmlHelper.Find(Node.OwnerDocument.DocumentElement, ShortCutPath);
+            Node = XmlHelper.Find(Node, ShortCutPath);
             if (Node == null)
                 throw new Exception("Cannot find shortcut: " + ShortCutPath);
         }
-        ClassType = GetClassType(Node.Name, Assembly);
+        ClassType = _ClassType;
         if (ClassType == null)
             throw new Exception("Cannot find a model class called: " + Node.Name);
 
         Parent = ParentInstance;
 
+        TheModel = Activator.CreateInstance(ClassType);
 
-        CreateInstanceOfModel();
+        CollectVariablesAndEvents();
     }
 
-    /// <summary>
-    /// Try and create model instance(s) for the specified XmlNode. Two ways that this method
-    /// works. The first (and simplest) is that it uses the Node.Name as a class name and tries to
-    /// locate that in the currently executing assembly. If this works then it will create the model instance
-    /// and it to the children collection.
-    /// If the first method fails then it will use the Node.Name as a class name, try and find an XML file with
-    /// that class name, open it, look for a AtModelRunTime node and then follow the "instructions" inside the
-    /// node.
-    /// </summary>
-    private void TryCreateModelInstance(XmlNode ModelParameterisation, Assembly CurrentAssembly)
-    {
-        string XmlFileName = Path.Combine(Configuration.ApsimBinDirectory(), ModelParameterisation.Name + "X.xml");
-        if (File.Exists(XmlFileName))
-        {
-            XmlDocument XmlDoc = new XmlDocument();
-            XmlDoc.Load(XmlFileName);
-            XmlNode RunTimeInstructions = XmlHelper.Find(XmlDoc.DocumentElement, "Model");
-            if (RunTimeInstructions == null)
-                throw new Exception("Cannot determine how to create an instance of class: " + ModelParameterisation.Name);
-
-            ProcessInstructions(RunTimeInstructions, ModelParameterisation);
-        }
-        else
-        {
-            Type ModelClassType = GetClassType(ModelParameterisation.Name, CurrentAssembly);
-            if (ModelClassType != null)
-            {
-                string InstanceName = XmlHelper.Name(ModelParameterisation);
-                Children.Add(new ModelInstance(InstanceName, ModelParameterisation, this, CurrentAssembly));
-            }
-        }
-    }
-
-    private XmlNode ProcessInstructions(XmlNode InstructionNode, XmlNode ModelParameterisation)
-    {
-        XmlNode ModelDescription = null;
-        foreach (XmlNode Instruction in InstructionNode.ChildNodes)
-        {
-            if (Instruction.Name == "InstantiateModel")
-            {
-                if (ModelDescription != null)
-                {
-                    // This must be the second model instantiation - add the previous one to "Children"
-                    CreateNewModelInstance(ModelParameterisation, ModelDescription);
-                }
-                ModelDescription = Instruction;
-            }
-            else if (Instruction.Name == "Override")
-            {
-                Override(ModelDescription, Instruction);
-            }
-            else if (Instruction.Name == "OverrideIf")
-            {
-                string Condition = XmlHelper.Attribute(Instruction, "condition");
-                if (!Condition.Contains("="))
-                    throw new Exception("Invalid <overrideif> condition: " + Condition);
-                int PosEquals = Condition.IndexOf('=');
-                string VariableName = Condition.Substring(0, PosEquals).Replace(".", "/");
-                string VariableValue = Condition.Substring(PosEquals + 1);
-                XmlNode VariableNode = XmlHelper.Find(ModelDescription, VariableName);
-                if (VariableNode == null)
-                    throw new Exception("Cannot find referenced node in <overrideif>: " + VariableName);
-                if (VariableNode.InnerText.ToLower() == VariableValue.ToLower())
-                    Override(ModelDescription, Instruction);
-            }
-        }
-        CreateNewModelInstance(ModelParameterisation, ModelDescription);
-        return ModelDescription;
-    }
-
-    private void CreateNewModelInstance(XmlNode ModelParameterisation, XmlNode ModelDescription)
-    {
-        string ClassName = XmlHelper.Attribute(ModelDescription, "ClassName");
-        if (ClassName == "")
-            throw new Exception("Cannot find a ClassName attribute on InstantiateModel XML element: " + ModelDescription.Name);
-
-        string InnerContents = ModelDescription.InnerXml;
-
-        // replace [InstanceName] with the name of this instance.
-        InnerContents = InnerContents.Replace("[InstanceName]", XmlHelper.Name(ModelParameterisation));
-
-        if (ModelParameterisation.Name == "soil" || ClassName == "Plant")
-        {
-            if (ModelParameterisation.Name == "soil")
-                SoilNode = ModelParameterisation;
-            InnerContents = Soil.ReplaceSoilMacros(SoilNode, InnerContents);
-        }
-        ApsimFile.Macro M = new Macro();
-        InnerContents = M.Go(ModelParameterisation, InnerContents);
-
-        ModelDescription.InnerXml = InnerContents;
-
-        ModelDescription = XmlHelper.ChangeType(ModelDescription, ClassName);
-
-        string AssemblyFileName = XmlHelper.Attribute(ModelDescription, "Assembly");
-        if (AssemblyFileName == "")
-            throw new Exception("Cannot find an assembly attribute on InstantiateModel XML element: " + ModelDescription.Name);
-        AssemblyFileName = Path.Combine(Configuration.ApsimBinDirectory(), AssemblyFileName);
-        if (!File.Exists(AssemblyFileName))
-            throw new Exception("Cannot find assemble: " + AssemblyFileName);
-        Assembly ModelAssembly = Assembly.LoadFile(AssemblyFileName);
-        if (ModelAssembly == null)
-            throw new Exception("Cannot find assembly: " + AssemblyFileName);
-
-        string InstanceName = XmlHelper.Name(ModelParameterisation);
-        Children.Add(new ModelInstance(InstanceName, ModelDescription, this, ModelAssembly));
-    }
-
-    /// <summary>
-    /// Perform an override on the specified modeldescription using the specified instruction.
-    /// </summary>
-    private static void Override(XmlNode ModelDescription, XmlNode Instruction)
-    {
-        String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
-        XmlNode ReferencedNode = ModelDescription;
-        if (ReferencedNodeName != "")
-            ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);
-        if (ReferencedNode == null)
-            throw new Exception("Cannot find referenced node: " + ReferencedNodeName);
-        foreach (XmlNode NodeToOverride in Instruction.ChildNodes)
-        {
-            XmlNode NodeToRemove = XmlHelper.Find(ReferencedNode, XmlHelper.Name(NodeToOverride));
-            if (NodeToRemove == null)
-                throw new Exception("Cannot override node: " + XmlHelper.Name(NodeToOverride));
-            XmlNode NewNode = ReferencedNode.OwnerDocument.ImportNode(NodeToOverride, true);
-            ReferencedNode.InsertAfter(NewNode, NodeToRemove);
-            ReferencedNode.RemoveChild(NodeToRemove);
-        }
-    }
 
 
     /// <summary>
@@ -266,12 +127,11 @@ internal class ModelInstance
         if (!Enabled)
             foreach (EventSubscriber Subscriber in Subscribers)
                 Subscriber.Enabled = false;
-        ResolveRefs();
+        ResolveRefs(IncludeChildren: false);
         UpdateValues();
         foreach (ModelInstance Child in Children)
             Child.Initialise();
     }
-
 
     /// <summary>
     /// Property to return a unqualified name.
@@ -314,37 +174,48 @@ internal class ModelInstance
     /// <summary>
     /// Resolve all [Ref] pointers.
     /// </summary>
-    public void ResolveRefs()
+    public void ResolveRefs(bool IncludeChildren)
     {
         foreach (LinkField Ref in Refs)
         {
-            object ModelReference = null;
             if (Ref.Info.FieldType.Name == "Paddock")
-                ModelReference = new Paddock(ParentPaddock);
+                Ref.Value = new Paddock(ParentPaddock);
 
             else if (Ref.Info.FieldType.Name == "Component" && Ref.Name == "My")
-                ModelReference = new ModelFramework.Component(this);
+                Ref.Value = new ModelFramework.Component(this);
 
             else
             {
-                ModelReference = FindModelByName(Ref.Name);
-                if (ModelReference == null)
-                    ModelReference = FindModelByType(Ref.Info.FieldType.Name);
-            }
+                ModelInstance[] Instances = FindModelsByName(Ref.Name);
 
-            if (ModelReference == null)
-            {
-                if (!Ref.Optional)
-                    throw new Exception("Cannot find ref: " + Ref.Name);
-            }
-            else
-            {
-                if (ModelReference.GetType().ToString().Contains("Generic.List"))
-                    Ref.Values = ModelReference;
+                if (Instances == null)
+                    Instances = FindModelsByType(Ref.Info.FieldType.Name);
+
+                if (Instances == null)
+                {
+                    if (!Ref.Optional)
+                        throw new Exception("Cannot find ref: " + Ref.Name);
+                }
                 else
-                    Ref.Value = ModelReference;
+                {
+                    if (Ref.Info.FieldType.IsArray)
+                    {
+                        // An link which is an array has been encountered.
+                        // e.g. [Link] LeafCohort[] InitialLeaves;
+                        int[] args = new int[] {Instances.Length};
+                        Array A = Array.CreateInstance(Ref.Info.FieldType.GetElementType(), Instances.Length) as Array;
+                        for (int i = 0; i < Instances.Length; i++)
+                            A.SetValue(Instances[i].TheModel, i);
+                        Ref.Value = A;
+                    }
+                    else
+                        Ref.Value = Instances[0].TheModel;
+                }
             }
         }
+        if (IncludeChildren)
+            foreach (ModelInstance Child in Children)
+                Child.ResolveRefs(IncludeChildren);
     }
 
     public ModelInstance Root
@@ -357,14 +228,26 @@ internal class ModelInstance
             return I;
         }
     }
+
+    public ModelInstance FindModelInstance(string NameToFind)
+    {
+        ModelInstance[] Instances = FindModelInstances(NameToFind);
+        if (Instances == null || Instances.Length == 0)
+            return null;
+        else
+            return Instances[0];
+    }
+
     /// <summary>
     /// Go find a model instance using the specified NameToFind. This name can
     /// have path information. Returns null if not found.
     ///   A leading . indicates an absolute address. e.g. .simulation.paddock1.soilwat
     ///   No dot indicates a child.                  e.g. leaf 
     /// </summary>
-    public ModelInstance FindModelInstance(string NameToFind)
+    public ModelInstance[] FindModelInstances(string NameToFind)
     {
+        List<ModelInstance> Instances = new List<ModelInstance>();
+
         ModelInstance I = this;
 
         string[] Paths = NameToFind.Split(".".ToCharArray());
@@ -381,44 +264,54 @@ internal class ModelInstance
             else
             {
                 // Find a child node.
-                int ChildIndex = 0;
-                while (ChildIndex < I.Children.Count && I.Children[ChildIndex].Name.ToLower() != Path.ToLower())
-                    ChildIndex++;
-                if (ChildIndex == I.Children.Count)
+                Instances.Clear();
+                foreach (ModelInstance Instance in I.Children)
+                {
+                    string NameNoArray = Instance.Name;
+                    StringManip.SplitOffBracketedValue(ref NameNoArray, '[', ']');
+                    if (string.Equals(NameNoArray, Path, StringComparison.CurrentCultureIgnoreCase))
+                        Instances.Add(Instance);
+                }
+                if (Instances.Count == 0)
                     return null;
-                I = I.Children[ChildIndex];
+                
+                I = Instances[0];
             }
 
             PathIndex++;
         }
-        return I;
+        return Instances.ToArray();
     }
 
-    public object FindModelByName(string NameToFind)
+    public ModelInstance[] FindModelsByName(string NameToFind)
     {
-        ModelInstance I = FindModelInstance(NameToFind);
+        ModelInstance[] I = FindModelInstances(NameToFind);
         if (I == null && !NameToFind.Contains(".") && Parent != null)
         {
             // No dot was specified so try our parent.
-            return Parent.FindModelByName(NameToFind);
+            return Parent.FindModelsByName(NameToFind);
         }
-        if (I != null)
-            return I.TheModel;
-        else
-            return null;
+        return I;
     }
 
-    public object FindModelByType(string TypeToFind)
+    public ModelInstance[] FindModelsByType(string TypeToFind)
     {
+        List<ModelInstance> Instances = null;
         foreach (ModelInstance Child in Children)
         {
-            if (Child.ClassType.ToString().ToLower() == TypeToFind.ToLower())
-                return Child.TheModel;
+            if (string.Equals(Child.ClassType.ToString(), TypeToFind, StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (Instances == null)
+                    Instances = new List<ModelInstance>();
+                Instances.Add(Child);
+            }
         }
+        if (Instances != null)
+            return Instances.ToArray();
 
         // Not found - try our parent.
         if (Parent != null)
-            return Parent.FindModelByType(TypeToFind);
+            return Parent.FindModelsByType(TypeToFind);
         else
             return null;
     }
@@ -427,7 +320,6 @@ internal class ModelInstance
     /// Find a specific output that matches "NameToFind". This method will search the
     /// instance passed in plus all child instances.
     /// </summary>
-
     public ClassVariable FindOutput(string NameToFind)
     {
         if (VariableCache.ContainsKey(NameToFind))
@@ -488,6 +380,35 @@ internal class ModelInstance
     }
 
 
+    public ClassVariable FindParamOrState(string NameToFind)
+    {
+        foreach (ClassVariable Param in Params)
+            if (string.Equals(Param.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
+                return Param;
+        foreach (ClassVariable State in States)
+            if (string.Equals(State.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
+                return State;
+
+        return null;
+    }
+
+    public ClassVariable FindParam(string NameToFind)
+    {
+        foreach (ClassVariable Param in Params)
+            if (string.Equals(Param.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
+                return Param;
+
+        return null;
+    }
+
+    public LinkField FindLink(string NameToFind)
+    {
+        foreach (LinkField Link in Refs)
+            if (string.Equals(Link.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
+                return Link;
+
+        return null;
+    }
 
     /// <summary>
     /// Update all [Input] values for this model instance and all child instances.
@@ -508,30 +429,6 @@ internal class ModelInstance
         }
     }
 
-    public void CreateInstanceOfModel()
-    {
-        TheModel = Activator.CreateInstance(ClassType);
-
-        CollectVariablesAndEvents();
-
-        // If this model doesn't have a [Param] of type XmlNode then go through all children
-        // and assume that those that aren't a [Param] must be a nested model.
-        if (!ModelHasXMLParam())
-        {
-            foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
-            {
-                bool ChildEnabled = XmlHelper.Attribute(Child, "enabled") != "no";
-
-                // If the model has a [Param] with the same name as this child xml node
-                // then don't go and try create a nested simulation object for this xml node.
-
-                if (!(Child is XmlWhitespace) && !ModelHasParam(Child.Name) && ChildEnabled)
-                    TryCreateModelInstance(Child, ClassType.Assembly);
-            }
-        }
-    }
-
-
     public void Activate()
     {
         if (!Enabled)
@@ -539,6 +436,7 @@ internal class ModelInstance
             // We're going to tear everything down and create a new, fresh model.
             //TearDownModel();
             EnableEvents();
+            //ResolveAllRefsAndEvents();
             UpdateAllValues();
             //CreateInstanceOfModel();
             //Root.ResolveAllRefsAndEvents();
@@ -575,7 +473,7 @@ internal class ModelInstance
     {
         Enabled = true;
         foreach (EventSubscriber Subscriber in Subscribers)
-            Subscriber.Enabled = true;
+            Subscriber.Connect();
         foreach (ModelInstance Child in Children)
             Child.EnableEvents();
     }
@@ -583,7 +481,7 @@ internal class ModelInstance
     private void DisableEvents()
     {
         foreach (EventSubscriber Subscriber in Subscribers)
-            Subscriber.Enabled = false;
+            Subscriber.Disconnect();
         foreach (ModelInstance Child in Children)
             Child.DisableEvents();
     }
@@ -592,7 +490,7 @@ internal class ModelInstance
     {
         VariableCache.Clear();
         ConnectInputsAndOutputs();
-        ResolveRefs();
+        ResolveRefs(IncludeChildren: false);
         if (Enabled)
             ConnectEvents();
         UpdateValues();
@@ -647,14 +545,14 @@ internal class ModelInstance
         return false;
     }
 
-    internal bool ModelHasXMLParam()
+    internal ClassVariable ModelHasXMLParam()
     {
         foreach (ClassVariable Param in Params)
         {
             if (Param.Type == typeof(XmlNode))
-                return true;
+                return Param;
         }
-        return false;
+        return null;
     }
 
 
@@ -665,7 +563,6 @@ internal class ModelInstance
     /// </summary>
     internal void AddModel(XmlNode ModelDescription, Assembly ModelAssembly)
     {
-
         Children.Clear();
         Inputs.Clear();
         Outputs.Clear();
@@ -676,23 +573,23 @@ internal class ModelInstance
         Subscribers.Clear();
 
         Node = ModelDescription;
-        ClassType = GetClassType(Node.Name, ModelAssembly);
+        ClassType = XmlSerialiser.GetClassType(Node.Name, ModelAssembly);
         if (ClassType == null)
             throw new Exception("Cannot find a model class called: " + Node.Name);
 
         TheModel = Activator.CreateInstance(ClassType);
         CollectVariablesAndEvents();
 
-        if (!ModelHasXMLParam())
-        {
-            foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
-            {
-                // If the model has a [Param] with the same name as this child xml node
-                // then don't go and try create a nested simulation object for this xml node.
-                if (!ModelHasParam(Child.Name) && Child.Name.ToLower() != "summaryfile")
-                    Children.Add(new ModelInstance(XmlHelper.Name(Child), Child, this, ModelAssembly));
-            }
-        }
+        //if (!ModelHasXMLParam())
+        //{
+        //    foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
+        //    {
+        //        // If the model has a [Param] with the same name as this child xml node
+        //        // then don't go and try create a nested simulation object for this xml node.
+        //        if (!ModelHasParam(Child.Name) && Child.Name.ToLower() != "summaryfile")
+        //            Children.Add(new ModelInstance(XmlHelper.Name(Child), Child, this, ModelAssembly));
+        //    }
+        //}
 
         Initialise();
 
@@ -768,67 +665,7 @@ internal class ModelInstance
             Outputs.Add(Variable);
 
         if (Variable.IsParam)
-        {
-            string ParamName = Variable.Name;
-            object ParamValue = null;
-
-            // Get the parameter value.
-            if (ParamName.ToLower() == "name")
-                ParamValue = Name;
-            else if (Variable.Type.Name == "XmlNode")
-                ParamValue = Node;
-            else
-            {
-                List<XmlNode> ParamNodes = XmlHelper.ChildNodesByName(Node, ParamName);
-                if (ParamNodes.Count > 0)
-                {
-                    if (Variable.Type.Name == "List`1")
-                    {
-                        IList L = (IList)Activator.CreateInstance(Variable.Type);
-                        ParamValue = L;
-
-                        foreach (XmlNode ParamNode in ParamNodes)
-                        {
-                            ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ParamNode), ParamNode, this, ClassType.Assembly);
-                            Children.Add(NewModelInstance);
-                            L.Add(NewModelInstance.TheModel);
-                        }
-                    }
-                    else if (ClassType.Assembly.GetType(Variable.Type.Name) != null)
-                    {
-                        // we have found a nested param - treat it as a model.
-                        ModelInstance NewModelInstance = new ModelInstance(XmlHelper.Name(ParamNodes[0]), ParamNodes[0], this, ClassType.Assembly);
-                        Children.Add(NewModelInstance);
-                        ParamValue = NewModelInstance.TheModel;
-                    }
-                    else
-                    {
-                        // Simple parameter value from XML.
-                        string ParamStringValue = ParamNodes[0].InnerXml;
-                        if (ParamStringValue != null)
-                            ParamValue = TypeConverter.Convert(ParamName, ParamStringValue, Variable.Type);
-                    }
-                }
-                else if (Variable.Type.IsArray && ParamName[ParamName.Length - 1] == 's')
-                {
-                    // We have encountered a [Param] that is an array e.g.
-                    // [Param] string[] XYs;
-                    // The name "XYs" is converted to a non plural name: XY
-                    // and all child values of this XML Node with a type of "XY" will be found and 
-                    // inserted into a newly created array.
-                    string ParamNameNoPlural = ParamName.Substring(0, ParamName.Length - 1);
-                    List<string> Values = XmlHelper.Values(Node, ParamNameNoPlural);
-                    if (Values.Count > 0)
-                        ParamValue = TypeConverter.Convert(ParamName, Values.ToArray(), Variable.Type);
-                }
-            }
-            if (ParamValue == null && !Variable.IsOptional)
-                throw new Exception("Cannot find a parameter value for: " + Variable.Name + " for " + Name);
-            else if (ParamValue != null)
-                Variable.Value = ParamValue;
-            
             Params.Add(Variable);
-        }
 
         if (Variable.IsState)
             States.Add(Variable);
@@ -861,51 +698,16 @@ internal class ModelInstance
 
     internal void PublishToChildren(string EventName)
     {
-        foreach (EventSubscriber Subscriber in Subscribers)
+        for (int i = 0; i < Subscribers.Count; i++)
         {
-            if (Subscriber.Name.ToLower() == EventName.ToLower())
-                Subscriber.Invoke();
+            if (Subscribers[i].Name.ToLower() == EventName.ToLower())
+                Subscribers[i].Invoke();
         }
         foreach (ModelInstance Child in Children)
             Child.PublishToChildren(EventName);
     }
     
-    /// <summary>
-    /// Go find and return the specified ClassName either in the current executing asssembly or
-    /// in a dll of the same name as the class.
-    /// </summary>
-    private static Type GetClassType(string ClassName, Assembly Assembly)
-    {
-        int PosPeriod = ClassName.IndexOf('.');
-        if (PosPeriod == -1)
-        {
-            Type T = Assembly.GetType(ClassName, false, true);
-            if (T == null)
-            {
-                string AssemblyFileName;
-                if (ClassName == "surfaceom")
-                    AssemblyFileName = "SurfaceOrganicMatter";
-                else
-                    AssemblyFileName = ClassName;
-                AssemblyFileName = Path.Combine(Configuration.ApsimBinDirectory(), AssemblyFileName + "X.dll");
-                if (File.Exists(AssemblyFileName))
-                {
-                    Assembly Dll = Assembly.LoadFile(AssemblyFileName);
-                    return Dll.GetType(ClassName, false, true);
-                }
-            }
-            return T;
-        }
-        else
-        {
-            // This is used in unit tests.
-            string AssemblyFileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + ClassName.Substring(0, PosPeriod) + ".dll";
-            if (!File.Exists(AssemblyFileName))
-                throw new Exception("Cannot find assembly file: " + AssemblyFileName);
-            Assembly Dll = Assembly.LoadFile(AssemblyFileName);
-            return Dll.GetType(ClassName.Substring(PosPeriod + 1));
-        }
-    }
+
     
     /// <summary>
     /// Return all fields. The normal .NET reflection doesn't return private fields in base classes.
@@ -1107,150 +909,41 @@ internal class ModelInstance
     /// Checkpoint the specified ModelInstance and all children by writing their values to the specified node
     /// Captures the values of all state variables.
     /// </summary>
-    internal void Checkpoint(XmlNode ParentNode)
+    internal string Checkpoint()
     {
-        XmlNode Node = ParentNode.AppendChild(ParentNode.OwnerDocument.CreateElement(Name));
-        foreach (ClassVariable State in States)
-            SerialiseObject(State.Name, State.Type, State.Value, Node);
-
-        foreach (ModelInstance Child in Children)
-            Child.Checkpoint(Node);
-
+        StringWriter Writer = new StringWriter();
+        XmlSerialiser.Serialise(this, Writer, true);
+        return Writer.ToString();
     }
 
-    private static void SerialiseObject(string Name, Type Type, object Value, XmlNode ParentNode)
+    /// <summary>
+    /// Use the specified checkpoint XML node to recreate all objects - runs slower than
+    /// the InitialiseFromCheckpoint method
+    /// </summary>
+    internal void RestoreFromCheckpoint(string Checkpoint)
     {
-        bool WriteBlank = Value == null;// ||
-                            //(Type.IsArray && (Value as Array).Length == 0) ||
-                            //(Type.Name == "List`1" && (Value as IList).Count == 0);
+        Root.DisconnectAllEvents();
 
-        if (WriteBlank)
-            XmlHelper.SetValue(ParentNode, Name, "");
-        else
-        {
-            if (!TypeConverter.CanHandleType(Type))
-            {
-                // We don't know about this type - ask class to serialise.
-                MethodInfo Serialise = Value.GetType().GetMethod("Serialise");
-                if (Serialise != null)
-                    Serialise.Invoke(Value, null);
-                else
-                {
-                    // Class doesn't have a serialise method so try and go through each member and write to node.
-                    XmlNode Node = ParentNode.AppendChild(ParentNode.OwnerDocument.CreateElement(Name));
-                    foreach (FieldInfo Field in GetAllFields(Value.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                        SerialiseObject(Field.Name, Field.FieldType, Field.GetValue(Value), Node);
-                }
-            }
-            else
-                XmlHelper.SetValue(ParentNode, Name, TypeConverter.Convert(Name, Value, typeof(string)) as string);
-        }
+        StringReader In = new StringReader(Checkpoint);
+        ModelInstance NewInstance = XmlSerialiser.Deserialise(In, null);
+        Parent.Children.Remove(this);
+        NewInstance.Parent = Parent;
+        Parent.Children.Add(NewInstance);
+        Parent.SortChildren();
+
+        // restoring from checkpoint doesn't do links.
+        Root.ResolveAllRefsAndEvents();
     }
 
     /// <summary>
     /// Use the specified checkpoint XML node to initialise all objects.
     /// </summary>
-    /// <param name="ParentNode"></param>
-    internal void RestoreFromCheckpoint(XmlNode ParentNode)
+    internal void InitialiseFromCheckpoint(string Checkpoint)
     {
-        foreach (XmlNode ChildNode in ParentNode.ChildNodes)
-        {
-            // See if this node is a state.
-            ClassVariable FoundState = null;
-            foreach (ClassVariable State in States)
-                if (State.Name == ChildNode.Name)
-                {
-                    FoundState = State;
-                    break;
-                }
-
-            if (FoundState == null)
-            {
-                // Not a state - so it must be a child.
-                ModelInstance FoundChild = null;
-                foreach (ModelInstance Child in Children)
-                    if (Child.Name == ChildNode.Name)
-                    {
-                        FoundChild = Child;
-                        break;
-                    }
-
-                if (FoundChild == null)
-                    throw new Exception("Cannot find class: " + ChildNode.Name + " while restoring from a checkpoint");
-
-                FoundChild.RestoreFromCheckpoint(ChildNode);
-            }
-            else
-            {
-                FoundState.Value = DeSerialiseObject(FoundState.Name, FoundState.Type, FoundState.Value, ChildNode);
-
-            }
-
-
-        }
+        StringReader In = new StringReader(Checkpoint);
+        XmlSerialiser.Deserialise(In, Parent, false);
     }
 
-    /// <summary>
-    /// "Value" is what the model currently has.
-    /// </summary>
-    /// <param name="Name"></param>
-    /// <param name="Type"></param>
-    /// <param name="Value"></param>
-    /// <param name="Node"></param>
-    /// <returns></returns>
-    private object DeSerialiseObject(string Name, Type Type, object Value, XmlNode Node)
-    {
-        // Found a state - set its value.
-        string st = Node.InnerText;
-        if (st == "" && Node.InnerXml == "")
-            return null;
-
-        else
-        {
-            if (!TypeConverter.CanHandleType(Type))
-            {
-                // We don't know about this type - ask class to deserialise.
-                MethodInfo DeSerialise = Type.GetMethod("DeSerialise");
-                if (DeSerialise != null)
-                    return DeSerialise.Invoke(Value, null);
-                else
-                {
-                    if (Type.Name == "List`1")
-                    {
-                        int size = Convert.ToInt32(XmlHelper.Value(Node, "_size"));
-                        if (size != 0)
-                            throw new NotImplementedException();
-                        if (Value != null)
-                        {
-                            (Value as IList).Clear();
-                            return Value;
-                        }
-                        else
-                            throw new NotImplementedException();
-                    }
-                    else if (Type.IsArray)
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    // Class doesn't have a deserialise method so try and go through each member and deserialise manually
-                    foreach (FieldInfo Field in GetAllFields(Value.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                    {
-                        // Need to find correct child XML node.
-                        XmlNode ChildNode = XmlHelper.Find(Node, Field.Name);
-                        if (ChildNode == null)
-                            throw new Exception("Cannot find child node: " + Field.Name + " in checkpoint under: " + Node.Name);
-                        Field.SetValue(Value, DeSerialiseObject(Field.Name, Field.FieldType, Field.GetValue(Value), ChildNode));
-                    }
-                    return Value;
-                }
-            }
-            else
-                return TypeConverter.Convert(Name, st, Type);
-
-        }
-        
-    }
 
     internal void OutputDiagnostics()
     {
@@ -1262,6 +955,22 @@ internal class ModelInstance
         foreach (ModelInstance Child in Children)
             Child.OutputDiagnostics();
 
+    }
+
+    /// <summary>
+    ///  Run all simulations found from this model instance, looking through all children.
+    /// </summary>
+    public void Run()
+    {
+        if (TheModel is Simulation)
+        {
+            UpdateValues();
+            do
+                PublishToChildren("Timestep");
+            while (true);
+        }
+        foreach (ModelInstance Child in Children)
+            Child.Run();
     }
 
 }

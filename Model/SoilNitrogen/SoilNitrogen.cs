@@ -59,6 +59,9 @@ public class SoilNitrogen
     {
         get 
         {
+            if (dlayer == null || hum_c == null || biom_c == null)
+                return null;
+
             int nLayers = dlayer.Length;
             double[] oc_percent = new double[nLayers];
             for (int i = 0; i < nLayers; i++)

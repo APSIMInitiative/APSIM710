@@ -48,6 +48,8 @@ internal class TypeConverter
                 return ToDouble;
             else if (ToType.Name == "Int32")
                 return ToInt;
+            else if (ToType.Name == "Int64")
+                return ToInt64;
             else if (ToType.Name == "String")
                 return ToString;
             else if (ToType.Name == "Single[]")
@@ -81,6 +83,8 @@ internal class TypeConverter
                 return ToDouble(Name, From);
             else if (ToType.Name == "Int32")
                 return ToInt(Name, From);
+            else if (ToType.Name == "Int64")
+                return ToInt64(Name, From);
             else if (ToType.Name == "String")
                 return ToString(Name, From);
             else if (ToType.Name == "Single[]")
@@ -105,6 +109,7 @@ internal class TypeConverter
                T == typeof(Single) ||
                T == typeof(Double) ||
                T == typeof(Int32) ||
+               T == typeof(Int64) ||
                T == typeof(String) ||
                T == typeof(Single[]) ||
                T == typeof(Double[]) ||
@@ -174,6 +179,21 @@ internal class TypeConverter
         catch (Exception)
         {
             throw new Exception("Cannot convert " + From.ToString() + " to an integer. Variable name is " + Name);
+        }
+    }
+
+    /// <summary>
+    /// Convert the specified object to an integer
+    /// </summary>
+    internal static object ToInt64(string Name, object From)
+    {
+        try
+        {
+            return System.Convert.ToInt64(From);
+        }
+        catch (Exception)
+        {
+            throw new Exception("Cannot convert " + From.ToString() + " to an integer64. Variable name is " + Name);
         }
     }
 

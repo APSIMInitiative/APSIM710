@@ -40,7 +40,7 @@ public class GenericOrgan : BaseOrgan
 
     #region Class data members
     private double SenescenceRate = 0;
-    double StructuralFraction = 1;
+    double _StructuralFraction = 1;
     private Biomass StartLive = new Biomass();
     private double StartNRetranslocationSupply = 0;
     private double StartNReallocationSupply = 0;
@@ -69,9 +69,9 @@ public class GenericOrgan : BaseOrgan
         SenescenceRate = 0;
         if (SenescenceRateFunction != null) //Default of zero means no senescence
             SenescenceRate = SenescenceRateFunction.Value;
-        StructuralFraction = 1;
+        _StructuralFraction = 1;
         if (StructuralFractionFunction != null) //Default of 1 means all biomass is structural
-            StructuralFraction = StructuralFractionFunction.Value;
+            _StructuralFraction = StructuralFractionFunction.Value;
         InitialWt = 0; //Default of zero means no initial Wt
         if (InitialWtFunction != null)
             InitialWt = InitialWtFunction.Value;
@@ -108,7 +108,7 @@ public class GenericOrgan : BaseOrgan
     {
         get
         {
-            StructuralDMDemand = DMDemandFunction.Value * StructuralFraction;
+            StructuralDMDemand = DMDemandFunction.Value * _StructuralFraction;
             return StructuralDMDemand;
         }
     }
@@ -116,7 +116,7 @@ public class GenericOrgan : BaseOrgan
     {
         get
         {
-            double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / StructuralFraction;
+            double MaximumDM = (StartLive.StructuralWt + StructuralDMDemand) * 1 / _StructuralFraction;
             MaximumDM = Math.Min(MaximumDM, 10000); // FIXME-EIT Temporary solution: Cealing value of 10000 g/m2 to ensure that infinite MaximumDM is not reached when 0% goes to structural fraction   
             return Math.Max(0.0, MaximumDM - StructuralDMDemand - StartLive.StructuralWt - StartLive.NonStructuralWt);
         }

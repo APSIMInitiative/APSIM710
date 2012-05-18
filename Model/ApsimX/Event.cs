@@ -72,6 +72,12 @@ class EventSubscriber
             Info.Invoke(TheModel, null);
     }
 
+    public void Connect()
+    {
+        if (Publisher != null)
+            Publisher.ConnectTo(this);
+    }
+
     public void Disconnect()
     {
         if (Publisher != null)

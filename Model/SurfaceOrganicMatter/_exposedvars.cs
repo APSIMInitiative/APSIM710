@@ -12,10 +12,10 @@ public partial class SurfaceOM
 
     #region BensParams
 
-    [Param]
+    [Link]
     public ResiduesType ResiduesType;
 
-    [Param]
+    [Link]
     public SOMTillageType SOMTillageType;
 
     [Param]

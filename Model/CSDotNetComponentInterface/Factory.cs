@@ -320,9 +320,13 @@ class Factory
                             StringManip.SplitOffBracketedValue(ref ArrayName, '[', ']');
                             XmlHelper.SetName(Child, ArrayName);
                             Parameter = FindProperty(Child);
-                            if (Parameter == null)
-                                throw new Exception("Cannot find array: " + ArrayName);
-                            Parameter.AddToList(ChildInstance);
+                            if (Parameter != null)
+                                Parameter.AddToList(ChildInstance);
+                            else
+                            {
+                                // Parameter must be an array link to child nodes e.g.
+                                // [Link] LeafCohort[] InitialLeaves;
+                            }
                         }
 
                         else if ((Parameter != null) && (Parameter.IsParam && !Parameter.TypeName.Contains("System::")))
@@ -341,9 +345,7 @@ class Factory
                     else if (Child.HasChildNodes)
                     {
                         FactoryProperty Parameter = FindProperty(Child);
-                        if (Parameter == null)
-                            throw new Exception("Cannot set value of property: " + Child.Name + " in object: " + Obj.InstanceName + ". The property must have either a [Param] or [Input] attribute.");
-                        else
+                        if (Parameter != null)
                         {
                             Parameter.Name = XmlHelper.Name(Child);
                             Parameter.Set(Child);

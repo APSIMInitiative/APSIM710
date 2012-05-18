@@ -7,7 +7,7 @@ using CSGeneral;
 using System.Reflection;
 using System.Collections;
 
-[Model]
+
 public class Plant
 {
     [Link(IsOptional=true)]
@@ -335,6 +335,7 @@ public class Plant
         SowingData = Sow;
 
         // Go through all our children and find all organs.
+        Organs.Clear();
         foreach (object ChildObject in My.ChildrenAsObjects)
         {
             Organ Child = ChildObject as Organ;

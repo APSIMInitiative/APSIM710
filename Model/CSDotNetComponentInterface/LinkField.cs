@@ -9,6 +9,7 @@ using CMPServices;
 using ModelFramework;
 using CSGeneral;
 using ApsimFile;
+using System.Xml;
 
 /// <summary>
 /// Represents a [Link]. Main responsability is to 
@@ -80,6 +81,22 @@ class LinkField
                     NameToFind = null; // default is not to use name.
                 string SystemName = Comp.Name.Substring(0, Math.Max(Comp.Name.LastIndexOf('.'), 0));
                 ReferencedObject = FindApsimObject(TypeToFind, NameToFind, SystemName, Comp);
+            }
+            else if (TypeToFind.Contains("[]"))
+            {
+                // e.g. TypeToFind == "LeafCohort[]"
+                List<object> ReferencedObjects = new List<object>();
+                foreach (Instance Child in In.Children)
+                {
+                    string ChildNameWithoutArray = Child.Name;
+                    StringManip.SplitOffBracketedValue(ref ChildNameWithoutArray, '[', ']');
+                    if (ChildNameWithoutArray == NameToFind)
+                        ReferencedObjects.Add(Child.Model);
+                }
+                Array A = Array.CreateInstance(Field.FieldType.GetElementType(), ReferencedObjects.Count) as Array;
+                for (int i = 0; i < ReferencedObjects.Count; i++)
+                    A.SetValue(ReferencedObjects[i], i);
+                ReferencedObject = A;
             }
             else
             {

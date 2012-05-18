@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-[CanHaveChildren]
 public class Simulation
 {
     [Event]
@@ -25,12 +24,16 @@ public class Simulation
 
 }
 
-[CanHaveChildren]
+public class Folder
+{
+
+}
 public class Area
 {
 
 }
 
+[Serializable]
 public class SummaryFile
 {
 

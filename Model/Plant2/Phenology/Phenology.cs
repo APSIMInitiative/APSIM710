@@ -18,7 +18,9 @@ public class Phenology
     [Link(IsOptional = true)]
     FacultativeVernalisationPhase FacultativeVernalisationPhase = null;
 
+    [NonSerialized]
     private List<Phase> Phases = new List<Phase>();
+
     [Output]
     private int CurrentPhaseIndex;
     public double _AccumulatedTT = 0;
@@ -144,6 +146,9 @@ public class Phenology
     public void DoTimeStep()
     {
         // If this is the first time through here then setup some variables.
+        if (Phases == null || Phases.Count == 0)
+            OnInitialised();
+
         CurrentlyOnFirstDayOfPhase = "";
         if (JustInitialised)
         {

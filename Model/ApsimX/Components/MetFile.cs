@@ -14,6 +14,7 @@ public class MetFile
     
     private bool HaveReadData = false;
     public event NewMetDelegate NewMet;
+    public double[] dummy = new double[3] {10.6, 13.2, 12};
     [Param]
     string FileName = "";
     [Input]

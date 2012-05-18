@@ -122,14 +122,17 @@ namespace ModelFramework
         /// </summary>
         public object LinkByType(String TypeToFind)
         {
-            return Instance.FindModelByType(TypeToFind);
+            return Instance.FindModelsByType(TypeToFind);
         }
         /// <summary>
         /// Return a child component of the paddock by unqualified name.
         /// </summary>
         public object LinkByName(string NameToFind)
         {
-            return Instance.FindModelByName(NameToFind);
+            ModelInstance[] Instances = Instance.FindModelsByName(NameToFind);
+            if (Instances == null || Instances.Length == 0)
+                return null;
+            return Instances[0];
         }
         // --------------------------------------------------------------------
         /// <summary>

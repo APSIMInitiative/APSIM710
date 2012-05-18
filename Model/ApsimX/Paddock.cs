@@ -6,10 +6,13 @@ using System.Runtime.InteropServices;
 using ModelFramework;
 using System.Xml;
 using System.Reflection;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ModelFramework
 {
 
+    [Serializable]
     public class Paddock : Component
     {
        // private ModelInstance Instance;
@@ -95,7 +98,6 @@ namespace ModelFramework
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot activate it.");
             I.Activate();
-            //I.PublishToChildren("Initialised");
         }
 
         public void Deactivate(string ComponentName)
@@ -104,27 +106,34 @@ namespace ModelFramework
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot deactivate it.");
             I.Deactivate();
-            //I.PublishToChildren("Initialised");
         }
 
 
-        public XmlNode Checkpoint(string ComponentName)
+        public string Checkpoint(string ComponentName)
         {
             ModelInstance I = Instance.FindModelInstance(ComponentName);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot checkpoint it.");
-            XmlDocument Doc = new XmlDocument();
-            Doc.AppendChild(Doc.CreateElement("Checkpoint"));
-            I.Checkpoint(Doc.DocumentElement);
-            return Doc.DocumentElement;
+
+            return I.Checkpoint();
         }
 
-        public void RestoreFromCheckpoint(string ComponentName, XmlNode Checkpoint)
+        public void RestoreFromCheckpoint(string ComponentName, string Checkpoint)
         {
             ModelInstance I = Instance.FindModelInstance(ComponentName);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot RestoreFromCheckpoint.");
-            I.RestoreFromCheckpoint(Checkpoint.ChildNodes[0]);
+
+            I.RestoreFromCheckpoint(Checkpoint);
+        }
+
+        public void InitialiseFromCheckpoint(string ComponentName, string Checkpoint)
+        {
+            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            if (I == null)
+                throw new Exception("Cannot find component: " + ComponentName + ". Cannot RestoreFromCheckpoint.");
+
+            I.InitialiseFromCheckpoint(Checkpoint);
         }
 
         public void OutputDiagnostics()
