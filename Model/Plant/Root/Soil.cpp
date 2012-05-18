@@ -212,7 +212,7 @@ void Soil::zero(void)
       no3_conc_half_max = 0.0;
       HaveModifiedKLValues = false;
 
-      ZeroDeltas();
+      ZeroDeltas(); 
    }
 
 void Soil::ZeroDeltas(void)

@@ -93,7 +93,9 @@ class RootPart : public RootBase
       vector<float> dltRootLengthSenesced;
       float initialRootDepth;                         // initial depth of roots (mm)
       float rootDieBackFraction;                      // fraction of roots dying at harvest or kill_stem
-
+      float root_depth_max;
+      int root_layer_max;
+      
       string crop_type;
 
       // External Getters and Setters etc

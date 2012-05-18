@@ -49,6 +49,7 @@ class Soil
 
       float sw_supply [max_layer];                      // potential water to take up (supply)
                                                         // from current soil water (mm)
+      float getModifiedKL(int LayerIndex);
 
    private:
       void zero(void);
@@ -141,7 +142,6 @@ class Soil
       float ECB;
       bool ModifyKL;
       bool HaveModifiedKLValues;
-      float getModifiedKL(int LayerIndex);
    protected:
       ScienceAPI& scienceAPI;
       plantInterface& plant;

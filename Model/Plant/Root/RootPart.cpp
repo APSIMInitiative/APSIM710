@@ -46,6 +46,8 @@ void RootPart::zeroAllGlobals(void)
    fill_real_array (root_length_senesced, 0.0, max_layer);
 
    uptake_source = "";
+   root_depth_max = 0.0;
+   root_layer_max = 0;
    }
 
 void RootPart::zeroDeltas(void)
@@ -74,6 +76,11 @@ void RootPart::onInit1(protocol::Component *system)
    system->addGettableVar("root_depth",
                root_depth, "mm", "depth of roots");
 
+   system->addGettableVar("root_depth_max",
+               root_depth_max, "mm", "Maximum depth of roots");
+               
+   system->addGettableVar("root_layer_max",
+               root_layer_max, "", "Maximum layer number of roots");               
 
    setupGetFunction(system, "root_length", protocol::DTsingle, true,
                     &RootPart::get_root_length,
@@ -347,11 +354,12 @@ void RootPart::plant_root_depth (void)
 
    // prevent roots partially entering layers where xf == 0
    for (deepest_layer = (*soil[0]).xf.size()-1;
-        deepest_layer >= 0 && (*soil[0]).xf[deepest_layer] <= 0.0;
+        deepest_layer >= 0 && 
+        ((*soil[0]).xf[deepest_layer] <= 0.0 || (*soil[0]).getModifiedKL(deepest_layer) <= 0.0);
         deepest_layer--)
       ; /* nothing */
-
-   float root_depth_max = sum_real_array ((*soil[0]).dlayer, deepest_layer+1);
+   root_layer_max = deepest_layer + 1;
+   root_depth_max = sum_real_array ((*soil[0]).dlayer, deepest_layer+1);
    dltRootDepth = u_bound ( dltRootDepth, root_depth_max - root_depth);
 
    if (dltRootDepth < 0.0) throw std::runtime_error("negative root growth??") ;
