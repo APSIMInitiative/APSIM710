@@ -4,9 +4,9 @@ using ApsimFile;
 
 public class ToowoombaCluster
 {
-    public static void RunOnCluster(List<string> FilesToRun , string FinalFolder, string ApsimVersion, bool isUnix, int simsPerJob, ApsimFile.ProgressNotifier Notifier)
+    public static void RunOnCluster(List<string> FilesToRun , string FinalFolder, string ApsimVersion, bool isUnix, int simsPerJob, bool NiceUser, ApsimFile.ProgressNotifier Notifier)
     {
-		CondorJob c = new CondorJob();
+		CondorJob c = new CondorJob(NiceUser);
         if (isUnix)
 		    c.arch = Configuration.architecture.unix;
         else

@@ -131,7 +131,7 @@ Public Class ApsimUIActions
                     Utility.FindFiles(F.FolderOfFiles, "*.apsim", FilesToRun, False)
                 End If
                 If (FilesToRun.Count > 0) Then
-                    ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, AddressOf UpdateProgress)
+                    ToowoombaCluster.RunOnCluster(FilesToRun, F.DropFolder, F.Version, F.archIsUnix, F.simsPerJobNumber, F.NiceUser, AddressOf UpdateProgress)
                     MessageBox.Show("Your job has been placed in your dropbox folder. Your outputs will appear adjacent.", "For your information", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 End If
             End If

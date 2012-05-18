@@ -19,6 +19,8 @@ namespace ApsimFile
 
     public class CondorJob
 	{
+        private bool _NiceUser;
+
 		// True if we want unix clients to run the scripts and sim files
 		public Configuration.architecture arch = Configuration.getArchitecture ();
 
@@ -36,11 +38,12 @@ namespace ApsimFile
 		// Where to write the zipfile. 
 		public string DestinationFolder = Directory.GetCurrentDirectory ();
 		
-		public CondorJob ()
+		public CondorJob (bool NiceUser)
 		{
 			// create header??
 			// add files??
 			// save xml
+            _NiceUser = NiceUser;
 		}
 		public string Go (List<string> FilesToRun, ProgressNotifier Notifier)
 		{
@@ -189,7 +192,10 @@ namespace ApsimFile
 			SubWriter.WriteLine ("universe = vanilla");
 			SubWriter.WriteLine ("when_to_transfer_output = ON_EXIT");
 			SubWriter.WriteLine ("log = Apsim.condorlog");
-			SubWriter.WriteLine ("nice_user = True");
+            if (_NiceUser)
+			    SubWriter.WriteLine ("nice_user = True");
+            else
+                SubWriter.WriteLine("nice_user = False");
 			
 			if (arch == Configuration.architecture.unix)
 				SubWriter.WriteLine ("requirements = (OpSys == \"LINUX\")");
@@ -198,53 +204,74 @@ namespace ApsimFile
 			
 			// Number of simulations in the current job
 			int numSims = 0;
+
+            // Create a top level batch file.
+            List<string> inputfiles = new List<string>();
+            StreamWriter TopLevelExe;
+            if (arch == Configuration.architecture.unix)
+            {
+                TopLevelExe = new StreamWriter(Path.Combine(WorkingFolder, "Apsim.sh"));
+                TopLevelExe.NewLine = "\r";
+                TopLevelExe.WriteLine("sh $1.sh");
+                SubWriter.WriteLine("executable = Apsim.sh");
+            }
+            else
+            {
+                TopLevelExe = new StreamWriter(Path.Combine(WorkingFolder, "Apsim.bat"));
+                TopLevelExe.WriteLine("%1.bat");
+                SubWriter.WriteLine("executable = Apsim.bat");
+            }
+            TopLevelExe.Close();
 			
 			// Number of jobs we have generated	
 			int jobCounter = 0;
-			List<string> inputfiles = new List<string> ();
 			foreach (XmlNode simNode in jobDoc.SelectNodes ("//simulation")) {
 				if (numSims == 0) {
-					if (arch == Configuration.architecture.unix) {
-						SubWriter.WriteLine ("executable = Apsim" + jobCounter.ToString () + ".sh");
-						exeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim" + jobCounter.ToString () + ".sh"));
-						exeWriter.NewLine = "\r";
-						exeWriter.WriteLine ("#! /bin/sh");
-						exeWriter.WriteLine ("export HOME=/tmp");
-						if (File.Exists(ApsimVersion)) 
-						{
-							inputfiles.Add(ApsimVersion);
-						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion) + " > /dev/null");
-                            exeWriter.WriteLine("rm -f " + Path.GetFileName(ApsimVersion));
-                            exeWriter.WriteLine("export APSIM=\"`pwd`/" + Path.GetFileNameWithoutExtension(ApsimVersion) + "\"");
-						}
-						else
-						{
-							exeWriter.WriteLine ("export APSIM=\"/opt/" + ApsimVersion +"\"");
-						}
-                        exeWriter.WriteLine("if [ -n ${LD_LIBRARY_PATH+1} ]; then");
-                        exeWriter.WriteLine(" export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$APSIM/Model");
-                        exeWriter.WriteLine("else");
-                        exeWriter.WriteLine(" export LD_LIBRARY_PATH=$APSIM/Model");
-                        exeWriter.WriteLine("fi");
-                    }
-                    else
-                    {
-						SubWriter.WriteLine ("executable = Apsim" + jobCounter.ToString () + ".bat");
-						exeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim" + jobCounter.ToString () + ".bat"));
-						if (File.Exists(ApsimVersion)) 
-						{
-							inputfiles.Add(Path.GetFileName(ApsimVersion));
-						    exeWriter.WriteLine (Path.GetFileName(ApsimVersion) + " > nul");
-                            exeWriter.WriteLine("del /f /q " + Path.GetFileName(ApsimVersion));
-                            exeWriter.WriteLine("set APSIM=Temp");
-						}
-						else
-						{
-						    exeWriter.WriteLine ("set APSIM=" + "C:\\Program files\\" + ApsimVersion);
-						}
+                    SubWriter.WriteLine("arguments = Apsim" + jobCounter.ToString());
 
-					}
-					
+					if (arch == Configuration.architecture.unix) {
+                        inputfiles.Add("Apsim.sh");
+                        inputfiles.Add("Apsim" + jobCounter.ToString() + ".sh");
+                        exeWriter = new StreamWriter(Path.Combine(WorkingFolder, "Apsim" + jobCounter.ToString() + ".sh"));
+                exeWriter.NewLine = "\r";
+                exeWriter.WriteLine("#! /bin/sh");
+                exeWriter.WriteLine("export HOME=/tmp");
+                if (File.Exists(ApsimVersion))
+                {
+                    inputfiles.Add(ApsimVersion);
+                    exeWriter.WriteLine(Path.GetFileName(ApsimVersion) + " > /dev/null");
+                    exeWriter.WriteLine("rm -f " + Path.GetFileName(ApsimVersion));
+                    exeWriter.WriteLine("export APSIM=\"`pwd`/" + Path.GetFileNameWithoutExtension(ApsimVersion) + "\"");
+                }
+                else
+                {
+                    exeWriter.WriteLine("export APSIM=\"/opt/" + ApsimVersion + "\"");
+                }
+                exeWriter.WriteLine("if [ -n ${LD_LIBRARY_PATH+1} ]; then");
+                exeWriter.WriteLine(" export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$APSIM/Model");
+                exeWriter.WriteLine("else");
+                exeWriter.WriteLine(" export LD_LIBRARY_PATH=$APSIM/Model");
+                exeWriter.WriteLine("fi");
+            }
+            else
+            {
+    			exeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim" + jobCounter.ToString () + ".bat"));
+                inputfiles.Add("Apsim.bat");
+                inputfiles.Add("Apsim" + jobCounter.ToString() + ".bat");
+                if (File.Exists(ApsimVersion))
+                {
+                    inputfiles.Add(Path.GetFileName(ApsimVersion));
+                    exeWriter.WriteLine(Path.GetFileName(ApsimVersion) + " > nul");
+                    exeWriter.WriteLine("del /f /q " + Path.GetFileName(ApsimVersion));
+                    exeWriter.WriteLine("set APSIM=Temp");
+                }
+                else
+                {
+                    exeWriter.WriteLine("set APSIM=" + "C:\\Program files\\" + ApsimVersion);
+                }
+
+            }
+
 					SubWriter.WriteLine ("output = " + "Apsim" + jobCounter.ToString () + ".stdout");
 					SubWriter.WriteLine ("error = " + "Apsim" + jobCounter.ToString () + ".stderr");
 				}
@@ -274,6 +301,7 @@ namespace ApsimFile
 					if (inputfiles.Count > 0)
 						SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 					SubWriter.WriteLine ("queue");
+                    SubWriter.WriteLine();
 					numSims = 0;
 					inputfiles.Clear ();
 					jobCounter++;
