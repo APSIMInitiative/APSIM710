@@ -731,7 +731,7 @@ namespace ModelFramework
         /// </summary>
         private static void Override(XmlNode ModelDescription, XmlNode Instruction)
         {
-            String ReferencedNodeName = XmlHelper.Attribute(Instruction, "NodeToOverride").Replace(".", "/");
+            String ReferencedNodeName = XmlHelper.Name(Instruction).Replace(".", "/");
             XmlNode ReferencedNode = ModelDescription;
             if (ReferencedNodeName != "")
                 ReferencedNode = XmlHelper.Find(ModelDescription, ReferencedNodeName);

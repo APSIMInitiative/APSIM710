@@ -257,36 +257,41 @@ Public Class GenericUI
          For Each Row As DataRow In Grid.DataSourceTable.Rows
             If Data.Name.ToLower() = "soil" And RowIndex = 0 Then
             Else
-               If Row("Name").ToString() <> "" Then
-                  Dim NewProperty As XmlNode = Data.OwnerDocument.CreateElement(Row("Name").ToString())
-                  XmlHelper.SetAttribute(NewProperty, "type", Row("Type").ToString())
-                  If Row("List items (CSV)").ToString() <> "" Then
-                     XmlHelper.SetAttribute(NewProperty, "listvalues", Row("List items (CSV)").ToString())
-                  End If
-                  If Row("Description").ToString() <> "" Then
-                     XmlHelper.SetAttribute(NewProperty, "description", Row("Description").ToString())
-                  End If
-                  If Row("Value").ToString() <> "" Then
-                     ' Make sure we save date rows as dd/mm/yyyy.
-                     If Not IsDBNull(Row("Type")) AndAlso Row("Type") = "date" Then
-                        ' Try converting to date.
-                        Try
-                           Dim DateValue As DateTime = Row("Value").ToString()
-                           NewProperty.InnerText = DateValue.ToString("dd/MM/yyyy")
-                        Catch ex As Exception
-                           MessageBox.Show("Cannot convert string: " + Row("Value").ToString() + " to a valid date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                           NewProperty.InnerText = Row("Value").ToString()
+                    If Row("Name").ToString() <> "" Then
+                        If (Row("Name").ToString() = "#text") Then
+                            Data.InnerText = Row("Value").ToString()
 
-                        End Try
-                     Else
-                        NewProperty.InnerText = Row("Value").ToString()
-                     End If
-                  End If
-                  Data.AppendChild(NewProperty)
-               End If
-            End If
-            RowIndex = RowIndex + 1
-         Next
+                        Else
+                            Dim NewProperty As XmlNode = Data.OwnerDocument.CreateElement(Row("Name").ToString())
+                            XmlHelper.SetAttribute(NewProperty, "type", Row("Type").ToString())
+                            If Row("List items (CSV)").ToString() <> "" Then
+                                XmlHelper.SetAttribute(NewProperty, "listvalues", Row("List items (CSV)").ToString())
+                            End If
+                            If Row("Description").ToString() <> "" Then
+                                XmlHelper.SetAttribute(NewProperty, "description", Row("Description").ToString())
+                            End If
+                            If Row("Value").ToString() <> "" Then
+                                ' Make sure we save date rows as dd/mm/yyyy.
+                                If Not IsDBNull(Row("Type")) AndAlso Row("Type") = "date" Then
+                                    ' Try converting to date.
+                                    Try
+                                        Dim DateValue As DateTime = Row("Value").ToString()
+                                        NewProperty.InnerText = DateValue.ToString("dd/MM/yyyy")
+                                    Catch ex As Exception
+                                        MessageBox.Show("Cannot convert string: " + Row("Value").ToString() + " to a valid date", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                        NewProperty.InnerText = Row("Value").ToString()
+
+                                    End Try
+                                Else
+                                    NewProperty.InnerText = Row("Value").ToString()
+                                End If
+                            End If
+                            Data.AppendChild(NewProperty)
+                        End If
+                    End If
+                End If
+                RowIndex = RowIndex + 1
+            Next
 
          ' Save memo text if necessary
          If TextBox.Visible Then
