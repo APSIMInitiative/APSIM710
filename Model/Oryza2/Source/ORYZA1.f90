@@ -881,7 +881,7 @@
             CALL OUTDAT(2,0,'wgrmx',wgrmx)
             CALL OUTARR(2,0,'rlv',rdensity, SL)
 			CALL OUTARR (2, 0, 'ROOTM', ROOTC, SL)
-			CALL OUTARR (2, 0, 'ROOTM', RDENSITY, SL)
+			CALL OUTARR (2, 0, 'ROOTL', RDENSITY, SL)
 
 !            do i=1, sl
 !				Rootobs = ' '

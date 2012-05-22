@@ -100,7 +100,7 @@ SUBROUTINE ROOTG(CROPSTA,DVS, DELT, LROOTC, LROOTN, PLANTMOD)
 	 REAL TPFmx, TWFmx, TTFmx, LWFmx !THE MINIMUM OF THE FACTOR IS SET TO 0 
 	 REAL KB1, KB2,TOTALRC, TOTALRN, TotalDRC, TotalDRN, MaxNo
 	 REAL SOILN(L),WCL(L),WL0, DVS, TotalLittleFall, LiveRootC
-	 REAL TMPV2, TEMPV2, tmpV3, TMPV1,TMPV4,TMPN1,TMPN2,TMPN3
+	 REAL TMPV2, TEMPV2, tmpV3, TMPV1,TMPV4,TMPN1,TMPN2,TMPN3, TMPRFract(L)
 	 real, allocatable::tmpF2(:)
 	 REAL BDx, BDo, SBD  !Variables DO bulk density at no rooting, max rootin and soil BD.
 	 REAL WFP		 !soil water factor, surface water level
@@ -162,22 +162,15 @@ SUBROUTINE ROOTG(CROPSTA,DVS, DELT, LROOTC, LROOTN, PLANTMOD)
 		 REFCD_O=REFFECD      !Change it into m
 		 OLDNO=INT(IROOTD*100.0)			!SETTING THE OPTIMAL AT TRANSPLANT DEPTH AT TRANSPLANTING DAY, TAOLI, 30NOV,2011		 
 		 DO I=1, SL
-			 IF(i.eq.1) THEN
-				 IF(IROOTD*100.0.LE.LAYT(1)) THEN       !IROOTD in m
-					ROOTC(1) = NROOTC
-					ROOTN(1) = NROOTN
-					!rdcl(i)=totaldrc
-					!rdnl(i)=totaldrn
-					GOTO 2000
-				 ENDIF
-			 ELSE
-				 IF((IROOTD.GT.SUM(LAYT(1:(I-1)))).AND.(IROOTD.LE.SUM(LAYT(1:I)))) THEN
-					ROOTC(I) = NROOTC; ROOTN(I) = NROOTN
-					rdcl(i)=totaldrc; rdnl(i)=totaldrn
-					GOTO 2000
-				 ENDIF	
-			 ENDIF
+           if (I .eq. 1) then
+             TMPRFract(I) = min(LAYT(1), IROOTD*100.0) / (IROOTD*100.0)
+           else
+             TMPRFract(I) = max(min(SUM(LAYT(1:I)), IROOTD*100.0) - SUM(LAYT(1:I-1)), 0.0) / (IROOTD*100.0)
+           endif
+           ROOTC(I) = NROOTC * TMPRFract(I) 
+           ROOTN(I) = NROOTN * TMPRFract(I) 
 		 ENDDO
+         GOTO 2000
 	 ENDIF
 
 !	** calculate the total root senescence C and N based on the assumption of new root would die immediately

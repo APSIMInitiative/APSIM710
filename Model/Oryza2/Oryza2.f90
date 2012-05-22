@@ -431,6 +431,7 @@
           PV%PWCAD(L) = g%SoilProfile%air_dry_dep(L) / g%SoilProfile%dlayer(L)
           PV%Psand(L) = g%Soil_sand(L)  ! These are redundant - read again in Oryza1.f90:376
           PV%Pclay(L) = g%Soil_clay(L)
+          ! PV%PPh = ??? unused ???
          end do
         ELSE
           pv%PResC(:,:) = 0.0
