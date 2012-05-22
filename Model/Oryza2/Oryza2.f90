@@ -1,8 +1,6 @@
 ! 23/12/2011 Things to do:
-! FBiomassRemovedType (incorp surfaceOM at end_crop) is broken
 ! no root weight (by layer) is appearing -> root transfer to FOM pool isnt happening
 ! no canopy radiation partitioning
-! no interaction with swim
 ! no rat grazing
 ! variable naming probing needs help (ie sow a crop for getDescription)
 ! latest & greatest .ini file
@@ -74,6 +72,7 @@
         real RLV(max_layer)             ! root length density (mm)
         real ZRTMS                      ! Max root depth
         real harvestFraction            ! fraction of biomass removed when harvesting
+        character uptake_source*32      ! 'apsim' = swim, calc = us.
         end type Oryza2Globals
 
       common /instancePointers/ ID, g, p, c
@@ -156,6 +155,7 @@
       g%plant_status = 'out'
       g%cropsta = 0
       g%crop_type = ' '
+      g%uptake_source = ' '
       return
       end subroutine
 
@@ -234,7 +234,7 @@
                            ,-1.0*g%dlt_nh4, g%SoilProfile%num_dlayer)
       endif
 
-      if (g%Soil_has_sw .and. sum(g%dlt_sw_dep) .ne. 0.0) then
+      if (g%uptake_source .eq. 'calc' .and. g%Soil_has_sw .and. sum(g%dlt_sw_dep) .ne. 0.0) then
         do layer = 1, g%SoilProfile%num_dlayer
            if (g%SoilProfile%sw_dep(layer) - g%dlt_sw_dep(layer) .lt. g%SoilProfile%LL15_dep(layer)) then
               write (message, *) 'Attempting to remove more SW (', g%dlt_sw_dep(layer), ') than LL15 (', g%SoilProfile%LL15_dep(layer), ') in layer ', layer
@@ -313,17 +313,17 @@
       REAL    TKLT  ,  LRSTRS, LESTRS, NRT
       REAL    CPEW , LAIROL, ZRT  , DVS, WCL(10),  DLDR
       REAL    LAI, LLV  , SLA , WLVG  , WST  , WSO, GSO, GGR, GST, GLV, PLTR 
-      REAL    TRW, TRWL(10), TKL(10), WRT, WRR14
+      REAL    TRW, TRWL(10), TRWL_COPY(10), TKL(10), WRT, WRR14
       REAL    HU, WAGT, WLVD, WRR, NGR, NACR
       REAL    ANSO, ANLV, ANST, ANLD, ANRT
       REAL    FACT, rDOY, rDAE, rdd, etrd, etae, TRC, pcew, TMDA, ETD, EVSC
       REAL, DIMENSION(10) :: MSKPA, MSUC
       REAL, DIMENSION(2)  :: HARVFRAC
       REAL, DIMENSION(NL) :: UPPM
-      INTEGER NLAYR
+      INTEGER NLAYR, num_layers
 
       INTEGER YEAR, IUNITD, IUNITL, L
-      LOGICAL TERMNL
+      LOGICAL TERMNL, found
       if (controlValue .ne. SEASINIT .and. .not. g%hasInitialised) return ! Do nothing until initialisation
       
 !***********************************************************************
@@ -568,18 +568,28 @@
                     WCL, pv%PWCST , LAI, EVSC, ETD , TRC)
         else
            trc = g%eo
-        endif
+        end if
 
-      IF(INDEX(ISWITCH%ISWWAT,"Y").GT.0) THEN
-
-            CALL WSTRESS2 (ITASK,  DELT,   OR_OUTPUT, IUNITD, IUNITL, FILEI1, FILEIT, &
+        IF (g%uptake_source .eq. 'apsim' .or. g%uptake_source .eq. 'swim3' ) THEN
+           found = get('uptake_water_' // trim(g%crop_type),  '(mm)', 0,  TRWL_COPY, num_layers, max_layer, 0.0, 1000.0)
+           TRC = sum(TRWL_COPY(:))
+           CALL WSTRESS2 (ITASK,  DELT,   OR_OUTPUT, IUNITD, IUNITL, FILEI1, FILEIT, &
                           TRC,    ZRT,    TKL,    NLAYR,    g%CROPSTA, &
                           WCL,    pv%PWCWP,   MSKPA, &
                           TRW,    TRWL,   LRSTRS, g%LDSTRS, LESTRS, PCEW, CPEW)
-        !       Check for potential production condition  
-        ELSEIF(INDEX(ISWITCH%ISWWAT, "N").GT.0) THEN              !POTENTIAL WATER CONDITION
-            TRW = TRC; TKLT = SUM(TKL); g%ZRTMS = TKLT   !THE TOTAL TRANSPIRATION EQUALS TO POTENTIAL TRANSPIRATION
-            CALL WNOSTRESS (NLAYR, TRW, TRWL, ZRT, TKL, LRSTRS, g%LDSTRS, LESTRS, PCEW, CPEW)
+           TRWL = TRWL_COPY
+           TRW = sum(TRWL(:))
+        ELSE 
+           IF(INDEX(ISWITCH%ISWWAT,"Y").GT.0) THEN
+              CALL WSTRESS2 (ITASK,  DELT,   OR_OUTPUT, IUNITD, IUNITL, FILEI1, FILEIT, &
+                          TRC,    ZRT,    TKL,    NLAYR,    g%CROPSTA, &
+                          WCL,    pv%PWCWP,   MSKPA, &
+                          TRW,    TRWL,   LRSTRS, g%LDSTRS, LESTRS, PCEW, CPEW)
+           ELSE
+              !POTENTIAL WATER CONDITION
+              TRW = TRC; TKLT = SUM(TKL); g%ZRTMS = TKLT   !THE TOTAL TRANSPIRATION EQUALS TO POTENTIAL TRANSPIRATION
+              CALL WNOSTRESS (NLAYR, TRW, TRWL, ZRT, TKL, LRSTRS, g%LDSTRS, LESTRS, PCEW, CPEW)
+           END IF
         END IF
 
         rDOY = REAL(g%iday)
@@ -671,6 +681,7 @@
       subroutine OnInit1()
       Use Oryza2Module
       use ScienceAPI2
+      USE ModuleDefs
       use public_module
       implicit none
 !STDCALL(OnInit1)
@@ -683,12 +694,12 @@
 !STDCALL(Oryza2OnNewMet)
 !STDCALL(Oryza2OnSow)
 !STDCALL(Oryza2OnHarvest)
-      external ::Oryza2OnTick, Oryza2OnNewProfile, Oryza2OnPrepare, Oryza2OnProcess, Oryza2OnPost, Oryza2OnCommence, Oryza2OnNewMet, Oryza2OnSow, Oryza2OnHarvest, Oryza2OnEndCrop
+!STDCALL(Oryza2createoutputs)
+      external ::Oryza2OnTick, Oryza2OnNewProfile, Oryza2OnPrepare, Oryza2OnProcess, Oryza2OnPost, Oryza2OnCommence, Oryza2OnNewMet, Oryza2OnSow, Oryza2OnHarvest, Oryza2OnEndCrop, Oryza2createoutputs
 
-      integer found
-  
+      call Oryza2createoutputs()
       call oryza2_zero_variables ()
-      found = ReadParam('crop_type', '()', 0, g%crop_type)
+
       call SubscribeTimeType('tick', Oryza2OnTick)
       call SubscribeNewProfileType('new_profile', Oryza2OnNewProfile)
       call SubscribeNullType('prepare', Oryza2OnPrepare)
@@ -712,16 +723,11 @@
       call Expose('cropsta', '', 'Crop status', .false., g%cropsta) 
 
       call Expose('tnsoil', '', 'Soil-N available for crop uptake', .false., g%tnsoil) 
-      call Expose('rnstrs', '', 'Decrease factor for RGRL caused by N stress', .false., g%rnstrs) 
-      call Expose('ldstrs', '', 'Stress factor for leaf death', .false., g%ldstrs) 
+      !call Expose('rnstrs', '', 'Decrease factor for RGRL caused by N stress', .false., g%rnstrs) 
+      !call Expose('ldstrs', '', 'Stress factor for leaf death', .false., g%ldstrs) 
       call Expose('dlt_sw_dep_oryza', 'mm', 'Water uptake', .false., g%dlt_sw_dep, g%SoilProfile%num_dlayer, max_layer)
       call Expose('dlt_no3_oryza', 'mm', 'NO3 uptake', .false., g%dlt_no3, g%SoilProfile%num_dlayer, max_layer) 
       call Expose('dlt_nh4_oryza', 'mm', 'NH4 uptake', .false., g%dlt_nh4, g%SoilProfile%num_dlayer, max_layer) 
-
-      ! Find what to do about ET
-      g%etmod = ' '
-      found = ReadParam('kl', '()', 1, g%soil_kl, found, max_layer, 0.0, 1.0)
-      found = ReadParam('zrtms', '()', 1, g%zrtms, 0.0, 1000.0)
 
       end subroutine
 
@@ -736,11 +742,27 @@
 !STDCALL(Oryza2OnCommence)
       logical found
       integer numvals
+      real dummy
       
       ! Find static information from other modules      
       found = Get('latitude', '()', 0, g%lat, -90.0, 90.0)
       found = Get('sand', '()', 0, g%soil_sand, numvals, max_layer, 0.0, 100.0)
       found = Get('clay', '()', 0, g%soil_clay, numvals, max_layer, 0.0, 100.0)
+
+      found = ReadParam('kl', '()', 1, g%soil_kl, numvals, max_layer, 0.0, 1.0)
+      found = ReadParam('zrtms', '()', 1, g%zrtms, 0.0, 1000.0)
+
+      found = ReadParam('crop_type', '()', 0, g%crop_type)
+      found = ReadParam('uptake_source', '()', 1, g%uptake_source)
+      if (.not. found) then
+         ! nothing in our parameters - see if swim3 is plugged in
+         found = Get('swim3', '()', 1, dummy, 0.0, 1.0)
+         if (found) then
+           g%uptake_source = 'swim3'
+         else
+           g%uptake_source = 'calc'
+         endif  
+      endif
 
       return
       end subroutine
@@ -1048,8 +1070,6 @@
       use Oryza2Module
       implicit none
 !STDCALL(alloc_dealloc_instance)
-!STDCALL(Oryza2createoutputs)
-!STDCALL(Oryza2closeoutputs)
 
 !+  Sub-Program Arguments
       logical, intent(in) :: doAllocate
@@ -1067,10 +1087,8 @@
             call exit(1)
          endif
          allocate(g)
-         call Oryza2createoutputs()
       else
          initcount = initcount - 1
-         call Oryza2closeoutputs()
          deallocate(g)
       end if
       return

@@ -252,6 +252,7 @@ extern "C" bool EXPORT STDCALL  CIGet(CMPComponentInterface* componentInterface,
       {
       componentInterface->error(err.what(), true);
       }
+   return false;
    }
 extern "C" void EXPORT STDCALL  CISet(CMPComponentInterface* componentInterface,
                                       const char* Name,

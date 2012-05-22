@@ -409,8 +409,10 @@
            CALL OUTDAT (2, 0, 'NMAXL', NMAXL)
          !  CALL OUTDAT (2, 0, 'NMINL', NMINL)
            CALL OUTDAT (2, 0, 'FNLV', FNLV)
-           CALL OUTDAT (2, 0, 'SNH4', SNH4X(1))
-           CALL OUTDAT (2, 0, 'SNO3', SNO3X(1))
+           CALL OUTARR (2, 0, 'SNH4', SNH4X, SL)
+           CALL OUTARR (2, 0, 'SNO3', SNO3X, SL)
+           CALL OUTARR (2, 0, 'SPNO3', SPNO3, SL)
+           CALL OUTARR (2, 0, 'SPNH4', SPNH4, SL)
          END IF
 !+		UPDATE SOIL MINERAL NITROGEN CONTENTS into public module values
 		 DO I=1, SL

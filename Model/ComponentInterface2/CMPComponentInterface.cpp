@@ -48,11 +48,16 @@ CMPComponentInterface::~CMPComponentInterface()
    for (NameToRegMap::iterator i = regNames.begin();
                                i != regNames.end();
                                i++)
-	  if (i->second != NULL) {
-		delete i->second->data;
-		delete i->second;
-	  }
-
+      {
+      Reg *reg = i->second;
+      if (reg != NULL) 
+          {
+          if (reg->data != NULL) 
+             delete reg->data;
+          delete reg;
+          }
+      }
+   regNames.clear();
    clearMessages();
    for (unsigned i = 0; i != init2.size(); i++)
      delete init2[i];
@@ -417,10 +422,7 @@ void CMPComponentInterface::expose(const std::string& name,
    RegistrationKind kind = respondToGetReg;
    if (writable)
       kind = respondToGetSetReg;
-   if (nameToRegistrationID(name, respondToGetReg) == 0)
-      RegisterWithPM(name, units, description, kind, variable);
-   else
-      delete variable;
+   RegisterWithPM(name, units, description, kind, variable);
    }
 
 void CMPComponentInterface::subscribe(const std::string& name, Packable* handler)
@@ -582,7 +584,7 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
    // ie. don't delete this data object elsewhere!
    // -----------------------------------------------------------------------
    {
-   string ddml = data != NULL ? data->ddml() : "";
+   string ddml = data != NULL ? data->ddml() : "<type/>";
    if (units != "")
       addAttributeToXML(ddml, "unit=\"" + units + "\"");
    if (description != "")
@@ -592,7 +594,19 @@ int CMPComponentInterface::RegisterWithPM(const string& name, const string& unit
    char buffer[100];
    sprintf(buffer, "%d", regKind);
    string fullRegName = name + buffer;
-   Reg* reg = new Reg;
+   Reg* reg;
+   NameToRegMap::iterator oldReg = regNames.find(fullRegName);
+   if (oldReg != regNames.end())
+     {
+     // This is the second time the variable has been exposed, so we dont need to update the registration - only the data
+     reg = oldReg->second;
+     if (reg->data != NULL) 
+       delete reg->data;
+     reg->data = data;
+     reg->ddml = ddml;
+     return (int) reg;
+     }
+   reg = new Reg;
    reg->data = data;
    reg->kind = regKind;
    reg->ddml = ddml;
@@ -715,24 +729,26 @@ void CMPComponentInterface::onQueryValue(const Message& message)
    // -----------------------------------------------------------------------
    {
    MessageData messageData(message);
-	QueryValueType queryValue;
+   QueryValueType queryValue;
    unpack(messageData, queryValue);
    Reg* reg = (Reg*) queryValue.ID;
-   Packable& data = *(reg->data);
+   if (reg->data != NULL) 
+      {
+      Packable& data = *(reg->data);
+      ReplyValueType replyValue;
+      replyValue.queryID = message.messageID;
+      replyValue.ddml = data.ddml();
 
-	ReplyValueType replyValue;
-	replyValue.queryID = message.messageID;
-	replyValue.ddml = data.ddml();
-
-	Message& replyValueMessage = constructMessage(Message::ReplyValue,
+      Message& replyValueMessage = constructMessage(Message::ReplyValue,
 	                                              componentID,
 	                                              message.from,
 	                                              false,
                                                  memorySize(replyValue) + data.memorySize());
-   MessageData replyValueMessageData(replyValueMessage);
-   pack(replyValueMessageData, replyValue);
-   data.pack(replyValueMessageData);
-	sendMessage(replyValueMessage);
+     MessageData replyValueMessageData(replyValueMessage);
+     pack(replyValueMessageData, replyValue);
+     data.pack(replyValueMessageData);
+     sendMessage(replyValueMessage);
+     }
    }
 
 
@@ -802,7 +818,6 @@ void CMPComponentInterface::notifyFutureEvent(const std::string& name)
    Null dummy;
    RegisterWithPM(name, "", "", eventReg, new PackableWrapper< Null >(dummy));
    }
-
 
 std::string CMPComponentInterface::getPropertyDescription(NameToRegMap::iterator reg, const string& access)
    {

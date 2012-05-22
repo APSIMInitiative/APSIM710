@@ -880,22 +880,24 @@
             CALL OUTDAT(2,0,'ngr',ngr)
             CALL OUTDAT(2,0,'wgrmx',wgrmx)
             CALL OUTARR(2,0,'rlv',rdensity, SL)
+			CALL OUTARR (2, 0, 'ROOTM', ROOTC, SL)
+			CALL OUTARR (2, 0, 'ROOTM', RDENSITY, SL)
 
-            do i=1, sl
-				Rootobs = ' '
-				write(xx,'(I2)') I
-				!IF (INQOBS (FILEIT,trim(rootobs))) THEN
-					rootobs = trim('ROOTM') // trim(adjustl(xx))
-					CALL OUTDAT (2, 0, trim(rootobs),ROOTC(I))
-					!ENDIF
-			!ENDDO
-			!DO I=1, SL
-				rootobs = ' '
-				rootobs = trim('ROOTL') // trim(adjustl(xx))
-				!IF (INQOBS (FILEIT,trim(rootobs))) THEN
-					CALL OUTDAT (2,0,trim(rootobs),RDENSITY(I))
-					!ENDIF
-			ENDDO
+!            do i=1, sl
+!				Rootobs = ' '
+!				write(xx,'(I2)') I
+!				!IF (INQOBS (FILEIT,trim(rootobs))) THEN
+!					rootobs = trim('ROOTM') // trim(adjustl(xx))
+!					CALL OUTDAT (2, 0, trim(rootobs),ROOTC(I))
+!					!ENDIF
+!			!ENDDO
+!			!DO I=1, SL
+!				rootobs = ' '
+!				rootobs = trim('ROOTL') // trim(adjustl(xx))
+!				!IF (INQOBS (FILEIT,trim(rootobs))) THEN
+!					CALL OUTDAT (2,0,trim(rootobs),RDENSITY(I))
+!					!ENDIF
+!			ENDDO
 
             IF (INQOBS (FILEIT,'NFLV')) THEN
                     CALL OUTDAT (2, 0, 'NFLV_OBS',GETOBS(FILEIT,'NFLV'))
