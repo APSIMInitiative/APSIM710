@@ -11,6 +11,7 @@
 #include <General/stristr.h>
 #include <General/path.h>
 #include <General/dll.h>
+#include <General/io_functions.h>
 
 #include <ComponentInterface2/ScienceAPI2.h>
 
@@ -231,14 +232,24 @@ void RComponent::onInit2(void)
    if (p != NULL) {
 	  userlibs = p;
       replace(userlibs.begin(), userlibs.end(), '\\', '/');
-	  userlibs += "/My Documents/R/win-library/";
-	  vector<string> vnums;
-	  split(versionString, ".", vnums);
-      userlibs += vnums[0];
-	  userlibs += ".";
-	  userlibs += vnums[1];
+	  string testDir = userlibs + "/My Documents/R/win-library/";
+      if (DirectoryExists(testDir)) {
+         userlibs = testDir;
+      } else {
+         testDir = userlibs + "/Documents/R/win-library/";
+         if (DirectoryExists(testDir)) {
+           userlibs = testDir;
+         }
+      }
+      if (DirectoryExists(testDir)) {
+        vector<string> vnums;
+        split(versionString, ".", vnums);
+        userlibs += vnums[0];
+        userlibs += ".";
+        userlibs += vnums[1];
+        apsimAPI.write("Userlibs = " + userlibs + "\n");
+      }
    }
-   apsimAPI.write("Userlibs = " + userlibs + "\n");
 
    if (!StartR(installPath.c_str(), 
                userlibs.c_str(), 

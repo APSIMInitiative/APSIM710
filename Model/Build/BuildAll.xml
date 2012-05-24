@@ -536,13 +536,13 @@
 	</Job>
     </Folder>
 	<Job name="Delete old .NET proxy classes" wait="yes">
-		<WorkingDirectory>%APSIM%\Model\DotNetProxies</WorkingDirectory>
+		<WorkingDirectory>%APSIM%/Model/DotNetProxies</WorkingDirectory>
 		<CommandLine>%APSIM%\Model\Build\DeleteFileIfExists.bat DotNetProxies.cs</CommandLine>
 		<CommandLineUnix>rm -f DotNetProxies.cs</CommandLineUnix>
 	</Job>
 	<Job name="Create new .NET proxy classes" wait="yes">
 		<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
 		<CommandLine>UpdateDotNetProxies.exe</CommandLine>
-		<CommandLineUnix>make</CommandLineUnix>
+		<CommandLineUnix>UpdateDotNetProxies.exe</CommandLineUnix>
 	</Job>
  </Folder>

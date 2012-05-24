@@ -133,8 +133,8 @@ extern "C" bool EmbeddedR_Start(const char *R_Home, const char *UserLibs)
    setenv("PATH", newPath.c_str(), 1);
 #endif
 
-   if (R_Home != NULL) { setenv("R_HOME", R_Home, 1) ; }
-   if (UserLibs != NULL) { setenv("R_LIBS_USER", UserLibs, 1); }
+   if (R_Home != NULL && strlen(R_Home) > 0) { setenv("R_HOME", R_Home, 1) ; }
+   if (UserLibs != NULL && strlen(UserLibs) > 0) { setenv("R_LIBS_USER", UserLibs, 1); }
    // TMPDIR??
    // R_USER??
 
