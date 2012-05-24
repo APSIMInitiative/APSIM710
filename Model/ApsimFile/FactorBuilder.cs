@@ -336,6 +336,11 @@ namespace ApsimFile
                         {
                            string sSelect = "//property[@name='" + Variable.Name + "']";
                            varNode = variablesNode.SelectSingleNode(sSelect);
+                           if (varNode == null)
+                           {
+                              sSelect = "//" + Variable.Name;
+                              varNode = variablesNode.SelectSingleNode(sSelect);
+                           }
                            if (varNode != null)
                            {
                               varNode.InnerText = par;
