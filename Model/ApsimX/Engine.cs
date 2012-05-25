@@ -16,7 +16,7 @@ public class FinishedException : Exception
       }
    }
 
-public class Engine
+public class ApsimX
 {
     /// <summary>
     /// Main program entry point.
@@ -28,8 +28,7 @@ public class Engine
             if (args.Length != 1)
                 throw new Exception("Usage: FastApsim .ApsimFileName");
 
-            Engine ApsimEngine = new Engine();
-            ModelInstance Simulation = ApsimEngine.Load(args[0]);
+            ModelInstance Simulation = Load(args[0]);
             Simulation.Run();
             return 0;
         }
@@ -48,7 +47,7 @@ public class Engine
     /// <summary>
     /// Load a simulation from the specified file.
     /// </summary>
-    private ModelInstance Load(string FileName)
+    public static ModelInstance Load(string FileName)
     {
         if (!File.Exists(FileName))
             throw new Exception("Cannot find file: " + FileName);
@@ -56,9 +55,6 @@ public class Engine
         StreamReader In = new StreamReader(FileName);
 
         ModelInstance Simulation = CreateModelInstance(In);
-        Simulation.UpdateValues();
-        Simulation.PublishToChildren("Initialised");
-        Simulation.Run();
         return Simulation;
     }
 
@@ -69,7 +65,6 @@ public class Engine
     private static ModelInstance CreateModelInstance(TextReader Reader)
     {
         ModelInstance RootInstance = XmlSerialiser.Deserialise(Reader);
-        RootInstance.SortChildren();
         RootInstance.Initialise();
         return RootInstance;
     }

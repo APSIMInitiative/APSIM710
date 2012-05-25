@@ -94,24 +94,24 @@ namespace ModelFramework
 
         public void Activate(string ComponentName)
         {
-            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            ModelInstance I = InScope.FindModel(ComponentName, Instance);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot activate it.");
-            I.Activate();
+            I.Enabled = true;
         }
 
         public void Deactivate(string ComponentName)
         {
-            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            ModelInstance I = InScope.FindModel(ComponentName, Instance);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot deactivate it.");
-            I.Deactivate();
+            I.Enabled = false;
         }
 
 
         public string Checkpoint(string ComponentName)
         {
-            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            ModelInstance I = InScope.FindModel(ComponentName, Instance);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot checkpoint it.");
 
@@ -120,7 +120,7 @@ namespace ModelFramework
 
         public void RestoreFromCheckpoint(string ComponentName, string Checkpoint)
         {
-            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            ModelInstance I = InScope.FindModel(ComponentName, Instance);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot RestoreFromCheckpoint.");
 
@@ -129,7 +129,7 @@ namespace ModelFramework
 
         public void InitialiseFromCheckpoint(string ComponentName, string Checkpoint)
         {
-            ModelInstance I = Instance.FindModelInstance(ComponentName);
+            ModelInstance I = InScope.FindModel(ComponentName, Instance);
             if (I == null)
                 throw new Exception("Cannot find component: " + ComponentName + ". Cannot RestoreFromCheckpoint.");
 

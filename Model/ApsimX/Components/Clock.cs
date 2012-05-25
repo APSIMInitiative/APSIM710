@@ -17,6 +17,7 @@ public class Clock
     public event NullDelegate Process;
     public event NullDelegate Post;
     public event NullDelegate Report;
+    public event NullDelegate Terminate;
 
     [Param]
     public DateTime Start_Date;
@@ -50,19 +51,24 @@ public class Clock
             _Today += OneDay;
         }
         FirstDay = false;
-        
-        if (_Today > End_Date)
-            throw new FinishedException("Simulation terminated normally");
 
-        Tick.Invoke(t);
-        if (Prepare != null)
-            Prepare.Invoke();
-        if (Process != null)
-            Process.Invoke();
-        if (Post != null)
-            Post.Invoke();
-        if (Report != null)
-            Report.Invoke();
+        if (_Today <= End_Date)
+        {
+            Tick.Invoke(t);
+            if (Prepare != null)
+                Prepare.Invoke();
+            if (Process != null)
+                Process.Invoke();
+            if (Post != null)
+                Post.Invoke();
+            if (Report != null)
+                Report.Invoke();
+        }
+        else
+        {
+            Console.WriteLine("Simulation terminated normally");
+            Terminate.Invoke();
+        }
     }
 
 }

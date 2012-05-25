@@ -4,7 +4,7 @@ using System.Text;
 using System.Reflection;
 
 
-class EventPublisher
+public class EventPublisher
 {
     private EventInfo Info;
     private object TheModel;
@@ -38,7 +38,7 @@ class EventPublisher
     }
 }
 
-class EventSubscriber
+public class EventSubscriber
 {
     internal MethodInfo Info;
     internal object TheModel;

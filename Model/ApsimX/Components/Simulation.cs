@@ -10,6 +10,9 @@ public class Simulation
     [Event]
     public event NullTypeDelegate Initialised;
 
+    [Param]
+    public string Name;
+
     public void InvokeInitialised()
     {
         if (Initialised != null)

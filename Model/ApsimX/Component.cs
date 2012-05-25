@@ -89,7 +89,7 @@ namespace ModelFramework
         // --------------------------------------------------------------------
         public virtual void Subscribe(String EventName, RuntimeEventHandler.NullFunction F)
         {
-            Instance.AddSubscriber(EventName, F.Method, F.Target);
+            Instance.Subscribe(EventName, F.Method, F.Target);
             Instance.ConnectEvents();
         }		
 		
@@ -122,17 +122,14 @@ namespace ModelFramework
         /// </summary>
         public object LinkByType(String TypeToFind)
         {
-            return Instance.FindModelsByType(TypeToFind);
+            return InScope.FindModel(Inst => Inst.Type.Name == TypeToFind, Instance);
         }
         /// <summary>
         /// Return a child component of the paddock by unqualified name.
         /// </summary>
         public object LinkByName(string NameToFind)
         {
-            ModelInstance[] Instances = Instance.FindModelsByName(NameToFind);
-            if (Instances == null || Instances.Length == 0)
-                return null;
-            return Instances[0];
+            return InScope.FindModel(Inst => string.Equals(Inst.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase), Instance);
         }
         // --------------------------------------------------------------------
         /// <summary>

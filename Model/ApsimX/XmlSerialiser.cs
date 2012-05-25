@@ -23,7 +23,7 @@ class XmlSerialiser
     static string[] TypesToIgnore = new string[] { "Memo", "DataTable" };
 
 
-    //// Serialisation ///////////////////////////////////////////////////////////////////////////////////////////
+    #region Serialisation
 
 
     /// <summary>
@@ -47,11 +47,11 @@ class XmlSerialiser
     /// </summary>
     private static void Serialise(ModelInstance Instance, XmlWriter XMLWriter, bool Deep)
     {
-        XMLWriter.WriteStartElement(Instance.ClassType.Name);
+        XMLWriter.WriteStartElement(Instance.Type.Name);
         XMLWriter.WriteAttributeString("name", Instance.Name);
 
-        if (Instance.ShortCutPath != "")
-            XMLWriter.WriteAttributeString("shortcut", Instance.ShortCutPath);
+        if (Instance.ShortcutPath != "")
+            XMLWriter.WriteAttributeString("shortcut", Instance.ShortcutPath);
         else
         {
             foreach (ClassVariable Param in Instance.Params)
@@ -118,9 +118,9 @@ class XmlSerialiser
         }
     }
 
+    #endregion
 
-    //// Deserialisation /////////////////////////////////////////////////////////////////////////////////////////
-
+    #region Deserialisation
 
     /// <summary>
     /// Deserialise the text in the specified 'Reader' to children of the specified Parent. If 
@@ -136,8 +136,7 @@ class XmlSerialiser
         XmlNode RootNode = Doc.DocumentElement;
         ModelInstance Root = CreateOrReuseObject(ref RootNode,
                                                   Parent,
-                                                  CreateNewObjects,
-                                                  XmlHelper.Name(RootNode)) as ModelInstance;
+                                                  CreateNewObjects) as ModelInstance;
         return DeserialiseChildrenOfObject(Doc.DocumentElement, Root, Parent, CreateNewObjects) as ModelInstance;
     }
 
@@ -154,7 +153,7 @@ class XmlSerialiser
         {
             NewInstance = NewModel as ModelInstance;
             NewModel = NewInstance.TheModel;
-            ClassVariable XmlVariable = NewInstance.ModelHasXMLParam();
+            ClassVariable XmlVariable = NewInstance.Params.Find(P => P.Type.Name == "XmlNode");
             if (XmlVariable != null)
             {
                 XmlVariable.Value = Node;
@@ -181,8 +180,7 @@ class XmlSerialiser
                 XmlNode ChildNode = Child;
                 object NewChildInstance = CreateOrReuseObject(ref ChildNode, 
                                                                NewInstance, 
-                                                               CreateNewObjects, 
-                                                               XmlHelper.Name(Child));
+                                                               CreateNewObjects);
                 DeserialiseChildrenOfObject(ChildNode,
                                    NewChildInstance,
                                    NewInstance,
@@ -273,7 +271,10 @@ class XmlSerialiser
         }
         else
         {
-            ClassVariable Var = Instance.FindParamOrState(FieldName);
+            ClassVariable Var = Instance.Params.Find(V => string.Equals(V.Name, FieldName, StringComparison.CurrentCultureIgnoreCase));
+            if (Var == null)
+                Var = Instance.States.Find(V => string.Equals(V.Name, FieldName, StringComparison.CurrentCultureIgnoreCase));
+
             if (Var != null)
             {
                 MemberInfo = Var.MemberInfo;
@@ -301,8 +302,9 @@ class XmlSerialiser
     /// 'CreateNewObjects'=true then a new instance of ModelInstance will be created. If
     /// 'CreateNewObjects'=false then an existing object will be found and returned.
     /// </summary>
-    private static object CreateOrReuseObject(ref XmlNode Node, ModelInstance ParentInstance, bool CreateNewObjects, string MemberName)
+    private static object CreateOrReuseObject(ref XmlNode Node, ModelInstance ParentInstance, bool CreateNewObjects)
     {
+        string MemberName = XmlHelper.Name(Node);
         object NewObject;
         if (CreateNewObjects)
         {
@@ -311,41 +313,37 @@ class XmlSerialiser
             if (ParentInstance == null)
                 AssemblyToLookIn = Assembly.GetExecutingAssembly();
             else
-                AssemblyToLookIn = ParentInstance.ClassType.Assembly;
+                AssemblyToLookIn = ParentInstance.Type.Assembly;
             Type ModelClassType = GetClassType(Node.Name, AssemblyToLookIn);
-            NewObject = new ModelInstance(MemberName, Node, ParentInstance, ModelClassType);
+            bool Enabled = XmlHelper.Attribute(Node, "enabled").ToLower() != "no";
+            string ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
+            if (ShortCutPath != "")
+            {
+                Node = XmlHelper.Find(Node, ShortCutPath);
+                if (Node == null)
+                    throw new Exception("Cannot find shortcut: " + ShortCutPath);
+            }
+            NewObject = new ModelInstance(XmlHelper.Name(Node), 
+                                          Enabled,
+                                          ShortCutPath,
+                                          ParentInstance, ModelClassType);
             if (ParentInstance != null)
                 ParentInstance.Children.Add(NewObject as ModelInstance);
-
-            // This model might be a shortcut. If found then set the NewObject.node will to point to 
-            // the shortcutted node.
-            Node = (NewObject as ModelInstance).Node;
         }
         else
-        {
-            // The MemberName might be an array variable e.g. InitialLeaves[1] - remove and use the array bit so
-            // that we can match it.
-            string MemberNoArray = MemberName;
-            string ArraySpec = StringManip.SplitOffBracketedValue(ref MemberNoArray, '[', ']');
-            ModelInstance[] MatchingInstances = ParentInstance.FindModelsByName(MemberNoArray);
-            if (MatchingInstances.Length == 0)
-                throw new Exception("Cannot find a ModelInstance for: " + MemberName);
-            if (ArraySpec != "")
-                NewObject = MatchingInstances[Convert.ToInt32(ArraySpec) - 1];
-            else
-                NewObject = MatchingInstances[0];
-        }
+            return InScope.FindModel(Inst => string.Equals(Inst.Name, MemberName, StringComparison.CurrentCultureIgnoreCase), ParentInstance);
 
         return NewObject;
     }
 
-    //// Utilities ///////////////////////////////////////////////////////////////////////////////////////////////
+    #endregion
 
+    #region Utilities
 
     /// <summary>
     /// Go find and return a 'Tyoe' by looking up the specified ClassName in the specified asssembly
     /// </summary>
-   public static Type GetClassType(string ClassName, Assembly Assembly)
+    public static Type GetClassType(string ClassName, Assembly Assembly)
     {
         int PosPeriod = ClassName.IndexOf('.');
         if (PosPeriod == -1)
@@ -410,5 +408,6 @@ class XmlSerialiser
             return F;
         return FindField(Name, type.BaseType, flags);
     }
-    
+
+    #endregion
 }

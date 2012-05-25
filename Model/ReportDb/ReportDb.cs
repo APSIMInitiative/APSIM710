@@ -38,7 +38,7 @@ public class ReportDb
     [Input]
     private DateTime Today;
 
-    [Input]
+    [Input(IsOptional=true)]
     string Title = null;
 
     [Link]
@@ -85,6 +85,13 @@ public class ReportDb
         Connection.Open();
         SQLiteCommand sql_cmd = new SQLiteCommand(Connection);
 #endif
+        if (Title == null)
+        {
+            Component Simulation = Paddock.LinkByType("Simulation") as Component;
+            if (Simulation != null)
+                Simulation.Get("Title", out Title);
+        }
+
 
         // Make sure we have a Simulations table.
         if (!TableNames.Contains("Simulations"))

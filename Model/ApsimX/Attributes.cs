@@ -104,8 +104,14 @@ public class Link : Attribute
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Field | AttributeTargets.Property)]
 public class Description : System.Attribute
 {
+    private string _Text;
     public Description(string Text)
     {
+        _Text = Text;
+    }
+    public string ToString()
+    {
+        return _Text;
     }
 }
 

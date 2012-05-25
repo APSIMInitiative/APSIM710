@@ -214,6 +214,17 @@ namespace CSGeneral
             return ReturnString;
         }
 
+        /// <summary>
+        /// Remove a substring (starting from OpenBracket) from a string.
+        /// </summary>
+        public static string RemoveAfter(string St, char OpenBracket)
+        {
+            int Pos = St.IndexOf(OpenBracket);
+            if (Pos != -1)
+                return St.Substring(0, Pos);
+            else
+                return St;
+        }
 
 
         // ------------------------------------------

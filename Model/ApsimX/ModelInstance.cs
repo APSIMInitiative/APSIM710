@@ -13,125 +13,120 @@ using System.Xml.Serialization;
 /// <summary>
 /// Encapculates an instance of a model (e.g. wheat, sorghum, manager).
 /// </summary>
-internal class ModelInstance
+public class ModelInstance
 {
-    public List<ModelInstance> Children = new List<ModelInstance>();
-    public List<ClassVariable> Inputs = new List<ClassVariable>();
-    public List<ClassVariable> Outputs = new List<ClassVariable>();
-    public List<ClassVariable> Params = new List<ClassVariable>();
-    public List<ClassVariable> States = new List<ClassVariable>();
-    public List<LinkField> Refs = new List<LinkField>();
-    public List<EventPublisher> Publishers = new List<EventPublisher>();
-    public List<EventSubscriber> Subscribers = new List<EventSubscriber>();
-    
-
-    public Type ClassType;
-    public XmlNode Node;
-    public ModelInstance Parent;
-    public object TheModel;
-    public static string Title;
-    public string ShortCutPath;
-    public static Simulation RootSimulation;
-    private string _FullName;
-    private List<string> ComponentOrder = null;
-    private bool Enabled = true;
+    private List<ModelInstance> _Children = new List<ModelInstance>();
+    private List<ClassVariable> _Inputs = new List<ClassVariable>();
+    private List<ClassVariable> _Outputs = new List<ClassVariable>();
+    private List<ClassVariable> _Params = new List<ClassVariable>();
+    private List<ClassVariable> _States = new List<ClassVariable>();
+    private List<ClassLink> _Links = new List<ClassLink>();
+    private List<EventPublisher> _Publishers = new List<EventPublisher>();
+    private List<EventSubscriber> _Subscribers = new List<EventSubscriber>();
     private Dictionary<string, ClassVariable> VariableCache = new Dictionary<string, ClassVariable>();
-
-
-
-    private int CompareModelInstances(ModelInstance x, ModelInstance y)
-    {
-        int xIndex = StringManip.IndexOfCaseInsensitive(ComponentOrder, x.ClassType.Name);
-        int yIndex = StringManip.IndexOfCaseInsensitive(ComponentOrder, y.ClassType.Name);
-        if (xIndex == yIndex)
-            return 0;
-        if (xIndex == -1)
-            return 1;
-        if (yIndex == -1)
-            return -1;
-        if (xIndex < yIndex)
-            return -1;
-        else
-            return 1;
-    }
+    private int ExecutionOrder = Int32.MaxValue;
+    private string _FullName;
+    private bool _Enabled = true;
+    private Type _ClassType;
+    private ModelInstance _Parent;
+    private object _TheModel;
+    private string _ShortcutPath;
+    private static bool _Terminate;
 
     /// <summary>
-    /// Sort all child instances according to the proper component order.
+    /// Internal constructor to create an instance of a model wrapper as specified by the 
+    /// XmlNode. The parent instance is also passed in.
     /// </summary>
-    public void SortChildren()
+    internal ModelInstance(string Name, bool Enabled, string ShortcutPath, ModelInstance Parent, Type ClassType)
     {
-        if (ComponentOrder == null)
-            ComponentOrder = Configuration.Instance.ComponentOrder();
+        _Enabled = Enabled;
+        _ShortcutPath = ShortcutPath;
+        _Parent = Parent;
+        _ClassType = ClassType;
 
-        Utility.StableSort<ModelInstance>(Children, CompareModelInstances);
-        foreach (ModelInstance Child in Children)
-            Child.SortChildren();
-    }
-
-    /// <summary>
-    /// Internal recursive constructor to create instances of all objects specified by the 
-    /// XmlNode. The parent instance is also passed in. Returns the top level instance.
-    /// </summary>
-    internal ModelInstance(string InstanceName, XmlNode _Node, ModelInstance ParentInstance, Type _ClassType)
-    {
-        if (ParentInstance != null)
+        if (Parent != null)
         {
-            if (!ParentInstance.Enabled)
-                Enabled = false;
-            else
-                Enabled = XmlHelper.Attribute(_Node, "enabled").ToLower() != "no";
-
-            _FullName = ParentInstance.FullName + "." + InstanceName;
+            if (!Parent._Enabled)
+                _Enabled = false;
+            _FullName = Parent.FullName + "." + Name;
         }
         else
         {
-            // Root element - register an "OnTick" handler and a "Title" output variable.
-            MethodInfo OnTickMethod = GetType().GetMethod("OnTick");
-            Subscribers.Add(new EventSubscriber(null, OnTickMethod, this));
-            FieldInfo TitleFieldInfo = GetType().GetField("Title");
-            Outputs.Add(new ClassVariable(TitleFieldInfo, TheModel));
-
-            _FullName = InstanceName;
-            Title = InstanceName;
+            _FullName = Name;
+            Subscribe("Tick", GetType().GetMethod("OnTick", BindingFlags.NonPublic | BindingFlags.Instance), this);
+            Subscribe("Terminate", GetType().GetMethod("OnTerminate", BindingFlags.NonPublic | BindingFlags.Instance), this);
         }
 
-        // resolve any shortcuts.
-        Node = _Node;
-        ShortCutPath = XmlHelper.Attribute(Node, "shortcut");
-        if (ShortCutPath != "")
-        {
-            Node = XmlHelper.Find(Node, ShortCutPath);
-            if (Node == null)
-                throw new Exception("Cannot find shortcut: " + ShortCutPath);
-        }
-        ClassType = _ClassType;
-        if (ClassType == null)
-            throw new Exception("Cannot find a model class called: " + Node.Name);
-
-        Parent = ParentInstance;
-
-        TheModel = Activator.CreateInstance(ClassType);
-
+        _TheModel = Activator.CreateInstance(ClassType);
         CollectVariablesAndEvents();
+
+        // See if we have an execution order state variable.
+        ClassVariable ExecutionOrderVar = States.Find(var => var.Name == "ExecutionOrder");
+        if (ExecutionOrderVar != null)
+            ExecutionOrder = Convert.ToInt32(ExecutionOrderVar.Value);
     }
 
-
+    #region Public properties
+    /// <summary>
+    /// Returns a list of child ModelInstances.
+    /// </summary>
+    public List<ModelInstance> Children { get { return _Children; } }
 
     /// <summary>
-    /// Initialise this model instance by resolving all variable, events and links.
+    /// Returns a list of child ModelInstances that have been sorted according to component order.
     /// </summary>
-    internal void Initialise()
+    public List<ModelInstance> ChildrenSorted
     {
-        ConnectInputsAndOutputs();
-        ConnectEvents();
-        if (!Enabled)
-            foreach (EventSubscriber Subscriber in Subscribers)
-                Subscriber.Enabled = false;
-        ResolveRefs(IncludeChildren: false);
-        UpdateValues();
-        foreach (ModelInstance Child in Children)
-            Child.Initialise();
+        get
+        {
+            // For speed reasons check to see if any child has an ExecutionOrder. If not then
+            // just return the normal children list. Otherwise return a sorted list.
+            if (Children.Find(var => var.ExecutionOrder != Int32.MaxValue) == null)
+                return Children;
+            else
+            {
+                List<ModelInstance> SortedChildren = Children;
+                Utility.StableSort<ModelInstance>(SortedChildren,
+                                                  (x, y) => x.ExecutionOrder.CompareTo(y.ExecutionOrder));
+                return SortedChildren;
+            }
+        }
     }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [Input]
+    /// </summary>
+    public List<ClassVariable> Inputs { get { return _Inputs; } }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [Output]
+    /// </summary>
+    public List<ClassVariable> Outputs { get { return _Outputs; } }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [Param]
+    /// </summary>
+    public List<ClassVariable> Params { get { return _Params; } }
+
+    /// <summary>
+    /// Returns a list of variables not decorated with any attribute - state variables.
+    /// </summary>
+    public List<ClassVariable> States { get { return _States; } }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [Link]
+    /// </summary>
+    public List<ClassLink> Links { get { return _Links; } }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [Event] - events published.
+    /// </summary>
+    public List<EventPublisher> Publishers { get { return _Publishers; } }
+
+    /// <summary>
+    /// Returns a list of variables decorated with [EventHandler]
+    /// </summary>
+    public List<EventSubscriber> Subscribers { get { return _Subscribers; } }
 
     /// <summary>
     /// Property to return a unqualified name.
@@ -149,6 +144,11 @@ internal class ModelInstance
     }
 
     /// <summary>
+    /// Return the 'Type' of the encapsulated model.
+    /// </summary>
+    public Type Type { get { return _ClassType; } }
+
+    /// <summary>
     /// Property to return a fully qualified name.
     /// </summary>
     public string FullName
@@ -159,65 +159,47 @@ internal class ModelInstance
         }
     }
 
-    public ModelInstance ParentPaddock
+    /// <summary>
+    /// Property to return the parent ModelInstance. Returns null if no parent.
+    /// </summary>
+    public ModelInstance Parent { get { return _Parent; } }
+
+    /// <summary>
+    /// Return true if the model is enabled. When enabling or disabling a model, it will also enable / disable 
+    /// all child models.
+    /// </summary>
+    public bool Enabled
     {
         get
         {
-            ModelInstance P = Parent;
-            while (P != null && P.ClassType.Name != "Area" && P.ClassType.Name != "Simulation")
-                P = P.Parent;
-            return P;
+            return _Enabled;
         }
-    }
-
-
-    /// <summary>
-    /// Resolve all [Ref] pointers.
-    /// </summary>
-    public void ResolveRefs(bool IncludeChildren)
-    {
-        foreach (LinkField Ref in Refs)
+        set
         {
-            if (Ref.Info.FieldType.Name == "Paddock")
-                Ref.Value = new Paddock(ParentPaddock);
-
-            else if (Ref.Info.FieldType.Name == "Component" && Ref.Name == "My")
-                Ref.Value = new ModelFramework.Component(this);
-
-            else
+            if (value != _Enabled)
             {
-                ModelInstance[] Instances = FindModelsByName(Ref.Name);
-
-                if (Instances == null)
-                    Instances = FindModelsByType(Ref.Info.FieldType.Name);
-
-                if (Instances == null)
-                {
-                    if (!Ref.Optional)
-                        throw new Exception("Cannot find ref: " + Ref.Name);
-                }
-                else
-                {
-                    if (Ref.Info.FieldType.IsArray)
-                    {
-                        // An link which is an array has been encountered.
-                        // e.g. [Link] LeafCohort[] InitialLeaves;
-                        int[] args = new int[] {Instances.Length};
-                        Array A = Array.CreateInstance(Ref.Info.FieldType.GetElementType(), Instances.Length) as Array;
-                        for (int i = 0; i < Instances.Length; i++)
-                            A.SetValue(Instances[i].TheModel, i);
-                        Ref.Value = A;
-                    }
-                    else
-                        Ref.Value = Instances[0].TheModel;
-                }
+                _Enabled = value;
+                foreach (EventSubscriber Subscriber in Subscribers)
+                    Subscriber.Enabled = _Enabled;
+                foreach (ModelInstance Child in Children)
+                    Child.Enabled = _Enabled;
             }
         }
-        if (IncludeChildren)
-            foreach (ModelInstance Child in Children)
-                Child.ResolveRefs(IncludeChildren);
     }
 
+    /// <summary>
+    /// Return the shortcut path for this ModelInstance or "" if not a shortcut.
+    /// </summary>
+    public string ShortcutPath { get { return _ShortcutPath; } }
+
+    /// <summary>
+    /// Return the actual 'Model' that this ModelInstance wraps.
+    /// </summary>
+    public object TheModel { get { return _TheModel; } }
+
+    /// <summary>
+    /// Return the Root ModelInstance i.e. the ModelInstance that doesn't have a Parent.
+    /// </summary>
     public ModelInstance Root
     {
         get
@@ -228,334 +210,95 @@ internal class ModelInstance
             return I;
         }
     }
+    #endregion
 
-    public ModelInstance FindModelInstance(string NameToFind)
+    /// <summary>
+    /// Initialise this model instance by resolving all variable, events and links.
+    /// </summary>
+    internal void Initialise()
     {
-        ModelInstance[] Instances = FindModelInstances(NameToFind);
-        if (Instances == null || Instances.Length == 0)
-            return null;
-        else
-            return Instances[0];
+        ConnectInputsAndOutputs();
+        ConnectEvents();
+        ResolveLinks();
+        UpdateValues(Deep: false);
+        foreach (ModelInstance Child in Children)
+            Child.Initialise();
     }
 
     /// <summary>
-    /// Go find a model instance using the specified NameToFind. This name can
-    /// have path information. Returns null if not found.
-    ///   A leading . indicates an absolute address. e.g. .simulation.paddock1.soilwat
-    ///   No dot indicates a child.                  e.g. leaf 
+    /// Resolve all [Link] pointers.
     /// </summary>
-    public ModelInstance[] FindModelInstances(string NameToFind)
+    private void ResolveLinks()
     {
-        List<ModelInstance> Instances = new List<ModelInstance>();
-
-        ModelInstance I = this;
-
-        string[] Paths = NameToFind.Split(".".ToCharArray());
-        int PathIndex = 0;
-        while (PathIndex < Paths.Length)
+        foreach (ClassLink Ref in Links)
         {
-            string Path = Paths[PathIndex];
-            if (Path == "")
+            if (Ref.Info.FieldType.Name == "Paddock")
             {
-                // Must be a reference to the root node.
-                I = Root;
+                ModelInstance ParentPaddock = Parent;
+                while (ParentPaddock != null && ParentPaddock.Type.Name != "Area" && ParentPaddock.Type.Name != "Simulation")
+                    ParentPaddock = ParentPaddock.Parent;
+                Ref.Value = new Paddock(ParentPaddock);
             }
 
+            else if (Ref.Info.FieldType.Name == "Component" && Ref.Name == "My")
+                Ref.Value = new ModelFramework.Component(this);
+
+            else if (Ref.Info.FieldType.IsArray)
+            {
+                // Find matching children.
+                List<ModelInstance> Instances = Children.FindAll(Instance => Ref.Info.Name == StringManip.RemoveAfter(Instance.Name, '['));
+
+                // An link which is an array has been encountered.
+                // e.g. [Link] LeafCohort[] InitialLeaves;
+                int[] args = new int[] { Instances.Count };
+                Array A = Array.CreateInstance(Ref.Info.FieldType.GetElementType(), Instances.Count) as Array;
+                for (int i = 0; i < Instances.Count; i++)
+                    A.SetValue(Instances[i].TheModel, i);
+                Ref.Value = A;
+            }
             else
             {
-                // Find a child node.
-                Instances.Clear();
-                foreach (ModelInstance Instance in I.Children)
+                ModelInstance Instance = InScope.FindModel(Ref.Name, this);
+                if (Instance == null)
+                    Instance = InScope.FindModel(I => I.Type.Name == Ref.Info.FieldType.Name, this);
+                if (Instance == null)
                 {
-                    string NameNoArray = Instance.Name;
-                    StringManip.SplitOffBracketedValue(ref NameNoArray, '[', ']');
-                    if (string.Equals(NameNoArray, Path, StringComparison.CurrentCultureIgnoreCase))
-                        Instances.Add(Instance);
+                    if (!Ref.Optional)
+                        throw new Exception("Cannot find ref: " + Ref.Name);
                 }
-                if (Instances.Count == 0)
-                    return null;
-                
-                I = Instances[0];
-            }
-
-            PathIndex++;
-        }
-        return Instances.ToArray();
-    }
-
-    public ModelInstance[] FindModelsByName(string NameToFind)
-    {
-        ModelInstance[] I = FindModelInstances(NameToFind);
-        if (I == null && !NameToFind.Contains(".") && Parent != null)
-        {
-            // No dot was specified so try our parent.
-            return Parent.FindModelsByName(NameToFind);
-        }
-        return I;
-    }
-
-    public ModelInstance[] FindModelsByType(string TypeToFind)
-    {
-        List<ModelInstance> Instances = null;
-        foreach (ModelInstance Child in Children)
-        {
-            if (string.Equals(Child.ClassType.ToString(), TypeToFind, StringComparison.CurrentCultureIgnoreCase))
-            {
-                if (Instances == null)
-                    Instances = new List<ModelInstance>();
-                Instances.Add(Child);
+                else
+                    Ref.Value = Instance.TheModel;
             }
         }
-        if (Instances != null)
-            return Instances.ToArray();
-
-        // Not found - try our parent.
-        if (Parent != null)
-            return Parent.FindModelsByType(TypeToFind);
-        else
-            return null;
     }
 
     /// <summary>
-    /// Find a specific output that matches "NameToFind". This method will search the
-    /// instance passed in plus all child instances.
+    /// Find a specific output that matches "NameToFind". For speed reasons, we'll look in a
+    /// variable cache first. This cache makes a big difference to runtime speed.
     /// </summary>
-    public ClassVariable FindOutput(string NameToFind)
+    private ClassVariable FindOutput(string NameToFind)
     {
         if (VariableCache.ContainsKey(NameToFind))
             return VariableCache[NameToFind];
 
-        ClassVariable V = FindOutputInternal(NameToFind);
+        ClassVariable V = InScope.FindVariable(NameToFind, this, InScope.Outputs);
+
         if (V != null)
             VariableCache.Add(NameToFind, V);
         return V;
     }
 
-    private ClassVariable FindOutputInternal(string NameToFind)
-    {
-        if (NameToFind.Contains("."))
-        {
-            // absolute address.
-            int PosLastPeriod = NameToFind.LastIndexOf('.');
-            ModelInstance I = FindModelInstance(NameToFind.Substring(0, PosLastPeriod));
-            if (I == null)
-                return null;
-            // See if we have the output
-            NameToFind = NameToFind.Substring(PosLastPeriod + 1);
-            foreach (ClassVariable V in I.Outputs)
-                if (string.Equals(V.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
-                    return V;
-            return null;
-        }
-        else
-        {
-            // If we get this far, then we haven't found it - check our children.
-            ClassVariable V1 = FindOutputInChildren(NameToFind);
-            if (V1 != null)
-                return V1;
-
-            // If we get this far, then we haven't found the output so go check our parent.
-            if (Parent == null)
-                return null;
-            else
-                return Parent.FindOutputInternal(NameToFind);
-        }
-    }
-
-
-    private ClassVariable FindOutputInChildren(string NameToFind)
-    {
-        // See if we have the output
-        foreach (ClassVariable V in Outputs)
-            if (V.Name.ToLower() == NameToFind.ToLower())
-                return V;
-
-        foreach (ModelInstance Child in Children)
-        {
-            ClassVariable V1 = Child.FindOutputInChildren(NameToFind);
-            if (V1 != null)
-                return V1;
-        }
-        return null;
-    }
-
-
-    public ClassVariable FindParamOrState(string NameToFind)
-    {
-        foreach (ClassVariable Param in Params)
-            if (string.Equals(Param.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
-                return Param;
-        foreach (ClassVariable State in States)
-            if (string.Equals(State.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
-                return State;
-
-        return null;
-    }
-
-    public ClassVariable FindParam(string NameToFind)
-    {
-        foreach (ClassVariable Param in Params)
-            if (string.Equals(Param.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
-                return Param;
-
-        return null;
-    }
-
-    public LinkField FindLink(string NameToFind)
-    {
-        foreach (LinkField Link in Refs)
-            if (string.Equals(Link.Name, NameToFind, StringComparison.CurrentCultureIgnoreCase))
-                return Link;
-
-        return null;
-    }
-
     /// <summary>
-    /// Update all [Input] values for this model instance and all child instances.
+    /// Update all [Input] values for this model instance
     /// </summary>
-    public void UpdateValues()
+    private void UpdateValues(bool Deep)
     {
         foreach (ClassVariable Input in Inputs)
             Input.UpdateValue();
-    }
-
-    public void OnTick(TimeType t)
-    {
-        if (Enabled)
-        {
-            UpdateValues();
+        if (Deep)
             foreach (ModelInstance Child in Children)
-                Child.OnTick(t);
-        }
+                Child.UpdateValues(Deep);
     }
-
-    public void Activate()
-    {
-        if (!Enabled)
-        {
-            // We're going to tear everything down and create a new, fresh model.
-            //TearDownModel();
-            EnableEvents();
-            //ResolveAllRefsAndEvents();
-            UpdateAllValues();
-            //CreateInstanceOfModel();
-            //Root.ResolveAllRefsAndEvents();
-            //PublishToChildren("Initialised");
-        }
-    }
-
-    private void UpdateAllValues()
-    {
-        UpdateValues();
-        foreach (ModelInstance Child in Children)
-            Child.UpdateValues();
-    }
-
-
-    /// <summary>
-    /// Need to tear down entire model and reinstate a fresh one.
-    /// </summary>
-    public void Deactivate()
-    {
-        if (Enabled)
-        {
-            Enabled = false;
-            DisableEvents();
-            //TearDownModel();
-            //CreateInstanceOfModel();
-            //Initialise();
-            //Root.ResolveAllRefsAndEvents();
-            //PublishToChildren("Initialised");
-        }
-    }
-
-    private void EnableEvents()
-    {
-        Enabled = true;
-        foreach (EventSubscriber Subscriber in Subscribers)
-            Subscriber.Connect();
-        foreach (ModelInstance Child in Children)
-            Child.EnableEvents();
-    }
-
-    private void DisableEvents()
-    {
-        foreach (EventSubscriber Subscriber in Subscribers)
-            Subscriber.Disconnect();
-        foreach (ModelInstance Child in Children)
-            Child.DisableEvents();
-    }
-
-    void ResolveAllRefsAndEvents()
-    {
-        VariableCache.Clear();
-        ConnectInputsAndOutputs();
-        ResolveRefs(IncludeChildren: false);
-        if (Enabled)
-            ConnectEvents();
-        UpdateValues();
-        foreach (ModelInstance Child in Children)
-            Child.ResolveAllRefsAndEvents();
-    }
-    void TearDownModel()
-    {
-        Inputs.Clear();
-        Outputs.Clear();
-        Params.Clear();
-        States.Clear();
-        Refs.Clear();
-        Root.DisconnectAllEvents();
-        Subscribers.Clear();
-        Publishers.Clear();
-        VariableCache.Clear();
-        foreach (ModelInstance Child in Children)
-        {
-            Child.TearDownModel();
-            Child.Parent = null;
-        }
-        Children.Clear();
-    }
-
-    internal void GetAllOutputNames(ref List<string> VariableNames)
-    {
-        foreach (ClassVariable Output in Outputs)
-            VariableNames.Add(Name + "." + Output.Name);
-        foreach (ModelInstance Child in Children)
-            Child.GetAllOutputNames(ref VariableNames);
-    }
-
-    internal void GetAllOutputValues(ref List<object> Values)
-    {
-        foreach (ClassVariable Output in Outputs)
-            Values.Add(Output.Value);
-        foreach (ModelInstance Child in Children)
-            Child.GetAllOutputValues(ref Values);
-    }
-
-    /// <summary>
-    /// Returns true if this model has a [Param] with the specified name.
-    /// </summary>
-    internal bool ModelHasParam(string ParamName)
-    {
-        foreach (ClassVariable Param in Params)
-        {
-            if (Param.Name.ToLower() == ParamName.ToLower())
-                return true;
-        }
-        return false;
-    }
-
-    internal ClassVariable ModelHasXMLParam()
-    {
-        foreach (ClassVariable Param in Params)
-        {
-            if (Param.Type == typeof(XmlNode))
-                return Param;
-        }
-        return null;
-    }
-
-
 
     /// <summary>
     /// Add a new model based on the model description passed in and the assembly. This will replace this 
@@ -568,28 +311,16 @@ internal class ModelInstance
         Outputs.Clear();
         Params.Clear();
         States.Clear();
-        Refs.Clear();
+        Links.Clear();
         Publishers.Clear();
         Subscribers.Clear();
 
-        Node = ModelDescription;
-        ClassType = XmlSerialiser.GetClassType(Node.Name, ModelAssembly);
-        if (ClassType == null)
-            throw new Exception("Cannot find a model class called: " + Node.Name);
+        _ClassType = XmlSerialiser.GetClassType(ModelDescription.Name, ModelAssembly);
+        if (Type == null)
+            throw new Exception("Cannot find a model class called: " + ModelDescription.Name);
 
-        TheModel = Activator.CreateInstance(ClassType);
+        _TheModel = Activator.CreateInstance(Type);
         CollectVariablesAndEvents();
-
-        //if (!ModelHasXMLParam())
-        //{
-        //    foreach (XmlNode Child in XmlHelper.ChildNodes(Node, ""))
-        //    {
-        //        // If the model has a [Param] with the same name as this child xml node
-        //        // then don't go and try create a nested simulation object for this xml node.
-        //        if (!ModelHasParam(Child.Name) && Child.Name.ToLower() != "summaryfile")
-        //            Children.Add(new ModelInstance(XmlHelper.Name(Child), Child, this, ModelAssembly));
-        //    }
-        //}
 
         Initialise();
 
@@ -603,7 +334,7 @@ internal class ModelInstance
     private void CollectVariablesAndEvents()
     {
         // Collection all fields.
-        foreach (FieldInfo Field in GetAllFields(TheModel.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (FieldInfo Field in Utility.GetAllFields(TheModel.GetType(), BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
             ProcessClassMember(Field);
         
         // Collect all properties.
@@ -621,7 +352,7 @@ internal class ModelInstance
                 if (Attribute.ToString() == "EventHandler")
                 {
                     EventHandler Handler = (EventHandler)Attribute;
-                    AddSubscriber(Handler.EventName, EventHandler, TheModel);
+                    Subscribe(Handler.EventName, EventHandler, TheModel);
                 }
         }
 
@@ -632,6 +363,9 @@ internal class ModelInstance
         }
     }
 
+    /// <summary>
+    /// Process the specified MemberInfo and put it into different Lists. e.g. Params, States, Inputs etc.
+    /// </summary>
     private void ProcessClassMember(MemberInfo Member)
     {
         // Exclude delegates.
@@ -652,7 +386,7 @@ internal class ModelInstance
             Link LinkAttribute = LinkAttributes[0] as Link;
             if (LinkAttribute.NamePath == null)
                 LinkAttribute.NamePath = Member.Name;
-            Refs.Add(new LinkField(TheModel, LinkAttribute.NamePath, Member as FieldInfo, LinkAttribute.IsOptional));
+            Links.Add(new ClassLink(TheModel, LinkAttribute.NamePath, Member as FieldInfo, LinkAttribute.IsOptional));
             return;
         }
 
@@ -671,7 +405,10 @@ internal class ModelInstance
             States.Add(Variable);
     }
 
-    internal void AddSubscriber(string EventName, MethodInfo EventHandler, object Model)
+    /// <summary>
+    /// Subscribe to the specified event.
+    /// </summary>
+    internal void Subscribe(string EventName, MethodInfo EventHandler, object Model)
     {
         Subscribers.Add(new EventSubscriber(EventName, EventHandler, Model));
     }
@@ -685,7 +422,7 @@ internal class ModelInstance
         if (PosPeriod != -1)
         {
             string ModelName = EventName.Substring(0, PosPeriod);
-            ModelInstance i = FindModelInstance(EventName.Substring(0, PosPeriod));
+            ModelInstance i = InScope.FindModel(ModelName, this);
             if (i == null)
                 throw new Exception("Cannot publish event to model: " + ModelName + ". Model not found");
             i.PublishToChildren(EventName.Substring(PosPeriod + 1));
@@ -696,6 +433,9 @@ internal class ModelInstance
             Parent.Publish(EventName);
     }
 
+    /// <summary>
+    /// Publish
+    /// </summary>
     internal void PublishToChildren(string EventName)
     {
         for (int i = 0; i < Subscribers.Count; i++)
@@ -707,22 +447,6 @@ internal class ModelInstance
             Child.PublishToChildren(EventName);
     }
     
-
-    
-    /// <summary>
-    /// Return all fields. The normal .NET reflection doesn't return private fields in base classes.
-    /// This function does.
-    /// </summary>
-    private static List<FieldInfo> GetAllFields(Type type, BindingFlags flags)
-    {
-        if (type == typeof(Object)) return new List<FieldInfo>();
-
-        var list = GetAllFields(type.BaseType, flags);
-        // in order to avoid duplicates, force BindingFlags.DeclaredOnly
-        list.AddRange(type.GetFields(flags | BindingFlags.DeclaredOnly));
-        return list;
-    }
-
     /// <summary>
     /// Connect all inputs to outputs for the specified instance and all child instances.
     /// </summary>
@@ -775,7 +499,7 @@ internal class ModelInstance
                 return Publisher;
         }
 
-        foreach (ModelInstance Child in Children)
+        foreach (ModelInstance Child in ChildrenSorted)
         {
             EventPublisher Publisher = Child.FindEventPublisher(EventName);
             if (Publisher != null)
@@ -800,6 +524,7 @@ internal class ModelInstance
     internal bool Get<T>(string NamePath, out T Data) where T: new()
     {
         ClassVariable V = FindOutput(NamePath);
+
         if (V != null)
         {
             Data = (T)Convert.ChangeType(V.Value, typeof(T));
@@ -927,12 +652,11 @@ internal class ModelInstance
         StringReader In = new StringReader(Checkpoint);
         ModelInstance NewInstance = XmlSerialiser.Deserialise(In, null);
         Parent.Children.Remove(this);
-        NewInstance.Parent = Parent;
+        NewInstance._Parent = Parent;
         Parent.Children.Add(NewInstance);
-        Parent.SortChildren();
 
         // restoring from checkpoint doesn't do links.
-        Root.ResolveAllRefsAndEvents();
+        Root.Initialise();
     }
 
     /// <summary>
@@ -958,19 +682,39 @@ internal class ModelInstance
     }
 
     /// <summary>
+    /// We have subscribed to the Tick event so that we can update all [Input] values in all models.
+    /// </summary>
+    private void OnTick(TimeType t)
+    {
+       UpdateValues(Deep: true);
+    }
+
+    /// <summary>
+    /// A component has terminated the simulation. Flag this so that we can stop the timestep loop.
+    /// </summary>
+    private void OnTerminate()
+    {
+        _Terminate = true;
+    }
+
+    /// <summary>
     ///  Run all simulations found from this model instance, looking through all children.
     /// </summary>
     public void Run()
     {
         if (TheModel is Simulation)
         {
-            UpdateValues();
+            _Terminate = false;
+            UpdateValues(Deep: true);
+            PublishToChildren("Initialised");
+
             do
                 PublishToChildren("Timestep");
-            while (true);
+            while (_Terminate == false);
         }
         foreach (ModelInstance Child in Children)
             Child.Run();
     }
+
 
 }

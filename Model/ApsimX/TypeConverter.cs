@@ -12,7 +12,7 @@ using CSGeneral;
 ///                         converter delegate that can be called later to perform the conversion.
 /// 2. Immediate conversion: You can call the Convert method to perform the object conversion immediately.
 /// </summary>
-internal class TypeConverter
+public class TypeConverter
 {
     internal delegate object Converter(string Name, object From);
 
@@ -68,7 +68,7 @@ internal class TypeConverter
     /// Convert the specified From object to the specified ToType. If no conversion is required then
     /// From will be returned.
     /// </summary>
-    internal static object Convert(string Name, object From, Type ToType)
+    public static object Convert(string Name, object From, Type ToType)
     {
         if (From.GetType() == ToType)
             return From;

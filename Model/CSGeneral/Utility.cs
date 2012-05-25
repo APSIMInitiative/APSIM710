@@ -7,6 +7,7 @@ using System.Xml.Xsl;
 using System.Xml.XPath;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Reflection;
 
 
 namespace CSGeneral
@@ -316,6 +317,21 @@ namespace CSGeneral
                 }
                 list[i + 1] = key;
             }
+        }
+
+
+        /// <summary>
+        /// Return all fields. The normal .NET reflection doesn't return private fields in base classes.
+        /// This function does.
+        /// </summary>
+        public static List<FieldInfo> GetAllFields(Type type, BindingFlags flags)
+        {
+            if (type == typeof(Object)) return new List<FieldInfo>();
+
+            var list = GetAllFields(type.BaseType, flags);
+            // in order to avoid duplicates, force BindingFlags.DeclaredOnly
+            list.AddRange(type.GetFields(flags | BindingFlags.DeclaredOnly));
+            return list;
         }
 
     }

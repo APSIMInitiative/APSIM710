@@ -8,7 +8,7 @@ using System.Xml;
 /// <summary>
 /// The class encapsulates a FieldInfo or PropertyInfo. In other words it can represent a class field or property.
 /// </summary>
-class ClassVariable
+public class ClassVariable
 {
     private ClassVariable Source;
     private TypeConverter.Converter Converter;
@@ -55,37 +55,12 @@ class ClassVariable
     /// <summary>
     /// Return the name of the class member.
     /// </summary>
-    internal string Name { get { return _Name; } }
-
-    /// <summary>
-    /// Return the name of the class member.
-    /// </summary>
-    internal MemberInfo MemberInfo { get { return Member; } }
-
-
-    /// <summary> 
-    /// Update the value of this variable using the source variable.
-    /// </summary>
-    internal void UpdateValue()
-    {
-        if (Source == null)
-        {
-            if (!IsOptional)
-                throw new Exception("Cannot find a value for [Input] variable: " + Name);
-        }
-        else if (!_HaveSetValue || !Source.Immutable)
-        {
-            if (Converter == null)
-                Value = Source.Value;
-            else
-                Value = Converter.Invoke(Name, Source.Value);
-        }
-    }
+    public string Name { get { return _Name; } }
 
     /// <summary>
     /// Provides access to the value of this class variable. 
     /// </summary>
-    internal object Value
+    public object Value
     {
         get
         {
@@ -103,6 +78,46 @@ class ClassVariable
             _HaveSetValue = true;
         }
     }
+
+    /// <summary>
+    /// Return a description
+    /// </summary>
+    public string Description
+    {
+        get
+        {
+            object[] Attributes = Member.GetCustomAttributes(typeof(Description), false);
+            if (Attributes.Length == 0)
+                return null;
+            else
+                return (Attributes[0] as Description).ToString();
+        }
+    }
+
+    /// <summary>
+    /// Return the name of the class member.
+    /// </summary>
+    internal MemberInfo MemberInfo { get { return Member; } }
+
+    /// <summary> 
+    /// Update the value of this variable using the source variable.
+    /// </summary>
+    internal void UpdateValue()
+    {
+        if (Source == null)
+        {
+            if (!IsOptional)
+                throw new Exception("Cannot find a value for [Input] variable: " + Name + " for model class: " + TheModel.GetType().Name);
+        }
+        else if (!_HaveSetValue || !Source.Immutable)
+        {
+            if (Converter == null)
+                Value = Source.Value;
+            else
+                Value = Converter.Invoke(Name, Source.Value);
+        }
+    }
+
 
     internal bool HaveSetValue { get { return _HaveSetValue; } }
 
@@ -123,7 +138,7 @@ class ClassVariable
     /// <summary>
     /// Return true if this class variable is an Optional one. [Param] and [Input] variables can be optional.
     /// </summary>
-    internal bool IsOptional { get { return _IsOptional; } }
+    private bool IsOptional { get { return _IsOptional; } }
 
     /// <summary>
     /// Return the [Param] attribute for this class variable. Will return null if no
