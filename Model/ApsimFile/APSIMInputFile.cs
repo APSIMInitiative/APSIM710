@@ -333,6 +333,8 @@ namespace ApsimFile
 
             DataTable Data = new DataTable();
 
+            int SavedPosition = In.Position;
+
             // Get first date.
             StringCollection Words = new StringCollection();
             GetNextLine(In, ref Words);
@@ -340,13 +342,14 @@ namespace ApsimFile
             try
             {
                 In.Seek(-1000, SeekOrigin.End);
+                In.ReadLine(); // throw away partial line.
             }
             catch (Exception)
             {
-            // The seek can fail on small files.
+                // The seek can fail on small files.
+                In.Seek(SavedPosition, SeekOrigin.Begin);
             }
 
-            In.ReadLine(); // throw away partial line.
 
             while (GetNextLine(In, ref Words)) ;
 
