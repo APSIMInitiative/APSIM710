@@ -14,10 +14,11 @@ namespace ApsimFile
         public delegate void ProgressNotifier(int Percent);
 
 
-        private static string[] VarNames = {"Name", "Country", "State", "Region", "NearestTown", "Site", 
+        private static string[] VarNames = {"Name", "RecordNo", "Country", "State", "Region", "NearestTown", "Site", 
                                   "ApsoilNumber", "SoilType", "ASC_Order", "ASC_Sub-order", "Latitude", "Longitude",
                                   "LocationAccuracy", "DataSource", "Comments", "NaturalVegetation",
                                   "MunsellColour",
+                                  "LayerNo",
                                   "Thickness (mm)", 
                                   "BD (g/cc)",
                                   "Rocks (%)",
@@ -87,7 +88,7 @@ namespace ApsimFile
                                   "ParticleSizeSilt (%)",
                                   "ParticleSizeClay (%)"};
 
-        private static string[] PropertyNames = {"Name", "Country", "State", "Region", "NearestTown", "Site", 
+        private static string[] PropertyNames = {"RecordNo", "Name", "Country", "State", "Region", "NearestTown", "Site", 
                                   "ApsoilNumber", "SoilType", "ASC_Order", "ASC_Sub-order", "Latitude", "Longitude",
                                   "LocationAccuracy", "DataSource", "Comments", "NaturalVegetation",
                                   "SummerCona",
@@ -384,45 +385,48 @@ namespace ApsimFile
                     !Column.ColumnName.Contains("Code"))
                 {
                     string VariableName = Column.ColumnName;
-                    string Units = StringManip.SplitOffBracketedValue(ref VariableName, '(', ')');
-
-                    // Work out codes and units
-                    string[] Codes = null;
-                    if (Table.Columns.Contains(VariableName + "Code"))
+                    if (VariableName != "LayerNo")
                     {
-                        Codes = DataTableUtility.GetColumnAsStrings(Table, VariableName + "Code", NumRows, StartRow);
+                        string Units = StringManip.SplitOffBracketedValue(ref VariableName, '(', ')');
 
-                        for (int i = 0; i < Codes.Length; i++)
+                        // Work out codes and units
+                        string[] Codes = null;
+                        if (Table.Columns.Contains(VariableName + "Code"))
                         {
-                            string CodeUnits = StringManip.SplitOffBracketedValue(ref Codes[i], '(', ')');
-                            if (CodeUnits != "")
-                                Units = CodeUnits;
-                        }
-                    }
+                            Codes = DataTableUtility.GetColumnAsStrings(Table, VariableName + "Code", NumRows, StartRow);
 
-                    // Get the values.
-                    string[] Values = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName, NumRows, StartRow);
-                    bool IsCrop = VariableName.Contains(" ");
-                    if (!IsCrop || MathUtility.ValuesInArray(Values))
-                    {
-                        Soil.Variable Var;
-                        if (IsPropertyName(VariableName))
-                            Var = new Soil.Variable(VariableName, Values[0]);
+                            for (int i = 0; i < Codes.Length; i++)
+                            {
+                                string CodeUnits = StringManip.SplitOffBracketedValue(ref Codes[i], '(', ')');
+                                if (CodeUnits != "")
+                                    Units = CodeUnits;
+                            }
+                        }
+
+                        // Get the values.
+                        string[] Values = DataTableUtility.GetColumnAsStrings(Table, Column.ColumnName, NumRows, StartRow);
+                        bool IsCrop = VariableName.Contains(" ");
+                        if (!IsCrop || MathUtility.ValuesInArray(Values))
+                        {
+                            Soil.Variable Var;
+                            if (IsPropertyName(VariableName))
+                                Var = new Soil.Variable(VariableName, Values[0]);
+                            else
+                            {
+                                if (IsChemVariable(VariableName))
+                                    Var = new Soil.Variable(VariableName, Units, Values, ThicknessChem, SoilNode);
+                                else
+                                    Var = new Soil.Variable(VariableName, Units, Values, Thickness, SoilNode);
+                            }
+                            Var.Codes = Codes;
+                            Soil.Set(SoilNode, Var);
+                        }
                         else
                         {
-                            if (IsChemVariable(VariableName))
-                                Var = new Soil.Variable(VariableName, Units, Values, ThicknessChem, SoilNode);
-                            else
-                                Var = new Soil.Variable(VariableName, Units, Values, Thickness, SoilNode);
+                            // Even though we don't have any values still check for units otherwise
+                            // later it will throw and exception when user navigates to that variable.
+                            Soil.CheckUnits(VariableName, Units);
                         }
-                        Var.Codes = Codes;
-                        Soil.Set(SoilNode, Var);
-                    }
-                    else
-                    {
-                        // Even though we don't have any values still check for units otherwise
-                        // later it will throw and exception when user navigates to that variable.
-                        Soil.CheckUnits(VariableName, Units);
                     }
                 }
             }
@@ -488,6 +492,12 @@ namespace ApsimFile
                 }
                 else if (Name == "Name")
                     Values = StringManip.CreateStringArray(XmlHelper.Name(SoilNode), NumValues);
+                else if (Name == "LayerNo")
+                {
+                    Values = new string[NumValues];
+                    for (int LayerNo = 1; LayerNo <= NumValues; LayerNo++)
+                        Values[LayerNo - 1] = LayerNo.ToString();
+                }
                 else if (Name.Contains(" "))
                 {
                     // Only put crop variable values into the table where we have crop variables.

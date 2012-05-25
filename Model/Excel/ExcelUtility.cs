@@ -150,7 +150,7 @@ namespace ExcelUtility
 				ExcelApp.DisplayAlerts = false;
 				ExcelApp.ActiveWorkbook.SaveAs(
 								FileName, 
-								XlFileFormat.xlXMLSpreadsheet, 
+								XlFileFormat.xlExcel8, 
 								Type.Missing, 
 								Type.Missing, 
 								Type.Missing, 
